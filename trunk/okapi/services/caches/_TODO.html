@@ -1,0 +1,203 @@
+<!-- Search for geocaches. -->
+<table class='method' cellspacing='1px'>
+	<tr>
+		<td class='precaption' colspan='3'>
+			<table><tr>
+				<td>Consumer: <span class='required'>required</span></td>
+				<td>Token: <span class='optional'>optional</span></td>
+			</tr></table>
+		</td>
+	</tr>
+	<tr>
+		<td class='caption' colspan='3'>
+			<b>WRTODO</b>
+		</td>
+	</tr>
+	<tr><td class='description' colspan='3'>
+		WRTODO
+		Get a list of geocaches.
+		Either area, point, wp name, or owner are required.
+		Results are sorted by distance from the center point.
+		If not center point is provided, then they are sorted by the
+		distance from the center of the bbox. If neither of those are
+		provided, then they are sorted by oxcode.
+	</td></tr>
+	<tr>
+		<td class='argname'>status_in</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>1</b></p>
+			<p>Pipe-separated list of status codes. Only caches matching any of the given
+			statuses will included in the response. Possible status codes are:</p>
+			<ul>
+				<li><b>1</b> - Ready to search,</li>
+				<li><b>2</b> - Temporarily unavailable,</li>
+				<li><b>3</b> - Archived.</li>
+			</ul>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>format</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>json</b></p>
+			<p>One of the following: <b>json</b>, <b>xml</b> or <b>gpx</b>. Format in
+			which you'd like the results to be returned.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>area</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>If given, limits the geocaches returned to those being inside the specified bounding box.
+			Caches will be sorted by the distance from the center of this area.</p>
+			<p>This parameter must be given in the following format:<br>
+			<b>south_latitude|west_longitude|north_latitude|east_longitude</b>
+			(the edges of the bounding area). Use positive numbers for north latitude and east longitude
+			and negitive numbers of south latitude and west longitude.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>point</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			If given, the method will return a list of geocaches closest to the specified point
+			sorted by the distance from that point.
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>wpts</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			Pipe-separated list of waypoint names. If given, the list of returned caches will
+			be limited to the waypoints given.
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>owners</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			Pipe-separated list of user IDs. If given, the list of returned caches will
+			be limited to those owned by the given users.
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>found_status</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>either</b></p>
+			<p><b>Notice:</b> This parameter may be used only for requests signed with an Access Token.</p>
+			<p>Should be one of the following:</p>
+			<ul>
+				<li><b>found_only</b> - only caches found by the user will be returned,</li>
+				<li><b>unfound_only</b> - only caches <b>not</b> found by the user will be returned,</li>
+				<li><b>either</b> - all caches will be returned.</li>
+			</ul>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>exclude_my_own</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>false</b></p>
+			<p><b>Notice:</b> This parameter may be used only for requests signed with an Access Token.</p>
+			<p>Boolean. If set to <b>true</b>, caches which the user is an owner of will
+			not be included in the result.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>modified_since</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>A datetime value in a format of "yyyy-mm-dd hh:mm:ss". If given, the list of returned
+			geocaches will be limited to those which were created or modified since that date.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>dist</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Valid along the <b>point</b> parameter. This is the radius within which to search for caches.
+			All caches which are more than <b>dist</b> kilimeters away from the center point will not be
+			included in the results.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>desc</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>false</b></p>
+			<p>Boolean. Tells us whether to include cache descriptions or not. Currently, must be
+			set to <b>false</b> when <b>format</b> is set to <b>gpx</b>.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>min_recommendations</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Integer. If <i>N</i> given, the result will contain only those caches which have
+			at least <i>N</i> recommendations.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>terrain</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>1-5</b></p>
+			<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+			Only caches with terrain rating between these numbers (inclusive) will be returned.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>difficulty</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>1-5</b></p>
+			<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+			Only caches with difficulty rating between these numbers (inclusive) will be returned.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>size</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>1-5</b></p>
+			<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+			Only caches of size rating between these numbers (inclusive) will be returned.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>score</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Default value: <b>1-5</b></p>
+			<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+			Only caches with an overall score rating between these numbers (inclusive) will be returned.</p>
+ 		</td>
+	</tr>
+	<tr>
+		<td class='argname'>type</td>
+		<td class='optional'>optional</td>
+		<td class='argdesc'>
+			<p>Pipe-separated list of cache type codes. If given, the results will be limited
+			to the given cache types. Valid cache type codes currently include:</p>
+			<ul>
+				<li><b>1</b> - Other cache,</li>
+				<li><b>2</b> - Traditional cache,</li>
+				<li><b>3</b> - Multi-cache,</li>
+				<li><b>4</b> - Virtual cache,</li>
+				<li><b>5</b> - Webcam cache,</li>
+				<li><b>6</b> - Event cache,</li>
+				<li><b>7</b> - Quiz cache,</li>
+				<li><b>8</b> - Moving cache,</li>
+				<li><b>9</b> - Own cache.</li>
+			</ul>
+ 		</td>
+	</tr>
+	
+	<tr><td colspan='3' class='returns'>
+		<p><b>Returned&nbsp;value:</b></p>
+		
+		
+	</td></tr>
+</table>

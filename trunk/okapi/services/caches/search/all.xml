@@ -1,0 +1,110 @@
+<xml>
+	<brief>Search for geocaches</brief>
+	<desc>
+		<p>If not for the <b>limit</b> parameter, this method (called without any additional
+		filtering arguments) would simply return the OX codes of <b>all the geocaches</b>
+		in the database (in arbitrary order). Then, you might use these codes to download
+		the actual data about these caches.</p>
+		<p>However, the power of this method comes with the filtering parameters.
+		All of them are optional, but you surely want to use at least some of them!</p>
+	</desc>
+	<opt name='type'>
+		<p>Pipe-separated list of cache type codes. If given, the results will be limited
+		to the given cache types. Valid cache type codes currently include:</p>
+		<ul>
+			<li><b>traditional</b>,</li>
+			<li><b>multi</b>,</li>
+			<li><b>quiz</b>,</li>
+			<li><b>event</b>,</li>
+			<li><b>virtual</b>,</li>
+			<li><b>webcam</b>,</li>
+			<li><b>moving</b>,</li>
+			<li><b>own</b>,</li>
+			<li><b>other</b>.</li>
+		</ul>
+		<p><b>Notice:</b> If you want to include all cache types <b>except</b>
+		selected ones, prepend your value with the "-" sign.</p>
+	</opt>
+	<opt name='status' default='ready'>
+		<p>Pipe-separated list of status codes. Only caches matching any of the given
+		statuses will included in the response. Possible status codes include:</p>
+		<ul>
+			<li><b>ready</b> - Ready to search,</li>
+			<li><b>temp_unavailable</b> - Temporarily unavailable,</li>
+			<li><b>archived</b> - Archived.</li>
+		</ul>
+	</opt>
+	<opt name='owner'>
+		<p>Pipe-separated list of user names. If given, the list of returned caches
+		will be limited to those owned by the given users.</p>
+		<p><b>Notice:</b> User ID and User Name are two different things.</p>
+	</opt>
+	<opt name='terrain' default='1-5'>
+		<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+		Only caches with terrain rating between these numbers (inclusive) will be returned.</p>
+	</opt>
+	<opt name='difficulty' default='1-5'>
+		<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+		Only caches with difficulty rating between these numbers (inclusive) will be returned.</p>
+	</opt>
+	<opt name='size' default='1-5'>
+		<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+		Only caches with size attribute between these numbers (inclusive) will be returned
+		(1 - micro, 5 - very big).</p>
+		<p><b>Notice:</b> If you use this parameter, all caches which do not have a container
+		(like event or virtual caches) will be excluded from the results.</p>
+	</opt>
+	<opt name='rating' default='1-5'>
+		<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+		Only caches with an overall rating between these numbers (inclusive) will be returned
+		(1 - poor, 5 - excellent).</p>
+		<p><b>Notice:</b> If you use this parameter, all caches with less than 4 votes will be
+		excluded from results.</p>
+	</opt>
+	<opt name='min_recommendations'>
+		<p>There are two possible options:</p>
+		<ul>
+			<li>Integer N. If <i>N</i> given, the result will contain only those caches which have
+			at least <i>N</i> recommendations.</li>
+			<li>Integer N with a percent sign appended (ex. "20%"). The result will contain
+			only those caches which have at last <i>N%</i> ratio of recommendations/founds.
+			Please note, that this is useful only with conjunction with <b>min_founds</b>
+			parameter.</li>
+		</ul>
+	</opt>
+	<opt name='min_founds'>
+		<p>Integer N. If <i>N</i> given, the result will contain only those caches which have
+		been found at least <i>N</i> times.</p>
+	</opt>
+	<opt name='modified_since'>
+		<p>A datetime value in a format of "yyyy-mm-dd hh:mm:ss". If given, the list of returned
+		geocaches will be limited to those which were created or modified since that date.</p>
+	</opt>
+	<opt name='found_status' default='either'>
+		<p><b>Notice:</b> This parameter may be used only for requests signed with an Access Token.</p>
+		<p>Should be one of the following:</p>
+		<ul>
+			<li><b>found_only</b> - only caches found by the user will be returned,</li>
+			<li><b>unfound_only</b> - only caches <b>not</b> found by the user will be returned,</li>
+			<li><b>either</b> - all caches will be returned.</li>
+		</ul>
+	</opt>
+	<opt name='exclude_my_own' default='false'>
+		<p><b>Notice:</b> This parameter may be used only for requests signed with an Access Token.</p>
+		<p>Boolean. If set to <b>true</b>, caches which the user is an owner of will
+		not be included in the result.</p>
+	</opt>
+	<opt name='limit' default='100'>
+		<p>Integer in range 1..1000. Maximum number of caches returned.</p>
+	</opt>
+	<common-format-params/>
+	<returns>
+		<p>A dictionary of the following structure:</p>
+		<ul>
+			<li><b>results</b> - a list of OX codes (unordered),</li>
+			<li><b>more</b> - boolean, <b>true</b> means that there were more
+			results for your query, but they were not returned because of the
+			<b>limit</b> parameter.</li>
+		</ul>
+	</returns>
+</xml>

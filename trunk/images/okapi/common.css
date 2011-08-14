@@ -1,0 +1,48 @@
+* { padding: 0; margin: 0; border: 0; }
+html { overflow-y: scroll; }
+html, body { height: 100%; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #444; }
+input, select { font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #444; }
+a { cursor: pointer; }
+span.note { color: #888; font-size: 70%; font-weight: normal; }
+
+body.api { background: #f5f1eb; }
+.okd_mid { width: 1025px; margin: 0 auto; background: url(middle.gif) #f5f1eb; background-position: top center; background-repeat: repeat-y; }
+.okd_top { padding-top: 230px; width: 1025px; margin: 0 auto; background: url(top.jpg); background-position: top center; background-repeat: no-repeat; }
+.okd_bottom { width: 1025px; height: 64px; margin: 0 auto; background: url(bottom.gif); background-position: top center; background-repeat: no-repeat; }
+
+.apimenu { vertical-align: top; width: 225px; font-size: 15px; padding: 0px 20px 0 32px; }
+.apimenu a { color: #804937; text-decoration: none; }
+.apimenu a:hover { text-decoration: underline; }
+.apimenu .module { margin: 10px 0 2px 0; font-weight: bold; }
+.apimenu .methods { padding-left: 20px; }
+.apimenu .selected { font-weight: bold; }
+
+.article { padding: 10px 48px 40px 31px; vertical-align: top; font-size: 15px; line-height: 1.4em; }
+.article a { color: #3e48a8; text-decoration: underline; }
+.article h1 { padding: 0 0 30px 0; font-weight: bold; font-style: italic; font-size: 22px; }
+.article h1 .subh1 { font-size: 18px; font-weight: normal; color: #888; }
+.article h1 .subh1 b { font-weight: normal; color: #944; }
+.article p { margin-bottom: 15px; }
+.article pre { margin-bottom: 15px; }
+.article ul { margin-bottom: 15px; margin-left: 35px; }
+.article ol { margin-bottom: 15px; margin-left: 35px; }
+.article li { margin: 6px 0; }
+.article li p { margin: 6px 0; }
+.method { background: #ccc; margin-bottom: 20px; }
+.method td { background: #fff; padding: 5px 8px 10px 8px; vertical-align: baseline; }
+.method td.argname { background: #fdf9f5; font-weight: bold; text-align: center; font-style: italic; font-size: 16px; padding: 5px 20px; }
+.method td.required { background: #fdf9f5; font-weight: bold; text-align: center; padding: 5px 20px; }
+.method td.optional { background: #fdf9f5; font-style: italic; text-align: center; padding: 5px 20px; }
+.method td.argdesc { background: #fdf9f5; }
+.method td.oauth_args { background: #fdf9f5; font-size: 12px; color: #666; line-height: 1.2em; }
+.method td.caption { text-align: left; padding: 10px; background: #eae2d5; }
+.method td.description { text-align: left; padding: 10px; background: #fff; }
+.method td.description p:last-child { margin-bottom: 0; }
+.method td.returns { text-align: left; padding: 10px; background: #fff; }
+.method td.returns p:last-child { margin-bottom: 0; }
+.method td.precaption { padding: 4px 2px; background: #fdf2e2; }
+.method td.precaption table { margin: 0 auto 0 0; }
+.method td.precaption table td { background: transparent; padding: 0 5px; font-size: 12px; color: #777; line-height: 1.1em; }
+.method td.precaption table td .required { color: #333; font-weight: bold; }
+.method td.precaption table td .optional { color: #333; }
+.method td.precaption table td .red { color: #c44; }

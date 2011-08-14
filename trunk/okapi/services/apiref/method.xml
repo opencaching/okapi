@@ -1,0 +1,41 @@
+<xml>
+	<brief>Get information on a given OKAPI service method</brief>
+	<desc>
+		<p>This method allows you to <b>access API documentation</b> (the same which you
+		are reading just now). Given a method name, it returns a complete method description.</p>
+	</desc>
+	<req name='name'>
+		Name of a method (begins with "services/").
+	</req>
+	<common-format-params/>
+	<returns>
+		<p>A dictionary of the following structure:</p>
+		<ul>
+			<li><b>name</b> - name of the method,</li>
+			<li><b>short_name</b> - name without a path,</li>
+			<li><b>description</b> - HTML-formatted description of what the method does,</li>
+			<li><b>brief_description</b> - brief (max 80 characters), single-line,
+				plain-text description of what the method does,</li>
+			<li><b>ref_url</b> - URL of the documentation page with method description,</li>
+			<li>
+				<b>auth_options</b> - a dictionary which describes authentication
+				requirements for this method, it has a following structure:
+				<ul>
+					<li><b>consumer</b> - "required", "optional", "ignored",</li>
+					<li><b>token</b> - "required", "optional", "ignored",</li>
+				</ul>
+			</li>
+			<li><b>arguments</b> - list of dictionaries, describes method
+				arguments. Each dictionary has a following structure:
+				<ul>
+					<li><b>name</b> - name of an argument,</li>
+					<li><b>is_required</b> - boolean, true if the argument is required,</li>
+					<li><b>default_value</b> - short, plain-text description of the default value
+						for this argument or null if argument doesn't have a default value,</li>
+					<li><b>description</b> - HTML-formatted description of an argument.</li>
+				</ul>
+			</li>
+			<li><b>returns</b> - HTML-formatted description method's return value.</li>
+		</ul>
+	</returns>
+</xml>

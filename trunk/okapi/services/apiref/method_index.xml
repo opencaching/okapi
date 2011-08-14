@@ -1,0 +1,16 @@
+<xml>
+	<brief>Get a list of USOS API methods with brief descriptions</brief>
+	<desc>
+		<p>Get a list of USOS API methods with brief descriptions.</p>
+	</desc>
+	<common-format-params/>
+	<returns>
+		A list of dictionaries, each of which contains one API
+		method description in the following format:
+		<ul>
+			<li><b>name</b> - name of a method,</li>
+			<li><b>brief_description</b> - plain-text, brief (one
+				sentence) description of what the method does.</li>
+		</ul>
+	</returns>
+</xml>
