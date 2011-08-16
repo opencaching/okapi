@@ -113,6 +113,49 @@ class OkapiDocViewer
 			$vars['method_index'] = OkapiServiceRunner::call('services/apiref/method_index',
 				new OkapiInternalRequest(null, null, array()));
 		}
+		elseif ($path == 'signup.html')
+		{
+			$vars['site_url'] = $GLOBALS['absolute_server_URI'];
+			$vars['site_url'] = "http://opencaching.pl/";
+			$matches = null;
+			if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $vars['site_url'], $matches)) {
+				$vars['site_name'] = "OpenCaching.".strtoupper($matches[2]);
+			} else {
+				$vars['site_name'] = $vars['site_url'];
+			}
+			if (isset($_REQUEST['posted']))
+			{
+				# Well... not so static after all. This should be moved out of
+				# the "display_static_doc" method. Perhaps, one day...
+				
+				$appname = isset($_REQUEST['appname']) ? $_REQUEST['appname'] : "";
+				$appname = trim($appname);
+				$appurl = isset($_REQUEST['appurl']) ? $_REQUEST['appurl'] : "";
+				$email = isset($_REQUEST['email']) ? $_REQUEST['email'] : "";
+				$accepted_terms = isset($_REQUEST['terms']) ? $_REQUEST['terms'] : "";
+				$ok = false;
+				if (!$appname)
+					$notice = "Please provide a valid application name.";
+				elseif (mb_strlen($appname) > 100)
+					$notice = "Application name should be less than 100 characters long.";
+				elseif (mb_strlen($appurl) > 250)
+					$notice = "Application URL should be less than 250 characters long.";
+				elseif (!$email)
+					$notice = "Please provide a valid email address.";
+				elseif (mb_strlen($email) > 70)
+					$notice = "Email address should be less than 70 characters long.";
+				elseif (!$accepted_terms)
+					$notice = "You have to read and accept OKAPI Terms of Use.";
+				else
+				{
+					$ok = true;
+					Okapi::register_new_consumer($appname, $appurl, $email);
+					$notice = "Consumer Key generated successfully.\\nCheck your email!";
+				}
+				print '{"ok": '.($ok ? "true" : "false").', "notice": "'.$notice.'"}';
+				return;
+			}
+		}
 		$path = substr($path, 0, strlen($path) - 5); # strip off ".html"
 		include "templates/$path.tpl.php";
 	}
