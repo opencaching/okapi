@@ -106,6 +106,7 @@ class OkapiDocViewer
 	{
 		$vars = array(
 			'menu' => self::get_menu_html($path),
+			'site_url' => $GLOBALS['absolute_server_URI'],
 		);
 		$path = substr($path, 0, strlen($path) - 5); # strip off ".html"
 		include "templates/$path.tpl.php";
