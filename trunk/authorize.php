@@ -32,7 +32,9 @@ if (!$token)
 	# Probably Request Token has expired. This will be usually viewed
 	# by the user, who knows nothing on tokens and OAuth. Let's be nice then!
 	$tplvars['token_expired'] = true;
+	\okapi\OkapiErrorHandler::disable();
 	tpl_BuildTemplate();
+	\okapi\OkapiErrorHandler::reenable();
 	die();
 }
 
