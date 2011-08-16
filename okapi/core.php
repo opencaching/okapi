@@ -345,6 +345,41 @@ class Okapi
 	}
 	
 	/**
+	 * Register new OKAPI Consumer, send him an email with his key-pair, etc.
+	 * This method does not verify parameter values, check if they are in
+	 * a correct format prior the execution.
+	 */
+	public static function register_new_consumer($appname, $appurl, $email)
+	{
+		$consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
+			$appname, $appurl, $email);
+		mail($email, "Your OKAPI Consumer Key",
+			"Consumer Key: $consumer->key\n".
+			"Consumer Secret: $consumer->secret\n\n".
+			"This is the key-pair for your \"".$consumer->name."\" application.\n".
+			"Have fun!");
+		if (isset($GLOBALS['sql_errormail']))
+		{
+			mail($GLOBALS['sql_errormail'], "New OKAPI app registered!",
+				"Name: $consumer->name\n".
+				"Developer: $consumer->email\n".
+				($consumer->url ? "URL: $consumer->url\n" : "").
+				"Consumer Key: $consumer->key\n");
+		}
+		sql("
+			insert into okapi_consumers (`key`, name, secret, url, email, date_created)
+			values (
+				'".mysql_real_escape_string($consumer->key)."',
+				'".mysql_real_escape_string($consumer->name)."',
+				'".mysql_real_escape_string($consumer->secret)."',
+				'".mysql_real_escape_string($consumer->url)."',
+				'".mysql_real_escape_string($consumer->email)."',
+				now()
+			);
+		");
+	}
+	
+	/**
 	 * Print out the standard OKAPI response. The $object will be printed
 	 * using one of the default formatters (JSON, JSONP, XML, etc.). Formatter is
 	 * auto-detected by peeking on the $request 'format' parameter.
