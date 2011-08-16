@@ -106,8 +106,13 @@ class OkapiDocViewer
 	{
 		$vars = array(
 			'menu' => self::get_menu_html($path),
-			'site_url' => $GLOBALS['absolute_server_URI'],
 		);
+		if ($path == 'introduction.html')
+		{
+			$vars['site_url'] = $GLOBALS['absolute_server_URI'];
+			$vars['method_index'] = OkapiServiceRunner::call('services/apiref/method_index',
+				new OkapiInternalRequest(null, null, array()));
+		}
 		$path = substr($path, 0, strlen($path) - 5); # strip off ".html"
 		include "templates/$path.tpl.php";
 	}

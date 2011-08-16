@@ -34,7 +34,7 @@ In fact, if you'd like a particular method to exist, we might encourage you to
 submit a patch. Visit project homepage for details:
 <a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></p>
 
-<h2>How can I use OKAPI?</h2>
+<h2 id='howto'>How can I use OKAPI?</h2>
 
 <p>We assume that you're a software developer and you know the basics.</p>
 <p><b>OKAPI is a set of simple (REST) web services.</b> Basicly, you make a proper HTTP request,
@@ -59,7 +59,7 @@ them by heart to properly use OKAPI. We might provide some working examples in t
 <p>Go to <a href='<?= $vars['site_url'] ?>okapi/signup.html'>this page</a> to generate a
 Consumer Key for your application.</p>
 
-<h2>Authentication</h2>
+<h2 id='authentication'>Authentication</h2>
 
 <p><b>The three OAuth request URLs</b> defined in the <a href='http://oauth.net/core/1.0a/'>OAuth specification</a> are:</p>
 <ul>
@@ -100,6 +100,17 @@ Consumer Key for your application.</p>
 		application - when this happens, you will have to redo the autorization dance.</p>
 	</li>
 </ul>
+
+<h2 id='method_index'>List of available methods</h2>
+
+<p>Currently available OKAPI web services (methods):</p>
+
+<ul>
+	<? foreach ($vars['method_index'] as $method_info) { ?>
+		<li><a href='<?= $vars['site_url']."okapi/".$method_info['name'].".html" ?>'><?= $method_info['name'] ?></a> - <?= $method_info['brief_description'] ?></li>
+	<? } ?>
+</ul>
+
 
 					</td>
 				</tr></table>
