@@ -1,0 +1,56 @@
+<xml>
+	<brief>Retrieve information on multiple geocaches</brief>
+	<desc>
+		<p>This method works like the services/caches/geocache method, but works
+		with multiple geocaches (instead of only one).</p>
+	</desc>
+	<req name='oxcode'>OX codes of the geocache</req>
+	<opt name='fields' default='oxcode|name|location|type|status'>
+		<p>Pipe-separated list of field names which you are interested with.
+		Selected fields will be included in the response.</p>
+		<p>Currently available fields:</p>
+		<ul>
+			<li><b>oxcode</b> - OX code of the geocache,</li>
+			<li><b>name</b> - name of the geocache,</li>
+			<li><b>location</b> - location of the cache in the "lat|lon" format
+				(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
+			<li><b>type</b> - cache type,</li>
+			<li><b>status</b> - cache status,</li>
+			<li><b>owner_id</b> - geocache owner's user ID,</li>
+			<li><b>founds</b> - number of times the geocache was successfully found,</li>
+			<li><b>notfounds</b> - number of times the geocache was unfound,</li>
+			<li><b>last_found</b> - datetime string, the time when the geocache
+				was last found,</li>
+			<li><b>size</b> - integer (one of: 1, 2, 3, 4, 5), size rating of the container, or
+				<b>null</b> if geocache does not have a container,</li>
+			<li><b>difficulty</b> - float (one of: 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0),
+				difficulty rating of the cache,</li>
+			<li><b>terrain</b> - float (one of: 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0),
+				terrain rating of the cache,</li>
+			<li><b>rating</b> - integer (one of: 1, 2, 3, 4, 5), an overall rating of the cache,
+				or <b>null</b> when the geocache does not have a sufficient amount of votes
+				to have a rating,</li>
+			<li><b>rating_votes</b> - number of votes submitted for the rating of this cache,</li>
+			<li><b>recommendations</b> - number of recommendations for this cache,</li>
+			<li><b>descriptions</b> - a dictionary (language code => HTML string) of cache
+				descriptions,</li>
+			<li><b>hints</b> - a dictionary (language code => plain-text string) of cache
+				hints/spoilers; in general, hints should not be displayed to the user
+				unless user specifically asks for them,</li>
+			<li><b>last_modified</b> - datetime string, represents the time when the
+				geocache was last modified (changed status, attributes, etc.),</li>
+			<li><b>date_created</b> - datetime string, represents the time when the
+				geocache was initially created,</li>
+			<li><b>date_hidden</b> - datetime string, represents the time when the
+				geocache was first hidden.</li>
+		</ul>
+	</opt>
+	<common-format-params/>
+	<returns>
+		<p>A dictionary of fields you have selected.</p>
+		<p>For example, for <i>geocache?oxcode=OX123&amp;fields=type</i>
+		query, the result might look something link this:</p>
+		<pre>{"type": "traditional"}</pre>
+		<p>If given OX code does not exist, the method will respond with a HTTP 400 error.</p>
+	</returns>
+</xml>

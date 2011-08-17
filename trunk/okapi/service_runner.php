@@ -25,6 +25,7 @@ class OkapiServiceRunner
 		'services/caches/search/all',
 		'services/caches/search/bbox',
 		'services/caches/search/nearest',
+		'services/caches/geocache',
 		'services/caches/geocaches',
 	);
 	
@@ -46,8 +47,9 @@ class OkapiServiceRunner
 				str_replace('/', '\\', $service_name).'\\WebService', 'options'));
 		} catch (Exception $e)
 		{
-			throw new Exception($e->getMessage()." (make sure you've declared ".
-				"your WebService class in an appropriate namespace!)");
+			throw new Exception("Make sure you've declared your WebService class ".
+				"in an valid namespace (".'okapi\\'.str_replace('/', '\\', $service_name)."); ".
+				$e->getMessage());
 		}
 	}
 	
