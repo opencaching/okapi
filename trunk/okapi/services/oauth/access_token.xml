@@ -6,9 +6,6 @@
 		authorized the Request Token.</p>
 		<p>Standard OAuth "Consumer &amp; Request Token" Authorization arguments
 		are required.</p>
-		<p>Please note, that the returned Access Token MAY have access to more
-		scopes than you declared in request_token method (but it will never have
-		access to these scopes, which user hasn't granted your application access to).</p>
 	</desc>
 	<req name='oauth_verifier'>
 		Consult <a href='http://oauth.net/documentation/spec/'>OAuth documentation</a> for details.
