@@ -11,7 +11,8 @@
 		<p>Currently available fields:</p>
 		<ul>
 			<li><b>oxcode</b> - OX code of the geocache,</li>
-			<li><b>name</b> - name of the geocache,</li>
+			<li><b>name</b> - a dictionary (language code => plain-text string) of
+				names of this geocache,</li>
 			<li><b>location</b> - location of the cache in the "lat|lon" format
 				(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
 			<li><b>type</b> - cache type,</li>
@@ -37,6 +38,22 @@
 			<li><b>hints</b> - a dictionary (language code => plain-text string) of cache
 				hints/spoilers; in general, hints should not be displayed to the user
 				unless user specifically asks for them,</li>
+			<li>
+				<p><b>images</b> - list of dictionaries, each dictionary represents one
+				image saved along the cache description; each dictionary has the
+				following structure:</p>
+				<ul>
+					<li><b>url</b> - an URL of the image,</li>
+					<li><b>thumb_url</b> - an URL of a small (thumb) version of the image
+						<b>or null</b> when no thumb is available (e.g. there are no thumbs
+						for spoiler images),</li>
+					<li><b>caption</b> - a dictionary (language code => plain-text string)
+						of image captions,</li>
+					<li><b>is_spoiler</b> - boolean, if <b>true</b> then the image is
+						a spoiler image and should not be displayed to the user unless
+						the user explicitly asks for it.</li>
+				</ul>
+			</li>
 			<li><b>last_modified</b> - datetime string, represents the time when the
 				geocache was last modified (changed status, attributes, etc.),</li>
 			<li><b>date_created</b> - datetime string, represents the time when the
