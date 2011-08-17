@@ -58,9 +58,7 @@
 		anything the retrieval methods responds with (along with its HTTP headers).</p>
 		<p><b>Example:</b></p>
 		<pre>search_and_retrieve<br/>?search_method=services/caches/search/bbox<br/>&amp;search_params={"bbox":"49|19|50|20","limit":"1"}<br/>&amp;retr_method=services/caches/geocaches<br/>&amp;retr_params={"fields":"location"}<br/>&amp;wrap=false</pre>
-		<p>Possible output:</p>
-		<pre>{"OP205A": {"location": "49.572417|19.525867"}}</pre>
-		<p>The same example with <i>wrap=true</i> would return:</p>
-		<pre>{"results": {"OP205A": {"location": "49.572417|19.525867"}}, "more": true}</pre>
+		<p>Possible output:<br/><code>{"OP205A": {"location": "49.572417|19.525867"}}</code></p>
+		<p>The same example with <i>wrap=true</i> would return:<br/><code>{"results": {"OP205A": {"location": "49.572417|19.525867"}}, "more": true}</code></p>
 	</returns>
 </xml>
