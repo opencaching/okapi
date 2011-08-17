@@ -61,7 +61,7 @@
 		<p><b>Notice:</b> If you use this parameter, all caches with less than 4 votes will be
 		excluded from results.</p>
 	</opt>
-	<opt name='min_recommendations'>
+	<opt name='min_rcmds'>
 		<p>There are two possible options:</p>
 		<ul>
 			<li>Integer N. If <i>N</i> given, the result will contain only those caches which have

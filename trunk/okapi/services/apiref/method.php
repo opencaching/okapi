@@ -8,6 +8,7 @@ use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
+use okapi\OkapiInternalRequest;
 
 class WebService
 {
@@ -25,8 +26,11 @@ class WebService
 		return array(
 			'name' => (string)$attrs['name'],
 			'is_required' => $arg_node->getName() == 'req',
-			'default_value' => isset($attrs['default']) ? (string)$attrs['default'] : null,
-			'description' => self::get_inner_xml($arg_node)
+			'class' => 'public',
+			'description' =>
+				(isset($attrs['default']) ? ("<p>Default value: <b>".$attrs['default']."</b></p>") : "").
+				self::get_inner_xml($arg_node),
+			
 		);
 	}
 	
@@ -73,6 +77,37 @@ class WebService
 		$result['arguments'] = array();
 		foreach ($docs->req as $arg) { $result['arguments'][] = self::arg_desc($arg); }
 		foreach ($docs->opt as $arg) { $result['arguments'][] = self::arg_desc($arg); }
+		foreach ($docs->{'import-params'} as $import_desc)
+		{
+			$attrs = $import_desc->attributes();
+			$referenced_methodname = $attrs['method'];
+			$referenced_method_info = OkapiServiceRunner::call('services/apiref/method',
+				new OkapiInternalRequest(null, null, array('name' => $referenced_methodname)));
+			foreach ($referenced_method_info['arguments'] as $arg)
+			{
+				if ($arg['class'] == 'common-formatting')
+					continue;
+				$arg['description'] = "<i>Inherited from <a href='".$referenced_method_info['ref_url'].
+					"'>".$referenced_method_info['name']."</a> method.</i>";
+				$arg['class'] = 'inherited';
+				$result['arguments'][] = $arg;
+			}
+		}
+		if ($docs->{'common-format-params'})
+		{
+			$result['arguments'][] = array(
+				'name' => 'format',
+				'is_required' => false,
+				'class' => 'common-formatting',
+				'description' => "<i>Standard <a href='".$GLOBALS['absolute_server_URI']."okapi/introduction.html#common-formatting'>common formatting arguments</a>.</i>"
+			);
+			$result['arguments'][] = array(
+				'name' => 'callback',
+				'is_required' => false,
+				'class' => 'common-formatting',
+				'description' => "<i>Standard <a href='".$GLOBALS['absolute_server_URI']."okapi/introduction.html#common-formatting'>common formatting arguments</a>.</i>"
+			);
+		}
 		if (!$docs->returns)
 			throw new Exception("Missing <returns> element in the $methodname.xml file. ".
 				"If your method does not return anything, you should document in nonetheless.");

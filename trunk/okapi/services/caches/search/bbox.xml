@@ -23,10 +23,7 @@
 		western hemispheres accordingly). These are full degrees with a dot
 		as a decimal point (ex. "48.7|15.8|54|24.9").</p>
 	</req>
-	<other-params>
-		You may also use all the "stadard filtering" arguments defined
-		in the search/all method.
-	</other-params>
+	<import-params method='services/caches/search/all'/>
 	<common-format-params/>
 	<returns>
 		<p>Same format as in the search/all method.</p>

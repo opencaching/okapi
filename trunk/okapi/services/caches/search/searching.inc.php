@@ -118,25 +118,25 @@ class SearchAssistant
 		}
 		
 		#
-		# min_recommendations
+		# min_rcmds
 		#
 		
-		if ($tmp = $request->get_parameter('min_recommendations'))
+		if ($tmp = $request->get_parameter('min_rcmds'))
 		{
 			if ($tmp[strlen($tmp) - 1] == '%')
 			{
 				$tmp = substr($tmp, 0, strlen($tmp) - 1);
 				if (intval($tmp) != $tmp)
-					throw new InvalidParam('min_recommendations', "'$tmp'");
+					throw new InvalidParam('min_rcmds', "'$tmp'");
 				$tmp = intval($tmp);
 				if ($tmp > 100 || $tmp < 0)
-					throw new InvalidParam('min_recommendations', "'$tmp'");
+					throw new InvalidParam('min_rcmds', "'$tmp'");
 				$tmp = floatval($tmp) / 100.0;
 				$where_conds[] = "caches.topratings >= caches.founds * '".mysql_real_escape_string($tmp)."'";
 				$where_conds[] = "caches.founds > 0";
 			}
 			if (intval($tmp) != $tmp)
-				throw new InvalidParam('min_recommendations', "'$tmp'");
+				throw new InvalidParam('min_rcmds', "'$tmp'");
 			$where_conds[] = "caches.topratings >= '".mysql_real_escape_string($tmp)."'";
 		}
 		

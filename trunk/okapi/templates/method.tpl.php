@@ -43,13 +43,10 @@ $m = $vars['method'];
 								</td>
 							</tr>
 							<? foreach ($m['arguments'] as $arg) { ?>
-								<tr>
+								<tr class='<?= $arg['class'] ?>'>
 									<td class='argname'><?= $arg['name'] ?></td>
 									<td class='<? echo $arg['is_required'] ? 'required' : 'optional'; ?>'><? echo $arg['is_required'] ? 'required' : 'optional'; ?></td>
 									<td class='argdesc'>
-										<? if ($arg['default_value']) { ?>
-											<p>Default value: <b><?= $arg['default_value'] ?></b></p>
-										<? } ?>
 										<?= $arg['description'] ?>
 									</td>
 								</tr>
