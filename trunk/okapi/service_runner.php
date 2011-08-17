@@ -24,7 +24,8 @@ class OkapiServiceRunner
 		'services/oauth/access_token',
 		'services/caches/search/all',
 		'services/caches/search/bbox',
-		'services/caches/search/nearest'
+		'services/caches/search/nearest',
+		'services/caches/geocaches',
 	);
 	
 	/** Check if method exists. */

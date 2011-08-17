@@ -5,7 +5,8 @@
 		a given center point.</p>
 	</desc>
 	<req name='center'>
-		<p>The center point (typically - the user's location).</p>
+		<p>The center point (typically - the user's location), in the
+		"lat|lon" format.</p>
 		<p>Use positive numbers for latitudes in the northern hemisphere and
 		longitudes in the eastern hemisphere (and negative for southern and
 		western hemispheres accordingly). These are full degrees with a dot

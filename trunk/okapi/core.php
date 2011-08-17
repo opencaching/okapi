@@ -425,6 +425,61 @@ class Okapi
 		return (strptime($string, "%Y-%m-%d %H:%M:%S") &&
 			date("Y-m-d H:i:s", strtotime($string)) == $string);
 	}
+	
+	private static $cache_types = array(
+		'traditional' => 2, 'multi' => 3, 'quiz' => 7, 'event' => 6, 'virtual' => 4, 'webcam' => 5,
+		'moving' => 8, 'own' => 9, 'other' => 1
+	);
+	
+	private static $cache_statuses = array(
+		'ready' => 1, 'temp_unavailable' => 2, 'archived' => 3
+	);
+	
+	/** Ex. 'traditional' => 2. For unknown names returns null. */
+	public static function cache_type_name2id($name)
+	{
+		if (isset(self::$cache_types[$name]))
+			return self::$cache_types[$name];
+		return null;
+	}
+	
+	/** Ex. 2 => 'traditional'. For unknown ids returns null. */
+	public static function cache_type_id2name($id)
+	{
+		static $reversed = null;
+		if ($reversed == null)
+		{
+			$reversed = array();
+			foreach (self::$cache_types as $key => $value)
+				$reversed[$value] = $key;
+		}
+		if (isset($reversed[$id]))
+			return $reversed[$id];
+		return null;
+	}
+	
+	/** Ex. 'ready' => 1. For unknown names returns null. */
+	public static function cache_status_name2id($name)
+	{
+		if (isset(self::$cache_statuses[$name]))
+			return self::$cache_statuses[$name];
+		return null;
+	}
+	
+	/** Ex. 1 => 'ready'. For unknown ids returns null. */
+	public static function cache_status_id2name($id)
+	{
+		static $reversed = null;
+		if ($reversed == null)
+		{
+			$reversed = array();
+			foreach (self::$cache_statuses as $key => $value)
+				$reversed[$value] = $key;
+		}
+		if (isset($reversed[$id]))
+			return $reversed[$id];
+		return null;
+	}
 }
 
 /**
