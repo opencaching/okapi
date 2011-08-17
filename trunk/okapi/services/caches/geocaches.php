@@ -20,7 +20,7 @@ class WebService
 	
 	public static $valid_field_names = array('oxcode', 'name', 'location', 'type', 'status',
 		'owner_id', 'founds', 'notfounds', 'last_found', 'size', 'difficulty', 'terrain',
-		'rating', 'rating_votes', 'recommendations', 'descriptions', 'last_modified',
+		'rating', 'rating_votes', 'recommendations', 'descriptions', 'hints', 'last_modified',
 		'date_created', 'date_hidden');
 	
 	public static function call(OkapiRequest $request)
@@ -46,9 +46,11 @@ class WebService
 			where wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $oxcodes))."')
 		");
 		$results = array();
+		$cacheid2oxcode = array();
 		while ($row = sql_fetch_assoc($rs))
 		{
 			$entry = array();
+			$cacheid2oxcode[$row['cache_id']] = $row['wp_oc'];
 			foreach ($fields as $field)
 			{
 				switch ($field)
@@ -76,6 +78,7 @@ class WebService
 					case 'rating_votes': $entry['rating_votes'] = $row['votes'] + 0; break;
 					case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
 					case 'descriptions': /* handled separately */ break;
+					case 'hints': /* handled separately */ break;
 					case 'last_modified': $entry['last_modified'] = $row['last_modified']; break;
 					case 'date_created': $entry['date_created'] = $row['date_created']; break;
 					case 'date_hidden': $entry['date_hidden'] = $row['date_hidden']; break;
@@ -85,10 +88,41 @@ class WebService
 			$results[$row['wp_oc']] = &$entry;
 		}
 		mysql_free_result($rs);
+		
 		# Check which OX codes were not found and mark them with null.
 		foreach ($oxcodes as $oxcode)
 			if (!isset($results[$oxcode]))
 				$results[$oxcode] = null;
+		
+		$include_descriptions = in_array('descriptions', $fields);
+		$include_hints = in_array('hints', $fields);
+		if ($include_descriptions || $include_hints)
+		{
+			# Get cache descriptions and hints.
+			$rs = sql("
+				select cache_id, language, `desc`, hint
+				from cache_desc
+				where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2oxcode)))."')
+			");
+			while ($row = sql_fetch_assoc($rs))
+			{
+				$oxcode = $cacheid2oxcode[$row['cache_id']];
+				if ($include_descriptions)
+				{
+					if (!isset($results[$oxcode]['descriptions']))
+						$results[$oxcode]['descriptions'] = array();
+					if ($row['desc'])
+						$results[$oxcode]['descriptions'][$row['language']] = $row['desc'];
+				}
+				if ($include_hints)
+				{
+					if (!isset($results[$oxcode]['hints']))
+						$results[$oxcode]['hints'] = array();
+					if ($row['hint'])
+						$results[$oxcode]['hints'][$row['language']] = $row['hint'];
+				}
+			}
+		}
 		return Okapi::formatted_response($request, $results);
 	}
 }
