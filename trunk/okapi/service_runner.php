@@ -86,7 +86,7 @@ class OkapiServiceRunner
 		if ($options['consumer'] == 'required' && $request->consumer == null)
 		{
 			throw new Exception("Method '$service_name' called with mismatched OkapiRequest: ".
-				"\$request->consumer MAY NOT be empty.");
+				"\$request->consumer MAY NOT be empty. Provide a dummy Consumer if you have to.");
 		}
 		if ($options['token'] == 'required' && $request->token == null)
 		{

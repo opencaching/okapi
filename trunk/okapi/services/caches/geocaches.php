@@ -2,6 +2,7 @@
 
 namespace okapi\services\caches\geocaches;
 
+use Exception;
 use okapi\Okapi;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
@@ -20,8 +21,8 @@ class WebService
 	
 	public static $valid_field_names = array('oxcode', 'name', 'location', 'type', 'status',
 		'owner_id', 'founds', 'notfounds', 'last_found', 'size', 'difficulty', 'terrain',
-		'rating', 'rating_votes', 'recommendations', 'descriptions', 'hints', 'last_modified',
-		'date_created', 'date_hidden');
+		'rating', 'rating_votes', 'recommendations', 'descriptions', 'hints', 'images',
+		'last_modified', 'date_created', 'date_hidden');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -56,7 +57,7 @@ class WebService
 				switch ($field)
 				{
 					case 'oxcode': $entry['oxcode'] = $row['wp_oc']; break;
-					case 'name': $entry['name'] = $row['name']; break;
+					case 'name': $entry['name'] = array('PL' => $row['name']); break;
 					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
 					case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
@@ -79,6 +80,7 @@ class WebService
 					case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
 					case 'descriptions': /* handled separately */ break;
 					case 'hints': /* handled separately */ break;
+					case 'images': /* handled separately */ break;
 					case 'last_modified': $entry['last_modified'] = $row['last_modified']; break;
 					case 'date_created': $entry['date_created'] = $row['date_created']; break;
 					case 'date_hidden': $entry['date_hidden'] = $row['date_hidden']; break;
@@ -98,6 +100,13 @@ class WebService
 		$include_hints = in_array('hints', $fields);
 		if ($include_descriptions || $include_hints)
 		{
+			if ($include_descriptions)
+				foreach ($results as &$result_ref)
+					$result_ref['descriptions'] = array();
+			if ($include_hints)
+				foreach ($results as &$result_ref)
+					$result_ref['hints'] = array();
+			
 			# Get cache descriptions and hints.
 			$rs = sql("
 				select cache_id, language, `desc`, hint
@@ -107,20 +116,33 @@ class WebService
 			while ($row = sql_fetch_assoc($rs))
 			{
 				$oxcode = $cacheid2oxcode[$row['cache_id']];
-				if ($include_descriptions)
-				{
-					if (!isset($results[$oxcode]['descriptions']))
-						$results[$oxcode]['descriptions'] = array();
-					if ($row['desc'])
-						$results[$oxcode]['descriptions'][$row['language']] = $row['desc'];
-				}
-				if ($include_hints)
-				{
-					if (!isset($results[$oxcode]['hints']))
-						$results[$oxcode]['hints'] = array();
-					if ($row['hint'])
-						$results[$oxcode]['hints'][$row['language']] = $row['hint'];
-				}
+				if ($include_descriptions && $row['desc'])
+					$results[$oxcode]['descriptions'][$row['language']] = $row['desc'];
+				if ($include_hints && $row['hint'])
+					$results[$oxcode]['hints'][$row['language']] = $row['hint'];
+			}
+		}
+		$include_images = in_array('images', $fields);
+		if ($include_images)
+		{
+			foreach ($results as &$result_ref)
+				$result_ref['images'] = array();
+			$rs = sql("
+				select object_id, url, thumb_url, title, spoiler
+				from pictures
+				where
+					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2oxcode)))."')
+					and display = 1
+			");
+			while ($row = sql_fetch_assoc($rs))
+			{
+				$oxcode = $cacheid2oxcode[$row['object_id']];
+				$results[$oxcode]['images'][] = array(
+					'url' => $row['url'],
+					'thumb_url' => $row['thumb_url'] ? $row['thumb_url'] : null,
+					'caption' => array('PL' => $row['title']),
+					'is_spoiler' => ($row['spoiler'] ? true : false),
+				);
 			}
 		}
 		return Okapi::formatted_response($request, $results);
