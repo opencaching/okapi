@@ -30,9 +30,14 @@
 				<ul>
 					<li><b>name</b> - name of an argument,</li>
 					<li><b>is_required</b> - boolean, true if the argument is required,</li>
-					<li><b>default_value</b> - short, plain-text description of the default value
-						for this argument or null if argument doesn't have a default value,</li>
 					<li><b>description</b> - HTML-formatted description of an argument.</li>
+					<li>
+						<p><b>class</b> - one of the following values: <i>public</i>,
+						<i>inherited</i> or <i>common-formatting</i> (other values might be
+						introduces in future).</p>
+						<p>Currently these values do not mean anything specific. They are
+						used for different coloring/styling in the documentation pages.</p>
+					</li>
 				</ul>
 			</li>
 			<li><b>returns</b> - HTML-formatted description method's return value.</li>

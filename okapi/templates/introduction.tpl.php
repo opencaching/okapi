@@ -106,6 +106,31 @@ Consumer Key for your application.</p>
 <p>Whichever you want. OKAPI will threat GET and POST requests as equal.
 You may also use the HTTP Authorization header for passing OAuth arguments.</p>
 
+<h2 id='common-formatting'>Common formatting parameters</h2>
+
+<p>Most of the methods return simple objects, such as list and dictionaries
+of strings and integers. Such objects can be formatted in several ways using
+<i>common formatting parameters</i>:
+
+<ul>
+	<li>
+		<p><b>format</b> - name of the format in which you'd like your result
+		to be returned in. Currently supported output formats:</p>
+		<ul>
+			<li><b>json</b> - <a href='http://en.wikipedia.org/wiki/JSON'>JSON</a> format (default),</li>
+			<li><b>jsonp</b> - <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> format, if
+			you choose this one, you have to specify the <b>callback</b> parameter.</li>
+		</ul>
+	</li>
+	<li>
+		<b>callback</b> - (when using JSONP output format) name of the JavaScript function
+		to be executed with the result as their parameter.
+	</li>
+</ul>
+
+<p>Some methods expose some <b>special formatting</b> of their own, for example, they may return
+a JPEG or a GPX file. Such methods do not accept <i>common formatting parameters</i>.</p>
+
 <h2 id='method_index'>List of available methods</h2>
 
 <p>Currently available OKAPI web services (methods):</p>
