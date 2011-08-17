@@ -35,8 +35,11 @@
 				to have a rating,</li>
 			<li><b>rating_votes</b> - number of votes submitted for the rating of this cache,</li>
 			<li><b>recommendations</b> - number of recommendations for this cache,</li>
-			<li><b>descriptions</b> - a dictionary (language code => string) of cache
-				descriptions; cache descriptions are HTML-formatted,</li>
+			<li><b>descriptions</b> - a dictionary (language code => HTML string) of cache
+				descriptions,</li>
+			<li><b>hints</b> - a dictionary (language code => plain-text string) of cache
+				hints/spoilers; in general, hints should not be displayed to the user
+				unless user specifically asks for them,</li>
 			<li><b>last_modified</b> - datetime string, represents the time when the
 				geocache was last modified (changed status, attributes, etc.),</li>
 			<li><b>date_created</b> - datetime string, represents the time when the
