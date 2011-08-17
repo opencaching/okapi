@@ -101,6 +101,11 @@ Consumer Key for your application.</p>
 	</li>
 </ul>
 
+<h2 id='http_methods'>GET or POST?</h2>
+
+<p>Whichever you want. OKAPI will threat GET and POST requests as equal.
+You may also use the HTTP Authorization header for passing OAuth arguments.</p>
+
 <h2 id='method_index'>List of available methods</h2>
 
 <p>Currently available OKAPI web services (methods):</p>
