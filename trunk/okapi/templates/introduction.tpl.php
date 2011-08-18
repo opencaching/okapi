@@ -38,7 +38,8 @@ submit your patches.</p>
 
 <p>We have our <a href='http://code.google.com/p/opencaching-api/issues/list'>Issue tracker</a>.
 You can use it to contact us!<br>You may also contact some of
-<a href='http://code.google.com/p/opencaching-api/people/list'>the developers</a> directly, if you want.</p>
+<a href='http://code.google.com/p/opencaching-api/people/list'>the developers</a> directly,
+if you want.</p>
 
 <p>Visit <b>project homepage</b> for details:
 <a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></p>
