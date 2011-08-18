@@ -36,10 +36,11 @@ body.api { background: #f5f1eb; }
 .method { background: #ccc; margin-bottom: 20px; }
 .method td { background: #fff; padding: 5px 8px 10px 8px; vertical-align: baseline; }
 .method .public td { background: #fdf9f5; }
-.method .inherited td { background: #fcfce1; }
-.method .inherited td.argname { background: #fcfce1; border-left: 5px solid #eeb; }
-.method .common-formatting td { background: #f3f3ff; }
-.method .common-formatting td.argname { border-left: 5px solid #cce; }
+.method .public td.argname { border-left: 5px solid #edd; }
+.method .inherited td { background: #ffffd8; }
+.method .inherited td.argname { border-left: 5px solid #eeb; }
+.method .common-formatting td { background: #f5f5ff; }
+.method .common-formatting td.argname { border-left: 5px solid #ddf; }
 .method td.argname { font-weight: bold; text-align: center; font-style: italic; font-size: 16px; padding: 5px 20px; }
 .method td.required { font-weight: bold; text-align: center; padding: 5px 20px; }
 .method td.optional { font-style: italic; text-align: center; padding: 5px 20px; }
