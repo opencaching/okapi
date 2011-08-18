@@ -1,0 +1,32 @@
+<xml>
+	<brief>Get information on this OKAPI installation</brief>
+	<desc>
+		Retrieve some basic information about this OKAPI installation.
+	</desc>
+	<common-format-params/>
+	<returns>
+		<p>A dictionary of the following structure:</p>
+		<ul>
+			<li>
+				<b>site_url</b> - URL of the OpenCaching site which is running
+				the OKAPI installation (in general, this looks like
+				"http://www.opencaching.<i>xx</i>/", where <b>xx</b> is a top
+				level domain of a country).
+			</li>
+			<li>
+				<b>okapi_base_url</b> - URL of the OKAPI installation (usually this is
+				<b>site_url</b> with "okapi/" appended, but you <b>may not</b> assume
+				that!); this value is to be used as a prefix when constructing service
+				method URLs,
+			</li>
+			<li>
+				<b>site_name</b> -  a dictionary (language code => plain-text string) of
+				names of the OpenCaching site,
+			</li>
+			<li><b>okapi_revision</b> - integer, an SVN revision of the OKAPI project
+				installed on this OpenCaching site,</li>
+			<li><b>cache_count</b> - approximate total number of geocaches stored at this site,</li>
+			<li><b>user_count</b> - approximate total number of users of this site.</li>
+		</ul>
+	</returns>
+</xml>
