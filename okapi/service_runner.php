@@ -16,7 +16,8 @@ class OkapiServiceRunner
 	#
 	public static $all_names = array(
 		# Valid format: ^services/[0-9a-z_/]*$ (it means you may use only alphanumeric
-		# characters and the "_" sign in your method names). 
+		# characters and the "_" sign in your method names).
+		'services/apisrv/installation', 
 		'services/apiref/method',
 		'services/apiref/method_index',
 		'services/oauth/request_token',
