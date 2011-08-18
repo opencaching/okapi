@@ -29,9 +29,18 @@ OpenCaching Nodes).</p>
 <p>The project is aiming to become a standard API for all National OpenCaching.<i>xx</i> sites.
 This OKAPI installation provides API for the
 <a href='<?= $vars['site_url']; ?>'><?= $vars['site_url']; ?></a> site.</p>
+
+<h2 id='participate'>How can I participate in OKAPI development?</h2>
+
 <p>OKAPI is Open Source and everyone is welcome to participate in the development.
-In fact, if you'd like a particular method to exist, we might encourage you to
-submit a patch. Visit project homepage for details:
+In fact, if you'd like a particular method to exist, we encourage you to
+submit your patches.</p>
+
+<p>We have our <a href='http://code.google.com/p/opencaching-api/issues/list'>Issue tracker</a>.
+You can use it to contact us!<br>You may also contact some of
+<a href='http://code.google.com/p/opencaching-api/people/list'>the developers</a> directly, if you want.</p>
+
+<p>Visit <b>project homepage</b> for details:
 <a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></p>
 
 <h2 id='howto'>How can I use OKAPI?</h2>
