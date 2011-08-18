@@ -99,13 +99,13 @@ class WebService
 				'name' => 'format',
 				'is_required' => false,
 				'class' => 'common-formatting',
-				'description' => "<i>Standard <a href='".$GLOBALS['absolute_server_URI']."okapi/introduction.html#common-formatting'>common formatting arguments</a>.</i>"
+				'description' => "<i>Standard <a href='".$GLOBALS['absolute_server_URI']."okapi/introduction.html#common-formatting'>common formatting</a> argument.</i>"
 			);
 			$result['arguments'][] = array(
 				'name' => 'callback',
 				'is_required' => false,
 				'class' => 'common-formatting',
-				'description' => "<i>Standard <a href='".$GLOBALS['absolute_server_URI']."okapi/introduction.html#common-formatting'>common formatting arguments</a>.</i>"
+				'description' => "<i>Standard <a href='".$GLOBALS['absolute_server_URI']."okapi/introduction.html#common-formatting'>common formatting</a> argument.</i>"
 			);
 		}
 		if (!$docs->returns)

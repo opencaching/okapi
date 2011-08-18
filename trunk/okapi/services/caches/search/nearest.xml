@@ -19,6 +19,7 @@
 	<import-params method='services/caches/search/all'/>
 	<common-format-params/>
 	<returns>
-		<p>Same format as in the search/all method.</p>
+		<p>Same format as in the search/all method. The <b>more</b> key will
+		be skipped when no <b>radius</b> argument is given.</p>
 	</returns>
 </xml>
