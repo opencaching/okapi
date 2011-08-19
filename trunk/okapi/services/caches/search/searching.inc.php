@@ -62,24 +62,12 @@ class SearchAssistant
 		$where_conds[] = "caches.status in ('".implode(",", array_map('mysql_real_escape_string', $codes))."')";
 		
 		#
-		# owner
+		# owner_id
 		#
 		
-		if ($tmp = $request->get_parameter('owner'))
+		if ($tmp = $request->get_parameter('owner_id'))
 		{
-			$rs = sql("
-				select user_id, username
-				from user
-				where username in ('".implode("','", array_map('mysql_real_escape_string', explode("|", $tmp)))."');
-			");
-			$dict = array();
-			while ($row = sql_fetch_assoc($rs))
-				$dict[$row['username']] = $row['user_id'];
-			mysql_free_result($rs);
-			foreach (explode("|", $tmp) as $username)
-				if (!isset($dict[$username]))
-					throw new InvalidParam('owner', "user '$username' does not exist.");
-			$where_conds[] = "caches.user_id in ('".implode("','", array_map('mysql_real_escape_string', array_values($dict)))."')";
+			$where_conds[] = "caches.user_id in ('".implode("','", array_map('mysql_real_escape_string', explode("|", $tmp)))."')";
 		}
 		
 		#
