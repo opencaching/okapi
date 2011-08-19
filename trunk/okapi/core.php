@@ -314,6 +314,7 @@ class Okapi
 {
 	public static $data_store;
 	public static $server;
+	public static $revision = null; # This gets replaced in automatically deployed packages
 	
 	/** Internal. */
 	public static function init_server()
