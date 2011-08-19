@@ -32,7 +32,7 @@ class WebService
 		# and retrieved by all OKAPI installations.
 		$result['site_name'] = array($GLOBALS['lang'] => $GLOBALS['pagetitle']);
 		
-		$result['okapi_revision'] = "WRTODO";
+		$result['okapi_revision'] = Okapi::$revision;
 		
 		# The 'totalstats.inc.php' file seems to be written by some kind of a
 		# cron script. I don't even have it in my test installation. Anyway,
