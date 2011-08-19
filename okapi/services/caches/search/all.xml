@@ -34,10 +34,10 @@
 			<li><b>archived</b> - Archived.</li>
 		</ul>
 	</opt>
-	<opt name='owner'>
-		<p>Pipe-separated list of user names. If given, the list of returned caches
+	<opt name='owner_id'>
+		<p>Pipe-separated list of user IDs. If given, the list of returned caches
 		will be limited to those owned by the given users.</p>
-		<p><b>Notice:</b> User ID and User Name are two different things.</p>
+		<p><b>Notice:</b> User ID and User Name are two different things!</p>
 	</opt>
 	<opt name='terrain' default='1-5'>
 		<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
