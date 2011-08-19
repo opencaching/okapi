@@ -1,7 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# A file called auth.py with the following content is required:
+# This script is executed by Google Code upon every SVN commit.
+# What it does:
+#   - verifies that the requests came from Google (HMAC signature),
+#   - checks if SVN commit changed anything within trunk/ (except the
+#     trunk/etc/ directory),
+#   - exports trunk to a temporary location,
+#   - removes etc/,
+#   - replaces Okapi::$revision field in okapi/core.php,
+#   - builds a package (okapi-rNNN.tar.gz),
+#   - posts the package on the Project Homepage.
+
+# A file called auth.py is required to run this script:
 # auth_key = '(Post-Commit Authentication Key)'
 # password = '(my googlecode.com password)'
 
