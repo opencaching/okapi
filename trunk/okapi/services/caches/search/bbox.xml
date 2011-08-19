@@ -1,5 +1,6 @@
 <xml>
 	<brief>Search for caches within specified bounding box</brief>
+	<issue-id>16</issue-id>
 	<desc>
 		<p>This method is similar to the search/all method, but the results
 		are restricted to the caches situated within a given bounding box

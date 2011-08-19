@@ -6,6 +6,10 @@
 		<link rel="stylesheet" href="/images/okapi/common.css">
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
+			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
+		</script>
+		<script src='/images/okapi/common.js'></script>
+		<script>
 			$(function() {
 				$('#submit').click(function() {
 					$.ajax({
@@ -97,6 +101,7 @@
 							<li>Hide, modify, or otherwise obscure your identity, your system's identity, or your user's
 							<?= $vars['site_name'] ?> account information, when using OKAPI.</li>
 						</ul>
+						<div class='issue-comments' issue_id='31'></div>
 					</td>
 				</tr></table>
 			</div>

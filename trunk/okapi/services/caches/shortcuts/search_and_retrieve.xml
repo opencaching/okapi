@@ -1,5 +1,6 @@
 <xml>
 	<brief>Search for caches and retrieve formatted results</brief>
+	<issue-id>18</issue-id>
 	<desc>
 		<p>We think that searching and retrieving data are two different things
 		and that's why they were cleanly separated in the documentation (put in

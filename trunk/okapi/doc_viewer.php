@@ -108,6 +108,7 @@ class OkapiDocViewer
 	{
 		$vars = array(
 			'menu' => self::get_menu_html($path),
+			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 		);
 		if ($path == 'introduction.html')
 		{
@@ -177,6 +178,7 @@ class OkapiDocViewer
 		$vars = array(
 			'method' => $method,
 			'menu' => self::get_menu_html($methodname.".html"),
+			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 		);
 		include 'templates/method.tpl.php';
 	}

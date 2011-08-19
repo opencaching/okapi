@@ -1,5 +1,6 @@
 <xml>
 	<brief>Exchange authorized Request Token for an Access Token</brief>
+	<issue-id>21</issue-id>
 	<desc>
 		<p>Exchange authorized Request Token for an Access Token.
 		Access Token can be used to access resources of a user who

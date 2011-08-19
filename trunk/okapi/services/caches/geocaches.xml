@@ -1,5 +1,6 @@
 <xml>
 	<brief>Retrieve information on multiple geocaches</brief>
+	<issue-id>20</issue-id>
 	<desc>
 		<p>This method works like the services/caches/geocache method, but works
 		with multiple geocaches (instead of only one).</p>

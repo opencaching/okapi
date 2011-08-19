@@ -1,5 +1,6 @@
 <xml>
 	<brief>Get information on a given OKAPI service method</brief>
+	<issue-id>13</issue-id>
 	<desc>
 		<p>This method allows you to <b>access API documentation</b> (the same which you
 		are reading just now). Given a method name, it returns a complete method description.</p>
@@ -41,6 +42,8 @@
 				</ul>
 			</li>
 			<li><b>returns</b> - HTML-formatted description method's return value.</li>
+			<li><b>issue_id</b> - ID of an issue (in our project's homepage Issue Tracker)
+				associated with this method's general development</li>
 		</ul>
 	</returns>
 </xml>

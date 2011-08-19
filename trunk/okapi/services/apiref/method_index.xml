@@ -1,5 +1,6 @@
 <xml>
 	<brief>Get a list of USOS API methods with brief descriptions</brief>
+	<issue-id>12</issue-id>
 	<desc>
 		<p>Get a list of USOS API methods with brief descriptions.</p>
 	</desc>

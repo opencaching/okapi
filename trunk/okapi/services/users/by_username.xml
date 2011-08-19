@@ -1,5 +1,6 @@
 <xml>
 	<brief>Find single user, by his/her username</brief>
+	<issue-id>24</issue-id>
 	<desc>
 		<p>Retrieve information on a single user, referencing him by his username.</p>
 		<p><b>IMPORTANT:</b> user IDs don't change, but usernames <b>may</b> change.</p>

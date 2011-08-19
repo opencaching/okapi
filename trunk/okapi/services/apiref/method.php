@@ -71,6 +71,9 @@ class WebService
 		if (strpos($docs->brief, "\n") !== false)
 			throw new Exception("The <brief> element may not contain new-lines ($methodname.xml).");
 		$result['brief_description'] = self::get_inner_xml($docs->brief);
+		if (!$docs->{'issue-id'})
+			throw new Exception("Missing <issue-id> element in the $methodname.xml file.");
+		$result['issue_id'] = (string)$docs->{'issue-id'};
 		if (!$docs->desc)
 			throw new Exception("Missing <desc> element in the $methodname.xml file.");
 		$result['description'] = self::get_inner_xml($docs->desc);

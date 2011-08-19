@@ -1,5 +1,6 @@
 <xml>
 	<brief>Retrieve information on a single geocache</brief>
+	<issue-id>19</issue-id>
 	<desc>
 		<p>Retrieve information on a single geocache.</p>
 	</desc>
