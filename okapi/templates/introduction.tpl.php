@@ -4,6 +4,11 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>OKAPI Reference</title>
 		<link rel="stylesheet" href="/images/okapi/common.css">
+		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
+		<script>
+			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
+		</script>
+		<script src='/images/okapi/common.js'></script>
 	</head>
 	<body class='api'>
 		<div class='okd_mid'>
@@ -29,6 +34,8 @@ OpenCaching Nodes).</p>
 <p>The project is aiming to become a standard API for all National OpenCaching.<i>xx</i> sites.
 This OKAPI installation provides API for the
 <a href='<?= $vars['site_url']; ?>'><?= $vars['site_url']; ?></a> site.</p>
+
+<div class='issue-comments' issue_id='28'></div>
 
 <h2 id='participate'>How can I participate in OKAPI development?</h2>
 
@@ -111,6 +118,8 @@ Consumer Key for your application.</p>
 	</li>
 </ul>
 
+<div class='issue-comments' issue_id='29'></div>
+
 <h2 id='http_methods'>GET or POST?</h2>
 
 <p>Whichever you want. OKAPI will threat GET and POST requests as equal.
@@ -140,6 +149,8 @@ of strings and integers. Such objects can be formatted in several ways using
 
 <p>Some methods expose some <b>special formatting</b> of their own, for example, they may return
 a JPEG or a GPX file. Such methods do not accept <i>common formatting parameters</i>.</p>
+
+<div class='issue-comments' issue_id='30'></div>
 
 <h2 id='method_index'>List of available methods</h2>
 

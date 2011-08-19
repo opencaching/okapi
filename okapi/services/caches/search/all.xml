@@ -1,5 +1,6 @@
 <xml>
 	<brief>Search for geocaches</brief>
+	<issue-id>15</issue-id>
 	<desc>
 		<p>If not for the <b>limit</b> parameter, this method (called without any additional
 		filtering arguments) would simply return the OX codes of <b>all the geocaches</b>

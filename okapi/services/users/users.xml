@@ -1,5 +1,6 @@
 <xml>
 	<brief>Retrieve information on multiple users</brief>
+	<issue-id>27</issue-id>
 	<desc>
 		<p>This method works like the services/users/user method, but works
 		with multiple users (instead of only one).</p>

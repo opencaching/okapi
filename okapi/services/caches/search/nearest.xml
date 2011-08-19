@@ -1,5 +1,6 @@
 <xml>
 	<brief>Search for nearest geocaches</brief>
+	<issue-id>17</issue-id>
 	<desc>
 		<p>Find the nearest geocaches. Results are sorted by the distance from
 		a given center point.</p>

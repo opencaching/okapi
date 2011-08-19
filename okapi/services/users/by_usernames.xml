@@ -1,5 +1,6 @@
 <xml>
 	<brief>Find multiple users, by their usernames</brief>
+	<issue-id>25</issue-id>
 	<desc>
 		<p>This method works like the services/users/by_username method, but works
 		with multiple users (instead of only one).</p>

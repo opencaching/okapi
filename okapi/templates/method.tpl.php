@@ -10,6 +10,11 @@ $m = $vars['method'];
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>OKAPI Reference - <?= $m['name'] ?></title>
 		<link rel="stylesheet" href="/images/okapi/common.css">
+		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
+		<script>
+			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
+		</script>
+		<script src='/images/okapi/common.js'></script>
 	</head>
 	<body class='api'>
 		<div class='okd_mid'>
@@ -75,6 +80,7 @@ $m = $vars['method'];
 								<?= $m['returns'] ?>
 							</td></tr>
 						</table>
+						<div class='issue-comments' issue_id='<?= $m['issue_id'] ?>'></div>
 					</td>
 				</tr></table>
 			</div>

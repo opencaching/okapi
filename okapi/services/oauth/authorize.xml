@@ -1,5 +1,6 @@
 <xml>
 	<brief>Authorize the Request Token</brief>
+	<issue-id>22</issue-id>
 	<desc>
 		<p>Unlike other methods, the <b>authorize</b> method is to be executed
 		inside the User's browser. Consumer's role is to <b>redirect</b> the User to

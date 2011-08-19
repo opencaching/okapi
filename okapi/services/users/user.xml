@@ -1,5 +1,6 @@
 <xml>
 	<brief>Retrieve information on a single user</brief>
+	<issue-id>26</issue-id>
 	<desc>
 		Retrieve information on a single user. This method might be also used
 		to retrieve data of the user in who's name the Access Token have been

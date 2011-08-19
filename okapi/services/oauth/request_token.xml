@@ -1,5 +1,6 @@
 <xml>
 	<brief>Get a new unauthorized OAuth Request Token</brief>
+	<issue-id>23</issue-id>
 	<desc>
 		<p>Get a new unauthorized OAuth Request Token. This token is bound to
 		the Consumer it was issued to. It has a short expiration date and
