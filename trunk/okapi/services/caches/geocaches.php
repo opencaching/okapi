@@ -117,7 +117,20 @@ class WebService
 			{
 				$oxcode = $cacheid2oxcode[$row['cache_id']];
 				if ($include_descriptions && $row['desc'])
-					$results[$oxcode]['descriptions'][$row['language']] = $row['desc'];
+				{
+					$site_url = $GLOBALS['absolute_server_URI'];
+					$cache_url = $site_url."viewcache.php?cacheid=".$row['cache_id'];
+					switch ($row['language'])
+					{
+						case 'PL':
+							$extra = "<p>Opis <a href='$cache_url'>skrzynki</a> pochodzi z serwisu <a href='$site_url'>$site_url</a>.</p>";
+							break;
+						default:
+							$extra = "<p>This <a href='$cache_url'>geocache</a> description comes from the <a href='$site_url'>$site_url</a> site.</p>";
+							break;
+					}
+					$results[$oxcode]['descriptions'][$row['language']] = $row['desc']."\n".$extra;
+				}
 				if ($include_hints && $row['hint'])
 					$results[$oxcode]['hints'][$row['language']] = $row['hint'];
 			}
