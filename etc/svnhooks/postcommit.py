@@ -77,10 +77,21 @@ try:
 	sys.stdout.flush()
 	print "Removing files not intended for deployment..."
 	subprocess.call(["rm", "-rf", deployment_name + "/etc"])
+	print "Adding version information..."
+	fp = open(deployment_name + '/okapi/core.php', 'r')
+	core_contents = fp.read()
+	fp.close()
+	core_contents = core_contents.replace(
+		"public static $revision = null;",
+		"public static $revision = " + str(revision) + ";")
+	fp = open(deployment_name + '/okapi/core.php', 'w')
+	fp.write(core_contents)
+	fp.close()
 	print "Creating archive..."
 	sys.stdout.flush()
 	subprocess.call(["tar", "-cf", deployment_name + ".tar", deployment_name])
 	subprocess.call(["gzip", deployment_name + ".tar"])
+	subprocess.call(["chmod", "666", deployment_name + ".tar.gz"])
 	print "Removing source files..."
 	subprocess.call(["rm", "-rf", deployment_name])
 	sys.stdout.flush()
