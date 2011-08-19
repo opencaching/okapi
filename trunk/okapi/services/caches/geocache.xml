@@ -1,10 +1,9 @@
 <xml>
-	<brief>Retrieve information on multiple geocaches</brief>
+	<brief>Retrieve information on a single geocache</brief>
 	<desc>
-		<p>This method works like the services/caches/geocache method, but works
-		with multiple geocaches (instead of only one).</p>
+		<p>Retrieve information on a single geocache.</p>
 	</desc>
-	<req name='oxcode'>OX codes of the geocache</req>
+	<req name='oxcode'>OX code of the geocache</req>
 	<opt name='fields' default='oxcode|name|location|type|status'>
 		<p>Pipe-separated list of field names which you are interested with.
 		Selected fields will be included in the response.</p>
