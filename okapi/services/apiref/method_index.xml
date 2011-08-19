@@ -10,8 +10,8 @@
 		method description in the following format:
 		<ul>
 			<li><b>name</b> - name of a method,</li>
-			<li><b>brief_description</b> - plain-text, brief (one
-				sentence) description of what the method does.</li>
+			<li><b>brief_description</b> - brief (max 80 characters), single-line,
+				plain-text description of what the method does.</li>
 		</ul>
 	</returns>
 </xml>

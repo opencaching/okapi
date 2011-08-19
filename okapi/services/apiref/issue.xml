@@ -2,9 +2,9 @@
 	<brief>Retrieve information on given issue</brief>
 	<issue-id>11</issue-id>
 	<desc>
-		<p>OKAPI is trying to be as integrated with its main project page (hosted
-		on Google Code) as it cas.</p>
-		<p>This method retrieves some basic information on a given issue from our project
+		<p>OKAPI is trying to be as <b>integrated</b> with its
+		<a href='http://code.google.com/p/opencaching-api/'>Main Project Page</a> as it can.
+		This method retrieves basic information on a given issue from our project
 		<a href='http://code.google.com/p/opencaching-api/issues/list'>Issue Tracker</a>.
 		In future, it <b>might</b> also return some of the latest comments (we're not yet
 		sure if we want them displayed on our documentation pages).</p>

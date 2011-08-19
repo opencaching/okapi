@@ -4,7 +4,7 @@
 	<desc>
 		<p>Unlike other methods, the <b>authorize</b> method is to be executed
 		inside the User's browser. Consumer's role is to <b>redirect</b> the User to
-		the proper URL, then wait if he ever comes back with a callback request.</p>
+		this URL, then wait if he ever comes back with a callback request.</p>
 		<p>Once the User is redirected to this URL, several things will happen:</p>
 		<ul>
 			<li>If he's not already logged in, he will be asked to do so.</li>
@@ -14,8 +14,9 @@
 			will display an "Authorization Request" form to the User. User
 			will be presented with a choice to allow or not to allow your
 			application access to his account.</li>
-			<li>In either case, User's browser will be redirected to the
-			<b>callback_url</b> you defined while getting your Request Token.
+			<li>If the User clicks one of these two options ("allow" or "don't allow"),
+			he's browser will be redirected to the <b>callback_url</b> you defined
+			while getting your Request Token.
 			If you did not provide a callback (in other word, provided "oob"),
 			user will be redirected to a default "authorized" page, where he
 			will be presented with an oauth_verifier (user will know it
