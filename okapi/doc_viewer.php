@@ -18,6 +18,8 @@ class OkapiDocViewer
 	public static function get_menu_html($current_path = null)
 	{
 		$chunks = array();
+		if (Okapi::$revision)
+			$chunks[] = "<div class='revision'>rev. ".Okapi::$revision."</div>";
 		$chunks[] = "<div class='main'>";
 		$chunks[] = self::link($current_path, "introduction.html", "Introduction");
 		$chunks[] = self::link($current_path, "signup.html", "Sign up");
