@@ -14,6 +14,8 @@
 		<ul>
 			<li><b>name</b> - name of the method,</li>
 			<li><b>short_name</b> - name without a path,</li>
+			<li><b>issue_id</b> - ID of the "general discussion" issue (in our project's
+				homepage Issue Tracker) associated with this method,</li>
 			<li><b>description</b> - HTML-formatted description of what the method does,</li>
 			<li><b>brief_description</b> - brief (max 80 characters), single-line,
 				plain-text description of what the method does,</li>
@@ -22,8 +24,8 @@
 				<b>auth_options</b> - a dictionary which describes authentication
 				requirements for this method, it has a following structure:
 				<ul>
-					<li><b>consumer</b> - "required", "optional", "ignored",</li>
-					<li><b>token</b> - "required", "optional", "ignored",</li>
+					<li><b>consumer</b> - "required", "optional" or "ignored",</li>
+					<li><b>token</b> - "required", "optional" or "ignored",</li>
 				</ul>
 			</li>
 			<li><b>arguments</b> - list of dictionaries, describes method
@@ -35,15 +37,13 @@
 					<li>
 						<p><b>class</b> - one of the following values: <i>public</i>,
 						<i>inherited</i> or <i>common-formatting</i> (other values might be
-						introduces in future).</p>
+						introduced in future).</p>
 						<p>Currently these values do not mean anything specific. They are
 						used for different coloring/styling in the documentation pages.</p>
 					</li>
 				</ul>
 			</li>
 			<li><b>returns</b> - HTML-formatted description method's return value.</li>
-			<li><b>issue_id</b> - ID of an issue (in our project's homepage Issue Tracker)
-				associated with this method's general development</li>
 		</ul>
 	</returns>
 </xml>
