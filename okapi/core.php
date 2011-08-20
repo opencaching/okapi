@@ -103,7 +103,8 @@ class OkapiExceptionHandler
 			{
 				print "\n\n".$exception_info;
 			}
-			$admin_email = isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'rygielski@mimuw.edu.pl';
+			$admin_email = isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost';
+			$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
 			mail(
 				$admin_email,
 				"OKAPI Method Error - ".(
@@ -113,7 +114,11 @@ class OkapiExceptionHandler
 				"OKAPI caught the following exception while executing API method request.\n".
 				"This is an error in OUR code and should be fixed. Please contact the\n".
 				"developer of the module that threw this error. Thanks!\n\n".
-				$exception_info);
+				$exception_info,
+				"Content-Type: text/plain; charset=utf-8\n".
+				"From: OKAPI <$sender_email>\n".
+				"Reply-To: $sender_email\n"
+				);
 		}
 	}
 }
@@ -354,18 +359,27 @@ class Okapi
 	{
 		$consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
 			$appname, $appurl, $email);
+		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
 		mail($email, "Your OKAPI Consumer Key",
 			"Consumer Key: $consumer->key\n".
 			"Consumer Secret: $consumer->secret\n\n".
 			"This is the key-pair for your \"".$consumer->name."\" application.\n".
-			"Have fun!");
+			"Have fun!",
+			"Content-Type: text/plain; charset=utf-8\n".
+			"From: OKAPI <$sender_email>\n".
+			"Reply-To: $sender_email\n"
+		);
 		if (isset($GLOBALS['sql_errormail']))
 		{
 			mail($GLOBALS['sql_errormail'], "New OKAPI app registered!",
 				"Name: $consumer->name\n".
 				"Developer: $consumer->email\n".
 				($consumer->url ? "URL: $consumer->url\n" : "").
-				"Consumer Key: $consumer->key\n");
+				"Consumer Key: $consumer->key\n",
+				"Content-Type: text/plain; charset=utf-8\n".
+				"From: OKAPI <$sender_email>\n".
+				"Reply-To: $sender_email\n"
+			);
 		}
 		sql("
 			insert into okapi_consumers (`key`, name, secret, url, email, date_created)
