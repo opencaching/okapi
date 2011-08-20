@@ -15,6 +15,8 @@ $(function() {
 				var link = $("<a>" + issue.comment_count + " " + comments + "</a>");
 				link.attr('href', issue.url);
 				div.append(link);
+				var notice = $("<span class='notice'>Notice: comments are shared between all OKAPI installations.</span>");
+				div.append(notice);
 			}
 		});
 	});

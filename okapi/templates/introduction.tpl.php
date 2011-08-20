@@ -2,7 +2,7 @@
 <html lang='en'>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title>OKAPI Reference</title>
+		<title>OKAPI - OpenCaching API</title>
 		<link rel="stylesheet" href="/images/okapi/common.css">
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
