@@ -35,6 +35,7 @@ body.api { background: #f5f1eb; }
 .article li { margin: 6px 0; }
 .article li p { margin: 6px 0; }
 .article .issue-comments { font-size: 20px; font-weight: bold; }
+.article .issue-comments .notice { font-size: 11px; font-weight: normal; color: #888; padding-left: 10px; }
 .method { background: #ccc; margin-bottom: 20px; }
 .method td { background: #fff; padding: 5px 8px 10px 8px; vertical-align: baseline; }
 .method .public td { background: #fdf9f5; }

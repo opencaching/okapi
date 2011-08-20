@@ -18,9 +18,9 @@
 	<returns>
 		<p>A dictionary. OX codes you provide will be mapped to dictionary keys,
 		and each value will be a dictionary of fields you have selected.</p>
-		<p>For example, for <i>geocaches?oxcodes=OX123|OX124&amp;fields=type</i>
+		<p>For example, for <i>geocaches?oxcodes=OP3D96|OX124&amp;fields=type</i>
 		query, the result might look something link this:</p>
-		<pre>{"OX123": {"type": "traditional"}, "OX124": null}</pre>
+		<pre>{"OP3D96": {"type": "traditional"}, "OX124": null}</pre>
 		<p>Value of <b>null</b> means that the selected OX code haven't been found.
 		(This behavior is different than in the services/caches/geocache method, which
 		responds with a HTTP 400 error in such case.)</p>
