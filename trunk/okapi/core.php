@@ -1,5 +1,6 @@
 <?php
 
+use okapi\OkapiInternalRequest;
 namespace okapi;
 
 # OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
@@ -357,13 +358,24 @@ class Okapi
 	 */
 	public static function register_new_consumer($appname, $appurl, $email)
 	{
+		include_once 'service_runner.php';
 		$consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
 			$appname, $appurl, $email);
+		$sample_cache = OkapiServiceRunner::call("services/caches/search/all",
+			new OkapiInternalRequest($consumer, null, array('limit', 1)));
+		if (count($sample_cache['results']) > 0)
+			$sample_cache_wpt = $sample_cache['results'][0];
+		else
+			$sample_cache_wpt = "CACHE_WAYPOINT";
 		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
 		mail($email, "Your OKAPI Consumer Key",
+			"This is the key-pair we've generated for your application:\n\n".
 			"Consumer Key: $consumer->key\n".
 			"Consumer Secret: $consumer->secret\n\n".
-			"This is the key-pair for your \"".$consumer->name."\" application.\n".
+			"Note: Consumer Secret is needed only when you intend to use OAuth.\n".
+			"You don't need Consumer Secret for Level 1 Authentication.\n\n".
+			"Now you may easily access Level 1 methods of OKAPI! For example:\n".
+			$GLOBALS['absolute_server_URI']."okapi/services/caches/geocache?cache_wpt=$sample_cache_wpt&consumer_key=$consumer->key\n\n".
 			"Have fun!",
 			"Content-Type: text/plain; charset=utf-8\n".
 			"From: OKAPI <$sender_email>\n".
