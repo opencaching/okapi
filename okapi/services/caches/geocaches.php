@@ -86,7 +86,7 @@ class WebService
 					default: throw new Exception("Missing field case: ".$field);
 				}
 			}
-			$results[$row['wp_oc']] = &$entry;
+			$results[$row['wp_oc']] = $entry;
 		}
 		mysql_free_result($rs);
 		
