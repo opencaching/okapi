@@ -19,7 +19,7 @@ class WebService
 	}
 	
 	public static $valid_field_names = array('wpt', 'name', 'location', 'type', 'status',
-		'owner_id', 'founds', 'notfounds', 'last_found', 'size', 'difficulty', 'terrain',
+		'url', 'owner_id', 'founds', 'notfounds', 'last_found', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'descriptions', 'hints', 'images',
 		'last_modified', 'date_created', 'date_hidden');
 	
@@ -60,6 +60,7 @@ class WebService
 					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
 					case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
+					case 'url': $entry['url'] = $GLOBALS['absolute_server_URI']."viewcache.php?cacheid=".$row['cache_id']; break;
 					case 'owner_id': $entry['owner_id'] = $row['user_id']; break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
