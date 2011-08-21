@@ -1,6 +1,5 @@
 <?php
 
-use okapi\OkapiInternalRequest;
 namespace okapi;
 
 # OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
@@ -52,6 +51,7 @@ class OkapiExceptionHandler
 		{
 			# This is thrown on improperly constructed OAuth requests.
 			header("HTTP/1.0 400 Bad Request");
+			header("Access-Control-Allow-Origin: *");
 			header("Content-Type: text/plain; charset=utf-8");
 			
 			print $e->getMessage();
@@ -63,6 +63,7 @@ class OkapiExceptionHandler
 			# http://oauth.net/core/1.0a/#http_codes
 			
 			header("HTTP/1.0 401 Unauthorized");
+			header("Access-Control-Allow-Origin: *");
 			header("Content-Type: text/plain; charset=utf-8");
 			
 			print $e->getMessage();
@@ -74,6 +75,7 @@ class OkapiExceptionHandler
 			# request and we want him to know that.
 			
 			header("HTTP/1.0 400 Bad Request");
+			header("Access-Control-Allow-Origin: *");
 			header("Content-Type: text/plain; charset=utf-8");
 			
 			print $e->getMessage();
@@ -85,6 +87,7 @@ class OkapiExceptionHandler
 			# must be fixed on OUR part.
 			
 			header("HTTP/1.0 500 Internal Server Error");
+			header("Access-Control-Allow-Origin: *");
 			header("Content-Type: text/plain; charset=utf-8");
 			
 			print "Oops... Something went wrong on *our* part.\n\n";
@@ -298,6 +301,7 @@ class OkapiHttpResponse
 	public function display()
 	{
 		header("HTTP/1.1 200 OK");
+		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: ".$this->content_type);
 		print $this->body;
 	}

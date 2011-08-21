@@ -23,6 +23,7 @@ class OkapiDocViewer
 		$chunks[] = "<div class='main'>";
 		$chunks[] = self::link($current_path, "introduction.html", "Introduction");
 		$chunks[] = self::link($current_path, "signup.html", "Sign up");
+		$chunks[] = self::link($current_path, "examples.html", "Examples");
 		$chunks[] = "</div>";
 		
 		# We need a list of all methods. We do not need their descriptions, so
@@ -64,7 +65,7 @@ class OkapiDocViewer
 	 */
 	public static function is_valid_doc($path)
 	{
-		if (in_array($path, array("", "introduction.html", "signup.html")))
+		if (in_array($path, array("", "introduction.html", "signup.html", "examples.html")))
 			return true;
 		if ((substr($path, 0, 9) == "services/") && (substr($path, -1) == "/"))
 		{
@@ -86,7 +87,7 @@ class OkapiDocViewer
 			header("HTTP/1.1 303 See Other");
 			header("Location: ".$GLOBALS['absolute_server_URI']."okapi/introduction.html");
 		}
-		elseif (in_array($path, array("introduction.html", "signup.html")))
+		elseif (in_array($path, array("introduction.html", "signup.html", "examples.html")))
 		{
 			self::display_static_doc($path);
 		}
