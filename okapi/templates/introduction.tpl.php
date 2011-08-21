@@ -28,28 +28,14 @@
 OpenCaching Nodes).</p>
 <ul>
 	<li>It provides your site with a set of useful well-documented API methods,</li>
-	<li>Allows external developers to easily access <b>public</b> OpenCaching data,</li>
-	<li>Allows access to <b>private</b> (user-related) data through OAuth 3-legged authorization.</li>
+	<li>Allows external developers to easily <b>read public</b> OpenCaching data,</li>
+	<li>Allows <b>read and write private</b> (user-related) data with OAuth 3-legged authentication.</li>
 </ul>
 <p>The project is aiming to become a standard API for all National OpenCaching.<i>xx</i> sites.
 This OKAPI installation provides API for the
 <a href='<?= $vars['site_url']; ?>'><?= $vars['site_url']; ?></a> site.</p>
 
 <div class='issue-comments' issue_id='28'></div>
-
-<h2 id='participate'>How can I participate in OKAPI development?</h2>
-
-<p>OKAPI is Open Source and everyone is welcome to participate in the development.
-In fact, if you'd like a particular method to exist, we encourage you to
-submit your patches.</p>
-
-<p>We have our <a href='http://code.google.com/p/opencaching-api/issues/list'>Issue tracker</a>.
-You can use it to contact us!<br>You may also contact some of
-<a href='http://code.google.com/p/opencaching-api/people/list'>the developers</a> directly,
-if you want.</p>
-
-<p>Visit <b>project homepage</b> for details:
-<a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></p>
 
 <h2 id='howto'>How can I use OKAPI?</h2>
 
@@ -61,24 +47,99 @@ all available methods:</p>
 <ul>
 	<li><a href='<?= $vars['site_url'] ?>okapi/services/apiref/method_index'><?= $vars['site_url'] ?>okapi/services/apiref/method_index</a></li>
 </ul>
-<p>You've made your first OKAPI request! <b>Unfortunetely</b>, this method was a simple one.
-It didn't require any arguments and it didn't require you to digitally sign you request.
-Other methods are more complex and require you to understand the <b>OAuth standard</b>.</p>
+<p>You've made your first OKAPI request! This method was a simple one.
+It didn't require any arguments and it didn't require you to use a Consumer Key.
+Other methods are more complex and require you to use
+<a href='<?= $vars['site_url'] ?>okapi/signup.html'>your own API key</a>.</p>
 
-<h2>Which methods require OAuth signatures?</h2>
+<h2 id='auth_levels'>Authentication Levels</h2>
 
-<p>Well... most of them. You may check it in the documentation page of the method. If it reads
-"<b>Consumer: required</b>" then you have to sign your request. Additionally, if it reads
-"<b>Token: required</b>", that you will first have to acquire permission from an OpenCaching
-user to use this method and access his/her data.</p>
-<p>There are numerous OAuth tutorials and libraries on the web. You will have to know
-them by heart to properly use OKAPI. We might provide some working examples in the future.</p>
-<p>Go to <a href='<?= $vars['site_url'] ?>okapi/signup.html'>this page</a> to generate a
-Consumer Key for your application.</p>
+<p>Each OKAPI method has a <b>minimum authentication level</b>.</p>
+<p>This means, that if you want to call a method which requires "Level 1"
+authentication, you have to use "Level 1" authentication <b>or higher</b>
+("Level 2" or "Level 3" will also work).</p>
+<p><b>Important:</b> Most developers will only need to use "Level 1" authentication
+and don't have to care about OAuth.</p>
+<ul>
+	<li>
+		<p><b>Level 0.</b> Anonymous. You may call this method with no extra
+		arguments.</p>
+		<p><code>some_method?arg=44</code></p>
+	</li>
+	<li>
+		<p><b>Level 1.</b> Simple Consumer Authentication. You must call this
+		method with <b>consumer_key</b> argument and provide the key which has
+		been generated for your application on the <a href='<?= $vars['site_url'] ?>okapi/signup.html'>Sign up</a> page.</p>
+		<p><code>some_method?arg=44&consumer_key=a7Lkeqf8CjNQTL522dH8</code></p>
+	</li>
+	<li>
+		<p><b>Level 2.</b> OAuth Consumer Signature. You must call this method
+		with proper OAuth Consumer signature (based on your Consumer Secret).</p>
+		<p><code>some_method<br>
+		?arg=44<br>
+		&oauth_consumer_key=a7Lkeqf8CjNQTL522dH8<br>
+		&oauth_nonce=1987981<br>
+		&oauth_signature_method=HMAC-SHA1<br>
+		&oauth_timestamp=1313882320<br>
+		&oauth_version=1.0<br>
+		&oauth_signature=mWEpK2e%2fm8QYZk1BMm%2fRR74B3Co%3d</code></p>
+	</li>
+	<li>
+		<p><b>Level 3.</b> OAuth Consumer+Token Signature. You must call this method
+		with proper OAuth Consumer+Token signature (based on both Consumer Secret and
+		Token Secret).</p>
+		<p><code>some_method<br>
+		?arg=44<br>
+		&oauth_consumer_key=a7Lkeqf8CjNQTL522dH8<br>
+		&oauth_nonce=2993717<br>
+		&oauth_signature_method=HMAC-SHA1<br>
+		&oauth_timestamp=1313882596<br>
+		&oauth_token=AKQbwa28Afp1YvQAqSyK<br>
+		&oauth_version=1.0<br>
+		&oauth_signature=qbNiWkUS93fz6ADoNcjuJ7psB%2bQ%3d</code></p>
+	</li>
+</ul>
 
-<h2 id='authentication'>Authentication</h2>
+<div class='issue-comments' issue_id='38'></div>
 
-<p><b>The three OAuth request URLs</b> defined in the <a href='http://oauth.net/core/1.0a/'>OAuth specification</a> are:</p>
+<h2 id='http_methods'>GET or POST?</h2>
+
+<p>Whichever you want. OKAPI will treat GET and POST requests as equal.
+You may also use the HTTP <code>Authorization</code> header for passing OAuth arguments.</p>
+
+<h2 id='common-formatting'>Common formatting parameters</h2>
+
+<p>Most of the methods return simple objects, such as list and dictionaries
+of strings and integers. Such objects can be formatted in several ways using
+<i>common formatting parameters</i>:
+
+<ul>
+	<li>
+		<p><b>format</b> - name of the format in which you'd like your result
+		to be returned in. Currently supported output formats:</p>
+		<ul>
+			<li><b>json</b> - <a href='http://en.wikipedia.org/wiki/JSON'>JSON</a> format (default),</li>
+			<li><b>jsonp</b> - <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> format, if
+			you choose this one, you have to specify the <b>callback</b> parameter.</li>
+		</ul>
+	</li>
+	<li>
+		<b>callback</b> - (when using JSONP output format) name of the JavaScript function
+		to be executed with the result as their parameter.
+	</li>
+</ul>
+
+<p>Some methods expose some <b>special formatting</b> of their own, for example, they may return
+a JPEG or a GPX file. Such methods do not accept <i>common formatting parameters</i>.</p>
+
+<div class='issue-comments' issue_id='30'></div>
+
+
+<h2 id='oauth'>OAuth Dance URLs</h2>
+
+<p>If you want to use <b>Level 3</b> methods, you will have to make "the OAuth dance" (series of
+method calls and redirects which provide you with an Access Token).</p>
+<p>The three OAuth request URLs defined in the <a href='http://oauth.net/core/1.0a/'>OAuth specification</a> are:</p>
 <ul>
 	<li>
 		<a href='<?= $vars['site_url'] ?>okapi/services/oauth/request_token'><?= $vars['site_url'] ?>okapi/services/oauth/request_token</a>
@@ -120,37 +181,21 @@ Consumer Key for your application.</p>
 
 <div class='issue-comments' issue_id='29'></div>
 
-<h2 id='http_methods'>GET or POST?</h2>
 
-<p>Whichever you want. OKAPI will threat GET and POST requests as equal.
-You may also use the HTTP Authorization header for passing OAuth arguments.</p>
+<h2 id='participate'>How can I participate in OKAPI development?</h2>
 
-<h2 id='common-formatting'>Common formatting parameters</h2>
+<p>OKAPI is Open Source and everyone is welcome to participate in the development.
+In fact, if you'd like a particular method to exist, we encourage you to
+submit your patches.</p>
 
-<p>Most of the methods return simple objects, such as list and dictionaries
-of strings and integers. Such objects can be formatted in several ways using
-<i>common formatting parameters</i>:
+<p>We have our <a href='http://code.google.com/p/opencaching-api/issues/list'>Issue tracker</a>.
+You can use it to contact us!<br>You may also contact some of
+<a href='http://code.google.com/p/opencaching-api/people/list'>the developers</a> directly,
+if you want.</p>
 
-<ul>
-	<li>
-		<p><b>format</b> - name of the format in which you'd like your result
-		to be returned in. Currently supported output formats:</p>
-		<ul>
-			<li><b>json</b> - <a href='http://en.wikipedia.org/wiki/JSON'>JSON</a> format (default),</li>
-			<li><b>jsonp</b> - <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> format, if
-			you choose this one, you have to specify the <b>callback</b> parameter.</li>
-		</ul>
-	</li>
-	<li>
-		<b>callback</b> - (when using JSONP output format) name of the JavaScript function
-		to be executed with the result as their parameter.
-	</li>
-</ul>
+<p>Visit <b>project homepage</b> for details:
+<a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></p>
 
-<p>Some methods expose some <b>special formatting</b> of their own, for example, they may return
-a JPEG or a GPX file. Such methods do not accept <i>common formatting parameters</i>.</p>
-
-<div class='issue-comments' issue_id='30'></div>
 
 <h2 id='method_index'>List of available methods</h2>
 

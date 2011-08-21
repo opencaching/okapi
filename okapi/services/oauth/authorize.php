@@ -12,8 +12,7 @@ class WebService
 	public static function options()
 	{
 		return array(
-			'consumer'   => 'ignored',
-			'token'      => 'ignored',
+			'min_auth_level' => 0
 		);
 	}
 	
