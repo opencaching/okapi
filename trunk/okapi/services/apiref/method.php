@@ -15,8 +15,7 @@ class WebService
 	public static function options()
 	{
 		return array(
-			'consumer'   => 'ignored',
-			'token'      => 'ignored',
+			'min_auth_level' => 0
 		);
 	}
 	
@@ -52,14 +51,17 @@ class WebService
 		if (!OkapiServiceRunner::exists($methodname))
 			throw new InvalidParam('name', "Method does not exist: '$methodname'.");
 		$options = OkapiServiceRunner::options($methodname);
+		if (!isset($options['min_auth_level']))
+			throw new Exception("Method $methodname is missing a required 'min_auth_level' option!");
 		$docs = simplexml_load_string(OkapiServiceRunner::docs($methodname));
 		$result = array(
 			'name' => $methodname,
 			'short_name' => end(explode("/", $methodname)),
 			'ref_url' => $GLOBALS['absolute_server_URI']."okapi/$methodname.html",
 			'auth_options' => array(
-				'consumer' => $options['consumer'],
-				'token' => $options['token'],
+				'min_auth_level' => $options['min_auth_level'],
+				'oauth_consumer' => $options['min_auth_level'] >= 2,
+				'oauth_token' => $options['min_auth_level'] >= 3,
 			)
 		);
 		if (!$docs->brief)

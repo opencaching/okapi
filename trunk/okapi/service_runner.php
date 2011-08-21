@@ -90,15 +90,16 @@ class OkapiServiceRunner
 			throw new Exception();
 		
 		$options = self::options($service_name);
-		if ($options['consumer'] == 'required' && $request->consumer == null)
+		if ($options['min_auth_level'] >= 2 && $request->consumer == null)
 		{
 			throw new Exception("Method '$service_name' called with mismatched OkapiRequest: ".
-				"\$request->consumer MAY NOT be empty. Provide a dummy Consumer if you have to.");
+				"\$request->consumer MAY NOT be empty for Level 2 and Level 3 methods. Provide ".
+				"a dummy Consumer if you have to.");
 		}
-		if ($options['token'] == 'required' && $request->token == null)
+		if ($options['min_auth_level'] >= 3 && $request->token == null)
 		{
 			throw new Exception("Method '$service_name' called with mismatched OkapiRequest: ".
-				"\$request->token MAY NOT be empty.");
+				"\$request->token MAY NOT be empty for Level 3 methods.");
 		}
 		
 		require_once "$service_name.php";

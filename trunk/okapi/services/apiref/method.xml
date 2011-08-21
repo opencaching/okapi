@@ -24,8 +24,12 @@
 				<b>auth_options</b> - a dictionary which describes authentication
 				requirements for this method, it has a following structure:
 				<ul>
-					<li><b>consumer</b> - "required", "optional" or "ignored",</li>
-					<li><b>token</b> - "required", "optional" or "ignored",</li>
+					<li><b>min_auth_level</b> - integer, in range from 0 to 3,
+						see Introduction page.</li>
+					<li><b>oauth_consumer</b> - "required" when min_auth_level >= 2,
+						"optional" otherwise,</li>
+					<li><b>oauth_token</b> - "required" when min_auth_level == 3,
+						"optional" otherwise.</li>
 				</ul>
 			</li>
 			<li><b>arguments</b> - list of dictionaries, describes method

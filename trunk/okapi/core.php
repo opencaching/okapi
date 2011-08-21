@@ -549,8 +549,7 @@ class OkapiInternalRequest extends OkapiRequest
 class OkapiHttpRequest extends OkapiRequest
 {
 	private $request; /* @var OAuthRequest */
-	private $opt_consumer; # "required", "optional" or "ignored"
-	private $opt_token; # "required", "optional" or "ignored"
+	private $opt_min_auth_level; # 0..3
 	private $opt_token_type = 'access'; # "access" or "request"
 	
 	public function __construct($options)
@@ -564,19 +563,12 @@ class OkapiHttpRequest extends OkapiRequest
 		{
 			switch ($key)
 			{
-				case 'consumer':
-					if (!in_array($value, array("required", "optional", "ignored")))
+				case 'min_auth_level':
+					if (!in_array($value, array(0, 1, 2, 3)))
 					{
-						throw new Exception("'consumer' option has invalid value: $value");
+						throw new Exception("'min_auth_level' option has invalid value: $value");
 					}
-					$this->opt_consumer = $value;
-					break;
-				case 'token':
-					if (!in_array($value, array("required", "optional", "ignored")))
-					{
-						throw new Exception("'token' option has invalid value: $value");
-					}
-					$this->opt_token = $value;
+					$this->opt_min_auth_level = $value;
 					break;
 				case 'token_type':
 					if (!in_array($value, array("request", "access")))
@@ -590,19 +582,7 @@ class OkapiHttpRequest extends OkapiRequest
 					break;
 			}
 		}
-		if (!$this->opt_consumer) throw new Exception("Required 'consumer' option is missing.");
-		if (!$this->opt_token) throw new Exception("Required 'token' option is missing.");
-		
-		if ($this->opt_consumer == 'ignored' && $this->opt_token != 'ignored')
-		{
-			throw new Exception("Invalid combination of 'consumer' and 'token' options.\n".
-				"When consumer is ignored, token has to be ignored too.");
-		}
-		if ($this->opt_token == 'required' && $this->opt_consumer != 'required')
-		{
-			throw new Exception("Invalid combination of 'consumer' and 'token' options.\n".
-				"When token is required, consumer has to be required too.");
-		}
+		if ($this->opt_min_auth_level === null) throw new Exception("Required 'min_auth_level' option is missing.");
 		
 		#
 		# Let's see if the request is signed. If it is, verify the signature.
@@ -613,24 +593,42 @@ class OkapiHttpRequest extends OkapiRequest
 		{
 			list($this->consumer, $this->token) = Okapi::$server->
 				verify_request2($this->request, $this->opt_token_type, $this->opt_token == 'required');
-			if ($this->opt_token == 'required' && !$this->token)
+			if ($this->get_parameter('consumer_key') && $this->get_parameter('consumer_key') != $this->get_parameter('oauth_consumer_key'))
+				throw new BadRequest("Inproper mixing of authentication types. You used both 'consumer_key' ".
+					"and 'oauth_consumer_key' parameters (Level 1 and Level 2), but they do not match with ".
+					"each other. Were you trying to hack me? ;)");
+			if ($this->opt_min_auth_level == 3 && !$this->token)
 			{
-				throw new BadRequest("This method requires a valid Token to be used. ".
-					"You didn't provide one.");
+				throw new BadRequest("This method requires a valid Token to be included (Level 3 ".
+					"Authentication). You didn't provide one.");
 			}
 		}
 		else
 		{
-			if ($this->opt_consumer == 'required')
+			if ($this->opt_min_auth_level >= 2)
 			{
-				throw new BadRequest("This method is available for registered Consumers only. ".
-					"It requires a valid OAuth signature.");
+				throw new BadRequest("This method requires OAuth signature (Level ".
+					$this->opt_min_auth_level." Authentication). You didn't sign your request.");
+			}
+			else
+			{
+				$consumer_key = $this->get_parameter('consumer_key');
+				if ($consumer_key)
+				{
+					$this->consumer = Okapi::$data_store->lookup_consumer($consumer_key);
+					if (!$this->consumer)
+						throw new InvalidParam('consumer_key', "Consumer does not exist.");
+				}
+				if (($this->opt_min_auth_level == 1) && (!$this->consumer))
+					throw new BadRequest("This method requires the 'consumer_key' argument (Level 1 ".
+						"Authentication). You didn't provide one.");
 			}
 		}
 		
 		#
 		# Prevent developers from accessing request parameters with PHP globals.
 		# Remember, that OKAPI requests can be nested within other OKAPI requests!
+		# Search the code for "new OkapiInternalRequest" to see examples.
 		#
 		
 		$_GET = $_POST = $_REQUEST = null;

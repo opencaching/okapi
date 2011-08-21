@@ -32,8 +32,8 @@ $m = $vars['method'];
 							<tr>
 								<td class='precaption' colspan='3'>
 									<table><tr>
-										<td>Consumer: <span class='<?= $m['auth_options']['consumer'] ?>'><?= $m['auth_options']['consumer'] ?></span></td>
-										<td>Token: <span class='<?= $m['auth_options']['token'] ?>'><?= $m['auth_options']['token'] ?></span></td>
+										<td>Minimum Authentication: <span class='level level<?= $m['auth_options']['min_auth_level'] ?>'>Level <?= $m['auth_options']['min_auth_level'] ?></span></td>
+										<td>(see <a href='/okapi/introduction#auth_level'>Authentication Levels</a>)</td>
 									</tr></table>
 								</td>
 							</tr>
@@ -58,20 +58,17 @@ $m = $vars['method'];
 							<? } ?>
 							<tr>
 								<td colspan='3' class='oauth_args'>
-									<? if ($m['auth_options']['consumer'] == 'ignored') { ?>
-										No additional OAuth arguments are required. If you provide any,
-										they will be ignored.
+									<? if ($m['auth_options']['min_auth_level'] == 0) { ?>
+										No additional authentication parameters are required.
+									<? } elseif ($m['auth_options']['min_auth_level'] == 1) { ?>
+										<b>Plus required</b> <i>consumer_key</i> argument, assigned for your application.
 									<? } else { ?>
-										<b>Plus <?= $m['auth_options']['consumer'] ?></b>
+										<b>Plus required</b>
 										standard OAuth Consumer signing arguments:
 										<i>oauth_consumer_key, oauth_nonce, oauth_timestamp, oauth_signature,
 										oauth_signature_method, oauth_version</i>.
-										<? if ($m['auth_options']['token'] == 'ignored') { ?>
-											Token is not required.
-										<? } else { ?>
-											<b>Plus <?= $m['auth_options']['token'] ?></b> <i>oauth_token</i>
-											for Token authorization.
-										<? } ?>
+										<b>Plus <?= $m['auth_options']['oauth_token'] ?></b> <i>oauth_token</i>
+										for Token authorization.
 									<? } ?>
 								</td>
 							</tr>

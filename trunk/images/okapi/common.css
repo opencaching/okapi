@@ -58,6 +58,8 @@ body.api { background: #f5f1eb; }
 .method td.precaption { padding: 4px 2px; background: #fdf2e2; }
 .method td.precaption table { margin: 0 auto 0 0; }
 .method td.precaption table td { background: transparent; padding: 0 5px; font-size: 12px; color: #777; line-height: 1.1em; }
-.method td.precaption table td .required { color: #333; font-weight: bold; }
-.method td.precaption table td .optional { color: #333; }
-.method td.precaption table td .red { color: #c44; }
+.method td.precaption .level { font-weight: bold; }
+.method td.precaption .level0 { color: #333; }
+.method td.precaption .level1 { color: #333; }
+.method td.precaption .level2 { color: #c44; }
+.method td.precaption .level3 { color: #c44; }
