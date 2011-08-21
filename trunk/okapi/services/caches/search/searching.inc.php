@@ -210,9 +210,9 @@ class SearchAssistant
 	}
 	
 	/**
-	 * Search for OX codes using given conditions and options. Return
+	 * Search for caches using given conditions and options. Return
 	 * an array in a "standard" format of array('results' => list of
-	 * OX codes, 'more' => boolean). This method takes care of the
+	 * waypoint codes, 'more' => boolean). This method takes care of the
 	 * 'more' variable in an appropriate way.
 	 * 
 	 * The $options parameter include:
@@ -221,7 +221,7 @@ class SearchAssistant
 	 *  - extra_tables - list of additional tables to be joined within
 	 *    the query,
 	 *  - order_by - SQL formula to be used with ORDER BY clause,
-	 *  - limit - maximum number of OX codes to be returned.
+	 *  - limit - maximum number of waypoint codes to be returned.
 	 */
 	public static function get_common_search_result($options)
 	{
@@ -244,21 +244,21 @@ class SearchAssistant
 			".((isset($options['order_by']))?"order by ".$options['order_by']:"")."
 			limit ".($options['limit'] + 1).";
 		");
-		$ox_codes = array();
+		$cache_wpts = array();
 		while ($row = sql_fetch_assoc($rs))
-			$ox_codes[] = $row['wp_oc'];
+			$cache_wpts[] = $row['wp_oc'];
 		mysql_free_result($rs);
 		
-		if (count($ox_codes) > $options['limit'])
+		if (count($cache_wpts) > $options['limit'])
 		{
 			$more = true;
-			array_pop($ox_codes); # get rid of the one above the limit
+			array_pop($cache_wpts); # get rid of the one above the limit
 		} else {
 			$more = false;
 		}
 		
 		$result = array(
-			'results' => $ox_codes,
+			'results' => $cache_wpts,
 			'more' => $more,
 		);
 		return $result;

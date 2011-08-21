@@ -6,14 +6,14 @@
 		and that's why they were cleanly separated in the documentation (put in
 		separate methods). This was done primarily to keep the docs clean.
 		This method allows you to do a quick search+retrieve task in one request.</p>
-		<p>All services/caches/search/* methods respond with a list of OX codes.
+		<p>All services/caches/search/* methods respond with a list of waypoint codes.
 		Then you have to use other method (like services/caches/geocaches) to
-		retrieve the names and locations, based on those OX codes. The
+		retrieve the names and locations, based on those waypoint codes. The
 		<b>search_and_retrieve</b> method allows you to do these two steps in one
 		method call.</p>
 		<p>First, you have to choose both methods and their parameters - one method
-		which returns the OX codes, and the other one, that responds with additional
-		data for the given OX codes.</p>
+		which returns the cache waypoint codes, and the other one, that responds
+		with additional data for the given caches.</p>
 	</desc>
 	<req name='search_method'>
 		<p>Name of the search method (begin with "services/").</p>
@@ -32,8 +32,8 @@
 		<p>JSON-formatted dictionary of parameters to be passed on
 		to the retrieval method.</p>
 		<p>E.g. <i>{"fields": "name|location|type"}</i></p>
-		<p>The method will be called with one additional parameter - <b>oxcodes</b>.
-		These will be the OX codes collected from the results of the search method.</p>
+		<p>The method will be called with one additional parameter - <b>cache_wpts</b>.
+		These will be the waypoint codes collected from the results of the search method.</p>
 	</req>
 	<req name='wrap'>
 		<p>Boolean.</p>

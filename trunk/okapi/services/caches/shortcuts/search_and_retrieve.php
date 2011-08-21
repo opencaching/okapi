@@ -73,7 +73,7 @@ class WebService
 		{
 			$retr_result = OkapiServiceRunner::call($retr_method, new OkapiInternalRequest(
 				$request->consumer, $request->token, array_merge($retr_params,
-				array('oxcodes' => implode("|", $search_result['results'])))));
+				array('cache_wpts' => implode("|", $search_result['results'])))));
 		}
 		catch (BadRequest $e)
 		{

@@ -18,21 +18,21 @@ class WebService
 		);
 	}
 	
-	public static $valid_field_names = array('oxcode', 'name', 'location', 'type', 'status',
+	public static $valid_field_names = array('wpt', 'name', 'location', 'type', 'status',
 		'owner_id', 'founds', 'notfounds', 'last_found', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'descriptions', 'hints', 'images',
 		'last_modified', 'date_created', 'date_hidden');
 	
 	public static function call(OkapiRequest $request)
 	{
-		$oxcodes = $request->get_parameter('oxcodes');
-		if (!$oxcodes) throw new ParamMissing('oxcodes');
-		$oxcodes = explode("|", $oxcodes);
-		if (count($oxcodes) > 500)
-			throw new InvalidParam('oxcodes', "Maximum allowed number of referenced OX ".
-				"codes is 500. You provided ".count($oxcodes)." codes.");
+		$cache_wpts = $request->get_parameter('cache_wpts');
+		if (!$cache_wpts) throw new ParamMissing('cache_wpts');
+		$cache_wpts = explode("|", $cache_wpts);
+		if (count($cache_wpts) > 500)
+			throw new InvalidParam('cache_wpts', "Maximum allowed number of referenced ".
+				"caches is 500. You provided ".count($cache_wpts)." waypoint codes.");
 		$fields = $request->get_parameter('fields');
-		if (!$fields) $fields = "oxcode|name|location|type|status";
+		if (!$fields) $fields = "wpt|name|location|type|status";
 		$fields = explode("|", $fields);
 		foreach ($fields as $field)
 			if (!in_array($field, self::$valid_field_names))
@@ -43,19 +43,19 @@ class WebService
 				date_created, type, status, date_hidden, founds, notfounds, last_found,
 				size, difficulty, terrain, wp_oc, topratings, votes, score
 			from caches
-			where wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $oxcodes))."')
+			where wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_wpts))."')
 		");
 		$results = array();
-		$cacheid2oxcode = array();
+		$cacheid2wptcode = array();
 		while ($row = sql_fetch_assoc($rs))
 		{
 			$entry = array();
-			$cacheid2oxcode[$row['cache_id']] = $row['wp_oc'];
+			$cacheid2wptcode[$row['cache_id']] = $row['wp_oc'];
 			foreach ($fields as $field)
 			{
 				switch ($field)
 				{
-					case 'oxcode': $entry['oxcode'] = $row['wp_oc']; break;
+					case 'wpt': $entry['wpt'] = $row['wp_oc']; break;
 					case 'name': $entry['name'] = array('PL' => $row['name']); break;
 					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
@@ -90,10 +90,10 @@ class WebService
 		}
 		mysql_free_result($rs);
 		
-		# Check which OX codes were not found and mark them with null.
-		foreach ($oxcodes as $oxcode)
-			if (!isset($results[$oxcode]))
-				$results[$oxcode] = null;
+		# Check which waypoint codes were not found and mark them with null.
+		foreach ($cache_wpts as $cache_wpt)
+			if (!isset($results[$cache_wpt]))
+				$results[$cache_wpt] = null;
 		
 		$include_descriptions = in_array('descriptions', $fields);
 		$include_hints = in_array('hints', $fields);
@@ -110,11 +110,11 @@ class WebService
 			$rs = sql("
 				select cache_id, language, `desc`, hint
 				from cache_desc
-				where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2oxcode)))."')
+				where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 			");
 			while ($row = sql_fetch_assoc($rs))
 			{
-				$oxcode = $cacheid2oxcode[$row['cache_id']];
+				$cache_wpt = $cacheid2wptcode[$row['cache_id']];
 				if ($include_descriptions && $row['desc'])
 				{
 					$site_url = $GLOBALS['absolute_server_URI'];
@@ -128,10 +128,10 @@ class WebService
 							$extra = "<p>This <a href='$cache_url'>geocache</a> description comes from the <a href='$site_url'>$site_url</a> site.</p>";
 							break;
 					}
-					$results[$oxcode]['descriptions'][$row['language']] = $row['desc']."\n".$extra;
+					$results[$cache_wpt]['descriptions'][$row['language']] = $row['desc']."\n".$extra;
 				}
 				if ($include_hints && $row['hint'])
-					$results[$oxcode]['hints'][$row['language']] = $row['hint'];
+					$results[$cache_wpt]['hints'][$row['language']] = $row['hint'];
 			}
 		}
 		$include_images = in_array('images', $fields);
@@ -143,13 +143,13 @@ class WebService
 				select object_id, url, thumb_url, title, spoiler
 				from pictures
 				where
-					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2oxcode)))."')
+					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 					and display = 1
 			");
 			while ($row = sql_fetch_assoc($rs))
 			{
-				$oxcode = $cacheid2oxcode[$row['object_id']];
-				$results[$oxcode]['images'][] = array(
+				$cache_wpt = $cacheid2wptcode[$row['object_id']];
+				$results[$cache_wpt]['images'][] = array(
 					'url' => $row['url'],
 					'thumb_url' => $row['thumb_url'] ? $row['thumb_url'] : null,
 					'caption' => array('PL' => $row['title']),
