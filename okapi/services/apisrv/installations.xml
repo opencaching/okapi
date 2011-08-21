@@ -1,6 +1,6 @@
 <xml>
 	<brief>Get the list of all public OKAPI installations</brief>
-	<issue-id>WRTODO</issue-id>
+	<issue-id>39</issue-id>
 	<desc>
 		Get the list of all public OKAPI installations. Keep in mind that
 		OKAPI installations might differ slightly. If you plan on using

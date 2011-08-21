@@ -25,11 +25,12 @@ class WebService
 		$result['site_url'] = $GLOBALS['absolute_server_URI'];
 		$result['okapi_base_url'] = $result['site_url']."okapi/";
 		
-		# site_name - currently, we take the name defined in the settings
-		# (in local language). In future, this will change, and we will
-		# have a global list of OpenCaching site names stored somewhere,
-		# and retrieved by all OKAPI installations.
-		$result['site_name'] = array($GLOBALS['lang'] => $GLOBALS['pagetitle']);
+		$matches = null;
+		if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $vars['site_url'], $matches)) {
+			$result['site_name'] = "OpenCaching.".strtoupper($matches[2]);
+		} else {
+			$result['site_name'] = $vars['site_url'];
+		}
 		
 		$result['okapi_revision'] = Okapi::$revision;
 		
