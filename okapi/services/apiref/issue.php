@@ -32,7 +32,7 @@ class WebService
 		$doc = simplexml_load_string($xml);
 		$result = array(
 			'id' => $issue_id + 0,
-			'last_updated' => substr($doc->updated, 0, 10)." ".substr($doc->updated, 11, 8),
+			'last_updated' => (string)$doc->updated,
 			'title' => (string)$doc->title,
 			'url' => (string)$doc->link[0]['href'],
 			'comment_count' => $doc->entry->count()
