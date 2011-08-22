@@ -540,7 +540,25 @@ class Okapi
 			return $reversed[$id];
 		return null;
 	}
+	
+	/** Ex. 'found' => 1. For unknown logtypes throws Exception. */
+	public static function logtypename2id($name)
+	{
+		if ($name == 'found') return 1;
+		if ($name == 'not_found') return 2;
+		if ($name == 'comment') return 3;
+		throw new Exception("logtype2id called with invalid log type argument: $name");
+	}
+	
+	/** Ex. 1 => 'found'. For unknown ids returns 'comment'. */
+	public static function logtypeid2name($id)
+	{
+		if ($id == 1) return 'found';
+		if ($id == 2) return 'not_found';
+		return 'comment';
+	}
 }
+
 
 /**
  * Represents an OKAPI web method request.
@@ -637,7 +655,7 @@ class OkapiHttpRequest extends OkapiRequest
 		if ($this->get_parameter('oauth_signature'))
 		{
 			list($this->consumer, $this->token) = Okapi::$server->
-				verify_request2($this->request, $this->opt_token_type, $this->opt_token == 'required');
+				verify_request2($this->request, $this->opt_token_type, $this->opt_min_auth_level == 3);
 			if ($this->get_parameter('consumer_key') && $this->get_parameter('consumer_key') != $this->get_parameter('oauth_consumer_key'))
 				throw new BadRequest("Inproper mixing of authentication types. You used both 'consumer_key' ".
 					"and 'oauth_consumer_key' parameters (Level 1 and Level 2), but they do not match with ".
