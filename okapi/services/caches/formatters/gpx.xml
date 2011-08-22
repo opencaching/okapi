@@ -40,15 +40,11 @@
 		used by <a href='http://www.opencaching.com/'>Garmin's Opencaching.com</a>.
 		The element includes information on cache difficulty and ratings.
 	</opt>
-	<!--
-	<opt name='ns_au' default='false'>
-		Boolean. If <b>true</b> then response will include
-		<a href='http://geocaching.com.au/geocache/1/geocache.xsd'>http://geocaching.com.au/geocache/1</a>
-		GPX extension. This namespace declares an extra &lt;geocache&gt; element.
-		As far as we know, there is no software that makes any use of it.
-		We advise you to skip it and use <b>ns_ground</b> instead.
+	<opt name='latest_logs' default='false'>
+		<p>Boolean. If <b>true</b> then response will include a couple of
+		latest log entries for this cache.</p>
+		<p>You <b>must</b> set <b>ns_ground</b> argument to <b>true</b> if you want to use this.</p>
 	</opt>
-	-->
 	<opt name='alt_wpts' default='false'>
 		<p>Boolean. If <b>true</b> then we will include <b>alternate waypoints</b> in the response.
 		These waypoints point to places associated with the cache.</p>
