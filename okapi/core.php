@@ -450,13 +450,6 @@ class Okapi
 		}
 	}
 	
-	/** Test $string to be a valid date in the "yyyy-mm-dd hh:mm:ss" format. */
-	public static function is_valid_datetime($string)
-	{
-		return (strptime($string, "%Y-%m-%d %H:%M:%S") &&
-			date("Y-m-d H:i:s", strtotime($string)) == $string);
-	}
-	
 	private static $cache_types = array(
 		'traditional' => 2, 'multi' => 3, 'quiz' => 7, 'event' => 6, 'virtual' => 4, 'webcam' => 5,
 		'moving' => 8, 'own' => 9, 'other' => 1

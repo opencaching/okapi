@@ -28,7 +28,7 @@
 
 <p>Some examples of OKAPI usage with popular programming languages.
 
-<h2>JavaScript</h2>
+<h2>JavaScript Example</h2>
 
 <p>It is possible to access OKAPI directly from user's browser, without the
 need for server backend. OKAPI methods allow both
@@ -37,7 +37,16 @@ output format and
 <a href='http://en.wikipedia.org/wiki/XMLHttpRequest#Cross-domain_requests'>Cross-domain
 XHR requests</a>. There are some limitations of both these techniques though.</p>
 
-<p><a href='/images/okapi/examples/javascript_nearest.html'>JavaScript Example</a> - checks your location and displays nearest geocaches.</p>
+<p>This example does the following:</p>
+<ul>
+	<li>Pulls the <a href='/okapi/services/apisrv/installations.html'>list of all OKAPI installations</a>
+	from one of the OKAPI servers and displays it in a select-box. Note, that this method does not
+	require Consumer Key (Level 0 Authentication).</li>
+	<li>Asks you to share your location (modern browser can do that).</li>
+	<li>Retrieves a list of nearest geocaches. This time, it uses the Consumer Key you have to supply.</li>
+</ul>
+
+<p><a href='/images/okapi/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>
 
 
 					</td>
