@@ -95,7 +95,7 @@ class WebService
 		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "text/xml; charset=utf-8";
-		// $response->content_disposition = 'Content-Disposition: inline; filename="results.gpx"';
+		$response->content_disposition = 'Content-Disposition: attachment; filename="results.gpx"';
 		ob_start();
 		include 'gpxfile.tpl.php';
 		$response->body = ob_get_clean();
