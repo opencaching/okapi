@@ -7,6 +7,8 @@ use okapi\Okapi;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
+use okapi\OkapiInternalRequest;
+use okapi\OkapiServiceRunner;
 use okapi\services\caches\search\SearchAssistant;
 
 class WebService
@@ -19,9 +21,10 @@ class WebService
 	}
 	
 	public static $valid_field_names = array('wpt', 'name', 'names', 'location', 'type',
-		'status', 'url', 'owner_id', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
+		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'description', 'descriptions', 'hint',
-		'hints', 'images', 'last_found', 'last_modified', 'date_created', 'date_hidden');
+		'hints', 'images', 'latest_logs', 'last_found', 'last_modified', 'date_created',
+		'date_hidden');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -65,7 +68,7 @@ class WebService
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
 					case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
 					case 'url': $entry['url'] = $GLOBALS['absolute_server_URI']."viewcache.php?cacheid=".$row['cache_id']; break;
-					case 'owner_id': $entry['owner_id'] = $row['user_id']; break;
+					case 'owner': $entry['owner'] = array('id' => $row['user_id']); /* extended below */ break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
 					case 'size': $entry['size'] = ($row['size'] < 7) ? $row['size'] - 1 : null; break;
@@ -86,6 +89,7 @@ class WebService
 					case 'hint': /* handled separately */ break;
 					case 'hints': /* handled separately */ break;
 					case 'images': /* handled separately */ break;
+					case 'latest_logs': /* handled separately */ break;
 					case 'last_found': $entry['last_found'] = $row['last_found'] ? date('c', strtotime($row['last_found'])) : null; break;
 					case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
 					case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
@@ -96,6 +100,22 @@ class WebService
 			$results[$row['wp_oc']] = $entry;
 		}
 		mysql_free_result($rs);
+		
+		# Extending 'owner' fields with usernames etc. (currently there are IDs only).
+		
+		if (in_array('owner', $fields))
+		{
+			$user_ids = array();
+			foreach ($results as &$result_ref)
+				$user_ids[] = $result_ref['owner']['id'];
+			$users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
+				$request->consumer, null, array('user_ids' => implode("|", $user_ids),
+				'fields' => 'id|username|profile_url')));
+			foreach ($results as &$result_ref)
+				$result_ref['owner'] = $users[$result_ref['owner']['id']];
+		}
+		
+		# Descriptions and hints.
 		
 		if (in_array('description', $fields) || in_array('descriptions', $fields)
 			|| in_array('hint', $fields) || in_array('hints', $fields))
@@ -120,8 +140,8 @@ class WebService
 				$cache_wpt = $cacheid2wptcode[$row['cache_id']];
 				// strtolower - ISO 639-1 codes are lowercase
 				if ($row['desc'])
-					$results[$cache_wpt]['descriptions'][strtolower($row['language'])] = $row['desc'];
-						"\n".self::get_cache_attribution_note($row['cache_id'], $row['language']);
+					$results[$cache_wpt]['descriptions'][strtolower($row['language'])] = $row['desc'].
+						"\n".self::get_cache_attribution_note($row['cache_id'], strtolower($row['language']));
 				if ($row['hint'])
 					$results[$cache_wpt]['hints'][strtolower($row['language'])] = $row['hint'];
 			}
@@ -139,8 +159,9 @@ class WebService
 						unset($result_ref[$field]);
 		}
 		
-		$include_images = in_array('images', $fields);
-		if ($include_images)
+		# Images.
+		
+		if (in_array('images', $fields))
 		{
 			foreach ($results as &$result_ref)
 				$result_ref['images'] = array();
@@ -163,6 +184,58 @@ class WebService
 			}
 		}
 		
+		# Latest log entries.
+		
+		if (in_array('latest_logs', $fields))
+		{
+			foreach ($results as &$result_ref)
+				$result_ref['latest_logs'] = array();
+			
+			# Get log IDs and dates. Sort in groups. Filter out latest 20. This is the fastest
+			# technique I could think of...
+			
+			$cachelogs = array();
+			$rs = sql("
+				select cache_id, id
+				from cache_logs
+				where
+					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+					and deleted = 0
+			");
+			while ($row = sql_fetch_assoc($rs))
+				$cachelogs[$row['cache_id']][] = $row['id']; // @
+			$logids = array();
+			foreach ($cachelogs as $cache_key => &$logids_ref)
+			{
+				rsort($logids_ref);
+				$logids = array_merge($logids, array_slice($logids_ref, 0, 20));
+			}
+			
+			# Now retrieve text and join.
+			
+			$rs = sql("
+				select cl.cache_id, cl.id, cl.type, unix_timestamp(cl.date) as date, cl.text,
+					u.user_id, u.username
+				from cache_logs cl, user u
+				where
+					cl.id in ('".implode("','", array_map('mysql_real_escape_string', $logids))."')
+					and cl.deleted = 0
+					and cl.user_id = u.user_id
+				order by cl.cache_id, cl.id desc
+			");
+			$cachelogs = array();
+			while ($row = sql_fetch_assoc($rs))
+			{
+				$results[$cacheid2wptcode[$row['cache_id']]]['latest_logs'][] = array(
+					'id' => $row['id'],
+					'date' => date('c', $row['date']),
+					'user' => array('user_id' => $row['user_id'], 'username' => $row['username']),
+					'type' => Okapi::logtypeid2name($row['type']),
+					'comment' => $row['text']
+				);
+			}
+		}
+		
 		# Check which waypoint codes were not found and mark them with null.
 		foreach ($cache_wpts as $cache_wpt)
 			if (!isset($results[$cache_wpt]))
@@ -174,6 +247,7 @@ class WebService
 	public static function get_cache_attribution_note($cache_id, $lang)
 	{
 		$site_url = $GLOBALS['absolute_server_URI'];
+		$site_name = Okapi::get_normalized_site_name();
 		$cache_url = $site_url."viewcache.php?cacheid=$cache_id";
 		
 		# This list if to be extended (opencaching.de, etc.).
@@ -181,10 +255,10 @@ class WebService
 		switch ($lang)
 		{
 			case 'pl':
-				return "<p>Opis <a href='$cache_url'>skrzynki</a> pochodzi z serwisu <a href='$site_url'>$site_url</a>.</p>";
+				return "<p>Opis <a href='$cache_url'>skrzynki</a> pochodzi z serwisu <a href='$site_url'>$site_name</a>.</p>";
 				break;
 			default:
-				$extra = "<p>This <a href='$cache_url'>geocache</a> description comes from the <a href='$site_url'>$site_url</a> site.</p>";
+				return "<p>This <a href='$cache_url'>geocache</a> description comes from the <a href='$site_url'>$site_name</a> site.</p>";
 				break;
 		}
 	}

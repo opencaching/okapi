@@ -26,7 +26,13 @@
 			<li><b>type</b> - cache type,</li>
 			<li><b>status</b> - cache status,</li>
 			<li><b>url</b> - URL of the cache's web page,</li>
-			<li><b>owner_id</b> - geocache owner's user ID,</li>
+			<li>
+				<p><b>owner</b> - dictionary of:</p>
+				<ul>
+					<li><b>user_id</b> - geocache owner's user ID,</li>
+					<li><b>username</b> - name of the user,</li>
+				</ul>
+			</li>
 			<li><b>founds</b> - number of times the geocache was successfully found,</li>
 			<li><b>notfounds</b> - number of times the geocache was unfound,</li>
 			<li><b>size</b> - integer (one of: 1, 2, 3, 4, 5), size rating of the container, or
@@ -61,6 +67,30 @@
 						a spoiler image and should not be displayed to the user unless
 						the user explicitly asks for it.</li>
 				</ul>
+			</li>
+			<li>
+				<p><b>latest_logs</b> - list of dictionaries - a couple of latest log
+				entries in the cache. Each dictionary represents one log entry and has
+				the following structure:</p>
+				<ul>
+					<li><b>id</b> - ID of the log entry (you probably won't need this),</li>
+					<li><b>date</b> - date and time (ISO 8601) when the log entry was submitted,</li>
+					<li>
+						<p><b>user</b> - a dictionary:</p>
+						<ul>
+							<li><b>user_id</b> - ID of the user (who submitted the log entry),</li>
+							<li><b>username</b> - name of the user (who submitted the log entry),</li>
+						</ul>
+					</li>
+					<li>
+						<p><b>type</b> - log type, one of: "found", "not_found" or "comment".</p>
+						<p>Notice: More types might be coming in the future. Your application should handle
+						unknown log types as comments.</p>
+					</li>
+					<li><b>comment</b> - HTML string, text entered with the log entry.</li>
+				</ul>
+				<p>Notice: There is no option to retrieve the full list of logs with
+				this method. You will always receive only some of the latest.</p>
 			</li>
 			<li><b>last_found</b> - date and time (ISO 8601) when the
 				geocache was last found <b>or null</b> when it hasn't been yet found,</li>
