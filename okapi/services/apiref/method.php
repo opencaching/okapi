@@ -75,9 +75,10 @@ class WebService
 		if (substr(trim($docs->brief), -1) == '.')
 			throw new Exception("The <brief> element should not end with a dot ($methodname.xml).");
 		$result['brief_description'] = self::get_inner_xml($docs->brief);
-		if (!$docs->{'issue-id'})
-			throw new Exception("Missing <issue-id> element in the $methodname.xml file.");
-		$result['issue_id'] = (string)$docs->{'issue-id'};
+		if ($docs->{'issue-id'})
+			$result['issue_id'] = (string)$docs->{'issue-id'};
+		else
+			$result['issue_id'] = null;
 		if (!$docs->desc)
 			throw new Exception("Missing <desc> element in the $methodname.xml file.");
 		$result['description'] = self::get_inner_xml($docs->desc);

@@ -15,7 +15,8 @@
 			<li><b>name</b> - name of the method,</li>
 			<li><b>short_name</b> - name without a path,</li>
 			<li><b>issue_id</b> - ID of the "general discussion" issue (in our project's
-				homepage Issue Tracker) associated with this method,</li>
+				homepage Issue Tracker) associated with this method <b>or null</b> if this
+				method has associated issue,</li>
 			<li><b>description</b> - HTML-formatted description of what the method does,</li>
 			<li><b>brief_description</b> - brief (max 80 characters), single-line,
 				plain-text description of what the method does,</li>
