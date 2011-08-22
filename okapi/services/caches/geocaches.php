@@ -20,7 +20,7 @@ class WebService
 		);
 	}
 	
-	public static $valid_field_names = array('wpt', 'name', 'names', 'location', 'type',
+	public static $valid_field_names = array('wpt', 'id', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'description', 'descriptions', 'hint',
 		'hints', 'images', 'latest_logs', 'last_found', 'last_modified', 'date_created',
@@ -62,6 +62,7 @@ class WebService
 				switch ($field)
 				{
 					case 'wpt': $entry['wpt'] = $row['wp_oc']; break;
+					case 'id': $entry['id'] = $row['cache_id']; break;
 					case 'name': $entry['name'] = $row['name']; break;
 					case 'names': $entry['name'] = array('pl' => $row['name']); break; // for the future
 					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
