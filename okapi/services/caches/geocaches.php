@@ -18,10 +18,10 @@ class WebService
 		);
 	}
 	
-	public static $valid_field_names = array('wpt', 'name', 'location', 'type', 'status',
-		'url', 'owner_id', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
-		'rating', 'rating_votes', 'recommendations', 'descriptions', 'hints', 'images',
-		'last_found', 'last_modified', 'date_created', 'date_hidden');
+	public static $valid_field_names = array('wpt', 'name', 'names', 'location', 'type',
+		'status', 'url', 'owner_id', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
+		'rating', 'rating_votes', 'recommendations', 'description', 'descriptions', 'hint',
+		'hints', 'images', 'last_found', 'last_modified', 'date_created', 'date_hidden');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -31,6 +31,9 @@ class WebService
 		if (count($cache_wpts) > 500)
 			throw new InvalidParam('cache_wpts', "Maximum allowed number of referenced ".
 				"caches is 500. You provided ".count($cache_wpts)." waypoint codes.");
+		$langpref = $request->get_parameter('langpref');
+		if (!$langpref) $langpref = "en";
+		$langpref = explode("|", $langpref);
 		$fields = $request->get_parameter('fields');
 		if (!$fields) $fields = "wpt|name|location|type|status";
 		$fields = explode("|", $fields);
@@ -56,7 +59,8 @@ class WebService
 				switch ($field)
 				{
 					case 'wpt': $entry['wpt'] = $row['wp_oc']; break;
-					case 'name': $entry['name'] = array('PL' => $row['name']); break;
+					case 'name': $entry['name'] = $row['name']; break;
+					case 'names': $entry['name'] = array('pl' => $row['name']); break; // for the future
 					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
 					case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
@@ -77,7 +81,9 @@ class WebService
 						break;
 					case 'rating_votes': $entry['rating_votes'] = $row['votes'] + 0; break;
 					case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
+					case 'description': /* handled separately */ break;
 					case 'descriptions': /* handled separately */ break;
+					case 'hint': /* handled separately */ break;
 					case 'hints': /* handled separately */ break;
 					case 'images': /* handled separately */ break;
 					case 'last_found': $entry['last_found'] = $row['last_found'] ? date('c', strtotime($row['last_found'])) : null; break;
@@ -91,23 +97,19 @@ class WebService
 		}
 		mysql_free_result($rs);
 		
-		# Check which waypoint codes were not found and mark them with null.
-		foreach ($cache_wpts as $cache_wpt)
-			if (!isset($results[$cache_wpt]))
-				$results[$cache_wpt] = null;
-		
-		$include_descriptions = in_array('descriptions', $fields);
-		$include_hints = in_array('hints', $fields);
-		if ($include_descriptions || $include_hints)
+		if (in_array('description', $fields) || in_array('descriptions', $fields)
+			|| in_array('hint', $fields) || in_array('hints', $fields))
 		{
-			if ($include_descriptions)
-				foreach ($results as &$result_ref)
-					$result_ref['descriptions'] = array();
-			if ($include_hints)
-				foreach ($results as &$result_ref)
-					$result_ref['hints'] = array();
+			# At first, we will fill all those 4 fields, even if user requested just one
+			# of them. We will chop off the remaining three at the end.
+			
+			foreach ($results as &$result_ref)
+				$result_ref['descriptions'] = array();
+			foreach ($results as &$result_ref)
+				$result_ref['hints'] = array();
 			
 			# Get cache descriptions and hints.
+			
 			$rs = sql("
 				select cache_id, language, `desc`, hint
 				from cache_desc
@@ -116,25 +118,27 @@ class WebService
 			while ($row = sql_fetch_assoc($rs))
 			{
 				$cache_wpt = $cacheid2wptcode[$row['cache_id']];
-				if ($include_descriptions && $row['desc'])
-				{
-					$site_url = $GLOBALS['absolute_server_URI'];
-					$cache_url = $site_url."viewcache.php?cacheid=".$row['cache_id'];
-					switch ($row['language'])
-					{
-						case 'PL':
-							$extra = "<p>Opis <a href='$cache_url'>skrzynki</a> pochodzi z serwisu <a href='$site_url'>$site_url</a>.</p>";
-							break;
-						default:
-							$extra = "<p>This <a href='$cache_url'>geocache</a> description comes from the <a href='$site_url'>$site_url</a> site.</p>";
-							break;
-					}
-					$results[$cache_wpt]['descriptions'][$row['language']] = $row['desc']."\n".$extra;
-				}
-				if ($include_hints && $row['hint'])
-					$results[$cache_wpt]['hints'][$row['language']] = $row['hint'];
+				// strtolower - ISO 639-1 codes are lowercase
+				if ($row['desc'])
+					$results[$cache_wpt]['descriptions'][strtolower($row['language'])] = $row['desc'];
+						"\n".self::get_cache_attribution_note($row['cache_id'], $row['language']);
+				if ($row['hint'])
+					$results[$cache_wpt]['hints'][strtolower($row['language'])] = $row['hint'];
 			}
+			foreach ($results as &$result_ref)
+			{
+				$result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langpref);
+				$result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langpref);
+			}
+			
+			# Remove unwanted fields.
+			
+			foreach (array('description', 'descriptions', 'hint', 'hints') as $field)
+				if (!in_array($field, $fields))
+					foreach ($results as &$result_ref)
+						unset($result_ref[$field]);
 		}
+		
 		$include_images = in_array('images', $fields);
 		if ($include_images)
 		{
@@ -153,11 +157,35 @@ class WebService
 				$results[$cache_wpt]['images'][] = array(
 					'url' => $row['url'],
 					'thumb_url' => $row['thumb_url'] ? $row['thumb_url'] : null,
-					'caption' => array('PL' => $row['title']),
+					'caption' => $row['title'],
 					'is_spoiler' => ($row['spoiler'] ? true : false),
 				);
 			}
 		}
+		
+		# Check which waypoint codes were not found and mark them with null.
+		foreach ($cache_wpts as $cache_wpt)
+			if (!isset($results[$cache_wpt]))
+				$results[$cache_wpt] = null;
+		
 		return Okapi::formatted_response($request, $results);
+	}
+	
+	public static function get_cache_attribution_note($cache_id, $lang)
+	{
+		$site_url = $GLOBALS['absolute_server_URI'];
+		$cache_url = $site_url."viewcache.php?cacheid=$cache_id";
+		
+		# This list if to be extended (opencaching.de, etc.).
+		
+		switch ($lang)
+		{
+			case 'pl':
+				return "<p>Opis <a href='$cache_url'>skrzynki</a> pochodzi z serwisu <a href='$site_url'>$site_url</a>.</p>";
+				break;
+			default:
+				$extra = "<p>This <a href='$cache_url'>geocache</a> description comes from the <a href='$site_url'>$site_url</a> site.</p>";
+				break;
+		}
 	}
 }

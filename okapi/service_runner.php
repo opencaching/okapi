@@ -31,6 +31,7 @@ class OkapiServiceRunner
 		'services/caches/shortcuts/search_and_retrieve',
 		'services/caches/geocache',
 		'services/caches/geocaches',
+		'services/caches/formatters/gpx',
 		'services/users/user',
 		'services/users/users',
 		'services/users/by_usernames',

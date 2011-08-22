@@ -48,13 +48,8 @@
 										var ul = $("<ul></ul>");
 										for (var cache_wpt in response) {
 											var cache = response[cache_wpt];
-											var cache_name = null;
-											for (var lang in cache.name) {
-												cache_name = cache.name[lang]
-												if (lang == 'EN') break;
-											}
 											var li = $("<li><a></a></li>");
-											li.find('a').attr('href', cache.url).text(cache_name);
+											li.find('a').attr('href', cache.url).text(cache.name);
 											ul.append(li);
 										}
 										$('#results').html("<p>Nearest geocaches:</p>");

@@ -24,14 +24,7 @@ class WebService
 		$result = array();
 		$result['site_url'] = $GLOBALS['absolute_server_URI'];
 		$result['okapi_base_url'] = $result['site_url']."okapi/";
-		
-		$matches = null;
-		if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $vars['site_url'], $matches)) {
-			$result['site_name'] = "OpenCaching.".strtoupper($matches[2]);
-		} else {
-			$result['site_name'] = $vars['site_url'];
-		}
-		
+		$result['site_name'] = Okapi::get_normalized_site_name();
 		$result['okapi_revision'] = Okapi::$revision;
 		
 		# The 'totalstats.inc.php' file seems to be written by some kind of a
