@@ -25,6 +25,8 @@ class WebService
 	{
 		$cache_wpt = $request->get_parameter('cache_wpt');
 		if (!$cache_wpt) throw new ParamMissing('cache_wpt');
+		$langpref = $request->get_parameter('langpref');
+		if (!$langpref) $langpref = "en";
 		$fields = $request->get_parameter('fields');
 		if (!$fields) $fields = "wpt|name|location|type|status";
 		
@@ -33,7 +35,7 @@ class WebService
 		
 		$results = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_wpts' => $cache_wpt,
-			'fields' => $fields)));
+			'langpref' => $langpref, 'fields' => $fields)));
 		$result = $results[$cache_wpt];
 		if ($result == null)
 			throw new InvalidParam('cache_wpt', "There is no geocache by this waypoint code.");

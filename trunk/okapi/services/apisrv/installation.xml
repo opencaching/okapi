@@ -21,8 +21,7 @@
 				method URLs,
 			</li>
 			<li>
-				<b>site_name</b> -  a dictionary (language code => plain-text string) of
-				names of the OpenCaching site,
+				<b>site_name</b> - international name of the OpenCaching site,
 			</li>
 			<li><b>okapi_revision</b> - integer, an SVN revision of the OKAPI project
 				installed on this OpenCaching site, <b>or null</b>, when could not

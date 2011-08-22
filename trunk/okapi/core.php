@@ -296,6 +296,7 @@ require_once('datastore.php');
 class OkapiHttpResponse
 {
 	public $content_type = "text/plain; charset=utf-8";
+	public $content_disposition = null;
 	public $body;
 	
 	public function display()
@@ -303,6 +304,8 @@ class OkapiHttpResponse
 		header("HTTP/1.1 200 OK");
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: ".$this->content_type);
+		if ($this->content_disposition)
+			header("Content-Disposition: ".$this->content_disposition);
 		print $this->body;
 	}
 }
@@ -325,6 +328,39 @@ class Okapi
 	public static $data_store;
 	public static $server;
 	public static $revision = null; # This gets replaced in automatically deployed packages
+	
+	/** Returns something like "OpenCaching.PL" or "OpenCaching.DE". */
+	public static function get_normalized_site_name()
+	{
+		$matches = null;
+		if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $GLOBALS['absolute_server_URI'], $matches)) {
+			return "OpenCaching.".strtoupper($matches[2]);
+		} else {
+			return $GLOBALS['absolute_server_URI'];
+		}
+	}
+	
+	/**
+	 * Pick text from $langdict based on language preference $langpref.
+	 * 
+	 * Example:
+	 * pick_best_language(
+	 *   array('pl' => 'X', 'de' => 'Y', 'en' => 'Z'),
+	 *   array('sp', 'de', 'en')
+	 * ) == 'Y'.
+	 * 
+	 * @param array $langdict - assoc array of lang-code => text.
+	 * @param array $langprefs - list of lang codes, in order of preference.
+	 */
+	public static function pick_best_language($langdict, $langprefs)
+	{
+		foreach ($langprefs as $pref)
+			if (isset($langdict[$pref]))
+				return $langdict[$pref];
+		foreach ($langdict as &$text_ref)
+			return $text_ref;
+		return "";
+	}
 	
 	/** Internal. */
 	public static function init_server()

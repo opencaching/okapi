@@ -5,14 +5,22 @@
 		<p>Retrieve information on a single geocache.</p>
 	</desc>
 	<req name='cache_wpt'>Waypoint code of the geocache</req>
+	<opt name='langpref' default='en'>
+		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+		order of preference in which language will be chosen for fields like
+		<b>name</b> and <b>description</b>.</p>
+		<p>(You may also access all available languages with fields
+		<b>names</b>, <b>descriptions</b> etc.)</p>
+	</opt>
 	<opt name='fields' default='wpt|name|location|type|status'>
 		<p>Pipe-separated list of field names which you are interested with.
 		Selected fields will be included in the response.</p>
 		<p>Currently available fields:</p>
 		<ul>
 			<li><b>wpt</b> - Waypoint code of the geocache,</li>
-			<li><b>name</b> - a dictionary (language code => plain-text string) of
-				names of this geocache,</li>
+			<li><b>name</b> - name of the geocache,</li>
+			<li><b>names</b> - a dictionary (language code => plain-text string) of
+				names of the geocache,</li>
 			<li><b>location</b> - location of the cache in the "lat|lon" format
 				(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
 			<li><b>type</b> - cache type,</li>
@@ -32,11 +40,13 @@
 				to have a rating,</li>
 			<li><b>rating_votes</b> - number of votes submitted for the rating of this cache,</li>
 			<li><b>recommendations</b> - number of recommendations for this cache,</li>
+			<li><b>description</b> - HTML string, description of the cache,</li>
 			<li><b>descriptions</b> - a dictionary (language code => HTML string) of cache
 				descriptions,</li>
-			<li><b>hints</b> - a dictionary (language code => plain-text string) of cache
-				hints/spoilers; in general, hints should not be displayed to the user
+			<li><b>hint</b> - plain-text string, cache hints/spoilers; in general, hints should not be displayed to the user
 				unless user specifically asks for them,</li>
+			<li><b>hints</b> - a dictionary (language code => plain-text string) of cache
+				hints/spoilers,</li>
 			<li>
 				<p><b>images</b> - list of dictionaries, each dictionary represents one
 				image saved along the cache description; each dictionary has the
@@ -46,8 +56,7 @@
 					<li><b>thumb_url</b> - an URL of a small (thumb) version of the image
 						<b>or null</b> when no thumb is available (e.g. there are no thumbs
 						for spoiler images),</li>
-					<li><b>caption</b> - a dictionary (language code => plain-text string)
-						of image captions,</li>
+					<li><b>caption</b> - plain-text string, caption of the image,</li>
 					<li><b>is_spoiler</b> - boolean, if <b>true</b> then the image is
 						a spoiler image and should not be displayed to the user unless
 						the user explicitly asks for it.</li>
