@@ -32,6 +32,7 @@ class OkapiServiceRunner
 		'services/caches/geocache',
 		'services/caches/geocaches',
 		'services/caches/formatters/gpx',
+		'services/logs/logs',
 		'services/users/user',
 		'services/users/users',
 		'services/users/by_usernames',
@@ -89,7 +90,7 @@ class OkapiServiceRunner
 	public static function call($service_name, OkapiRequest $request)
 	{
 		if (!self::exists($service_name))
-			throw new Exception();
+			throw new Exception("Method does not exist: '$service_name'");
 		
 		$options = self::options($service_name);
 		if ($options['min_auth_level'] >= 2 && $request->consumer == null)

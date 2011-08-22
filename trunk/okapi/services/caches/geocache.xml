@@ -18,6 +18,8 @@
 		<p>Currently available fields:</p>
 		<ul>
 			<li><b>wpt</b> - Waypoint code of the geocache,</li>
+			<li><b>id</b> - internal ID of the cache (you won't need this, use
+				the "wpt" as the key),</li>
 			<li><b>name</b> - name of the geocache,</li>
 			<li><b>names</b> - a dictionary (language code => plain-text string) of
 				names of the geocache,</li>
