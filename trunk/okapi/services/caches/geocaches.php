@@ -19,9 +19,9 @@ class WebService
 	}
 	
 	public static $valid_field_names = array('wpt', 'name', 'location', 'type', 'status',
-		'url', 'owner_id', 'founds', 'notfounds', 'last_found', 'size', 'difficulty', 'terrain',
+		'url', 'owner_id', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'descriptions', 'hints', 'images',
-		'last_modified', 'date_created', 'date_hidden');
+		'last_found', 'last_modified', 'date_created', 'date_hidden');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -64,7 +64,6 @@ class WebService
 					case 'owner_id': $entry['owner_id'] = $row['user_id']; break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
-					case 'last_found': $entry['last_found'] = $row['last_found']; break;
 					case 'size': $entry['size'] = ($row['size'] < 7) ? $row['size'] - 1 : null; break;
 					case 'difficulty': $entry['difficulty'] = round($row['difficulty'] / 2.0, 1); break;
 					case 'terrain': $entry['terrain'] = round($row['terrain'] / 2.0, 1); break;
@@ -81,9 +80,10 @@ class WebService
 					case 'descriptions': /* handled separately */ break;
 					case 'hints': /* handled separately */ break;
 					case 'images': /* handled separately */ break;
-					case 'last_modified': $entry['last_modified'] = $row['last_modified']; break;
-					case 'date_created': $entry['date_created'] = $row['date_created']; break;
-					case 'date_hidden': $entry['date_hidden'] = $row['date_hidden']; break;
+					case 'last_found': $entry['last_found'] = $row['last_found'] ? date('c', strtotime($row['last_found'])) : null; break;
+					case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
+					case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
+					case 'date_hidden': $entry['date_hidden'] = date('c', strtotime($row['date_hidden'])); break;
 					default: throw new Exception("Missing field case: ".$field);
 				}
 			}

@@ -120,7 +120,6 @@ class OkapiDocViewer
 		elseif ($path == 'signup.html')
 		{
 			$vars['site_url'] = $GLOBALS['absolute_server_URI'];
-			$vars['site_url'] = "http://opencaching.pl/";
 			$matches = null;
 			if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $vars['site_url'], $matches)) {
 				$vars['site_name'] = "OpenCaching.".strtoupper($matches[2]);

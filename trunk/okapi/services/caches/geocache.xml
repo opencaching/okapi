@@ -21,8 +21,6 @@
 			<li><b>owner_id</b> - geocache owner's user ID,</li>
 			<li><b>founds</b> - number of times the geocache was successfully found,</li>
 			<li><b>notfounds</b> - number of times the geocache was unfound,</li>
-			<li><b>last_found</b> - datetime string, the time when the geocache
-				was last found,</li>
 			<li><b>size</b> - integer (one of: 1, 2, 3, 4, 5), size rating of the container, or
 				<b>null</b> if geocache does not have a container,</li>
 			<li><b>difficulty</b> - float (one of: 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0),
@@ -55,11 +53,13 @@
 						the user explicitly asks for it.</li>
 				</ul>
 			</li>
-			<li><b>last_modified</b> - datetime string, represents the time when the
+			<li><b>last_found</b> - date and time (ISO 8601) when the
+				geocache was last found <b>or null</b> when it hasn't been yet found,</li>
+			<li><b>last_modified</b> - date and time (ISO 8601) when the
 				geocache was last modified (changed status, attributes, etc.),</li>
-			<li><b>date_created</b> - datetime string, represents the time when the
+			<li><b>date_created</b> - date and time (ISO 8601) when the
 				geocache was initially created,</li>
-			<li><b>date_hidden</b> - datetime string, represents the time when the
+			<li><b>date_hidden</b> - date and time (ISO 8601) when the
 				geocache was first hidden.</li>
 		</ul>
 	</opt>

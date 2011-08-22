@@ -145,8 +145,9 @@ class SearchAssistant
 		
 		if ($tmp = $request->get_parameter('modified_since'))
 		{
-			if (Okapi::is_valid_datetime($tmp))
-				$where_conds[] = "caches.last_modified > '".mysql_real_escape_string($tmp)."'";
+			$timestamp = strtotime($tmp);
+			if ($timestamp)
+				$where_conds[] = "unix_timestamp(caches.last_modified) > '".mysql_real_escape_string($timestamp)."'";
 			else
 				throw new InvalidParam('modified_since', "'$tmp' is not in a valid format or is not a valid date.");
 		}
