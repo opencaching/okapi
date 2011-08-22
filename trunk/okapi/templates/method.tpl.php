@@ -83,7 +83,9 @@ $m = $vars['method'];
 								<?= $m['returns'] ?>
 							</td></tr>
 						</table>
-						<div class='issue-comments' issue_id='<?= $m['issue_id'] ?>'></div>
+						<? if ($m['issue_id']) { ?>
+							<div class='issue-comments' issue_id='<?= $m['issue_id'] ?>'></div>
+						<? } ?>
 					</td>
 				</tr></table>
 			</div>

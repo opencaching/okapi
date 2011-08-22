@@ -1,0 +1,28 @@
+<xml>
+	<brief>Submit a log entry</brief>
+	<issue-id>42</issue-id>
+	<desc>
+		<p>Submit a log entry for the geocache. Please note, that you won't be
+		able to use this method until you learn to handle OAuth.</p>
+	</desc>
+	<req name='cache_wpt'>
+		<p>Waypoint code of the geocache.</p>
+	</req>
+	<req name='logtype'>
+		<p>Type of an entry. This should be one of: <i>found</i>, <i>not_found</i>
+		or <i>comment</i>.</p>
+	</req>
+	<req name='comment'>
+		<p>Text to be submitted with the log entry. This should be plain-text (no HTML).</p>
+	</req>
+	<common-format-params/>
+	<returns>
+		<p>A dictionary of the following structure:</p>
+		<ul>
+			<li><b>success</b> - true, if the log entry was submitted successfully,</li>
+			<li><b>message</b> - plain-text string, a message which acknowledges success
+				or describes an error (some comments may be rejected),</li>
+			<li><b>log_id</b> - ID of the log entry (you probably won't be needing this).</li>
+		</ul>
+	</returns>
+</xml>
