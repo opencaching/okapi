@@ -143,7 +143,7 @@ class OkapiDataStore extends OAuthDataStore
 		");
 		$row = sql_fetch_assoc($rs);
 		mysql_free_result($rs);
-		if ($row !== null)
+		if ($row)
 		{
 			# Use existing Access Token
 			
