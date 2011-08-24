@@ -28,7 +28,7 @@ class WebService
 		$usernames = explode("|", $usernames);
 		if (count($usernames) > 500)
 			throw new InvalidParam('usernames', "Maximum allowed number of referenced users ".
-				"is 500. You provided ".count($usernames)." user IDs.");
+				"is 500. You provided ".count($usernames)." usernames.");
 		$fields = $request->get_parameter('fields');
 		if (!$fields)
 			throw new ParamMissing('fields');
@@ -37,31 +37,31 @@ class WebService
 		# method does this (it will raise a proper exception on invalid values).
 		
 		$rs = sql("
-			select username, user_id
+			select username, uuid
 			from user
 			where username in ('".implode("','", array_map('mysql_real_escape_string', $usernames))."')
 		");
-		$username2userid = array();
+		$username2useruuid = array();
 		while ($row = sql_fetch_assoc($rs))
 		{
-			$username2userid[$row['username']] = $row['user_id'];
+			$username2useruuid[$row['username']] = $row['uuid'];
 		}
 		mysql_free_result($rs);
 		
-		# Retrieve data on given user_ids.
+		# Retrieve data on given user_uuids.
 		$id_results = OkapiServiceRunner::call('services/users/users', new OkapiInternalRequest(
-			$request->consumer, $request->token, array('user_ids' => implode("|", array_values($username2userid)),
+			$request->consumer, $request->token, array('user_uuids' => implode("|", array_values($username2useruuid)),
 			'fields' => $fields)));
 		
-		# Map user_ids to usernames. Also check which usernames were not found
+		# Map user_uuids to usernames. Also check which usernames were not found
 		# and mark them with null.
 		$results = array();
 		foreach ($usernames as $username)
 		{
-			if (!isset($username2userid[$username]))
+			if (!isset($username2useruuid[$username]))
 				$results[$username] = null;
 			else
-				$results[$username] = $id_results[$username2userid[$username]];
+				$results[$username] = $id_results[$username2useruuid[$username]];
 		}
 		
 		return Okapi::formatted_response($request, $results);

@@ -45,11 +45,16 @@ class WebService
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
 		$rs = sql("
 			select
-				cache_id, user_id, name, longitude, latitude, last_modified,
-				date_created, type, status, date_hidden, founds, notfounds, last_found,
-				size, difficulty, terrain, wp_oc, topratings, votes, score
-			from caches
-			where wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+				c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
+				c.date_created, c.type, c.status, c.date_hidden, c.founds, c.notfounds, c.last_found,
+				c.size, c.difficulty, c.terrain, c.wp_oc, c.topratings, c.votes, c.score,
+				u.uuid as user_uuid, u.username, u.user_id
+			from
+				caches c,
+				user u
+			where
+				wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+				and c.user_id = u.user_id
 		");
 		$results = array();
 		$cacheid2wptcode = array();
@@ -68,7 +73,13 @@ class WebService
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
 					case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
 					case 'url': $entry['url'] = $GLOBALS['absolute_server_URI']."viewcache.php?cacheid=".$row['cache_id']; break;
-					case 'owner': $entry['owner'] = array('id' => $row['user_id']); /* extended below */ break;
+					case 'owner':
+						$entry['owner'] = array(
+							'uuid' => $row['user_uuid'],
+							'username' => $row['username'],
+							'profile_url' => $GLOBALS['absolute_server_URI']."viewprofile?userid=".$row['user_id']
+						);
+						break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
 					case 'size': $entry['size'] = ($row['size'] < 7) ? $row['size'] - 1 : null; break;
@@ -101,20 +112,6 @@ class WebService
 			$results[$row['wp_oc']] = $entry;
 		}
 		mysql_free_result($rs);
-		
-		# Extending 'owner' fields with usernames etc. (currently there are IDs only).
-		
-		if (in_array('owner', $fields))
-		{
-			$user_ids = array();
-			foreach ($results as &$result_ref)
-				$user_ids[] = $result_ref['owner']['id'];
-			$users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
-				$request->consumer, null, array('user_ids' => implode("|", $user_ids),
-				'fields' => 'id|username|profile_url')));
-			foreach ($results as &$result_ref)
-				$result_ref['owner'] = $users[$result_ref['owner']['id']];
-		}
 		
 		# Descriptions and hints.
 		
@@ -215,8 +212,8 @@ class WebService
 			# Now retrieve text and join.
 			
 			$rs = sql("
-				select cl.cache_id, cl.id, cl.type, unix_timestamp(cl.date) as date, cl.text,
-					u.user_id, u.username
+				select cl.cache_id, cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
+					u.uuid as user_uuid, u.username, u.user_id
 				from cache_logs cl, user u
 				where
 					cl.id in ('".implode("','", array_map('mysql_real_escape_string', $logids))."')
@@ -228,9 +225,13 @@ class WebService
 			while ($row = sql_fetch_assoc($rs))
 			{
 				$results[$cacheid2wptcode[$row['cache_id']]]['latest_logs'][] = array(
-					'id' => $row['id'],
+					'uuid' => $row['uuid'],
 					'date' => date('c', $row['date']),
-					'user' => array('user_id' => $row['user_id'], 'username' => $row['username']),
+					'user' => array(
+						'uuid' => $row['user_uuid'],
+						'username' => $row['username'],
+						'profile_url' => $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id'],
+					),
 					'type' => Okapi::logtypeid2name($row['type']),
 					'comment' => $row['text']
 				);

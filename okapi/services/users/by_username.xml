@@ -5,7 +5,7 @@
 		<p>Retrieve information on a single user, referencing him by his username.</p>
 		<p><b>IMPORTANT:</b> user IDs don't change, but usernames <b>may</b> change.</p>
 		<p>Usually, you'll want to run this method only once, in order to get the IDs
-		of referenced users. You should not keep usernames in your database, it is
+		of referenced users. You should not store usernames in your database, it is
 		much safer to reference them by their IDs.</p>
 	</desc>
 	<req name='username'>Name of the user.</req>

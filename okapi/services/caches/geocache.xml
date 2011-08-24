@@ -50,7 +50,7 @@
 			<li>
 				<p><b>owner</b> - dictionary of:</p>
 				<ul>
-					<li><b>user_id</b> - geocache owner's user ID,</li>
+					<li><b>user_uuid</b> - geocache owner's user ID,</li>
 					<li><b>username</b> - name of the user,</li>
 				</ul>
 			</li>
