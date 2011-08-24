@@ -38,7 +38,9 @@ class OkapiServiceRunner
 		'services/users/user',
 		'services/users/users',
 		'services/users/by_usernames',
-		'services/users/by_username'
+		'services/users/by_username',
+		'services/users/by_internal_id',
+		'services/users/by_internal_ids'
 	);
 	
 	/** Check if method exists. */

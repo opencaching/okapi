@@ -1,5 +1,5 @@
 <xml>
-	<brief>Get information on this OKAPI installation</brief>
+	<brief>Get some basic stats about the site</brief>
 	<issue-id>43</issue-id>
 	<desc>
 		Retrieve some basic statistics about this OKAPI installation.
