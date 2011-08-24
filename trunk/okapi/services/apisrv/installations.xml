@@ -24,6 +24,7 @@
 				that); this value is to be used as a prefix when constructing service
 				method URLs.
 			</li>
+			<!-- include site_name -->
 		</ul>
 	</returns>
 </xml>
