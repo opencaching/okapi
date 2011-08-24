@@ -27,7 +27,7 @@ class WebService
 		# Check if code exists and retrieve cache ID (this will throw
 		# a proper exception on invalid code).
 		$cache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
-			$request->consumer, null, array('cache_code' => $cache_code, 'fields' => 'id')));
+			$request->consumer, null, array('cache_code' => $cache_code, 'fields' => 'internal_id')));
 		
 		# Cache exists. Retrieving logs.
 			
@@ -36,7 +36,7 @@ class WebService
 				u.user_id, u.username
 			from cache_logs cl, user u
 			where
-				cl.cache_id = '".mysql_real_escape_string($cache['id'])."'
+				cl.cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 				and cl.deleted = 0
 				and cl.user_id = u.user_id
 			order by cl.id desc

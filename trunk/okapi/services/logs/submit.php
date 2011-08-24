@@ -34,14 +34,14 @@ class WebService
 		# a proper exception on invalid code).
 		
 		$cache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
-			$request->consumer, null, array('cache_code' => $cache_code, 'fields' => 'id')));
+			$request->consumer, null, array('cache_code' => $cache_code, 'fields' => 'internal_id')));
 		
 		# Add a log entry.
 		
 		sql("
 			insert into cache_logs (cache_id, user_id, type, date, text)
 			values (
-				'".mysql_real_escape_string($cache['id'])."',
+				'".mysql_real_escape_string($cache['internal_id'])."',
 				'".mysql_real_escape_string($request->token->user_id)."',
 				'".mysql_real_escape_string($logtype_id)."',
 				now(),
@@ -50,7 +50,7 @@ class WebService
 		");
 		$result = array(
 			'success' => true,
-			'message' => "You're cache log entry was posted successfully.",
+			'message' => "Your cache log entry was posted successfully.",
 			'log_id' => sql_insert_id(),
 		);
 		return Okapi::formatted_response($request, $result);

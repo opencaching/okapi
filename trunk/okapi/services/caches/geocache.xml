@@ -18,8 +18,6 @@
 		<p>Currently available fields:</p>
 		<ul>
 			<li><b>code</b> - unique code of the geocache,</li>
-			<li><b>id</b> - internal ID of the cache (you won't need this, use
-				the "code" as the key),</li> <!-- WRTODO -->
 			<li><b>name</b> - name of the geocache,</li>
 			<li><b>names</b> - a dictionary (language code => plain-text string) of
 				names of the geocache,</li>
@@ -84,7 +82,12 @@
 			<li><b>date_created</b> - date and time (ISO 8601) when the
 				geocache was initially created,</li>
 			<li><b>date_hidden</b> - date and time (ISO 8601) when the
-				geocache was first hidden.</li>
+				geocache was first hidden,</li>
+			<!-- Note: I think cache uuids should not be ever revealed to the public.
+			We have already one universally unique key - the cache code. It is uncommon
+			to have multiple universally unique keys. -->
+			<li><b>internal_id</b> - internal ID of the cache (do not use this,
+				use the "code" as an identifier).</li>
 		</ul>
 	</opt>
 	<common-format-params/>
