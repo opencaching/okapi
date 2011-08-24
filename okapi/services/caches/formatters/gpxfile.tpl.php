@@ -29,7 +29,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 			<sym>Geocache</sym>
 			<type>Geocache|<?= $vars['cache_GPX_types'][$c['type']] ?></type>
 			<? if ($vars['ns_ground']) { /* Does user want us to include Groundspeak <cache> element? */ ?>
-				<cache archived="<?= ($c['status'] == 'archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'ready') ? "True" : "False" ?>" id="" xmlns="http://www.groundspeak.com/cache/1/0">
+				<cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="" xmlns="http://www.groundspeak.com/cache/1/0">
 					<name><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></name>
 					<placed_by><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></placed_by>
 					<owner id=""><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></owner>
