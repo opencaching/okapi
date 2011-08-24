@@ -181,8 +181,12 @@ class ParamMissing extends BadRequest
 /** Common type of BadRequest: Parameter has invalid value. */
 class InvalidParam extends BadRequest
 {
+	/** What was wrong about the param? */
+	public $whats_wrong_about_it;
+	
 	public function __construct($paramName, $whats_wrong_about_it = "", $code = 0)
 	{
+		$this->whats_wrong_about_it = $whats_wrong_about_it;
 		if ($whats_wrong_about_it)
 			parent::__construct("Parameter '$paramName' has invalid value: ".$whats_wrong_about_it, $code);
 		else
@@ -500,7 +504,7 @@ class Okapi
 		'Available' => 1, 'Temporarily unavailable' => 2, 'Archived' => 3
 	);
 	
-	/** Ex. 'Traditional' => 2. For unknown names throw an Exception. */
+	/** E.g. 'Traditional' => 2. For unknown names throw an Exception. */
 	public static function cache_type_name2id($name)
 	{
 		if (isset(self::$cache_types[$name]))
@@ -510,7 +514,7 @@ class Okapi
 			"of non-primary type.");
 	}
 	
-	/** Ex. 2 => 'Traditional'. For unknown ids returns "Other". */
+	/** E.g. 2 => 'Traditional'. For unknown ids returns "Other". */
 	public static function cache_type_id2name($id)
 	{
 		static $reversed = null;
@@ -525,7 +529,7 @@ class Okapi
 		return "Other";
 	}
 	
-	/** Ex. 'Available' => 1. For unknown names throws an Exception. */
+	/** E.g. 'Available' => 1. For unknown names throws an Exception. */
 	public static function cache_status_name2id($name)
 	{
 		if (isset(self::$cache_statuses[$name]))
@@ -533,7 +537,7 @@ class Okapi
 		throw new Exception("Method cache_status_name2id called with invalid name '$name'.");
 	}
 	
-	/** Ex. 1 => 'Available'. For unknown ids returns 'Archived'. */
+	/** E.g. 1 => 'Available'. For unknown ids returns 'Archived'. */
 	public static function cache_status_id2name($id)
 	{
 		static $reversed = null;

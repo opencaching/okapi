@@ -2,9 +2,12 @@
 
 namespace okapi\services\caches\search;
 
+use okapi\Okapi;
+use okapi\OkapiInternalRequest;
+use okapi\OkapiServiceRunner;
 use okapi\OkapiRequest;
 use okapi\InvalidParam;
-use okapi\Okapi;
+use Exception;
 
 class SearchAssistant
 {
@@ -42,7 +45,7 @@ class SearchAssistant
 					$id = Okapi::cache_type_name2id($name);
 					$types[] = $id;
 				}
-				catch (Excetion $e)
+				catch (Exception $e)
 				{
 					throw new InvalidParam('type', "'$name' is not a valid cache type.");
 				}
@@ -61,8 +64,7 @@ class SearchAssistant
 		{
 			try
 			{
-				$id = Okapi::cache_status_name2id($name);
-				$codes[] = $id;
+				$codes[] = Okapi::cache_status_name2id($name);
 			}
 			catch (Exception $e)
 			{
@@ -72,12 +74,24 @@ class SearchAssistant
 		$where_conds[] = "caches.status in ('".implode(",", array_map('mysql_real_escape_string', $codes))."')";
 		
 		#
-		# owner_id
+		# owner_uuid
 		#
 		
-		if ($tmp = $request->get_parameter('owner_id'))
+		if ($tmp = $request->get_parameter('owner_uuid'))
 		{
-			$where_conds[] = "caches.user_id in ('".implode("','", array_map('mysql_real_escape_string', explode("|", $tmp)))."')";
+			try
+			{
+				$users = OkapiServiceRunner::call("serivces/users/users", new OkapiInternalRequest(
+					$request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
+			}
+			catch (InvalidParam $e) # invalid uuid
+			{
+				throw new InvalidParam('owner_uuid', $e->whats_wrong_about_it);
+			}
+			$user_ids = array();
+			foreach ($users as $user)
+				$user_ids[] = $user['internal_id'];
+			$where_conds[] = "caches.user_id in ('".implode("','", array_map('mysql_real_escape_string', $user_ids))."')";
 		}
 		
 		#

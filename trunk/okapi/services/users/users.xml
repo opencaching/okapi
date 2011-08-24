@@ -5,7 +5,7 @@
 		<p>This method works like the services/users/user method, but works
 		with multiple users (instead of only one).</p>
 	</desc>
-	<req name='user_ids'>
+	<req name='user_uuids'>
 		<p>Pipe-separated list of user IDs. No more than 500 IDs are allowed.</p>
 	</req>
 	<req name='fields'>

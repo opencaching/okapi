@@ -32,7 +32,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 				<cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="" xmlns="http://www.groundspeak.com/cache/1/0">
 					<name><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></name>
 					<placed_by><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></placed_by>
-					<owner id=""><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></owner>
+					<owner id="<?= $c['owner']['uuid'] ?>"><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></owner>
 					<type><?= $vars['cache_GPX_types'][$c['type']] ?></type>
 					<container><?= $vars['cache_GPX_sizes'][$c['size']] ?></container>
 					<difficulty><?= $c['difficulty'] ?></difficulty>
@@ -46,10 +46,10 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 					<? if ($vars['latest_logs']) { /* Does user want us to include latest log entries? */ ?>
 						<logs>
 							<? foreach ($c['latest_logs'] as $log) { ?>
-								<log id="">
+								<log id="<?= $log['uuid'] ?>">
 									<date><?= $log['date'] ?></date>
 									<type><?= $vars['GPX_log_types'][$log['type']] ?></type>
-									<finder id=""><?= $log['user']['username'] ?></finder>
+									<finder id="<?= $log['user']['uuid'] ?>"><?= $log['user']['username'] ?></finder>
 									<text encoded="False"><?= htmlspecialchars($log['comment'], ENT_COMPAT, 'UTF-8') ?></text>
 								</log>
 							<? } ?>
@@ -66,7 +66,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 			<? if ($vars['ns_ox']) { /* Does user want us to include Garmin's <opencaching> element? */ ?>
 				<opencaching xmlns="http://www.opencaching.com/xmlschemas/opencaching/1/0">
 					<ratings>
-						<awesomeness><?= $c['rating'] ?></awesomeness>
+						<? if ($c['rating'] !== null) { ?><awesomeness><?= $c['rating'] ?></awesomeness><? } ?>
 						<difficulty><?= $c['difficulty'] ?></difficulty>
 						<? if ($c['size'] !== null) { ?><size><?= $c['size'] ?></size><? } ?>
 						<terrain><?= $c['terrain'] ?></terrain>

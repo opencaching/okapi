@@ -21,7 +21,7 @@
 		statuses will included in the response. For a list of cache status codes, see
 		services/caches/geocache method.</p>
 	</opt>
-	<opt name='owner_id'>
+	<opt name='owner_uuid'>
 		<p>Pipe-separated list of user IDs. If given, the list of returned caches
 		will be limited to those owned by the given users.</p>
 		<p><b>Notice:</b> User ID and Username are two different things!</p>

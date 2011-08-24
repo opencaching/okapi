@@ -32,8 +32,8 @@ class WebService
 		# Cache exists. Retrieving logs.
 			
 		$rs = sql("
-			select cl.id, cl.type, unix_timestamp(cl.date) as date, cl.text,
-				u.user_id, u.username
+			select cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
+				u.uuid as user_uuid, u.username, u.user_id
 			from cache_logs cl, user u
 			where
 				cl.cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
@@ -45,9 +45,13 @@ class WebService
 		while ($row = sql_fetch_assoc($rs))
 		{
 			$results[] = array(
-				'id' => $row['id'],
+				'uuid' => $row['uuid'],
 				'date' => date('c', $row['date']),
-				'user' => array('user_id' => $row['user_id'], 'username' => $row['username']),
+				'user' => array(
+					'uuid' => $row['user_uuid'],
+					'username' => $row['username'],
+					'profile_url' => $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id'],
+				),
 				'type' => Okapi::logtypeid2name($row['type']),
 				'comment' => $row['text']
 			);
