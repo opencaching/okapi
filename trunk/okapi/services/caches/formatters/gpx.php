@@ -23,15 +23,15 @@ class WebService
 
 	/** Maps OKAPI cache type codes to Geocaching.com GPX cache types. */
 	public static $cache_GPX_types = array(
-		'traditional' => 'Traditional Cache',
-		'multi' => 'Multi-Cache',
-		'quiz' => 'Multi-cache',
-		'event' => 'Event Cache',
-		'virtual' => 'Virtual Cache',
-		'webcam' => 'Webcam Cache',
-		'moving' => 'Multi-cache',
-		'own' => 'Unknown Cache',
-		'other' => 'Unknown Cache'
+		'Traditional' => 'Traditional Cache',
+		'Multi' => 'Multi-Cache',
+		'Quiz' => 'Multi-Cache',
+		'Event' => 'Event Cache',
+		'Virtual' => 'Virtual Cache',
+		'Webcam' => 'Webcam Cache',
+		'Moving' => 'Multi-Cache',
+		'Own' => 'Unknown Cache',
+		'Other' => 'Unknown Cache'
 	);
 	
 	/** Maps OpenCaching cache sizes Geocaching.com size codes. */
