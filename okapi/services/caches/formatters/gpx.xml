@@ -3,8 +3,8 @@
 	<issue-id>40</issue-id>
 	<desc>
 		<p>Produces a standards-compliant Geocaching GPX file.</p>
-		<p>Unlike the services/caches/geocaches method, GPX file cannot
-		contain names and descriptions in multiple languages. This method
+		<p>Unlike the services/caches/geocaches method responses, GPX files cannot
+		contain names and descriptions in separate multiple languages. This method
 		will attempt to choose the best language based on your preference
 		(see <b>langpref</b> argument).</p>
 	</desc>

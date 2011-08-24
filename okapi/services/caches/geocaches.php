@@ -20,11 +20,11 @@ class WebService
 		);
 	}
 	
-	public static $valid_field_names = array('code', 'id', 'name', 'names', 'location', 'type',
+	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'description', 'descriptions', 'hint',
 		'hints', 'images', 'latest_logs', 'last_found', 'last_modified', 'date_created',
-		'date_hidden');
+		'date_hidden', 'internal_id');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -62,7 +62,6 @@ class WebService
 				switch ($field)
 				{
 					case 'code': $entry['code'] = $row['wp_oc']; break;
-					case 'id': $entry['id'] = $row['cache_id']; break;
 					case 'name': $entry['name'] = $row['name']; break;
 					case 'names': $entry['name'] = array('pl' => $row['name']); break; // for the future
 					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
@@ -95,6 +94,7 @@ class WebService
 					case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
 					case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
 					case 'date_hidden': $entry['date_hidden'] = date('c', strtotime($row['date_hidden'])); break;
+					case 'internal_id': $entry['internal_id'] = $row['cache_id']; break;
 					default: throw new Exception("Missing field case: ".$field);
 				}
 			}
