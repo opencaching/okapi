@@ -20,7 +20,7 @@ class WebService
 		);
 	}
 	
-	public static $valid_field_names = array('wpt', 'id', 'name', 'names', 'location', 'type',
+	public static $valid_field_names = array('code', 'id', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'description', 'descriptions', 'hint',
 		'hints', 'images', 'latest_logs', 'last_found', 'last_modified', 'date_created',
@@ -28,17 +28,17 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
-		$cache_wpts = $request->get_parameter('cache_wpts');
-		if (!$cache_wpts) throw new ParamMissing('cache_wpts');
-		$cache_wpts = explode("|", $cache_wpts);
-		if (count($cache_wpts) > 500)
-			throw new InvalidParam('cache_wpts', "Maximum allowed number of referenced ".
-				"caches is 500. You provided ".count($cache_wpts)." waypoint codes.");
+		$cache_codes = $request->get_parameter('cache_codes');
+		if (!$cache_codes) throw new ParamMissing('cache_codes');
+		$cache_codes = explode("|", $cache_codes);
+		if (count($cache_codes) > 500)
+			throw new InvalidParam('cache_codes', "Maximum allowed number of referenced ".
+				"caches is 500. You provided ".count($cache_codes)." cache codes.");
 		$langpref = $request->get_parameter('langpref');
 		if (!$langpref) $langpref = "en";
 		$langpref = explode("|", $langpref);
 		$fields = $request->get_parameter('fields');
-		if (!$fields) $fields = "wpt|name|location|type|status";
+		if (!$fields) $fields = "code|name|location|type|status";
 		$fields = explode("|", $fields);
 		foreach ($fields as $field)
 			if (!in_array($field, self::$valid_field_names))
@@ -49,7 +49,7 @@ class WebService
 				date_created, type, status, date_hidden, founds, notfounds, last_found,
 				size, difficulty, terrain, wp_oc, topratings, votes, score
 			from caches
-			where wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_wpts))."')
+			where wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
 		");
 		$results = array();
 		$cacheid2wptcode = array();
@@ -61,7 +61,7 @@ class WebService
 			{
 				switch ($field)
 				{
-					case 'wpt': $entry['wpt'] = $row['wp_oc']; break;
+					case 'code': $entry['code'] = $row['wp_oc']; break;
 					case 'id': $entry['id'] = $row['cache_id']; break;
 					case 'name': $entry['name'] = $row['name']; break;
 					case 'names': $entry['name'] = array('pl' => $row['name']); break; // for the future
@@ -138,13 +138,13 @@ class WebService
 			");
 			while ($row = sql_fetch_assoc($rs))
 			{
-				$cache_wpt = $cacheid2wptcode[$row['cache_id']];
+				$cache_code = $cacheid2wptcode[$row['cache_id']];
 				// strtolower - ISO 639-1 codes are lowercase
 				if ($row['desc'])
-					$results[$cache_wpt]['descriptions'][strtolower($row['language'])] = $row['desc'].
+					$results[$cache_code]['descriptions'][strtolower($row['language'])] = $row['desc'].
 						"\n".self::get_cache_attribution_note($row['cache_id'], strtolower($row['language']));
 				if ($row['hint'])
-					$results[$cache_wpt]['hints'][strtolower($row['language'])] = $row['hint'];
+					$results[$cache_code]['hints'][strtolower($row['language'])] = $row['hint'];
 			}
 			foreach ($results as &$result_ref)
 			{
@@ -175,8 +175,8 @@ class WebService
 			");
 			while ($row = sql_fetch_assoc($rs))
 			{
-				$cache_wpt = $cacheid2wptcode[$row['object_id']];
-				$results[$cache_wpt]['images'][] = array(
+				$cache_code = $cacheid2wptcode[$row['object_id']];
+				$results[$cache_code]['images'][] = array(
 					'url' => $row['url'],
 					'thumb_url' => $row['thumb_url'] ? $row['thumb_url'] : null,
 					'caption' => $row['title'],
@@ -237,10 +237,10 @@ class WebService
 			}
 		}
 		
-		# Check which waypoint codes were not found and mark them with null.
-		foreach ($cache_wpts as $cache_wpt)
-			if (!isset($results[$cache_wpt]))
-				$results[$cache_wpt] = null;
+		# Check which cache codes were not found and mark them with null.
+		foreach ($cache_codes as $cache_code)
+			if (!isset($results[$cache_code]))
+				$results[$cache_code] = null;
 		
 		return Okapi::formatted_response($request, $results);
 	}

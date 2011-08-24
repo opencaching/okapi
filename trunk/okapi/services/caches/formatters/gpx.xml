@@ -8,9 +8,9 @@
 		will attempt to choose the best language based on your preference
 		(see <b>langpref</b> argument).</p>
 	</desc>
-	<req name='cache_wpts'>
-		<p>Pipe-separated list of cache waypoint codes. These represent the
-		geocaches you are interested in. No more than 500 codes are allowed.</p>
+	<req name='cache_codes'>
+		<p>Pipe-separated list of cache codes which you are interested in.
+		No more than 500 codes are allowed.</p>
 	</req>
 	<opt name='langpref' default='en'>
 		Pipe-separated list of ISO 639-1 language codes. This indicates the

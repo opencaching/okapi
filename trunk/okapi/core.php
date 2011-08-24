@@ -404,9 +404,9 @@ class Okapi
 		$sample_cache = OkapiServiceRunner::call("services/caches/search/all",
 			new OkapiInternalRequest($consumer, null, array('limit', 1)));
 		if (count($sample_cache['results']) > 0)
-			$sample_cache_wpt = $sample_cache['results'][0];
+			$sample_cache_code = $sample_cache['results'][0];
 		else
-			$sample_cache_wpt = "CACHE_WAYPOINT";
+			$sample_cache_code = "CACHECODE";
 		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
 		mail($email, "Your OKAPI Consumer Key",
 			"This is the key-pair we've generated for your application:\n\n".
@@ -415,7 +415,7 @@ class Okapi
 			"Note: Consumer Secret is needed only when you intend to use OAuth.\n".
 			"You don't need Consumer Secret for Level 1 Authentication.\n\n".
 			"Now you may easily access Level 1 methods of OKAPI! For example:\n".
-			$GLOBALS['absolute_server_URI']."okapi/services/caches/geocache?cache_wpt=$sample_cache_wpt&consumer_key=$consumer->key\n\n".
+			$GLOBALS['absolute_server_URI']."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n".
 			"Have fun!",
 			"Content-Type: text/plain; charset=utf-8\n".
 			"From: OKAPI <$sender_email>\n".

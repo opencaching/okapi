@@ -5,8 +5,8 @@
 		<p>This method works like the services/caches/geocache method, but works
 		with multiple geocaches (instead of only one).</p>
 	</desc>
-	<req name='cache_wpts'>
-		<p>Pipe-separated list of cache waypoint codes. These represent the
+	<req name='cache_codes'>
+		<p>Pipe-separated list of cache cache codes. These represent the
 		geocaches you are interested in. No more than 500 codes are allowed.</p>
 	</req>
 	<opt name='langpref' default='en'>
@@ -16,7 +16,7 @@
 		<p>(You may also access all available languages with fields
 		<b>names</b>, <b>descriptions</b> etc.)</p>
 	</opt>
-	<opt name='fields' default='wpt|name|location|type|status'>
+	<opt name='fields' default='code|name|location|type|status'>
 		<p>Same as in the services/caches/geocache method. Pipe-separated list
 		of field names which you are interested with.
 		See services/caches/geocache method for a list available values.</p>
@@ -25,7 +25,7 @@
 	<returns>
 		<p>A dictionary. Cache codes you provide will be mapped to dictionary keys,
 		and each value will be a dictionary of fields you have selected.</p>
-		<p>For example, for <i>geocaches?cache_wpts=OP3D96|OC124&amp;fields=type</i>
+		<p>For example, for <i>geocaches?cache_codes=OP3D96|OC124&amp;fields=type</i>
 		query, the result might look something link this:</p>
 		<pre>{"OP3D96": {"type": "traditional"}, "OC124": null}</pre>
 		<p>Value of <b>null</b> means that the given cache haven't been found.

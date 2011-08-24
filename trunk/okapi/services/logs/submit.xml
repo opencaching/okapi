@@ -5,8 +5,8 @@
 		<p>Submit a log entry for the geocache. Please note, that you won't be
 		able to use this method until you learn to handle OAuth.</p>
 	</desc>
-	<req name='cache_wpt'>
-		<p>Waypoint code of the geocache.</p>
+	<req name='cache_code'>
+		<p>Code of the geocache.</p>
 	</req>
 	<req name='logtype'>
 		<p>Type of an entry. This should be one of: <i>found</i>, <i>not_found</i>

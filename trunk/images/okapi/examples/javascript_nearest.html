@@ -40,14 +40,14 @@
 										'search_params': '{"center": "' + position.coords.latitude + "|" +
 											position.coords.longitude + '", "limit": 5}',
 										'retr_method': 'services/caches/geocaches',
-										'retr_params': '{"fields": "wpt|name|url"}',
+										'retr_params': '{"fields": "code|name|url"}',
 										'wrap': 'false',
 										'consumer_key': $('#consumer_key').attr('value')
 									},
 									success: function(response) {
 										var ul = $("<ul></ul>");
-										for (var cache_wpt in response) {
-											var cache = response[cache_wpt];
+										for (var cache_code in response) {
+											var cache = response[cache_code];
 											var li = $("<li><a></a></li>");
 											li.find('a').attr('href', cache.url).text(cache.name);
 											ul.append(li);

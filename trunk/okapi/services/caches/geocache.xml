@@ -4,7 +4,7 @@
 	<desc>
 		<p>Retrieve information on a single geocache.</p>
 	</desc>
-	<req name='cache_wpt'>Waypoint code of the geocache</req>
+	<req name='cache_code'>Unique code of the geocache</req>
 	<opt name='langpref' default='en'>
 		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
 		order of preference in which language will be chosen for fields like
@@ -12,14 +12,14 @@
 		<p>(You may also access all available languages with fields
 		<b>names</b>, <b>descriptions</b> etc.)</p>
 	</opt>
-	<opt name='fields' default='wpt|name|location|type|status'>
+	<opt name='fields' default='code|name|location|type|status'>
 		<p>Pipe-separated list of field names which you are interested with.
 		Selected fields will be included in the response.</p>
 		<p>Currently available fields:</p>
 		<ul>
-			<li><b>wpt</b> - Waypoint code of the geocache,</li>
+			<li><b>code</b> - unique code of the geocache,</li>
 			<li><b>id</b> - internal ID of the cache (you won't need this, use
-				the "wpt" as the key),</li>
+				the "code" as the key),</li> <!-- WRTODO -->
 			<li><b>name</b> - name of the geocache,</li>
 			<li><b>names</b> - a dictionary (language code => plain-text string) of
 				names of the geocache,</li>
@@ -90,10 +90,10 @@
 	<common-format-params/>
 	<returns>
 		<p>A dictionary of fields you have selected.</p>
-		<p>For example, for <i>geocache?cache_wpt=OP3D96&amp;fields=type</i>
+		<p>For example, for <i>geocache?cache_code=OP3D96&amp;fields=type</i>
 		query, the result might look something link this:</p>
 		<pre>{"type": "traditional"}</pre>
-		<p>If given cache waypoint code does not exist, the method will
+		<p>If given cache code does not exist, the method will
 		respond with a HTTP 400 error.</p>
 	</returns>
 </xml>
