@@ -21,8 +21,8 @@ class WebService
 	}
 	public static function call(OkapiRequest $request)
 	{
-		$cache_wpt = $request->get_parameter('cache_wpt');
-		if (!$cache_wpt) throw new ParamMissing('cache_wpt');
+		$cache_code = $request->get_parameter('cache_code');
+		if (!$cache_code) throw new ParamMissing('cache_code');
 		$logtype = $request->get_parameter('logtype');
 		if (!$logtype) throw new ParamMissing('logtype');
 		if (!in_array($logtype, array('found', 'not_found', 'comment')))
@@ -30,11 +30,11 @@ class WebService
 		$logtype_id = Okapi::logtypename2id($logtype);
 		if (!$comment) throw new ParamMissing('comment');
 		
-		# Check if wpt exists and retrieve cache ID (this will throw
-		# a proper exception on invalid wpt).
+		# Check if code exists and retrieve cache ID (this will throw
+		# a proper exception on invalid code).
 		
 		$cache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
-			$request->consumer, null, array('cache_wpt' => $cache_wpt, 'fields' => 'id')));
+			$request->consumer, null, array('cache_code' => $cache_code, 'fields' => 'id')));
 		
 		# Add a log entry.
 		

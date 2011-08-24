@@ -4,8 +4,8 @@
 	<desc>
 		<p>Retrieve all log entries for the specified geocache.</p>
 	</desc>
-	<req name='cache_wpt'>
-		<p>Waypoint code of the geocache.</p>
+	<req name='cache_code'>
+		<p>Code of the geocache.</p>
 	</req>
 	<common-format-params/>
 	<returns>

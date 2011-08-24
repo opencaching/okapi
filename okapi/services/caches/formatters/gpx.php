@@ -58,8 +58,8 @@ class WebService
 		# Validating arguments. We will also assign some of them to the
 		# $vars variable which we will use later in the GPS template.
 		
-		$cache_wpts = $request->get_parameter('cache_wpts');
-		if (!$cache_wpts) throw new ParamMissing('cache_wpts');
+		$cache_codes = $request->get_parameter('cache_codes');
+		if (!$cache_codes) throw new ParamMissing('cache_codes');
 		$langpref = $request->get_parameter('langpref');
 		if (!$langpref) $langpref = "en";
 		foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'latest_logs') as $param)
@@ -80,12 +80,12 @@ class WebService
 		# We can get all the data we need from the services/caches/geocaches method.
 		# We don't need to do any additional queries here.
 		
-		$fields = 'wpt|name|location|date_created|url|type|status|size'.
+		$fields = 'code|name|location|date_created|url|type|status|size'.
 			'|difficulty|terrain|description|hint|rating|owner|url';
 		if ($vars['latest_logs'])
 			$fields .= "|latest_logs";
 		$vars['caches'] = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
-			$request->consumer, $request->token, array('cache_wpts' => $cache_wpts,
+			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'fields' => $fields)));
 		$vars['installation'] = OkapiServiceRunner::call('services/apisrv/installation', new OkapiInternalRequest(
 			null, null, array()));

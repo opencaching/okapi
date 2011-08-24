@@ -3,7 +3,7 @@
 	<issue-id>15</issue-id>
 	<desc>
 		<p>If not for the <b>limit</b> parameter, this method (called without any additional
-		filtering arguments) would simply return the waypoint codes of <b>all the geocaches</b>
+		filtering arguments) would simply return the codes of <b>all the geocaches</b>
 		in the database (in arbitrary order). Then, you might use these codes to download
 		the actual data about these caches.</p>
 		<p>However, the power of this method comes with the filtering parameters.
@@ -105,7 +105,7 @@
 	<returns>
 		<p>A dictionary of the following structure:</p>
 		<ul>
-			<li><b>results</b> - a list of waypoint codes (unordered),</li>
+			<li><b>results</b> - a list of cache codes (unordered),</li>
 			<li><b>more</b> - boolean, <b>true</b> means that there were more
 			results for your query, but they were not returned because of the
 			<b>limit</b> parameter.</li>

@@ -22,7 +22,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 		<? list($lat, $lon) = explode("|", $c['location']); ?>
 		<wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
 			<time><?= $c['date_created'] ?></time>
-			<name><?= $c['wpt'] ?></name>
+			<name><?= $c['code'] ?></name>
 			<desc><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?> by <?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?> :: <?= ucfirst($c['type']) ?> Cache (<?= $c['difficulty'] ?>/<?= $c['terrain'] ?><? if ($c['size'] !== null) { echo "/".$c['size']; } ?>/<?= $c['rating'] ?>)</desc>
 			<url><?= $c['url'] ?></url>
 			<urlname><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></urlname>
