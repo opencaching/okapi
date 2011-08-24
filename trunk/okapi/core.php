@@ -489,23 +489,28 @@ class Okapi
 	}
 	
 	private static $cache_types = array(
-		'traditional' => 2, 'multi' => 3, 'quiz' => 7, 'event' => 6, 'virtual' => 4, 'webcam' => 5,
-		'moving' => 8, 'own' => 9, 'other' => 1
+		# Primary types
+		'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
+		# Additional types - these should include ALL types used in
+		# ANY of the opencaching installations. Contact me if you want to modify this.
+		'Event' => 6, 'Webcam' => 5, 'Moving' => 8, 'Own' => 9, 'Other' => 1,
 	);
 	
 	private static $cache_statuses = array(
-		'ready' => 1, 'temp_unavailable' => 2, 'archived' => 3
+		'Available' => 1, 'Temporarily unavailable' => 2, 'Archived' => 3
 	);
 	
-	/** Ex. 'traditional' => 2. For unknown names returns null. */
+	/** Ex. 'Traditional' => 2. For unknown names throw an Exception. */
 	public static function cache_type_name2id($name)
 	{
 		if (isset(self::$cache_types[$name]))
 			return self::$cache_types[$name];
-		return null;
+		throw new Exception("Method cache_type_name2id called with unsupported cache ".
+			"type name '$name'. You should not allow users to submit caches ".
+			"of non-primary type.");
 	}
 	
-	/** Ex. 2 => 'traditional'. For unknown ids returns null. */
+	/** Ex. 2 => 'Traditional'. For unknown ids returns "Other". */
 	public static function cache_type_id2name($id)
 	{
 		static $reversed = null;
@@ -517,18 +522,18 @@ class Okapi
 		}
 		if (isset($reversed[$id]))
 			return $reversed[$id];
-		return null;
+		return "Other";
 	}
 	
-	/** Ex. 'ready' => 1. For unknown names returns null. */
+	/** Ex. 'Available' => 1. For unknown names throws an Exception. */
 	public static function cache_status_name2id($name)
 	{
 		if (isset(self::$cache_statuses[$name]))
 			return self::$cache_statuses[$name];
-		return null;
+		throw new Exception("Method cache_status_name2id called with invalid name '$name'.");
 	}
 	
-	/** Ex. 1 => 'ready'. For unknown ids returns null. */
+	/** Ex. 1 => 'Available'. For unknown ids returns 'Archived'. */
 	public static function cache_status_id2name($id)
 	{
 		static $reversed = null;
@@ -540,7 +545,7 @@ class Okapi
 		}
 		if (isset($reversed[$id]))
 			return $reversed[$id];
-		return null;
+		return 'Archived';
 	}
 	
 	/** Ex. 'found' => 1. For unknown logtypes throws Exception. */

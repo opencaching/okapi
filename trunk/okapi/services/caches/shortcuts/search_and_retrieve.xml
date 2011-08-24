@@ -22,7 +22,7 @@
 	<req name='search_params'>
 		<p>JSON-formatted dictionary of parameters to be passed on
 		to the search method.</p>
-		<p>E.g. <i>{"center": "49|19", "status": "ready"}</i>.</p>
+		<p>E.g. <i>{"center": "49|19", "status": "Available"}</i>.</p>
 	</req>
 	<req name='retr_method'>
 		<p>Name of the retrieval method (begin with "services/").</p>

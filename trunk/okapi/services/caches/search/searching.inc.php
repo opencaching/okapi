@@ -37,10 +37,15 @@ class SearchAssistant
 			$types = array();
 			foreach (explode("|", $tmp) as $name)
 			{
-				if ($id = Okapi::cache_type_name2id($name))
+				try
+				{
+					$id = Okapi::cache_type_name2id($name);
 					$types[] = $id;
-				else
+				}
+				catch (Excetion $e)
+				{
 					throw new InvalidParam('type', "'$name' is not a valid cache type.");
+				}
 			}
 			$where_conds[] = "caches.type $operator ('".implode("','", array_map('mysql_real_escape_string', $types))."')";
 		}
@@ -50,14 +55,19 @@ class SearchAssistant
 		#
 		
 		$tmp = $request->get_parameter('status');
-		if ($tmp == null) $tmp = "ready";
+		if ($tmp == null) $tmp = "Available";
 		$codes = array();
 		foreach (explode("|", $tmp) as $name)
 		{
-			if ($id = Okapi::cache_status_name2id($name))
+			try
+			{
+				$id = Okapi::cache_status_name2id($name);
 				$codes[] = $id;
-			else
+			}
+			catch (Exception $e)
+			{
 				throw new InvalidParam('status', "'$name' is not a valid cache status.");
+			}
 		}
 		$where_conds[] = "caches.status in ('".implode(",", array_map('mysql_real_escape_string', $codes))."')";
 		
