@@ -19,6 +19,7 @@ class OkapiServiceRunner
 		# characters and the "_" sign in your method names).
 		'services/apisrv/installation',
 		'services/apisrv/installations',
+		'services/apisrv/stats',
 		'services/apiref/method',
 		'services/apiref/method_index',
 		'services/apiref/issue',

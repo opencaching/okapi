@@ -330,13 +330,15 @@ class Okapi
 	public static $revision = null; # This gets replaced in automatically deployed packages
 	
 	/** Returns something like "OpenCaching.PL" or "OpenCaching.DE". */
-	public static function get_normalized_site_name()
+	public static function get_normalized_site_name($site_url = null)
 	{
+		if ($site_url == null)
+			$site_url = $GLOBALS['absolute_server_URI'];
 		$matches = null;
-		if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $GLOBALS['absolute_server_URI'], $matches)) {
+		if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $site_url, $matches)) {
 			return "OpenCaching.".strtoupper($matches[2]);
 		} else {
-			return $GLOBALS['absolute_server_URI'];
+			return "LOCAL DEVEL INSTALLATION";
 		}
 	}
 	

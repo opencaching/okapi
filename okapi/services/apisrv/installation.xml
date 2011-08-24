@@ -26,8 +26,10 @@
 			<li><b>okapi_revision</b> - integer, an SVN revision of the OKAPI project
 				installed on this OpenCaching site, <b>or null</b>, when could not
 				determine revision number,</li>
+			<!-- MOVE to stats method
 			<li><b>cache_count</b> - approximate total number of geocaches stored at this site,</li>
 			<li><b>user_count</b> - approximate total number of users of this site.</li>
+			-->
 		</ul>
 	</returns>
 </xml>
