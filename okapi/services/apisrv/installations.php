@@ -26,7 +26,8 @@ class WebService
 		
 		$sites = array(
 			"http://opencaching.pl/",
-			// coming soon? "http://www.opencaching.de/"
+			"http://www.opencaching.us/",
+			// hopefully coming soon - "http://www.opencaching.de/"
 		);
 		
 		# If running on a local developer installation, then include the local

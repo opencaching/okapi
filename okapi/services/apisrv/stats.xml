@@ -1,6 +1,6 @@
 <xml>
 	<brief>Get information on this OKAPI installation</brief>
-	
+	<issue-id>43</issue-id>
 	<desc>
 		Retrieve some basic statistics about this OKAPI installation.
 		If you want some more stats, post a comment!
