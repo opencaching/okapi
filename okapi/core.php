@@ -552,7 +552,7 @@ class Okapi
 		return 'Archived';
 	}
 	
-	/** Ex. 'found' => 1. For unknown logtypes throws Exception. */
+	/** E.g. 'found' => 1. For unknown logtypes throws Exception. */
 	public static function logtypename2id($name)
 	{
 		if ($name == 'found') return 1;
@@ -561,7 +561,7 @@ class Okapi
 		throw new Exception("logtype2id called with invalid log type argument: $name");
 	}
 	
-	/** Ex. 1 => 'found'. For unknown ids returns 'comment'. */
+	/** E.g. 1 => 'found'. For unknown ids returns 'comment'. */
 	public static function logtypeid2name($id)
 	{
 		if ($id == 1) return 'found';
