@@ -22,10 +22,9 @@ class WebService
 		if (!$token_key)
 			throw new ParamMissing("oauth_token");
 		
-		# Redirect out of the services directory. This is only a shortcut,
-		# just to keep all OAuth entry points in one place.
+		# Redirect to the authorization page.
 		
-		return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."authorize.php".
+		return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/authorize".
 			"?oauth_token=".$token_key);
 	}
 }

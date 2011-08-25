@@ -16,5 +16,7 @@ class OkapiUrls
 		'^signup\.html$' => 'signup',
 		'^examples\.html$' => 'examples',
 		'^$' => 'index',
+		'^authorize$' => 'authorize',
+		'^authorized$' => 'authorized',
 	);
 }

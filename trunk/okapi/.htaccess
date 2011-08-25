@@ -1,2 +1,5 @@
 RewriteEngine on
+RewriteCond %{REQUEST_URI} !^/okapi/static/
 RewriteRule ^(.*)$ controller.php [L,QSA]
+
+Options -Indexes
