@@ -3,7 +3,7 @@
 namespace okapi\views\http404;
 
 use Exception;
-use okapi\OkapiHttpResponse;
+use okapi\Okapi404Response;
 use okapi\views\menu\OkapiMenu;
 
 class View
@@ -16,8 +16,7 @@ class View
 			'menu' => OkapiMenu::get_menu_html(),
 		);
 		
-		$response = new OkapiHttpResponse();
-		$response->status = 404;
+		$response = new Okapi404Response();
 		$response->content_type = "text/html; charset=utf-8";
 		ob_start();
 		include 'http404.tpl.php';

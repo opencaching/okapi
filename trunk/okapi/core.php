@@ -328,6 +328,16 @@ class OkapiRedirectResponse extends OkapiHttpResponse
 	}
 }
 
+class Okapi404Response extends OkapiHttpResponse
+{
+	public function display()
+	{
+		header("HTTP/1.1 404 Not Found");
+		header("Content-Type: ".$this->content_type);
+		print $this->body;
+	}
+}
+
 /** Container for various OKAPI functions. */
 class Okapi
 {
