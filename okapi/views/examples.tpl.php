@@ -3,12 +3,12 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>OKAPI Examples</title>
-		<link rel="stylesheet" href="/images/okapi/common.css">
+		<link rel="stylesheet" href="/okapi/static/common.css">
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
 			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
 		</script>
-		<script src='/images/okapi/common.js'></script>
+		<script src='/okapi/static/common.js'></script>
 	</head>
 	<body class='api'>
 		<div class='okd_mid'>
@@ -46,7 +46,7 @@ XHR requests</a>. There are some limitations of both these techniques though.</p
 	<li>Retrieves a list of nearest geocaches. This time, it uses the Consumer Key you have to supply.</li>
 </ul>
 
-<p><a href='/images/okapi/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>
+<p><a href='/okapi/static/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>
 
 
 					</td>

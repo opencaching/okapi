@@ -272,7 +272,7 @@ class OkapiOAuthServer extends OAuthServer
 		$this->add_signature_method(new OAuthSignatureMethod_HMAC_SHA1());
 	}
 	
-	/** 
+	/**
 	 * By default, works like verify_request, but it does support some additional
 	 * options. If $token_required == false, it doesn't throw an exception when
 	 * there is no token specified. You may also change the token_type required
@@ -354,19 +354,19 @@ class Okapi
 		if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $site_url, $matches)) {
 			return "OpenCaching.".strtoupper($matches[2]);
 		} else {
-			return "LOCAL DEVEL INSTALLATION";
+			return "DEVELSITE";
 		}
 	}
 	
 	/**
 	 * Pick text from $langdict based on language preference $langpref.
-	 * 
+	 *
 	 * Example:
 	 * pick_best_language(
 	 *   array('pl' => 'X', 'de' => 'Y', 'en' => 'Z'),
 	 *   array('sp', 'de', 'en')
 	 * ) == 'Y'.
-	 * 
+	 *
 	 * @param array $langdict - assoc array of lang-code => text.
 	 * @param array $langprefs - list of lang codes, in order of preference.
 	 */
@@ -585,7 +585,7 @@ class Okapi
 
 /**
  * Represents an OKAPI web method request.
- * 
+ *
  * Use this class to get parameters from your request and access
  * Consumer and Token objects. Please note, that request method
  * SHOULD be irrelevant to you: GETs and POSTs are interchangable
@@ -599,7 +599,7 @@ abstract class OkapiRequest
 	public $consumer;
 	public $token;
 	
-	/** 
+	/**
 	 * Return request parameter, or NULL when not found. Use this instead of
 	 * $_GET or $_POST or $_REQUEST.
 	 */
@@ -610,7 +610,7 @@ class OkapiInternalRequest extends OkapiRequest
 {
 	private $parameters;
 	
-	/** 
+	/**
 	 * Set this to true, if you want to receive OkapiResponse instead of
 	 * the actual object.
 	 */
@@ -730,7 +730,7 @@ class OkapiHttpRequest extends OkapiRequest
 		}
 	}
 	
-	/** 
+	/**
 	 * Return request parameter, or NULL when not found. Use this instead of
 	 * $_GET or $_POST or $_REQUEST.
 	 */
