@@ -17,7 +17,7 @@ class View
 {
 	public static function call($methodname)
 	{
-		require_once 'service_runner.php';
+		require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
 
 		if (!OkapiServiceRunner::exists($methodname))
 			throw new BadRequest("Method '$methodname' does not exist. ".

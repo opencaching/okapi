@@ -61,7 +61,7 @@ class OkapiScriptEntryPointController
 		
 		# None of the patterns matched OR method threw the Http404 exception.
 		
-		require "views/http404.php";
+		require_once "views/http404.php";
 		$response = \okapi\views\http404\View::call();
 		$response->display();
 	}
