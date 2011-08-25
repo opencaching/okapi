@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\views\authorize;
+namespace okapi\views\apps\authorize;
 
 use Exception;
 use okapi\Okapi;
@@ -38,7 +38,10 @@ class View
 			# Probably Request Token has expired. This will be usually viewed
 			# by the user, who knows nothing on tokens and OAuth. Let's be nice then!
 			
-			$vars = array('token_expired' => true);
+			$vars = array(
+				'token_expired' => true,
+				'site_name' => Okapi::get_normalized_site_name()
+			);
 			$response = new OkapiHttpResponse();
 			$response->content_type = "text/html; charset=utf-8";
 			ob_start();
@@ -51,7 +54,7 @@ class View
 	
 		if ($GLOBALS['usr'] == false)
 		{
-			$after_login = "okapi/authorize?oauth_token=$token_key";
+			$after_login = "okapi/apps/authorize?oauth_token=$token_key";
 			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login);
 			return new OkapiRedirectResponse($login_url);
 		}
@@ -131,7 +134,7 @@ class View
 		} else {
 			# Consumer did not provide a callback URL (probably the user is using a desktop
 			# or mobile application). We'll just have to display the verifier to the user.
-			return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/authorized?oauth_token=".$token_key."&oauth_verifier=".$token['verifier']);
+			return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/apps/authorized?oauth_token=".$token_key."&oauth_verifier=".$token['verifier']);
 		}
 	}
 }

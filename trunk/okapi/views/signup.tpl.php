@@ -60,7 +60,7 @@
 									<td><input type='text' class='text' id='appname' name='appname'></td>
 								</tr>
 								<tr>
-									<td>Application URL (if any):</td>
+									<td>Homepage URL:</td>
 									<td><input type='text' class='text' id='appurl' name='appurl'></td>
 								</tr>
 								<tr>
@@ -76,6 +76,10 @@
 									</td>
 								</tr>
 							</table>
+							<p>* - required fields</p>
+							<p>Application homepage URL will be used for hyperlinks, to allow users to find your
+							application more easily. It must be a "http://" web address. (In case you were wondering,
+							it has nothing to do with OAuth callback.)</p>
 						</form>
 
 						<h2>Terms of Use</h2>

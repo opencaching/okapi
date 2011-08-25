@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\views\authorized;
+namespace okapi\views\apps\authorized;
 
 use Exception;
 use okapi\Okapi;
@@ -33,7 +33,7 @@ class View
 
 		if (!$token)
 		{
-			# Probably Request Token has expired or it is already used. We'll
+			# Probably Request Token has expired or it was already used. We'll
 			# just redirect to the OpenCaching main page.
 			return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']);
 		}

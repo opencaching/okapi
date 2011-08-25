@@ -19,12 +19,15 @@
 				level domain of a country).
 			</li>
 			<li>
+				<b>site_name</b> - universal name for this site (should be fine
+				for all languages),
+			</li>
+			<li>
 				<b>okapi_base_url</b> - URL of the OKAPI installation (usually this is
 				<b>site_url</b> with "okapi/" appended, but you should not assume
 				that); this value is to be used as a prefix when constructing service
 				method URLs.
 			</li>
-			<!-- include site_name -->
 		</ul>
 	</returns>
 </xml>
