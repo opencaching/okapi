@@ -24,7 +24,7 @@ class WebService
 		
 		# Redirect to the authorization page.
 		
-		return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/authorize".
+		return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/apps/authorize".
 			"?oauth_token=".$token_key);
 	}
 }

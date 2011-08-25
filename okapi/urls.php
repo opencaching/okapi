@@ -16,8 +16,10 @@ class OkapiUrls
 		'^signup\.html$' => 'signup',
 		'^examples\.html$' => 'examples',
 		'^$' => 'index',
-		'^authorize$' => 'authorize',
-		'^authorized$' => 'authorized',
-		'^update$' => 'update',
+		'^apps/$' => 'apps/index',
+		'^apps/authorize$' => 'apps/authorize',
+		'^apps/authorized$' => 'apps/authorized',
+		'^apps/revoke_access$' => 'apps/revoke_access',
+		'^update/?$' => 'update',
 	);
 }

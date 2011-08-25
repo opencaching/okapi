@@ -6,7 +6,7 @@
 	</head>
 	<style>
 		.okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
-		.okapi .opencaching { font-size: 20px; font-weight: bold; padding-top: 13px; }
+		.okapi a.opencaching { font-size: 20px; font-weight: bold; padding-top: 13px; color: #333; text-decoration: none; display: block; }
 		.okapi * { padding: 0; margin: 0; border: 0; }
 		.okapi input, select { font-size: 15px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #444; }
 		.okapi a, .okapi a:hover, .okapi a:visited { cursor: pointer; color: #3e48a8; text-decoration: underline; }
@@ -39,7 +39,7 @@
 					<input type='button' value="Odmawiam" onclick="document.forms['authform'].submit();">
 				</form>
 				<p>Raz udzielona zgoda jest ważna aż do momentu jej wycofania na stronie
-				<a href='WRTODO'>zarządzania aplikacjami</a>.</p>
+				<a href='/okapi/apps/'>zarządzania aplikacjami</a>.</p>
 				<p>Aplikacja będzie łączyć się z Twoim kontem poprzez <a href='/okapi/'>platformę OKAPI</a> (strona w języku
 				angielskim). Uzyskanie zgody na dostęp pozwoli aplikacji na korzystanie
 				ze wszystkich metod udostępnianych przez platformę OKAPI (m.in. aplikacja
