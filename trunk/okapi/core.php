@@ -169,6 +169,8 @@ set_error_handler(array('\okapi\OkapiErrorHandler', 'handle'));
 # the developer).
 #
 
+class Http404 extends BadRequest {}
+
 /** Common type of BadRequest: Required parameter is missing. */
 class ParamMissing extends BadRequest
 {
