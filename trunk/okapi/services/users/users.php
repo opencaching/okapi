@@ -18,7 +18,7 @@ class WebService
 		);
 	}
 	
-	public static $valid_field_names = array('uuid', 'username', 'profile_url', 'internal_id');
+	public static $valid_field_names = array('uuid', 'username', 'profile_url', 'internal_id', 'is_admin');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -36,7 +36,7 @@ class WebService
 			if (!in_array($field, self::$valid_field_names))
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
 		$rs = sql("
-			select user_id, uuid, username
+			select user_id, uuid, username, admin
 			from user
 			where uuid in ('".implode("','", array_map('mysql_real_escape_string', $user_uuids))."')
 		");
@@ -51,6 +51,7 @@ class WebService
 					case 'uuid': $entry['id'] = $row['uuid']; break;
 					case 'username': $entry['username'] = $row['username']; break;
 					case 'profile_url': $entry['profile_url'] = $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id']; break;
+					case 'is_admin': $entry['is_admin'] = $row['admin'] ? true : false; break;
 					case 'internal_id': $entry['internal_id'] = $row['user_id']; break;
 					default: throw new Exception("Missing field case: ".$field);
 				}
