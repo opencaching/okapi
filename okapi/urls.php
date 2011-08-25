@@ -18,5 +18,6 @@ class OkapiUrls
 		'^$' => 'index',
 		'^authorize$' => 'authorize',
 		'^authorized$' => 'authorized',
+		'^update$' => 'update',
 	);
 }

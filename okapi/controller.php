@@ -11,7 +11,7 @@ use okapi\views\menu\OkapiMenu;
 # display an appropriate error message).
 #
 # To learn more about OKAPI, see core.php.
-# 
+#
 
 $rootpath = '../';
 require_once($rootpath.'okapi/core.php');
@@ -48,7 +48,8 @@ class OkapiScriptEntryPointController
 					require_once "views/$namespace.php";
 					$response = call_user_func_array(array('\\okapi\\views\\'.
 						str_replace('/', '\\', $namespace).'\\View', 'call'), $matches);
-					$response->display();
+					if ($response)
+						$response->display();
 					return;
 				}
 			}

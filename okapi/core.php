@@ -86,9 +86,12 @@ class OkapiExceptionHandler
 			# indicates an error in OKAPI method. If thrown, then something
 			# must be fixed on OUR part.
 			
-			header("HTTP/1.0 500 Internal Server Error");
-			header("Access-Control-Allow-Origin: *");
-			header("Content-Type: text/plain; charset=utf-8");
+			if (!headers_sent())
+			{
+				header("HTTP/1.0 500 Internal Server Error");
+				header("Access-Control-Allow-Origin: *");
+				header("Content-Type: text/plain; charset=utf-8");
+			}
 			
 			print "Oops... Something went wrong on *our* part.\n\n";
 			print "Message was passed on to the site administrators. We'll try to fix it.\n";
