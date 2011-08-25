@@ -19,11 +19,6 @@
 					</td>
 					<td class='article'>
 
-<div style='color: #c00; text-align: center; margin-bottom: 10px'>
-	Please note: this is a BETA developer-preview version.<br>
-	Method signatures may change slightly during the next few days.
-</div>
-
 <h1>
 	The OKAPI Project
 	<div class='subh1'>:: <b>OpenCaching API</b> Reference</div>
