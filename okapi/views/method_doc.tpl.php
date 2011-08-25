@@ -25,11 +25,6 @@ $m = $vars['method'];
 					</td>
 					<td class='article'>
 					
-						<div style='color: #c00; text-align: center; margin-bottom: 10px'>
-							Please note: this is a BETA developer-preview version.<br>
-							Method signatures may change slightly during the next few days.
-						</div>
-						
 						<h1>
 							<?= $m['brief_description'] ?>
 							<div class='subh1'>:: <b><?= $m['name'] ?></b> method</div>

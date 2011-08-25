@@ -19,11 +19,6 @@
 					</td>
 					<td class='article'>
 
-<div style='color: #c00; text-align: center; margin-bottom: 10px'>
-	Please note: this is a BETA developer-preview version.<br>
-	Method signatures may change slightly during the next few days.
-</div>
-
 <h1>Examples</h1>
 
 <p>Some examples of OKAPI usage with popular programming languages.
