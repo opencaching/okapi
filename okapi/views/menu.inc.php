@@ -6,7 +6,7 @@ use Exception;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 
-require_once 'okapi/service_runner.php';
+require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
 
 class OkapiMenu
 {
