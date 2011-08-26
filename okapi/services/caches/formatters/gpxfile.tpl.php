@@ -48,7 +48,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 							<? foreach ($c['latest_logs'] as $log) { ?>
 								<log id="<?= $log['uuid'] ?>">
 									<date><?= $log['date'] ?></date>
-									<type><?= $vars['GPX_log_types'][$log['type']] ?></type>
+									<type><?= $log['type'] ?></type>
 									<finder id="<?= $log['user']['uuid'] ?>"><?= $log['user']['username'] ?></finder>
 									<text encoded="False"><?= htmlspecialchars($log['comment'], ENT_COMPAT, 'UTF-8') ?></text>
 								</log>
