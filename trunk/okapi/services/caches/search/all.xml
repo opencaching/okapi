@@ -61,7 +61,11 @@
 	</opt>
 	<opt name='min_founds'>
 		<p>Integer N. If <i>N</i> given, the result will contain only those caches which have
-		been found at least <i>N</i> times.</p>
+		been found at least <i>N</i> times. Useful if you want to skip "unverified" caches.</p>
+	</opt>
+	<opt name='max_founds'>
+		<p>Integer N. If <i>N</i> given, the result will contain only those caches which have
+		been found at most <i>N</i> times. Useful for FTF-searchers.</p>
 	</opt>
 	<opt name='modified_since'>
 		<p>A date and time string, in any reasonable format (any acceptable by

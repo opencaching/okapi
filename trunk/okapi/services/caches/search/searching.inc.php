@@ -164,6 +164,17 @@ class SearchAssistant
 		}
 		
 		#
+		# max_founds
+		#
+		
+		if ($tmp = $request->get_parameter('max_founds'))
+		{
+			if (intval($tmp) != $tmp)
+				throw new InvalidParam('max_founds', "'$tmp'");
+			$where_conds[] = "caches.founds <= '".mysql_real_escape_string($tmp)."'";
+		}
+		
+		#
 		# modified_since
 		#
 		
