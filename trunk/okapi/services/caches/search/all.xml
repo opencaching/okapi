@@ -76,7 +76,7 @@
 		<p>Should be one of the following:</p>
 		<ul>
 			<li><b>found_only</b> - only caches found by the user will be returned,</li>
-			<li><b>unfound_only</b> - only caches <b>not</b> found by the user will be returned,</li>
+			<li><b>notfound_only</b> - only caches <b>not</b> found by the user will be returned,</li>
 			<li><b>either</b> - all caches will be returned.</li>
 		</ul>
 	</opt>

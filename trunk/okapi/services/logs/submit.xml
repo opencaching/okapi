@@ -9,8 +9,8 @@
 		<p>Code of the geocache.</p>
 	</req>
 	<req name='logtype'>
-		<p>Type of an entry. This should be one of: <i>found</i>, <i>not_found</i>
-		or <i>comment</i>.</p>
+		<p>Type of an entry. This should be one of: <i>Found it</i>, <i>Didn't find it</i>
+		or <i>Comment</i>.</p>
 	</req>
 	<req name='comment'>
 		<p>Text to be submitted with the log entry. Plain-text (no HTML).</p>
@@ -27,7 +27,7 @@
 	This not yet implemented. Remove the comment when/if you implement this.
 	<opt name='rating'>
 		<p>An integer in range between 1 and 5 - user's optional rating of a found cache.</p>
-		<p>Important: <b>logtype</b> has to be "found" in order to use the <b>rating</b> argument.
+		<p>Important: <b>logtype</b> has to be "Found it" in order to use the <b>rating</b> argument.
 		If you use rating with other type of logtype, you will get a HTTP 400 error (instead of
 		a dictionary).</p>
 		<p>Note: you should allow your user to <b>not</b> rate a found cache.</p>

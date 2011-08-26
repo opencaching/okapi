@@ -184,7 +184,7 @@ class SearchAssistant
 		{
 			if ($request->token == null)
 				throw new InvalidParam('found_status', "Might be used only for requests signed with an Access Token.");
-			if (!in_array($tmp, array('found_only', 'unfound_only', 'either')))
+			if (!in_array($tmp, array('found_only', 'notfound_only', 'either')))
 				throw new InvalidParam('found_status', "'$tmp'");
 			if ($tmp != 'either')
 			{
