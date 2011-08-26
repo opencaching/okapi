@@ -65,7 +65,7 @@
 	</opt>
 	<opt name='max_founds'>
 		<p>Integer N. If <i>N</i> given, the result will contain only those caches which have
-		been found at most <i>N</i> times. Useful for FTF-searchers.</p>
+		been found at most <i>N</i> times. Useful for FTF hunters.</p>
 	</opt>
 	<opt name='modified_since'>
 		<p>A date and time string, in any reasonable format (any acceptable by

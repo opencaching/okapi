@@ -84,7 +84,6 @@ class WebService
 			null, null, array()));
 		$vars['cache_GPX_types'] = self::$cache_GPX_types;
 		$vars['cache_GPX_sizes'] = self::$cache_GPX_sizes;
-		$vars['GPX_log_types'] = self::$GPX_log_types;
 		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "text/xml; charset=utf-8";
