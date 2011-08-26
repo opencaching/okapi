@@ -43,6 +43,9 @@ XHR requests</a>. There are some limitations of both these techniques though.</p
 
 <p><a href='/okapi/static/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>
 
+<h2>Comments</h2>
+
+<div class='issue-comments' issue_id='36'></div>
 
 					</td>
 				</tr></table>
