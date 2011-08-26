@@ -44,13 +44,6 @@ class WebService
 		null => 'Other'
 	);
 	
-	/** Maps OKAPI log type codes to "universal" log type names. */
-	public static $GPX_log_types = array(
-		'found' => "Found it",
-		'not_found' => "Didn't find it",
-		'comment' => "Comment"
-	);
-
 	public static function call(OkapiRequest $request)
 	{
 		$vars = array();

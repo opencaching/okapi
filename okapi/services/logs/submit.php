@@ -42,7 +42,7 @@ class WebService
 		if (!$cache_code) throw new ParamMissing('cache_code');
 		$logtype = $request->get_parameter('logtype');
 		if (!$logtype) throw new ParamMissing('logtype');
-		if (!in_array($logtype, array('found', 'not_found', 'comment')))
+		if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment')))
 			throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
 		$logtype_id = Okapi::logtypename2id($logtype);
 		if (!$comment) throw new ParamMissing('comment');
@@ -81,10 +81,10 @@ class WebService
 				throw new CannotPublishException("This geocache is archived. Only admins and owner log entries here!");
 			}
 		}
-		if ($cache['type'] == 'Event' && $logtype != 'comment')
-			throw new CannotPublishException('This cache is an Event cache. You cannot "find it"! (But - you may "comment" on it.)');
-		if ($rating && $logtype != 'found')
-			throw new BadRequest("Rating is allowed only for 'found' logtypes.");
+		if ($cache['type'] == 'Event' && $logtype != 'Comment')
+			throw new CannotPublishException('This cache is an Event cache. You cannot "Find it"! (But - you may "Comment" on it.)');
+		if ($rating && $logtype != 'Found it')
+			throw new BadRequest("Rating is allowed only for 'Found it' logtypes.");
 		if ($rating)
 		{
 			$has_already_rated = sqlValue("
@@ -117,7 +117,7 @@ class WebService
 		
 		# Update cache stats.
 		
-		if ($logtype == 'found')
+		if ($logtype == 'Found it')
 		{
 			sql("
 				update caches
@@ -127,7 +127,7 @@ class WebService
 				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 			");
 		}
-		elseif ($logtype == 'not_found')
+		elseif ($logtype == "Didn't find it")
 		{
 			sql("
 				update caches
@@ -135,7 +135,7 @@ class WebService
 				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 			");
 		}
-		elseif ($logtype == 'comment')
+		elseif ($logtype == 'Comment')
 		{
 			sql("
 				update caches
@@ -152,9 +152,9 @@ class WebService
 		
 		switch ($logtype)
 		{
-			case 'found': $field_to_increment = 'founds_count'; break;
-			case 'not_found': $field_to_increment = 'notfounds_count'; break;
-			case 'comment': $field_to_increment = 'log_notes_count'; break;
+			case 'Found it': $field_to_increment = 'founds_count'; break;
+			case "Didn't find it": $field_to_increment = 'notfounds_count'; break;
+			case 'Comment': $field_to_increment = 'log_notes_count'; break;
 			default: throw new Exception("Missing logtype '$logtype' in a switch..case statetment.");
 		}
 		sql("
