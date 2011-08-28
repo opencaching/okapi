@@ -60,10 +60,18 @@
 				<b>null</b> if geocache does not have a container,</li>
 			<li><b>difficulty</b> - float (between 1 and 5), difficulty rating of the cache,</li>
 			<li><b>terrain</b> - float (between 1 and 5), terrain rating of the cache,</li>
-			<li><b>rating</b> - float (between 1 and 5), an overall rating of the cache,
+			<li>
+				<p><b>rating</b> - float (between 1 and 5), an overall rating of the cache,
 				or <b>null</b> when the geocache does not have a sufficient amount of votes
-				to have a rating,</li>
-			<li><b>rating_votes</b> - number of votes submitted for the rating of this cache,</li>
+				to have a rating.</p>
+				<p>Please note: some OC installations do not use the rating/voting system. The <b>rating</b> will
+				always be <b>null</b> on such installations.</p>
+			</li>
+			<li>
+				<p><b>rating_votes</b> - number of votes submitted for the rating of this cache.</p>
+				<p>Please note: some OC installations do not use the rating/voting system. The <b>rating_votes</b> will
+				always be <b>0</b> on such installations.</p>
+			</li>
 			<li><b>recommendations</b> - number of recommendations for this cache,</li>
 			<li><b>description</b> - HTML string, description of the cache,</li>
 			<li><b>descriptions</b> - a dictionary (language code => HTML string) of cache

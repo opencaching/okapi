@@ -4,6 +4,7 @@ namespace okapi\services\caches\geocaches;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Settings;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -43,19 +44,60 @@ class WebService
 		foreach ($fields as $field)
 			if (!in_array($field, self::$valid_field_names))
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
-		$rs = sql("
-			select
-				c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
-				c.date_created, c.type, c.status, c.date_hidden, c.founds, c.notfounds, c.last_found,
-				c.size, c.difficulty, c.terrain, c.wp_oc, c.topratings, c.votes, c.score,
-				u.uuid as user_uuid, u.username, u.user_id
-			from
-				caches c,
-				user u
-			where
-				wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
-				and c.user_id = u.user_id
-		");
+
+		if (Settings::get('OC_BRANCH') == 'oc.de')
+		{
+			# DE branch:
+			# - Caches do not have ratings.
+			# - Total numbers of found and notfounds are kept in the "stat_caches" table.
+			
+			$rs = sql("
+				select
+					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
+					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
+					c.terrain, c.wp_oc, u.uuid as user_uuid, u.username, u.user_id,
+					
+					ifnull(sc.toprating, 0) as topratings,
+					ifnull(sc.found, 0) as founds,
+					ifnull(sc.notfound, 0) as notfounds,
+					sc.last_found,
+					0 as votes, 0 as score
+					-- SEE ALSO OC.PL BRANCH BELOW
+				from
+					caches c
+					inner join user u on c.user_id = u.user_id
+					left join stat_caches as sc on c.cache_id = sc.cache_id
+				where
+					wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+			");
+		}
+		elseif (Settings::get('OC_BRANCH') == 'oc.pl')
+		{
+			# PL branch:
+			# - Caches have ratings.
+			# - Total numbers of found and notfounds are kept in the "caches" table.
+			
+			$rs = sql("
+				select
+					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
+					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
+					c.terrain, c.wp_oc, u.uuid as user_uuid, u.username, u.user_id,
+					
+					c.topratings,
+					c.founds,
+					c.notfounds,
+					c.last_found,
+					c.votes, c.score
+					-- SEE ALSO OC.DE BRANCH ABOVE
+				from
+					caches c,
+					user u
+				where
+					wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+					and c.user_id = u.user_id
+			");
+		}
+
 		$results = array();
 		$cacheid2wptcode = array();
 		while ($row = sql_fetch_assoc($rs))
