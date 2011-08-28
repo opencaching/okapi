@@ -298,8 +298,9 @@ class OkapiOAuthServer extends OAuthServer
 	}
 }
 
-# Including local datastore (connecting SQL database etc.).
+# Including local datastore and settings (connecting SQL database etc.).
 
+require_once('settings.php');
 require_once('datastore.php');
 
 class OkapiHttpResponse
