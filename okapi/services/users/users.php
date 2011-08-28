@@ -56,7 +56,7 @@ class WebService
 					default: throw new Exception("Missing field case: ".$field);
 				}
 			}
-			$results[$row['uuid']] = &$entry;
+			$results[$row['uuid']] = $entry;
 		}
 		mysql_free_result($rs);
 		
