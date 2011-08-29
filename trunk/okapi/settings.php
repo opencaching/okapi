@@ -31,8 +31,16 @@ final class Settings
 		 * 
 		 * Possible values: "oc.pl" or "oc.de".
 		 */
-		'OC_BRANCH' => "oc.pl"
+		'OC_BRANCH' => "oc.pl",
 		
+		/**
+		 * Each OpenCaching site has a default language. I.e. the language in
+		 * which all the names of caches are entered. What is the ISO 639-1 code
+		 * of this language? Note: ISO 639-1 codes are always lowercase.
+		 * 
+		 * E.g. "pl", "en" or "de".
+		 */
+		'SITELANG' => "en"
 	);
 	
 	/** 
