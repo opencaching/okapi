@@ -2,12 +2,8 @@
 	<brief>Search for geocaches</brief>
 	<issue-id>15</issue-id>
 	<desc>
-		<p>If not for the <b>limit</b> parameter, this method (called without any additional
-		filtering arguments) would simply return the codes of <b>all the geocaches</b>
-		in the database (in arbitrary order). Then, you might use these codes to download
-		the actual data about these caches.</p>
-		<p>However, the power of this method comes with the filtering parameters.
-		All of them are optional, but you surely want to use at least some of them!</p>
+		<p>Search for geocaches using some simple filters.
+		All of them are optional, but you surely want to use at least some of them.</p>
 	</desc>
 	<opt name='type'>
 		<p>Pipe-separated list of cache type codes. If given, the results will be limited
@@ -72,7 +68,8 @@
 		PHP's <a href='http://pl2.php.net/strtotime'>strtotime</a> function,
 		ISO 8601 preffered).</p>
 		<p>If given, the list of returned geocaches will be limited to those which were
-		created or modified since that date.</p>
+		created or modified since that date. (Note: currently caches do not get
+		"modified" when user makes a log entry.)</p>
 	</opt>
 	<opt name='found_status' default='either'>
 		<p><b>Notice:</b> This parameter may be used only for requests signed with an Access Token
