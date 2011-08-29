@@ -48,7 +48,7 @@ class WebService
 			{
 				switch ($field)
 				{
-					case 'uuid': $entry['id'] = $row['uuid']; break;
+					case 'uuid': $entry['uuid'] = $row['uuid']; break;
 					case 'username': $entry['username'] = $row['username']; break;
 					case 'profile_url': $entry['profile_url'] = $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id']; break;
 					case 'is_admin': $entry['is_admin'] = $row['admin'] ? true : false; break;

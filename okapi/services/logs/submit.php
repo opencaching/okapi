@@ -33,7 +33,7 @@ class WebService
 	 * Publish a new log entry and return log entry uuid. Throws
 	 * CannotPublishException or BadRequest on errors.
 	 */
-	private static function _call(OkapiRequst $request)
+	private static function _call(OkapiRequest $request)
 	{
 		# Developers! Please notice the fundamental difference between throwing
 		# CannotPublishException and standard BadRequest/InvalidParam exceptions!
@@ -45,15 +45,18 @@ class WebService
 		if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment')))
 			throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
 		$logtype_id = Okapi::logtypename2id($logtype);
+		$comment = $request->get_parameter('comment');
 		if (!$comment) throw new ParamMissing('comment');
 		$tmp = $request->get_parameter('when');
 		if ($tmp)
+		{
 			$when = strtotime($tmp);
 			if (!$when)
 				throw new InvalidParam('when', "'$tmp' is not in a valid format or is not a valid date.");
 			if ($when > time())
 				throw new CannotPublishException("You are trying to publish a log entry with a date in future. ".
 					"Cache log entries are allowed to be published in the past, but NOT in the future.");
+		}
 		else
 			$when = time();
 		$rating = $request->get_parameter('rating');
@@ -68,8 +71,8 @@ class WebService
 			'fields' => 'internal_id|status|owner|type')));
 		$user = OkapiServiceRunner::call('services/users/by_internal_id', new OkapiInternalRequest(
 			$request->consumer, null, array('internal_id' => $request->token->user_id,
-			'fields' => 'is_admin|uuid')));
-			
+			'fields' => 'is_admin|uuid|internal_id')));
+		
 		# Various integrity checks.
 		
 		if (!in_array($cache['status'], array("Available", "Temporarily unavailable")))
@@ -78,13 +81,27 @@ class WebService
 			if ($user['is_admin'] || ($user['uuid'] == $cache['owner']['uuid'])) {
 				/* pass */
 			} else {
-				throw new CannotPublishException("This geocache is archived. Only admins and owner log entries here!");
+				throw new CannotPublishException("This cache is archived. Only admins and the owner are allowed to add a log entry.");
 			}
 		}
 		if ($cache['type'] == 'Event' && $logtype != 'Comment')
 			throw new CannotPublishException('This cache is an Event cache. You cannot "Find it"! (But - you may "Comment" on it.)');
 		if ($rating && $logtype != 'Found it')
 			throw new BadRequest("Rating is allowed only for 'Found it' logtypes.");
+		if ($logtype == 'Found it')
+		{
+			$has_already_found_it = sqlValue("
+				select 1
+				from cache_logs
+				where
+					user_id = '".mysql_real_escape_string($user['internal_id'])."'
+					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+					and type = '".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."'
+					and deleted = 0
+			", null);
+			if ($has_already_found_it)
+				throw new CannotPublishException("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!");
+		}
 		if ($rating)
 		{
 			$has_already_rated = sqlValue("
@@ -93,23 +110,28 @@ class WebService
 				where
 					user_id = '".mysql_real_escape_string($user['internal_id'])."'
 					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-			");
+			", null);
 			if ($has_already_rated)
 				throw new CannotPublishException("You have already rated this cache once. Your rating cannot be changed.");
 		}
+		if (strlen(trim($comment)) < 5)
+			throw new CannotPublishException("Your comment must have at least 5 characters.".
+				(($logtype == 'Found it') ? " You may always say \"Thanks\" :)" : ""));
 			
 		# Add the log entry.
 		
 		$log_uuid = create_uuid();
-		sql("
-			insert into cache_logs (uuid, cache_id, user_id, type, date, text)
+		# Can't use "sql" here because it fails. WRTODO: get rid od "sql" and "sqlValue".
+		mysql_query("
+			insert into cache_logs (uuid, cache_id, user_id, type, date, text, node)
 			values (
 				'".mysql_real_escape_string($log_uuid)."',
 				'".mysql_real_escape_string($cache['internal_id'])."',
 				'".mysql_real_escape_string($request->token->user_id)."',
 				'".mysql_real_escape_string($logtype_id)."',
-				from_unix_timestamp('".mysql_real_escape_string($when)."'),
-				'".mysql_real_escape_string($comment)."'
+				from_unixtime('".mysql_real_escape_string($when)."'),
+				'".mysql_real_escape_string(htmlspecialchars($comment, ENT_QUOTES))."',
+				'".mysql_real_escape_string($GLOBALS['oc_nodeid'])."'
 			);
 		");
 		
@@ -123,7 +145,7 @@ class WebService
 				update caches
 				set
 					founds = founds + 1,
-					last_found = from_unix_timestamp('".mysql_real_escape_string($when)."')
+					last_found = from_unixtime('".mysql_real_escape_string($when)."')
 				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 			");
 		}
