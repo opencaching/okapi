@@ -63,7 +63,7 @@ class WebService
 		{
 			# We'll have to assume that this box goes through the 180-degree meridian.
 			# For example, $bbwest = 179 and $bbeast = -179.
-			$where_conds[] = "(caches.longitude > '".mysql_real_escape_string($bbwest)."' or caches.longitude < '".mysql_real_escape_string($bbeast)."'";
+			$where_conds[] = "(caches.longitude > '".mysql_real_escape_string($bbwest)."' or caches.longitude < '".mysql_real_escape_string($bbeast)."')";
 		}
 		
 		$other_search_params = SearchAssistant::get_common_search_params($request);
