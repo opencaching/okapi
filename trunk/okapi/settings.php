@@ -9,7 +9,7 @@ namespace okapi;
 # add following lines to your OC's lib/settings.inc.php file:
 #
 #     $OKAPI_SETTINGS = array(
-#         '{X}' => '{Y}',
+#         'X' => 'Y',
 #         // ... other settings may come here ...
 #     );
 #

@@ -12,7 +12,7 @@ class OkapiServiceRunner
 	# to create an invisible or undocumented OKAPI method. If you want to test your
 	# methods, you should do it in your local development server. If you want to
 	# create a private, "internal" method, you still have to document it properly
-	# (i.e. describe it as "internal" and accessible to selected consumer keys only).
+	# (you may describe it as "internal" and accessible to selected consumer keys only).
 	#
 	public static $all_names = array(
 		# Valid format: ^services/[0-9a-z_/]*$ (it means you may use only alphanumeric

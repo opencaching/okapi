@@ -2,7 +2,9 @@
 	<brief>Retrieve all log entries for the specified geocache</brief>
 	<issue-id>41</issue-id>
 	<desc>
-		<p>Retrieve all log entries for the specified geocache.</p>
+		<p>Retrieve all log entries for the specified geocache. If you want
+		only the latest entries, use the <b>latest_logs</b> fields in the
+		services/caches/geocache method.</p>
 	</desc>
 	<req name='cache_code'>
 		<p>Code of the geocache.</p>
