@@ -110,7 +110,7 @@ class WebService
 				{
 					case 'code': $entry['code'] = $row['wp_oc']; break;
 					case 'name': $entry['name'] = $row['name']; break;
-					case 'names': $entry['name'] = array('pl' => $row['name']); break; // for the future
+					case 'names': $entry['names'] = array(Settings::get('SITELANG') => $row['name']); break; // for the future
 					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
 					case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
