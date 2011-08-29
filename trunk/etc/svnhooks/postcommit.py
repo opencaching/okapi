@@ -72,7 +72,7 @@ print "Files affected:\n" + "\n".join(filenames)
 print
 
 important_filenames = filter(lambda filename: filename.startswith("/trunk/"), filenames)
-important_filenames = filter(lambda filename: not filename.startswith("/trunk/etc/"), filenames)
+important_filenames = filter(lambda filename: not filename.startswith("/trunk/etc/"), important_filenames)
 if len(important_filenames) == 0:
 	print "Deployment package was unaffected by this commit. Aborting."
 	sys.exit()
