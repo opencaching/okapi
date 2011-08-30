@@ -51,7 +51,11 @@ class WebService
 					case 'uuid': $entry['uuid'] = $row['uuid']; break;
 					case 'username': $entry['username'] = $row['username']; break;
 					case 'profile_url': $entry['profile_url'] = $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id']; break;
-					case 'is_admin': $entry['is_admin'] = $row['admin'] ? true : false; break;
+					case 'is_admin':
+						if (!$request->token) $entry['is_admin'] = null;
+						if ($request->token->user_id != $row['user_id']) $entry['is_admin'] = null;
+						$entry['is_admin'] = $row['admin'] ? true : false;
+						break;
 					case 'internal_id': $entry['internal_id'] = $row['user_id']; break;
 					default: throw new Exception("Missing field case: ".$field);
 				}

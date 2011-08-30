@@ -15,8 +15,12 @@
 			<li><b>uuid</b> - ID of the user,</li>
 			<li><b>username</b> - username (login) of the user,</li>
 			<li><b>profile_url</b> - URL of the user's OpenCaching profile page,</li>
-			<li><b>is_admin</b> - boolean; true is user has admin privileges (you
-				probably won't need that),</li>
+			<li>
+				<p><b>is_admin</b> - boolean; true is user has admin privileges.</p>
+				<p>This value can be accessed only with <b>Level 3</b> Authentication
+				and only for the user of your Access Token. For all other reads, is_admin
+				will equal <b>null</b>.</p>
+			</li>
 			<li><b>internal_id</b> - internal ID of the user (<b>DO NOT</b> use this!
 				use the <b>uuid</b> as the user identifier).</li>
 		</ul>

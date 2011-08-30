@@ -70,7 +70,7 @@ class WebService
 			$request->consumer, null, array('cache_code' => $cache_code,
 			'fields' => 'internal_id|status|owner|type')));
 		$user = OkapiServiceRunner::call('services/users/by_internal_id', new OkapiInternalRequest(
-			$request->consumer, null, array('internal_id' => $request->token->user_id,
+			$request->consumer, $request->token, array('internal_id' => $request->token->user_id,
 			'fields' => 'is_admin|uuid|internal_id')));
 		
 		# Various integrity checks.
