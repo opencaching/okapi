@@ -12,9 +12,9 @@
 		<p>Type of an entry. This should be one of: <i>Found it</i>, <i>Didn't find it</i>
 		or <i>Comment</i>.</p>
 	</req>
-	<req name='comment'>
+	<opt name='comment'>
 		<p>Text to be submitted with the log entry. Plain-text (no HTML).</p>
-	</req>
+	</opt>
 	<opt name='when'>
 		<p>A date and time string, in any reasonable format (any acceptable by
 		PHP's <a href='http://pl2.php.net/strtotime'>strtotime</a> function,
