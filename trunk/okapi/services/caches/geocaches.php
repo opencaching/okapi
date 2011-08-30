@@ -119,7 +119,7 @@ class WebService
 						$entry['owner'] = array(
 							'uuid' => $row['user_uuid'],
 							'username' => $row['username'],
-							'profile_url' => $GLOBALS['absolute_server_URI']."viewprofile?userid=".$row['user_id']
+							'profile_url' => $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id']
 						);
 						break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
