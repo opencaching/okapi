@@ -46,7 +46,7 @@ class WebService
 			throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
 		$logtype_id = Okapi::logtypename2id($logtype);
 		$comment = $request->get_parameter('comment');
-		if (!$comment) throw new ParamMissing('comment');
+		if (!$comment) $comment = "";
 		$tmp = $request->get_parameter('when');
 		if ($tmp)
 		{
@@ -114,9 +114,8 @@ class WebService
 			if ($has_already_rated)
 				throw new CannotPublishException("You have already rated this cache once. Your rating cannot be changed.");
 		}
-		if (strlen(trim($comment)) < 5)
-			throw new CannotPublishException("Your comment must have at least 5 characters.".
-				(($logtype == 'Found it') ? " You may always say \"Thanks\" :)" : ""));
+		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
+			throw new CannotPublishException("Your have to supply some text for your comment.");
 			
 		# Add the log entry.
 		
