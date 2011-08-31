@@ -4,6 +4,7 @@ namespace okapi\services\users\users;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -35,13 +36,13 @@ class WebService
 		foreach ($fields as $field)
 			if (!in_array($field, self::$valid_field_names))
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
-		$rs = sql("
+		$rs = Db::query("
 			select user_id, uuid, username, admin
 			from user
 			where uuid in ('".implode("','", array_map('mysql_real_escape_string', $user_uuids))."')
 		");
 		$results = array();
-		while ($row = sql_fetch_assoc($rs))
+		while ($row = mysql_fetch_assoc($rs))
 		{
 			$entry = array();
 			foreach ($fields as $field)

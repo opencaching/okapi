@@ -2,15 +2,14 @@
 
 namespace okapi\services\users\by_usernames;
 
-use okapi\OkapiInternalRequest;
-
-use okapi\OkapiServiceRunner;
-
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\services\caches\search\SearchAssistant;
+use okapi\OkapiServiceRunner;
+use okapi\OkapiInternalRequest;
 
 class WebService
 {
@@ -36,13 +35,13 @@ class WebService
 		# There's no need to validate the fields parameter as the 'users'
 		# method does this (it will raise a proper exception on invalid values).
 		
-		$rs = sql("
+		$rs = Db::query("
 			select username, uuid
 			from user
 			where username in ('".implode("','", array_map('mysql_real_escape_string', $usernames))."')
 		");
 		$username2useruuid = array();
-		while ($row = sql_fetch_assoc($rs))
+		while ($row = mysql_fetch_assoc($rs))
 		{
 			$username2useruuid[$row['username']] = $row['uuid'];
 		}

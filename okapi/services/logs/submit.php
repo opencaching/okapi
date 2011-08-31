@@ -4,6 +4,7 @@ namespace okapi\services\logs\submit;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -68,7 +69,7 @@ class WebService
 		
 		$cache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
 			$request->consumer, null, array('cache_code' => $cache_code,
-			'fields' => 'internal_id|status|owner|type')));
+			'fields' => 'internal_id|status|owner|type|req_passwd')));
 		$user = OkapiServiceRunner::call('services/users/by_internal_id', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('internal_id' => $request->token->user_id,
 			'fields' => 'is_admin|uuid|internal_id')));
@@ -90,7 +91,7 @@ class WebService
 			throw new BadRequest("Rating is allowed only for 'Found it' logtypes.");
 		if ($logtype == 'Found it')
 		{
-			$has_already_found_it = sqlValue("
+			$has_already_found_it = Db::select_value("
 				select 1
 				from cache_logs
 				where
@@ -98,30 +99,42 @@ class WebService
 					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 					and type = '".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."'
 					and deleted = 0
-			", null);
+			");
 			if ($has_already_found_it)
 				throw new CannotPublishException("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!");
 		}
 		if ($rating)
 		{
-			$has_already_rated = sqlValue("
+			$has_already_rated = Db::select_value("
 				select 1
 				from scores
 				where
 					user_id = '".mysql_real_escape_string($user['internal_id'])."'
 					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-			", null);
+			");
 			if ($has_already_rated)
 				throw new CannotPublishException("You have already rated this cache once. Your rating cannot be changed.");
 		}
 		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
 			throw new CannotPublishException("Your have to supply some text for your comment.");
-			
+		if ($logtype == 'Found it' && $cache['req_passwd'])
+		{
+			$valid_password = Db::select_value("
+				select logpw
+				from caches
+				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+			");
+			$supplied_password = $request->get_parameter('password');
+			if (!$supplied_password)
+				throw new CannotPublishException("This cache requires a password. You didn't provide one!");
+			if (strtolower($supplied_password) != strtolower($valid_password))
+				throw new CannotPublishException("Invalid password!");
+		}
+		
 		# Add the log entry.
 		
 		$log_uuid = create_uuid();
-		# Can't use "sql" here because it fails. WRTODO: get rid od "sql" and "sqlValue".
-		mysql_query("
+		Db::execute("
 			insert into cache_logs (uuid, cache_id, user_id, type, date, text, last_modified, date_created, node)
 			values (
 				'".mysql_real_escape_string($log_uuid)."',
@@ -135,6 +148,17 @@ class WebService
 				'".mysql_real_escape_string($GLOBALS['oc_nodeid'])."'
 			);
 		");
+		$log_internal_id = Db::last_insert_id();
+		
+		# Also, store the information on consumer_key which have created this log entry.
+		
+		Db::execute("
+			insert into okapi_cache_logs (log_id, consumer_key)
+			values (
+				'".mysql_real_escape_string($log_internal_id)."',
+				'".mysql_real_escape_string($request->consumer->key)."'
+			);
+		");
 		
 		# WRTODO: Add rating.
 		
@@ -142,7 +166,7 @@ class WebService
 		
 		if ($logtype == 'Found it')
 		{
-			sql("
+			Db::execute("
 				update caches
 				set
 					founds = founds + 1,
@@ -152,7 +176,7 @@ class WebService
 		}
 		elseif ($logtype == "Didn't find it")
 		{
-			sql("
+			Db::execute("
 				update caches
 				set notfounds = notfounds + 1
 				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
@@ -160,7 +184,7 @@ class WebService
 		}
 		elseif ($logtype == 'Comment')
 		{
-			sql("
+			Db::execute("
 				update caches
 				set notes = notes + 1
 				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
@@ -180,7 +204,7 @@ class WebService
 			case 'Comment': $field_to_increment = 'log_notes_count'; break;
 			default: throw new Exception("Missing logtype '$logtype' in a switch..case statetment.");
 		}
-		sql("
+		Db::execute("
 			update user
 			set $field_to_increment = $field_to_increment + 1
 			where user_id = '".mysql_real_escape_string($user['internal_id'])."'

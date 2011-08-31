@@ -4,6 +4,7 @@ namespace okapi\views\apps\authorized;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
@@ -15,7 +16,7 @@ class View
 		$token_key = isset($_GET['oauth_token']) ? $_GET['oauth_token'] : '';
 		$verifier = isset($_GET['oauth_verifier']) ? $_GET['oauth_verifier'] : '';
 		
-		$rs = sql("
+		$token = Db::select_row("
 			select
 				c.`key` as consumer_key,
 				c.name as consumer_name,
@@ -28,8 +29,6 @@ class View
 				t.`key` = '".mysql_real_escape_string($token_key)."'
 				and t.consumer_key = c.`key`
 		");
-		$token = sql_fetch_assoc($rs);
-		mysql_free_result($rs);
 
 		if (!$token)
 		{

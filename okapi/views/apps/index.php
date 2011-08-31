@@ -4,6 +4,7 @@ namespace okapi\views\apps\index;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
@@ -23,7 +24,7 @@ class View
 		
 		# Get the list of authorized apps.
 		
-		$rs = sql("
+		$rs = Db::query("
 			select c.`key`, c.name, c.url
 			from
 				okapi_consumers c,
@@ -36,7 +37,7 @@ class View
 		$vars = array();
 		$vars['site_name'] = Okapi::get_normalized_site_name();
 		$vars['apps'] = array();
-		while ($row = sql_fetch_assoc($rs))
+		while ($row = mysql_fetch_assoc($rs))
 			$vars['apps'][] = $row;
 		mysql_free_result($rs);
 		

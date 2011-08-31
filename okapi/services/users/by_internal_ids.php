@@ -3,6 +3,7 @@
 namespace okapi\services\users\by_internal_ids;
 
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiRequest;
@@ -34,13 +35,13 @@ class WebService
 		# There's no need to validate the fields parameter as the 'users'
 		# method does this (it will raise a proper exception on invalid values).
 		
-		$rs = sql("
+		$rs = Db::query("
 			select user_id, uuid
 			from user
 			where user_id in ('".implode("','", array_map('mysql_real_escape_string', $internal_ids))."')
 		");
 		$internalid2useruuid = array();
-		while ($row = sql_fetch_assoc($rs))
+		while ($row = mysql_fetch_assoc($rs))
 		{
 			$internalid2useruuid[$row['user_id']] = $row['uuid'];
 		}
