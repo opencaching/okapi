@@ -121,7 +121,6 @@ class WebService
 		# Add the log entry.
 		
 		$log_uuid = create_uuid();
-		# Can't use "sql" here because it fails. WRTODO: get rid od "sql" and "sqlValue".
 		Db::execute("
 			insert into cache_logs (uuid, cache_id, user_id, type, date, date_created, text, node)
 			values (
@@ -133,6 +132,17 @@ class WebService
 				now(),
 				'".mysql_real_escape_string(htmlspecialchars($comment, ENT_QUOTES))."',
 				'".mysql_real_escape_string($GLOBALS['oc_nodeid'])."'
+			);
+		");
+		$log_internal_id = Db::last_insert_id();
+		
+		# Also, store the information on consumer_key which have created this log entry.
+		
+		Db::execute("
+			insert into okapi_cache_logs (log_id, consumer_key)
+			values (
+				'".mysql_real_escape_string($log_internal_id)."',
+				'".mysql_real_escape_string($request->consumer->key)."'
 			);
 		");
 		

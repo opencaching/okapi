@@ -160,6 +160,23 @@ class View
 	
 	private static function ver6()
 	{
+		# OKAPI was creating log entries with empty date_created. Fixing that.
 		Db::execute("update cache_logs set date_created = now() where date_created='0000-00-00' and user_id <> -1");
+	}
+	
+	private static function ver7()
+	{
+		# In fact, this should be "alter cache_logs add column okapi_consumer_key...", but
+		# I don't want for OKAPI to mess with the rest of DB. Keeping it separete for now.
+		# One day, this table could come in handy. See:
+		# http://code.google.com/p/opencaching-api/issues/detail?id=64
+		Db::execute("
+			CREATE TABLE okapi_cache_logs (
+				log_id int(11) NOT NULL,
+				consumer_key varchar(20) charset ascii collate ascii_bin NOT NULL,
+				PRIMARY KEY  (log_id),
+				KEY by_consumer (consumer_key)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+		");
 	}
 }
