@@ -118,9 +118,15 @@ of strings and integers. Such objects can be formatted in several ways using
 		<p><b>format</b> - name of the format in which you'd like your result
 		to be returned in. Currently supported output formats:</p>
 		<ul>
-			<li><b>json</b> - <a href='http://en.wikipedia.org/wiki/JSON'>JSON</a> format (default),</li>
+			<li>
+				<p><b>json</b> - <a href='http://en.wikipedia.org/wiki/JSON'>JSON</a> format (default),</p>
+				<p><b>Important:</b> Use <a href='https://chrome.google.com/webstore/detail/chklaanhfefbnpoihckbnefhakgolnmc'>Chrome</a>
+				or <a href='https://addons.mozilla.org/en-US/firefox/addon/jsonview/'>Firefox</a> extensions
+				to view JSON results directly in your browser. This simplifies debuging <b>a lot</b>!</p>
+			</li>
 			<li><b>jsonp</b> - <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> format, if
 			you choose this one, you have to specify the <b>callback</b> parameter.</li>
+			<!-- WRTODO: xmlmap doc? -->
 		</ul>
 	</li>
 	<li>

@@ -563,12 +563,18 @@ class Okapi
 		");
 	}
 	
+	/** Escape string for use with XML. */
+	public static function xmlentities($string)
+	{
+		return strtr($string, array("<" => "&lt;", ">" => "&gt;", "\"" => "&quot;", "'" => "&apos;", "&" => "&amp;"));
+	}
+	
 	/**
 	 * Print out the standard OKAPI response. The $object will be printed
 	 * using one of the default formatters (JSON, JSONP, XML, etc.). Formatter is
 	 * auto-detected by peeking on the $request 'format' parameter.
 	 */
-	public static function formatted_response(OkapiRequest $request, $object)
+	public static function formatted_response(OkapiRequest $request, &$object)
 	{
 		if ($request instanceof OkapiInternalRequest && ($request->i_want_okapi_response == false))
 		{
@@ -578,7 +584,7 @@ class Okapi
 		}
 		$format = $request->get_parameter('format');
 		if ($format == null) $format = 'json';
-		if (!in_array($format, array('json', 'jsonp')))
+		if (!in_array($format, array('json', 'jsonp', 'xmlmap')))
 			throw new InvalidParam('format', "'$format'");
 		$callback = $request->get_parameter('callback');
 		if ($callback && $format != 'jsonp')
@@ -601,6 +607,79 @@ class Okapi
 			$response->body = $callback."(".json_encode($object).");";
 			return $response;
 		}
+		elseif ($format == 'xmlmap')
+		{
+			$response = new OkapiHttpResponse();
+			$response->content_type = "text/xml; charset=utf-8";
+			$response->body = self::xmlmap_dumps($object);
+			return $response;
+		}
+	}
+	
+	private static function _xmlmap_add(&$chunks, &$obj)
+	{
+		if (is_string($obj))
+		{
+			$chunks[] = "<string>".
+			$chunks[] = self::xmlentities($obj);
+			$chunks[] = "</string>";
+		}
+		elseif (is_int($obj))
+		{
+			$chunks[] = "<int>$obj;</int>";
+		}
+		elseif (is_float($obj))
+		{
+			$chunks[] = "<float>$obj</float>";
+		}
+		elseif (is_bool($obj))
+		{
+			$chunks[] = $obj ? "<bool>true</bool>" : "<bool>false</bool>";
+		}
+		elseif (is_null($obj))
+		{
+			$chunks[] = "<null/>";
+		}
+		elseif (is_array($obj))
+		{
+			# Have to check if this is associative or not! Shit. I hate PHP.
+			if (array_keys($obj) === range(0, count($obj) - 1))
+			{
+				# Not assoc.
+				$chunks[] = "<list>";
+				foreach ($obj as &$item_ref)
+				{
+					$chunks[] = "<item>";
+					self::_xmlmap_add($chunks, $item_ref);
+					$chunks[] = "</item>";
+				}
+				$chunks[] = "</list>";
+			}
+			else
+			{
+				# Assoc.
+				$chunks[] = "<dict>";
+				foreach ($obj as $key => &$item_ref)
+				{
+					$chunks[] = "<item key=\"".self::xmlentities($key)."\">";
+					self::_xmlmap_add($chunks, $item_ref);
+					$chunks[] = "</item>";
+				}
+				$chunks[] = "</dict>";
+			}
+		}
+		else
+		{
+			throw new Exception("Cannot encode as xmlmap: " + print_r($obj, true));
+		}
+	}
+	
+	/** Return the object in a serialized version, in the "xmlmap" format. */
+	public static function xmlmap_dumps(&$obj)
+	{
+		$chunks = array();
+		self::_xmlmap_add($chunks, $obj);
+		return implode('', $chunks);
 	}
 	
 	private static $cache_types = array(
