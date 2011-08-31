@@ -760,6 +760,44 @@ class Okapi
 	}
 }
 
+/** A data caching layer. For slow SQL queries etc. */
+class Cache
+{
+	/**
+	 * Save object $value under the key $key. Store this object for
+	 * $timeout seconds. $key must be a string of max 32 characters in length.
+	 * $value might be any serializable PHP object.
+	 */
+	public static function set($key, $value, $timeout)
+	{
+		Db::execute("
+			replace into okapi_cache (`key`, value, expires)
+			values (
+				'".mysql_real_escape_string($key)."',
+				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
+				date_add(now(), interval '".mysql_real_escape_string($timeout)."' second)
+			);
+		");
+	}
+	
+	/**
+	 * Retrieve object stored under the key $key. If object does not
+	 * exist or timeout expired, return null.
+	 */
+	public static function get($key)
+	{
+		$blob = Db::select_value("
+			select value
+			from okapi_cache
+			where
+				`key` = '".mysql_real_escape_string($key)."'
+				and expires > now()
+		");
+		if (!$blob)
+			return null;
+		return unserialize(gzinflate($blob));
+	}
+}
 
 /**
  * Represents an OKAPI web method request.

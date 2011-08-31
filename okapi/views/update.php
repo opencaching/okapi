@@ -179,4 +179,16 @@ class View
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 		");
 	}
+	
+	private static function ver8()
+	{
+		Db::execute("
+			CREATE TABLE okapi_cache (
+				`key` varchar(32) NOT NULL,
+				value blob,
+				expires datetime,
+				PRIMARY KEY  (`key`)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+		");
+	}
 }
