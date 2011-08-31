@@ -14,6 +14,7 @@ class View
 		
 		$vars = array(
 			'menu' => OkapiMenu::get_menu_html(),
+			'installations' => OkapiMenu::get_installations(),
 		);
 		
 		$response = new Okapi404Response();

@@ -7,8 +7,12 @@ span.note { color: #888; font-size: 70%; font-weight: normal; }
 
 body.api { background: #f5f1eb; }
 .okd_mid { width: 1025px; margin: 0 auto; background: url(middle.gif) #f5f1eb; background-position: top center; background-repeat: repeat-y; }
-.okd_top { padding-top: 230px; width: 1025px; margin: 0 auto; background: url(top.jpg); background-position: top center; background-repeat: no-repeat; }
+.okd_top { width: 1025px; margin: 0 auto; background: url(top.jpg); background-position: top center; background-repeat: no-repeat; }
+.okd_top_pad { height: 230px; width: 1025px; }
 .okd_bottom { width: 1025px; height: 64px; margin: 0 auto; background: url(bottom.gif); background-position: top center; background-repeat: no-repeat; }
+.okd_switcher { text-align: right; padding: 30px 30px 0 0; font-size: 11px; color: #888; }
+.okd_switcher select { border: 1px solid #bbb; padding: 2px; font-size: 12px; }
+
 .signup { border: 1px solid #bbb; }
 .signup td { background: #eee9e9; padding: 8px 16px; }
 .signup input.text { border: 1px solid #aaa; padding: 3px 4px 2px 4px; width: 300px }
