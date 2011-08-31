@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>404 Page Not Found</title>
-		<link rel="stylesheet" href="/okapi/static/common.css">
+		<link rel="stylesheet" href="/okapi/static/common.css?<?= $vars['okapi_rev'] ?>">
 	</head>
 	<body class='api'>
 		<div class='okd_mid'>

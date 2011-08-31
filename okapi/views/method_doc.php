@@ -35,6 +35,7 @@ class View
 			'menu' => OkapiMenu::get_menu_html($methodname.".html"),
 			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 			'installations' => OkapiMenu::get_installations(),
+			'okapi_rev' => Okapi::$revision,
 		);
 		
 		$response = new OkapiHttpResponse();

@@ -9,12 +9,12 @@ $m = $vars['method'];
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>OKAPI Reference - <?= $m['name'] ?></title>
-		<link rel="stylesheet" href="/okapi/static/common.css">
+		<link rel="stylesheet" href="/okapi/static/common.css?<?= $vars['okapi_rev'] ?>">
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
 			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
 		</script>
-		<script src='/okapi/static/common.js'></script>
+		<script src='/okapi/static/common.js?<?= $vars['okapi_rev'] ?>'></script>
 	</head>
 	<body class='api'>
 		<div class='okd_mid'>
