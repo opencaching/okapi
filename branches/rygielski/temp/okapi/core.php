@@ -278,7 +278,9 @@ class Db
 	public static function execute($query)
 	{
 		$rs = self::query($query);
-		mysql_free_result($rs);
+		if ($rs !== true)
+			throw new DbException("Db::execute returned a result set for your query. ".
+				"You should use Db::select_* or Db::query for SELECT queries!");
 	}
 	
 	public static function query($query)

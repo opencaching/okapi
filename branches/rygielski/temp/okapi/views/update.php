@@ -19,7 +19,7 @@ class View
 	public static function get_current_version()
 	{
 		try {
-			$db_version = Db:select_value("
+			$db_version = Db::select_value("
 				select value
 				from okapi_vars
 				where var = 'db_version'
@@ -156,5 +156,10 @@ class View
 				KEY by_consumer (consumer_key)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 		");
+	}
+	
+	private static function ver6()
+	{
+		Db::execute("update cache_logs set date_created = now() where date_created='0000-00-00' and user_id <> -1");
 	}
 }
