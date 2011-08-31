@@ -122,7 +122,7 @@ of strings and integers. Such objects can be formatted in several ways using
 				<p><b>json</b> - <a href='http://en.wikipedia.org/wiki/JSON'>JSON</a> format (default),</p>
 				<p><b>Important:</b> Use <a href='https://chrome.google.com/webstore/detail/chklaanhfefbnpoihckbnefhakgolnmc'>Chrome</a>
 				or <a href='https://addons.mozilla.org/en-US/firefox/addon/jsonview/'>Firefox</a> extensions
-				to view JSON results directly in your browser. This simplifies debuging <b>a lot</b>!</p>
+				to view JSON results directly in your browser. This simplifies debugging <b>a lot</b>!</p>
 			</li>
 			<li><b>jsonp</b> - <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> format, if
 			you choose this one, you have to specify the <b>callback</b> parameter.</li>
