@@ -131,8 +131,10 @@ of strings and integers. Such objects can be formatted in several ways using
 				to view JSON results directly in your browser. This simplifies debugging <b>a lot</b>!</p>
 			</li>
 			<li><b>jsonp</b> - <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> format, if
-			you choose this one, you have to specify the <b>callback</b> parameter.</li>
-			<!-- WRTODO: xmlmap doc? -->
+			you choose this one, you have to specify the <b>callback</b> parameter,</li>
+			<li><b>xmlmap</b> - XML format. This is produced by mapping JSON datatypes to XML elements.
+			Keep in mind, that XML format is larger than JSON and it takes more time to generate.
+			Try to use JSON when it's possible.</li>
 		</ul>
 	</li>
 	<li>

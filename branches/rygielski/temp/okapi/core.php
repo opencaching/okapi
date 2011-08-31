@@ -656,13 +656,13 @@ class Okapi
 	{
 		if (is_string($obj))
 		{
-			$chunks[] = "<string>".
+			$chunks[] = "<string>";
 			$chunks[] = self::xmlentities($obj);
 			$chunks[] = "</string>";
 		}
 		elseif (is_int($obj))
 		{
-			$chunks[] = "<int>$obj;</int>";
+			$chunks[] = "<int>$obj</int>";
 		}
 		elseif (is_float($obj))
 		{
