@@ -5,6 +5,7 @@ namespace okapi\views\menu;
 use Exception;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
+use okapi\OkapiInternalRequest;
 
 require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
 
@@ -59,5 +60,14 @@ class OkapiMenu
 			$chunks[] = "</div>";
 		}
 		return implode("", $chunks);
+	}
+	
+	public static function get_installations()
+	{
+		$installations = OkapiServiceRunner::call("services/apisrv/installations",
+			new OkapiInternalRequest(null, null, array()));
+		foreach ($installations as &$inst_ref)
+			$inst_ref['selected'] = ($inst_ref['site_url'] == $GLOBALS['absolute_server_URI']);
+		return $installations;
 	}
 }

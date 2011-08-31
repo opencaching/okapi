@@ -6,6 +6,7 @@ use okapi\OkapiHttpResponse;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Cache;
 use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\OkapiRedirectResponse;
@@ -18,17 +19,7 @@ class View
 {
 	public static function get_current_version()
 	{
-		try {
-			$db_version = Db::select_value("
-				select value
-				from okapi_vars
-				where var = 'db_version'
-			");
-		} catch (Exception $e) {
-			# Table okapi_vars does not exist.
-			return 0;
-		}
-		return $db_version + 0;
+		return Okapi::get_var('db_version', 0) + 0;
 	}
 	
 	public static function get_max_version()
@@ -55,6 +46,10 @@ class View
 	
 	public static function call()
 	{
+		ignore_user_abort(true);
+		set_time_limit(0);
+		Cache::clear();
+		
 		header("Content-Type: text/plain; chatset=utf-8");
 		$current_ver = self::get_current_version();
 		$max_ver = self::get_max_version();
@@ -76,10 +71,7 @@ class View
 			try {
 				call_user_func(array(__CLASS__, "ver".$version_to_apply));
 				self::out(" OK!\n");
-				Db::execute("
-					replace into okapi_vars (var, value)
-					values ('db_version', '".mysql_real_escape_string($version_to_apply)."');
-				");
+				Okapi::set_var('db_version', $version_to_apply);
 				$current_ver += 1;
 			} catch (Exception $e) {
 				self::out(" ERROR\n\n");
@@ -160,8 +152,7 @@ class View
 	
 	private static function ver6()
 	{
-		# OKAPI was creating log entries with empty date_created. Fixing that.
-		Db::execute("update cache_logs set date_created = now() where date_created='0000-00-00' and user_id <> -1");
+		# Removed this update. It seemed dangerous to run such updates on unknown OC installations.
 	}
 	
 	private static function ver7()

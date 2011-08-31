@@ -443,6 +443,42 @@ class Okapi
 	public static $data_store;
 	public static $server;
 	public static $revision = null; # This gets replaced in automatically deployed packages
+	private static $okapi_vars = null;
+	
+	/** Get a variable stored in okapi_vars. If variable not found, return $default. */
+	public static function get_var($varname, $default = null)
+	{
+		if (self::$okapi_vars === null)
+		{
+			$rs = Db::query("
+				select var, value
+				from okapi_vars
+			");
+			self::$okapi_vars = array();
+			while ($row = mysql_fetch_assoc($rs))
+				self::$okapi_vars[$row['var']] = $row['value'];
+		}
+		if (isset(self::$okapi_vars[$varname]))
+			return self::$okapi_vars[$varname];
+		return $default;
+	}
+	
+	/**
+	 * Save a variable to okapi_vars. WARNING: The entire content of okapi_vars table
+	 * is loaded on EVERY execution. Do not store data in this table, unless it's
+	 * frequently needed.
+	 */
+	public static function set_var($varname, $value)
+	{
+		Db::execute("
+			replace into okapi_vars (var, value)
+			values (
+				'".mysql_real_escape_string($varname)."',
+				'".mysql_real_escape_string($value)."');
+		");
+		self::$okapi_vars[$varname] = $value;
+	}
+	
 	
 	/** Returns something like "OpenCaching.PL" or "OpenCaching.DE". */
 	public static function get_normalized_site_name($site_url = null)
@@ -620,13 +656,13 @@ class Okapi
 	{
 		if (is_string($obj))
 		{
-			$chunks[] = "<string>".
+			$chunks[] = "<string>";
 			$chunks[] = self::xmlentities($obj);
 			$chunks[] = "</string>";
 		}
 		elseif (is_int($obj))
 		{
-			$chunks[] = "<int>$obj;</int>";
+			$chunks[] = "<int>$obj</int>";
 		}
 		elseif (is_float($obj))
 		{
@@ -797,6 +833,12 @@ class Cache
 			return null;
 		return unserialize(gzinflate($blob));
 	}
+	
+	/** Clear all cache. (i.e. invalidate all keys) */
+	public static function clear()
+	{
+		Db::execute("truncate okapi_cache;");
+	}
 }
 
 /**
@@ -893,6 +935,15 @@ class OkapiHttpRequest extends OkapiRequest
 		
 		if ($this->get_parameter('oauth_signature'))
 		{
+			# User is using OAuth. There is no cronjob for deleting old Request Tokens
+			# and Nonces, so we have to check if cleanup is needed.
+			
+			$timestamp = Okapi::get_var('last_oauth_cleanup', 0);
+			if ($timestamp < time() - 300)
+				Okapi::$data_store->cleanup();
+			
+			# Now we know that cleanup was executed no more than 5 minutes ago.
+			
 			list($this->consumer, $this->token) = Okapi::$server->
 				verify_request2($this->request, $this->opt_token_type, $this->opt_min_auth_level == 3);
 			if ($this->get_parameter('consumer_key') && $this->get_parameter('consumer_key') != $this->get_parameter('oauth_consumer_key'))

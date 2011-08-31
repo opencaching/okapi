@@ -165,4 +165,20 @@ class OkapiDataStore extends OAuthDataStore
 		}
 		return $access_token;
 	}
+	
+	public function cleanup()
+	{
+		Db::execute("
+			delete from okapi_nonces
+			where
+				timestamp < unix_timestamp(date_add(now(), interval -6 minute))
+				or timestamp > unix_timestamp(date_add(now(), interval 6 minute))
+		");
+		Db::execute("
+			delete from okapi_tokens
+			where
+				token_type = 'request'
+				and timestamp < unix_timestamp(date_add(now(), interval -2 hour))
+		");
+	}
 }
