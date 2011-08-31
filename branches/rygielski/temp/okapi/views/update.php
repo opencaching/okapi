@@ -6,6 +6,7 @@ use okapi\OkapiHttpResponse;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Cache;
 use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\OkapiRedirectResponse;
@@ -56,6 +57,7 @@ class View
 	public static function call()
 	{
 		header("Content-Type: text/plain; chatset=utf-8");
+		Cache::clear();
 		$current_ver = self::get_current_version();
 		$max_ver = self::get_max_version();
 		self::out("Current OKAPI database version: $current_ver\n");

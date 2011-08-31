@@ -797,6 +797,12 @@ class Cache
 			return null;
 		return unserialize(gzinflate($blob));
 	}
+	
+	/** Clear all cache. (i.e. invalidate all keys) */
+	public static function clear()
+	{
+		Db::execute("truncate okapi_cache;");
+	}
 }
 
 /**
