@@ -160,8 +160,7 @@ class View
 	
 	private static function ver6()
 	{
-		# OKAPI was creating log entries with empty date_created. Fixing that.
-		Db::execute("update cache_logs set date_created = now() where date_created='0000-00-00' and user_id <> -1");
+		# Removed this update. It seemed dangerous to run such updates on unknown OC installations.
 	}
 	
 	private static function ver7()
