@@ -4,6 +4,8 @@ namespace okapi\services\apisrv\stats;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
+use okapi\Cache;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -21,26 +23,29 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
-		$result = array();
-		
-		# The 'totalstats.inc.php' file seems to be written by some kind of a
-		# cron script. I don't even have it in my test installation. Anyway,
-		# I'll try to include it and get this data out of it... (BTW, wouldn't
-		# it be MUCH easier to use memcached, or even any other cache backend,
-		# rather than producing these "cache files"?)
-		try
+		$cachekey = "apisrv/stats";
+		$result = Cache::get($cachekey);
+		if (!$result)
 		{
-			$total_stats_filename = $GLOBALS['dynstylepath']."totalstats.inc.php";
-			if (!file_exists($total_stats_filename))
-				throw new Exception();
-			include_once $total_stats_filename;
-			$result['cache_count'] = $GLOBALS['vars']['total_hiddens'] + 0;
-			$result['user_count'] = $GLOBALS['vars']['users'] + 0;
-		} catch (Exception $e) {
-			$result['cache_count'] = 0;
-			$result['user_count'] = 0;
+			$result = array(
+				'cache_count' => Db::select_value("
+					select count(*) from caches where status in (1,2,3)
+				"),
+				'user_count' => Db::select_value("
+					select count(*) from (
+						select distinct user_id
+						from cache_logs
+						where
+							type in (1,2)
+							and deleted = 0
+						UNION DISTINCT
+						select distinct user_id
+						from caches
+					) as t;
+				"),
+			);
+			Cache::set($cachekey, $result, 86400); # cache it for one day
 		}
-		
 		return Okapi::formatted_response($request, $result);
 	}
 }
