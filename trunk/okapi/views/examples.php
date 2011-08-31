@@ -24,6 +24,7 @@ class View
 			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 			'site_url' => $GLOBALS['absolute_server_URI'],
 			'installations' => OkapiMenu::get_installations(),
+			'okapi_rev' => Okapi::$revision,
 		);
 		
 		$response = new OkapiHttpResponse();
