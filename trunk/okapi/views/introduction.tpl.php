@@ -45,7 +45,12 @@ and you receive a JSON-formatted data, that you may parse and use within your ow
 <p><b>Example.</b> Click the following link to run a method that prints out the list of
 all available methods:</p>
 <ul>
-	<li><a href='<?= $vars['site_url'] ?>okapi/services/apiref/method_index'><?= $vars['site_url'] ?>okapi/services/apiref/method_index</a></li>
+	<li>
+		<p><a href='<?= $vars['site_url'] ?>okapi/services/apiref/method_index'><?= $vars['site_url'] ?>okapi/services/apiref/method_index</a></p>
+		<p>Note: You need to install a proper <a href='https://chrome.google.com/webstore/detail/chklaanhfefbnpoihckbnefhakgolnmc'>Chrome</a>
+		or <a href='https://addons.mozilla.org/en-US/firefox/addon/jsonview/'>Firefox</a> extension
+		in order to view JSON directly in your browser.</p>
+	</li>
 </ul>
 <p>You've made your first OKAPI request! This method was a simple one.
 It didn't require any arguments and it didn't require you to use a Consumer Key.
