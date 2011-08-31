@@ -122,7 +122,7 @@ class WebService
 		$log_uuid = create_uuid();
 		# Can't use "sql" here because it fails. WRTODO: get rid od "sql" and "sqlValue".
 		mysql_query("
-			insert into cache_logs (uuid, cache_id, user_id, type, date, text, node)
+			insert into cache_logs (uuid, cache_id, user_id, type, date, text, date_created, node)
 			values (
 				'".mysql_real_escape_string($log_uuid)."',
 				'".mysql_real_escape_string($cache['internal_id'])."',
@@ -130,6 +130,7 @@ class WebService
 				'".mysql_real_escape_string($logtype_id)."',
 				from_unixtime('".mysql_real_escape_string($when)."'),
 				'".mysql_real_escape_string(htmlspecialchars($comment, ENT_QUOTES))."',
+				from_unixtime('".mysql_real_escape_string(time())."'),
 				'".mysql_real_escape_string($GLOBALS['oc_nodeid'])."'
 			);
 		");
