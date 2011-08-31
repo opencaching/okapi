@@ -4,6 +4,7 @@ namespace okapi\services\caches\geocaches;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\Settings;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
@@ -23,7 +24,7 @@ class WebService
 	
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
-		'rating', 'rating_votes', 'recommendations', 'description', 'descriptions', 'hint',
+		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
 		'hints', 'images', 'latest_logs', 'last_found', 'last_modified', 'date_created',
 		'date_hidden', 'internal_id');
 	
@@ -51,11 +52,11 @@ class WebService
 			# - Caches do not have ratings.
 			# - Total numbers of found and notfounds are kept in the "stat_caches" table.
 			
-			$rs = sql("
+			$rs = Db::query("
 				select
 					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
-					c.terrain, c.wp_oc, u.uuid as user_uuid, u.username, u.user_id,
+					c.terrain, c.wp_oc, c.logpw, u.uuid as user_uuid, u.username, u.user_id,
 					
 					ifnull(sc.toprating, 0) as topratings,
 					ifnull(sc.found, 0) as founds,
@@ -77,11 +78,11 @@ class WebService
 			# - Caches have ratings.
 			# - Total numbers of found and notfounds are kept in the "caches" table.
 			
-			$rs = sql("
+			$rs = Db::query("
 				select
 					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
-					c.terrain, c.wp_oc, u.uuid as user_uuid, u.username, u.user_id,
+					c.terrain, c.wp_oc, c.logpw, u.uuid as user_uuid, u.username, u.user_id,
 					
 					c.topratings,
 					c.founds,
@@ -100,7 +101,7 @@ class WebService
 
 		$results = array();
 		$cacheid2wptcode = array();
-		while ($row = sql_fetch_assoc($rs))
+		while ($row = mysql_fetch_assoc($rs))
 		{
 			$entry = array();
 			$cacheid2wptcode[$row['cache_id']] = $row['wp_oc'];
@@ -137,6 +138,7 @@ class WebService
 						break;
 					case 'rating_votes': $entry['rating_votes'] = $row['votes'] + 0; break;
 					case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
+					case 'req_passwd': $entry['req_passwd'] = $row['logpw'] ? true : false; break;
 					case 'description': /* handled separately */ break;
 					case 'descriptions': /* handled separately */ break;
 					case 'hint': /* handled separately */ break;
@@ -170,12 +172,12 @@ class WebService
 			
 			# Get cache descriptions and hints.
 			
-			$rs = sql("
+			$rs = Db::query("
 				select cache_id, language, `desc`, hint
 				from cache_desc
 				where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 			");
-			while ($row = sql_fetch_assoc($rs))
+			while ($row = mysql_fetch_assoc($rs))
 			{
 				$cache_code = $cacheid2wptcode[$row['cache_id']];
 				// strtolower - ISO 639-1 codes are lowercase
@@ -205,14 +207,14 @@ class WebService
 		{
 			foreach ($results as &$result_ref)
 				$result_ref['images'] = array();
-			$rs = sql("
+			$rs = Db::query("
 				select object_id, url, thumb_url, title, spoiler
 				from pictures
 				where
 					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 					and display = 1
 			");
-			while ($row = sql_fetch_assoc($rs))
+			while ($row = mysql_fetch_assoc($rs))
 			{
 				$cache_code = $cacheid2wptcode[$row['object_id']];
 				$results[$cache_code]['images'][] = array(
@@ -235,14 +237,14 @@ class WebService
 			# technique I could think of...
 			
 			$cachelogs = array();
-			$rs = sql("
+			$rs = Db::query("
 				select cache_id, id
 				from cache_logs
 				where
 					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 					and deleted = 0
 			");
-			while ($row = sql_fetch_assoc($rs))
+			while ($row = mysql_fetch_assoc($rs))
 				$cachelogs[$row['cache_id']][] = $row['id']; // @
 			$logids = array();
 			foreach ($cachelogs as $cache_key => &$logids_ref)
@@ -253,7 +255,7 @@ class WebService
 			
 			# Now retrieve text and join.
 			
-			$rs = sql("
+			$rs = Db::query("
 				select cl.cache_id, cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
 					u.uuid as user_uuid, u.username, u.user_id
 				from cache_logs cl, user u
@@ -264,7 +266,7 @@ class WebService
 				order by cl.cache_id, cl.id desc
 			");
 			$cachelogs = array();
-			while ($row = sql_fetch_assoc($rs))
+			while ($row = mysql_fetch_assoc($rs))
 			{
 				$results[$cacheid2wptcode[$row['cache_id']]]['latest_logs'][] = array(
 					'uuid' => $row['uuid'],

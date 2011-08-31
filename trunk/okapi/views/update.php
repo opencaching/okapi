@@ -6,6 +6,7 @@ use okapi\OkapiHttpResponse;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\OkapiRedirectResponse;
 use okapi\ParamMissing;
@@ -18,11 +19,11 @@ class View
 	public static function get_current_version()
 	{
 		try {
-			$db_version = sqlValue("
+			$db_version = Db::select_value("
 				select value
 				from okapi_vars
 				where var = 'db_version'
-			", 0);
+			");
 		} catch (Exception $e) {
 			# Table okapi_vars does not exist.
 			return 0;
@@ -75,7 +76,7 @@ class View
 			try {
 				call_user_func(array(__CLASS__, "ver".$version_to_apply));
 				self::out(" OK!\n");
-				sql("
+				Db::execute("
 					replace into okapi_vars (var, value)
 					values ('db_version', '".mysql_real_escape_string($version_to_apply)."');
 				");
@@ -91,7 +92,7 @@ class View
 
 	private static function ver1()
 	{
-		sql("
+		Db::execute("
 			CREATE TABLE okapi_vars (
 				var varchar(32) charset ascii collate ascii_bin NOT NULL,
 				value text,
@@ -102,7 +103,7 @@ class View
 	
 	private static function ver2()
 	{
-		sql("
+		Db::execute("
 			CREATE TABLE okapi_authorizations (
 				consumer_key varchar(20) charset ascii collate ascii_bin NOT NULL,
 				user_id int(11) NOT NULL,
@@ -114,7 +115,7 @@ class View
 	
 	private static function ver3()
 	{
-		sql("
+		Db::execute("
 			CREATE TABLE okapi_consumers (
 				`key` varchar(20) charset ascii collate ascii_bin NOT NULL,
 				name varchar(100) collate utf8_general_ci NOT NULL,
@@ -129,7 +130,7 @@ class View
 	
 	private static function ver4()
 	{
-		sql("
+		Db::execute("
 			CREATE TABLE okapi_nonces (
 				consumer_key varchar(20) charset ascii collate ascii_bin NOT NULL,
 				`key` varchar(255) charset ascii collate ascii_bin NOT NULL,
@@ -141,7 +142,7 @@ class View
 	
 	private static function ver5()
 	{
-		sql("
+		Db::execute("
 			CREATE TABLE okapi_tokens (
 				`key` varchar(20) charset ascii collate ascii_bin NOT NULL,
 				secret varchar(40) charset ascii collate ascii_bin NOT NULL,
@@ -152,6 +153,28 @@ class View
 				verifier varchar(10) charset ascii collate ascii_bin default NULL,
 				callback varchar(2083) character set utf8 collate utf8_general_ci default NULL,
 				PRIMARY KEY  (`key`),
+				KEY by_consumer (consumer_key)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+		");
+	}
+	
+	private static function ver6()
+	{
+		# OKAPI was creating log entries with empty date_created. Fixing that.
+		Db::execute("update cache_logs set date_created = now() where date_created='0000-00-00' and user_id <> -1");
+	}
+	
+	private static function ver7()
+	{
+		# In fact, this should be "alter cache_logs add column okapi_consumer_key...", but
+		# I don't want for OKAPI to mess with the rest of DB. Keeping it separete for now.
+		# One day, this table could come in handy. See:
+		# http://code.google.com/p/opencaching-api/issues/detail?id=64
+		Db::execute("
+			CREATE TABLE okapi_cache_logs (
+				log_id int(11) NOT NULL,
+				consumer_key varchar(20) charset ascii collate ascii_bin NOT NULL,
+				PRIMARY KEY  (log_id),
 				KEY by_consumer (consumer_key)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 		");

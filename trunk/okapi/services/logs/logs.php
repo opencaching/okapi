@@ -4,6 +4,7 @@ namespace okapi\services\logs\logs;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -31,7 +32,7 @@ class WebService
 		
 		# Cache exists. Retrieving logs.
 			
-		$rs = sql("
+		$rs = Db::query("
 			select cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
 				u.uuid as user_uuid, u.username, u.user_id
 			from cache_logs cl, user u
@@ -42,7 +43,7 @@ class WebService
 			order by cl.id desc
 		");
 		$results = array();
-		while ($row = sql_fetch_assoc($rs))
+		while ($row = mysql_fetch_assoc($rs))
 		{
 			$results[] = array(
 				'uuid' => $row['uuid'],

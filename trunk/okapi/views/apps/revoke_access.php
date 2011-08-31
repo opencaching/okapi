@@ -4,6 +4,7 @@ namespace okapi\views\apps\revoke_access;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
@@ -25,13 +26,13 @@ class View
 		
 		# Just remove app (if it doesn't exist - nothing wrong will happen anyway).
 		
-		sql("
+		Db::execute("
 			delete from okapi_tokens
 			where
 				user_id = '".mysql_real_escape_string($GLOBALS['usr']['userid'])."'
 				and consumer_key = '".mysql_real_escape_string($consumer_key)."'
 		");
-		sql("
+		Db::execute("
 			delete from okapi_authorizations
 			where
 				user_id = '".mysql_real_escape_string($GLOBALS['usr']['userid'])."'
