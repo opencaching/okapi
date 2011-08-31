@@ -1,0 +1,52 @@
+<xml>
+	<brief>Submit a log entry</brief>
+	<issue-id>42</issue-id>
+	<desc>
+		<p>Submit a log entry for the geocache. Please note, that you won't be
+		able to use this method until you learn to handle OAuth.</p>
+	</desc>
+	<req name='cache_code'>
+		<p>Code of the geocache.</p>
+	</req>
+	<req name='logtype'>
+		<p>Type of an entry. This should be one of: <i>Found it</i>, <i>Didn't find it</i>
+		or <i>Comment</i>.</p>
+	</req>
+	<opt name='comment'>
+		<p>Text to be submitted with the log entry. Plain-text (no HTML).</p>
+	</opt>
+	<opt name='when'>
+		<p>A date and time string, in any reasonable format (any acceptable by
+		PHP's <a href='http://pl2.php.net/strtotime'>strtotime</a> function,
+		ISO 8601 preffered).</p>
+		<p>Indicates when the cache was found. If given, the log will be published
+		with the given date and time. If not, log will be published using the current
+		date and time.</p>
+	</opt>
+	<opt name='password'>
+		<p>Some caches require a password in order to submit a "Found it" log entry.
+		You may check if this caches requires password with <b>req_passwd</b> field
+		of the services/caches/geocache method.</p>
+	</opt>
+	<!--
+	This not yet implemented. Remove the comment when/if you implement this.
+	<opt name='rating'>
+		<p>An integer in range between 1 and 5 - user's optional rating of a found cache.</p>
+		<p>Important: <b>logtype</b> has to be "Found it" in order to use the <b>rating</b> argument.
+		If you use rating with other type of logtype, you will get a HTTP 400 error (instead of
+		a dictionary).</p>
+		<p>Note: you should allow your user to <b>not</b> rate a found cache.</p>
+	</opt>
+	-->
+	<common-format-params/>
+	<returns>
+		<p>A dictionary of the following structure:</p>
+		<ul>
+			<li><b>success</b> - true, if the log entry was submitted successfully,</li>
+			<li><b>message</b> - plain-text string, a message which acknowledges success
+				or describes an error (some comments may be rejected),</li>
+			<li><b>log_uuid</b> - ID of the newly created log entry, <b>or null</b>
+				in case of an error.</li>
+		</ul>
+	</returns>
+</xml>

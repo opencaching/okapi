@@ -1,0 +1,57 @@
+<xml>
+	<brief>Retrieve geocaches in GPX format</brief>
+	<issue-id>40</issue-id>
+	<desc>
+		<p>Produces a standards-compliant Geocaching GPX file.</p>
+		<p>Unlike the services/caches/geocaches method responses, GPX files cannot
+		contain names and descriptions in separate multiple languages. This method
+		will attempt to choose the best language based on your preference
+		(see <b>langpref</b> argument).</p>
+	</desc>
+	<req name='cache_codes'>
+		<p>Pipe-separated list of cache codes which you are interested in.
+		No more than 500 codes are allowed.</p>
+	</req>
+	<opt name='langpref' default='en'>
+		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+		order of preference in which language will be chosen for GPX entities.</p>
+	</opt>
+	<opt name='ns_ground' default='false'>
+		Boolean. If <b>true</b> then response will include
+		<a href='http://www.groundspeak.com/cache/1/0/cache.xsd'>http://www.groundspeak.com/cache/1/0</a>
+		GPX extension. This namespace declares an extra &lt;cache&gt; element
+		used by <a href='http://www.geocaching.com/'>geocaching.com</a> and <b>many others</b>.
+		This namespace was initially associatied with geocaching.com, but now seems to
+		be used in every geocaching GPX file. You probably want to have it.
+	</opt>
+	<opt name='ns_gsak' default='false'>
+		<p>Boolean. If <b>true</b> then response will include
+		<a href='http://www.gsak.net/xmlv1/5/gsak.xsd'>http://www.gsak.net/xmlv1/5</a>
+		GPX extension. This namespace declares an extra &lt;wptExtension&gt; element,
+		which allows including "waypoint inheritance" information (parent-child relations).
+		This in turn allows us to include "alternate waypoints" in the response.</p>
+		<p>We know of <b>at least</b> <a href='http://www.gsak.net/'>one tool</a> that
+		makes use of this.</p> 
+	</opt>
+	<opt name='ns_ox' default='false'>
+		Boolean. If <b>true</b> then response will include Garmin's
+		<a href='http://www.opencaching.com/xmlschemas/opencaching/1/0/opencaching.xsd'>http://www.opencaching.com/xmlschemas/opencaching/1/0</a>
+		GPX extension. This namespace declares an extra &lt;opencaching&gt; element
+		used by <a href='http://www.opencaching.com/'>Garmin's Opencaching.com</a>.
+		The element includes information on cache difficulty and ratings.
+	</opt>
+	<opt name='latest_logs' default='false'>
+		<p>Boolean. If <b>true</b> then response will include a couple of
+		latest log entries for this cache.</p>
+		<p>You <b>must</b> set <b>ns_ground</b> argument to <b>true</b> if you want to use this.</p>
+	</opt>
+	<opt name='alt_wpts' default='false'>
+		<p><b>Not yet implemented.</b></p>
+		<p>Boolean. If <b>true</b> then we will include <b>alternate waypoints</b> in the response.
+		These waypoints point to places associated with the cache.</p>
+		<p>You <b>must</b> set <b>ns_gsak</b> argument to <b>true</b> if you want to use this.</p>
+	</opt>
+	<returns>
+		<p>GPX file.</p>
+	</returns>
+</xml>
