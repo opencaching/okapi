@@ -24,7 +24,7 @@ class WebService
 	
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
-		'rating', 'rating_votes', 'recommendations', 'description', 'descriptions', 'hint',
+		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
 		'hints', 'images', 'latest_logs', 'last_found', 'last_modified', 'date_created',
 		'date_hidden', 'internal_id');
 	
@@ -56,7 +56,7 @@ class WebService
 				select
 					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
-					c.terrain, c.wp_oc, u.uuid as user_uuid, u.username, u.user_id,
+					c.terrain, c.wp_oc, c.logpw, u.uuid as user_uuid, u.username, u.user_id,
 					
 					ifnull(sc.toprating, 0) as topratings,
 					ifnull(sc.found, 0) as founds,
@@ -82,7 +82,7 @@ class WebService
 				select
 					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
-					c.terrain, c.wp_oc, u.uuid as user_uuid, u.username, u.user_id,
+					c.terrain, c.wp_oc, c.logpw, u.uuid as user_uuid, u.username, u.user_id,
 					
 					c.topratings,
 					c.founds,
@@ -138,6 +138,7 @@ class WebService
 						break;
 					case 'rating_votes': $entry['rating_votes'] = $row['votes'] + 0; break;
 					case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
+					case 'req_passwd': $entry['req_passwd'] = $row['logpw'] ? true : false; break;
 					case 'description': /* handled separately */ break;
 					case 'descriptions': /* handled separately */ break;
 					case 'hint': /* handled separately */ break;

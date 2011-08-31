@@ -69,7 +69,7 @@ class WebService
 		
 		$cache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
 			$request->consumer, null, array('cache_code' => $cache_code,
-			'fields' => 'internal_id|status|owner|type')));
+			'fields' => 'internal_id|status|owner|type|req_passwd')));
 		$user = OkapiServiceRunner::call('services/users/by_internal_id', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('internal_id' => $request->token->user_id,
 			'fields' => 'is_admin|uuid|internal_id')));
@@ -117,7 +117,20 @@ class WebService
 		}
 		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
 			throw new CannotPublishException("Your have to supply some text for your comment.");
-			
+		if ($logtype == 'Found it' && $cache['req_passwd'])
+		{
+			$valid_password = Db::select_value("
+				select logpw
+				from caches
+				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+			");
+			$supplied_password = $request->get_parameter('password');
+			if (!$supplied_password)
+				throw new CannotPublishException("This cache requires a password. You didn't provide one!");
+			if (strtolower($supplied_password) != strtolower($valid_password))
+				throw new CannotPublishException("Invalid password!");
+		}
+		
 		# Add the log entry.
 		
 		$log_uuid = create_uuid();

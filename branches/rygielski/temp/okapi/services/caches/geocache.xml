@@ -74,6 +74,8 @@
 				always be <b>0</b> on such installations.</p>
 			</li>
 			<li><b>recommendations</b> - number of recommendations for this cache,</li>
+			<li><b>req_passwd</b> - boolean; states if this cache requires a password
+				in order to submit a "Found it" log entry.</li>
 			<li><b>description</b> - HTML string, description of the cache,</li>
 			<li><b>descriptions</b> - a dictionary (language code => HTML string) of cache
 				descriptions,</li>

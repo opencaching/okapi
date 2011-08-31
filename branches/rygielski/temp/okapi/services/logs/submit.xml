@@ -23,6 +23,11 @@
 		with the given date and time. If not, log will be published using the current
 		date and time.</p>
 	</opt>
+	<opt name='password'>
+		<p>Some caches require a password in order to submit a "Found it" log entry.
+		You may check if this caches requires password with <b>req_passwd</b> field
+		of the services/caches/geocache method.</p>
+	</opt>
 	<!--
 	This not yet implemented. Remove the comment when/if you implement this.
 	<opt name='rating'>
