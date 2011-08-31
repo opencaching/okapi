@@ -3,6 +3,7 @@
 namespace okapi\services\caches\search;
 
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiRequest;
@@ -199,17 +200,13 @@ class SearchAssistant
 				throw new InvalidParam('found_status', "'$tmp'");
 			if ($tmp != 'either')
 			{
-				$rs = sql("
+				$found_cache_ids = Db::select_column("
 					select cache_id
 					from cache_logs
 					where
 						user_id = '".mysql_real_escape_string($request->token->user_id)."'
 						and type = 1
 				");
-				$found_cache_ids = array();
-				while ($row = sql_fetch_assoc($rs))
-					$found_cache_ids[] = $row['cache_id'];
-				mysql_free_result($rs);
 				$operator = ($tmp == 'found_only') ? "in" : "not in";
 				$where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
 			}
@@ -273,17 +270,13 @@ class SearchAssistant
 		# We need to pull limit+1 items, in order to properly determine the
 		# value of "more" variable.
 		
-		$rs = sql("
+		$cache_codes = Db::select_column("
 			select caches.wp_oc
 			from ".implode(", ", $tables)."
 			where ".implode(" and ", $where_conds)."
 			".((isset($options['order_by']))?"order by ".$options['order_by']:"")."
 			limit ".($options['limit'] + 1).";
 		");
-		$cache_codes = array();
-		while ($row = sql_fetch_assoc($rs))
-			$cache_codes[] = $row['wp_oc'];
-		mysql_free_result($rs);
 		
 		if (count($cache_codes) > $options['limit'])
 		{

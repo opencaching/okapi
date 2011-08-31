@@ -199,6 +199,99 @@ class InvalidParam extends BadRequest
 	}
 }
 
+/** Thrown on invalid SQL queries. */
+class DbException extends Exception {}
+
+#
+# Database access layer.
+#
+
+/** Database access class. Use this instead of mysql_query, sql or sqlValue. */
+class Db
+{
+	public static function select_row($query)
+	{
+		$rows = self::select_all($query);
+		switch (count($rows))
+		{
+			case 0: return null;
+			case 1: return $rows[0];
+			default:
+				throw new DbException("Invalid query. Db::select_row returned more than one row for:\n\n".$query."\n");
+		}
+	}
+
+	public static function select_all($query)
+	{
+		$rows = array();
+		self::select_and_push($query, $rows);
+		return $rows;
+	}
+	
+	public static function select_and_push($query, & $arr, $keyField = null)
+	{
+		$rs = self::query($query);
+		while (true)
+		{
+			$row = mysql_fetch_assoc($rs);
+			if ($row === false)
+				break;
+			if ($keyField == null)
+				$arr[] = $row;
+			else
+				$arr[$row[$keyField]] = $row;
+		}
+		mysql_free_result($rs);
+	}
+
+	
+	public static function select_value($query)
+	{
+		$column = self::select_column($query);
+		if ($column == null)
+			return null;
+		if (count($column) == 1)
+			return $column[0];
+		throw new DbException("Invalid query. Db::select_value returned more than one row for:\n\n".$query."\n");
+	}
+	
+	public static function select_column($query)
+	{
+		$column = array();
+		$rs = self::query($query);
+		while (true)
+		{
+			$values = mysql_fetch_array($rs);
+			if ($values === false)
+				break;
+			array_push($column, $values[0]);
+		}
+		mysql_free_result($rs);
+		return $column;
+	}
+	
+	public static function last_insert_id()
+	{
+		return mysql_insert_id();
+	}
+
+	public static function execute($query)
+	{
+		$rs = self::query($query);
+		mysql_free_result($rs);
+	}
+	
+	public static function query($query)
+	{
+		$rs = mysql_query($query);
+		if (!$rs)
+		{
+			throw new DbException("SQL Error ".mysql_errno().": ".mysql_error()."\n\nThe query was:\n".$query."\n");
+		}
+		return $rs;
+	}
+}
+
 #
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.
 #
@@ -455,7 +548,7 @@ class Okapi
 				"Reply-To: $sender_email\n"
 			);
 		}
-		sql("
+		Db::execute("
 			insert into okapi_consumers (`key`, name, secret, url, email, date_created)
 			values (
 				'".mysql_real_escape_string($consumer->key)."',

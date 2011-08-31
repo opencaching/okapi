@@ -4,6 +4,7 @@ namespace okapi\views\apps\authorize;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
@@ -13,7 +14,7 @@ class View
 	public static function call()
 	{
 		$token_key = isset($_GET['oauth_token']) ? $_GET['oauth_token'] : '';
-		$rs = sql("
+		$token = Db::select_row("
 			select
 				c.`key` as consumer_key,
 				c.name as consumer_name,
@@ -28,8 +29,6 @@ class View
 				and t.consumer_key = c.`key`
 				and t.user_id is null
 		");
-		$token = sql_fetch_assoc($rs);
-		mysql_free_result($rs);
 		
 		$callback_concat_char = (strpos($token['callback'], '?') === false) ? "?" : "&";
 		
@@ -63,7 +62,7 @@ class View
 		# then we will automatically authorize all subsequent Request Tokens
 		# from this Consumer.
 
-		$authorized = sqlValue("
+		$authorized = Db::select_value("
 			select 1
 			from okapi_authorizations
 			where
@@ -80,9 +79,9 @@ class View
 				
 				if ($_POST['authorization_result'] == 'granted')
 				{
-					sql("
-						INSERT INTO okapi_authorizations (consumer_key, user_id)
-						VALUES (
+					Db::execute("
+						insert into okapi_authorizations (consumer_key, user_id)
+						values (
 							'".mysql_real_escape_string($token['consumer_key'])."',
 							'".mysql_real_escape_string($GLOBALS['usr']['userid'])."'
 						);
@@ -121,7 +120,7 @@ class View
 		
 		# User granted access. Now we can authorize the Request Token.
 		
-		sql("
+		Db::execute("
 			update okapi_tokens
 			set user_id = '".mysql_real_escape_string($GLOBALS['usr']['userid'])."'
 			where `key` = '".mysql_real_escape_string($token_key)."';

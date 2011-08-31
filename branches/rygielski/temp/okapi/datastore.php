@@ -12,13 +12,11 @@ class OkapiDataStore extends OAuthDataStore
 {
 	public function lookup_consumer($consumer_key)
 	{
-		$rs = sql("
+		$row = Db::select_row("
 			select `key`, secret, name, url, email
 			from okapi_consumers
 			where `key` = '".mysql_real_escape_string($consumer_key)."'
 		");
-		$row = sql_fetch_assoc($rs);
-		mysql_free_result($rs);
 		if (!$row)
 			return null;
 		return new OkapiConsumer($row['key'], $row['secret'], $row['name'],
@@ -27,7 +25,7 @@ class OkapiDataStore extends OAuthDataStore
 
 	public function lookup_token(OkapiConsumer $consumer, $token_type, $token)
 	{
-		$rs = sql("
+		$row = Db::select_row("
 			select `key`, consumer_key, secret, token_type, user_id, verifier, callback
 			from okapi_tokens
 			where
@@ -35,8 +33,6 @@ class OkapiDataStore extends OAuthDataStore
 				and token_type = '".mysql_real_escape_string($token_type)."'
 				and `key` = '".mysql_real_escape_string($token)."'
 		");
-		$row = sql_fetch_assoc($rs);
-		mysql_free_result($rs);
 		if (!$row)
 			return null;
 		switch ($row['token_type'])
@@ -58,20 +54,20 @@ class OkapiDataStore extends OAuthDataStore
 		# First, see if it exists. Note, that old nonces are deleted
 		# periodically by a cronjob.
 		
-		$exists = sqlValue("
+		$exists = Db::select_value("
 			select 1
 			from okapi_nonces
 			where
 				consumer_key = '".mysql_real_escape_string($consumer->key)."'
 				and `key` = '".mysql_real_escape_string($nonce)."'
 				and timestamp = '".mysql_real_escape_string($timestamp)."'
-		", 0);
+		");
 		if ($exists)
 			return $nonce;
 		
 		# It didn't exist. We have to remember it.
 		
-		sql("
+		Db::execute("
 			insert into okapi_nonces (consumer_key, `key`, timestamp)
 			values (
 				'".mysql_real_escape_string($consumer->key)."',
@@ -91,7 +87,7 @@ class OkapiDataStore extends OAuthDataStore
 		else { throw new BadRequest("oauth_callback should begin with http:// or https://, or should equal 'oob'."); }
 		$token = new OkapiRequestToken(Okapi::generate_key(20), Okapi::generate_key(40),
 			$consumer->key, $callback, null, Okapi::generate_key(8, true));
-		sql("
+		Db::execute("
 			insert into okapi_tokens
 				(`key`, secret, token_type, timestamp,
 				user_id, consumer_key, verifier, callback)
@@ -123,7 +119,7 @@ class OkapiDataStore extends OAuthDataStore
 		
 		# Invalidate the Request Token.
 		
-		sql("
+		Db::execute("
 			delete from okapi_tokens
 			where `key` = '".mysql_real_escape_string($token->key)."'
 		");
@@ -133,7 +129,7 @@ class OkapiDataStore extends OAuthDataStore
 		# if there is already an Access Token generated for this (Consumer, User)
 		# pair and return it if there is.
 		
-		$rs = sql("
+		$row = Db::select_row("
 			select `key`, secret
 			from okapi_tokens
 			where
@@ -141,8 +137,6 @@ class OkapiDataStore extends OAuthDataStore
 				and user_id = '".mysql_real_escape_string($token->authorized_by_user_id)."'
 				and consumer_key = '".mysql_real_escape_string($consumer->key)."'
 		");
-		$row = sql_fetch_assoc($rs);
-		mysql_free_result($rs);
 		if ($row)
 		{
 			# Use existing Access Token
@@ -156,7 +150,7 @@ class OkapiDataStore extends OAuthDataStore
 			
 			$access_token = new OkapiAccessToken(Okapi::generate_key(20), Okapi::generate_key(40),
 				$consumer->key, $token->authorized_by_user_id);
-			sql("
+			Db::execute("
 				insert into okapi_tokens
 					(`key`, secret, token_type, timestamp, user_id, consumer_key)
 				values (

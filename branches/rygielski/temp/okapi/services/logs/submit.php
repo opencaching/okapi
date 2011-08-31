@@ -4,6 +4,7 @@ namespace okapi\services\logs\submit;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -90,7 +91,7 @@ class WebService
 			throw new BadRequest("Rating is allowed only for 'Found it' logtypes.");
 		if ($logtype == 'Found it')
 		{
-			$has_already_found_it = sqlValue("
+			$has_already_found_it = Db::select_value("
 				select 1
 				from cache_logs
 				where
@@ -98,19 +99,19 @@ class WebService
 					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 					and type = '".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."'
 					and deleted = 0
-			", null);
+			");
 			if ($has_already_found_it)
 				throw new CannotPublishException("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!");
 		}
 		if ($rating)
 		{
-			$has_already_rated = sqlValue("
+			$has_already_rated = Db::select_value("
 				select 1
 				from scores
 				where
 					user_id = '".mysql_real_escape_string($user['internal_id'])."'
 					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-			", null);
+			");
 			if ($has_already_rated)
 				throw new CannotPublishException("You have already rated this cache once. Your rating cannot be changed.");
 		}
@@ -121,7 +122,7 @@ class WebService
 		
 		$log_uuid = create_uuid();
 		# Can't use "sql" here because it fails. WRTODO: get rid od "sql" and "sqlValue".
-		mysql_query("
+		Db::execute("
 			insert into cache_logs (uuid, cache_id, user_id, type, date, text, node)
 			values (
 				'".mysql_real_escape_string($log_uuid)."',
@@ -140,7 +141,7 @@ class WebService
 		
 		if ($logtype == 'Found it')
 		{
-			sql("
+			Db::execute("
 				update caches
 				set
 					founds = founds + 1,
@@ -150,7 +151,7 @@ class WebService
 		}
 		elseif ($logtype == "Didn't find it")
 		{
-			sql("
+			Db::execute("
 				update caches
 				set notfounds = notfounds + 1
 				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
@@ -158,7 +159,7 @@ class WebService
 		}
 		elseif ($logtype == 'Comment')
 		{
-			sql("
+			Db::execute("
 				update caches
 				set notes = notes + 1
 				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
@@ -178,7 +179,7 @@ class WebService
 			case 'Comment': $field_to_increment = 'log_notes_count'; break;
 			default: throw new Exception("Missing logtype '$logtype' in a switch..case statetment.");
 		}
-		sql("
+		Db::execute("
 			update user
 			set $field_to_increment = $field_to_increment + 1
 			where user_id = '".mysql_real_escape_string($user['internal_id'])."'
