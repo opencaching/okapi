@@ -18,6 +18,11 @@ require_once($rootpath.'okapi/core.php');
 OkapiErrorHandler::$treat_notices_as_errors = true;
 require_once($rootpath.'okapi/urls.php');
 
+# OKAPI does not use sessions. The following statement will allow concurrent
+# requests to be fired from browser. (BTW, it would be nice to prevent OC code
+# from creating a session cookie while displaying OKAPI.)
+if (session_id()) session_write_close();
+
 class OkapiScriptEntryPointController
 {
 	public static function dispatch_request($uri)

@@ -56,8 +56,11 @@ class View
 	
 	public static function call()
 	{
-		header("Content-Type: text/plain; chatset=utf-8");
+		ignore_user_abort(true);
+		set_time_limit(0);
 		Cache::clear();
+		
+		header("Content-Type: text/plain; chatset=utf-8");
 		$current_ver = self::get_current_version();
 		$max_ver = self::get_max_version();
 		self::out("Current OKAPI database version: $current_ver\n");
