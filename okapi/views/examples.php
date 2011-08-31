@@ -23,6 +23,7 @@ class View
 			'menu' => OkapiMenu::get_menu_html("examples.html"),
 			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 			'site_url' => $GLOBALS['absolute_server_URI'],
+			'installations' => OkapiMenu::get_installations(),
 		);
 		
 		$response = new OkapiHttpResponse();

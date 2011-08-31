@@ -20,4 +20,11 @@ $(function() {
 			}
 		});
 	});
+	$('#switcher').change(function() {
+		var current_base_url = $('#switcher option[current]').attr('value');
+		var new_base_url = $('#switcher option:selected').attr('value');
+		if (current_base_url != new_base_url)
+			window.location.href = window.location.href.replace(current_base_url, new_base_url);
+	});
+	$('#switcher option[current]').attr('selected', true);
 });
