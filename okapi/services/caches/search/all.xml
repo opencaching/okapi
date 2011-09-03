@@ -81,6 +81,14 @@
 			<li><b>either</b> - all caches will be returned.</li>
 		</ul>
 	</opt>
+	<opt name='found_by'>
+		<p>User UUID. If given, the response will only include geocaches found by
+		the given user.</p>
+	</opt>
+	<opt name='not_found_by'>
+		<p>User UUID. If given, the response will only include geocaches not found by
+		the given user.</p>
+	</opt>
 	<opt name='exclude_my_own' default='false'>
 		<p><b>Notice:</b> This parameter may be used only for requests signed
 		with an Access Token (you will need to use <b>Level 3</b> Authentication).</p>
