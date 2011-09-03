@@ -3,6 +3,7 @@
 namespace okapi\views\http404;
 
 use Exception;
+use okapi\Okapi;
 use okapi\Okapi404Response;
 use okapi\views\menu\OkapiMenu;
 
