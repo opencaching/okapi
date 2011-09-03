@@ -49,7 +49,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 								<log id="<?= $log['uuid'] ?>">
 									<date><?= $log['date'] ?></date>
 									<type><?= $log['type'] ?></type>
-									<finder id="<?= $log['user']['uuid'] ?>"><?= $log['user']['username'] ?></finder>
+									<finder id="<?= $log['user']['uuid'] ?>"><?= htmlspecialchars($log['user']['username'], ENT_COMPAT, 'UTF-8') ?></finder>
 									<text encoded="False"><?= htmlspecialchars($log['comment'], ENT_COMPAT, 'UTF-8') ?></text>
 								</log>
 							<? } ?>
