@@ -25,7 +25,7 @@
 	</opt>
 	<opt name='password'>
 		<p>Some caches require a password in order to submit a "Found it" log entry.
-		You may check if this caches requires password with <b>req_passwd</b> field
+		You may check if this cache requires password with <b>req_passwd</b> field
 		of the services/caches/geocache method.</p>
 	</opt>
 	<!--
