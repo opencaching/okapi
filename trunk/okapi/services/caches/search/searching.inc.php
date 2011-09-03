@@ -213,6 +213,50 @@ class SearchAssistant
 		}
 		
 		#
+		# found_by
+		#
+		
+		if ($tmp = $request->get_parameter('found_by'))
+		{
+			try {
+				$user = OkapiServiceRunner::call("services/users/user", new OkapiInternalRequest(
+					$request->consumer, null, array('user_uuid' => $tmp, 'fields' => 'internal_id')));
+			} catch (InvalidParam $e) { # invalid uuid
+				throw new InvalidParam('found_by', $e->whats_wrong_about_it);
+			}
+			$found_cache_ids = Db::select_column("
+				select cache_id
+				from cache_logs
+				where
+					user_id = '".mysql_real_escape_string($user['internal_id'])."'
+					and type = 1
+			");
+			$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
+		}
+		
+		#
+		# not_found_by
+		#
+		
+		if ($tmp = $request->get_parameter('not_found_by'))
+		{
+			try {
+				$user = OkapiServiceRunner::call("services/users/user", new OkapiInternalRequest(
+					$request->consumer, null, array('user_uuid' => $tmp, 'fields' => 'internal_id')));
+			} catch (InvalidParam $e) { # invalid uuid
+				throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
+			}
+			$found_cache_ids = Db::select_column("
+				select cache_id
+				from cache_logs
+				where
+					user_id = '".mysql_real_escape_string($user['internal_id'])."'
+					and type = 1
+			");
+			$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
+		}
+		
+		#
 		# exclude_my_own
 		#
 		
