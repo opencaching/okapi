@@ -134,7 +134,7 @@ class WebService
 						elseif ($row['score'] >= 1.4) $entry['rating'] = 4;
 						elseif ($row['score'] >= 0.1) $entry['rating'] = 3;
 						elseif ($row['score'] >= -1.0) $entry['rating'] = 2;
-						else $entry['score'] = 1;
+						else $entry['rating'] = 1;
 						break;
 					case 'rating_votes': $entry['rating_votes'] = $row['votes'] + 0; break;
 					case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
