@@ -74,7 +74,7 @@ class WebService
 		# We don't need to do any additional queries here.
 		
 		$fields = 'code|name|location|date_created|url|type|status|size'.
-			'|difficulty|terrain|description|hint|rating|owner|url';
+			'|difficulty|terrain|description|hint|rating|owner|url|internal_id';
 		if ($vars['latest_logs'])
 			$fields .= "|latest_logs";
 		$vars['caches'] = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(

@@ -1,6 +1,6 @@
 <?
 
-echo '<?xml version="1.0" encoding="utf-8"?>';
+echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
 
 ?>
 <gpx xmlns="http://www.topografix.com/GPX/1/0" version="1.0" creator="OKAPI r<?= $vars['installation']['okapi_revision'] ?>"
@@ -29,7 +29,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 			<sym>Geocache</sym>
 			<type>Geocache|<?= $vars['cache_GPX_types'][$c['type']] ?></type>
 			<? if ($vars['ns_ground']) { /* Does user want us to include Groundspeak's <cache> element? */ ?>
-				<groundspeak:cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0">
+				<groundspeak:cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="<?= $c['internal_id'] ?>" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1">
 					<groundspeak:name><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></groundspeak:name>
 					<groundspeak:placed_by><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></groundspeak:placed_by>
 					<groundspeak:owner id="<?= $c['owner']['uuid'] ?>"><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></groundspeak:owner>
