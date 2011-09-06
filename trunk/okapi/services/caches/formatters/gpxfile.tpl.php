@@ -28,34 +28,34 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 			<urlname><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></urlname>
 			<sym>Geocache</sym>
 			<type>Geocache|<?= $vars['cache_GPX_types'][$c['type']] ?></type>
-			<? if ($vars['ns_ground']) { /* Does user want us to include Groundspeak <cache> element? */ ?>
-				<cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="" xmlns="http://www.groundspeak.com/cache/1/0">
-					<name><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></name>
-					<placed_by><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></placed_by>
-					<owner id="<?= $c['owner']['uuid'] ?>"><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></owner>
-					<type><?= $vars['cache_GPX_types'][$c['type']] ?></type>
-					<container><?= $vars['cache_GPX_sizes'][$c['size']] ?></container>
-					<difficulty><?= $c['difficulty'] ?></difficulty>
-					<terrain><?= $c['terrain'] ?></terrain>
-					<long_description html="True">
+			<? if ($vars['ns_ground']) { /* Does user want us to include Groundspeak's <cache> element? */ ?>
+				<groundspeak:cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0">
+					<groundspeak:name><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></groundspeak:name>
+					<groundspeak:placed_by><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></groundspeak:placed_by>
+					<groundspeak:owner id="<?= $c['owner']['uuid'] ?>"><?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?></groundspeak:owner>
+					<groundspeak:type><?= $vars['cache_GPX_types'][$c['type']] ?></groundspeak:type>
+					<groundspeak:container><?= $vars['cache_GPX_sizes'][$c['size']] ?></groundspeak:container>
+					<groundspeak:difficulty><?= $c['difficulty'] ?></groundspeak:difficulty>
+					<groundspeak:terrain><?= $c['terrain'] ?></groundspeak:terrain>
+					<groundspeak:long_description html="True">
 						&lt;p&gt;&lt;a href="<?= $c['url'] ?>"&gt;<?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;
 						by &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;&lt;/p&gt;
 						<?= htmlspecialchars($c['description'], ENT_COMPAT, 'UTF-8') ?>
-					</long_description>
-					<encoded_hints><?= htmlspecialchars($c['hint'], ENT_COMPAT, 'UTF-8') ?></encoded_hints>
+					</groundspeak:long_description>
+					<groundspeak:encoded_hints><?= htmlspecialchars($c['hint'], ENT_COMPAT, 'UTF-8') ?></groundspeak:encoded_hints>
 					<? if ($vars['latest_logs']) { /* Does user want us to include latest log entries? */ ?>
-						<logs>
+						<groundspeak:logs>
 							<? foreach ($c['latest_logs'] as $log) { ?>
-								<log id="<?= $log['uuid'] ?>">
-									<date><?= $log['date'] ?></date>
-									<type><?= $log['type'] ?></type>
-									<finder id="<?= $log['user']['uuid'] ?>"><?= htmlspecialchars($log['user']['username'], ENT_COMPAT, 'UTF-8') ?></finder>
-									<text encoded="False"><?= htmlspecialchars($log['comment'], ENT_COMPAT, 'UTF-8') ?></text>
-								</log>
+								<groundspeak:log id="<?= $log['uuid'] ?>">
+									<groundspeak:date><?= $log['date'] ?></groundspeak:date>
+									<groundspeak:type><?= $log['type'] ?></groundspeak:type>
+									<groundspeak:finder id="<?= $log['user']['uuid'] ?>"><?= htmlspecialchars($log['user']['username'], ENT_COMPAT, 'UTF-8') ?></groundspeak:finder>
+									<groundspeak:text encoded="False"><?= htmlspecialchars($log['comment'], ENT_COMPAT, 'UTF-8') ?></groundspeak:text>
+								</groundspeak:log>
 							<? } ?>
-						</logs>
+						</groundspeak:logs>
 					<? } ?>
-				</cache>
+				</groundspeak:cache>
 			<? } ?>
 			<? /* TO BE INCLUDED IN ALTERNATE WAYPOINTS if ($vars['ns_gsak']) { ?>
 				<wptExtension xmlns="http://www.gsak.net/xmlv1/5">
@@ -64,14 +64,14 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 				</wptExtension>
 			<? } */ ?>
 			<? if ($vars['ns_ox']) { /* Does user want us to include Garmin's <opencaching> element? */ ?>
-				<opencaching xmlns="http://www.opencaching.com/xmlschemas/opencaching/1/0">
-					<ratings>
-						<? if ($c['rating'] !== null) { ?><awesomeness><?= $c['rating'] ?></awesomeness><? } ?>
-						<difficulty><?= $c['difficulty'] ?></difficulty>
-						<? if ($c['size'] !== null) { ?><size><?= $c['size'] ?></size><? } ?>
-						<terrain><?= $c['terrain'] ?></terrain>
-					</ratings>
-				</opencaching>
+				<ox:opencaching xmlns:ox="http://www.opencaching.com/xmlschemas/opencaching/1/0">
+					<ox:ratings>
+						<? if ($c['rating'] !== null) { ?><ox:awesomeness><?= $c['rating'] ?></ox:awesomeness><? } ?>
+						<ox:difficulty><?= $c['difficulty'] ?></ox:difficulty>
+						<? if ($c['size'] !== null) { ?><ox:size><?= $c['size'] ?></ox:size><? } ?>
+						<ox:terrain><?= $c['terrain'] ?></ox:terrain>
+					</ox:ratings>
+				</ox:opencaching>
 			<? } ?>
 		</wpt>
 	<? } ?>
