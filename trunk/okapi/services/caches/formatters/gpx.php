@@ -69,12 +69,17 @@ class WebService
 		if (!$alt_wpts) $alt_wpts = "false";
 		if ($alt_wpts != "false")
 			throw new InvalidParam('alt_wpts', "NOT YET IMPLEMENTED. Please add a comment in our issue tracker.");
+		$images = $request->get_parameter('images');
+		if (!$images) $images = 'descrefs:nonspoilers';
+		if (!in_array($images, array('none', 'descrefs:nonspoilers', 'descrefs:all')))
+			throw new InvalidParam('images', "'$images'");
+		$vars['images'] = $images;
 		
 		# We can get all the data we need from the services/caches/geocaches method.
 		# We don't need to do any additional queries here.
 		
 		$fields = 'code|name|location|date_created|url|type|status|size'.
-			'|difficulty|terrain|description|hint|rating|owner|url|internal_id';
+			'|difficulty|terrain|description|hint|rating|owner|url|internal_id|images';
 		if ($vars['latest_logs'])
 			$fields .= "|latest_logs";
 		$vars['caches'] = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(

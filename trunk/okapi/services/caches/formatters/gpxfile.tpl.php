@@ -41,6 +41,30 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 						&lt;p&gt;&lt;a href="<?= $c['url'] ?>"&gt;<?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;
 						by &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;&lt;/p&gt;
 						<?= htmlspecialchars($c['description'], ENT_COMPAT, 'UTF-8') ?>
+						<? if (count($c['images']) > 0 && (strpos($vars['images'], "descrefs:") === 0)) { /* Does user want us to include <img> references in cache descriptions? */ ?>
+							<?
+								# We will split images into two subcategories: spoilers and nonspoilers.
+								$spoilers = array();
+								$nonspoilers = array();
+								foreach ($c['images'] as $img)
+									if ($img['is_spoiler']) $spoilers[] = $img;
+									else $nonspoilers[] = $img;
+							?>
+							<? if (count($nonspoilers) > 0) { ?>
+								&lt;h2&gt;Images (<?= count($nonspoilers) ?>)&lt;/h2&gt;
+								<? foreach ($nonspoilers as $img) { ?>
+									&lt;p&gt;&lt;img src='<?= htmlspecialchars($img['url'], ENT_COMPAT, 'UTF-8') ?>'&gt;&lt;br&gt;
+									<?= $img['caption'] ?>&lt;/p&gt;
+								<? } ?>
+							<? } ?>
+							<? if (count($spoilers) > 0 && $vars['images'] == 'descrefs:all') { ?>
+								&lt;h2&gt;Spoilers (<?= count($spoilers) ?>)&lt;/h2&gt;
+								<? foreach ($spoilers as $img) { ?>
+									&lt;p&gt;&lt;img src='<?= htmlspecialchars($img['url'], ENT_COMPAT, 'UTF-8') ?>'&gt;&lt;br&gt;
+									<?= $img['caption'] ?>&lt;/p&gt;
+								<? } ?>
+							<? } ?>
+						<? } ?>
 					</groundspeak:long_description>
 					<groundspeak:encoded_hints><?= htmlspecialchars($c['hint'], ENT_COMPAT, 'UTF-8') ?></groundspeak:encoded_hints>
 					<? if ($vars['latest_logs']) { /* Does user want us to include latest log entries? */ ?>
