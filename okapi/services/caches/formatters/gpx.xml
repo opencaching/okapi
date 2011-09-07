@@ -40,6 +40,18 @@
 		used by <a href='http://www.opencaching.com/'>Garmin's Opencaching.com</a>.
 		The element includes information on cache difficulty and ratings.
 	</opt>
+	<opt name='images' default='descrefs:nonspoilers'>
+		<p>Which images to include (and how to include them). One of the following values:</p>
+		<ul>
+			<li><b>none</b> - no images will be included,</li>
+			<li><b>descrefs:nonspoilers</b> - all non-spoiler images will be included
+			as &lt;img&gt; references at the end of each cache description,</li>
+			<li><b>descrefs:all</b> - all images will be included (including spoilers)
+			as &lt;img&gt; references at the end of each cache description.</li>
+		</ul>
+		<p>Note, that cache descriptions are included only when <b>ns_ground</b> is set to <b>true</b>.
+		In the future, more generic ways of including images in GPX files may emerge.</p>
+	</opt>
 	<opt name='latest_logs' default='false'>
 		<p>Boolean. If <b>true</b> then response will include a couple of
 		latest log entries for this cache.</p>
