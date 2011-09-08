@@ -74,14 +74,24 @@ class WebService
 		if (!in_array($images, array('none', 'descrefs:nonspoilers', 'descrefs:all')))
 			throw new InvalidParam('images', "'$images'");
 		$vars['images'] = $images;
+		$attrs = $request->get_parameter('attrs');
+		if (!$attrs) $attrs = 'desc:text';
+		if (!in_array($attrs, array('none', 'desc:text')))
+			throw new InvalidParam('attrs', "'$attrs'");
+		$vars['attrs'] = $attrs;
 		
 		# We can get all the data we need from the services/caches/geocaches method.
 		# We don't need to do any additional queries here.
 		
 		$fields = 'code|name|location|date_created|url|type|status|size'.
-			'|difficulty|terrain|description|hint|rating|owner|url|internal_id|images';
+			'|difficulty|terrain|description|hint|rating|owner|url|internal_id';
+		if ($vars['images'] != 'none')
+			$fields .= "|images";
+		if ($vars['attrs'] != 'none')
+			$fields .= "|attrnames";
 		if ($vars['latest_logs'])
 			$fields .= "|latest_logs";
+		
 		$vars['caches'] = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'fields' => $fields)));

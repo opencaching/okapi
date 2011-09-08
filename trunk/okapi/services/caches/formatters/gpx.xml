@@ -52,6 +52,15 @@
 		<p>Note, that cache descriptions are included only when <b>ns_ground</b> is set to <b>true</b>.
 		In the future, more generic ways of including images in GPX files may emerge.</p>
 	</opt>
+	<opt name='attrs' default='desc:text'>
+		<p>This argument controls wether cache attributes are included and how they are included.
+		One of the following values:</p>
+		<ul>
+			<li><b>none</b> - no attributes will be included,</li>
+			<li><b>desc:text</b> - attributes will be listed (in plain-text) within the cache description.</li>
+		</ul>
+		<p>Note, that cache descriptions are included only when <b>ns_ground</b> is set to <b>true</b>.</p>
+	</opt>
 	<opt name='latest_logs' default='false'>
 		<p>Boolean. If <b>true</b> then response will include a couple of
 		latest log entries for this cache.</p>
