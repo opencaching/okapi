@@ -7,6 +7,10 @@
 		contain names and descriptions in separate multiple languages. This method
 		will attempt to choose the best language based on your preference
 		(see <b>langpref</b> argument).</p>
+		<p>Remember that a full-blown GPX file is much larger than a basic one.
+		This method can produce many various types of GPX files. The simplest list of
+		waypoints takes ~50 times less space than the same list with cache descriptions
+		and log entries included.</p>
 	</desc>
 	<req name='cache_codes'>
 		<p>Pipe-separated list of cache codes which you are interested in.
@@ -63,8 +67,13 @@
 	</opt>
 	<opt name='latest_logs' default='false'>
 		<p>Boolean. If <b>true</b> then response will include a couple of
-		latest log entries for this cache.</p>
+		latest log entries for this cache (see also the <b>lpc</b> argument).</p>
 		<p>You <b>must</b> set <b>ns_ground</b> argument to <b>true</b> if you want to use this.</p>
+	</opt>
+	<opt name='lpc' default='10'>
+		Log-entries per cache - the number of log entries included in each returned cache.
+		This should be an integer or a special "all" value. Please note, that the <b>ns_ground</b>
+		and <b>latest_logs</b> arguments must be set to <b>true</b> in order for the logs to be included.
 	</opt>
 	<opt name='alt_wpts' default='false'>
 		<p><b>Not yet implemented.</b></p>

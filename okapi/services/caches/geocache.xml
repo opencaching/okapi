@@ -109,9 +109,7 @@
 			<li>
 				<p><b>latest_logs</b> - a couple of latest log entries in the cache.
 				The format is the same as the one returned by the services/logs/logs method.</p>
-				<p>Notice: There is no option to retrieve the full list of logs with
-				this method. You will always receive only some of the latest. If you
-				want the complete list, you'll have to use the services/logs/logs method.</p>
+				<p>Notice: The number of logs returned can be set with the <b>lpc</b> option.</p>
 			</li>
 			<li><b>last_found</b> - date and time (ISO 8601) when the
 				geocache was last found <b>or null</b> when it hasn't been yet found,</li>
@@ -127,6 +125,11 @@
 			<li><b>internal_id</b> - internal ID of the cache (<b>do not</b> use
 				this, unless you know what you're doing; use the "code" as an identifier).</li>
 		</ul>
+	</opt>
+	<opt name='lpc' default='10'>
+		Log-entries per cache - the number of logs returned in the <b>latest_logs</b> field.
+		This should be an integer or a special "all" value. Please note, that you must include
+		the <b>latest_logs</b> field in <b>fields</b> in order to see the log entries.
 	</opt>
 	<common-format-params/>
 	<returns>
