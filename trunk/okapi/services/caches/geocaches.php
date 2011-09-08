@@ -45,6 +45,18 @@ class WebService
 		foreach ($fields as $field)
 			if (!in_array($field, self::$valid_field_names))
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
+		$lpc = $request->get_parameter('lpc');
+		if ($lpc === null) $lpc = 10;
+		if ($lpc == 'all')
+			$lpc = null;
+		else
+		{
+			if ((!is_numeric($lpc)) || (intval($lpc) != $lpc))
+				throw new InvalidParam('lpc', "Invalid number: '$lpc'");
+			$lpc = intval($lpc);
+			if ($lpc < 0)
+				throw new InvalidParam('lpc', "Must be a positive value.");
+		}
 
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
@@ -256,10 +268,9 @@ class WebService
 			foreach ($results as &$result_ref)
 				$result_ref['latest_logs'] = array();
 			
-			# Get log IDs and dates. Sort in groups. Filter out latest 20. This is the fastest
+			# Get log IDs and dates. Sort in groups. Filter out latest ones. This is the fastest
 			# technique I could think of...
 			
-			$cachelogs = array();
 			$rs = Db::query("
 				select cache_id, id
 				from cache_logs
@@ -267,13 +278,24 @@ class WebService
 					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 					and deleted = 0
 			");
-			while ($row = mysql_fetch_assoc($rs))
-				$cachelogs[$row['cache_id']][] = $row['id']; // @
 			$logids = array();
-			foreach ($cachelogs as $cache_key => &$logids_ref)
+			if ($lpc !== null)
 			{
-				rsort($logids_ref);
-				$logids = array_merge($logids, array_slice($logids_ref, 0, 20));
+				# User wants some of the latest logs.
+				$tmp = array();
+				while ($row = mysql_fetch_assoc($rs))
+					$tmp[$row['cache_id']][] = $row['id'];
+				foreach ($tmp as $cache_key => &$logids_ref)
+				{
+					rsort($logids_ref);
+					$logids = array_merge($logids, array_slice($logids_ref, 0, $lpc));
+				}
+			}
+			else
+			{
+				# User wants ALL logs.
+				while ($row = mysql_fetch_assoc($rs))
+					$logids[] = $row['id'];
 			}
 			
 			# Now retrieve text and join.

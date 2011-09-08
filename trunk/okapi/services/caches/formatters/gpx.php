@@ -79,6 +79,8 @@ class WebService
 		if (!in_array($attrs, array('none', 'desc:text')))
 			throw new InvalidParam('attrs', "'$attrs'");
 		$vars['attrs'] = $attrs;
+		$lpc = $request->get_parameter('lpc');
+		if ($lpc === null) $lpc = 10; # will be checked in services/caches/geocaches call
 		
 		# We can get all the data we need from the services/caches/geocaches method.
 		# We don't need to do any additional queries here.
@@ -94,7 +96,7 @@ class WebService
 		
 		$vars['caches'] = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
-			'langpref' => $langpref, 'fields' => $fields)));
+			'langpref' => $langpref, 'fields' => $fields, 'lpc' => $lpc)));
 		$vars['installation'] = OkapiServiceRunner::call('services/apisrv/installation', new OkapiInternalRequest(
 			null, null, array()));
 		$vars['cache_GPX_types'] = self::$cache_GPX_types;

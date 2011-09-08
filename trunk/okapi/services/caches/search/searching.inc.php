@@ -139,7 +139,7 @@ class SearchAssistant
 			if ($tmp[strlen($tmp) - 1] == '%')
 			{
 				$tmp = substr($tmp, 0, strlen($tmp) - 1);
-				if (intval($tmp) != $tmp)
+				if ((!is_numeric($tmp)) || (intval($tmp) != $tmp))
 					throw new InvalidParam('min_rcmds', "'$tmp'");
 				$tmp = intval($tmp);
 				if ($tmp > 100 || $tmp < 0)
@@ -148,7 +148,7 @@ class SearchAssistant
 				$where_conds[] = "caches.topratings >= caches.founds * '".mysql_real_escape_string($tmp)."'";
 				$where_conds[] = "caches.founds > 0";
 			}
-			if (intval($tmp) != $tmp)
+			if ((!is_numeric($tmp)) || (intval($tmp) != $tmp))
 				throw new InvalidParam('min_rcmds', "'$tmp'");
 			$where_conds[] = "caches.topratings >= '".mysql_real_escape_string($tmp)."'";
 		}
@@ -159,7 +159,7 @@ class SearchAssistant
 		
 		if ($tmp = $request->get_parameter('min_founds'))
 		{
-			if (intval($tmp) != $tmp)
+			if ((!is_numeric($tmp)) || (intval($tmp) != $tmp))
 				throw new InvalidParam('min_founds', "'$tmp'");
 			$where_conds[] = "caches.founds >= '".mysql_real_escape_string($tmp)."'";
 		}
@@ -170,7 +170,7 @@ class SearchAssistant
 		
 		if ($tmp = $request->get_parameter('max_founds'))
 		{
-			if (intval($tmp) != $tmp)
+			if ((!is_numeric($tmp)) || (intval($tmp) != $tmp))
 				throw new InvalidParam('max_founds', "'$tmp'");
 			$where_conds[] = "caches.founds <= '".mysql_real_escape_string($tmp)."'";
 		}
@@ -275,7 +275,7 @@ class SearchAssistant
 		#
 		$limit = $request->get_parameter('limit');
 		if ($limit == null) $limit = "100";
-		if (intval($limit) != $limit)
+		if ((!is_numeric($tmp)) || (intval($tmp) != $tmp))
 			throw new InvalidParam('limit', "'$limit'");
 		if ($limit < 1 || $limit > 1000)
 			throw new InvalidParam('limit', "Has to be between 1 and 1000.");
