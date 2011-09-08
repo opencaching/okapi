@@ -2,14 +2,13 @@
 
 namespace okapi\views\update;
 
-use okapi\OkapiHttpResponse;
-
 use Exception;
 use okapi\Okapi;
 use okapi\Cache;
 use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\OkapiRedirectResponse;
+use okapi\OkapiHttpResponse;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
@@ -50,7 +49,8 @@ class View
 		set_time_limit(0);
 		Cache::clear();
 		
-		header("Content-Type: text/plain; chatset=utf-8");
+		header("Content-Type: text/plain; charset=utf-8");
+		
 		$current_ver = self::get_current_version();
 		$max_ver = self::get_max_version();
 		self::out("Current OKAPI database version: $current_ver\n");
