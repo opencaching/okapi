@@ -25,7 +25,7 @@ class WebService
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
-		'hints', 'images', 'latest_logs', 'last_found', 'last_modified', 'date_created',
+		'hints', 'images', 'attrnames', 'latest_logs', 'last_found', 'last_modified', 'date_created',
 		'date_hidden', 'internal_id');
 	
 	public static function call(OkapiRequest $request)
@@ -144,6 +144,7 @@ class WebService
 					case 'hint': /* handled separately */ break;
 					case 'hints': /* handled separately */ break;
 					case 'images': /* handled separately */ break;
+					case 'attrnames': /* handled separately */ break;
 					case 'latest_logs': /* handled separately */ break;
 					case 'last_found': $entry['last_found'] = $row['last_found'] ? date('c', strtotime($row['last_found'])) : null; break;
 					case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
@@ -223,6 +224,28 @@ class WebService
 					'caption' => $row['title'],
 					'is_spoiler' => ($row['spoiler'] ? true : false),
 				);
+			}
+		}
+		
+		# Attrnames
+		
+		if (in_array('attrnames', $fields))
+		{
+			foreach ($results as &$result_ref)
+				$result_ref['attrnames'] = array();
+			$rs = Db::query("select id, language, text_long from cache_attrib order by id");
+			$dict = array();
+			while ($row = mysql_fetch_assoc($rs))
+				$dict[$row['id']][strtolower($row['language'])] = $row['text_long'];
+			$rs = Db::query("
+				select cache_id, attrib_id
+				from caches_attributes
+				where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+			");
+			while ($row = mysql_fetch_assoc($rs))
+			{
+				$cache_code = $cacheid2wptcode[$row['cache_id']];
+				$results[$cache_code]['attrnames'][] = Okapi::pick_best_language($dict[$row['attrib_id']], $langpref);
 			}
 		}
 		

@@ -40,8 +40,12 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 					<groundspeak:long_description html="True">
 						&lt;p&gt;&lt;a href="<?= $c['url'] ?>"&gt;<?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;
 						by &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;&lt;/p&gt;
+						<? if ($vars['attrs'] == 'desc:text' && count($c['attrnames']) > 0) { /* Does user want us to include attributes? */ ?>
+							&lt;p&gt;Attributes:&lt;/p&gt;
+							&lt;ul&gt;&lt;li&gt;<?= implode("&lt;/li&gt;&lt;li&gt;", $c['attrnames']) ?>&lt;/li&gt;&lt;/ul&gt;
+						<? } ?>
 						<?= htmlspecialchars($c['description'], ENT_COMPAT, 'UTF-8') ?>
-						<? if (count($c['images']) > 0 && (strpos($vars['images'], "descrefs:") === 0)) { /* Does user want us to include <img> references in cache descriptions? */ ?>
+						<? if ((strpos($vars['images'], "descrefs:") === 0) && count($c['images']) > 0) { /* Does user want us to include <img> references in cache descriptions? */ ?>
 							<?
 								# We will split images into two subcategories: spoilers and nonspoilers.
 								$spoilers = array();

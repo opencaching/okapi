@@ -99,6 +99,14 @@
 				</ul>
 			</li>
 			<li>
+				<p><b>attrnames</b> - list of names of attributes of the cache; the language will
+				be selected based on the <b>langpref</b> argument.</p>
+				<p>Note: currently each of the OC installations has its own set of attributes. That's
+				why we don't reference them by their IDs - we only return them as text. This could change
+				*if* OC installations would begin to use UUIDs for their attributes and synchronize them
+				between all installations.</p>
+			</li>
+			<li>
 				<p><b>latest_logs</b> - a couple of latest log entries in the cache.
 				The format is the same as the one returned by the services/logs/logs method.</p>
 				<p>Notice: There is no option to retrieve the full list of logs with
