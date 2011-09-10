@@ -275,7 +275,7 @@ class SearchAssistant
 		#
 		$limit = $request->get_parameter('limit');
 		if ($limit == null) $limit = "100";
-		if (!is_numeric($tmp))
+		if (!is_numeric($limit))
 			throw new InvalidParam('limit', "'$limit'");
 		if ($limit < 1 || $limit > 1000)
 			throw new InvalidParam('limit', "Has to be between 1 and 1000.");
