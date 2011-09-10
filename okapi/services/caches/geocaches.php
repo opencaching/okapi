@@ -51,7 +51,7 @@ class WebService
 			$lpc = null;
 		else
 		{
-			if ((!is_numeric($lpc)) || (intval($lpc) != $lpc))
+			if (!is_numeric($lpc))
 				throw new InvalidParam('lpc', "Invalid number: '$lpc'");
 			$lpc = intval($lpc);
 			if ($lpc < 0)
@@ -259,8 +259,8 @@ class WebService
 				$cache_code = $cacheid2wptcode[$row['cache_id']];
 				if (isset($dict[$row['attrib_id']]))
 				{
-					# The "isset" condition was added because there were some attrib_ids in
-					# caches_attributes which WERE NOT in cache_attrib.
+					# The "isset" condition was added because there were some attrib_ids in caches_attributes
+					# which WERE NOT in cache_attrib. http://code.google.com/p/opencaching-api/issues/detail?id=77
 					$results[$cache_code]['attrnames'][] = Okapi::pick_best_language($dict[$row['attrib_id']], $langpref);
 				}
 			}

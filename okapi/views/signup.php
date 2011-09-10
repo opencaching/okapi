@@ -44,7 +44,7 @@ class View
 			{
 				$ok = true;
 				Okapi::register_new_consumer($appname, $appurl, $email);
-				$notice = "Consumer Key generated successfully.\\nCheck your email!";
+				$notice = "Consumer Key generated successfully.\nCheck your email!";
 			}
 			$response = new OkapiHttpResponse();
 			$response->content_type = "application/json; charset=utf-8";

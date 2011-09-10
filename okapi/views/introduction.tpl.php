@@ -139,7 +139,7 @@ of strings and integers. Such objects can be formatted in several ways using
 	</li>
 	<li>
 		<b>callback</b> - (when using JSONP output format) name of the JavaScript function
-		to be executed with the result as their parameter.
+		to be executed with the result as its parameter.
 	</li>
 </ul>
 
