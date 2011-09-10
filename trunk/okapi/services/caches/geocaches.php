@@ -257,7 +257,12 @@ class WebService
 			while ($row = mysql_fetch_assoc($rs))
 			{
 				$cache_code = $cacheid2wptcode[$row['cache_id']];
-				$results[$cache_code]['attrnames'][] = Okapi::pick_best_language($dict[$row['attrib_id']], $langpref);
+				if (isset($dict[$row['attrib_id']]))
+				{
+					# The "isset" condition was added because there were some attrib_ids in
+					# caches_attributes which WERE NOT in cache_attrib.
+					$results[$cache_code]['attrnames'][] = Okapi::pick_best_language($dict[$row['attrib_id']], $langpref);
+				}
 			}
 		}
 		
