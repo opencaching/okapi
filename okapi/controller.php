@@ -8,7 +8,7 @@ use okapi\views\menu\OkapiMenu;
 #
 # All HTTP requests within the /okapi/ path are redirected through this
 # controller. From here we'll pass them to the right entry point (or
-# display an appropriate error message).
+# display an appropriate error message). 
 #
 # To learn more about OKAPI, see core.php.
 #
