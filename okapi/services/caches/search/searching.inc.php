@@ -82,7 +82,7 @@ class SearchAssistant
 		{
 			try
 			{
-				$users = OkapiServiceRunner::call("serivces/users/users", new OkapiInternalRequest(
+				$users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
 					$request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
 			}
 			catch (InvalidParam $e) # invalid uuid
