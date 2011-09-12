@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\logs\logs;
+namespace okapi\services\logs\userlogs;
 
 use Exception;
 use okapi\Okapi;
@@ -22,24 +22,24 @@ class WebService
 	}
 	public static function call(OkapiRequest $request)
 	{
-		$cache_code = $request->get_parameter('cache_code');
-		if (!$cache_code) throw new ParamMissing('cache_code');
+		$user_uuid = $request->get_parameter('user_uuid');
+		if (!$user_uuid) throw new ParamMissing('user_uuid');
 		
-		# Check if code exists and retrieve cache ID (this will throw
-		# a proper exception on invalid code).
-		$cache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
-			$request->consumer, null, array('cache_code' => $cache_code, 'fields' => 'internal_id')));
+		# Check if user exists and retrieve user's ID (this will throw
+		# a proper exception on invalid UUID).
+		$user = OkapiServiceRunner::call('services/users/user', new OkapiInternalRequest(
+			$request->consumer, null, array('user_uuid' => $user_uuid, 'fields' => 'internal_id')));
 		
-		# Cache exists. Retrieving logs.
+		# User exists. Retrieving logs.
 			
 		$rs = Db::query("
 			select cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
-				u.uuid as user_uuid, u.username, u.user_id
-			from cache_logs cl, user u
+				c.wp_oc as cache_code
+			from cache_logs cl, caches c
 			where
-				cl.cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+				cl.user_id = '".mysql_real_escape_string($user['internal_id'])."'
 				and cl.deleted = 0
-				and cl.user_id = u.user_id
+				and cl.cache_id = c.cache_id
 			order by cl.date desc
 		");
 		$results = array();
@@ -48,11 +48,7 @@ class WebService
 			$results[] = array(
 				'uuid' => $row['uuid'],
 				'date' => date('c', $row['date']),
-				'user' => array(
-					'uuid' => $row['user_uuid'],
-					'username' => $row['username'],
-					'profile_url' => $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id'],
-				),
+				'cache_code' => $row['cache_code'],
 				'type' => Okapi::logtypeid2name($row['type']),
 				'comment' => $row['text']
 			);

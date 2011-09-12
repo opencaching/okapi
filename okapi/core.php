@@ -778,7 +778,9 @@ class Okapi
 		return 'Archived';
 	}
 	
-	/** E.g. 'Found it' => 1. For unknown logtypes throws Exception. */
+	/**
+	 * E.g. 'Found it' => 1. For logtypes other than 1|2|3 throws Exception.
+	 */
 	public static function logtypename2id($name)
 	{
 		if ($name == 'Found it') return 1;
@@ -790,9 +792,32 @@ class Okapi
 	/** E.g. 1 => 'Found it'. For unknown ids returns 'Comment'. */
 	public static function logtypeid2name($id)
 	{
-		if ($id == 1) return 'Found it';
+		if ($id == 1) return "Found it";
 		if ($id == 2) return "Didn't find it";
-		return 'Comment';
+		if ($id == 3) return "Comment";
+		
+		static $other_types = null;
+		if ($other_types === null)
+		{
+			# I am not sure if every OC installation has a proper log_types table. Hence
+			# the try..catch block.
+			try
+			{
+				$rs = Db::query("select id, en from log_types");
+				$other_types = array();
+				while ($row = mysql_fetch_assoc($rs))
+					$other_types[$row['id']] = $row['en'];
+			}
+			catch (Exception $e)
+			{
+				$other_types = array();
+			}
+		}
+		
+		if (isset($other_types[$id]))
+			return $other_types[$id];
+		
+		return "Comment";
 	}
 }
 
