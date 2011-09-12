@@ -24,6 +24,20 @@ class WebService
 	{
 		$user_uuid = $request->get_parameter('user_uuid');
 		if (!$user_uuid) throw new ParamMissing('user_uuid');
+		$limit = $request->get_parameter('limit');
+		if (!$limit) $limit = "20";
+		if (!is_numeric($limit))
+			throw new InvalidParam('limit', "'$limit'");
+		$limit = intval($limit);
+		if (($limit < 1) || ($limit > 1000))
+			throw new InvalidParam('limit', "Has to be in range 1..1000.");
+		$offset = $request->get_parameter('offset');
+		if (!$offset) $offset = "0";
+		if (!is_numeric($offset))
+			throw new InvalidParam('offset', "'$offset'");
+		$offset = intval($offset);
+		if ($offset < 0)
+			throw new InvalidParam('offset', "'$offset'");
 		
 		# Check if user exists and retrieve user's ID (this will throw
 		# a proper exception on invalid UUID).
@@ -41,6 +55,7 @@ class WebService
 				and cl.deleted = 0
 				and cl.cache_id = c.cache_id
 			order by cl.date desc
+			limit $offset, $limit
 		");
 		$results = array();
 		while ($row = mysql_fetch_assoc($rs))
