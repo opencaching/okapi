@@ -2,7 +2,8 @@ $(function() {
 	$('.issue-comments').each(function() {
 		var div = $(this);
 		var issue_id = div.attr('issue_id');
-		$.ajax({
+		/* disabled temporarily becouse of code.google.com problems..
+      $.ajax({
 			type: 'GET',
 			dataType: 'json',
 			url: okapi_base_url + 'services/apiref/issue',
@@ -19,6 +20,7 @@ $(function() {
 				div.append(notice);
 			}
 		});
+      */
 	});
 	$('#switcher').change(function() {
 		var current_base_url = $('#switcher option[current]').attr('value');
