@@ -870,7 +870,13 @@ class OAuthUtil {
   // array('a' => array('b','c'), 'd' => 'e')
   public static function parse_parameters( $input ) {
     if (!isset($input) || !$input) return array();
-
+	
+	// issue 82: &center in URL was replaced to (cent character) ¢er... 
+	// this line replace it back.
+	// Maybe It's temporary solution - 
+	// - I know, that this line of code isn't sophisticated, but it works;)
+	$input=str_replace("%C2%A2","&cent",$input);
+	
     $pairs = explode('&', $input);
 
     $parsed_parameters = array();

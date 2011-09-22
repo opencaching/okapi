@@ -2,7 +2,7 @@ $(function() {
 	$('.issue-comments').each(function() {
 		var div = $(this);
 		var issue_id = div.attr('issue_id');
-		/* disabled temporarily becouse of code.google.com problems..
+		
       $.ajax({
 			type: 'GET',
 			dataType: 'json',
@@ -20,7 +20,7 @@ $(function() {
 				div.append(notice);
 			}
 		});
-      */
+      
 	});
 	$('#switcher').change(function() {
 		var current_base_url = $('#switcher option[current]').attr('value');
