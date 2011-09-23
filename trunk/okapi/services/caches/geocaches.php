@@ -228,7 +228,7 @@ class WebService
 				from pictures
 				where
 					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
-					and display = 1
+					and display = 1 and object_type = 2
 			");
 			while ($row = mysql_fetch_assoc($rs))
 			{
