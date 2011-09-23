@@ -271,6 +271,25 @@ class SearchAssistant
 		}
 		
 		#
+		# name
+		#
+		
+		if ($tmp = $request->get_parameter('name'))
+		{
+			//only a-z, A-Z, 0-9, "-", "*" and " " are allowed 
+			if(!preg_match("/^[a-z0-9\*\040\-]+$/i",$tmp))
+				throw new InvalidParam('name', "Not allowed characters in name string. You can use only a-z, A-Z, 0-9, *, -, and space.");
+				
+			//max length = 100	
+			if (strlen($tmp)>100)
+				throw new InvalidParam('name', "Maximum length of 'name' parameter is 100 characters");
+			
+			//replace * => % for "LIKE" pattern
+			$tmp=str_replace("*","%",$tmp);	
+			$where_conds[] = "caches.name LIKE '".mysql_real_escape_string($tmp)."'";
+		}
+		
+		#
 		# limit
 		#
 		$limit = $request->get_parameter('limit');
