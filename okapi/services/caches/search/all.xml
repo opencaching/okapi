@@ -29,7 +29,7 @@
 		is 100 characters.</p>
 		<p><b>Example:</b><ul>
 			<li>"Name=the *" returns caches that name starts with "the ".</li> 
-			<li>"Name=water tower" returns cache(s) with <b>exacly</b> that name.</li> 
+			<li>"Name=water tower" returns cache(s) with <b>exactly</b> that name.</li> 
 			<li>"Name=*water tower*" can return e.g. "Beautiful Water Tower II".</li>
 		</ul>
 		You can also put asterisk between words, e.g. "name=water*tower".</p>
