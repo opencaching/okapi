@@ -885,6 +885,9 @@ class OAuthUtil {
       $parameter = OAuthUtil::urldecode_rfc3986($split[0]);
       $value = isset($split[1]) ? OAuthUtil::urldecode_rfc3986($split[1]) : '';
 
+	/* issue 85: this part of code is not needed - also makes troubles with using 
+					value of parameters in OKAPI code. 
+	
       if (isset($parsed_parameters[$parameter])) {
         // We have already recieved parameter(s) with this name, so add to the list
         // of parameters with this name
@@ -896,9 +899,11 @@ class OAuthUtil {
         }
 
         $parsed_parameters[$parameter][] = $value;
-      } else {
+      } else { */
         $parsed_parameters[$parameter] = $value;
-      }
+      //}
+	  
+	  
     }
     return $parsed_parameters;
   }
