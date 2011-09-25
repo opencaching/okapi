@@ -296,12 +296,12 @@ class SearchAssistant
 		if ($limit == null) $limit = "100";
 		if (!is_numeric($limit))
 			throw new InvalidParam('limit', "'$limit'");
-		if ($limit < 1 || $limit > 1000)
-			throw new InvalidParam('limit', "Has to be between 1 and 1000.");
+		if ($limit < 1 || $limit > 500)
+			throw new InvalidParam('limit', "Has to be between 1 and 500.");
 		
 		return array(
 			'where_conds' => $where_conds,
-			'limit' => $limit,
+			'limit' => (int)$limit
 		);
 	}
 	
