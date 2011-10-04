@@ -276,9 +276,6 @@ class SearchAssistant
 		
 		if ($tmp = $request->get_parameter('name'))
 		{
-			//only a-z, A-Z, 0-9, "-", "*" and " " are allowed 
-			if(!preg_match("/^[a-z0-9\*\040\-]+$/i",$tmp))
-				throw new InvalidParam('name', "Not allowed characters in name string. You can use only a-z, A-Z, 0-9, *, -, and space.");
 				
 			//max length = 100	
 			if (strlen($tmp)>100)
