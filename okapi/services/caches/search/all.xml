@@ -23,16 +23,19 @@
 		<p><b>Notice:</b> User ID and Username are two different things!</p>
 	</opt>
 	<opt name='name'>
-		<p>Name (or part of name) of cache. Allowed characters in name string are 
-		[A-Z], [a-z], [0-9], hyphen ("-") and space (" ").  Asterisk ("*") is used as
-		"anything" pattern. This parameter is case-insensitive. Maximum length of pattern 
-		is 100 characters.</p>
-		<p><b>Example:</b><ul>
+		<p>Name (or part of name) of cache. All characters are allowed including space (" "). 
+		Asterisk ("*") is used as "anything" pattern. Underscore ("_") is used as any (single) character. 
+		This parameter is case-insensitive. Maximum length of pattern is 100 characters.</p>
+		<p><b>Examples:</b><ul>
 			<li>"Name=the *" returns caches that name starts with "the ".</li> 
 			<li>"Name=water tower" returns cache(s) with <b>exactly</b> that name.</li> 
 			<li>"Name=*water tower*" can return e.g. "Beautiful Water Tower II".</li>
+			<li>"Name=*tower_" can return e.g. "Water Towers", but <b>not</b> "Water Tower" or "Water Tower II".</li>
+			<li>"Name=wie%C5%BCa" can return "wieża".</li>
 		</ul>
 		You can also put asterisk between words, e.g. "name=water*tower".</p>
+		
+		<p><b>Notice:</b>Additional (national) characters such as "ę,ż,ß,ü,á,č" etc. should be UTF-8 encoded.</p>
 		
 		<p><b>Notice:</b> Cache code and name are two different things - if you want to 
 		determine a specific cache use /services/caches/geocache with <i>cache_code</i> parameter.</p>
