@@ -72,7 +72,7 @@ class SearchAssistant
 				throw new InvalidParam('status', "'$name' is not a valid cache status.");
 			}
 		}
-		$where_conds[] = "caches.status in ('".implode(",", array_map('mysql_real_escape_string', $codes))."')";
+		$where_conds[] = "caches.status in ('".implode("','", array_map('mysql_real_escape_string', $codes))."')";
 		
 		#
 		# owner_uuid
