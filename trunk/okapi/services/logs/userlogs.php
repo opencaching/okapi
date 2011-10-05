@@ -53,6 +53,7 @@ class WebService
 			where
 				cl.user_id = '".mysql_real_escape_string($user['internal_id'])."'
 				and cl.deleted = 0
+				and c.status not in (4,5,6)
 				and cl.cache_id = c.cache_id
 			order by cl.date desc
 			limit $offset, $limit
