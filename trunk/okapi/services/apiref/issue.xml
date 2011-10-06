@@ -22,5 +22,7 @@
 			<li><b>url</b> - URL of the issue page,</li>
 			<li><b>comment_count</b> - total number of submitted comments.</li>
 		</ul>
+		<p>Note, that this will respond with HTTP 400 if we fail to retrieve data from
+		the Google Code site.</p>
 	</returns>
 </xml>
