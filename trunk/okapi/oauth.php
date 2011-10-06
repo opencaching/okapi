@@ -870,13 +870,7 @@ class OAuthUtil {
   // array('a' => array('b','c'), 'd' => 'e')
   public static function parse_parameters( $input ) {
     if (!isset($input) || !$input) return array();
-	
-	// issue 82: &center in URL was replaced to (cent character) ¢er... 
-	// this line replace it back.
-	// Maybe It's temporary solution - 
-	// - I know, that this line of code isn't sophisticated, but it works;)
-	$input=str_replace("%C2%A2","&cent",$input);
-	
+
     $pairs = explode('&', $input);
 
     $parsed_parameters = array();
@@ -885,9 +879,6 @@ class OAuthUtil {
       $parameter = OAuthUtil::urldecode_rfc3986($split[0]);
       $value = isset($split[1]) ? OAuthUtil::urldecode_rfc3986($split[1]) : '';
 
-	/* issue 85: this part of code is not needed - also makes troubles with using 
-					value of parameters in OKAPI code. 
-	
       if (isset($parsed_parameters[$parameter])) {
         // We have already recieved parameter(s) with this name, so add to the list
         // of parameters with this name
@@ -899,11 +890,9 @@ class OAuthUtil {
         }
 
         $parsed_parameters[$parameter][] = $value;
-      } else { */
+      } else {
         $parsed_parameters[$parameter] = $value;
-      //}
-	  
-	  
+      }
     }
     return $parsed_parameters;
   }

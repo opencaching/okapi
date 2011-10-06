@@ -1028,6 +1028,15 @@ class OkapiHttpRequest extends OkapiRequest
 	 */
 	public function get_parameter($name)
 	{
-		return $this->request->get_parameter($name);
+		$value = $this->request->get_parameter($name);
+		
+		# Default implementation of OAuthRequest allows arrays to be passed with
+		# multiple references to the same variable ("a=1&a=2&a=3"). This is invalid
+		# in OKAPI and should be reported back. See issue 85:
+		# http://code.google.com/p/opencaching-api/issues/detail?id=85
+		
+		if (!is_scalar($value))
+			throw new InvalidParam($name, "Make sure you are using '$name' no more than ONCE in your URL.");
+		return $value;
 	}
 }
