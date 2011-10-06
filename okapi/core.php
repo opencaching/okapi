@@ -1035,7 +1035,7 @@ class OkapiHttpRequest extends OkapiRequest
 		# in OKAPI and should be reported back. See issue 85:
 		# http://code.google.com/p/opencaching-api/issues/detail?id=85
 		
-		if (!is_scalar($value))
+		if (is_array($value))
 			throw new InvalidParam($name, "Make sure you are using '$name' no more than ONCE in your URL.");
 		return $value;
 	}
