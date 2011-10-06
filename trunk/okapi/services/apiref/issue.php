@@ -28,20 +28,24 @@ class WebService
 			throw new InvalidParam('issue_id');
 		
 		# Download list of comments from Google Code Issue Tracker.
-		if($xml = @file_get_contents("http://code.google.com/feeds/issues/p/opencaching-api/issues/$issue_id/comments/full")) {
-			$doc = simplexml_load_string($xml);
-			$result = array(
-				'id' => $issue_id + 0,
-				'last_updated' => (string)$doc->updated,
-				'title' => (string)$doc->title,
-				'url' => (string)$doc->link[0]['href'],
-				'comment_count' => $doc->entry->count()
-			);
-		} else
+		
+		$xml = @file_get_contents("http://code.google.com/feeds/issues/p/opencaching-api/issues/$issue_id/comments/full");
+		if (!$xml)
 		{
-			$result=array();
-			// maybe if error, instead of return valid json response, we should throw exception (or 404)?  
+			throw new BadRequest("Sorry, we could not retrieve issue stats from the Google Code site. ".
+				"This is probably due to a temporary connection problem. Try again later or contact ".
+				"us if this seems permanent.");
 		}
+		
+		$doc = simplexml_load_string($xml);
+		$result = array(
+			'id' => $issue_id + 0,
+			'last_updated' => (string)$doc->updated,
+			'title' => (string)$doc->title,
+			'url' => (string)$doc->link[0]['href'],
+			'comment_count' => $doc->entry->count()
+		);
+		
 		return Okapi::formatted_response($request, $result);
 	}
 }
