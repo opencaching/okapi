@@ -169,9 +169,10 @@ class WebService
 			$results[$row['wp_oc']] = $entry;
 		}
 		mysql_free_result($rs);
-    if (count($cache_codes) != count($results)) 
-			throw new InvalidParam('cache_codes', "One of (or more) cache codes are invalid - ".
-				"you provided ".count($cache_codes)." cache codes, but OKAPI returns ".count($results)." caches.");
+		if (count($cache_codes) != count($results))
+		{
+			throw new InvalidParam('cache_codes', "Some of the referenced caches could not be found.");
+		}
 		
 		# Descriptions and hints.
 		

@@ -23,22 +23,23 @@
 		<p><b>Notice:</b> User ID and Username are two different things!</p>
 	</opt>
 	<opt name='name'>
-		<p>Name (or part of name) of cache. All characters are allowed including space (" "). 
-		Asterisk ("*") is used as "anything" pattern. Underscore ("_") is used as any (single) character. 
-		This parameter is case-insensitive. Maximum length of pattern is 100 characters.</p>
-		<p><b>Examples:</b><ul>
-			<li>"Name=the *" returns caches that name starts with "the ".</li> 
-			<li>"Name=water tower" returns cache(s) with <b>exactly</b> that name.</li> 
-			<li>"Name=*water tower*" can return e.g. "Beautiful Water Tower II".</li>
-			<li>"Name=*tower_" can return e.g. "Water Towers", but <b>not</b> "Water Tower" or "Water Tower II".</li>
-			<li>"Name=wie%C5%BCa" can return "wieża".</li>
+		<p>UTF-8 encoded string - the name (or part of the name) of the cache.</p>
+		<p>Allowed wildcard characters:</p>
+		<ul>
+			<li>asterisk ("*") will match any string of characters,</li>
+			<li>underscore ("_") will match any single character.</li>
 		</ul>
-		You can also put asterisk between words, e.g. "name=water*tower".</p>
-		
-		<p><b>Notice:</b>Additional (national) characters such as "ę,ż,ß,ü,á,č" etc. should be UTF-8 encoded.</p>
-		
+		<p>Name matching is case-insensitive. Maximum length for the <b>name</b> parameter
+		is 100 characters.</p>
+		<p><b>Examples:</b><ul>
+			<li>"name=the *" returns caches which name starts with "the " (or "The ", etc.),</li> 
+			<li>"name=water tower" returns caches which have <b>exactly</b> that name (case insensitive),</li> 
+			<li>"name=*water tower*" will match caches like "Beautiful Water Tower II",</li>
+			<li>"name=*tower_" will match "Water Towers" but will <b>not</b> match "Water Tower".</li>
+			<li>"name=wie%C5%BCa" will match "Wie�a".</li>
+		</ul>
 		<p><b>Notice:</b> Cache code and name are two different things - if you want to 
-		determine a specific cache use /services/caches/geocache with <i>cache_code</i> parameter.</p>
+		find a cache by its code, use the services/caches/geocache method.</p>
 	</opt>
 	<opt name='terrain' default='1-5'>
 		<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
