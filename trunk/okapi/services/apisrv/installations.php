@@ -3,6 +3,7 @@
 namespace okapi\services\apisrv\installations;
 
 use Exception;
+use ErrorException;
 use okapi\Okapi;
 use okapi\Cache;
 use okapi\OkapiRequest;
@@ -26,12 +27,41 @@ class WebService
 		# OKAPI repository. This method displays the cached version of it.
 		
 		$cachekey = 'apisrv/installations';
+		$backupkey = 'apisrv/installations-backup';
 		$results = Cache::get($cachekey);
 		if (!$results)
 		{
 			# Download the current list of OKAPI servers.
 			
-			$xml = file_get_contents("http://opencaching-api.googlecode.com/svn/trunk/etc/installations.xml");
+			try
+			{
+				$opts = array(
+					'http' => array(
+						'method' => "GET",
+						'timeout' => 5.0
+					)
+				);
+				$context = stream_context_create($opts);
+				$xml = file_get_contents("http://opencaching-api.googlecode.com/svn/trunk/etc/installations.xml",
+					false, $context);
+			}
+			catch (ErrorException $e)
+			{
+				# Google failed on us. Try to respond with a backup list.
+				
+				$results = Cache::get($backupkey);
+				if ($results)
+				{
+					Cache::set($cachekey, $results, 10*60); # so to retry no earlier than after 10 minutes
+					return Okapi::formatted_response($request, $results);
+				}
+				
+				# Backup has expired (or have never been cached). Something is just wrong...
+				
+				throw new Exception("Could not retrieve installations list from the Google Code site. ".
+					"Also, failed to load it from the 30-days cache. WTF?");
+			}
+			
 			$doc = simplexml_load_string($xml);
 			$results = array();
 			$i_was_included = false;
@@ -68,9 +98,10 @@ class WebService
 				# Contact OKAPI developers in order to get added to the official sites list!
 			}
 			
-			# Cache it for 1 hour.
+			# Cache it for 1 hour. Also, save a backup (valid for 30 days).
 			
 			Cache::set($cachekey, $results, 3600);
+			Cache::set($backupkey, $results, 86400*30);
 		}
 
 		return Okapi::formatted_response($request, $results);
