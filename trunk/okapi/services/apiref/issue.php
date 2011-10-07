@@ -3,8 +3,10 @@
 namespace okapi\services\apiref\issue;
 
 use Exception;
+use ErrorException;
 use okapi\Okapi;
 use okapi\OkapiRequest;
+use okapi\BadRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
@@ -29,8 +31,19 @@ class WebService
 		
 		# Download list of comments from Google Code Issue Tracker.
 		
-		$xml = @file_get_contents("http://code.google.com/feeds/issues/p/opencaching-api/issues/$issue_id/comments/full");
-		if (!$xml)
+		try
+		{
+			$opts = array(
+				'http' => array(
+					'method' => "GET",
+					'timeout' => 2.0
+				)
+			);
+			$context = stream_context_create($opts);
+			$xml = file_get_contents("http://code.google.com/feeds/issues/p/opencaching-api/issues/$issue_id/comments/full",
+				false, $context);
+		}
+		catch (ErrorException $e)
 		{
 			throw new BadRequest("Sorry, we could not retrieve issue stats from the Google Code site. ".
 				"This is probably due to a temporary connection problem. Try again later or contact ".

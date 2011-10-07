@@ -31,12 +31,12 @@
 		</ul>
 		<p>Name matching is case-insensitive. Maximum length for the <b>name</b> parameter
 		is 100 characters.</p>
-		<p><b>Examples:</b><ul>
+		<p><b>Examples:</b></p>
+		<ul>
 			<li>"name=the *" returns caches which name starts with "the " (or "The ", etc.),</li> 
 			<li>"name=water tower" returns caches which have <b>exactly</b> that name (case insensitive),</li> 
 			<li>"name=*water tower*" will match caches like "Beautiful Water Tower II",</li>
 			<li>"name=*tower_" will match "Water Towers" but will <b>not</b> match "Water Tower".</li>
-			<li>"name=wie%C5%BCa" will match "Wie¿a".</li>
 		</ul>
 		<p><b>Notice:</b> Cache code and name are two different things - if you want to 
 		find a cache by its code, use the services/caches/geocache method.</p>
