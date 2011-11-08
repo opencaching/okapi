@@ -80,11 +80,6 @@ class OkapiDataStore extends OAuthDataStore
 
 	public function new_request_token(OkapiConsumer $consumer, $callback)
 	{
-		if ((strpos($callback, "http://") === 0) ||
-			(strpos($callback, "https://") === 0) ||
-			$callback == "oob")
-		{ /* ok */ }
-		else { throw new BadRequest("oauth_callback should begin with http:// or https://, or should equal 'oob'."); }
 		$token = new OkapiRequestToken(Okapi::generate_key(20), Okapi::generate_key(40),
 			$consumer->key, $callback, null, Okapi::generate_key(8, true));
 		Db::execute("
