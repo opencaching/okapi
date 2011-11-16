@@ -29,6 +29,22 @@
 					</td>
 					<td class='article'>
 
+<h1>External libraries</h1>
+
+<p>OKAPI doesn't require you to use any third-party libraries (see below for some crude examples), but some such
+libraries exist and you can use them if you want. With proper libraries, OKAPI might be easier to use.</p>
+
+<ul>
+	<li><b>Oliver Dietz</b> published a <a target='_blank' href='http://code.google.com/p/okapi-dotnet-client/'>.NET client library for OKAPI</a>.
+	He keeps it up-to-date (see his page for details).</li>
+<ul>
+
+<p>If you developped your own library and would like it to be included here, post the details in a comment thread below. Please note, that it might
+take some time before we respond.</p>
+
+<div class='issue-comments' issue_id='96'></div>
+
+
 <h1>Examples</h1>
 
 <p>Some examples of OKAPI usage with popular programming languages.
