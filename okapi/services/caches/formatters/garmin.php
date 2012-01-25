@@ -59,6 +59,8 @@ class WebService
 		$caches = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'fields' => "images")));
+		if (count($caches) > 50)
+			throw new InvalidParam('cache_codes', "The maximum number of caches allowed to be downloaded with this method is 50.");
 		foreach ($caches as $cache_code => $dict)
 		{
 			$images = $dict['images'];
