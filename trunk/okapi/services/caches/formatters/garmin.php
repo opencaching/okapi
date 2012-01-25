@@ -56,6 +56,9 @@ class WebService
 
 		# Then, include all the images.
 		
+		# Note: Oliver Dietz replied that (theoretically) images with local set to 0 could not
+		# be accessed locally. But probably all the files have local set to 1 anyway.
+		
 		$caches = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'fields' => "images")));
