@@ -88,7 +88,7 @@
 				image saved along the cache description; each dictionary has the
 				following structure:</p>
 				<ul>
-					<Li><b>uuid</b> - UUID of the image,</li>
+					<li><b>uuid</b> - UUID of the image,</li>
 					<li><b>url</b> - an URL of the image,</li>
 					<li><b>thumb_url</b> - an URL of a small (thumb) version of the image
 						<b>or null</b> when no thumb is available (e.g. there are no thumbs
