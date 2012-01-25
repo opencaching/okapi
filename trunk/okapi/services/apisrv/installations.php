@@ -59,7 +59,7 @@ class WebService
 				# Backup has expired (or have never been cached). Something is just wrong...
 				
 				throw new Exception("Could not retrieve installations list from the Google Code site. ".
-					"Also, failed to load it from the 30-days cache. WTF?");
+					"Also, failed to load it from the 30-days cache.");
 			}
 			
 			$doc = simplexml_load_string($xml);

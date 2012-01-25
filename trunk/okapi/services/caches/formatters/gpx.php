@@ -71,12 +71,12 @@ class WebService
 			throw new InvalidParam('alt_wpts', "NOT YET IMPLEMENTED. Please add a comment in our issue tracker.");
 		$images = $request->get_parameter('images');
 		if (!$images) $images = 'descrefs:nonspoilers';
-		if (!in_array($images, array('none', 'descrefs:nonspoilers', 'descrefs:all')))
+		if (!in_array($images, array('none', 'descrefs:nonspoilers', 'descrefs:all', 'ox:all')))
 			throw new InvalidParam('images', "'$images'");
 		$vars['images'] = $images;
 		$attrs = $request->get_parameter('attrs');
 		if (!$attrs) $attrs = 'desc:text';
-		if (!in_array($attrs, array('none', 'desc:text')))
+		if (!in_array($attrs, array('none', 'desc:text', 'ox:tags')))
 			throw new InvalidParam('attrs', "'$attrs'");
 		$vars['attrs'] = $attrs;
 		$lpc = $request->get_parameter('lpc');

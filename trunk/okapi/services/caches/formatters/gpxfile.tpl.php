@@ -99,6 +99,21 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 						<? if ($c['size'] !== null) { ?><ox:size><?= $c['size'] ?></ox:size><? } ?>
 						<ox:terrain><?= $c['terrain'] ?></ox:terrain>
 					</ox:ratings>
+					<? if ($vars['attrs'] == 'ox:tags' && count($c['attrnames']) > 0) { /* Does user want us to include ox:tags? */ ?>
+						<ox:tags><ox:tag><?= implode("</ox:tag><ox:tag>", $c['attrnames']) ?></ox:tag></ox:tags>
+					<? } ?>
+					<? if ((strpos($vars['images'], "ox:") === 0) && count($c['images']) > 0) { /* Does user want us to include ox:image references? */ ?>
+						<ox:images>
+							<? foreach ($c['images'] as $no => $img) { ?>
+								<ox:image>
+									<ox:name><?= $img['unique_caption'] ?>.jpg</ox:name>
+									<ox:size>0</ox:size>
+									<ox:required>false</ox:required>
+									<ox:spoiler><?= ($img['is_spoiler'] ? "true" : "false") ?></ox:spoiler>
+								</ox:image>
+							<? } ?>
+						</ox:images>
+					<? } ?>
 				</ox:opencaching>
 			<? } ?>
 		</wpt>

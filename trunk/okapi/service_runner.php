@@ -33,6 +33,7 @@ class OkapiServiceRunner
 		'services/caches/geocache',
 		'services/caches/geocaches',
 		'services/caches/formatters/gpx',
+		'services/caches/formatters/garmin',
 		'services/logs/logs',
 		'services/logs/userlogs',
 		'services/logs/submit',

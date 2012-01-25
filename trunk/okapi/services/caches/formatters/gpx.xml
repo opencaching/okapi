@@ -42,7 +42,8 @@
 		<a href='http://www.opencaching.com/xmlschemas/opencaching/1/0/opencaching.xsd'>http://www.opencaching.com/xmlschemas/opencaching/1/0</a>
 		GPX extension. This namespace declares an extra &lt;opencaching&gt; element
 		used by <a href='http://www.opencaching.com/'>Garmin's Opencaching.com</a>.
-		The element includes information on cache difficulty and ratings.
+		The element includes information on cache difficulty, ratings, tags and images.
+		It is used within Garmin's Geocaching-enabled handheld GPS devices.
 	</opt>
 	<opt name='images' default='descrefs:nonspoilers'>
 		<p>Which images to include (and how to include them). One of the following values:</p>
@@ -51,10 +52,15 @@
 			<li><b>descrefs:nonspoilers</b> - all non-spoiler images will be included
 			as &lt;img&gt; references at the end of each cache description,</li>
 			<li><b>descrefs:all</b> - all images will be included (including spoilers)
-			as &lt;img&gt; references at the end of each cache description.</li>
+			as &lt;img&gt; references at the end of each cache description,</li>
+			<li><b>ox:all</b> - all images will be included (including spoilers)
+			as Garmin's &lt;ox:image&gt; references.</li>
 		</ul>
-		<p>Note, that cache descriptions are included only when <b>ns_ground</b> is set to <b>true</b>.
-		In the future, more generic ways of including images in GPX files may emerge.</p>
+		<p>Note: When using "descrefs:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
+		<p>Note: When using "ox:" mode, remember to set <b>ns_ox</b> to <b>true</b>. You must also
+		include JPEG files along the GPX for this to work properly - see
+		services/caches/formatters/garmin for more information.</p>
+		<p>In the future, more generic ways of including images in GPX files may emerge.</p>
 	</opt>
 	<opt name='attrs' default='desc:text'>
 		<p>This argument controls wether cache attributes are included and how they are included.
@@ -62,8 +68,10 @@
 		<ul>
 			<li><b>none</b> - no attributes will be included,</li>
 			<li><b>desc:text</b> - attributes will be listed (in plain-text) within the cache description.</li>
+			<li><b>ox:tags</b> - attributes will be converted to Garmin's ox:tag elements.</li>
 		</ul>
-		<p>Note, that cache descriptions are included only when <b>ns_ground</b> is set to <b>true</b>.</p>
+		<p>Note: When using "desc:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
+		<p>Note: When using "ox:" mode, remember to set <b>ns_ox</b> to <b>true</b>.</p>
 	</opt>
 	<opt name='latest_logs' default='false'>
 		<p>Boolean. If <b>true</b> then response will include a couple of

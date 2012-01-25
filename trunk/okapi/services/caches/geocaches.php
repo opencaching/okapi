@@ -225,19 +225,22 @@ class WebService
 			foreach ($results as &$result_ref)
 				$result_ref['images'] = array();
 			$rs = Db::query("
-				select object_id, url, thumb_url, title, spoiler
+				select object_id, uuid, url, thumb_url, title, spoiler
 				from pictures
 				where
 					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 					and display = 1 and object_type = 2
 			");
+			self::reset_unique_captions();
 			while ($row = mysql_fetch_assoc($rs))
 			{
 				$cache_code = $cacheid2wptcode[$row['object_id']];
 				$results[$cache_code]['images'][] = array(
+					'uuid' => $row['uuid'],
 					'url' => $row['url'],
 					'thumb_url' => $row['thumb_url'] ? $row['thumb_url'] : null,
 					'caption' => $row['title'],
+					'unique_caption' => self::get_unique_caption($row['title']),
 					'is_spoiler' => ($row['spoiler'] ? true : false),
 				);
 			}
@@ -342,6 +345,40 @@ class WebService
 				$results[$cache_code] = null;
 		
 		return Okapi::formatted_response($request, $results);
+	}
+	
+	/**
+	 * Create unique caption, safe to be used as a file name for images
+	 * uploaded into Garmin's GPS devices. Use reset_unique_captions to reset
+	 * unique counter.
+	 */
+	private static function get_unique_caption($caption)
+	{
+		$caption = preg_replace('#[^\\pL\d ]+#u', '-', $caption);
+		$caption = trim($caption, '-');
+		if (function_exists('iconv'))
+		{
+			$new = iconv("utf-8", "ASCII//TRANSLIT", $caption);
+			if (!$new)
+				$new = iconv("UTF-8", "ASCII//IGNORE", $caption);
+		} else {
+			$new = $caption;
+		}
+		$new = str_replace(array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', '.'), '', $new);
+		$new = trim($new);
+		if ($new == "")
+			$new = "(no caption)";
+		if (strlen($new) > 240)
+			$new = substr($new, 0, 240);
+		$new = self::$caption_no.". ".$new;
+		self::$caption_no++;
+		return $new;
+	}
+	private static $caption_no = 1;
+	private static function reset_unique_captions()
+	{
+		setlocale(LC_ALL, 'en_US.UTF8');
+		self::$caption_no = 1;
 	}
 	
 	public static function get_cache_attribution_note($cache_id, $lang)
