@@ -88,11 +88,15 @@
 				image saved along the cache description; each dictionary has the
 				following structure:</p>
 				<ul>
+					<Li><b>uuid</b> - UUID of the image,</li>
 					<li><b>url</b> - an URL of the image,</li>
 					<li><b>thumb_url</b> - an URL of a small (thumb) version of the image
 						<b>or null</b> when no thumb is available (e.g. there are no thumbs
 						for spoiler images),</li>
 					<li><b>caption</b> - plain-text string, caption of the image,</li>
+					<li><b>unique_caption</b> - plain-text string, to be used as a filename
+						for Garmin's crappy images implementation (currently, they get image
+						caption from the image's filename itself),</li>
 					<li><b>is_spoiler</b> - boolean, if <b>true</b> then the image is
 						a spoiler image and should not be displayed to the user unless
 						the user explicitly asks for it.</li>
