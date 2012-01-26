@@ -230,11 +230,18 @@ class WebService
 				where
 					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 					and display = 1 and object_type = 2
+				order by object_id, last_modified
 			");
-			self::reset_unique_captions();
+			$prev_cache_code = null;
 			while ($row = mysql_fetch_assoc($rs))
 			{
 				$cache_code = $cacheid2wptcode[$row['object_id']];
+				if ($cache_code != $prev_cache_code)
+				{
+					# Group images together. Images must have unique captions within one cache.
+					self::reset_unique_captions();
+					$prev_cache_code = $cache_code;
+				}
 				$results[$cache_code]['images'][] = array(
 					'uuid' => $row['uuid'],
 					'url' => $row['url'],
@@ -370,7 +377,7 @@ class WebService
 			$new = "(no caption)";
 		if (strlen($new) > 240)
 			$new = substr($new, 0, 240);
-		$new = self::$caption_no.". ".$new;
+		$new = self::$caption_no." - ".$new;
 		self::$caption_no++;
 		return $new;
 	}
