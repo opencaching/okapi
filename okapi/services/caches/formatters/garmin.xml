@@ -4,8 +4,9 @@
 	<desc>
 		<p>Produce a ZIP file with content compatible with Geocaching-enabled Garmin
 		GPS devices. The general idea is, <b>you should <u>extract</u> the contents</b> of the ZIP
-		file directly <b>into the root directory</b> of your Garmin's MicroSD card. The device
-		will be filled with all the data we are currently able to fill it with.</p>
+		file directly <b>into the root directory</b> of your Garmin's internal memory storage
+		(currently it doesn't work if you extract the data to the external MicroSD card). The device
+		will then be filled with all the data we are currently able to fill it with.</p>
 		<p>Currently, the ZIP file will contain GPX file and all images associated
 		with the chosen geocaches. Options for the GPX file are fixed, use the
 		services/caches/formatters/gpx method if
@@ -25,6 +26,6 @@
 	</opt>
 	<returns>
 		<p>ZIP file. You should extract it's contents directly into the root
-		directory of your Garmin's MicroSD card.</p>
+		directory of your Garmin's internal memory storage.</p>
 	</returns>
 </xml>
