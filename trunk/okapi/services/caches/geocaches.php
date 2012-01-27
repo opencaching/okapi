@@ -81,7 +81,7 @@ class WebService
 					inner join user u on c.user_id = u.user_id
 					left join stat_caches as sc on c.cache_id = sc.cache_id
 				where
-					wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+					binary wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
 			");
 		}
 		elseif (Settings::get('OC_BRANCH') == 'oc.pl')
@@ -106,7 +106,7 @@ class WebService
 					caches c,
 					user u
 				where
-					wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+					binary wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
 					and c.user_id = u.user_id
 			");
 		}
