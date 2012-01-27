@@ -51,7 +51,7 @@ class WebService
 			OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'ns_ground' => 'true', 'ns_ox' => 'true',
-			'images' => 'ox:all', 'attrs' => 'desc:text' /* WRTODO: ox:tags */,
+			'images' => 'ox:all', 'attrs' => 'ox:tags',
 			'latest_logs' => 'true', 'lpc' => 'all')))->body);
 
 		# Then, include all the images.
