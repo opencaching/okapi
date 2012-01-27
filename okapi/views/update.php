@@ -182,4 +182,16 @@ class View
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 		");
 	}
+	
+	private static function ver9() { Db::execute("alter table okapi_consumers modify column `key` varchar(20) not null"); }
+	private static function ver10() { Db::execute("alter table okapi_consumers modify column secret varchar(40) not null"); }
+	private static function ver11() { Db::execute("alter table okapi_tokens modify column `key` varchar(20) not null"); }
+	private static function ver12() { Db::execute("alter table okapi_tokens modify column secret varchar(40) not null"); }
+	private static function ver13() { Db::execute("alter table okapi_tokens modify column consumer_key varchar(20) not null"); }
+	private static function ver14() { Db::execute("alter table okapi_tokens modify column verifier varchar(10) default null"); }
+	private static function ver15() { Db::execute("alter table okapi_authorizations modify column consumer_key varchar(20) not null"); }
+	private static function ver16() { Db::execute("alter table okapi_nonces modify column consumer_key varchar(20) not null"); }
+	private static function ver17() { Db::execute("alter table okapi_nonces modify column `key` varchar(255) not null"); }
+	private static function ver18() { Db::execute("alter table okapi_cache_logs modify column consumer_key varchar(20) not null"); }
+	private static function ver19() { Db::execute("alter table okapi_vars modify column `var` varchar(32) not null"); }
 }
