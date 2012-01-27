@@ -36,6 +36,8 @@ class WebService
 		if (count($cache_codes) > 500)
 			throw new InvalidParam('cache_codes', "Maximum allowed number of referenced ".
 				"caches is 500. You provided ".count($cache_codes)." cache codes.");
+		if (count($cache_codes) != count(array_unique($cache_codes)))
+			throw new InvalidParam('cache_codes', "Duplicate codes detected (make sure each cache is referenced only once).");
 		$langpref = $request->get_parameter('langpref');
 		if (!$langpref) $langpref = "en";
 		$langpref = explode("|", $langpref);
@@ -351,7 +353,17 @@ class WebService
 			if (!isset($results[$cache_code]))
 				$results[$cache_code] = null;
 		
-		return Okapi::formatted_response($request, $results);
+		# Order the results in the same order as the input codes were given.
+		# This might come in handy for languages which support ordered dictionaries
+		# (especially with conjunction with the search_and_retrieve method).
+		# See issue#97. PHP dictionaries (assoc arrays) are ordered structures,
+		# so we just have to rewrite it (sequentially).
+		
+		$ordered_results = array();
+		foreach ($cache_codes as $cache_code)
+			$ordered_results[$cache_code] = $results[$cache_code];
+		
+		return Okapi::formatted_response($request, $ordered_results);
 	}
 	
 	/**
