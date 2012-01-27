@@ -194,4 +194,16 @@ class View
 	private static function ver17() { Db::execute("alter table okapi_nonces modify column `key` varchar(255) not null"); }
 	private static function ver18() { Db::execute("alter table okapi_cache_logs modify column consumer_key varchar(20) not null"); }
 	private static function ver19() { Db::execute("alter table okapi_vars modify column `var` varchar(32) not null"); }
+	
+	private static function ver20() { Db::execute("alter table okapi_consumers modify column `key` varchar(20) collate utf8_bin not null"); }
+	private static function ver21() { Db::execute("alter table okapi_consumers modify column secret varchar(40) collate utf8_bin not null"); }
+	private static function ver22() { Db::execute("alter table okapi_tokens modify column `key` varchar(20) collate utf8_bin not null"); }
+	private static function ver23() { Db::execute("alter table okapi_tokens modify column secret varchar(40) collate utf8_bin not null"); }
+	private static function ver24() { Db::execute("alter table okapi_tokens modify column consumer_key varchar(20) collate utf8_bin not null"); }
+	private static function ver25() { Db::execute("alter table okapi_tokens modify column verifier varchar(10) collate utf8_bin default null"); }
+	private static function ver26() { Db::execute("alter table okapi_authorizations modify column consumer_key varchar(20) collate utf8_bin not null"); }
+	private static function ver27() { Db::execute("alter table okapi_nonces modify column consumer_key varchar(20) collate utf8_bin not null"); }
+	private static function ver28() { Db::execute("alter table okapi_nonces modify column `key` varchar(255) collate utf8_bin not null"); }
+	private static function ver29() { Db::execute("alter table okapi_cache_logs modify column consumer_key varchar(20) collate utf8_bin not null"); }
+	private static function ver30() { Db::execute("alter table okapi_vars modify column `var` varchar(32) collate utf8_bin not null"); }
 }
