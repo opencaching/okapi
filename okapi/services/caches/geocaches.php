@@ -25,8 +25,8 @@ class WebService
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
-		'hints', 'images', 'attrnames', 'latest_logs', 'last_found', 'last_modified', 'date_created',
-		'date_hidden', 'internal_id');
+		'hints', 'images', 'attrnames', 'latest_logs', 'trackables_count', 'last_found',
+		'last_modified', 'date_created', 'date_hidden', 'internal_id');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -160,6 +160,7 @@ class WebService
 					case 'images': /* handled separately */ break;
 					case 'attrnames': /* handled separately */ break;
 					case 'latest_logs': /* handled separately */ break;
+					case 'trackables_count': /* handled separately */ break;
 					case 'last_found': $entry['last_found'] = $row['last_found'] ? date('c', strtotime($row['last_found'])) : null; break;
 					case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
 					case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
@@ -346,6 +347,28 @@ class WebService
 					'comment' => $row['text']
 				);
 			}
+		}
+		
+		# Trackables (issue#92).
+		
+		if (in_array('trackables_count', $fields))
+		{
+			$rs = Db::query("
+				select wp as cache_code, count(*) as count
+				from gk_item_waypoint
+				where wp in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+			");
+			$tr_counts = array();
+			while ($row = mysql_fetch_assoc($rs))
+				$tr_counts[$row['cache_code']] = $row['count'];
+			foreach ($results as $cache_code => &$result_ref)
+			{
+				if (isset($tr_counts[$cache_code]))
+					$result_ref['trackables_count'] = $tr_counts[$cache_code] + 0;
+				else
+					$result_ref['trackables_count'] = 0;
+			}
+			unset($tr_counts);
 		}
 		
 		# Check which cache codes were not found and mark them with null.

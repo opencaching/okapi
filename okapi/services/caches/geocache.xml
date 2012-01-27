@@ -115,6 +115,7 @@
 				The format is the same as the one returned by the services/logs/logs method.</p>
 				<p>Notice: The number of logs returned can be set with the <b>lpc</b> option.</p>
 			</li>
+			<li><b>trackables_count</b> - a total number of trackables hidden within the cache.</li>
 			<li><b>last_found</b> - date and time (ISO 8601) when the
 				geocache was last found <b>or null</b> when it hasn't been yet found,</li>
 			<li><b>last_modified</b> - date and time (ISO 8601) when the
