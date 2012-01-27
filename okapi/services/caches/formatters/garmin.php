@@ -51,13 +51,10 @@ class WebService
 			OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'ns_ground' => 'true', 'ns_ox' => 'true',
-			'images' => 'ox:all', 'attrs' => 'ox:tags', 'latest_logs' => 'true',
-			'lpc' => 'all')))->body);
+			'images' => 'ox:all', 'attrs' => 'desc:text' /* WRTODO: ox:tags */,
+			'latest_logs' => 'true', 'lpc' => 'all')))->body);
 
 		# Then, include all the images.
-		
-		# Note: Oliver Dietz replied that (theoretically) images with local set to 0 could not
-		# be accessed locally. But probably all the files have local set to 1 anyway.
 		
 		$caches = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
@@ -84,8 +81,12 @@ class WebService
 					$zippath = $dir."/".$img['unique_caption'].".jpg";
 				}
 				
-				# The safest way would be to use the URL, but this would be painfully slow!
-				# That's why I am trying to access files directly. This was tested on OCPL server only.
+				# The safest way would be to use the URL, but that would be painfully slow!
+				# That's why I am trying to access files directly (and fail silently on error).
+				# This was tested on OCPL server only.
+				
+				# Note: Oliver Dietz (oc.de) replied that images with 'local' set to 0 could not
+				# be accessed locally. But all the files have 'local' set to 1 anyway.
 				
 				$syspath = $GLOBALS['picdir']."/".$img['uuid'].".jpg";
 				if (!file_exists($syspath))
