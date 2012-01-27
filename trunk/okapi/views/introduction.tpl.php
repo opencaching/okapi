@@ -111,7 +111,8 @@ and don't have to care about OAuth.</p>
 <h2 id='http_methods'>GET or POST?</h2>
 
 <p>Whichever you want. OKAPI will treat GET and POST requests as equal.
-You may also use the HTTP <code>Authorization</code> header for passing OAuth arguments.</p>
+You may also use the HTTP <code>Authorization</code> header for passing OAuth arguments.
+OKAPI does not allow usage of PUT and DELETE requests.</p>
 
 <h2 id='common-formatting'>Common formatting parameters</h2>
 
@@ -142,6 +143,13 @@ of strings and integers. Such objects can be formatted in several ways using
 		to be executed with the result as its parameter.
 	</li>
 </ul>
+
+<p><b><u>Important:</u></b> Almost all of the returned datatypes are <b>extendible</b>. This means,
+that (in future) they <b>may contain data that you do not expect to be there</b>.
+Such data will be included in backward-compatible manner, but still you should remember about
+it in some cases (i.e. when iterating over attributes of an object). The additional data might
+include special elements in GPX files or special keys in JSON responses.
+Your software must ignore such occurances if it doesn't understand them!</p>
 
 <p>Some methods expose some <b>special formatting</b> of their own, for example, they may return
 a JPEG or a GPX file. Such methods do not accept <i>common formatting parameters</i>.</p>
