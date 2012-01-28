@@ -22,16 +22,16 @@
 	</opt>
 	<opt name='ns_ground' default='false'>
 		Boolean. If <b>true</b> then response will include
-		<a href='http://www.groundspeak.com/cache/1/0/cache.xsd'>http://www.groundspeak.com/cache/1/0</a>
-		GPX extension. This namespace declares an extra &lt;cache&gt; element
+		<a href='http://www.groundspeak.com/cache/1/0/cache.xsd'>Groundspeak's
+		GPX extension</a>. This namespace declares an extra &lt;cache&gt; element
 		used by <a href='http://www.geocaching.com/'>geocaching.com</a> and <b>many others</b>.
 		This namespace was initially associatied with geocaching.com, but now seems to
 		be used in every geocaching GPX file. You probably want to have it.
 	</opt>
 	<opt name='ns_gsak' default='false'>
 		<p>Boolean. If <b>true</b> then response will include
-		<a href='http://www.gsak.net/xmlv1/5/gsak.xsd'>http://www.gsak.net/xmlv1/5</a>
-		GPX extension. This namespace declares an extra &lt;wptExtension&gt; element,
+		<a href='http://www.gsak.net/xmlv1/5/gsak.xsd'>GSAK GPX extension</a>.
+		This namespace declares an extra &lt;wptExtension&gt; element,
 		which allows including "waypoint inheritance" information (parent-child relations).
 		This in turn allows us to include "alternate waypoints" in the response.</p>
 		<p>We know of <b>at least</b> <a href='http://www.gsak.net/'>one tool</a> that
@@ -39,8 +39,8 @@
 	</opt>
 	<opt name='ns_ox' default='false'>
 		Boolean. If <b>true</b> then response will include Garmin's
-		<a href='http://www.opencaching.com/xmlschemas/opencaching/1/0/opencaching.xsd'>http://www.opencaching.com/xmlschemas/opencaching/1/0</a>
-		GPX extension. This namespace declares an extra &lt;opencaching&gt; element
+		<a href='http://www.opencaching.com/xmlschemas/opencaching/1/0/opencaching.xsd'>OpenCaching.com
+		GPX extension</a>. This namespace declares an extra &lt;opencaching&gt; element
 		used by <a href='http://www.opencaching.com/'>Garmin's Opencaching.com</a>.
 		The element includes information on cache difficulty, ratings, tags and images.
 		It is used within Garmin's Geocaching-enabled handheld GPS devices.
