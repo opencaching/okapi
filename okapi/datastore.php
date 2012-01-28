@@ -4,8 +4,6 @@ namespace okapi;
 
 use OAuthDataStore;
 
-# WRTODO: dodać usuwanie starych request tokenów i nonces
-
 require_once($rootpath.'lib/common.inc.php');
 
 class OkapiDataStore extends OAuthDataStore
@@ -51,8 +49,7 @@ class OkapiDataStore extends OAuthDataStore
 
 	public function lookup_nonce(OkapiConsumer $consumer, $token, $nonce, $timestamp)
 	{
-		# First, see if it exists. Note, that old nonces are deleted
-		# periodically by a cronjob.
+		# First, see if it exists. Note, that old nonces are periodically deleted.
 		
 		$exists = Db::select_value("
 			select 1

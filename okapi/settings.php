@@ -2,6 +2,8 @@
 
 namespace okapi;
 
+use Exception;
+
 # DO NOT MODIFY THIS FILE. This file should always look like the original here:
 # http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/settings.php
 #
@@ -29,7 +31,8 @@ final class Settings
 		 * Currently there are two mainstream branches of OpenCaching code.
 		 * Which branch is you installation using?
 		 * 
-		 * Possible values: "oc.pl" or "oc.de".
+		 * Possible values: "oc.pl" or "oc.de". (As far as we know, oc.us and
+		 * oc.org.uk use "oc.pl" branch, the rest uses "oc.de" branch.)
 		 */
 		'OC_BRANCH' => "oc.pl",
 		
@@ -40,7 +43,29 @@ final class Settings
 		 * 
 		 * E.g. "pl", "en" or "de".
 		 */
-		'SITELANG' => "en"
+		'SITELANG' => "en",
+		
+		/**
+		 * Locale to be used with gettext. For example "pl_PL.utf8".
+		 */
+		'LOCALE' => "pl_PL.utf8",
+		
+		/**
+		 * All OKAPI documentation pages should remain English-only, but some
+		 * other pages (these viewable by regular users) should be translated
+		 * to your local language. We try to catch up to all OKAPI instances and
+		 * fill our default translation tables with all the languages of all
+		 * OKAPI installations. But we also give you an option to use your own
+		 * translation table if you want to. Use this variable to pass your
+		 * own gettext initialization function/method.
+		 */
+		'GETTEXT_INIT' => array('\okapi\Settings', 'default_gettext_init'),
+		
+		/**
+		 * By default, OKAPI uses "okapi_messages" domain file for translations.
+		 * Use this variable when you want it to use your own domain.
+		 */
+		'GETTEXT_DOMAIN' => 'okapi_messages',
 	);
 	
 	/** 
@@ -78,5 +103,17 @@ final class Settings
 			throw new Exception("Tried to access an invalid settings key: '$key'");
 		
 		return self::$SETTINGS[$key];
+	}
+	
+	/**
+	 * Bind "okapi_messages" with our local i18n database. Set proper locale
+	 * based on settings.
+	 */
+	public static function default_gettext_init()
+	{
+		$locale = self::get("LOCALE");
+		putenv("LC_ALL=$locale");
+		setlocale(LC_ALL, $locale);
+		bindtextdomain("okapi_messages", $GLOBALS['rootpath'].'okapi/locale');
 	}
 }

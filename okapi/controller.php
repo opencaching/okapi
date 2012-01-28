@@ -3,6 +3,7 @@
 namespace okapi;
 
 use Exception;
+use okapi\Okapi;
 use okapi\views\menu\OkapiMenu;
 
 #
@@ -72,4 +73,6 @@ class OkapiScriptEntryPointController
 	}
 }
 
+Okapi::gettext_domain_init();
 OkapiScriptEntryPointController::dispatch_request($_SERVER['REQUEST_URI']);
+Okapi::gettext_domain_restore();

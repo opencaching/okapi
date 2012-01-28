@@ -465,7 +465,6 @@ class WebService
 	private static $caption_no = 1;
 	private static function reset_unique_captions()
 	{
-		setlocale(LC_ALL, 'en_US.UTF8');
 		self::$caption_no = 1;
 	}
 	
