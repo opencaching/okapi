@@ -48,7 +48,7 @@ final class Settings
 		/**
 		 * Locale to be used with gettext. For example "pl_PL.utf8".
 		 */
-		'LOCALE' => "pl_PL.utf8",
+		'LOCALE' => "en_US.utf8",
 		
 		/**
 		 * All OKAPI documentation pages should remain English-only, but some
