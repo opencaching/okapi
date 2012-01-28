@@ -47,7 +47,7 @@ class WebService
 		# Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It will
 		# also include image references (actual images will be added as separate files later).
 		
-		$zip->addFromString("Garmin/GPX/opencaching.gpx",
+		$zip->addFromString("Garmin/GPX/opencaching".time().rand(100000,999999).".gpx",
 			OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'ns_ground' => 'true', 'ns_ox' => 'true',
