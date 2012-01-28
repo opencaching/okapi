@@ -116,6 +116,17 @@
 				<p>Notice: The number of logs returned can be set with the <b>lpc</b> option.</p>
 			</li>
 			<li><b>trackables_count</b> - a total number of trackables hidden within the cache.</li>
+			<li>
+				<p><b>trackables</b> - list of dictionaries, each dictionary represents one
+				trackable hidden within the cache container; each dictionary has the
+				following structure:</p>
+				<ul>
+					<li><b>code</b> - code of the trackable,</li>
+					<li><b>name</b> - plain text name of the trackable,</li>
+					<li><b>url</b> - trackable's own webpage address <b>or null</b>, if OKAPI
+						cannot automatically determine this address.</li>
+				</ul>
+			</li>
 			<li><b>last_found</b> - date and time (ISO 8601) when the
 				geocache was last found <b>or null</b> when it hasn't been yet found,</li>
 			<li><b>last_modified</b> - date and time (ISO 8601) when the

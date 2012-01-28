@@ -69,16 +69,31 @@ class WebService
 		if (!$alt_wpts) $alt_wpts = "false";
 		if ($alt_wpts != "false")
 			throw new InvalidParam('alt_wpts', "NOT YET IMPLEMENTED. Please add a comment in our issue tracker.");
+		
 		$images = $request->get_parameter('images');
 		if (!$images) $images = 'descrefs:nonspoilers';
 		if (!in_array($images, array('none', 'descrefs:nonspoilers', 'descrefs:all', 'ox:all')))
 			throw new InvalidParam('images', "'$images'");
 		$vars['images'] = $images;
-		$attrs = $request->get_parameter('attrs');
-		if (!$attrs) $attrs = 'desc:text';
-		if (!in_array($attrs, array('none', 'desc:text', 'ox:tags')))
-			throw new InvalidParam('attrs', "'$attrs'");
-		$vars['attrs'] = $attrs;
+		
+		$tmp = $request->get_parameter('attrs');
+		if (!$tmp) $tmp = 'desc:text';
+		if (!in_array($tmp, array('none', 'desc:text', 'ox:tags')))
+			throw new InvalidParam('attrs', "'$tmp'");
+		$vars['attrs'] = $tmp;
+		
+		$tmp = $request->get_parameter('trackables');
+		if (!$tmp) $tmp = 'none';
+		if (!in_array($tmp, array('none', 'desc:list', 'desc:count')))
+			throw new InvalidParam('trackables', "'$tmp'");
+		$vars['trackables'] = $tmp;
+		
+		$tmp = $request->get_parameter('recommendations');
+		if (!$tmp) $tmp = 'none';
+		if (!in_array($tmp, array('none', 'desc:count')))
+			throw new InvalidParam('recommendations', "'$tmp'");
+		$vars['recommendations'] = $tmp;
+		
 		$lpc = $request->get_parameter('lpc');
 		if ($lpc === null) $lpc = 10; # will be checked in services/caches/geocaches call
 		
@@ -91,6 +106,12 @@ class WebService
 			$fields .= "|images";
 		if ($vars['attrs'] != 'none')
 			$fields .= "|attrnames";
+		if ($vars['trackables'] == 'desc:list')
+			$fields .= "|trackables";
+		elseif ($vars['trackables'] == 'desc:count')
+			$fields .= "|trackables_count";
+		if ($vars['recommendations'] != 'none')
+			$fields .= "|recommendations";
 		if ($vars['latest_logs'])
 			$fields .= "|latest_logs";
 		

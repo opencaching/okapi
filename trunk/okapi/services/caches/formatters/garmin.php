@@ -44,15 +44,15 @@ class WebService
 		$zip->addEmptyDir("Garmin/GeocachePhotos");
 		
 		# Include a GPX file compatible with Garmin devices. It should include all
-		# Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It won't
-		# include references to images (these will be added as separate files later).
+		# Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It will
+		# also include image references (actual images will be added as separate files later).
 		
 		$zip->addFromString("Garmin/GPX/opencaching.gpx",
 			OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'ns_ground' => 'true', 'ns_ox' => 'true',
-			'images' => 'ox:all', 'attrs' => 'ox:tags',
-			'latest_logs' => 'true', 'lpc' => 'all')))->body);
+			'images' => 'ox:all', 'attrs' => 'ox:tags', 'trackables' => 'desc:count',
+			'recommendations' => 'desc:count', 'latest_logs' => 'true', 'lpc' => 'all')))->body);
 
 		# Then, include all the images.
 		
@@ -67,7 +67,7 @@ class WebService
 			if (count($images) == 0)
 				continue;
 			$dir = "Garmin/GeocachePhotos/".$cache_code[strlen($cache_code) - 1];
-			$zip->addEmptyDir($dir);
+			$zip->addEmptyDir($dir); # fails silently if it already exists
 			$dir .= "/".$cache_code[strlen($cache_code) - 2];
 			$zip->addEmptyDir($dir);
 			$dir .= "/".$cache_code;
