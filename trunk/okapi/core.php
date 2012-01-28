@@ -160,7 +160,7 @@ class OkapiErrorHandler
 	}
 }
 
-# Settings handlers. Errors will now throw exceptions, and all exceptions
+# Setting handlers. Errors will now throw exceptions, and all exceptions
 # will be properly handled. (Unfortunetelly, only SOME errors can be caught
 # this way, PHP limitations...)
 
@@ -513,6 +513,25 @@ class Okapi
 		foreach ($langdict as &$text_ref)
 			return $text_ref;
 		return "";
+	}
+	
+	private static $gettext_initialized = false;
+	private static $gettext_original_domain;
+	private static $gettext_current_depth = 0;
+	public static function gettext_domain_init()
+	{
+		if (!self::$gettext_initialized)
+			call_user_func(Settings::get("GETTEXT_INIT"));
+		if (self::$gettext_current_depth == 0)
+			self::$gettext_original_domain = textdomain(null);
+		textdomain(Settings::get("GETTEXT_DOMAIN"));
+		self::$gettext_current_depth++;
+	}
+	public static function gettext_domain_restore()
+	{
+		self::$gettext_current_depth--;
+		if (self::$gettext_current_depth == 0)
+			textdomain(self::$gettext_original_domain);
 	}
 	
 	/** Internal. */

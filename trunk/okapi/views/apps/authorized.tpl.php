@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title>Authorization Succeeded</title>
+		<title><?= _("Authorization Succeeded") ?></title>
 	</head>
 	<style>
 		.okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
@@ -23,13 +23,13 @@
 		<div class='okapi'>
 			<a href='/okapi/'><img src='/okapi/static/logo-xsmall.gif' alt='OKAPI' style='float: right; margin-left: 10px;'></a>
 			<a href='/'><img src="/images/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
-			<div class='opencaching'><?= $vars['site_name'] ?></div>
+			<a class='opencaching'><?= $vars['site_name'] ?></a>
 			
-			<h1 style='clear: both'>Pomyślnie dałeś dostęp</h1>
-			<p><b>Właśnie dałeś dostęp aplikacji <?= $vars['token']['consumer_name'] ?> do Twojego
-			konta <?= $vars['site_name'] ?>.</b>
-			Aby zakończyć operację, wróć teraz do aplikacji <?= $vars['token']['consumer_name'] ?>
-			i wpisz następujący kod PIN:</p>
+			<h1 style='clear: both'><?= _("Access successfully granted") ?></h1>
+			<?= sprintf(_("
+				<p><b>You've just granted %s application access to your %s account.</b>
+				To complete the operation, go back to %s and enter the following PIN code:</p>
+			"), $vars['token']['consumer_name'], $vars['site_name'], $vars['token']['consumer_name']) ?>
 			
 			<div class='pin'><?= $vars['verifier'] ?></div>
 			

@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title>Authorization Form</title>
+		<title><?= _("Authorization Form") ?></title>
 	</head>
 	<style>
 		.okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
@@ -23,28 +23,27 @@
 		<div class='okapi'>
 			<a href='/okapi/'><img src='/okapi/static/logo-xsmall.gif' alt='OKAPI' style='float: right; margin-left: 10px;'></a>
 			<a href='/'><img src="/images/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
-			<div class='opencaching'><?= $vars['site_name'] ?></div>
+			<a class='opencaching'><?= $vars['site_name'] ?></a>
 			
 			<? if (isset($vars['token_expired']) && $vars['token_expired']) { ?>
-				<h1 style='clear: both'>Przeterminowane żądanie</h1>
-				<p>Niestety upłynął termin ważności żądania. Prosimy sprobować ponownie.</p>
+				<h1 style='clear: both'><?= _("Expired request") ?></h1>
+				<p><?= _("Unfortunately, the request has expired. Please try again.") ?></p>
 			<? } elseif ($vars['token']) { ?>
-				<h1 style='clear: both'>Aplikacja zewnętrzna prosi o dostęp...</h1>
-				<p><b><?= htmlentities($vars['token']['consumer_name']) ?></b> chce uzyskać
-				dostęp do Twojego konta <b><?= $vars['site_name'] ?></b>.
-				Czy zgadzasz się na udzielenie dostępu tej aplikacji?</p>
+				<h1 style='clear: both'><?= _("External application has requested access...") ?></h1>
+				<p><?= sprintf(_("<b>%s</b> wants to access your <b>%s</b> account. Do you agree to grant access for this application?"), htmlentities($vars['token']['consumer_name']), $vars['site_name']) ?></p>
 				<form id='authform' method='POST' class='form'>
 					<input type='hidden' name='authorization_result' id='authform_result' value='denied'>
-					<input type='button' value="Zgadzam się" onclick="document.getElementById('authform_result').setAttribute('value', 'granted'); document.forms['authform'].submit();">
-					<input type='button' value="Odmawiam" onclick="document.forms['authform'].submit();">
+					<input type='button' value="<?= _("I agree") ?>" onclick="document.getElementById('authform_result').setAttribute('value', 'granted'); document.forms['authform'].submit();">
+					<input type='button' value="<?= _("I don't agree") ?>" onclick="document.forms['authform'].submit();">
 				</form>
-				<p>Raz udzielona zgoda jest ważna aż do momentu jej wycofania na stronie
-				<a href='/okapi/apps/'>zarządzania aplikacjami</a>.</p>
-				<p>Aplikacja będzie łączyć się z Twoim kontem poprzez <a href='/okapi/'>platformę OKAPI</a> (strona w języku
-				angielskim). Uzyskanie zgody na dostęp pozwoli aplikacji na korzystanie
-				ze wszystkich metod udostępnianych przez platformę OKAPI (m.in. aplikacja
-				będzie mogła umieszczać komentarze pod znajdowanymi przez Ciebie skrzynkami).
-				Zgodę możesz wycofać w każdym momencie.</p>
+				<?= sprintf(_("
+					<p>Once you grant access, the application has access to your account until
+					the moment you revoke this access on the <a href='%s'>applications management</a> page.</p>
+					<p>Application will access your acount via the <a href='%s'>OKAPI Framework</a>.
+					If you allow this request application will be able to access all methods delivered
+					by the OKAPI Framework, i.e. post log entries on geocaches you have found.
+					You can revoke this permission at any moment.</p>
+				"), "/okapi/apps/", "/okapi/") ?>
 			<? } ?>
 		</div>
 

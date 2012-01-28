@@ -111,9 +111,13 @@ class OkapiServiceRunner
 				"\$request->token MAY NOT be empty for Level 3 methods.");
 		}
 		
+		Okapi::gettext_domain_init();
 		require_once "$service_name.php";
-		return call_user_func(array('\\okapi\\'.
+		$response = call_user_func(array('\\okapi\\'.
 			str_replace('/', '\\', $service_name).'\\WebService', 'call'), $request);
+		Okapi::gettext_domain_restore();
+		
+		return $response;
 	}
 	
 }

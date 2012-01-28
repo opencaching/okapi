@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title>My Apps</title>
+		<title><?= _("My Apps") ?></title>
 	</head>
 	<style>
 		.okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
@@ -26,11 +26,14 @@
 			<a href='/'><img src="/images/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
 			<a class='opencaching'><?= $vars['site_name'] ?></a>
 			
-			<h1 style='clear: both'>Twoje aplikacje</h1>
+			<h1 style='clear: both'><?= _("Your external applications") ?></h1>
 			<? if (count($vars['apps']) > 0) { ?>
-				<p>Następującym aplikacjom zezwoliłeś na dostęp do swojego konta <b><?= $vars['site_name'] ?></b>.
-				Na tej stronie możesz wycofać udzielone poprzednio zezwolenia. Po kliknięciu
-				"usuń" aplikacja nie będzie już mogła wykonywać żadnych operacji w Twoim imieniu.</p>
+				<?= sprintf(_("
+					<p>This is the list of applications which you granted access to your <b>%s</b> account.
+					This page gives you the abbility to revoke all previously granted privileges.
+					Once you click \"remove\" the application will no longer be able to perform any
+					actions in your name.</p>
+				"), $vars['site_name']) ?>
 				<ul>
 					<? foreach ($vars['apps'] as $app) { ?>
 						<li>
@@ -39,15 +42,16 @@
 							<? } else { ?>
 								<?= htmlspecialchars($app['name'], ENT_QUOTES, 'utf-8') ?>
 							<? } ?>
-							- <a href='/okapi/apps/revoke_access?consumer_key=<?= $app['key'] ?>'>usuń</a>
+							- <a href='/okapi/apps/revoke_access?consumer_key=<?= $app['key'] ?>'><?= _("remove") ?></a>
 						</li>
 					<? } ?>
 				</ul>
 			<? } else { ?>
-				<p>Dzięki platformie <a href='/okapi/'>OKAPI</a> możesz dawać zewnętrznym aplikacjom
-				dostęp do Twojego konta <b><?= $vars['site_name'] ?></b>.
-				Aktualnie nie pozwalasz żadnej aplikacji na działania w Twoim imieniu. Jeśli kiedyś dodasz
-				jakieś aplikacje, to ich lista pojawi się tutaj.</p>
+				<?= sprintf(_("
+					<p>Thanks to the <a href='%s'>OKAPI Framework</a> you can grant external applications
+					access to your <b>%s</b> account. Currently you do not allow any application to act
+					in your name. Once you start using external OpenCaching applications, they will appear here.</p>
+				"), "/okapi/", $vars['site_name']) ?>
 			<? } ?>
 		</div>
 

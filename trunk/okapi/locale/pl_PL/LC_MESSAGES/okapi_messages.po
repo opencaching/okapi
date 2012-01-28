@@ -1,0 +1,152 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: OKAPI\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-01-28 23:03+0100\n"
+"PO-Revision-Date: 2012-01-28 23:03+0100\n"
+"Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: D:\\PRIV\\Projekty\\EclipseWorkspace\\opencaching-api\\okapi\n"
+"Plural-Forms: nplurals=3; plural = n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: views/apps/authorize.tpl.php:5
+msgid "Authorization Form"
+msgstr "Formularz autoryzacyjny"
+
+#: views/apps/authorize.tpl.php:29
+msgid "Expired request"
+msgstr "Przeterminowane żądanie"
+
+#: views/apps/authorize.tpl.php:30
+msgid "Unfortunately, the request has expired. Please try again."
+msgstr "Niestety upłynął termin ważności żądania. Prosimy sprobować ponownie."
+
+#: views/apps/authorize.tpl.php:32
+msgid "External application has requested access..."
+msgstr "Aplikacja zewnętrzna prosi o dostęp..."
+
+#: views/apps/authorize.tpl.php:33
+#, php-format
+msgid "<b>%s</b> wants to access your <b>%s</b> account. Do you agree to grant access for this application?"
+msgstr "<b>%s</b> chce uzyskać dostęp do Twojego konta <b>%s</b>. Czy zgadzasz się na udzielenie dostępu tej aplikacji?"
+
+#: views/apps/authorize.tpl.php:36
+msgid "I agree"
+msgstr "Zgadzam się"
+
+#: views/apps/authorize.tpl.php:37
+msgid "I don't agree"
+msgstr "Odmawiam"
+
+#: views/apps/authorize.tpl.php:39
+#, php-format
+msgid ""
+"\n"
+"\t\t\t\t\t<p>Once you grant access, the application has access to your account until\n"
+"\t\t\t\t\tthe moment you revoke this access on the <a href='%s'>applications management</a> page.</p>\n"
+"\t\t\t\t\t<p>Application will access your acount via the <a href='%s'>OKAPI Framework</a>.\n"
+"\t\t\t\t\tIf you allow this request application will be able to access all methods delivered\n"
+"\t\t\t\t\tby the OKAPI Framework, i.e. post log entries on geocaches you have found.\n"
+"\t\t\t\t\tYou can revoke this permission at any moment.</p>\n"
+"\t\t\t\t"
+msgstr ""
+"\n"
+"<p>Raz udzielona zgoda jest ważna aż do momentu jej wycofania na stronie <a href='%s'>zarządzania aplikacjami</a>.</p><p>Aplikacja będzie łączyć się z Twoim kontem poprzez <a href='%s'>platformę OKAPI</a> (strona w języku angielskim). Uzyskanie zgody na dostęp pozwoli aplikacji na korzystanie ze wszystkich metod udostępnianych przez platformę OKAPI (m.in. aplikacja będzie mogła umieszczać komentarze pod znajdowanymi przez Ciebie skrzynkami). Zgodę możesz wycofać w każdym momencie.</p>"
+
+#: views/apps/authorized.tpl.php:5
+msgid "Authorization Succeeded"
+msgstr "Autoryzacja powiodła się"
+
+#: views/apps/authorized.tpl.php:28
+msgid "Access successfully granted"
+msgstr "Pomyślnie dałeś dostęp"
+
+#: views/apps/authorized.tpl.php:29
+#, php-format
+msgid ""
+"\n"
+"\t\t\t\t<p><b>You've just granted %s application access to your %s account.</b>\n"
+"\t\t\t\tTo complete the operation, go back to %s and enter the following PIN code:</p>\n"
+"\t\t\t"
+msgstr ""
+"\n"
+"<p><b>Właśnie dałeś dostęp aplikacji %s do Twojego konta %s.</b>\n"
+"Aby zakończyć operację, wróć teraz do aplikacji %s i wpisz następujący kod PIN:</p>"
+
+#: views/apps/index.tpl.php:5
+msgid "My Apps"
+msgstr "Moje aplikacje"
+
+#: views/apps/index.tpl.php:29
+msgid "Your external applications"
+msgstr "Twoje zewnętrzne aplikacje"
+
+#: views/apps/index.tpl.php:31
+#, php-format
+msgid ""
+"\n"
+"\t\t\t\t\t<p>This is the list of applications which you granted access to your <b>%s</b> account.\n"
+"\t\t\t\t\tThis page gives you the abbility to revoke all previously granted privileges.\n"
+"\t\t\t\t\tOnce you click \"remove\" the application will no longer be able to perform any\n"
+"\t\t\t\t\tactions in your name.</p>\n"
+"\t\t\t\t"
+msgstr ""
+"\n"
+"<p>Następującym aplikacjom zezwoliłeś na dostęp do swojego konta <b>%s</b>.\n"
+"Na tej stronie możesz wycofać udzielone poprzednio zezwolenia. Po kliknięciu\n"
+"\"usuń\" aplikacja nie będzie już mogła wykonywać żadnych operacji w Twoim imieniu.</p>"
+
+#: views/apps/index.tpl.php:45
+msgid "remove"
+msgstr "usuń"
+
+#: views/apps/index.tpl.php:50
+#, php-format
+msgid ""
+"\n"
+"\t\t\t\t\t<p>Thanks to the <a href='%s'>OKAPI Framework</a> you can grant external applications\n"
+"\t\t\t\t\taccess to your <b>%s</b> account. Currently you do not allow any application to act\n"
+"\t\t\t\t\tin your name. Once you start using external OpenCaching applications, they will appear here.</p>\n"
+"\t\t\t\t"
+msgstr ""
+"\n"
+"<p>Dzięki platformie <a href='%s'>OKAPI</a> możesz dawać zewnętrznym aplikacjom\n"
+"dostęp do Twojego konta <b>%s</b>. Aktualnie nie pozwalasz żadnej aplikacji na działania\n"
+"w Twoim imieniu. Jeśli kiedyś dodasz jakieś aplikacje, to ich lista pojawi się tutaj.</p>"
+
+#~ msgid ""
+#~ "Once you grant access, the application has access to your account until "
+#~ "the moment you revoke this access on the <a href='%s'>applications "
+#~ "management</a> page."
+#~ msgstr ""
+#~ "Raz udzielona zgoda jest ważna aż do momentu jej wycofania na stronie <a "
+#~ "href='%s'>zarządzania aplikacjami</a>."
+
+#~ msgid ""
+#~ "Application will access your acount via <a href='%s'>OKAPI Framework</a>."
+#~ msgstr ""
+#~ "Aplikacja będzie łączyć się z Twoim kontem poprzez <a href='%s'>platformę "
+#~ "OKAPI</a> (strona w języku angielskim)."
+
+#~ msgid ""
+#~ "If you allow this request application will be able to access all methods "
+#~ "delivered by the OKAPI Framework, i.e. post log entries on geocaches you "
+#~ "have found."
+#~ msgstr ""
+#~ "Uzyskanie zgody na dostęp pozwoli aplikacji na korzystanie ze wszystkich "
+#~ "metod udostępnianych przez platformę OKAPI (m.in. aplikacja będzie mogła "
+#~ "umieszczać komentarze pod znajdowanymi przez Ciebie skrzynkami)."
+
+#~ msgid "You can revoke this permission at any moment."
+#~ msgstr "Zgodę możesz wycofać w każdym momencie."
+
+#~ msgid "Test in English"
+#~ msgstr "Test po polsku"
