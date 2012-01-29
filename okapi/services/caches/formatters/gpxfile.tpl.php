@@ -72,16 +72,24 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 								&lt;h2&gt;Images (<?= count($nonspoilers) ?>)&lt;/h2&gt;
 								<? foreach ($nonspoilers as $img) { ?>
 									&lt;p&gt;&lt;img src='<?= htmlspecialchars($img['url'], ENT_COMPAT, 'UTF-8') ?>'&gt;&lt;br&gt;
-									<?= $img['caption'] ?>&lt;/p&gt;
+									<?= htmlspecialchars($img['caption'], ENT_COMPAT, 'UTF-8') ?>&lt;/p&gt;
 								<? } ?>
 							<? } ?>
 							<? if (count($spoilers) > 0 && $vars['images'] == 'descrefs:all') { ?>
 								&lt;h2&gt;Spoilers (<?= count($spoilers) ?>)&lt;/h2&gt;
 								<? foreach ($spoilers as $img) { ?>
 									&lt;p&gt;&lt;img src='<?= htmlspecialchars($img['url'], ENT_COMPAT, 'UTF-8') ?>'&gt;&lt;br&gt;
-									<?= $img['caption'] ?>&lt;/p&gt;
+									<?= htmlspecialchars($img['caption'], ENT_COMPAT, 'UTF-8') ?>&lt;/p&gt;
 								<? } ?>
 							<? } ?>
+						<? } ?>
+						<? if ((strpos($vars['images'], "ox:") === 0) && count($c['images']) > 0) { /* Include image descriptions (for ox:image numbers)? */ ?>
+							&lt;p&gt;<?= _("Image descriptions") ?>:&lt;/p&gt;
+							<ul>
+								<? foreach ($c['images'] as $no => $img) { ?>
+									<li><?= $img['unique_caption'] ?>. <?= htmlspecialchars($img['caption'], ENT_COMPAT, 'UTF-8') ?></li>
+								<? } ?>
+							</ul>
 						<? } ?>
 					</groundspeak:long_description>
 					<groundspeak:encoded_hints><?= htmlspecialchars($c['hint'], ENT_COMPAT, 'UTF-8') ?></groundspeak:encoded_hints>
