@@ -521,7 +521,10 @@ class Okapi
 	public static function gettext_domain_init()
 	{
 		if (!self::$gettext_initialized)
+		{
 			call_user_func(Settings::get("GETTEXT_INIT"));
+			self::$gettext_initialized = true;
+		}
 		if (self::$gettext_current_depth == 0)
 			self::$gettext_original_domain = textdomain(null);
 		textdomain(Settings::get("GETTEXT_DOMAIN"));
