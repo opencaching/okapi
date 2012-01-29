@@ -85,11 +85,11 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 						<? } ?>
 						<? if ((strpos($vars['images'], "ox:") === 0) && count($c['images']) > 0) { /* Include image descriptions (for ox:image numbers)? */ ?>
 							&lt;p&gt;<?= _("Image descriptions") ?>:&lt;/p&gt;
-							<ul>
+							&lt;ul&gt;
 								<? foreach ($c['images'] as $no => $img) { ?>
-									<li><?= $img['unique_caption'] ?>. <?= htmlspecialchars($img['caption'], ENT_COMPAT, 'UTF-8') ?></li>
+									&lt;li&gt;<?= $img['unique_caption'] ?>. <?= htmlspecialchars($img['caption'], ENT_COMPAT, 'UTF-8') ?>&lt;/li&gt;
 								<? } ?>
-							</ul>
+							&lt;/ul&gt;
 						<? } ?>
 					</groundspeak:long_description>
 					<groundspeak:encoded_hints><?= htmlspecialchars($c['hint'], ENT_COMPAT, 'UTF-8') ?></groundspeak:encoded_hints>
