@@ -48,7 +48,7 @@ final class Settings
 		/**
 		 * Locale to be used with gettext. For example "pl_PL.utf8".
 		 */
-		'LOCALE' => "en_US.utf8",
+		'LOCALE' => "POSIX",
 		
 		/**
 		 * All OKAPI documentation pages should remain English-only, but some
@@ -114,7 +114,7 @@ final class Settings
 		$locale = self::get("LOCALE");
 		putenv("LC_ALL=$locale");
 		setlocale(LC_ALL, $locale);
-		setlocale(LC_NUMERIC, "en_US.utf8"); # We don't one *this one* to get out of control.
+		setlocale(LC_NUMERIC, "POSIX"); # We don't one *this one* to get out of control.
 		bindtextdomain("okapi_messages", $GLOBALS['rootpath'].'okapi/locale');
 	}
 }
