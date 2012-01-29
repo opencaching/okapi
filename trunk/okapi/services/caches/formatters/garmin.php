@@ -76,9 +76,9 @@ class WebService
 			{
 				if ($img['is_spoiler']) {
 					$zip->addEmptyDir($dir."/Spoilers");
-					$zippath = $dir."/Spoilers/".$no.".jpg"; // was: $img['unique_caption']
+					$zippath = $dir."/Spoilers/".$img['unique_caption'].".jpg";
 				} else {
-					$zippath = $dir."/".$no.".jpg"; // was: $img['unique_caption']
+					$zippath = $dir."/".$img['unique_caption'].".jpg";
 				}
 				
 				# The safest way would be to use the URL, but that would be painfully slow!

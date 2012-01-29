@@ -442,6 +442,15 @@ class WebService
 	 */
 	private static function get_unique_caption($caption)
 	{
+		# Garmins keep hanging on long file names. We don't have any specification from
+		# Garmin and cannot determine WHY. That's why we won't use captions until we
+		# know more.
+		
+		$caption = self::$caption_no."";
+		self::$caption_no++;
+		return $caption;
+		
+		/* This code is harmful for Garmins!
 		$caption = preg_replace('#[^\\pL\d ]+#u', '-', $caption);
 		$caption = trim($caption, '-');
 		if (function_exists('iconv'))
@@ -460,7 +469,7 @@ class WebService
 			$new = substr($new, 0, 240);
 		$new = self::$caption_no." - ".$new;
 		self::$caption_no++;
-		return $new;
+		return $new;*/
 	}
 	private static $caption_no = 1;
 	private static function reset_unique_captions()
