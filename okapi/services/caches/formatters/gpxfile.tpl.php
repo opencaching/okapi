@@ -38,20 +38,23 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 					<groundspeak:difficulty><?= $c['difficulty'] ?></groundspeak:difficulty>
 					<groundspeak:terrain><?= $c['terrain'] ?></groundspeak:terrain>
 					<groundspeak:long_description html="True">
-						&lt;p&gt;&lt;a href="<?= $c['url'] ?>"&gt;<?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;
-						by &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;&lt;/p&gt;
-						<? if ($vars['recommendations'] == 'desc:count') { /* Does user want us to include recommendations count? */ ?>
-							&lt;p&gt;Recommendations: <?= $c['recommendations'] ?>&lt;/p&gt;
-						<? } ?>
-						<? if ($vars['trackables'] == 'desc:count') { /* Does user want us to include trackables count? */ ?>
-							&lt;p&gt;Trackables: <?= $c['trackables_count'] ?>&lt;/p&gt;
-						<? } ?>
+						&lt;p&gt;
+							&lt;a href="<?= $c['url'] ?>"&gt;<?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;
+							<?= _("hidden by") ?> &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;&lt;br/&gt;
+							<? if ($vars['recommendations'] == 'desc:count') { /* Does user want us to include recommendations count? */ ?>
+								<?= sprintf(ngettext("%d recommendation", "%d recommendations", $c['recommendations']), $c['recommendations']) ?>.
+							<? } ?>
+							<? if ($vars['trackables'] == 'desc:count') { /* Does user want us to include trackables count? */ ?>
+								<?= sprintf(ngettext("%d trackable", "%d trackables", $c['trackables_count']), $c['trackables_count']) ?>.
+							<? } ?>
+						&lt;/p&gt;
+						
 						<? if ($vars['attrs'] == 'desc:text' && count($c['attrnames']) > 0) { /* Does user want us to include attributes? */ ?>
-							&lt;p&gt;Attributes:&lt;/p&gt;
+							&lt;p&gt;<?= _("Attributes") ?>:&lt;/p&gt;
 							&lt;ul&gt;&lt;li&gt;<?= implode("&lt;/li&gt;&lt;li&gt;", $c['attrnames']) ?>&lt;/li&gt;&lt;/ul&gt;
 						<? } ?>
 						<? if ($vars['trackables'] == 'desc:list' && count($c['trackables']) > 0) { /* Does user want us to include trackables list? */ ?>
-							&lt;p&gt;Trackables:&lt;/p&gt;
+							&lt;p&gt;<?= _("Trackables") ?>:&lt;/p&gt;
 							&lt;ul&gt;
 							<? foreach ($c['trackables'] as $t) { ?>
 								&lt;li&gt;&lt;a href='<?= htmlspecialchars($t['url'], ENT_COMPAT, 'UTF-8') ?>'&gt;<?= htmlspecialchars($t['name'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt; (<?= $t['code'] ?>)&lt;/li&gt;
@@ -69,14 +72,14 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 									else $nonspoilers[] = $img;
 							?>
 							<? if (count($nonspoilers) > 0) { ?>
-								&lt;h2&gt;Images (<?= count($nonspoilers) ?>)&lt;/h2&gt;
+								&lt;h2&gt;<?= _("Images") ?> (<?= count($nonspoilers) ?>)&lt;/h2&gt;
 								<? foreach ($nonspoilers as $img) { ?>
 									&lt;p&gt;&lt;img src='<?= htmlspecialchars($img['url'], ENT_COMPAT, 'UTF-8') ?>'&gt;&lt;br&gt;
 									<?= htmlspecialchars($img['caption'], ENT_COMPAT, 'UTF-8') ?>&lt;/p&gt;
 								<? } ?>
 							<? } ?>
 							<? if (count($spoilers) > 0 && $vars['images'] == 'descrefs:all') { ?>
-								&lt;h2&gt;Spoilers (<?= count($spoilers) ?>)&lt;/h2&gt;
+								&lt;h2&gt;<?= _("Spoilers") ?> (<?= count($spoilers) ?>)&lt;/h2&gt;
 								<? foreach ($spoilers as $img) { ?>
 									&lt;p&gt;&lt;img src='<?= htmlspecialchars($img['url'], ENT_COMPAT, 'UTF-8') ?>'&gt;&lt;br&gt;
 									<?= htmlspecialchars($img['caption'], ENT_COMPAT, 'UTF-8') ?>&lt;/p&gt;

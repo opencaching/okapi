@@ -7,13 +7,15 @@
 		file directly <b>into the root directory</b> of your Garmin's internal memory storage
 		(currently it doesn't work if you extract the data to the external MicroSD card). The device
 		will then be filled with all the data we are currently able to fill it with.</p>
-		<p>Currently, the ZIP file will contain GPX file and all images associated
+		<p>Currently, the ZIP file will contain GPX file and all JPEG images associated
 		with the chosen geocaches. Options for the GPX file are fixed, use the
 		services/caches/formatters/gpx method if
 		you want a custom-tailored GPX file.</p>
 		<p><b>Important note:</b> The contents of the returned ZIP archive may change in the
 		future. You should not parse the contents, nor assume that they have any specific
 		structure.</p>
+		<p><b>Note:</b> All non-JPEG images will be skipped. Currently OKAPI does not convert
+		other types of images to JPEG.</p>
 	</desc>
 	<req name='cache_codes'>
 		<p>Pipe-separated list of cache codes which you are interested in.

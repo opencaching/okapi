@@ -233,7 +233,9 @@ class WebService
 				from pictures
 				where
 					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
-					and display = 1 and object_type = 2
+					and display = 1
+					and object_type = 2
+					and unknown_format = 0
 				order by object_id, last_modified
 			");
 			$prev_cache_code = null;
