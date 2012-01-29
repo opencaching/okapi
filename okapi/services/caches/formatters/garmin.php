@@ -76,9 +76,9 @@ class WebService
 			{
 				if ($img['is_spoiler']) {
 					$zip->addEmptyDir($dir."/Spoilers");
-					$zippath = $dir."/Spoilers/".$img['unique_caption'].".jpg";
+					$zippath = $dir."/Spoilers/".$no.".jpg"; // was: $img['unique_caption']
 				} else {
-					$zippath = $dir."/".$img['unique_caption'].".jpg";
+					$zippath = $dir."/".$no.".jpg"; // was: $img['unique_caption']
 				}
 				
 				# The safest way would be to use the URL, but that would be painfully slow!
@@ -102,8 +102,6 @@ class WebService
 		$response = new OkapiHttpResponse();
 		$response->content_type = "application/zip";
 		$response->content_disposition = 'Content-Disposition: attachment; filename="results.zip"';
-		#$response->content_type = "plain/text";
-		#$response->content_disposition = 'Content-Disposition: inline';
 		$response->body = file_get_contents($tempfilename);
 		unlink($tempfilename);
 		return $response;
