@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-29 21:48+0100\n"
-"PO-Revision-Date: 2012-01-29 21:48+0100\n"
+"POT-Creation-Date: 2012-01-29 22:15+0100\n"
+"PO-Revision-Date: 2012-01-29 22:24+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,13 +11,49 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: D:\\PRIV\\Projekty\\EclipseWorkspace\\opencaching-api\\okapi\n"
-"Plural-Forms: nplurals=3; plural = n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural= n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: services/caches/formatters/gpxfile.tpl.php:87
+#: services/caches/formatters/gpxfile.tpl.php:43
+msgid "hidden by"
+msgstr "ukryta przez"
+
+#: services/caches/formatters/gpxfile.tpl.php:45
+#, php-format
+msgid "%d recommendation"
+msgid_plural "%d recommendations"
+msgstr[0] "%d rekomendacja"
+msgstr[1] "%d rekomendacje"
+msgstr[2] "%d rekomendacji"
+
+#: services/caches/formatters/gpxfile.tpl.php:48
+#, php-format
+msgid "%d trackable"
+msgid_plural "%d trackables"
+msgstr[0] "%d GeoKret (lub TravelBug)"
+msgstr[1] "%d GeoKrety (lub TravelBugi)"
+msgstr[2] "%d GeoKretów (lub TravelBugów)"
+
+#: services/caches/formatters/gpxfile.tpl.php:53
+msgid "Attributes"
+msgstr "Atrybuty"
+
+#: services/caches/formatters/gpxfile.tpl.php:57
+msgid "Trackables"
+msgstr "Geokrety, Travelbugi itp."
+
+#: services/caches/formatters/gpxfile.tpl.php:75
+msgid "Images"
+msgstr "Obrazki"
+
+#: services/caches/formatters/gpxfile.tpl.php:82
+msgid "Spoilers"
+msgstr "Spoilery"
+
+#: services/caches/formatters/gpxfile.tpl.php:90
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 
