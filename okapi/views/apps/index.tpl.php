@@ -32,7 +32,7 @@
 					<p>This is the list of applications which you granted access to your <b>%s</b> account.
 					This page gives you the abbility to revoke all previously granted privileges.
 					Once you click \"remove\" the application will no longer be able to perform any
-					actions in your name.</p>
+					actions on your behalf.</p>
 				"), $vars['site_name']) ?>
 				<ul>
 					<? foreach ($vars['apps'] as $app) { ?>
@@ -49,8 +49,8 @@
 			<? } else { ?>
 				<?= sprintf(_("
 					<p>Thanks to the <a href='%s'>OKAPI Framework</a> you can grant external applications
-					access to your <b>%s</b> account. Currently you do not allow any application to act
-					in your name. Once you start using external OpenCaching applications, they will appear here.</p>
+					access to your <b>%s</b> account. Currently no applications are authorized to act
+					on your behalf. Once you start using external OpenCaching applications, they will appear here.</p>
 				"), "/okapi/", $vars['site_name']) ?>
 			<? } ?>
 		</div>

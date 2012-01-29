@@ -29,19 +29,19 @@
 				<h1 style='clear: both'><?= _("Expired request") ?></h1>
 				<p><?= _("Unfortunately, the request has expired. Please try again.") ?></p>
 			<? } elseif ($vars['token']) { ?>
-				<h1 style='clear: both'><?= _("External application has requested access...") ?></h1>
-				<p><?= sprintf(_("<b>%s</b> wants to access your <b>%s</b> account. Do you agree to grant access for this application?"), htmlentities($vars['token']['consumer_name']), $vars['site_name']) ?></p>
+				<h1 style='clear: both'><?= _("External application is requesting access...") ?></h1>
+				<p><?= sprintf(_("<b>%s</b> wants to access your <b>%s</b> account. Do you agree to grant access to this application?"), htmlentities($vars['token']['consumer_name']), $vars['site_name']) ?></p>
 				<form id='authform' method='POST' class='form'>
 					<input type='hidden' name='authorization_result' id='authform_result' value='denied'>
 					<input type='button' value="<?= _("I agree") ?>" onclick="document.getElementById('authform_result').setAttribute('value', 'granted'); document.forms['authform'].submit();">
-					<input type='button' value="<?= _("I don't agree") ?>" onclick="document.forms['authform'].submit();">
+					<input type='button' value="<?= _("Decline") ?>" onclick="document.forms['authform'].submit();">
 				</form>
 				<?= sprintf(_("
-					<p>Once you grant access, the application has access to your account until
-					the moment you revoke this access on the <a href='%s'>applications management</a> page.</p>
-					<p>Application will access your acount via the <a href='%s'>OKAPI Framework</a>.
+					<p>Once permission is granted it is valid until its withdrawal on
+					the <a href='%s'>applications management</a> page.</p>
+					<p>The application will access your acount via <a href='%s'>the OKAPI Framework</a>.
 					If you allow this request application will be able to access all methods delivered
-					by the OKAPI Framework, i.e. post log entries on geocaches you have found.
+					by the OKAPI Framework, i.e. post log entries on geocaches in your name.
 					You can revoke this permission at any moment.</p>
 				"), "/okapi/apps/", "/okapi/") ?>
 			<? } ?>
