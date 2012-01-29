@@ -34,7 +34,15 @@ OpenCaching Nodes).</p>
 </ul>
 <p>The project is aiming to become a standard API for all National OpenCaching.<i>xx</i> sites.
 This OKAPI installation provides API for the
-<a href='<?= $vars['site_url']; ?>'><?= $vars['site_url']; ?></a> site.</p>
+<a href='<?= $vars['site_url']; ?>'><?= $vars['site_url']; ?></a> site.
+Check out other OKAPI installations:</p>
+
+<ul>
+	<? foreach ($vars['installations'] as $inst) { ?>
+		<li><?= $inst['site_name'] ?> - <a href='<?= $inst['okapi_base_url'] ?>'><?= $inst['okapi_base_url'] ?></a></li>
+	<? } ?>
+	<li>OKAPI Project Homepage - <a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></li>
+</ul>
 
 <div class='issue-comments' issue_id='28'></div>
 
