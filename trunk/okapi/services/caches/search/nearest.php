@@ -54,7 +54,6 @@ class WebService
 		
 		# Using default OpenCaching SQL distance formula. (What's the third argument for?)
 		$distance_formula = \getSqlDistanceFormula($center_lon, $center_lat, null);
-		$distance_formula = str_replace(",", ".", $distance_formula); # hotfix: in some locales numbers contain comas
 		
 		# 'radius' parameter is optional. If not given, we'll have to calculate the
 		# distance for every cache in the database.

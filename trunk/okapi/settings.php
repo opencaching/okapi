@@ -114,6 +114,7 @@ final class Settings
 		$locale = self::get("LOCALE");
 		putenv("LC_ALL=$locale");
 		setlocale(LC_ALL, $locale);
+		setlocale(LC_NUMERIC, "en_US.utf8"); # We don't one *this one* to get out of control.
 		bindtextdomain("okapi_messages", $GLOBALS['rootpath'].'okapi/locale');
 	}
 }
