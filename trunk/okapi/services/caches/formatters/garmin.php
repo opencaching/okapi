@@ -74,7 +74,7 @@ class WebService
 			$zip->addEmptyDir($dir);
 			foreach ($images as $no => $img)
 			{
-				if (strtolower(substr($img['url'], strlen($img['url'] - 4))) != ".jpg")
+				if (strtolower(substr($img['url'], strlen($img['url']) - 4)) != ".jpg")
 					continue;
 				if ($img['is_spoiler']) {
 					$zip->addEmptyDir($dir."/Spoilers");
