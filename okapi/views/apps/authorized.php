@@ -8,6 +8,7 @@ use okapi\Db;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
+use okapi\Settings;
 
 class View
 {
@@ -15,6 +16,8 @@ class View
 	{
 		$token_key = isset($_GET['oauth_token']) ? $_GET['oauth_token'] : '';
 		$verifier = isset($_GET['oauth_verifier']) ? $_GET['oauth_verifier'] : '';
+		$langpref = isset($_GET['langpref']) ? $_GET['langpref'] : Settings::get('SITELANG');
+		$langprefs = explode("|", $langpref);
 		
 		$token = Db::select_row("
 			select
@@ -45,8 +48,10 @@ class View
 		$response = new OkapiHttpResponse();
 		$response->content_type = "text/html; charset=utf-8";
 		ob_start();
+		Okapi::gettext_domain_init($langprefs);
 		include 'authorized.tpl.php';
 		$response->body = ob_get_clean();
+		Okapi::gettext_domain_restore();
 		return $response;
 	}
 }

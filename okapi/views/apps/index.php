@@ -8,16 +8,20 @@ use okapi\Db;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
+use okapi\Settings;
 
 class View
 {
 	public static function call()
 	{
+		$langpref = isset($_GET['langpref']) ? $_GET['langpref'] : Settings::get('SITELANG');
+		$langprefs = explode("|", $langpref);
+		
 		# Ensure a user is logged in.
 	
 		if ($GLOBALS['usr'] == false)
 		{
-			$after_login = "okapi/apps/";
+			$after_login = "okapi/apps/".(($langpref != Settings::get('SITELANG'))?"?langpref=".$langpref:"");
 			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login);
 			return new OkapiRedirectResponse($login_url);
 		}
@@ -44,8 +48,10 @@ class View
 		$response = new OkapiHttpResponse();
 		$response->content_type = "text/html; charset=utf-8";
 		ob_start();
+		Okapi::gettext_domain_init($langprefs);
 		include 'index.tpl.php';
 		$response->body = ob_get_clean();
+		Okapi::gettext_domain_restore();
 		return $response;
 	}
 }

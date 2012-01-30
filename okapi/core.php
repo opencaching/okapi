@@ -108,6 +108,8 @@ class OkapiExceptionHandler
 			
 			if (isset($GLOBALS['debug_page']) && $GLOBALS['debug_page'])
 			{
+				print "\n\nBUT! Since the DEBUG flag is on, then you probably ARE the developer yourself.\n";
+				print "Let's cut to the chase then:";
 				print "\n\n".$exception_info;
 			}
 			$admin_email = isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost';
@@ -516,6 +518,7 @@ class Okapi
 	}
 	
 	private static $gettext_last_used_langprefs = null;
+	private static $gettext_last_set_locale = null;
 	private static $gettext_original_domain;
 	private static $gettext_current_depth = 0;
 	public static function gettext_domain_init($langprefs = null)
@@ -524,13 +527,14 @@ class Okapi
 			$langprefs = array(Settings::get('SITELANG'));
 		if (self::$gettext_last_used_langprefs != $langprefs)
 		{
-			call_user_func(Settings::get("GETTEXT_INIT"), $langprefs);
+			self::$gettext_last_set_locale = call_user_func(Settings::get("GETTEXT_INIT"), $langprefs);
 			self::$gettext_last_used_langprefs = $langprefs;
 		}
 		if (self::$gettext_current_depth == 0)
 			self::$gettext_original_domain = textdomain(null);
 		textdomain(Settings::get("GETTEXT_DOMAIN"));
 		self::$gettext_current_depth++;
+		return self::$gettext_last_set_locale;
 	}
 	public static function gettext_domain_restore()
 	{

@@ -26,6 +26,12 @@
 	<req name='oauth_token'>
 		Consult <a href='http://oauth.net/documentation/spec/'>OAuth documentation</a> for details.
 	</req>
+	<opt name='langpref'>
+		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+		order of preference in which the language will be chosen for the authorization page.</p>
+		<p>By default, OKAPI will display the page in the primary native language of local
+		OpenCaching installation.</p>
+	</opt>
 	<returns>
 		<p>Technically, a HTTP 302 Redirect - it will direct user's browser to the OKAPI apps
 		authorization page.</p>
