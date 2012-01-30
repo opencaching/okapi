@@ -42,7 +42,8 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 							&lt;a href="<?= $c['url'] ?>"&gt;<?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;
 							<?= _("hidden by") ?> &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= htmlspecialchars($c['owner']['username'], ENT_COMPAT, 'UTF-8') ?>&lt;/a&gt;&lt;br/&gt;
 							<? if ($vars['recommendations'] == 'desc:count') { /* Does user want us to include recommendations count? */ ?>
-								<?= sprintf(ngettext("%d recommendation", "%d recommendations", $c['recommendations']), $c['recommendations']) ?>.
+								<?= sprintf(ngettext("%d recommendation", "%d recommendations", $c['recommendations']), $c['recommendations']) ?>
+								(<?= sprintf(ngettext("from among %d vote", "from among %d votes", $c['rating_votes']), $c['rating_votes']) ?>).
 							<? } ?>
 							<? if ($vars['trackables'] == 'desc:count') { /* Does user want us to include trackables count? */ ?>
 								<?= sprintf(ngettext("%d trackable", "%d trackables", $c['trackables_count']), $c['trackables_count']) ?>.
