@@ -6,7 +6,7 @@ class Locales
 {
 	public static $languages = array(
 		'pl' => array('lang' => 'pl', 'locale' => 'pl_PL.utf8', 'name' => 'Polish'),
-		'en' => array('lang' => 'en', 'locale' => 'en_US.utf8', 'name' => 'English'),
+		'en' => array('lang' => 'en', 'locale' => 'POSIX',      'name' => 'English'),
 	);
 	
 	private static function get_locale_for_language($lang)
@@ -24,6 +24,6 @@ class Locales
 			if ($locale != null)
 				return $locale;
 		}
-		return 'en_US.utf8';
+		return self::$languages['en']['locale'];
 	}
 }
