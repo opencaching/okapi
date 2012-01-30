@@ -14,6 +14,9 @@
 		<p><b>Important note:</b> The contents of the returned ZIP archive may change in the
 		future. You should not parse the contents, nor assume that they have any specific
 		structure.</p>
+		<p><b>Important note:</b> We might be increasing required authentication level for
+		this method to level 2 or 3. You should be prepared for that. Use the highest authentication
+		level you've got.</p>
 		<p><b>Note:</b> All non-JPEG images will be skipped. Currently OKAPI does not convert
 		other types of images to JPEG.</p>
 	</desc>
