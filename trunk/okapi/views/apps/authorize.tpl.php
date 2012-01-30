@@ -3,27 +3,44 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title><?= _("Authorization Form") ?></title>
+		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
+		<style>
+			.okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
+			.okapi a.opencaching { font-size: 20px; font-weight: bold; padding-top: 13px; color: #333; text-decoration: none; display: block; }
+			.okapi * { padding: 0; margin: 0; border: 0; }
+			.okapi input, select { font-size: 15px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #444; }
+			.okapi a, .okapi a:hover, .okapi a:visited { cursor: pointer; color: #3e48a8; text-decoration: underline; }
+			.okapi h1 { padding: 12px 0 30px 0; font-weight: bold; font-style: italic; font-size: 22px; color: #bb4924; }
+			.okapi p { margin-bottom: 15px; font-size: 15px; }
+			.okapi .form { text-align: center; margin: 20px; }
+			.okapi .form input { padding: 5px 15px; background: #ded; border: 1px solid #aba; margin: 0 20px 0 20px; cursor: pointer; }
+			.okapi .form input:hover {background: #ada; border: 1px solid #7a7; }
+			.okapi span.note { color: #888; font-size: 70%; font-weight: normal; }
+			.okapi .pin { margin: 20px 20px 0 0; background: #eee; border: 1px solid #ccc; padding: 20px 40px; text-align: center; font-size: 24px; }
+		</style>
+		<script>
+			$(function() {
+				$('#langpref').change(function() {
+					document.location = "?oauth_token=<?= $vars['token']['key'] ?>&langpref=" + $('#langpref').attr('value');
+				});
+			});
+		</script>
 	</head>
-	<style>
-		.okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
-		.okapi a.opencaching { font-size: 20px; font-weight: bold; padding-top: 13px; color: #333; text-decoration: none; display: block; }
-		.okapi * { padding: 0; margin: 0; border: 0; }
-		.okapi input, select { font-size: 15px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #444; }
-		.okapi a, .okapi a:hover, .okapi a:visited { cursor: pointer; color: #3e48a8; text-decoration: underline; }
-		.okapi h1 { padding: 12px 0 30px 0; font-weight: bold; font-style: italic; font-size: 22px; color: #bb4924; }
-		.okapi p { margin-bottom: 15px; font-size: 15px; }
-		.okapi .form { text-align: center; margin: 20px; }
-		.okapi .form input { padding: 5px 15px; background: #ded; border: 1px solid #aba; margin: 0 20px 0 20px; cursor: pointer; }
-		.okapi .form input:hover {background: #ada; border: 1px solid #7a7; }
-		.okapi span.note { color: #888; font-size: 70%; font-weight: normal; }
-		.okapi .pin { margin: 20px 20px 0 0; background: #eee; border: 1px solid #ccc; padding: 20px 40px; text-align: center; font-size: 24px; }
-	</style>
 	<body>
 
 		<div class='okapi'>
 			<a href='/okapi/'><img src='/okapi/static/logo-xsmall.gif' alt='OKAPI' style='float: right; margin-left: 10px;'></a>
 			<a href='/'><img src="/images/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
 			<a class='opencaching'><?= $vars['site_name'] ?></a>
+			
+			<div style='float: right; clear: right; margin: 10px 0 10px 30px'>
+				Choose your language:
+				<select id='langpref' style='border: 1px solid #ccc'>
+					<? foreach ($vars['locales'] as $locale => $attrs) { ?>
+						<option value='<?= $attrs['lang'] ?>' <?= ($attrs['locale'] == $vars['locale_displayed']) ? "selected" : "" ?>><?= $attrs['name'] ?></option>
+					<? } ?>
+				</select>
+			</div>
 			
 			<? if (isset($vars['token_expired']) && $vars['token_expired']) { ?>
 				<h1 style='clear: both'><?= _("Expired request") ?></h1>

@@ -21,10 +21,11 @@ class WebService
 		$token_key = $request->get_parameter('oauth_token');
 		if (!$token_key)
 			throw new ParamMissing("oauth_token");
+		$langpref = $request->get_parameter('langpref');
 		
 		# Redirect to the authorization page.
 		
 		return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/apps/authorize".
-			"?oauth_token=".$token_key);
+			"?oauth_token=".$token_key.(($langpref != null) ? "&langpref=".$langpref : ""));
 	}
 }

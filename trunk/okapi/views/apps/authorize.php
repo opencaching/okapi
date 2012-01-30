@@ -8,14 +8,23 @@ use okapi\Db;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
+use okapi\Settings;
+use okapi\Locales;
 
 class View
 {
 	public static function call()
 	{
 		$token_key = isset($_GET['oauth_token']) ? $_GET['oauth_token'] : '';
+		$langpref = isset($_GET['langpref']) ? $_GET['langpref'] : Settings::get('SITELANG');
+		$langprefs = explode("|", $langpref);
+		$locales = array();
+		foreach (Locales::$languages as $lang => $attrs)
+			$locales[$attrs['locale']] = $attrs;
+		
 		$token = Db::select_row("
 			select
+				t.`key` as `key`,
 				c.`key` as consumer_key,
 				c.name as consumer_name,
 				c.url as consumer_url,
@@ -38,14 +47,18 @@ class View
 			# by the user, who knows nothing on tokens and OAuth. Let's be nice then!
 			
 			$vars = array(
+				'token' => $token,
 				'token_expired' => true,
-				'site_name' => Okapi::get_normalized_site_name()
+				'site_name' => Okapi::get_normalized_site_name(),
+				'locales' => $locales,
 			);
 			$response = new OkapiHttpResponse();
 			$response->content_type = "text/html; charset=utf-8";
 			ob_start();
+			$vars['locale_displayed'] = Okapi::gettext_domain_init($langprefs);
 			include 'authorize.tpl.php';
 			$response->body = ob_get_clean();
+			Okapi::gettext_domain_restore();
 			return $response;
 		}
 		
@@ -53,8 +66,9 @@ class View
 	
 		if ($GLOBALS['usr'] == false)
 		{
-			$after_login = "okapi/apps/authorize?oauth_token=$token_key";
-			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login);
+			$after_login = "okapi/apps/authorize?oauth_token=$token_key".(($langpref != Settings::get('SITELANG'))?"&langpref=".$langpref:"");
+			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login)
+				."&langpref=".$langpref;
 			return new OkapiRedirectResponse($login_url);
 		}
 
@@ -107,13 +121,16 @@ class View
 				# Not yet authorized. Display an authorization request.
 				$vars = array(
 					'token' => $token,
-					'site_name' => Okapi::get_normalized_site_name()
+					'site_name' => Okapi::get_normalized_site_name(),
+					'locales' => $locales,
 				);
 				$response = new OkapiHttpResponse();
 				$response->content_type = "text/html; charset=utf-8";
 				ob_start();
+				$vars['locale_displayed'] = Okapi::gettext_domain_init($langprefs);
 				include 'authorize.tpl.php';
 				$response->body = ob_get_clean();
+				Okapi::gettext_domain_restore();
 				return $response;
 			}
 		}
@@ -133,7 +150,8 @@ class View
 		} else {
 			# Consumer did not provide a callback URL (probably the user is using a desktop
 			# or mobile application). We'll just have to display the verifier to the user.
-			return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/apps/authorized?oauth_token=".$token_key."&oauth_verifier=".$token['verifier']);
+			return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/apps/authorized?oauth_token=".$token_key
+				."&oauth_verifier=".$token['verifier']."&langpref=".$langpref);
 		}
 	}
 }

@@ -4,10 +4,15 @@ namespace okapi;
 
 class Locales
 {
+	public static $languages = array(
+		'pl' => array('lang' => 'pl', 'locale' => 'pl_PL.utf8', 'name' => 'Polish'),
+		'en' => array('lang' => 'en', 'locale' => 'en_US.utf8', 'name' => 'English'),
+	);
+	
 	private static function get_locale_for_language($lang)
 	{
-		if ($lang == 'pl') return 'pl_PL.utf8';
-		if ($lang == 'en') return 'en_EN.utf8'; // will fall back to the default translation
+		if (isset(self::$languages[$lang]))
+			return self::$languages[$lang]['locale'];
 		return null;
 	}
 	
@@ -19,6 +24,6 @@ class Locales
 			if ($locale != null)
 				return $locale;
 		}
-		return 'POSIX';
+		return 'en_US.utf8';
 	}
 }
