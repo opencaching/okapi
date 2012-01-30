@@ -25,7 +25,7 @@ class WebService
 	public static $cache_GPX_types = array(
 		'Traditional' => 'Traditional Cache',
 		'Multi' => 'Multi-Cache',
-		'Quiz' => 'Multi-Cache',
+		'Quiz' => 'Unknown Cache',
 		'Event' => 'Event Cache',
 		'Virtual' => 'Virtual Cache',
 		'Webcam' => 'Webcam Cache',
