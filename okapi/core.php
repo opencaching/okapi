@@ -515,15 +515,17 @@ class Okapi
 		return "";
 	}
 	
-	private static $gettext_initialized = false;
+	private static $gettext_last_used_langprefs = null;
 	private static $gettext_original_domain;
 	private static $gettext_current_depth = 0;
-	public static function gettext_domain_init()
+	public static function gettext_domain_init($langprefs = null)
 	{
-		if (!self::$gettext_initialized)
+		if ($langprefs == null)
+			$langprefs = array(Settings::get('SITELANG'));
+		if (self::$gettext_last_used_langprefs != $langprefs)
 		{
-			call_user_func(Settings::get("GETTEXT_INIT"));
-			self::$gettext_initialized = true;
+			call_user_func(Settings::get("GETTEXT_INIT"), $langprefs);
+			self::$gettext_last_used_langprefs = $langprefs;
 		}
 		if (self::$gettext_current_depth == 0)
 			self::$gettext_original_domain = textdomain(null);

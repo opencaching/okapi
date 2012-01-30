@@ -3,6 +3,7 @@
 namespace okapi;
 
 use Exception;
+use okapi\Locales;
 
 # DO NOT MODIFY THIS FILE. This file should always look like the original here:
 # http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/settings.php
@@ -46,18 +47,14 @@ final class Settings
 		'SITELANG' => "en",
 		
 		/**
-		 * Locale to be used with gettext. For example "pl_PL.utf8".
-		 */
-		'LOCALE' => "POSIX",
-		
-		/**
 		 * All OKAPI documentation pages should remain English-only, but some
-		 * other pages (these viewable by regular users) should be translated
-		 * to your local language. We try to catch up to all OKAPI instances and
+		 * other pages (and results!) should be translated to their localized
+		 * versions. We try to catch up to all OKAPI instances and
 		 * fill our default translation tables with all the languages of all
 		 * OKAPI installations. But we also give you an option to use your own
 		 * translation table if you want to. Use this variable to pass your
-		 * own gettext initialization function/method.
+		 * own gettext initialization function/method. See default_gettext_init
+		 * function below for details.
 		 */
 		'GETTEXT_INIT' => array('\okapi\Settings', 'default_gettext_init'),
 		
@@ -107,14 +104,23 @@ final class Settings
 	
 	/**
 	 * Bind "okapi_messages" with our local i18n database. Set proper locale
-	 * based on settings.
+	 * based on the language codes passed and return the locale code.
+	 * $langprefs is a list of language codes in order of preference.
+	 * 
+	 * Please note, that OKAPI consumers may ask OKAPI to return contents
+	 * in a specified language. (For example, consumers from Germany may ask
+	 * Polish OKAPI server to return GPX file in German.) If you insist on using
+	 * your own translation tables, you should still fallback to the default
+	 * OKAPI translations table in case of other languages!
 	 */
-	public static function default_gettext_init()
+	public static function default_gettext_init($langprefs)
 	{
-		$locale = self::get("LOCALE");
+		require_once 'locale/locales.php';
+		$locale = Locales::get_best_locale($langprefs);
 		putenv("LC_ALL=$locale");
 		setlocale(LC_ALL, $locale);
 		setlocale(LC_NUMERIC, "POSIX"); # We don't one *this one* to get out of control.
 		bindtextdomain("okapi_messages", $GLOBALS['rootpath'].'okapi/locale');
+		return $locale;
 	}
 }
