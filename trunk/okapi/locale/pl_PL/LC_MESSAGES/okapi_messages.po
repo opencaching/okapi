@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-29 22:15+0100\n"
-"PO-Revision-Date: 2012-01-29 22:24+0100\n"
+"POT-Creation-Date: 2012-01-30 11:40+0100\n"
+"PO-Revision-Date: 2012-01-30 11:41+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,15 @@ msgstr[0] "%d rekomendacja"
 msgstr[1] "%d rekomendacje"
 msgstr[2] "%d rekomendacji"
 
-#: services/caches/formatters/gpxfile.tpl.php:48
+#: services/caches/formatters/gpxfile.tpl.php:46
+#, php-format
+msgid "from among %d vote"
+msgid_plural "from among %d votes"
+msgstr[0] "spośród %d oceny"
+msgstr[1] "spośród %d ocen"
+msgstr[2] "spośród %d ocen"
+
+#: services/caches/formatters/gpxfile.tpl.php:49
 #, php-format
 msgid "%d trackable"
 msgid_plural "%d trackables"
@@ -37,23 +45,23 @@ msgstr[0] "%d GeoKret (lub TravelBug)"
 msgstr[1] "%d GeoKrety (lub TravelBugi)"
 msgstr[2] "%d GeoKretów (lub TravelBugów)"
 
-#: services/caches/formatters/gpxfile.tpl.php:53
+#: services/caches/formatters/gpxfile.tpl.php:54
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: services/caches/formatters/gpxfile.tpl.php:57
+#: services/caches/formatters/gpxfile.tpl.php:58
 msgid "Trackables"
 msgstr "Geokrety, Travelbugi itp."
 
-#: services/caches/formatters/gpxfile.tpl.php:75
+#: services/caches/formatters/gpxfile.tpl.php:76
 msgid "Images"
 msgstr "Obrazki"
 
-#: services/caches/formatters/gpxfile.tpl.php:82
+#: services/caches/formatters/gpxfile.tpl.php:83
 msgid "Spoilers"
 msgstr "Spoilery"
 
-#: services/caches/formatters/gpxfile.tpl.php:90
+#: services/caches/formatters/gpxfile.tpl.php:91
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 

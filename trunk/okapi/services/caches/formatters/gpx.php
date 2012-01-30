@@ -111,7 +111,7 @@ class WebService
 		elseif ($vars['trackables'] == 'desc:count')
 			$fields .= "|trackables_count";
 		if ($vars['recommendations'] != 'none')
-			$fields .= "|recommendations";
+			$fields .= "|recommendations|rating_votes";
 		if ($vars['latest_logs'])
 			$fields .= "|latest_logs";
 		
