@@ -29,7 +29,7 @@ class WebService
 		'Event' => 'Event Cache',
 		'Virtual' => 'Virtual Cache',
 		'Webcam' => 'Webcam Cache',
-		'Moving' => 'Multi-Cache',
+		'Moving' => 'Unknown Cache',
 		'Own' => 'Unknown Cache',
 		'Other' => 'Unknown Cache'
 	);
