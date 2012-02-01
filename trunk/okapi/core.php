@@ -404,7 +404,27 @@ class OkapiHttpResponse
 {
 	public $content_type = "text/plain; charset=utf-8";
 	public $content_disposition = null;
+	
+	/** This is string OR *stream*! */
 	public $body;
+	
+	/** This could be set in case when body is a stream of known length. */
+	public $stream_length = null;
+	
+	public function get_length()
+	{
+		if (is_resource($this->body))
+			return $this->stream_length;
+		return strlen($this->body);
+	}
+	
+	public function print_body()
+	{
+		if (is_resource($this->body))
+			fpassthru($this->body);
+		else
+			print $this->body;
+	}
 	
 	public function display()
 	{
@@ -413,7 +433,10 @@ class OkapiHttpResponse
 		header("Content-Type: ".$this->content_type);
 		if ($this->content_disposition)
 			header("Content-Disposition: ".$this->content_disposition);
-		print $this->body;
+		$length = $this->get_length();
+		if ($length)
+			header("Content-Length: ".$length);
+		$this->print_body();
 	}
 }
 
@@ -435,7 +458,7 @@ class Okapi404Response extends OkapiHttpResponse
 	{
 		header("HTTP/1.1 404 Not Found");
 		header("Content-Type: ".$this->content_type);
-		print $this->body;
+		$this->print_body();
 	}
 }
 

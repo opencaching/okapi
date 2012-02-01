@@ -88,8 +88,8 @@
 		One of the following values:</p>
 		<ul>
 			<li><b>none</b> - no recommendations-info will be included,</li>
-			<li><b>desc:count</b> - number of recommendations will be included (in plain-text) within
-				the cache description.</li>
+			<li><b>desc:count</b> - number of recommendations (and votes) will be included
+				(in plain-text) within the cache description.</li>
 		</ul>
 		<p>Note: When using "desc:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
 	</opt>

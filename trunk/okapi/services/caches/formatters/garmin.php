@@ -16,6 +16,9 @@ use \ZipArchive;
 
 class WebService
 {
+	private static $shutdown_function_registered = false;
+	private static $files_to_unlink = array();
+	
 	public static function options()
 	{
 		return array(
@@ -29,6 +32,10 @@ class WebService
 		if (!$cache_codes) throw new ParamMissing('cache_codes');
 		$langpref = $request->get_parameter('langpref');
 		if (!$langpref) $langpref = "en";
+		$images = $request->get_parameter('images');
+		if (!$images) $images = "all";
+		if (!in_array($images, array("none", "all", "spoilers", "nonspoilers")))
+			throw new InvalidParam('images');
 		
 		# Start creating ZIP archive.
 		
@@ -61,51 +68,75 @@ class WebService
 			'langpref' => $langpref, 'fields' => "images")));
 		if (count($caches) > 50)
 			throw new InvalidParam('cache_codes', "The maximum number of caches allowed to be downloaded with this method is 50.");
-		foreach ($caches as $cache_code => $dict)
+		if ($images != 'none')
 		{
-			$images = $dict['images'];
-			if (count($images) == 0)
-				continue;
-			$dir = "Garmin/GeocachePhotos/".$cache_code[strlen($cache_code) - 1];
-			$zip->addEmptyDir($dir); # fails silently if it already exists
-			$dir .= "/".$cache_code[strlen($cache_code) - 2];
-			$zip->addEmptyDir($dir);
-			$dir .= "/".$cache_code;
-			$zip->addEmptyDir($dir);
-			foreach ($images as $no => $img)
+			foreach ($caches as $cache_code => $dict)
 			{
-				if (strtolower(substr($img['url'], strlen($img['url']) - 4)) != ".jpg")
+				$imgs = $dict['images'];
+				if (count($imgs) == 0)
 					continue;
-				if ($img['is_spoiler']) {
-					$zip->addEmptyDir($dir."/Spoilers");
-					$zippath = $dir."/Spoilers/".$img['unique_caption'].".jpg";
-				} else {
-					$zippath = $dir."/".$img['unique_caption'].".jpg";
+				$dir = "Garmin/GeocachePhotos/".$cache_code[strlen($cache_code) - 1];
+				$zip->addEmptyDir($dir); # fails silently if it already exists
+				$dir .= "/".$cache_code[strlen($cache_code) - 2];
+				$zip->addEmptyDir($dir);
+				$dir .= "/".$cache_code;
+				$zip->addEmptyDir($dir);
+				foreach ($imgs as $no => $img)
+				{
+					if ($images == 'spoilers' && (!$img['is_spoiler']))
+						continue;
+					if ($images == 'nonspoilers' && $img['is_spoiler'])
+						continue;
+					if (strtolower(substr($img['url'], strlen($img['url']) - 4)) != ".jpg")
+						continue;
+					if ($img['is_spoiler']) {
+						$zip->addEmptyDir($dir."/Spoilers");
+						$zippath = $dir."/Spoilers/".$img['unique_caption'].".jpg";
+					} else {
+						$zippath = $dir."/".$img['unique_caption'].".jpg";
+					}
+					
+					# The safest way would be to use the URL, but that would be painfully slow!
+					# That's why we're trying to access files directly (and fail silently on error).
+					# This was tested on OCPL server only.
+					
+					# Note: Oliver Dietz (oc.de) replied that images with 'local' set to 0 could not
+					# be accessed locally. But all the files have 'local' set to 1 anyway.
+					
+					$syspath = $GLOBALS['picdir']."/".$img['uuid'].".jpg";
+					if (!file_exists($syspath))
+						continue;
+					$file = file_get_contents($syspath);
+					if ($file)
+						$zip->addFromString($zippath, $file);
 				}
-				
-				# The safest way would be to use the URL, but that would be painfully slow!
-				# That's why I am trying to access files directly (and fail silently on error).
-				# This was tested on OCPL server only.
-				
-				# Note: Oliver Dietz (oc.de) replied that images with 'local' set to 0 could not
-				# be accessed locally. But all the files have 'local' set to 1 anyway.
-				
-				$syspath = $GLOBALS['picdir']."/".$img['uuid'].".jpg";
-				if (!file_exists($syspath))
-					continue;
-				$file = file_get_contents($syspath);
-				if ($file)
-					$zip->addFromString($zippath, $file);
 			}
 		}
 		
 		$zip->close();
 		
+		# The result could be big. Bigger than our memory limit. That's why we don't
+		# even keep in in the memory. We simply return an open file stream.
+		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "application/zip";
 		$response->content_disposition = 'Content-Disposition: attachment; filename="results.zip"';
-		$response->body = file_get_contents($tempfilename);
-		unlink($tempfilename);
+		$response->stream_length = filesize($tempfilename);
+		$response->body = fopen($tempfilename, "rb");
+		self::add_file_to_unlink($tempfilename);
 		return $response;
+	}
+	
+	private static function add_file_to_unlink($filename)
+	{
+		if (!self::$shutdown_function_registered)
+			register_shutdown_function(array("okapi\\services\\caches\\formatters\\garmin\\WebService", "unlink_temporary_files"));
+		self::$files_to_unlink[] = $filename;
+	}
+	
+	public static function unlink_temporary_files()
+	{
+		foreach (self::$files_to_unlink as $filename)
+			unlink($filename);
 	}
 }
