@@ -59,7 +59,7 @@ class WebService
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'ns_ground' => 'true', 'ns_ox' => 'true',
 			'images' => 'ox:all', 'attrs' => 'ox:tags', 'trackables' => 'desc:count',
-			'recommendations' => 'desc:count', 'latest_logs' => 'true', 'lpc' => 'all')))->body);
+			'recommendations' => 'desc:count', 'latest_logs' => 'true', 'lpc' => 'all')))->get_body());
 
 		# Then, include all the images.
 		

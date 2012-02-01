@@ -86,7 +86,7 @@ class WebService
 			# $retr_result might be a PHP object, but also might be a binary response
 			# (e.g. a GPX file).
 			if ($retr_result instanceof OkapiHttpResponse)
-				$result = array('results' => $retr_result->body);
+				$result = array('results' => $retr_result->get_body());
 			else
 				$result = array('results' => $retr_result);
 			foreach ($search_result as $key => &$value_ref)
