@@ -402,10 +402,11 @@ require_once('datastore.php');
 
 class OkapiHttpResponse
 {
+	public $status = "200 OK";
 	public $content_type = "text/plain; charset=utf-8";
 	public $content_disposition = null;
 	
-	/** This is string OR *stream*! */
+	/** Use this only as a setter, use get_body or print_body for reading! */
 	public $body;
 	
 	/** This could be set in case when body is a stream of known length. */
@@ -418,6 +419,7 @@ class OkapiHttpResponse
 		return strlen($this->body);
 	}
 	
+	/** Note: You can call this only once! */
 	public function print_body()
 	{
 		if (is_resource($this->body))
@@ -426,16 +428,34 @@ class OkapiHttpResponse
 			print $this->body;
 	}
 	
+	/**
+	 * Note: You can call this only once! The result might be huge,
+	 * it is usually better to print it directly with ->print_body().
+	 */
+	public function get_body()
+	{
+		if (is_resource($this->body))
+		{
+			ob_start();
+			fpassthru($this->body);
+			return ob_get_clean();
+		}
+		else
+			return $this->body;
+	}
+	
+	/** Print the headers and the body. */
 	public function display()
 	{
-		header("HTTP/1.1 200 OK");
+		header("HTTP/1.1 ".$this->status);
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: ".$this->content_type);
 		if ($this->content_disposition)
 			header("Content-Disposition: ".$this->content_disposition);
-		$length = $this->get_length();
-		if ($length)
-			header("Content-Length: ".$length);
+		## This was commented out because some servers gzip all PHP output.
+		# $length = $this->get_length();
+		# if ($length)
+		# 	header("Content-Length: ".$length);
 		$this->print_body();
 	}
 }
@@ -447,18 +467,7 @@ class OkapiRedirectResponse extends OkapiHttpResponse
 	public function display()
 	{
 		header("HTTP/1.1 303 See Other");
-		header("Content-Type: ".$this->content_type);
 		header("Location: ".$this->url);
-	}
-}
-
-class Okapi404Response extends OkapiHttpResponse
-{
-	public function display()
-	{
-		header("HTTP/1.1 404 Not Found");
-		header("Content-Type: ".$this->content_type);
-		$this->print_body();
 	}
 }
 

@@ -4,7 +4,7 @@ namespace okapi\views\http404;
 
 use Exception;
 use okapi\Okapi;
-use okapi\Okapi404Response;
+use okapi\OkapiHttpResponse;
 use okapi\views\menu\OkapiMenu;
 
 class View
@@ -19,7 +19,8 @@ class View
 			'okapi_rev' => Okapi::$revision,
 		);
 		
-		$response = new Okapi404Response();
+		$response = new OkapiHttpResponse();
+		$response->status = "404 Not Found";
 		$response->content_type = "text/html; charset=utf-8";
 		ob_start();
 		include 'http404.tpl.php';
