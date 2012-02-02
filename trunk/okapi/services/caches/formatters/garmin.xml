@@ -16,7 +16,8 @@
 		structure.</p>
 		<p><b>Important note:</b> We might be increasing required authentication level for
 		this method to level 2 or 3. You should be prepared for that. Use the highest authentication
-		level you've got.</p>
+		level you've got. Also, if you want the GPX file to include <b>personal data (like user's notes)</b>,
+		you have to use Level 3 Authentication anyway.</p>
 		<p><b>Note:</b> All non-JPEG images will be skipped. Currently OKAPI does not convert
 		other types of images to JPEG.</p>
 	</desc>

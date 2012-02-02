@@ -9,8 +9,10 @@ use okapi\Settings;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
+use okapi\BadRequest;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\OkapiAccessToken;
 use okapi\services\caches\search\SearchAssistant;
 
 class WebService
@@ -25,7 +27,7 @@ class WebService
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
-		'hints', 'images', 'attrnames', 'latest_logs', 'trackables_count', 'trackables', 'last_found',
+		'hints', 'images', 'attrnames', 'latest_logs', 'my_notes', 'trackables_count', 'trackables', 'last_found',
 		'last_modified', 'date_created', 'date_hidden', 'internal_id');
 	
 	public static function call(OkapiRequest $request)
@@ -47,6 +49,8 @@ class WebService
 		foreach ($fields as $field)
 			if (!in_array($field, self::$valid_field_names))
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
+		if (in_array('my_notes', $fields) && $request->token == null)
+			throw new BadRequest("Level 3 Authentication is required to access 'my_notes' field.");
 		$lpc = $request->get_parameter('lpc');
 		if ($lpc === null) $lpc = 10;
 		if ($lpc == 'all')
@@ -160,6 +164,7 @@ class WebService
 					case 'images': /* handled separately */ break;
 					case 'attrnames': /* handled separately */ break;
 					case 'latest_logs': /* handled separately */ break;
+					case 'my_notes': /* handles separately */ break;
 					case 'trackables_count': /* handled separately */ break;
 					case 'trackables': /* handled separately */ break;
 					case 'last_found': $entry['last_found'] = $row['last_found'] ? date('c', strtotime($row['last_found'])) : null; break;
@@ -352,6 +357,28 @@ class WebService
 			}
 		}
 		
+		# My notes
+		
+		if (in_array('my_notes', $fields))
+		{
+			foreach ($results as &$result_ref)
+				$result_ref['my_notes'] = null;
+			$rs = Db::query("
+				select cache_id, max(date) as date, group_concat(`desc`) as `desc`
+				from cache_notes
+				where
+					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+					and user_id = '".mysql_real_escape_string($request->token->user_id)."'
+				group by cache_id
+			");
+			while ($row = mysql_fetch_assoc($rs))
+			{
+				$results[$cacheid2wptcode[$row['cache_id']]]['my_notes'] = array(
+					'contents' => strip_tags($row['desc']),
+					'last_modified' => date('c', strtotime($row['date']))
+				);
+			}
+		}
 		
 		if (in_array('trackables', $fields))
 		{

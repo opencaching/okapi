@@ -49,6 +49,9 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 								<?= sprintf(ngettext("%d trackable", "%d trackables", $c['trackables_count']), $c['trackables_count']) ?>.
 							<? } ?>
 						&lt;/p&gt;
+						<? if (($vars['my_notes'] == 'desc:text') && ($c['my_notes'] != null)) { /* Does user want us to include personal notes? */ ?>
+							&lt;p&gt;&lt;b&gt;<?= _("Personal notes") ?>:&lt;/b&gt; <?= htmlspecialchars($c['my_notes']['contents'], ENT_COMPAT, 'UTF-8') ?>&lt;/p&gt;
+						<? } ?>
 						
 						<? if ($vars['attrs'] == 'desc:text' && count($c['attrnames']) > 0) { /* Does user want us to include attributes? */ ?>
 							&lt;p&gt;<?= _("Attributes") ?>:&lt;/p&gt;
