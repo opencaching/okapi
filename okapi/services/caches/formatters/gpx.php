@@ -9,6 +9,7 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 use okapi\BadRequest;
 use okapi\ParamMissing;
+use okapi\OkapiAccessToken;
 use okapi\InvalidParam;
 use okapi\services\caches\search\SearchAssistant;
 
@@ -65,6 +66,15 @@ class WebService
 		}
 		if ($vars['latest_logs'] && (!$vars['ns_ground']))
 			throw new BadRequest("In order for 'latest_logs' to work you have to also include 'ns_ground' extensions.");
+		
+		$tmp = $request->get_parameter('my_notes');
+		if (!$tmp) $tmp = "none";
+		if (!in_array($tmp, array("none", "desc:text")))
+			throw new InvalidParam("my_notes");
+		if (($tmp != 'none') && ($request->token == null))
+			throw new BadRequest("Level 3 Authentication is required to access my_notes data.");
+		$vars['my_notes'] = $tmp;
+			
 		$alt_wpts = $request->get_parameter('alt_wpts');
 		if (!$alt_wpts) $alt_wpts = "false";
 		if ($alt_wpts != "false")
@@ -112,6 +122,8 @@ class WebService
 			$fields .= "|trackables_count";
 		if ($vars['recommendations'] != 'none')
 			$fields .= "|recommendations|rating_votes";
+		if ($vars['my_notes'] != 'none')
+			$fields .= "|my_notes";
 		if ($vars['latest_logs'])
 			$fields .= "|latest_logs";
 		

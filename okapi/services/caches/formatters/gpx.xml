@@ -93,6 +93,14 @@
 		</ul>
 		<p>Note: When using "desc:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
 	</opt>
+	<opt name='my_notes' default='none'>
+		<p>Allows you to include personal user's notes on each cache. One of the following values:</p>
+		<ul>
+			<li><b>none</b> - don't include personal notes,</li>
+			<li><b>desc:text</b> - include personal notes as part of the cache description.</li>
+		</ul>
+		<p>Note: You need to use Level 3 Authentication in order to set it to anything else than "none".</p>
+	</opt>
 	<opt name='latest_logs' default='false'>
 		<p>Boolean. If <b>true</b> then response will include a couple of
 		latest log entries for this cache (see also the <b>lpc</b> argument).</p>

@@ -10,6 +10,7 @@ use okapi\OkapiServiceRunner;
 use okapi\BadRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
+use okapi\OkapiAccessToken;
 use okapi\services\caches\search\SearchAssistant;
 
 use \ZipArchive;
@@ -52,14 +53,24 @@ class WebService
 		
 		# Include a GPX file compatible with Garmin devices. It should include all
 		# Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It will
-		# also include image references (actual images will be added as separate files later).
+		# also include image references (actual images will be added as separate files later)
+		# and personal data (if the method was invoked using Level 3 Authentication).
 		
 		$zip->addFromString("Garmin/GPX/opencaching".time().rand(100000,999999).".gpx",
 			OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
-			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
-			'langpref' => $langpref, 'ns_ground' => 'true', 'ns_ox' => 'true',
-			'images' => 'ox:all', 'attrs' => 'ox:tags', 'trackables' => 'desc:count',
-			'recommendations' => 'desc:count', 'latest_logs' => 'true', 'lpc' => 'all')))->get_body());
+			$request->consumer, $request->token, array(
+				'cache_codes' => $cache_codes,
+				'langpref' => $langpref,
+				'ns_ground' => 'true',
+				'ns_ox' => 'true',
+				'images' => 'ox:all',
+				'attrs' => 'ox:tags',
+				'trackables' => 'desc:count',
+				'recommendations' => 'desc:count',
+				'latest_logs' => 'true',
+				'lpc' => 'all',
+				'my_notes' => ($request->token != null) ? "desc:text" : "none"
+			)))->get_body());
 
 		# Then, include all the images.
 		
@@ -137,6 +148,7 @@ class WebService
 	public static function unlink_temporary_files()
 	{
 		foreach (self::$files_to_unlink as $filename)
-			unlink($filename);
+			@unlink($filename);
+		self::$files_to_unlink = array();
 	}
 }

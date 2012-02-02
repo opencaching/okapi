@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-30 11:40+0100\n"
-"PO-Revision-Date: 2012-01-30 11:41+0100\n"
+"POT-Creation-Date: 2012-02-02 16:42+0100\n"
+"PO-Revision-Date: 2012-02-02 16:42+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
+#: services/caches/formatters/gpxfile.tpl.php:26
 #: services/caches/formatters/gpxfile.tpl.php:43
 msgid "hidden by"
 msgstr "ukryta przez"
@@ -45,23 +46,27 @@ msgstr[0] "%d GeoKret (lub TravelBug)"
 msgstr[1] "%d GeoKrety (lub TravelBugi)"
 msgstr[2] "%d GeoKretów (lub TravelBugów)"
 
-#: services/caches/formatters/gpxfile.tpl.php:54
+#: services/caches/formatters/gpxfile.tpl.php:53
+msgid "Personal notes"
+msgstr "Osobiste notatki"
+
+#: services/caches/formatters/gpxfile.tpl.php:57
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: services/caches/formatters/gpxfile.tpl.php:58
+#: services/caches/formatters/gpxfile.tpl.php:61
 msgid "Trackables"
 msgstr "Geokrety, Travelbugi itp."
 
-#: services/caches/formatters/gpxfile.tpl.php:76
+#: services/caches/formatters/gpxfile.tpl.php:79
 msgid "Images"
 msgstr "Obrazki"
 
-#: services/caches/formatters/gpxfile.tpl.php:83
+#: services/caches/formatters/gpxfile.tpl.php:86
 msgid "Spoilers"
 msgstr "Spoilery"
 
-#: services/caches/formatters/gpxfile.tpl.php:91
+#: services/caches/formatters/gpxfile.tpl.php:94
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 
@@ -69,32 +74,32 @@ msgstr "Opisy obrazków"
 msgid "Authorization Form"
 msgstr "Formularz autoryzacyjny"
 
-#: views/apps/authorize.tpl.php:29
+#: views/apps/authorize.tpl.php:46
 msgid "Expired request"
 msgstr "Przeterminowane żądanie"
 
-#: views/apps/authorize.tpl.php:30
+#: views/apps/authorize.tpl.php:47
 msgid "Unfortunately, the request has expired. Please try again."
 msgstr "Niestety upłynął termin ważności żądania. Prosimy sprobować ponownie."
 
-#: views/apps/authorize.tpl.php:32
+#: views/apps/authorize.tpl.php:49
 msgid "External application is requesting access..."
 msgstr "Aplikacja zewnętrzna prosi o dostęp..."
 
-#: views/apps/authorize.tpl.php:33
+#: views/apps/authorize.tpl.php:50
 #, php-format
 msgid "<b>%s</b> wants to access your <b>%s</b> account. Do you agree to grant access to this application?"
 msgstr "<b>%s</b> chce uzyskać dostęp do Twojego konta <b>%s</b>. Czy zgadzasz się na udzielenie dostępu tej aplikacji?"
 
-#: views/apps/authorize.tpl.php:36
+#: views/apps/authorize.tpl.php:53
 msgid "I agree"
 msgstr "Zgadzam się"
 
-#: views/apps/authorize.tpl.php:37
+#: views/apps/authorize.tpl.php:54
 msgid "Decline"
 msgstr "Odmawiam"
 
-#: views/apps/authorize.tpl.php:39
+#: views/apps/authorize.tpl.php:56
 #, php-format
 msgid ""
 "\n"
