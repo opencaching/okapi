@@ -423,7 +423,10 @@ class OkapiHttpResponse
 	public function print_body()
 	{
 		if (is_resource($this->body))
-			fpassthru($this->body);
+		{
+			while (!feof($this->body))
+				print fread($this->body, 1024*1024);
+		}
 		else
 			print $this->body;
 	}
