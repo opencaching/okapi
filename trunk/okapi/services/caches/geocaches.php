@@ -373,10 +373,8 @@ class WebService
 			");
 			while ($row = mysql_fetch_assoc($rs))
 			{
-				$results[$cacheid2wptcode[$row['cache_id']]]['my_notes'] = array(
-					'contents' => strip_tags($row['desc']),
-					'last_modified' => date('c', strtotime($row['date']))
-				);
+				# This one is plain-text. We may add my_notes_html for those who want it in HTML.
+				$results[$cacheid2wptcode[$row['cache_id']]]['my_notes'] = strip_tags($row['desc']);
 			}
 		}
 		

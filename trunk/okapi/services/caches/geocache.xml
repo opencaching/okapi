@@ -116,13 +116,8 @@
 				<p>Notice: The number of logs returned can be set with the <b>lpc</b> option.</p>
 			</li>
 			<li>
-				<p><b>my_notes</b> - user's notes on the cache. Either <b>null</b> or dictionary
-				of the following structure:</p>
-				<ul>
-					<li><b>contents</b> - plain-text notes,</li>
-					<li><b>last_modified</b> - date and time (ISO 8601) when notes were last
-						modified.</li>
-				</ul>
+				<p><b>my_notes</b> - user's notes on the cache, in plain-text, or <b>null</b>
+				if user hadn't defined any notes.</p>
 				<p>This field requires you to use the <b>Level 3</b> Authentication.</p>
 			</li>
 			<li><b>trackables_count</b> - a total number of trackables hidden within the cache.</li>
