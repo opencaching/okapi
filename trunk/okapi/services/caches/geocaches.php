@@ -27,8 +27,8 @@ class WebService
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
-		'hints', 'images', 'attrnames', 'latest_logs', 'my_notes', 'trackables_count', 'trackables', 'last_found',
-		'last_modified', 'date_created', 'date_hidden', 'internal_id');
+		'hints', 'images', 'attrnames', 'latest_logs', 'my_notes', 'trackables_count', 'trackables',
+		'alt_wpts', 'last_found', 'last_modified', 'date_created', 'date_hidden', 'internal_id');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -167,6 +167,7 @@ class WebService
 					case 'my_notes': /* handles separately */ break;
 					case 'trackables_count': /* handled separately */ break;
 					case 'trackables': /* handled separately */ break;
+					case 'alt_wpts': /* handled separately */ break;
 					case 'last_found': $entry['last_found'] = $row['last_found'] ? date('c', strtotime($row['last_found'])) : null; break;
 					case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
 					case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
@@ -441,6 +442,31 @@ class WebService
 						$result_ref['trackables_count'] = 0;
 				}
 				unset($tr_counts);
+			}
+		}
+		
+		# Alternate/Additional waypoints.
+		
+		if (in_array('alt_wpts', $fields))
+		{
+			foreach ($results as &$result_ref)
+				$result_ref['alt_wpts'] = array();
+			$rs = Db::query("
+				select cache_id, stage, latitude, longitude, `desc`, type
+				from waypoints
+				where
+					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+					and status = 1
+				order by cache_id, stage, `desc`
+			");
+			while ($row = mysql_fetch_assoc($rs))
+			{
+				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
+					'name' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
+					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+					'sym' => (($row['type'] == 3) ? "Flag, Red" : ($row['type'] == 4) ? "Circle with X" :
+						($row['type'] == 5) ? "Parking Area" : "Flag, Green"),
+				);
 			}
 		}
 		
