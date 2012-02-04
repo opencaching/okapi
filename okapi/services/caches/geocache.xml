@@ -136,11 +136,12 @@
 				<p><b>alt_wpts</b> - list of alternate/additional waypoints associated
 				with this geocache. Each item is a dictionary of the following structure:</p>
 				<ul>
-					<li><b>name</b> - plain-text name/description of the waypoint,</li>
+					<li><b>name</b> - plain-text short name for the waypoint,</li>
 					<li><b>location</b> - location of the waypoint in the "lat|lon" format
-					(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
+						(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
 					<li><b>sym</b> - string, one of globally-recognized waypoint symbol
-					names (such as "Flag, Green" or "Parking Area").</li>
+						names (such as "Flag, Green" or "Parking Area"),</li>
+					<li><b>description</b> - plain-text longer description of the waypoint.</li>
 				</ul>
 			</li>
 			<li><b>last_found</b> - date and time (ISO 8601) when the
