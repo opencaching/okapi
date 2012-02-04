@@ -142,7 +142,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 			<? } ?>
 		</wpt>
 	<? } ?>
-	<? if ($vars['alt_wpts'] == 'true') { ?>
+	<? if ($vars['alt_wpts']) { ?>
 		<? foreach ($vars['caches'] as $c) { ?>
 			<? foreach ($c['alt_wpts'] as $wpt) { ?>
 				<? list($lat, $lon) = explode("|", $wpt['location']); ?>
@@ -154,9 +154,11 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 					<urlname><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></urlname>
 					<sym><?= $wpt['sym'] ?></sym>
 					<type>Waypoint|<?= $wpt['sym'] ?></type>
-					<wptExtension xmlns="http://www.gsak.net/xmlv1/5">
-						<Parent><?= $c['code'] ?></Parent>
-					</wptExtension>
+					<? if ($vars['ns_gsak']) { ?>
+						<wptExtension xmlns="http://www.gsak.net/xmlv1/5">
+							<Parent><?= $c['code'] ?></Parent>
+						</wptExtension>
+					<? } ?>
 				</wpt>
 			<? } ?>
 		<? } ?>
