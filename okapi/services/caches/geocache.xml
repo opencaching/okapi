@@ -132,6 +132,17 @@
 						cannot automatically determine this address.</li>
 				</ul>
 			</li>
+			<li>
+				<p><b>alt_wpts</b> - list of alternate/additional waypoints associated
+				with this geocache. Each item is a dictionary of the following structure:</p>
+				<ul>
+					<li><b>name</b> - plain-text name/description of the waypoint,</li>
+					<li><b>location</b> - location of the waypoint in the "lat|lon" format
+					(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
+					<li><b>sym</b> - string, one of globally-recognized waypoint symbol
+					names (such as "Flag, Green" or "Parking Area").</li>
+				</ul>
+			</li>
 			<li><b>last_found</b> - date and time (ISO 8601) when the
 				geocache was last found <b>or null</b> when it hasn't been yet found,</li>
 			<li><b>last_modified</b> - date and time (ISO 8601) when the
