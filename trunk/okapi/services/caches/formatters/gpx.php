@@ -75,10 +75,11 @@ class WebService
 			throw new BadRequest("Level 3 Authentication is required to access my_notes data.");
 		$vars['my_notes'] = $tmp;
 			
-		$alt_wpts = $request->get_parameter('alt_wpts');
-		if (!$alt_wpts) $alt_wpts = "false";
-		if ($alt_wpts != "false")
-			throw new InvalidParam('alt_wpts', "NOT YET IMPLEMENTED. Please add a comment in our issue tracker.");
+		$tmp = $request->get_parameter('alt_wpts');
+		if (!$tmp) $tmp = "false";
+		if (!in_array($tmp, array("true", "false")))
+			throw new InvalidParam('alt_wpts');
+		$vars['alt_wpts'] = $tmp;
 		
 		$images = $request->get_parameter('images');
 		if (!$images) $images = 'descrefs:nonspoilers';
@@ -120,6 +121,8 @@ class WebService
 			$fields .= "|trackables";
 		elseif ($vars['trackables'] == 'desc:count')
 			$fields .= "|trackables_count";
+		if ($vars['alt_wpts'] == 'true')
+			$fields .= "|alt_wpts";
 		if ($vars['recommendations'] != 'none')
 			$fields .= "|recommendations|rating_votes";
 		if ($vars['my_notes'] != 'none')
