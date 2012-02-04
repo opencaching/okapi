@@ -112,14 +112,9 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 							<? } ?>
 						</groundspeak:logs>
 					<? } ?>
+					<? /* groundspeak:travelbugs - does it actually DO anything? WRTODO */ ?>
 				</groundspeak:cache>
 			<? } ?>
-			<? /* TO BE INCLUDED IN ALTERNATE WAYPOINTS if ($vars['ns_gsak']) { ?>
-				<wptExtension xmlns="http://www.gsak.net/xmlv1/5">
-					<Parent>{waypoint} WRTODO</Parent>
-					<Code>{waypoint} {wp_stage} WRTODO</Code>
-				</wptExtension>
-			<? } */ ?>
 			<? if ($vars['ns_ox']) { /* Does user want us to include Garmin's <opencaching> element? */ ?>
 				<ox:opencaching xmlns:ox="http://www.opencaching.com/xmlschemas/opencaching/1/0">
 					<ox:ratings>
@@ -146,5 +141,24 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 				</ox:opencaching>
 			<? } ?>
 		</wpt>
+	<? } ?>
+	<? if ($vars['alt_wpts'] == 'true') { ?>
+		<? foreach ($vars['caches'] as $c) { ?>
+			<? foreach ($c['alt_wpts'] as $wpt) { ?>
+				<? list($lat, $lon) = explode("|", $wpt['location']); ?>
+				<wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
+					<time><?= $c['date_created'] ?></time>
+					<name><?= htmlspecialchars($wpt['name'], ENT_COMPAT, 'UTF-8') ?></name>
+					<desc><?= htmlspecialchars($wpt['description'], ENT_COMPAT, 'UTF-8') ?></desc>
+					<url><?= $c['url'] ?></url>
+					<urlname><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></urlname>
+					<sym><?= $wpt['sym'] ?></sym>
+					<type>Waypoint|<?= $wpt['sym'] ?></type>
+					<wptExtension xmlns="http://www.gsak.net/xmlv1/5">
+						<Parent><?= $c['code'] ?></Parent>
+					</wptExtension>
+				</wpt>
+			<? } ?>
+		<? } ?>
 	<? } ?>
 </gpx>
