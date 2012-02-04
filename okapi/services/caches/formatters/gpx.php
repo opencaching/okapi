@@ -56,7 +56,7 @@ class WebService
 		if (!$cache_codes) throw new ParamMissing('cache_codes');
 		$langpref = $request->get_parameter('langpref');
 		if (!$langpref) $langpref = "en";
-		foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'latest_logs') as $param)
+		foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'latest_logs', 'alt_wpts') as $param)
 		{
 			$val = $request->get_parameter($param);
 			if (!$val) $val = "false";
@@ -74,12 +74,6 @@ class WebService
 		if (($tmp != 'none') && ($request->token == null))
 			throw new BadRequest("Level 3 Authentication is required to access my_notes data.");
 		$vars['my_notes'] = $tmp;
-			
-		$tmp = $request->get_parameter('alt_wpts');
-		if (!$tmp) $tmp = "false";
-		if (!in_array($tmp, array("true", "false")))
-			throw new InvalidParam('alt_wpts');
-		$vars['alt_wpts'] = $tmp;
 		
 		$images = $request->get_parameter('images');
 		if (!$images) $images = 'descrefs:nonspoilers';

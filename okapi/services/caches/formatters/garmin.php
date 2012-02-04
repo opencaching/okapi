@@ -66,6 +66,7 @@ class WebService
 				'images' => 'ox:all',
 				'attrs' => 'ox:tags',
 				'trackables' => 'desc:count',
+				'alt_wpts' => 'true',
 				'recommendations' => 'desc:count',
 				'latest_logs' => 'true',
 				'lpc' => 'all',
