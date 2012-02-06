@@ -112,10 +112,11 @@
 		and <b>latest_logs</b> arguments must be set to <b>true</b> in order for the logs to be included.
 	</opt>
 	<opt name='alt_wpts' default='false'>
-		<p><b>Not yet implemented.</b></p>
-		<p>Boolean. If <b>true</b> then we will include <b>alternate waypoints</b> in the response.
-		These waypoints point to places associated with the cache.</p>
-		<p>You <b>must</b> set <b>ns_gsak</b> argument to <b>true</b> if you want to use this.</p>
+		<p>Boolean. If <b>true</b> then we will include additional (alternate) waypoints in the response.
+		These are all places associated with the cache.</p>
+		<p>Combine this with <b>ns_gsak</b> if you want the result to include additional references between
+		waypoints and their geocaches. Please note that not many applications are currently able to
+		properly understand GSAK metadata.</p>
 	</opt>
 	<returns>
 		<p>GPX file.</p>

@@ -108,7 +108,7 @@ class OkapiExceptionHandler
 			
 			if (isset($GLOBALS['debug_page']) && $GLOBALS['debug_page'])
 			{
-				print "\n\nBUT! Since the DEBUG flag is on, then you probably ARE the developer yourself.\n";
+				print "\n\nBUT! Since the DEBUG flag is on, then you probably ARE a developer yourself.\n";
 				print "Let's cut to the chase then:";
 				print "\n\n".$exception_info;
 			}
@@ -323,6 +323,15 @@ class OkapiConsumer extends OAuthConsumer
 	}
 }
 
+/** Use this when calling OKAPI internally from OC code. */
+class OkapiInternalConsumer extends OkapiConsumer
+{
+	public function __construct()
+	{
+		super::__construct('internal', null, "OpenCaching site", null, isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost');
+	}
+}
+
 class OkapiToken extends OAuthToken
 {
 	public $consumer_key;
@@ -359,6 +368,15 @@ class OkapiAccessToken extends OkapiToken
 	{
 		parent::__construct($key, $secret, $consumer_key, 'access');
 		$this->user_id = $user_id;
+	}
+}
+
+/** Use this when calling OKAPI internally from OC code. */
+class OkapiInternalAccessToken extends OkapiAccessToken
+{
+	public function __construct($user_id)
+	{
+		parent::__construct('internal-'.$user_id, null, 'internal', $user_id);
 	}
 }
 
