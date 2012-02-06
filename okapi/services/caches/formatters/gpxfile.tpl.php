@@ -120,7 +120,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 					<ox:ratings>
 						<? if ($c['rating'] !== null) { ?><ox:awesomeness><?= $c['rating'] ?></ox:awesomeness><? } ?>
 						<ox:difficulty><?= $c['difficulty'] ?></ox:difficulty>
-						<? if ($c['size'] !== null) { ?><ox:size><?= $c['size'] ?></ox:size><? } ?>
+						<? if ($c['size'] !== null) { ?><ox:size><?= $vars['cache_OX_sizes'][$c['size']] ?></ox:size><? } ?>
 						<ox:terrain><?= $c['terrain'] ?></ox:terrain>
 					</ox:ratings>
 					<? if ($vars['attrs'] == 'ox:tags' && count($c['attrnames']) > 0) { /* Does user want us to include ox:tags? */ ?>

@@ -38,11 +38,20 @@ class WebService
 	/** Maps OpenCaching cache sizes Geocaching.com size codes. */
 	public static $cache_GPX_sizes = array(
 		1 => 'Micro',
-		2 => 'Micro',
-		3 => 'Small',
-		4 => 'Regular',
+		2 => 'Small',
+		3 => 'Regular',
+		4 => 'Large',
 		5 => 'Large',
-		null => 'Other'
+		null => 'Virtual'
+	);
+	/** Maps OpenCaching cache sizes opencaching.com (OX) size codes. */
+	public static $cache_OX_sizes = array(
+		1 => 2,
+		2 => 3,
+		3 => 4,
+		4 => 5,
+		5 => 5,
+		null => null
 	);
 	
 	public static function call(OkapiRequest $request)
@@ -131,6 +140,7 @@ class WebService
 			null, null, array()));
 		$vars['cache_GPX_types'] = self::$cache_GPX_types;
 		$vars['cache_GPX_sizes'] = self::$cache_GPX_sizes;
+		$vars['cache_OX_sizes'] = self::$cache_OX_sizes;
 		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "text/xml; charset=utf-8";
