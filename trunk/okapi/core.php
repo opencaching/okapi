@@ -328,7 +328,7 @@ class OkapiInternalConsumer extends OkapiConsumer
 {
 	public function __construct()
 	{
-		super::__construct('internal', null, "OpenCaching site", null, isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost');
+		parent::__construct('internal', null, "OpenCaching site", null, isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost');
 	}
 }
 
