@@ -12,6 +12,7 @@ use okapi\ParamMissing;
 use okapi\OkapiAccessToken;
 use okapi\InvalidParam;
 use okapi\services\caches\search\SearchAssistant;
+use okapi\OkapiInternalConsumer;
 
 class WebService
 {
@@ -137,7 +138,7 @@ class WebService
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
 			'langpref' => $langpref, 'fields' => $fields, 'lpc' => $lpc)));
 		$vars['installation'] = OkapiServiceRunner::call('services/apisrv/installation', new OkapiInternalRequest(
-			null, null, array()));
+			new OkapiInternalConsumer(), null, array()));
 		$vars['cache_GPX_types'] = self::$cache_GPX_types;
 		$vars['cache_GPX_sizes'] = self::$cache_GPX_sizes;
 		$vars['cache_OX_sizes'] = self::$cache_OX_sizes;

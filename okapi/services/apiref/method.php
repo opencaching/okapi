@@ -9,6 +9,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
+use okapi\OkapiInternalConsumer;
 
 class WebService
 {
@@ -90,7 +91,7 @@ class WebService
 			$attrs = $import_desc->attributes();
 			$referenced_methodname = $attrs['method'];
 			$referenced_method_info = OkapiServiceRunner::call('services/apiref/method',
-				new OkapiInternalRequest(null, null, array('name' => $referenced_methodname)));
+				new OkapiInternalRequest(new OkapiInternalConsumer(), null, array('name' => $referenced_methodname)));
 			foreach ($referenced_method_info['arguments'] as $arg)
 			{
 				if ($arg['class'] == 'common-formatting')
