@@ -149,6 +149,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 				<wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
 					<time><?= $c['date_created'] ?></time>
 					<name><?= htmlspecialchars($wpt['name'], ENT_COMPAT, 'UTF-8') ?></name>
+           <cmt><?= htmlspecialchars($wpt['description'], ENT_COMPAT, 'UTF-8') ?></cmt>
 					<desc><?= htmlspecialchars($wpt['description'], ENT_COMPAT, 'UTF-8') ?></desc>
 					<url><?= $c['url'] ?></url>
 					<urlname><?= htmlspecialchars($c['name'], ENT_COMPAT, 'UTF-8') ?></urlname>
