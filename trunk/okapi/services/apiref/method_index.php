@@ -11,6 +11,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\Cache;
+use okapi\OkapiInternalConsumer;
 
 class WebService
 {
@@ -33,7 +34,7 @@ class WebService
 			foreach ($methodnames as $methodname)
 			{
 				$info = OkapiServiceRunner::call('services/apiref/method', new OkapiInternalRequest(
-					null, null, array('name' => $methodname)));
+					new OkapiInternalConsumer(), null, array('name' => $methodname)));
 				$results[] = array(
 					'name' => $info['name'],
 					'brief_description' => $info['brief_description'],

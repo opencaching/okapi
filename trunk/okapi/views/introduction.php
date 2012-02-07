@@ -11,6 +11,7 @@ use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
 use okapi\views\menu\OkapiMenu;
+use okapi\OkapiInternalConsumer;
 
 class View
 {
@@ -24,7 +25,7 @@ class View
 			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 			'site_url' => $GLOBALS['absolute_server_URI'],
 			'method_index' => OkapiServiceRunner::call('services/apiref/method_index',
-				new OkapiInternalRequest(null, null, array())),
+				new OkapiInternalRequest(new OkapiInternalConsumer(), null, array())),
 			'installations' => OkapiMenu::get_installations(),
 			'okapi_rev' => Okapi::$revision,
 		);
