@@ -134,7 +134,7 @@ class OkapiServiceRunner
 		# Temp table doesn't have primary key, but other stats tables (which are
 		# dependant on stats table) - do.
 		
-		$consumer_key = ($request->consumer != null) ? $request->consumer->key : 'internal';
+		$consumer_key = ($request->consumer != null) ? $request->consumer->key : 'anonymous';
 		$user_id = (($request->token != null) && ($request->token instanceof OkapiAccessToken)) ? $request->token->user_id : -1;
 		
 		Db::execute("
