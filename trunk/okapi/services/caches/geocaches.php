@@ -464,8 +464,8 @@ class WebService
 				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
 					'name' => $cacheid2wptcode[$row['cache_id']]."-".($row['stage'] ? $row['stage'] : "wpt"),
 					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
-					'sym' => (($row['type'] == 3) ? "Flag, Red" : ($row['type'] == 4) ? "Circle with X" :
-						($row['type'] == 5) ? "Parking Area" : "Flag, Green"),
+					'sym' => (($row['type'] == 3) ? "Flag, Red" : (($row['type'] == 4) ? "Circle with X" : 
+               (($row['type'] == 5) ? "Parking Area" : "Flag, Green"))),
 					'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
 				);
 			}
