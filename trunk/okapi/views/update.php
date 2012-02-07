@@ -56,30 +56,37 @@ class View
 		self::out("Current OKAPI database version: $current_ver\n");
 		if ($max_ver == $current_ver)
 		{
-			self::out("It is up-to-date.");
-			return;
+			self::out("It is up-to-date.\n\n");
 		}
 		elseif ($max_ver < $current_ver)
 			throw new Exception();
-		
-		self::out("Updating to version $max_ver... PLEASE WAIT\n\n");
-		
-		while ($current_ver < $max_ver)
+		else
 		{
-			$version_to_apply = $current_ver + 1;
-			self::out("Applying mutation #$version_to_apply...");
-			try {
-				call_user_func(array(__CLASS__, "ver".$version_to_apply));
-				self::out(" OK!\n");
-				Okapi::set_var('db_version', $version_to_apply);
-				$current_ver += 1;
-			} catch (Exception $e) {
-				self::out(" ERROR\n\n");
-				throw $e;
+			self::out("Updating to version $max_ver... PLEASE WAIT\n\n");
+			
+			while ($current_ver < $max_ver)
+			{
+				$version_to_apply = $current_ver + 1;
+				self::out("Applying mutation #$version_to_apply...");
+				try {
+					call_user_func(array(__CLASS__, "ver".$version_to_apply));
+					self::out(" OK!\n");
+					Okapi::set_var('db_version', $version_to_apply);
+					$current_ver += 1;
+				} catch (Exception $e) {
+					self::out(" ERROR\n\n");
+					throw $e;
+				}
 			}
+			self::out("\nDatabase updated.\n\n");
 		}
 		
-		self::out("\nUpdated.");
+		self::out("Registering new cronjobs...\n");
+		# Force execute_cronjobs to validate all cronjobs (some might have been added).
+		Okapi::set_var("cron_nearest_event", 0);
+		Okapi::execute_cronjobs();
+		
+		self::out("\nUpdate complete.");
 	}
 
 	private static function ver1()
@@ -206,4 +213,35 @@ class View
 	private static function ver28() { Db::execute("alter table okapi_nonces modify column `key` varchar(255) collate utf8_bin not null"); }
 	private static function ver29() { Db::execute("alter table okapi_cache_logs modify column consumer_key varchar(20) collate utf8_bin not null"); }
 	private static function ver30() { Db::execute("alter table okapi_vars modify column `var` varchar(32) collate utf8_bin not null"); }
+	
+	private static function ver31()
+	{
+		Db::execute("
+			CREATE TABLE `okapi_stats_temp` (
+				`datetime` datetime NOT NULL,
+				`consumer_key` varchar(32) NOT NULL DEFAULT 'internal',
+				`user_id` int(10) NOT NULL DEFAULT '-1',
+				`service_name` varchar(80) NOT NULL,
+				`calltype` enum('internal','http') NOT NULL,
+				`runtime` float NOT NULL DEFAULT '0'
+			) ENGINE=MEMORY DEFAULT CHARSET=utf8
+		");
+	}
+
+	private static function ver32()
+	{
+		Db::execute("
+			CREATE TABLE `okapi_stats_hourly` (
+				`consumer_key` varchar(32) NOT NULL,
+				`user_id` int(10) NOT NULL,
+				`period_start` datetime NOT NULL,
+				`service_name` varchar(80) NOT NULL,
+				`total_calls` int(10) NOT NULL,
+				`http_calls` int(10) NOT NULL,
+				`total_runtime` float NOT NULL DEFAULT '0',
+				`http_runtime` float NOT NULL DEFAULT '0',
+				PRIMARY KEY (`consumer_key`,`user_id`,`period_start`,`service_name`)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8
+		");
+	}
 }

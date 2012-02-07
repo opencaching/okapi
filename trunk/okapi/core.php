@@ -32,6 +32,7 @@ use OAuthToken;
 use OAuthServer;
 use OAuthSignatureMethod_HMAC_SHA1;
 use OAuthRequest;
+use okapi\cronjobs\CronJobController;
 
 /** Throw this when external developer does something wrong. */
 class BadRequest extends Exception {}
@@ -525,6 +526,7 @@ class Okapi
 	 */
 	public static function set_var($varname, $value)
 	{
+		Okapi::get_var($varname);
 		Db::execute("
 			replace into okapi_vars (var, value)
 			values (
@@ -570,6 +572,21 @@ class Okapi
 		return "";
 	}
 	
+	/**
+	 * Check if any cronjobs are scheduled to execute and execute them if needed.
+	 * Reschedule for new executions.
+	 */
+	public static function execute_cronjobs()
+	{
+		$nearest_event = Okapi::get_var("cron_nearest_event");
+		if ($nearest_event + 0 <= time())
+		{
+			require_once 'cronjobs.php';
+			$nearest_event = CronJobController::run();
+			Okapi::set_var("cron_nearest_event", $nearest_event);
+		}
+	}
+	
 	private static $gettext_last_used_langprefs = null;
 	private static $gettext_last_set_locale = null;
 	private static $gettext_original_domain;
@@ -596,13 +613,20 @@ class Okapi
 			textdomain(self::$gettext_original_domain);
 	}
 	
-	/** Internal. */
-	public static function init_server()
+	/**
+	 * Internal. This is called always when OKAPI core is included.
+	 */
+	public static function init_internals()
 	{
+		static $init_made = false;
+		if ($init_made)
+			return;
 		if (!self::$data_store)
 			self::$data_store = new OkapiDataStore();
 		if (!self::$server)
 			self::$server = new OkapiOAuthServer(self::$data_store);
+		self::execute_cronjobs();
+		$init_made = true;
 	}
 	
 	/**
@@ -1004,7 +1028,7 @@ class OkapiHttpRequest extends OkapiRequest
 	
 	public function __construct($options)
 	{
-		Okapi::init_server();
+		Okapi::init_internals();
 		$this->init_request();
 		#
 		# Parsing options.
@@ -1041,14 +1065,9 @@ class OkapiHttpRequest extends OkapiRequest
 		
 		if ($this->get_parameter('oauth_signature'))
 		{
-			# User is using OAuth. There is no cronjob for deleting old Request Tokens
-			# and Nonces, so we have to check if cleanup is needed.
-			
-			$timestamp = Okapi::get_var('last_oauth_cleanup', 0);
-			if ($timestamp < time() - 300)
-				Okapi::$data_store->cleanup();
-			
-			# Now we know that cleanup was executed no more than 5 minutes ago.
+			# User is using OAuth. There is a cronjob scheduled to run every 5 minutes and
+			# delete old Request Tokens and Nonces. We may assume that cleanup was executed
+			# not more than 5 minutes ago.
 			
 			list($this->consumer, $this->token) = Okapi::$server->
 				verify_request2($this->request, $this->opt_token_type, $this->opt_min_auth_level == 3);

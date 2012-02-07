@@ -28,6 +28,8 @@ class OkapiScriptEntryPointController
 {
 	public static function dispatch_request($uri)
 	{
+		Okapi::init_internals();
+		
 		# Chop off the ?args=... part.
 		
 		if (strpos($uri, '?') !== false)

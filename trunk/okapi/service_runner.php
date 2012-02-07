@@ -95,6 +95,8 @@ class OkapiServiceRunner
 	 */
 	public static function call($service_name, OkapiRequest $request)
 	{
+		Okapi::init_internals();
+
 		if (!self::exists($service_name))
 			throw new Exception("Method does not exist: '$service_name'");
 		
@@ -111,13 +113,40 @@ class OkapiServiceRunner
 				"\$request->token MAY NOT be empty for Level 3 methods.");
 		}
 		
+		$time_started = microtime(true);
 		Okapi::gettext_domain_init();
 		require_once "$service_name.php";
 		$response = call_user_func(array('\\okapi\\'.
 			str_replace('/', '\\', $service_name).'\\WebService', 'call'), $request);
 		Okapi::gettext_domain_restore();
+		$runtime = microtime(true) - $time_started;
+		
+		# Log the request to the stats table. Only valid requests (these which didn't end up
+		# with an exception) are logged.
+		self::save_stats($service_name, $request, $runtime);
 		
 		return $response;
 	}
 	
+	private static function save_stats($service_name, OkapiRequest $request, $runtime)
+	{
+		# Getting rid of nulls. MySQL PRIMARY keys cannot contain nullable columns.
+		# Temp table doesn't have primary key, but other stats tables (which are
+		# dependant on stats table) - do.
+		
+		$consumer_key = ($request->consumer != null) ? $request->consumer->key : 'internal';
+		$user_id = (($request->token != null) && ($request->token instanceof OkapiAccessToken)) ? $request->token->user_id : -1;
+		
+		Db::execute("
+			insert into okapi_stats_temp (`datetime`, consumer_key, user_id, service_name, calltype, runtime)
+			values (
+				now(),
+				'".mysql_real_escape_string($consumer_key)."',
+				'".mysql_real_escape_string($user_id)."',
+				'".mysql_real_escape_string($service_name)."',
+				'".(($request instanceof OkapiHttpRequest) ? "http" : "internal")."',
+				'".mysql_real_escape_string($runtime)."'
+			);
+		");
+	}
 }

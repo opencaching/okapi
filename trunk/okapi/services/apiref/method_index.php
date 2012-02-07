@@ -10,6 +10,7 @@ use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
+use okapi\Cache;
 
 class WebService
 {
@@ -22,19 +23,23 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
-		// WRTODO: cache it!
-		
-		$methodnames = OkapiServiceRunner::$all_names;
-		sort($methodnames);
-		$results = array();
-		foreach ($methodnames as $methodname)
+		$cache_key = "api_ref/method_index";
+		$results = Cache::get($cache_key);
+		if ($results == null)
 		{
-			$info = OkapiServiceRunner::call('services/apiref/method', new OkapiInternalRequest(
-				null, null, array('name' => $methodname)));
-			$results[] = array(
-				'name' => $info['name'],
-				'brief_description' => $info['brief_description'],
-			);
+			$methodnames = OkapiServiceRunner::$all_names;
+			sort($methodnames);
+			$results = array();
+			foreach ($methodnames as $methodname)
+			{
+				$info = OkapiServiceRunner::call('services/apiref/method', new OkapiInternalRequest(
+					null, null, array('name' => $methodname)));
+				$results[] = array(
+					'name' => $info['name'],
+					'brief_description' => $info['brief_description'],
+				);
+			}
+			Cache::set($cache_key, $results, 3600);
 		}
 		return Okapi::formatted_response($request, $results);
 	}
