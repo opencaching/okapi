@@ -27,7 +27,6 @@ class CronJobController
 	 */
 	public static function run()
 	{
-		$nearest = time() + 30*86400;
 		$schedule = Cache::get("cron_schedule");
 		if ($schedule == null)
 			$schedule = array();
@@ -38,11 +37,13 @@ class CronJobController
 			{
 				$cronjob->execute();
 				$schedule[$name] = time() + $cronjob->get_period();
-				if ($schedule[$name] < $nearest)
-					$nearest = $schedule[$name];
 			}
 		}
-		Cache::set("cron_schedule", $schedule, 30*86400);
+		$nearest = time() + 3600;
+		foreach ($schedule as $name => $time)
+			if ($time < $nearest)
+				$nearest = $time;
+		Cache::set("cron_schedule", $schedule, 86400);
 		return $nearest;
 	}
 }
