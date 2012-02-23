@@ -34,12 +34,8 @@ class WebService
 		# check if this requests is signed with: $request->token != null.
 
 		$search_params = SearchAssistant::get_common_search_params($request);
-		
-		$result = SearchAssistant::get_common_search_result(array(
-			'extra_tables' => array(),
-			'where_conds' => $search_params['where_conds'],
-			'limit' => $search_params['limit']
-		));
+		$search_params['extra_tables'] = array();
+		$result = SearchAssistant::get_common_search_result($search_params);
 		
 		return Okapi::formatted_response($request, $result);
 	}

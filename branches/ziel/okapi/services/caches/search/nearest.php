@@ -70,14 +70,12 @@ class WebService
 			$where_conds[] = "$distance_formula <= '".mysql_real_escape_string($radius)."'";
 		}
 		
-		$other_search_params = SearchAssistant::get_common_search_params($request);
+		$search_params = SearchAssistant::get_common_search_params($request);
+		$search_params['extra_tables'] = array();
+		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
+		$search_params['order_by'] = ($search_params['order_by']!=null?$search_params['order_by']:$distance_formula);
 		
-		$result = SearchAssistant::get_common_search_result(array(
-			'extra_tables' => array(),
-			'where_conds' => array_merge($where_conds, $other_search_params['where_conds']),
-			'order_by' => $distance_formula,
-			'limit' => $other_search_params['limit']
-		));
+		$result = SearchAssistant::get_common_search_result($search_params);
 		if ($radius == null)
 		{
 			# 'more' is meaningless in this case, we'll remove it.

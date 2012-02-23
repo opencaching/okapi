@@ -66,8 +66,6 @@ class WebService
 			$where_conds[] = "(caches.longitude > '".mysql_real_escape_string($bbwest)."' or caches.longitude < '".mysql_real_escape_string($bbeast)."')";
 		}
 		
-		$other_search_params = SearchAssistant::get_common_search_params($request);
-		
 		#
 		# In the method description, we promised to return caches ordered by the *rough*
 		# distance from the center of the bounding box. We'll use ORDER BY with a simplified
@@ -80,12 +78,12 @@ class WebService
 		# Using default OpenCaching SQL distance formula. (What's the third argument for?)
 		$distance_formula = getSqlDistanceFormula($center_lon, $center_lat, null);
 		
-		$result = SearchAssistant::get_common_search_result(array(
-			'extra_tables' => array(),
-			'where_conds' => array_merge($where_conds, $other_search_params['where_conds']),
-			'order_by' => $distance_formula,
-			'limit' => $other_search_params['limit']
-		));
+		$search_params = SearchAssistant::get_common_search_params($request);
+		$search_params['extra_tables'] = array();
+		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
+		$search_params['order_by'] = ($search_params['order_by']!=null?$search_params['order_by']:$distance_formula);
+		
+		$result = SearchAssistant::get_common_search_result($search_params);
 		
 		return Okapi::formatted_response($request, $result);
 	}

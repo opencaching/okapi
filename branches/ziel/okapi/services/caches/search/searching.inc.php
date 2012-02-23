@@ -296,10 +296,49 @@ class SearchAssistant
 		if ($limit < 1 || $limit > 500)
 			throw new InvalidParam('limit', "Has to be between 1 and 500.");
 		
-		return array(
+		#
+		# offset (default 0)
+		#
+		$offset = $request->get_parameter('offset');
+		if ($offset == null) $offset = "0";
+		if (!is_numeric($offset))
+			throw new InvalidParam('offset', "'$offset'");
+		if ($limit < 0)
+			throw new InvalidParam('offset', "Cannot be negative.");
+		
+		
+		$ret_array = array(
 			'where_conds' => $where_conds,
 			'limit' => (int)$limit
+			'offset' => (int)$offset
 		);
+
+		#
+		# order_by (column name as in geocaches)
+		#
+		$order_by = $request->get_parameter('order_by');
+        if (!in_array($order_by, array('code', 'name', 'names', 'location', 'type',
+            'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
+            'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
+            'hints', 'images', 'attrnames', 'latest_logs', 'my_notes', 'trackables_count', 'trackables',
+            'alt_wpts', 'last_found', 'last_modified', 'date_created', 'date_hidden', 'internal_id', 'distance')))
+            throw new InvalidParam('order_by', "'$order_by'");
+		if ($order_by != null) 
+        {
+            #
+            # ascending (default true)
+            #
+            $ascending = $request->get_parameter('ascending');
+            if ($ascending == null) $ascending = true;
+            if (!is_bool($ascending))
+                throw new InvalidParam('ascending', "'$ascending'");
+            $order_by .= ' '.($ascending?"asc":"desc");
+            $ret_array['order_by'] = $order_by;
+        }
+       
+        return $ret_array;
+
+
 	}
 	
 	/**
@@ -335,7 +374,8 @@ class SearchAssistant
 			from ".implode(", ", $tables)."
 			where ".implode(" and ", $where_conds)."
 			".((isset($options['order_by']))?"order by ".$options['order_by']:"")."
-			limit ".($options['limit'] + 1).";
+			limit ".($options['limit'] + 1)."
+			offset ".($options['offset'] + 1).";
 		");
 		
 		if (count($cache_codes) > $options['limit'])
