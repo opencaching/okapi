@@ -64,33 +64,31 @@ class WebService
 				throw new InvalidParam('lpc', "Must be a positive value.");
 		}
 
-        
-        $distance_formula = '';
-        # Lets take this effort ONLY if the distance is needed
-        if (in_array('distance', $fields))
-        {
-            $tmp = $request->get_parameter('center');
-            if (!$tmp)
-                throw new ParamMissing('center');
-            $parts = explode('|', $tmp);
-            if (count($parts) != 2)
-                throw new InvalidParam('center', "Expecting 2 pipe-separated parts, got ".count($parts).".");
-            foreach ($parts as &$part_ref)
-            {
-                if (!preg_match("/^-?[0-9]+(\.?[0-9]*)$/", $part_ref))
-                    throw new InvalidParam('center', "'$part_ref' is not a valid float number.");
-                $part_ref = floatval($part_ref);
-            }
-            list($center_lat, $center_lon) = $parts;
-            if ($center_lat > 90 || $center_lat < -90)
-                throw new InvalidParam('center', "Latitudes have to be within -90..90 range.");
-            if ($center_lon > 180 || $center_lon < -180)
-                throw new InvalidParam('center', "Longitudes have to be within -180..180 range.");
-            # Do we have a similar getHeading method??
-            $distance_formula = \getSqlDistanceFormula($center_lon, $center_lat, null);
-        }
-        
-        
+		$distance_formula = '';
+		# Lets take this effort ONLY if the distance is needed
+		if (in_array('distance', $fields))
+		{
+			$tmp = $request->get_parameter('current_position');
+			if (!$tmp)
+				throw new ParamMissing('current_position');
+			$parts = explode('|', $tmp);
+			if (count($parts) != 2)
+				throw new InvalidParam('current_position', "Expecting 2 pipe-separated parts, got ".count($parts).".");
+			foreach ($parts as &$part_ref)
+			{
+				if (!preg_match("/^-?[0-9]+(\.?[0-9]*)$/", $part_ref))
+					throw new InvalidParam('current_position', "'$part_ref' is not a valid float number.");
+				$part_ref = floatval($part_ref);
+			}
+			list($center_lat, $center_lon) = $parts;
+			if ($center_lat > 90 || $center_lat < -90)
+				throw new InvalidParam('current_position', "Latitudes have to be within -90..90 range.");
+			if ($center_lon > 180 || $center_lon < -180)
+				throw new InvalidParam('current_position', "Longitudes have to be within -180..180 range.");
+			# Do we have a similar getHeading method??
+			$distance_formula = \getSqlDistanceFormula($center_lon, $center_lat, null);
+		}
+
 
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{

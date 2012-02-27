@@ -5,6 +5,15 @@
 		<p>Retrieve information on a single geocache.</p>
 	</desc>
 	<req name='cache_code'>Unique code of the geocache</req>
+	<opt name='current_position'>
+		<p>The reference point for cache distance calculation (typically - the user's location), in the
+		"lat|lon" format.</p>
+		<p>Use positive numbers for latitudes in the northern hemisphere and
+		longitudes in the eastern hemisphere (and negative for southern and
+		western hemispheres accordingly). These are full degrees with a dot
+		as a decimal point (ex. "54.3|22.3").</p>
+		<p><b>Note:</b> If "fields" param contains <b>distance</b> field, the "current_position" is required.</p>
+	</opt>
 	<opt name='langpref' default='en'>
 		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
 		order of preference in which language will be chosen for fields like
@@ -157,6 +166,7 @@
 			to have multiple universally unique keys. -->
 			<li><b>internal_id</b> - internal ID of the cache (<b>do not</b> use
 				this, unless you know what you're doing; use the "code" as an identifier).</li>
+			<li><b>distance</b> - the distance from a cahce. This requires "current_position" param to be provided.</li>
 		</ul>
 	</opt>
 	<opt name='lpc' default='10'>

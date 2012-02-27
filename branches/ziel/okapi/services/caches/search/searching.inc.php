@@ -317,26 +317,36 @@ class SearchAssistant
 		# order_by (column name as in geocaches)
 		#
 		$order_by = $request->get_parameter('order_by');
-        if (!in_array($order_by, array('code', 'name', 'names', 'location', 'type',
-            'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
-            'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
-            'hints', 'images', 'attrnames', 'latest_logs', 'my_notes', 'trackables_count', 'trackables',
-            'alt_wpts', 'last_found', 'last_modified', 'date_created', 'date_hidden', 'internal_id', 'distance')))
-            throw new InvalidParam('order_by', "'$order_by'");
+		$order_cols_array = explode('|', $order_by);
+		$order_by_stmt_array[] = array();
+		foreach($order_cols_array as $column) 
+		{
+			$order_direction = 'ASC';
+			$order_column = $column;
+			if (strpos($column, '-')===0)
+			{
+				$order_direction = 'DESC';
+				$order_column = substr($column, 1);
+			}
+			elseif (strpos($column, '+')===0)
+			{
+				$order_direction = 'ASC';
+				$order_column = substr($column, 1);
+			}
+			
+			if (!in_array($order_column, array('code', 'name', 'names', 'location', 'type',
+				'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
+				'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
+				'hints', 'images', 'attrnames', 'latest_logs', 'my_notes', 'trackables_count', 'trackables',
+				'alt_wpts', 'last_found', 'last_modified', 'date_created', 'date_hidden', 'internal_id', 'distance')))
+				throw new InvalidParam('order_by', "'$order_by'");
+				
+			$order_by_stmt_array[] = "$order_column $order_direction";
+		}
 		if ($order_by != null) 
-        {
-            #
-            # ascending (default true)
-            #
-            $ascending = $request->get_parameter('ascending');
-            if ($ascending == null) $ascending = true;
-            if (!is_bool($ascending))
-                throw new InvalidParam('ascending', "'$ascending'");
-            $order_by .= ' '.($ascending?"asc":"desc");
-            $ret_array['order_by'] = $order_by;
-        }
-       
-        return $ret_array;
+			$ret_array['order_by'] = implode(', ', $order_by_stmt_array);
+	
+		return $ret_array;
 
 
 	}
@@ -375,7 +385,7 @@ class SearchAssistant
 			where ".implode(" and ", $where_conds)."
 			".((isset($options['order_by']))?"order by ".$options['order_by']:"")."
 			limit ".($options['limit'] + 1)."
-			offset ".($options['offset'] + 1).";
+			offset ".($options['offset']).";
 		");
 		
 		if (count($cache_codes) > $options['limit'])
