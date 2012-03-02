@@ -29,14 +29,8 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
-		# We declared Token to be 'optional' in the OkapiRequest above. This means,
-		# that OKAPI will pass on requests NOT signed with an Access Token. We may
-		# check if this requests is signed with: $request->token != null.
-
 		$search_params = SearchAssistant::get_common_search_params($request);
-		$search_params['extra_tables'] = array();
 		$result = SearchAssistant::get_common_search_result($search_params);
-		
 		return Okapi::formatted_response($request, $result);
 	}
 }

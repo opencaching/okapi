@@ -704,6 +704,73 @@ class Okapi
 		");
 	}
 	
+	/** Return the distance between two geopoints, in meters. */
+	public static function get_distance($lat1, $lon1, $lat2, $lon2)
+	{
+		$x1 = (90-$lat1) * 3.14159 / 180;
+		$x2 = (90-$lat2) * 3.14159 / 180;
+		$d = acos(cos($x1) * cos($x2) + sin($x1) * sin($x2) * cos(($lon1-$lon2) * 3.14159 / 180)) * 6371000;
+		if ($d < 0) $d = 0;
+		return $d;
+	}
+	
+	/**
+	 * Return an SQL formula for calculating distance between two geopoints.
+	 * Parameters should be either numberals or strings (SQL field references).
+	 */
+	public function get_distance_sql($lat1, $lon1, $lat2, $lon2)
+	{
+		$x1 = "(90-$lat1) * 3.14159 / 180";
+		$x2 = "(90-$lat2) * 3.14159 / 180";
+		$d = "acos(cos($x1) * cos($x2) + sin($x1) * sin($x2) * cos(($lon1-$lon2) * 3.14159 / 180)) * 6371000";
+		return $d;
+	}
+
+	/** Return bearing (float 0..360) from geopoint 1 to 2. */
+	public function get_bearing($lat1, $lon1, $lat2, $lon2)
+	{
+		if ($lat1 == $lat2 && $lon1 == $lon2)
+			return null;
+		if ($lat1 == $lat2) $lat1 += 0.0000166;
+		if ($lon1 == $lon2) $lon1 += 0.0000166;
+		
+		$rad_lat1 = $lat1 / 180.0 * $pi;
+		$rad_lon1 = $lon1 / 180.0 * $pi;
+		$rad_lat2 = $lat2 / 180.0 * $pi;
+		$rad_lon2 = $lon2 / 180.0 * $pi;
+
+		$delta_lon = $rad_lon2 - $rad_lon1;
+		$bearing = atan2(sin($delta_lon) * cos($rad_lat2),
+			cos($rad_lat1) * sin($rad_lat2) - sin($rad_lat1) * cos($rad_lat2) * cos($delta_lon));
+		$bearing = 180.0 * $bearing / 3.14159;
+		if ( $bearing < 0.0 ) $bearing = $bearing + 360.0;
+
+		return $bearing;
+	}
+
+	/** Transform bearing (float 0..360) to simple text string (N, SSE, itp.) */
+	function bearing_as_text($b)
+	{
+		if ($b == null) return 'n/a';
+		elseif (($b < 11.25) || ($b >= 348.75)) return 'N';
+		elseif ($b < 33.75) return 'NNE';
+		elseif ($b < 56.25) return 'NE';
+		elseif ($b < 78.75) return 'ENE';
+		elseif ($b < 101.25) return 'E';
+		elseif ($b < 123.75) return 'ESE';
+		elseif ($b < 146.25) return 'SE';
+		elseif ($b < 168.75) return 'SSE';
+		elseif ($b < 191.25) return 'S';
+		elseif ($b < 213.75) return 'SSW';
+		elseif ($b < 236.25) return 'SW';
+		elseif ($b < 258.75) return 'WSW';
+		elseif ($b < 281.25) return 'W';
+		elseif ($b < 303.75) return 'WNW';
+		elseif ($b < 326.25) return 'NW';
+		elseif ($b < 348.75) return 'NNW';
+		else throw new Exception();
+	}
+	
 	/** Escape string for use with XML. */
 	public static function xmlentities($string)
 	{

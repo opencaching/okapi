@@ -8,6 +8,7 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiRequest;
 use okapi\InvalidParam;
+use okapi\BadRequest;
 use Exception;
 
 class SearchAssistant
@@ -20,7 +21,11 @@ class SearchAssistant
 	 * 
 	 *  - "where_conds" - list of additional WHERE conditions to be ANDed
 	 *    to the rest of your SQL query,
-	 *  - "limit" - value of the limit parameter.
+	 *  - "offset" - value of the offset parameter,
+	 *  - "limit" - value of the limit parameter,
+	 *  - "order_by" - list of order by clauses to be included in the "order by"
+	 *    SQL clause,
+	 *  - "extra_tables" - extra tables to be included in the FROM clause.
 	 */
 	public static function get_common_search_params(OkapiRequest $request)
 	{
@@ -275,20 +280,18 @@ class SearchAssistant
 		#
 		
 		if ($tmp = $request->get_parameter('name'))
-		{
-				
-			//max length = 100	
-			if (strlen($tmp)>100)
+		{	
+			if (strlen($tmp) > 100)
 				throw new InvalidParam('name', "Maximum length of 'name' parameter is 100 characters");
-			
-			//replace * => % for "LIKE" pattern
-			$tmp=str_replace("*","%",$tmp);	
+			# This param uses "*" wildcard instead of SQL's "%".
+			$tmp = str_replace("*", "%", str_replace("%", "%%", $tmp));	
 			$where_conds[] = "caches.name LIKE '".mysql_real_escape_string($tmp)."'";
 		}
 		
 		#
 		# limit
 		#
+		
 		$limit = $request->get_parameter('limit');
 		if ($limit == null) $limit = "100";
 		if (!is_numeric($limit))
@@ -297,58 +300,66 @@ class SearchAssistant
 			throw new InvalidParam('limit', "Has to be between 1 and 500.");
 		
 		#
-		# offset (default 0)
+		# offset
 		#
+		
 		$offset = $request->get_parameter('offset');
 		if ($offset == null) $offset = "0";
 		if (!is_numeric($offset))
 			throw new InvalidParam('offset', "'$offset'");
-		if ($limit < 0)
-			throw new InvalidParam('offset', "Cannot be negative.");
+		if ($offset < 0 || $offset > 499)
+			throw new InvalidParam('offset', "Has to be between 0 and 499.");
+		if ($offset + $limit > 500)
+			throw new BadRequest("The sum of offset and limit may not exceed 500.");
 		
-		
-		$ret_array = array(
-			'where_conds' => $where_conds,
-			'limit' => (int)$limit
-			'offset' => (int)$offset
-		);
-
 		#
 		# order_by (column name as in geocaches)
 		#
+		
+		$order_clauses = array();
 		$order_by = $request->get_parameter('order_by');
-		$order_cols_array = explode('|', $order_by);
-		$order_by_stmt_array[] = array();
-		foreach($order_cols_array as $column) 
+		if ($order_by != null)
 		{
-			$order_direction = 'ASC';
-			$order_column = $column;
-			if (strpos($column, '-')===0)
+			$order_by = explode('|', $order_by);
+			foreach ($order_by as $field) 
 			{
-				$order_direction = 'DESC';
-				$order_column = substr($column, 1);
+				$dir = 'asc';
+				if ($field[0] == '-')
+				{
+					$dir = 'desc';
+					$field = substr($field, 1);
+				}
+				elseif ($field[0] == '+')
+					$field = substr($field, 1); # ignore leading "+"
+				# WRCLEANIT: Tutaj by³o bez sensu. Nale¿y ka¿dy podany field mapowaæ na SQL,
+				# nie ka¿dy field odpowiada kolumnie w bazie danych. Ani nie po wszystkich fieldach
+				# da siê sortowaæ, a po niektórych pradopodobnie nie chcemy sortowaæ ze wzglêdu na
+				# optymalnoœæ. (Dopisa³em tylko parê przyk³adowych, sporo nadal mo¿na tu dodaæ.)
+				switch ($field)
+				{
+					case 'code': $cl = "caches.wp_oc"; break;
+					case 'name': $cl = "caches.name"; break;
+					case 'founds': $cl = "caches.founds"; break;
+					case 'rcmds': $cl = "caches.topratings"; break;
+					case 'rcmds%':
+						$cl = "caches.topratings / if(caches.founds = 0, 1, caches.founds)";
+						break;
+					default:
+						throw new InvalidParam('order_by', "Invalid field '$field'");
+				}
+				$order_clauses[] = "($cl) $dir";
 			}
-			elseif (strpos($column, '+')===0)
-			{
-				$order_direction = 'ASC';
-				$order_column = substr($column, 1);
-			}
-			
-			if (!in_array($order_column, array('code', 'name', 'names', 'location', 'type',
-				'status', 'url', 'owner', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
-				'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
-				'hints', 'images', 'attrnames', 'latest_logs', 'my_notes', 'trackables_count', 'trackables',
-				'alt_wpts', 'last_found', 'last_modified', 'date_created', 'date_hidden', 'internal_id', 'distance')))
-				throw new InvalidParam('order_by', "'$order_by'");
-				
-			$order_by_stmt_array[] = "$order_column $order_direction";
 		}
-		if ($order_by != null) 
-			$ret_array['order_by'] = implode(', ', $order_by_stmt_array);
 	
+		$ret_array = array(
+			'where_conds' => $where_conds,
+			'offset' => (int)$offset,
+			'limit' => (int)$limit,
+			'order_by' => $order_clauses,
+			'extra_tables' => array(),
+		);
+
 		return $ret_array;
-
-
 	}
 	
 	/**
@@ -362,7 +373,7 @@ class SearchAssistant
 	 *    to the rest of your SQL query,
 	 *  - extra_tables - list of additional tables to be joined within
 	 *    the query,
-	 *  - order_by - SQL formula to be used with ORDER BY clause,
+	 *  - order_by - list or SQL clauses to be used with ORDER BY,
 	 *  - limit - maximum number of cache codes to be returned.
 	 */
 	public static function get_common_search_result($options)
@@ -383,9 +394,8 @@ class SearchAssistant
 			select caches.wp_oc
 			from ".implode(", ", $tables)."
 			where ".implode(" and ", $where_conds)."
-			".((isset($options['order_by']))?"order by ".$options['order_by']:"")."
-			limit ".($options['limit'] + 1)."
-			offset ".($options['offset']).";
+			".((count($options['order_by']) > 0) ? "order by ".implode(", ", $options['order_by']) : "")."
+			limit ".($options['offset']).", ".($options['limit'] + 1).";
 		");
 		
 		if (count($cache_codes) > $options['limit'])

@@ -52,8 +52,7 @@ class WebService
 		# formula and combine it with the LIMIT clause to get the best results.
 		#
 		
-		# Using default OpenCaching SQL distance formula. (What's the third argument for?)
-		$distance_formula = \getSqlDistanceFormula($center_lon, $center_lat, null);
+		$distance_formula = Okapi::get_distance_sql($center_lat, $center_lon, "caches.latitude", "caches.longitude");
 		
 		# 'radius' parameter is optional. If not given, we'll have to calculate the
 		# distance for every cache in the database.
@@ -73,7 +72,7 @@ class WebService
 		$search_params = SearchAssistant::get_common_search_params($request);
 		$search_params['extra_tables'] = array();
 		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
-		$search_params['order_by'] = ($search_params['order_by']!=null?$search_params['order_by']:$distance_formula);
+		$search_params['order_by'][] = $distance_formula;
 		
 		$result = SearchAssistant::get_common_search_result($search_params);
 		if ($radius == null)

@@ -118,17 +118,21 @@
 		<p>Integer in range 1..500. Maximum number of caches codes returned.</p>
 	</opt>
 	<opt name='offset' default='0'>
-		<p>An offset, i.e. the record number to begin with. Used with limit allows easy pagination of results.</p>
+		<p>An offset, i.e. the record number to begin with. Used with limit allows easy pagination of results.
+		Please note, that offset+limit still cannot exceed 500. You may not use this method to list
+		all the caches.</p>
 	</opt>
 	<opt name='order_by' default='0'>
-		<p>Pipe separated field names used for sorting. You may use '+' plus sign (default) prefix to sort ascendingly or '-' minus sign prefix to sort descendingly.</p>
+		<p>Pipe separated field names used for sorting. You may use '+' plus sign (default) prefix to
+		sort ascendingly or '-' minus sign prefix to sort descendingly.</p>
 		<p><b>Examples:</b></p>
-		</ul>
+		<ul>
 			<li>to sort by cahce name ascendingly use "order_by=+name" or just "order_by=name"</li>
 			<li>to sort by cahce size descendingly use "order_by=-size"</li>
 			<li>multicolumn sort also allowed, ex: "order_by=name|-size|distance"</li>
 		</ul>
-		<p><b>Note:</b>It is highly recommended to avoid executing separate OKAPI request every time you want to sort the data which you already have. Consider sorting on a client side.</p>
+		<p><b>Note:</b>It is highly recommended to avoid executing separate OKAPI request every time you
+		want to sort the data which you already have. Consider caching and sorting on client side.</p>
 	</opt>
 	<common-format-params/>
 	<returns>
