@@ -189,12 +189,12 @@ method calls and redirects which provide you with an Access Token).</p>
 <ul>
 	<li>
 		<p>The <b>oauth_callback</b> argument of the <b>request_token</b> method is <b>required</b>.</p>
-		<p>As the OAuth 1.0a specification states, it should be set to "<i>oob</i>" or a callback
-		URL in case you have a web front-end for your application.</p>
+		<p>As the OAuth 1.0a specification states, it should be set to "<i>oob</i>" or a callback URL
+		(this usually starts with http:// or https://, but you can use any other myapp:// scheme).</p>
 		<p>For most OAuth client libraries, you just should provide
 		"<i><?= $vars['site_url'] ?>okapi/services/oauth/request_token?oauth_callback=oob</i>"
 		as the request_token URL, to get it started. Later, probably you'd want to switch "oob"
-		to something else.</p>
+		to something more useful.</p>
 	</li>
 	<li>
 		<p>The <b>oauth_verifier</b> argument of the <b>access_token</b> method is also <b>required</b>.</p>

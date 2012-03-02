@@ -10,7 +10,9 @@
 		<p>A dictionary of the following structure:</p>
 		<ul>
 			<li><b>cache_count</b> - approximate total number of geocaches stored at this site,</li>
-			<li><b>user_count</b> - approximate total number of users of this site.</li>
+			<li><b>user_count</b> - approximate total number of active users of this site,</li>
+			<li><b>apps_count</b> - approximate number of active OKAPI applications (the ones which issued
+				at least one, <b>non-anonymous</b> OKAPI request during the last month).</li>
 		</ul>
 	</returns>
 </xml>

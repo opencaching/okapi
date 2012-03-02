@@ -28,10 +28,10 @@ class WebService
 		if (!$result)
 		{
 			$result = array(
-				'cache_count' => Db::select_value("
+				'cache_count' => 0 + Db::select_value("
 					select count(*) from caches where status in (1,2,3)
 				"),
-				'user_count' => Db::select_value("
+				'user_count' => 0 + Db::select_value("
 					select count(*) from (
 						select distinct user_id
 						from cache_logs
@@ -41,6 +41,13 @@ class WebService
 						UNION DISTINCT
 						select distinct user_id
 						from caches
+					) as t;
+				"),
+				'apps_count' => 0 + Db::select_value("
+					select count(*) from (
+						select distinct consumer_key
+						from okapi_stats_hourly
+						where period_start >= date_add(now(), interval -30 day)
 					) as t;
 				"),
 			);
