@@ -78,7 +78,7 @@ class WebService
 		$search_params = SearchAssistant::get_common_search_params($request);
 		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
 		$search_params['order_by'][] = Okapi::get_distance_sql($center_lat, $center_lon,
-			"caches.latitude", "caches.longitude")); # not replaced; added to the end!
+			"caches.latitude", "caches.longitude"); # not replaced; added to the end!
 		
 		$result = SearchAssistant::get_common_search_result($search_params);
 		
