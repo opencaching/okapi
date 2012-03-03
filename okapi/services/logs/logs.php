@@ -24,6 +24,15 @@ class WebService
 	{
 		$cache_code = $request->get_parameter('cache_code');
 		if (!$cache_code) throw new ParamMissing('cache_code');
+		$offset = $request->get_parameter('offset');
+		if (!$offset) $offset = "0";
+		if ((((int)$offset) != $offset) || ((int)$offset) < 0)
+			throw new InvalidParam('offset', "Expecting non-negative integer.");
+		$limit = $request->get_parameter('limit');
+		if (!$limit) $limit = "none";
+		if ($limit == "none") $limit = "999999999";
+		if ((((int)$limit) != $limit) || ((int)$limit) < 0)
+			throw new InvalidParam('limit', "Expecting non-negative integer or 'none'.");
 		
 		# Check if code exists and retrieve cache ID (this will throw
 		# a proper exception on invalid code).
@@ -41,6 +50,7 @@ class WebService
 				and cl.deleted = 0
 				and cl.user_id = u.user_id
 			order by cl.date desc
+			limit $offset, $limit
 		");
 		$results = array();
 		while ($row = mysql_fetch_assoc($rs))
