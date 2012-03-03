@@ -52,8 +52,7 @@ class WebService
 		# formula and combine it with the LIMIT clause to get the best results.
 		#
 		
-		# Using default OpenCaching SQL distance formula. (What's the third argument for?)
-		$distance_formula = \getSqlDistanceFormula($center_lon, $center_lat, null);
+		$distance_formula = Okapi::get_distance_sql($center_lat, $center_lon, "caches.latitude", "caches.longitude");
 		
 		# 'radius' parameter is optional. If not given, we'll have to calculate the
 		# distance for every cache in the database.
@@ -70,14 +69,11 @@ class WebService
 			$where_conds[] = "$distance_formula <= '".mysql_real_escape_string($radius)."'";
 		}
 		
-		$other_search_params = SearchAssistant::get_common_search_params($request);
+		$search_params = SearchAssistant::get_common_search_params($request);
+		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
+		$search_params['order_by'][] = $distance_formula; # not replaced; added to the end!
 		
-		$result = SearchAssistant::get_common_search_result(array(
-			'extra_tables' => array(),
-			'where_conds' => array_merge($where_conds, $other_search_params['where_conds']),
-			'order_by' => $distance_formula,
-			'limit' => $other_search_params['limit']
-		));
+		$result = SearchAssistant::get_common_search_result($search_params);
 		if ($radius == null)
 		{
 			# 'more' is meaningless in this case, we'll remove it.

@@ -5,8 +5,8 @@
 		<p>This method is similar to the search/all method, but the results
 		are restricted to the caches situated within a given bounding box
 		(a rectangle on the map).</p>
-		<p>Results are sorted by the distance from the center of the bounding
-		box. This also means, that if you hit the limit of geocaches
+		<p>Unless overriden, results are ordered by the distance from the center of the bounding
+		box. This means, that if you hit the limit of geocaches
 		returned, you will receive the ones that are in the middle of your
 		box, and miss the ones on the edges.</p>
 	</desc>
