@@ -33,8 +33,16 @@ class WebService
 	public static function call(OkapiRequest $request)
 	{
 		$cache_codes = $request->get_parameter('cache_codes');
-		if (!$cache_codes) throw new ParamMissing('cache_codes');
-		$cache_codes = explode("|", $cache_codes);
+		if ($cache_codes === null) throw new ParamMissing('cache_codes');
+		if ($cache_codes === "")
+		{
+			# Issue 106 requires us to allow empty list of cache codes to be passed into this method.
+			# All of the queries below have to be ready for $cache_codes to be empty!
+			$cache_codes = array();
+		}
+		else
+			$cache_codes = explode("|", $cache_codes);
+		
 		if (count($cache_codes) > 500)
 			throw new InvalidParam('cache_codes', "Maximum allowed number of referenced ".
 				"caches is 500. You provided ".count($cache_codes)." cache codes.");
