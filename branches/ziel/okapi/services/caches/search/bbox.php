@@ -76,7 +76,6 @@ class WebService
 		$center_lon = ($bbwest + $bbeast) / 2.0; 
 		
 		$search_params = SearchAssistant::get_common_search_params($request);
-		$search_params['extra_tables'] = array();
 		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
 		$search_params['order_by'][] = Okapi::get_distance_sql($center_lat, $center_lon,
 			"caches.latitude", "caches.longitude")); # not replaced; added to the end!
