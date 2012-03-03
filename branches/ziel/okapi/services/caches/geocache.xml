@@ -57,25 +57,25 @@
 			</li>
 			<li>
 				<p><b>distance</b> - float, the distance to a cache, in meters.
-				This requires <b>current_location</b> parameter to be provided.</p>
+				This requires <b>my_location</b> parameter to be provided.</p>
 				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li>
 				<p><b>bearing</b> - float, the absolute bearing to the cache, measured in degrees from north,
-				<b>or null</b> if it cannot be calculated (i.e. when target's location equals the reference point).
-				This requires <b>current_location</b> parameter to be provided.</p>
+				<b>or null</b> if it cannot be calculated (i.e. when you are exactly at the target's location).
+				This requires <b>my_location</b> parameter to be provided.</p>
 				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li>
 				<p><b>bearing2</b> - string, the absolute bearing to the cache, represented as a typical direction
 				string of length of 1 or 2 characters (ex. "N", "NE", "E", "SE", etc.), or "n/a" if it cannot be calculated.
-				This requires <b>current_location</b> parameter to be provided.</p>
+				This requires <b>my_location</b> parameter to be provided.</p>
 				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li>
 				<p><b>bearing3</b> - string, the absolute bearing to the cache, represented as a typical directon
 				string of length of 1 or 2 or 3 characters (ex. "N", "NNE", "NE", "ENE", etc.), or "n/a" if it cannot be calculated.
-				This requires <b>current_location</b> parameter to be provided.</p>
+				This requires <b>my_location</b> parameter to be provided.</p>
 				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li><b>founds</b> - number of times the geocache was successfully found,</li>
@@ -187,7 +187,7 @@
 		This should be an integer or a special "all" value. Please note, that you must include
 		the <b>latest_logs</b> field in <b>fields</b> in order to see the log entries.
 	</opt>
-	<opt name='current_location'>
+	<opt name='my_location'>
 		<p>The reference point for cache distance and bearing calculation (typically - the user's location),
 		in the "lat|lon" format. This parameter is required when accessing <b>distance</b> and/or <b>bearing</b>
 		fields.</p>

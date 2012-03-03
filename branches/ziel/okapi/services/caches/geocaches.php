@@ -68,16 +68,16 @@ class WebService
 		if (in_array('distance', $fields) || in_array('bearing', $fields) || in_array('bearing2', $fields)
 			|| in_array('bearing3', $fields))
 		{
-			$tmp = $request->get_parameter('current_location');
+			$tmp = $request->get_parameter('my_location');
 			if (!$tmp)
-				throw new BadRequest("When using 'distance' or 'bearing' fields, you have to supply 'current_location' parameter.");
+				throw new BadRequest("When using 'distance' or 'bearing' fields, you have to supply 'my_location' parameter.");
 			$parts = explode('|', $tmp);
 			if (count($parts) != 2)
-				throw new InvalidParam('current_location', "Expecting 2 pipe-separated parts, got ".count($parts).".");
+				throw new InvalidParam('my_location', "Expecting 2 pipe-separated parts, got ".count($parts).".");
 			foreach ($parts as &$part_ref)
 			{
 				if (!preg_match("/^-?[0-9]+(\.?[0-9]*)$/", $part_ref))
-					throw new InvalidParam('current_location', "'$part_ref' is not a valid float number.");
+					throw new InvalidParam('my_location', "'$part_ref' is not a valid float number.");
 				$part_ref = floatval($part_ref);
 			}
 			list($center_lat, $center_lon) = $parts;

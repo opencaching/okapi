@@ -37,9 +37,9 @@ class WebService
 			'fields' => $fields,
 			'lpc' => $lpc
 		);
-		$current_location = $request->get_parameter('current_location');
-		if ($current_location)
-			$params['current_location'] = $current_location;
+		$my_location = $request->get_parameter('my_location');
+		if ($my_location)
+			$params['my_location'] = $my_location;
 		
 		# There's no need to validate the fields/lpc parameters as the 'geocaches'
 		# method does this (it will raise a proper exception on invalid values).
