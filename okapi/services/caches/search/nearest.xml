@@ -2,8 +2,8 @@
 	<brief>Search for nearest geocaches</brief>
 	<issue-id>17</issue-id>
 	<desc>
-		<p>Find the nearest geocaches. Results are sorted by the distance from
-		a given center point.</p>
+		<p>Find the nearest geocaches. Unless overriden, results are ordered by the distance from
+		the given center point.</p>
 	</desc>
 	<req name='center'>
 		<p>The center point (typically - the user's location), in the

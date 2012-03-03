@@ -31,13 +31,21 @@ class WebService
 		if (!$fields) $fields = "code|name|location|type|status";
 		$lpc = $request->get_parameter('lpc');
 		if (!$lpc) $lpc = 10;
+		$params = array(
+			'cache_codes' => $cache_code,
+			'langpref' => $langpref,
+			'fields' => $fields,
+			'lpc' => $lpc
+		);
+		$my_location = $request->get_parameter('my_location');
+		if ($my_location)
+			$params['my_location'] = $my_location;
 		
 		# There's no need to validate the fields/lpc parameters as the 'geocaches'
 		# method does this (it will raise a proper exception on invalid values).
 		
 		$results = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
-			$request->consumer, $request->token, array('cache_codes' => $cache_code,
-			'langpref' => $langpref, 'fields' => $fields, 'lpc' => $lpc)));
+			$request->consumer, $request->token, $params));
 		$result = $results[$cache_code];
 		if ($result == null)
 			throw new InvalidParam('cache_code', "This cache does not exist.");

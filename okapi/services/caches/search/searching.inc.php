@@ -8,6 +8,7 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiRequest;
 use okapi\InvalidParam;
+use okapi\BadRequest;
 use Exception;
 
 class SearchAssistant
@@ -20,7 +21,11 @@ class SearchAssistant
 	 * 
 	 *  - "where_conds" - list of additional WHERE conditions to be ANDed
 	 *    to the rest of your SQL query,
-	 *  - "limit" - value of the limit parameter.
+	 *  - "offset" - value of the offset parameter to be used in the LIMIT clause,
+	 *  - "limit" - value of the limit parameter to be used in the LIMIT clause,
+	 *  - "order_by" - list of order by clauses to be included in the "order by"
+	 *    SQL clause,
+	 *  - "extra_tables" - extra tables to be included in the FROM clause.
 	 */
 	public static function get_common_search_params(OkapiRequest $request)
 	{
@@ -275,20 +280,18 @@ class SearchAssistant
 		#
 		
 		if ($tmp = $request->get_parameter('name'))
-		{
-				
-			//max length = 100	
-			if (strlen($tmp)>100)
+		{	
+			if (strlen($tmp) > 100)
 				throw new InvalidParam('name', "Maximum length of 'name' parameter is 100 characters");
-			
-			//replace * => % for "LIKE" pattern
-			$tmp=str_replace("*","%",$tmp);	
+			# This param uses "*" wildcard instead of SQL's "%".
+			$tmp = str_replace("*", "%", str_replace("%", "%%", $tmp));	
 			$where_conds[] = "caches.name LIKE '".mysql_real_escape_string($tmp)."'";
 		}
 		
 		#
 		# limit
 		#
+		
 		$limit = $request->get_parameter('limit');
 		if ($limit == null) $limit = "100";
 		if (!is_numeric($limit))
@@ -296,10 +299,63 @@ class SearchAssistant
 		if ($limit < 1 || $limit > 500)
 			throw new InvalidParam('limit', "Has to be between 1 and 500.");
 		
-		return array(
+		#
+		# offset
+		#
+		
+		$offset = $request->get_parameter('offset');
+		if ($offset == null) $offset = "0";
+		if (!is_numeric($offset))
+			throw new InvalidParam('offset', "'$offset'");
+		if ($offset + $limit > 500)
+			throw new BadRequest("The sum of offset and limit may not exceed 500.");
+		if ($offset < 0 || $offset > 499)
+			throw new InvalidParam('offset', "Has to be between 0 and 499.");
+		
+		#
+		# order_by
+		#
+		
+		$order_clauses = array();
+		$order_by = $request->get_parameter('order_by');
+		if ($order_by != null)
+		{
+			$order_by = explode('|', $order_by);
+			foreach ($order_by as $field) 
+			{
+				$dir = 'asc';
+				if ($field[0] == '-')
+				{
+					$dir = 'desc';
+					$field = substr($field, 1);
+				}
+				elseif ($field[0] == '+')
+					$field = substr($field, 1); # ignore leading "+"
+				switch ($field)
+				{
+					case 'code': $cl = "caches.wp_oc"; break;
+					case 'name': $cl = "caches.name"; break;
+					case 'founds': $cl = "caches.founds"; break;
+					case 'rcmds': $cl = "caches.topratings"; break;
+					case 'rcmds%':
+						$cl = "caches.topratings / if(caches.founds = 0, 1, caches.founds)";
+						break;
+					default:
+						throw new InvalidParam('order_by', "Unsupported field '$field'");
+				}
+				$order_clauses[] = "($cl) $dir";
+			}
+		}
+	
+		$ret_array = array(
 			'where_conds' => $where_conds,
-			'limit' => (int)$limit
+			'offset' => (int)$offset,
+			'limit' => (int)$limit,
+			'order_by' => $order_clauses,
+			'extra_tables' => array(),
 		);
+
+		return $ret_array;
 	}
 	
 	/**
@@ -313,7 +369,7 @@ class SearchAssistant
 	 *    to the rest of your SQL query,
 	 *  - extra_tables - list of additional tables to be joined within
 	 *    the query,
-	 *  - order_by - SQL formula to be used with ORDER BY clause,
+	 *  - order_by - list or SQL clauses to be used with ORDER BY,
 	 *  - limit - maximum number of cache codes to be returned.
 	 */
 	public static function get_common_search_result($options)
@@ -334,8 +390,8 @@ class SearchAssistant
 			select caches.wp_oc
 			from ".implode(", ", $tables)."
 			where ".implode(" and ", $where_conds)."
-			".((isset($options['order_by']))?"order by ".$options['order_by']:"")."
-			limit ".($options['limit'] + 1).";
+			".((count($options['order_by']) > 0) ? "order by ".implode(", ", $options['order_by']) : "")."
+			limit ".($options['offset']).", ".($options['limit'] + 1).";
 		");
 		
 		if (count($cache_codes) > $options['limit'])
