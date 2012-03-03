@@ -69,19 +69,16 @@ class WebService
 		}
 		
 		# Run retrieval method
-		if (count($search_result['results'])>0)
-		{
 		try
 		{
 			$retr_result = OkapiServiceRunner::call($retr_method, new OkapiInternalRequest(
-			$request->consumer, $request->token, array_merge($retr_params,
-			array('cache_codes' => implode("|", $search_result['results'])))));
-			}
-				catch (BadRequest $e)
-			{
-				throw new InvalidParam('retr_params', "Retrieval method responded with the ".
+				$request->consumer, $request->token, array_merge($retr_params,
+				array('cache_codes' => implode("|", $search_result['results'])))));
+		}
+		catch (BadRequest $e)
+		{
+			throw new InvalidParam('retr_params', "Retrieval method responded with the ".
 				"following error message: ".$e->getMessage());
-			}
 		}
 		
 		if ($wrap)

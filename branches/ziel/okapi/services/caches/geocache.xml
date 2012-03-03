@@ -65,9 +65,9 @@
 				</ul>
 			</li>
 			<li>
-				<p><b>distance</b> - the distance from a cache, in meters. This requires "current_location"
+				<p><b>distance</b> - float, the distance to a cache, in meters. This requires "current_location"
 				param to be provided.</p>
-				<p>It is recommended that you compute this field yourself, on client-side, instead of quering OKAPI.</p>
+				<p>Please note, that sometimes it is faster to compute the distance yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li><b>founds</b> - number of times the geocache was successfully found,</li>
 			<li><b>notfounds</b> - number of times the geocache was not found,</li>

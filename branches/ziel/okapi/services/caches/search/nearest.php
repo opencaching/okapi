@@ -70,9 +70,8 @@ class WebService
 		}
 		
 		$search_params = SearchAssistant::get_common_search_params($request);
-		$search_params['extra_tables'] = array();
 		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
-		$search_params['order_by'][] = $distance_formula;
+		$search_params['order_by'][] = $distance_formula; # not replaced; added to the end!
 		
 		$result = SearchAssistant::get_common_search_result($search_params);
 		if ($radius == null)

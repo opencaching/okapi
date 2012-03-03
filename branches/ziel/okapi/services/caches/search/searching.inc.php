@@ -21,8 +21,8 @@ class SearchAssistant
 	 * 
 	 *  - "where_conds" - list of additional WHERE conditions to be ANDed
 	 *    to the rest of your SQL query,
-	 *  - "offset" - value of the offset parameter,
-	 *  - "limit" - value of the limit parameter,
+	 *  - "offset" - value of the offset parameter to be used in the LIMIT clause,
+	 *  - "limit" - value of the limit parameter to be used in the LIMIT clause,
 	 *  - "order_by" - list of order by clauses to be included in the "order by"
 	 *    SQL clause,
 	 *  - "extra_tables" - extra tables to be included in the FROM clause.
@@ -307,13 +307,13 @@ class SearchAssistant
 		if ($offset == null) $offset = "0";
 		if (!is_numeric($offset))
 			throw new InvalidParam('offset', "'$offset'");
-		if ($offset < 0 || $offset > 499)
-			throw new InvalidParam('offset', "Has to be between 0 and 499.");
 		if ($offset + $limit > 500)
 			throw new BadRequest("The sum of offset and limit may not exceed 500.");
+		if ($offset < 0 || $offset > 499)
+			throw new InvalidParam('offset', "Has to be between 0 and 499.");
 		
 		#
-		# order_by (column name as in geocaches)
+		# order_by
 		#
 		
 		$order_clauses = array();
@@ -331,10 +331,6 @@ class SearchAssistant
 				}
 				elseif ($field[0] == '+')
 					$field = substr($field, 1); # ignore leading "+"
-				# WRCLEANIT: Tutaj by³o bez sensu. Nale¿y ka¿dy podany field mapowaæ na SQL,
-				# nie ka¿dy field odpowiada kolumnie w bazie danych. Ani nie po wszystkich fieldach
-				# da siê sortowaæ, a po niektórych pradopodobnie nie chcemy sortowaæ ze wzglêdu na
-				# optymalnoœæ. (Dopisa³em tylko parê przyk³adowych, sporo nadal mo¿na tu dodaæ.)
 				switch ($field)
 				{
 					case 'code': $cl = "caches.wp_oc"; break;
@@ -345,7 +341,7 @@ class SearchAssistant
 						$cl = "caches.topratings / if(caches.founds = 0, 1, caches.founds)";
 						break;
 					default:
-						throw new InvalidParam('order_by', "Invalid field '$field'");
+						throw new InvalidParam('order_by', "Unsupported field '$field'");
 				}
 				$order_clauses[] = "($cl) $dir";
 			}

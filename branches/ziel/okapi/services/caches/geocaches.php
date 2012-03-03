@@ -96,6 +96,7 @@ class WebService
 					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
 					c.terrain, c.wp_oc, c.logpw, u.uuid as user_uuid, u.username, u.user_id,
+					
 					ifnull(sc.toprating, 0) as topratings,
 					ifnull(sc.found, 0) as founds,
 					ifnull(sc.notfound, 0) as notfounds,
@@ -121,6 +122,7 @@ class WebService
 					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
 					c.terrain, c.wp_oc, c.logpw, u.uuid as user_uuid, u.username, u.user_id,
+					
 					c.topratings,
 					c.founds,
 					c.notfounds,
@@ -195,7 +197,6 @@ class WebService
 					case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
 					case 'date_hidden': $entry['date_hidden'] = date('c', strtotime($row['date_hidden'])); break;
 					case 'internal_id': $entry['internal_id'] = $row['cache_id']; break;
-					case 'distance': $entry['distance'] = $row['distance']; break;
 					default: throw new Exception("Missing field case: ".$field);
 				}
 			}
