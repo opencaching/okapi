@@ -24,7 +24,8 @@
 	<req name='cache_codes'>
 		<p>Pipe-separated list of cache codes which you are interested in.
 		No more than 50 codes are allowed. (This limit is smaller than usual, because
-		we're afraid about the sizes of ZIP files produced.)</p>
+		we're afraid about the sizes of ZIP files produced.)
+		This CAN be an empty string (it will still result in a valid ZIP file).</p>
 	</req>
 	<opt name='langpref' default='en'>
 		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
