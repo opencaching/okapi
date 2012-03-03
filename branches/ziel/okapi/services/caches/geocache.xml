@@ -5,15 +5,6 @@
 		<p>Retrieve information on a single geocache.</p>
 	</desc>
 	<req name='cache_code'>Unique code of the geocache</req>
-	<opt name='current_location'>
-		<p>The reference point for cache distance calculation (typically - the user's location), in the
-		"lat|lon" format.</p>
-		<p>Use positive numbers for latitudes in the northern hemisphere and
-		longitudes in the eastern hemisphere (and negative for southern and
-		western hemispheres accordingly). These are full degrees with a dot
-		as a decimal point (ex. "54.3|22.3").</p>
-		<p><b>Note:</b> If "fields" param contains <b>distance</b> field, the "current_location" is required.</p>
-	</opt>
 	<opt name='langpref' default='en'>
 		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
 		order of preference in which language will be chosen for fields like
@@ -65,9 +56,27 @@
 				</ul>
 			</li>
 			<li>
-				<p><b>distance</b> - float, the distance to a cache, in meters. This requires "current_location"
-				param to be provided.</p>
-				<p>Please note, that sometimes it is faster to compute the distance yourself, on client-side, instead of quering OKAPI.</p>
+				<p><b>distance</b> - float, the distance to a cache, in meters.
+				This requires <b>current_location</b> parameter to be provided.</p>
+				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
+			</li>
+			<li>
+				<p><b>bearing</b> - float, the absolute bearing to the cache, measured in degrees from north,
+				<b>or null</b> if it cannot be calculated (i.e. when target's location equals the reference point).
+				This requires <b>current_location</b> parameter to be provided.</p>
+				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
+			</li>
+			<li>
+				<p><b>bearing2</b> - string, the absolute bearing to the cache, represented as a typical direction
+				string of length of 1 or 2 characters (ex. "N", "NE", "E", "SE", etc.), or "n/a" if it cannot be calculated.
+				This requires <b>current_location</b> parameter to be provided.</p>
+				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
+			</li>
+			<li>
+				<p><b>bearing3</b> - string, the absolute bearing to the cache, represented as a typical directon
+				string of length of 1 or 2 or 3 characters (ex. "N", "NNE", "NE", "ENE", etc.), or "n/a" if it cannot be calculated.
+				This requires <b>current_location</b> parameter to be provided.</p>
+				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li><b>founds</b> - number of times the geocache was successfully found,</li>
 			<li><b>notfounds</b> - number of times the geocache was not found,</li>
@@ -177,6 +186,15 @@
 		Log-entries per cache - the number of logs returned in the <b>latest_logs</b> field.
 		This should be an integer or a special "all" value. Please note, that you must include
 		the <b>latest_logs</b> field in <b>fields</b> in order to see the log entries.
+	</opt>
+	<opt name='current_location'>
+		<p>The reference point for cache distance and bearing calculation (typically - the user's location),
+		in the "lat|lon" format. This parameter is required when accessing <b>distance</b> and/or <b>bearing</b>
+		fields.</p>
+		<p>Use positive numbers for latitudes in the northern hemisphere and
+		longitudes in the eastern hemisphere (and negative for southern and
+		western hemispheres accordingly). These are full degrees with a dot
+		as a decimal point (ex. "54.3|22.3").</p>
 	</opt>
 	<common-format-params/>
 	<returns>

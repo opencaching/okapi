@@ -25,10 +25,11 @@ class WebService
 	}
 	
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
-		'status', 'url', 'owner', 'distance', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
-		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description', 'descriptions', 'hint',
-		'hints', 'images', 'attrnames', 'latest_logs', 'my_notes', 'trackables_count', 'trackables',
-		'alt_wpts', 'last_found', 'last_modified', 'date_created', 'date_hidden', 'internal_id');
+		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'founds',
+		'notfounds', 'size', 'difficulty', 'terrain', 'rating', 'rating_votes', 'recommendations',
+		'req_passwd', 'description', 'descriptions', 'hint', 'hints', 'images', 'attrnames',
+		'latest_logs', 'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
+		'last_modified', 'date_created', 'date_hidden', 'internal_id');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -64,11 +65,12 @@ class WebService
 				throw new InvalidParam('lpc', "Must be a positive value.");
 		}
 
-		if (in_array('distance', $fields))
+		if (in_array('distance', $fields) || in_array('bearing', $fields) || in_array('bearing2', $fields)
+			|| in_array('bearing3', $fields))
 		{
 			$tmp = $request->get_parameter('current_location');
 			if (!$tmp)
-				throw new BadRequest("When using 'distance' field, you have to supply 'current_location' parameter.");
+				throw new BadRequest("When using 'distance' or 'bearing' fields, you have to supply 'current_location' parameter.");
 			$parts = explode('|', $tmp);
 			if (count($parts) != 2)
 				throw new InvalidParam('current_location', "Expecting 2 pipe-separated parts, got ".count($parts).".");
@@ -164,6 +166,17 @@ class WebService
 						break;
 					case 'distance':
 						$entry['distance'] = (int)Okapi::get_distance($center_lat, $center_lon, $row['latitude'], $row['longitude']);
+						break;
+					case 'bearing':
+						$entry['bearing'] = ((int)(10*Okapi::get_bearing($center_lat, $center_lon, $row['latitude'], $row['longitude']))) / 10.0;
+						break;
+					case 'bearing2':
+						$tmp = Okapi::get_bearing($center_lat, $center_lon, $row['latitude'], $row['longitude']);
+						$entry['bearing2'] = Okapi::bearing_as_two_letters($tmp);
+						break;
+					case 'bearing3':
+						$tmp = Okapi::get_bearing($center_lat, $center_lon, $row['latitude'], $row['longitude']);
+						$entry['bearing3'] = Okapi::bearing_as_three_letters($tmp);
 						break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;

@@ -734,10 +734,10 @@ class Okapi
 		if ($lat1 == $lat2) $lat1 += 0.0000166;
 		if ($lon1 == $lon2) $lon1 += 0.0000166;
 		
-		$rad_lat1 = $lat1 / 180.0 * $pi;
-		$rad_lon1 = $lon1 / 180.0 * $pi;
-		$rad_lat2 = $lat2 / 180.0 * $pi;
-		$rad_lon2 = $lon2 / 180.0 * $pi;
+		$rad_lat1 = $lat1 / 180.0 * 3.14159;
+		$rad_lon1 = $lon1 / 180.0 * 3.14159;
+		$rad_lat2 = $lat2 / 180.0 * 3.14159;
+		$rad_lon2 = $lon2 / 180.0 * 3.14159;
 
 		$delta_lon = $rad_lon2 - $rad_lon1;
 		$bearing = atan2(sin($delta_lon) * cos($rad_lat2),
@@ -748,27 +748,21 @@ class Okapi
 		return $bearing;
 	}
 
-	/** Transform bearing (float 0..360) to simple text string (N, SSE, itp.) */
-	function bearing_as_text($b)
+	/** Transform bearing (float 0..360) to simple 2-letter string (N, NE, E, SE, etc.) */
+	function bearing_as_two_letters($b)
 	{
-		if ($b == null) return 'n/a';
-		elseif (($b < 11.25) || ($b >= 348.75)) return 'N';
-		elseif ($b < 33.75) return 'NNE';
-		elseif ($b < 56.25) return 'NE';
-		elseif ($b < 78.75) return 'ENE';
-		elseif ($b < 101.25) return 'E';
-		elseif ($b < 123.75) return 'ESE';
-		elseif ($b < 146.25) return 'SE';
-		elseif ($b < 168.75) return 'SSE';
-		elseif ($b < 191.25) return 'S';
-		elseif ($b < 213.75) return 'SSW';
-		elseif ($b < 236.25) return 'SW';
-		elseif ($b < 258.75) return 'WSW';
-		elseif ($b < 281.25) return 'W';
-		elseif ($b < 303.75) return 'WNW';
-		elseif ($b < 326.25) return 'NW';
-		elseif ($b < 348.75) return 'NNW';
-		else throw new Exception();
+		static $names = array('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW');
+		if ($b === null) return 'n/a';
+		return $names[round(($b / 360.0) * 8.0) % 8];
+	}
+	
+	/** Transform bearing (float 0..360) to simple 3-letter string (N, NNE, NE, ESE, etc.) */
+	function bearing_as_three_letters($b)
+	{
+		static $names = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
+			'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW');
+		if ($b === null) return 'n/a';
+		return $names[round(($b / 360.0) * 16.0) % 16];
 	}
 	
 	/** Escape string for use with XML. */
