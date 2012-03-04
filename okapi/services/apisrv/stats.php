@@ -43,7 +43,8 @@ class WebService
 						from caches
 					) as t;
 				"),
-				'apps_count' => 0 + Db::select_value("
+				'apps_count' => 0 + Db::select_value("select count(*) from okapi_consumers;"),
+				'apps_active' => 0 + Db::select_value("
 					select count(*) from (
 						select distinct consumer_key
 						from okapi_stats_hourly
