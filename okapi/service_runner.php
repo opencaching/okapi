@@ -34,6 +34,8 @@ class OkapiServiceRunner
 		'services/caches/geocaches',
 		'services/caches/formatters/gpx',
 		'services/caches/formatters/garmin',
+		'services/logs/entries',
+		'services/logs/entry',
 		'services/logs/logs',
 		'services/logs/userlogs',
 		'services/logs/submit',
@@ -42,7 +44,7 @@ class OkapiServiceRunner
 		'services/users/by_usernames',
 		'services/users/by_username',
 		'services/users/by_internal_id',
-		'services/users/by_internal_ids'
+		'services/users/by_internal_ids',
 	);
 	
 	/** Check if method exists. */

@@ -10,6 +10,11 @@
 	<req name='cache_code'>
 		<p>Code of the geocache.</p>
 	</req>
+	<opt name='fields' default='uuid|date|user|type|comment'>
+		<p>Same as in the services/logs/entry method. Pipe-separated list
+		of field names which you are interested with.
+		See services/logs/entry method for a list of available values.</p>
+	</opt>
 	<opt name='offset' default='0'>
 		<p>Number of entries to skip at the beginning. Use this along the <b>limit</b> parameter
 		for pagination.</p>
@@ -20,24 +25,7 @@
 	</opt>
 	<common-format-params/>
 	<returns>
-		<p>Log entries. A dictionary of the following format:</p>
-		<ul>
-			<li><b>uuid</b> - ID of the log entry,</li>
-			<li><b>date</b> - date and time (ISO 8601) when the log entry was submitted,</li>
-			<li>
-				<p><b>user</b> - a dictionary:</p>
-				<ul>
-					<li><b>uuid</b> - ID of the user (author of the log entry),</li>
-					<li><b>username</b> - name of the user (who submitted the log entry),</li>
-					<li><b>profile_url</b> - URL of the profile page of the user,</li>
-				</ul>
-			</li>
-			<li>
-				<p><b>type</b> - string; log type. This could be <b>pretty much everything</b>, but
-				there are three primary types: "Found it", "Didn't find it" or "Comment".
-				You may treat every other string as "Comment".</p>
-			</li>
-			<li><b>comment</b> - HTML string, text entered with the log entry.</li>
-		</ul>
+		<p>A list of log entries, ordered by date. Each log entry is a dictionary of a format
+		described in the "entry" method.</p>
 	</returns>
 </xml>

@@ -3,9 +3,7 @@
 namespace okapi\services\caches\geocache;
 
 use okapi\OkapiInternalRequest;
-
 use okapi\OkapiServiceRunner;
-
 use okapi\Okapi;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
