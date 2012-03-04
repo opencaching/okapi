@@ -88,7 +88,7 @@ class View
 		
 		self::out("\nUpdate complete.");
 	}
-
+	
 	private static function ver1()
 	{
 		Db::execute("
@@ -227,7 +227,7 @@ class View
 			) ENGINE=MEMORY DEFAULT CHARSET=utf8
 		");
 	}
-
+	
 	private static function ver32()
 	{
 		Db::execute("
@@ -243,5 +243,14 @@ class View
 				PRIMARY KEY (`consumer_key`,`user_id`,`period_start`,`service_name`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8
 		");
+	}
+	
+	private static function ver33()
+	{
+		$spec = Db::select_value("show create table cache_logs");
+		$key_exists = (strpos($spec, "(`uuid`") !== false);
+		if ($key_exists)
+			return;
+		Db::execute("alter table cache_logs add key `uuid` (`uuid`)");
 	}
 }
