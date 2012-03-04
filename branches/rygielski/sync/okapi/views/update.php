@@ -253,4 +253,15 @@ class View
 			return;
 		Db::execute("alter table cache_logs add key `uuid` (`uuid`)");
 	}
+	
+	private static function ver34()
+	{
+		Db::execute("
+			CREATE TABLE `okapi_clog` (
+				id int(10) not null auto_increment,
+				data blob default null,
+				PRIMARY KEY (id)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8
+		");
+	}
 }

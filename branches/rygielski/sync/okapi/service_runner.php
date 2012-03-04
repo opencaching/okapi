@@ -45,6 +45,7 @@ class OkapiServiceRunner
 		'services/users/by_username',
 		'services/users/by_internal_id',
 		'services/users/by_internal_ids',
+		'services/dbsync/changelog',
 	);
 	
 	/** Check if method exists. */
