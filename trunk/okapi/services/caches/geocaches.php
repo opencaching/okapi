@@ -224,10 +224,6 @@ class WebService
 			$results[$row['wp_oc']] = $entry;
 		}
 		mysql_free_result($rs);
-		if (count($cache_codes) != count($results))
-		{
-			throw new InvalidParam('cache_codes', "Some of the referenced caches could not be found.");
-		}
 		
 		# Descriptions and hints.
 		

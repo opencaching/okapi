@@ -15,7 +15,8 @@
 	<req name='cache_codes'>
 		<p>Pipe-separated list of cache codes which you are interested in.
 		No more than 500 codes are allowed. This CAN be an empty string (it will
-		result in an empty, but valid, GPX file)</p>
+		result in an empty, but valid, GPX file). All invalid cache codes will
+		be skipped without any notice!</p>
 	</req>
 	<opt name='langpref' default='en'>
 		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
@@ -120,6 +121,6 @@
 		properly understand GSAK metadata.</p>
 	</opt>
 	<returns>
-		<p>GPX file.</p>
+		<p>GPX file. All invalid cache codes will be skipped without any notice!</p>
 	</returns>
 </xml>
