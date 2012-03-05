@@ -28,6 +28,28 @@ class SyncCommon
 		return Okapi::get_var('clog_revision', 0);
 	}
 	
+	/**
+	 * Compare two dictionaries. Return the $new dictionary with all unchanged
+	 * keys removed. Only the changed ones will remain.
+	 */
+	private static function get_diff($old, $new)
+	{
+		if ($old === null)
+			return $new;
+		$changed_keys = array();
+		foreach ($new as $key => $value)
+		{
+			if (!array_key_exists($key, $old))
+				$changed_keys[] = $key;
+			elseif ($old[$key] != $new[$key])
+				$changed_keys[] = $key;
+		}
+		$changed = array();
+		foreach ($changed_keys as $key)
+			$changed[$key] = $new[$key];
+		return $changed;
+	}
+	
 	/** Check for modifications in the database and update the changelog table accordingly. */
 	public static function update_clog_table($last_update)
 	{
@@ -44,6 +66,7 @@ class SyncCommon
 		");
 		foreach ($modified_caches as $cache_code)
 		{
+			$cache_key = 'clog_cache#'.$cache_code;
 			try
 			{
 				$cache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
@@ -53,11 +76,12 @@ class SyncCommon
 					'object_type' => 'geocache',
 					'object_key' => array('code' => $cache_code),
 					'change_type' => 'replace',
-					'data' => $cache,
+					'data' => self::get_diff(Cache::get($cache_key), $cache),
 				);
 			}
 			catch (DoesNotExist $e)
 			{
+				$cache = null;
 				$entry = array(
 					'object_type' => 'geocache',
 					'object_key' => array('code' => $cache_code),
@@ -68,6 +92,10 @@ class SyncCommon
 				insert into okapi_clog (data)
 				values ('".mysql_real_escape_string(gzdeflate(serialize($entry)))."');
 			");
+			if ($cache)
+				Cache::set($cache_key, $cache, 30 * 86400);
+			else
+				Cache::delete($cache_key);
 		}
 		$modified_log_entries = Db::select_column("
 			select uuid
