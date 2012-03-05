@@ -772,9 +772,11 @@ class Okapi
 	}
 	
 	/**
-	 * Print out the standard OKAPI response. The $object will be printed
+	 * Return object as a standard OKAPI response. The $object will be formatted
 	 * using one of the default formatters (JSON, JSONP, XML, etc.). Formatter is
-	 * auto-detected by peeking on the $request 'format' parameter.
+	 * auto-detected by peeking on the $request's 'format' parameter. In some
+	 * specific cases, this method can also return the $object itself, instead
+	 * of OkapiResponse - this allows nesting methods within other methods.
 	 */
 	public static function formatted_response(OkapiRequest $request, &$object)
 	{
