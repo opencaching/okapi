@@ -536,6 +536,17 @@ class Okapi
 		self::$okapi_vars[$varname] = $value;
 	}
 	
+	/** Send an email message to local OKAPI administrators. */
+	public static function mail_admins($subject, $message)
+	{
+		$admin_email = isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost';
+		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
+		mail($admin_email, $subject, $message,
+			"Content-Type: text/plain; charset=utf-8\n".
+			"From: OKAPI <$sender_email>\n".
+			"Reply-To: $sender_email\n"
+			);
+	}
 	
 	/** Returns something like "OpenCaching.PL" or "OpenCaching.DE". */
 	public static function get_normalized_site_name($site_url = null)
@@ -573,16 +584,33 @@ class Okapi
 	}
 	
 	/**
-	 * Check if any cronjobs are scheduled to execute and execute them if needed.
-	 * Reschedule for new executions.
+	 * Check if any pre-request cronjobs are scheduled to execute and execute
+	 * them if needed. Reschedule for new executions.
 	 */
-	public static function execute_cronjobs()
+	public static function execute_prerequest_cronjobs()
 	{
 		$nearest_event = Okapi::get_var("cron_nearest_event");
 		if ($nearest_event + 0 <= time())
 		{
 			require_once 'cronjobs.php';
-			$nearest_event = CronJobController::run();
+			$nearest_event = CronJobController::run_jobs('pre-request');
+			Okapi::set_var("cron_nearest_event", $nearest_event);
+		}
+	}
+	
+	/**
+	 * Check if any cron-5 cronjobs are scheduled to execute and execute
+	 * them if needed. Reschedule for new executions.
+	 */
+	public static function execute_cron5_cronjobs()
+	{
+		$nearest_event = Okapi::get_var("cron_nearest_event");
+		if ($nearest_event + 0 <= time())
+		{
+			set_time_limit(0);
+			ignore_user_abort(true); 
+			require_once 'cronjobs.php';
+			$nearest_event = CronJobController::run_jobs('cron-5');
 			Okapi::set_var("cron_nearest_event", $nearest_event);
 		}
 	}
@@ -625,7 +653,7 @@ class Okapi
 			self::$data_store = new OkapiDataStore();
 		if (!self::$server)
 			self::$server = new OkapiOAuthServer(self::$data_store);
-		self::execute_cronjobs();
+		self::execute_prerequest_cronjobs();
 		$init_made = true;
 	}
 	

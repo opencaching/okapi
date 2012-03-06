@@ -82,9 +82,10 @@ class View
 		}
 		
 		self::out("Registering new cronjobs...\n");
-		# Force execute_cronjobs to validate all cronjobs (some might have been added).
+		# Validate all cronjobs (some might have been added).
 		Okapi::set_var("cron_nearest_event", 0);
-		Okapi::execute_cronjobs();
+		Okapi::execute_prerequest_cronjobs();
+		Okapi::execute_cron5_cronjobs();
 		
 		self::out("\nUpdate complete.");
 	}
@@ -263,5 +264,20 @@ class View
 				PRIMARY KEY (id)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8
 		");
+	}
+	
+	private static function ver35()
+	{
+		# Inform the admin about the new cronjobs.
+		Okapi::mail_admins(
+			"Additional setup needed: cronjobs support",
+			"Hello there, you've just updated OKAPI on your server. Thanks!\n\n".
+			"We need you to do one more thing. This version of OKAPI requires\n".
+			"additional crontab entry. Please add the following line to your crontab:\n\n".
+			"*/5 * * * * wget -O - -q -t 1 ".$GLOBALS['absolute_server_URI']."okapi/cron5\n\n".
+			"This is required for OKAPI to function properly from now on.\n\n".
+			"-- \n".
+			"Thanks, OKAPI developers."
+		);
 	}
 }

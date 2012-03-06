@@ -21,6 +21,7 @@ class OkapiUrls
 		'^apps/authorized$' => 'apps/authorized',
 		'^apps/revoke_access$' => 'apps/revoke_access',
 		'^update/?$' => 'update',
+		'^cron5$' => 'cron5',
 		'^attrlist$' => 'attrlist',
 	);
 }
