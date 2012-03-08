@@ -20,19 +20,11 @@ use okapi\OkapiInternalRequest;
  */
 class View
 {
-	public static function out($str)
-	{
-		print $str;
-		ob_flush();
-		flush();
-	}
-
 	public static function call()
 	{
 		ignore_user_abort(true);
 		set_time_limit(0);
 		header("Content-Type: text/plain; charset=utf-8");
 		Okapi::execute_cron5_cronjobs();
-		self::out("Done.");
 	}
 }

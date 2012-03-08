@@ -606,6 +606,21 @@ class Okapi
 	}
 	
 	/**
+	 * Split the array into groups of max. $size items.
+	 */
+	public static function make_groups($array, $size)
+	{
+		$i = 0;
+		$groups = array();
+		while ($i < count($array))
+		{
+			$groups[] = array_slice($array, $i, $size);
+			$i += $size;
+		}
+		return $groups;
+	}
+	
+	/**
 	 * Check if any pre-request cronjobs are scheduled to execute and execute
 	 * them if needed. Reschedule for new executions.
 	 */

@@ -32,11 +32,6 @@ class WebService
 		if ($since === null) throw new ParamMissing('since');
 		if ((int)$since != $since) throw new InvalidParam('since');
 		
-		# First we have to update the changelog. Usually it will be pretty up-to-date, since it is
-		# being updated by a cronjob too, this operation should be quick then.
-		
-		SyncCommon::update_clog_table();
-		
 		# Let's check the $since parameter.
 		
 		if (!SyncCommon::check_since_param($since))

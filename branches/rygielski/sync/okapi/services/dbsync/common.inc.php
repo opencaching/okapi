@@ -55,10 +55,15 @@ class SyncCommon
 	{
 		$now = Db::select_value("select unix_timestamp(now())");
 		
-		# Skip the update, if it was already done during the last 60 seconds.
+		# Skip the update, if it was already done during the last 60 seconds
+		# OR if it is BEING done right now.
 		
 		$last_update = Okapi::get_var('last_clog_update', $now - 86400) + 0;
 		if ($now - $last_update < 60)
+			return;
+		
+		$lock = Db::select_value("select get_lock('okapi_changelog_update', 0)");
+		if (!$lock)
 			return;
 		
 		# Usually this will be fast. But, for example, if admin changes ALL the
@@ -67,83 +72,131 @@ class SyncCommon
 		
 		set_time_limit(0);
 		ignore_user_abort(true); 
-			
-		$lock = Db::select_value("select get_lock('okapi_changelog_update', 10)");
-		if (!$lock)
-			throw new Exception("Could not obtain a lock");
-
+		
 		require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
 		
-		$modified_caches = Db::select_column("
+		# Get the list of modified cache codes. Split it into groups of N cache codes.
+		
+		$cache_codes = Db::select_column("
 			select wp_oc
 			from caches
 			where last_modified > from_unixtime('".mysql_real_escape_string($last_update)."');
 		");
-		foreach ($modified_caches as $cache_code)
+		$cache_code_groups = Okapi::make_groups($cache_codes, 50);
+		unset($cache_codes);
+		
+		foreach ($cache_code_groups as $cache_codes)
 		{
-			$cache_key = 'clog_cache#'.$cache_code;
-			try
+			# For each group, get the cached values of geocache-dictionaries from OKAPI cache.
+			# These will be used as a base to compare the changes made to geocache objects.
+			
+			$cache_keys = array();
+			foreach ($cache_codes as $cache_code)
+				$cache_keys[] = 'clog_cache#'.$cache_code;
+			$cached_values = Cache::get_many($cache_keys);
+			Cache::delete_many($cache_keys);
+			unset($cache_keys);
+			
+			# Get the current values for geocache-dictionaries. Compare them with the previous
+			# ones and create changelog entries.
+			
+			$current_values = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
+				new OkapiInternalConsumer(), null, array('cache_codes' => implode("|", $cache_codes),
+				'fields' => self::$logged_cache_fields)));
+			$entries = array();
+			foreach ($current_values as $cache_code => $geocache)
 			{
-				$cache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
-					new OkapiInternalConsumer(), null, array('cache_code' => $cache_code,
-					'fields' => self::$logged_cache_fields)));
-				$entry = array(
-					'object_type' => 'geocache',
-					'object_key' => array('code' => $cache_code),
-					'change_type' => 'replace',
-					'data' => self::get_diff(Cache::get($cache_key), $cache),
-				);
+				if ($geocache !== null)
+				{
+					$entries[] = array(
+						'object_type' => 'geocache',
+						'object_key' => array('code' => $cache_code),
+						'change_type' => 'replace',
+						'data' => self::get_diff($cached_values['clog_cache#'.$cache_code], $geocache),
+					);
+					$cached_values['clog_cache#'.$cache_code] = $geocache;
+				}
+				else
+				{
+					$entries[] = array(
+						'object_type' => 'geocache',
+						'object_key' => array('code' => $cache_code),
+						'change_type' => 'delete',
+					);
+					$cached_values['clog_cache#'.$cache_code] = null;
+				}
 			}
-			catch (BadRequest $e)
-			{
-				$cache = null;
-				$entry = array(
-					'object_type' => 'geocache',
-					'object_key' => array('code' => $cache_code),
-					'change_type' => 'delete',
-				);
-			}
+			
+			# Save the changelog entries into the clog table.
+			
+			$data_values = array();
+			foreach ($entries as $entry)
+				$data_values[] = gzdeflate(serialize($entry));
 			Db::execute("
 				insert into okapi_clog (data)
-				values ('".mysql_real_escape_string(gzdeflate(serialize($entry)))."');
+				values ('".implode("'),('", array_map('mysql_real_escape_string', $data_values))."');
 			");
-			if ($cache)
-				Cache::set($cache_key, $cache, 30 * 86400);
-			else
-				Cache::delete($cache_key);
+			
+			# Update the values kept in OKAPI cache.
+			
+			Cache::set_many($cached_values, 30 * 86400);
 		}
-		$modified_log_entries = Db::select_column("
+		unset($current_values);
+		unset($cached_values);
+		unset($data_values);
+		unset($entries);
+		
+		$log_uuids = Db::select_column("
 			select uuid
 			from cache_logs
 			where last_modified > from_unixtime('".mysql_real_escape_string($last_update)."');
 		");
-		foreach ($modified_log_entries as $log_uuid)
+		$log_uuid_groups = Okapi::make_groups($log_uuids, 100);
+		unset($log_uuids);
+		
+		foreach ($log_uuid_groups as $log_uuids)
 		{
-			try
+			# Unlike geocaches, we don't keep cached copies of log entries. These do not
+			# change much, and do not keep much space anyway.
+			
+			$logs = OkapiServiceRunner::call('services/logs/entries', new OkapiInternalRequest(
+				new OkapiInternalConsumer(), null, array('log_uuids' => implode("|", $log_uuids),
+				'fields' => self::$logged_log_entry_fields)));
+			$entries = array();
+			foreach ($logs as $log_uuid => $log)
 			{
-				$log_entry = OkapiServiceRunner::call('services/logs/entry', new OkapiInternalRequest(
-					new OkapiInternalConsumer(), null, array('log_uuid' => $log_uuid,
-					'fields' => self::$logged_log_entry_fields)));
-				$entry = array(
-					'object_type' => 'log_entry',
-					'object_key' => array('uuid' => $log_uuid),
-					'change_type' => 'replace',
-					'data' => $log_entry,
-				);
+				if ($log !== null)
+				{
+					$entries[] = array(
+						'object_type' => 'log_entry',
+						'object_key' => array('uuid' => $log_uuid),
+						'change_type' => 'replace',
+						'data' => $log,
+					);
+				}
+				else
+				{
+					$entries[] = array(
+						'object_type' => 'geocache',
+						'object_key' => array('uuid' => $log_uuid),
+						'change_type' => 'delete',
+					);
+				}
 			}
-			catch (BadRequest $e)
-			{
-				$entry = array(
-					'object_type' => 'geocache',
-					'object_key' => array('uuid' => $log_uuid),
-					'change_type' => 'delete',
-				);
-			}
+
+			# Save the changelog entries into the clog table.
+			
+			$data_values = array();
+			foreach ($entries as $entry)
+				$data_values[] = gzdeflate(serialize($entry));
 			Db::execute("
 				insert into okapi_clog (data)
-				values ('".mysql_real_escape_string(gzdeflate(serialize($entry)))."');
+				values ('".implode("'),('", array_map('mysql_real_escape_string', $data_values))."');
 			");
 		}
+		
+		# Update state variables and release DB lock.
+		
 		Okapi::set_var("last_clog_update", $now);
 		$revision = Db::select_value("select max(id) from okapi_clog");
 		Okapi::set_var("clog_revision", $revision);
