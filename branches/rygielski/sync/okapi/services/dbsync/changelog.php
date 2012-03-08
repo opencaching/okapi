@@ -44,7 +44,7 @@ class WebService
 		
 		$result = array(
 			'changelog' => &$clog_entries,
-			'revision' => $to,
+			'revision' => $to + 0,
 			'more' => $to < SyncCommon::get_revision(),
 		);
 		

@@ -1074,6 +1074,26 @@ class Cache
 		");
 	}
 	
+	/** Do 'set' on many keys at once. */
+	public static function set_many($dict, $timeout)
+	{
+		if (count($dict) == 0)
+			return;
+		$entries = array();
+		foreach ($dict as $key => $value)
+		{
+			$entries[] = "(
+				'".mysql_real_escape_string($key)."',
+				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
+				date_add(now(), interval '".mysql_real_escape_string($timeout)."' second)
+			)";
+		}
+		Db::execute("
+			replace into okapi_cache (`key`, value, expires)
+			values ".implode(", ", $entries)."
+		");
+	}
+	
 	/**
 	 * Retrieve object stored under the key $key. If object does not
 	 * exist or timeout expired, return null.
@@ -1092,10 +1112,49 @@ class Cache
 		return unserialize(gzinflate($blob));
 	}
 	
+	/** Do 'get' on many keys at once. */
+	public static function get_many($keys)
+	{
+		$dict = array();
+		$rs = Db::query("
+			select `key`, value
+			from okapi_cache
+			where
+				`key` in ('".implode("','", array_map('mysql_real_escape_string', $keys))."')
+				and expires > now()
+		");
+		while ($row = mysql_fetch_assoc($rs))
+			$dict[$row['key']] = unserialize(gzinflate($row['value']));
+		if (count($dict) < count($keys))
+			foreach ($keys as $key)
+				if (!isset($dict[$key]))
+					$dict[$key] = null;
+		return $dict;
+	}
+	
 	/** Clear all cache. (i.e. invalidate all keys) */
 	public static function clear()
 	{
 		Db::execute("truncate okapi_cache;");
+	}
+	
+	/**
+	 * Delete key $key from the cache.
+	 */
+	public static function delete($key)
+	{
+		self::delete_many(array($key));
+	}
+	
+	/** Do 'delete' on many keys at once. */
+	public static function delete_many($keys)
+	{
+		if (count($keys) == 0)
+			return;
+		Db::execute("
+			delete from okapi_cache
+			where `key` in ('".implode("','", array_map('mysql_real_escape_string', $keys))."')
+		");
 	}
 }
 

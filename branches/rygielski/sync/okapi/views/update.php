@@ -280,4 +280,6 @@ class View
 			"Thanks, OKAPI developers."
 		);
 	}
+	
+	private static function ver36() { Db::execute("alter table okapi_cache modify column `key` varchar(64) not null"); }
 }
