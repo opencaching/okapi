@@ -424,6 +424,7 @@ class OkapiHttpResponse
 	public $status = "200 OK";
 	public $content_type = "text/plain; charset=utf-8";
 	public $content_disposition = null;
+	public $allow_gzip = true;
 	
 	/** Use this only as a setter, use get_body or print_body for reading! */
 	public $body;
@@ -466,19 +467,40 @@ class OkapiHttpResponse
 			return $this->body;
 	}
 	
-	/** Print the headers and the body. */
+	/**
+	 * Print the headers and the body. This should be the last thing your script does.
+	 */
 	public function display()
 	{
 		header("HTTP/1.1 ".$this->status);
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: ".$this->content_type);
+		header("Connection: close");
 		if ($this->content_disposition)
 			header("Content-Disposition: ".$this->content_disposition);
-		## This was commented out because some servers gzip all PHP output.
-		# $length = $this->get_length();
-		# if ($length)
-		# 	header("Content-Length: ".$length);
-		$this->print_body();
+		
+		# Make sure that gzip is supported by the client.
+		$try_gzip = $this->allow_gzip;
+		if (!empty($_SERVER["HTTP_ACCEPT_ENCODING"]) && strpos("gzip", $_SERVER["HTTP_ACCEPT_ENCODING"]) === null)
+			$try_gzip = false;
+
+		# Gziping the data here will disable gziping by Apache. This way, we can
+		# set the Content-Length correctly which is handy in some scenarios.
+		
+		if ($try_gzip && is_string($this->body))
+		{
+			header("Content-Encoding: gzip");
+			$gzipped = gzencode($this->body, 5, true);
+			header("Content-Length: ".strlen($gzipped));
+			print $gzipped;
+		}
+		else
+		{
+			$length = $this->get_length();
+			if ($length)
+				header("Content-Length: ".$length);
+			$this->print_body();
+		}
 	}
 }
 

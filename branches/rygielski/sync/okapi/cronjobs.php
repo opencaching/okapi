@@ -42,7 +42,7 @@ class CronJobController
 		$lock_name = 'okapi-cronjobs-'.$type;
 		$lock = Db::select_value("select get_lock('$lock_name', 0)");
 		if (!$lock)
-			return time() - 1; # force to check it again
+			return time() - 1; # force to check it again on next request or crontab event
 
 		$schedule = Cache::get("cron_schedule");
 		if ($schedule == null)

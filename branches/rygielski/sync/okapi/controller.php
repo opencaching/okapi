@@ -14,14 +14,19 @@ use okapi\views\menu\OkapiMenu;
 # To learn more about OKAPI, see core.php.
 #
 
-$rootpath = '../';
-require_once($rootpath.'okapi/core.php');
+$GLOBALS['rootpath'] = '../'; # this is for OC-code compatibility, OC requires this
+$GLOBALS['no-session'] = true; # turn off OC-code session starting
+$GLOBALS['no-gzip'] = true; # turn off OC-code GZIP output buffering
+
+require_once($GLOBALS['rootpath'].'okapi/core.php');
 OkapiErrorHandler::$treat_notices_as_errors = true;
-require_once($rootpath.'okapi/urls.php');
+require_once($GLOBALS['rootpath'].'okapi/urls.php');
 
 # OKAPI does not use sessions. The following statement will allow concurrent
 # requests to be fired from browser.
-if (session_id()) session_write_close();
+if (session_id())
+	throw new Exception("Session started when should not be! You have to patch your OC installation. ".
+		"Please contact OKAPI developers.");
 
 class OkapiScriptEntryPointController
 {
