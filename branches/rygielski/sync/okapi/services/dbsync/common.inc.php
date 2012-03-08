@@ -51,13 +51,28 @@ class SyncCommon
 	}
 	
 	/** Check for modifications in the database and update the changelog table accordingly. */
-	public static function update_clog_table($last_update)
+	public static function update_clog_table()
 	{
+		$now = Db::select_value("select unix_timestamp(now())");
+		
+		# Skip the update, if it was already done during the last 60 seconds.
+		
+		$last_update = Okapi::get_var('last_clog_update', $now - 86400) + 0;
+		if ($now - $last_update < 60)
+			return;
+		
+		# Usually this will be fast. But, for example, if admin changes ALL the
+		# caches, this will take forever. But we still want it to finish properly
+		# without interruption.
+		
+		set_time_limit(0);
+		ignore_user_abort(true); 
+			
 		$lock = Db::select_value("select get_lock('okapi_changelog_update', 10)");
 		if (!$lock)
 			throw new Exception("Could not obtain a lock");
 
-		$now = Db::select_value("select unix_timestamp(now())");
+		require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
 		
 		$modified_caches = Db::select_column("
 			select wp_oc
@@ -79,7 +94,7 @@ class SyncCommon
 					'data' => self::get_diff(Cache::get($cache_key), $cache),
 				);
 			}
-			catch (DoesNotExist $e)
+			catch (BadRequest $e)
 			{
 				$cache = null;
 				$entry = array(
@@ -116,7 +131,7 @@ class SyncCommon
 					'data' => $log_entry,
 				);
 			}
-			catch (DoesNotExist $e)
+			catch (BadRequest $e)
 			{
 				$entry = array(
 					'object_type' => 'geocache',

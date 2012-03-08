@@ -32,14 +32,12 @@ class WebService
 		if ($since === null) throw new ParamMissing('since');
 		if ((int)$since != $since) throw new InvalidParam('since');
 		
-		# First we have to update the changelog. We make sure to do this only if it hasn't been
-		# updated during the last minute or so.
+		# First we have to update the changelog. Usually it will be pretty up-to-date, since it is
+		# being updated by a cronjob too, this operation should be quick then.
 		
-		$last_update = Okapi::get_var('last_clog_update', time() - 86400) + 0;
-		if (time() - $last_update > 60)
-			SyncCommon::update_clog_table($last_update);
+		SyncCommon::update_clog_table();
 		
-		# Changelog is up-to-date. Let's check the $since parameter.
+		# Let's check the $since parameter.
 		
 		if (!SyncCommon::check_since_param($since))
 			throw new BadRequest("The 'since' parameter is too old. You must sync your database more frequently.");

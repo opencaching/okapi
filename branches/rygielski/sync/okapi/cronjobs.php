@@ -21,6 +21,7 @@ class CronJobController
 				new StatsWriterCronJob(),
 				new CheckCronTab1(),
 				new CheckCronTab2(),
+				new ChangeLogWriterJob(),
 			);
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
@@ -282,5 +283,18 @@ class CheckCronTab2 extends PrerequestCronJob
 			$since_last = time() - $last_ping;
 			Cache::set('crontab_check_counter', (int)($since_last / $this->get_period()), 86400);
 		}
+	}
+}
+
+/**
+ * Once per 10 minutes, search for changes in the database and update the changelog.
+ */
+class ChangeLogWriterJob extends Cron5Job
+{
+	public function get_period() { return 600; }
+	public function execute()
+	{
+		require_once 'services/dbsync/common.inc.php';
+		\okapi\services\dbsync\common\SyncCommon::update_clog_table();
 	}
 }
