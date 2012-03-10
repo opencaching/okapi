@@ -1,0 +1,21 @@
+<xml>
+	<brief>Download OKAPI database snapshot</brief>
+	<issue-id>WRTODO</issue-id>
+	<desc>
+		<p>Download the latest snapshot of OKAPI database. You should call this method
+		only once in your lifetime. After installing this snapshot, you should use
+		'changelog' method to update your database.</p>
+		<p>See "Data replication" section (in the left menu) for more information.</p>
+		<p><b>Important:</b> This method may substantially change or might be removed.
+		We don't plan on doing this, but we may be forced to (i.e. to prevent abuse).</p>
+	</desc>
+	<returns>
+		<p>Compressed TAR file (GZIP or BZ2 might be used). All <b>part*.json</b> files should
+		be processed and saved to your database. File named <b>index.json</b>
+		will contain a dictionary. Use the <b>db_revision</b> field of this dictionary
+		for your first 'changelog' call.</p>
+		<p>You should not assume anything permanent about the structure of this file,
+		i.e. the names and sizes of the included files may change in future. If you
+		set up everything correctly then you need fulldump only once.</p>
+	</returns>
+</xml>

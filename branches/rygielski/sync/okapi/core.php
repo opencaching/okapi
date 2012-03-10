@@ -1132,12 +1132,6 @@ class Cache
 		return $dict;
 	}
 	
-	/** Clear all cache. (i.e. invalidate all keys) */
-	public static function clear()
-	{
-		Db::execute("truncate okapi_cache;");
-	}
-	
 	/**
 	 * Delete key $key from the cache.
 	 */

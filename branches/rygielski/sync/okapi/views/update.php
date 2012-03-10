@@ -47,7 +47,6 @@ class View
 	{
 		ignore_user_abort(true);
 		set_time_limit(0);
-		Cache::clear();
 		
 		header("Content-Type: text/plain; charset=utf-8");
 		

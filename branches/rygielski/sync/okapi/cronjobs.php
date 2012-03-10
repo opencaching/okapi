@@ -23,6 +23,10 @@ class CronJobController
 				new CheckCronTab2(),
 				new ChangeLogWriterJob(),
 			);
+			# If you want fulldump generated for your development machine, comment
+			# the 'if' out.
+			if ((!isset($GLOBALS['debug_page'])) || (!$GLOBALS['debug_page']))
+				$cache[] = new FulldumpGeneratorJob();
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
 					throw new Exception("Cronjob '".$cronjob->get_name()."' has an invalid (unsupported) type.");
@@ -298,3 +302,17 @@ class ChangeLogWriterJob extends Cron5Job
 		\okapi\services\dbsync\common\SyncCommon::update_clog_table();
 	}
 }
+
+/**
+ * Once per week, generate the fulldump archive.
+ */
+class FulldumpGeneratorJob extends Cron5Job
+{
+	public function get_period() { return 7*86400; }
+	public function execute()
+	{
+		require_once 'services/dbsync/common.inc.php';
+		\okapi\services\dbsync\common\SyncCommon::generate_fulldump();
+	}
+}
+

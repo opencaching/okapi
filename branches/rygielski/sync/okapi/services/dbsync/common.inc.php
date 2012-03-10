@@ -25,7 +25,7 @@ class SyncCommon
 	/** Return current (maximum) changelog revision number. */
 	public static function get_revision()
 	{
-		return Okapi::get_var('clog_revision', 0);
+		return Okapi::get_var('clog_revision', 0) + 0;
 	}
 	
 	/**
@@ -287,5 +287,120 @@ class SyncCommon
 		}
 		
 		return $chunk;
+	}
+	
+	/**
+	 * Generate a new fulldump file and put it into the OKAPI cache table.
+	 * Return the cache key.
+	 */
+	public static function generate_fulldump()
+	{
+		# First we will create temporary files, then compress them in the end.
+		
+		$revision = self::get_revision();
+		$generated_at = date('c', time());
+		$dir = $GLOBALS['dynbasepath']."/okapi-db-dump";
+		$i = 1;
+		$json_files = array();
+		
+		# Cleanup (from a previous, possibly unsuccessful, execution)
+		
+		shell_exec("rm -f $dir/*");
+		shell_exec("rmdir $dir");
+		shell_exec("mkdir $dir");
+		shell_exec("chmod 777 $dir");
+		
+		# Geocaches
+		
+		$cache_codes = Db::select_column("select wp_oc from caches");
+		$cache_code_groups = Okapi::make_groups($cache_codes, 200);
+		unset($cache_codes);
+		foreach ($cache_code_groups as $cache_codes)
+		{
+			$basename = "part".str_pad($i, 5, "0", STR_PAD_LEFT);
+			$json_files[] = $basename.".json";
+			$entries = self::generate_changelog_entries('services/caches/geocaches', 'geocache', 'cache_codes',
+				'code', $cache_codes, self::$logged_cache_fields, true, false);
+			$filtered = array();
+			foreach ($entries as $entry)
+				if ($entry['change_type'] == 'replace')
+					$filtered[] = $entry;
+			unset($entries);
+			$fp = fopen("$dir/$basename.json", "wb");
+			fwrite($fp, json_encode($filtered));
+			fclose($fp);
+			unset($filtered);
+			$i++;
+		}
+		unset($cache_code_groups);
+		
+		# Log entries
+		
+		$log_uuids = Db::select_column("select uuid from cache_logs");
+		$log_uuid_groups = Okapi::make_groups($log_uuids, 500);
+		unset($log_uuids);
+		foreach ($log_uuid_groups as $log_uuids)
+		{
+			$basename = "part".str_pad($i, 5, "0", STR_PAD_LEFT);
+			$json_files[] = $basename.".json";
+			$entries = self::generate_changelog_entries('services/logs/entries', 'log', 'log_uuids',
+				'uuid', $log_uuids, self::$logged_log_entry_fields, true, false);
+			$filtered = array();
+			foreach ($entries as $entry)
+				if ($entry['change_type'] == 'replace')
+					$filtered[] = $entry;
+			unset($entries);
+			$fp = fopen("$dir/$basename.json", "wb");
+			fwrite($fp, json_encode($filtered));
+			fclose($fp);
+			unset($filtered);
+			$i++;
+		}
+
+		# Package data.
+		
+		$metadata = array(
+			'site_name' => Okapi::get_normalized_site_name(),
+			'db_revision' => $revision,
+			'okapi_revision' => Okapi::$revision,
+			'generated_at' => $generated_at,
+			'data_files' => $json_files
+		);
+		$fp = fopen("$dir/index.json", "wb");
+		fwrite($fp, json_encode($metadata));
+		fclose($fp);
+		
+		# Compute uncompressed size.
+		
+		$size = filesize("$dir/index.json");
+		foreach ($json_files as $filename)
+			$size += filesize("$dir/$filename");
+		
+		# Create JSON archive.
+		# (BTW, tar options: -j for bzip2, -z for gzip (bzip2 is MUCH slower))
+		
+		$dumpfilename = "okapi-dump.tar.gz";
+		shell_exec("tar --directory $dir -czf $dir/$dumpfilename index.json ".implode(" ", $json_files). " 2>&1");
+		
+		# Delete temporary files.
+		
+		shell_exec("rm -f $dir/*.json");
+		
+		# Move the archive one directory upwards, replacing the previous one.
+		# Remove the temporary directory.
+		
+		shell_exec("mv -f $dir/$dumpfilename ".$GLOBALS['dynbasepath']);
+		shell_exec("rmdir $dir");
+		
+		# Update the database info.
+		
+		unset($metadata['data_files']);
+		$metadata['filepath'] = $GLOBALS['dynbasepath'].'/'.$dumpfilename;
+		$metadata['content_type'] = "application/x-gzip";
+		$metadata['public_filename'] = 'okapi-dump-r'.$metadata['db_revision'].'.tar.gz';
+		$metadata['uncompressed_size'] = $size;
+		$metadata['compressed_size'] = filesize($metadata['filepath']);
+		Cache::set("last_fulldump", $metadata, 10 * 86400);
+		print_r($metadata);
 	}
 }
