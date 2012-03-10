@@ -6,6 +6,7 @@ use Exception;
 use okapi\Okapi;
 use okapi\Db;
 use okapi\Cache;
+use okapi\services\replicate\ReplicateCommon;
 
 class CronJobController
 {
@@ -22,6 +23,7 @@ class CronJobController
 				new CheckCronTab1(),
 				new CheckCronTab2(),
 				new ChangeLogWriterJob(),
+				new ChangeLogCleanerJob(),
 			);
 			# If you want fulldump generated for your development machine, comment
 			# the 'if' out.
@@ -299,7 +301,7 @@ class ChangeLogWriterJob extends Cron5Job
 	public function execute()
 	{
 		require_once 'services/replicate/replicate_common.inc.php';
-		\okapi\services\replicate\ReplicateCommon::update_clog_table();
+		ReplicateCommon::update_clog_table();
 	}
 }
 
@@ -312,7 +314,36 @@ class FulldumpGeneratorJob extends Cron5Job
 	public function execute()
 	{
 		require_once 'services/replicate/replicate_common.inc.php';
-		\okapi\services\replicate\ReplicateCommon::generate_fulldump();
+		ReplicateCommon::generate_fulldump();
 	}
 }
 
+/** Once per day, remove all revisions older than 10 days from okapi_clog table. */
+class ChangeLogCleanerJob extends Cron5Job
+{
+	public function get_period() { return 86400; }
+	public function execute()
+	{
+		require_once 'services/replicate/replicate_common.inc.php';
+		$max_revision = ReplicateCommon::get_revision();
+		$cache_key = 'clog_revisions_daily';
+		$data = Cache::get($cache_key);
+		if ($data == null)
+			$data = array();
+		$data[time()] = $max_revision;
+		$new_min_revision = 1;
+		$new_data = array();
+		foreach ($data as $time => $r)
+		{
+			if ($time < time() - 10*86400)
+				$new_min_revision = max($new_min_revision, $r);
+			else
+				$new_data[$time] = $r;
+		}
+		Db::execute("
+			delete from okapi_clog
+			where id < '".mysql_real_escape_string($new_min_revision)."'
+		");
+		Cache::set($cache_key, $new_data, 10*86400);
+	}
+}
