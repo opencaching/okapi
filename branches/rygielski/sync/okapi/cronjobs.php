@@ -298,8 +298,8 @@ class ChangeLogWriterJob extends Cron5Job
 	public function get_period() { return 600; }
 	public function execute()
 	{
-		require_once 'services/dbsync/common.inc.php';
-		\okapi\services\dbsync\common\SyncCommon::update_clog_table();
+		require_once 'services/replicate/replicate_common.inc.php';
+		\okapi\services\replicate\ReplicateCommon::update_clog_table();
 	}
 }
 
@@ -311,8 +311,8 @@ class FulldumpGeneratorJob extends Cron5Job
 	public function get_period() { return 7*86400; }
 	public function execute()
 	{
-		require_once 'services/dbsync/common.inc.php';
-		\okapi\services\dbsync\common\SyncCommon::generate_fulldump();
+		require_once 'services/replicate/replicate_common.inc.php';
+		\okapi\services\replicate\ReplicateCommon::generate_fulldump();
 	}
 }
 

@@ -27,7 +27,7 @@
 						
 						<p>For some applications it might be desireable to have a quick access to the entire
 						OpenCaching database (instead of quering for specific portions of it). You may use
-						OKAPI's dbsync module to achive this effect.</p>
+						OKAPI's <b>replicate</b> module to achive this effect.</p>
 						
 						<h2>Requirements and limitations</h2>
 						
@@ -40,7 +40,7 @@
 							should use <b>your own server</b> for data traffic (i.e. serve your own
 							copy of snapshots).</li>
 							<li>Please download the snapshot <b>only once</b>. Later on, use
-							the services/dbsync/changelog method to download snapshot updates. If you
+							the services/replicate/changelog method to download snapshot updates. If you
 							download updates frequently, this should allow you to keep the fresh
 							copy of our data for years.</li>
 							<li>You <b>must</b> update your database frequently for this method to work.
@@ -78,7 +78,7 @@
 							will use this number.</li>
 						</ul>
 						
-						<p>See the docs of the service/dbsync/changelog method for details.</p>
+						<p>See the docs of the service/replicate/changelog method for details.</p>
 						
 						<h2>Understanding fulldump archive</h2>
 						
@@ -89,7 +89,7 @@
 							days. This copy if intended for you to start only, later you must use the changelog to
 							keep it up-to-date.</li>
 							<li>Fulldump is a compressed archive with JSON files. Each JSON file contains a
-							list of changelog entries (in the same format as described in the services/dbsync/changelog
+							list of changelog entries (in the same format as described in the services/replicate/changelog
 							method). It contains ALL the objects in the database.</li>
 							<li>There is no XMLMAP version of this file.</li>
 							<li>You should not assume anything permanent about the structure of this file,
@@ -97,7 +97,7 @@
 							set up everything correctly then you need fulldump only once.</li>
 						</ul>
 						
-						<p>Download your copy of fulldump archive using services/dbsync/fulldump method.</p>
+						<p>Download your copy of fulldump archive using services/replicate/fulldump method.</p>
 						
 						<div class='issue-comments' issue_id='WRTODO'></div>
 					</td>

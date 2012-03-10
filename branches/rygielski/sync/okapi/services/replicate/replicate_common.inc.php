@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\dbsync\common;
+namespace okapi\services\replicate;
 
 use Exception;
 use okapi\Okapi;
@@ -15,7 +15,7 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
 use okapi\Cache;
 
-class SyncCommon
+class ReplicateCommon
 {
 	private static $chunk_size = 200;
 	private static $logged_cache_fields = 'code|name|names|location|type|status|url|owner|founds|notfounds|size|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|description|descriptions|hint|hints|images|attrnames|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden';

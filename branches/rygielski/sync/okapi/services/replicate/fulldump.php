@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\dbsync\fulldump;
+namespace okapi\services\replicate\fulldump;
 
 use Exception;
 use okapi\Okapi;
@@ -11,8 +11,6 @@ use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\BadRequest;
-
-require_once 'common.inc.php';
 
 class WebService
 {
@@ -31,7 +29,7 @@ class WebService
 				from okapi_stats_temp
 				where
 					consumer_key = '".mysql_real_escape_string($consumer_key)."'
-					and service_name='services/dbsync/fulldump'
+					and service_name='services/replicate/fulldump'
 			")
 			+
 			Db::select_value("
@@ -39,7 +37,7 @@ class WebService
 				from okapi_stats_hourly
 				where
 					consumer_key = '".mysql_real_escape_string($consumer_key)."'
-					and service_name='services/dbsync/fulldump'
+					and service_name='services/replicate/fulldump'
 					and period_start > date_add(now(), interval -$days day)
 				limit 1
 			")
@@ -48,6 +46,8 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
+		require_once 'replicate_common.inc.php';
+		
 		$meta = Cache::get("last_fulldump");
 		if ($meta == null)
 			throw new BadRequest("No fulldump found. Try again later. If this doesn't help ".
