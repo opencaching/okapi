@@ -14,7 +14,6 @@ class OkapiUrls
 		'^(services/.*)$' => 'method_call',
 		'^introduction\.html$' => 'introduction',
 		'^signup\.html$' => 'signup',
-		'^replication\.html$' => 'replication',
 		'^examples\.html$' => 'examples',
 		'^$' => 'index',
 		'^apps/$' => 'apps/index',

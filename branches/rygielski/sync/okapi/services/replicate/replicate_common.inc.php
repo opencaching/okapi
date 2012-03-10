@@ -22,11 +22,21 @@ class ReplicateCommon
 	
 	private static $logged_log_entry_fields = 'uuid|cache_code|date|user|type|comment';
 	
-	/** Return current (maximum) changelog revision number. */
+	/** Return current (greatest) changelog revision number. */
 	public static function get_revision()
 	{
 		return Okapi::get_var('clog_revision', 0) + 0;
 	}
+
+	/** Return the number of the oldest changelog revision kept in database. */
+	public static function get_min_revision()
+	{
+		static $cache = null;
+		if ($cache == null)
+			$cache = Db::select_value("select min(id) from okapi_clog") + 0;
+		return $cache;
+	}
+
 	
 	/**
 	 * Compare two dictionaries. Return the $new dictionary with all unchanged
@@ -360,11 +370,13 @@ class ReplicateCommon
 		# Package data.
 		
 		$metadata = array(
-			'site_name' => Okapi::get_normalized_site_name(),
-			'db_revision' => $revision,
-			'okapi_revision' => Okapi::$revision,
-			'generated_at' => $generated_at,
-			'data_files' => $json_files
+			'revision' => $revision,
+			'data_files' => $json_files,
+			'meta' => array(
+				'site_name' => Okapi::get_normalized_site_name(),
+				'okapi_revision' => Okapi::$revision,
+				'generated_at' => $generated_at,
+			),
 		);
 		$fp = fopen("$dir/index.json", "wb");
 		fwrite($fp, json_encode($metadata));
@@ -394,13 +406,11 @@ class ReplicateCommon
 		
 		# Update the database info.
 		
-		unset($metadata['data_files']);
-		$metadata['filepath'] = $GLOBALS['dynbasepath'].'/'.$dumpfilename;
-		$metadata['content_type'] = "application/x-gzip";
-		$metadata['public_filename'] = 'okapi-dump-r'.$metadata['db_revision'].'.tar.gz';
-		$metadata['uncompressed_size'] = $size;
-		$metadata['compressed_size'] = filesize($metadata['filepath']);
+		$metadata['meta']['filepath'] = $GLOBALS['dynbasepath'].'/'.$dumpfilename;
+		$metadata['meta']['content_type'] = "application/x-gzip";
+		$metadata['meta']['public_filename'] = 'okapi-dump-r'.$metadata['revision'].'.tar.gz';
+		$metadata['meta']['uncompressed_size'] = $size;
+		$metadata['meta']['compressed_size'] = filesize($metadata['meta']['filepath']);
 		Cache::set("last_fulldump", $metadata, 10 * 86400);
-		print_r($metadata);
 	}
 }

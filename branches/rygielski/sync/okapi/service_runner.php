@@ -47,6 +47,7 @@ class OkapiServiceRunner
 		'services/users/by_internal_ids',
 		'services/replicate/changelog',
 		'services/replicate/fulldump',
+		'services/replicate/info',
 	);
 	
 	/** Check if method exists. */

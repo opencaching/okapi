@@ -28,7 +28,6 @@ class OkapiMenu
 		$chunks[] = self::link($current_path, "introduction.html", "Introduction");
 		$chunks[] = self::link($current_path, "signup.html", "Sign up");
 		$chunks[] = self::link($current_path, "examples.html", "Examples");
-		$chunks[] = self::link($current_path, "replication.html", "Data replication");
 		$chunks[] = "</div>";
 		
 		# We need a list of all methods. We do not need their descriptions, so
