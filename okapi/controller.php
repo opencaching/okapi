@@ -14,15 +14,33 @@ use okapi\views\menu\OkapiMenu;
 # To learn more about OKAPI, see core.php.
 #
 
-$rootpath = '../';
-require_once($rootpath.'okapi/core.php');
+$GLOBALS['rootpath'] = '../'; # this is for OC-code compatibility, OC requires this
+$GLOBALS['no-session'] = true; # turn off OC-code session starting
+$GLOBALS['no-ob'] = true; # turn off OC-code GZIP output buffering
+
+require_once($GLOBALS['rootpath'].'okapi/core.php');
 OkapiErrorHandler::$treat_notices_as_errors = true;
-require_once($rootpath.'okapi/urls.php');
+require_once($GLOBALS['rootpath'].'okapi/urls.php');
 
 # OKAPI does not use sessions. The following statement will allow concurrent
-# requests to be fired from browser. (BTW, it would be nice to prevent OC code
-# from creating a session cookie while displaying OKAPI.)
-if (session_id()) session_write_close();
+# requests to be fired from browser.
+if (session_id())
+{
+	# WRTODO: Move this to some kind of cronjob, to prevent admin-spamming in case on an error.
+	throw new Exception("Session started when should not be! You have to patch your OC installation. ".
+		"You have to check \"if ((!isset(\$GLOBALS['no-session'])) || (\$GLOBALS['no-ob'] == false))\" ".
+		"before executing session_start.");
+}
+
+# Make sure OC did not start anything suspicious, like ob_start('ob_gzhandler').
+# OKAPI makes it's own decisions whether "to gzip or not to gzip".
+if (ob_list_handlers() != array('default output handler'))
+{
+	# WRTODO: Move this to some kind of cronjob, to prevent admin-spamming in case on an error.
+	throw new Exception("Output buffering started while it should not be! You have to patch you OC ".
+		"installation (probable lib/common.inc.php file). You have to check \"if ((!isset(\$GLOBALS['no-ob'])) ".
+		"|| (\$GLOBALS['no-ob'] == false))\" before executing ob_start.");
+}
 
 class OkapiScriptEntryPointController
 {

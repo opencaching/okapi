@@ -424,6 +424,8 @@ class OkapiHttpResponse
 	public $status = "200 OK";
 	public $content_type = "text/plain; charset=utf-8";
 	public $content_disposition = null;
+	public $allow_gzip = true;
+	public $connection_close = false;
 	
 	/** Use this only as a setter, use get_body or print_body for reading! */
 	public $body;
@@ -460,25 +462,47 @@ class OkapiHttpResponse
 		{
 			ob_start();
 			fpassthru($this->body);
-			return ob_get_clean();
+			return ob_get_flush();
 		}
 		else
 			return $this->body;
 	}
 	
-	/** Print the headers and the body. */
+	/**
+	 * Print the headers and the body. This should be the last thing your script does.
+	 */
 	public function display()
 	{
 		header("HTTP/1.1 ".$this->status);
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: ".$this->content_type);
+		if ($this->connection_close)
+			header("Connection: close");
 		if ($this->content_disposition)
 			header("Content-Disposition: ".$this->content_disposition);
-		## This was commented out because some servers gzip all PHP output.
-		# $length = $this->get_length();
-		# if ($length)
-		# 	header("Content-Length: ".$length);
-		$this->print_body();
+		
+		# Make sure that gzip is supported by the client.
+		$try_gzip = $this->allow_gzip;
+		if (!empty($_SERVER["HTTP_ACCEPT_ENCODING"]) && strpos("gzip", $_SERVER["HTTP_ACCEPT_ENCODING"]) === null)
+			$try_gzip = false;
+
+		# We will gzip the data ourselves, while disabling gziping by Apache. This way, we can
+		# set the Content-Length correctly which is handy in some scenarios.
+		
+		if ($try_gzip && is_string($this->body))
+		{
+			header("Content-Encoding: gzip");
+			$gzipped = gzencode($this->body, 5, true);
+			header("Content-Length: ".strlen($gzipped));
+			print $gzipped;
+		}
+		else
+		{
+			$length = $this->get_length();
+			if ($length)
+				header("Content-Length: ".$length);
+			$this->print_body();
+		}
 	}
 }
 
@@ -536,6 +560,17 @@ class Okapi
 		self::$okapi_vars[$varname] = $value;
 	}
 	
+	/** Send an email message to local OKAPI administrators. */
+	public static function mail_admins($subject, $message)
+	{
+		$admin_email = isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost';
+		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
+		mail($admin_email, $subject, $message,
+			"Content-Type: text/plain; charset=utf-8\n".
+			"From: OKAPI <$sender_email>\n".
+			"Reply-To: $sender_email\n"
+			);
+	}
 	
 	/** Returns something like "OpenCaching.PL" or "OpenCaching.DE". */
 	public static function get_normalized_site_name($site_url = null)
@@ -573,16 +608,48 @@ class Okapi
 	}
 	
 	/**
-	 * Check if any cronjobs are scheduled to execute and execute them if needed.
-	 * Reschedule for new executions.
+	 * Split the array into groups of max. $size items.
 	 */
-	public static function execute_cronjobs()
+	public static function make_groups($array, $size)
+	{
+		$i = 0;
+		$groups = array();
+		while ($i < count($array))
+		{
+			$groups[] = array_slice($array, $i, $size);
+			$i += $size;
+		}
+		return $groups;
+	}
+	
+	/**
+	 * Check if any pre-request cronjobs are scheduled to execute and execute
+	 * them if needed. Reschedule for new executions.
+	 */
+	public static function execute_prerequest_cronjobs()
 	{
 		$nearest_event = Okapi::get_var("cron_nearest_event");
 		if ($nearest_event + 0 <= time())
 		{
 			require_once 'cronjobs.php';
-			$nearest_event = CronJobController::run();
+			$nearest_event = CronJobController::run_jobs('pre-request');
+			Okapi::set_var("cron_nearest_event", $nearest_event);
+		}
+	}
+	
+	/**
+	 * Check if any cron-5 cronjobs are scheduled to execute and execute
+	 * them if needed. Reschedule for new executions.
+	 */
+	public static function execute_cron5_cronjobs()
+	{
+		$nearest_event = Okapi::get_var("cron_nearest_event");
+		if ($nearest_event + 0 <= time())
+		{
+			set_time_limit(0);
+			ignore_user_abort(true); 
+			require_once 'cronjobs.php';
+			$nearest_event = CronJobController::run_jobs('cron-5');
 			Okapi::set_var("cron_nearest_event", $nearest_event);
 		}
 	}
@@ -625,7 +692,7 @@ class Okapi
 			self::$data_store = new OkapiDataStore();
 		if (!self::$server)
 			self::$server = new OkapiOAuthServer(self::$data_store);
-		self::execute_cronjobs();
+		self::execute_prerequest_cronjobs();
 		$init_made = true;
 	}
 	
@@ -772,9 +839,11 @@ class Okapi
 	}
 	
 	/**
-	 * Print out the standard OKAPI response. The $object will be printed
+	 * Return object as a standard OKAPI response. The $object will be formatted
 	 * using one of the default formatters (JSON, JSONP, XML, etc.). Formatter is
-	 * auto-detected by peeking on the $request 'format' parameter.
+	 * auto-detected by peeking on the $request's 'format' parameter. In some
+	 * specific cases, this method can also return the $object itself, instead
+	 * of OkapiResponse - this allows nesting methods within other methods.
 	 */
 	public static function formatted_response(OkapiRequest $request, &$object)
 	{
@@ -1007,6 +1076,26 @@ class Cache
 		");
 	}
 	
+	/** Do 'set' on many keys at once. */
+	public static function set_many($dict, $timeout)
+	{
+		if (count($dict) == 0)
+			return;
+		$entries = array();
+		foreach ($dict as $key => $value)
+		{
+			$entries[] = "(
+				'".mysql_real_escape_string($key)."',
+				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
+				date_add(now(), interval '".mysql_real_escape_string($timeout)."' second)
+			)";
+		}
+		Db::execute("
+			replace into okapi_cache (`key`, value, expires)
+			values ".implode(", ", $entries)."
+		");
+	}
+	
 	/**
 	 * Retrieve object stored under the key $key. If object does not
 	 * exist or timeout expired, return null.
@@ -1025,10 +1114,43 @@ class Cache
 		return unserialize(gzinflate($blob));
 	}
 	
-	/** Clear all cache. (i.e. invalidate all keys) */
-	public static function clear()
+	/** Do 'get' on many keys at once. */
+	public static function get_many($keys)
 	{
-		Db::execute("truncate okapi_cache;");
+		$dict = array();
+		$rs = Db::query("
+			select `key`, value
+			from okapi_cache
+			where
+				`key` in ('".implode("','", array_map('mysql_real_escape_string', $keys))."')
+				and expires > now()
+		");
+		while ($row = mysql_fetch_assoc($rs))
+			$dict[$row['key']] = unserialize(gzinflate($row['value']));
+		if (count($dict) < count($keys))
+			foreach ($keys as $key)
+				if (!isset($dict[$key]))
+					$dict[$key] = null;
+		return $dict;
+	}
+	
+	/**
+	 * Delete key $key from the cache.
+	 */
+	public static function delete($key)
+	{
+		self::delete_many(array($key));
+	}
+	
+	/** Do 'delete' on many keys at once. */
+	public static function delete_many($keys)
+	{
+		if (count($keys) == 0)
+			return;
+		Db::execute("
+			delete from okapi_cache
+			where `key` in ('".implode("','", array_map('mysql_real_escape_string', $keys))."')
+		");
 	}
 }
 

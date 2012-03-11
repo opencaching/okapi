@@ -24,7 +24,7 @@ class View
 		$response->content_type = "text/html; charset=utf-8";
 		ob_start();
 		include 'http404.tpl.php';
-		$response->body = ob_get_clean();
+		$response->body = ob_get_flush();
 		return $response;
 	}
 }

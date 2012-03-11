@@ -23,8 +23,8 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
-		# The list of installations is periodically refreshed by contacting
-		# OKAPI repository. This method displays the cached version of it.
+		# The list of installations is periodically refreshed by contacting OKAPI
+		# repository. This method usually displays the cached version of it.
 		
 		$cachekey = 'apisrv/installations';
 		$backupkey = 'apisrv/installations-backup';
@@ -52,7 +52,7 @@ class WebService
 				$results = Cache::get($backupkey);
 				if ($results)
 				{
-					Cache::set($cachekey, $results, 10*60); # so to retry no earlier than after 10 minutes
+					Cache::set($cachekey, $results, 12 * 3600); # so to retry no earlier than after 12 hours
 					return Okapi::formatted_response($request, $results);
 				}
 				
@@ -98,9 +98,9 @@ class WebService
 				# Contact OKAPI developers in order to get added to the official sites list!
 			}
 			
-			# Cache it for 1 hour. Also, save a backup (valid for 30 days).
+			# Cache it for one day. Also, save a backup (valid for 30 days).
 			
-			Cache::set($cachekey, $results, 3600);
+			Cache::set($cachekey, $results, 86400);
 			Cache::set($backupkey, $results, 86400*30);
 		}
 
