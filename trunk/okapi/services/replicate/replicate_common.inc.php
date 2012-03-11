@@ -64,7 +64,9 @@ class ReplicateCommon
 	public static function update_clog_table()
 	{
 		$now = Db::select_value("select now()");
-		$last_update = Okapi::get_var('last_clog_update', $now);
+		$last_update = Okapi::get_var('last_clog_update');
+		if ($last_update === null)
+			$last_update = Db::select_value("select date_add(now(), interval -1 day)");
 		
 		# Skip the update, if it is BEING done right now.
 		
