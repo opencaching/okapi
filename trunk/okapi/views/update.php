@@ -84,7 +84,6 @@ class View
 		# Validate all cronjobs (some might have been added).
 		Okapi::set_var("cron_nearest_event", 0);
 		Okapi::execute_prerequest_cronjobs();
-		Okapi::execute_cron5_cronjobs();
 		
 		self::out("\nUpdate complete.");
 	}
