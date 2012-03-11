@@ -462,7 +462,7 @@ class OkapiHttpResponse
 		{
 			ob_start();
 			fpassthru($this->body);
-			return ob_get_flush();
+			return ob_get_clean();
 		}
 		else
 			return $this->body;

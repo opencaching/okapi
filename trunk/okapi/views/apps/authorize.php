@@ -57,7 +57,7 @@ class View
 			ob_start();
 			$vars['locale_displayed'] = Okapi::gettext_domain_init($langprefs);
 			include 'authorize.tpl.php';
-			$response->body = ob_get_flush();
+			$response->body = ob_get_clean();
 			Okapi::gettext_domain_restore();
 			return $response;
 		}
@@ -129,7 +129,7 @@ class View
 				ob_start();
 				$vars['locale_displayed'] = Okapi::gettext_domain_init($langprefs);
 				include 'authorize.tpl.php';
-				$response->body = ob_get_flush();
+				$response->body = ob_get_clean();
 				Okapi::gettext_domain_restore();
 				return $response;
 			}

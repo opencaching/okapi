@@ -154,7 +154,7 @@ class WebService
 		Okapi::gettext_domain_init(explode("|", $langpref)); # Consumer gets properly localized GPX file.
 		include 'gpxfile.tpl.php';
 		Okapi::gettext_domain_restore();
-		$response->body = ob_get_flush();
+		$response->body = ob_get_clean();
 		return $response;
 	}
 }
