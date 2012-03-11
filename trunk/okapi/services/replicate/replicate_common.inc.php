@@ -353,7 +353,7 @@ class ReplicateCommon
 			if (count($log_uuids) == 0)
 				break;
 			$offset += 10000;
-			$log_uuid_groups = Okapi::make_groups($log_uuids, 500);
+			$log_uuid_groups = Okapi::make_groups($log_uuids, 1000);
 			unset($log_uuids);
 			foreach ($log_uuid_groups as $log_uuids)
 			{
@@ -395,11 +395,12 @@ class ReplicateCommon
 		foreach ($json_files as $filename)
 			$size += filesize("$dir/$filename");
 		
-		# Create JSON archive.
-		# (BTW, tar options: -j for bzip2, -z for gzip (bzip2 is MUCH slower))
+		# Create JSON archive. We use tar options: -j for bzip2, -z for gzip
+		# (bzip2 is MUCH slower).
 		
-		$dumpfilename = "okapi-dump.tar.gz";
-		shell_exec("tar --directory $dir -czf $dir/$dumpfilename index.json ".implode(" ", $json_files). " 2>&1");
+		$use_bzip2 = true;
+		$dumpfilename = "okapi-dump.tar.".($use_bzip2 ? "bz2" : "gz");
+		shell_exec("tar --directory $dir -c".($use_bzip2 ? "j" : "z")."f $dir/$dumpfilename index.json ".implode(" ", $json_files). " 2>&1");
 		
 		# Delete temporary files.
 		
@@ -414,8 +415,8 @@ class ReplicateCommon
 		# Update the database info.
 		
 		$metadata['meta']['filepath'] = $GLOBALS['dynbasepath'].'/'.$dumpfilename;
-		$metadata['meta']['content_type'] = "application/x-gzip";
-		$metadata['meta']['public_filename'] = 'okapi-dump-r'.$metadata['revision'].'.tar.gz';
+		$metadata['meta']['content_type'] = ($use_bzip2 ? "application/octet-stream" : "application/x-gzip");
+		$metadata['meta']['public_filename'] = 'okapi-dump-r'.$metadata['revision'].'.tar.'.($use_bzip2 ? "bz2" : "gz");
 		$metadata['meta']['uncompressed_size'] = $size;
 		$metadata['meta']['compressed_size'] = filesize($metadata['meta']['filepath']);
 		Cache::set("last_fulldump", $metadata, 10 * 86400);
