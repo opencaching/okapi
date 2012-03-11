@@ -83,8 +83,6 @@ class ReplicateCommon
 		set_time_limit(0);
 		ignore_user_abort(true); 
 		
-		require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
-		
 		# Get the list of modified cache codes. Split it into groups of N cache codes.
 		
 		$cache_codes = Db::select_column("
@@ -151,7 +149,8 @@ class ReplicateCommon
 		
 		# Get the current values for objects. Compare them with their previous versions
 		# and generate changelog entries.
-			
+		
+		require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
 		$current_values = OkapiServiceRunner::call($feeder_method, new OkapiInternalRequest(
 			new OkapiInternalConsumer(), null, array($feeder_keys_param => implode("|", $key_values),
 			'fields' => $fields)));
@@ -344,29 +343,37 @@ class ReplicateCommon
 		}
 		unset($cache_code_groups);
 		
-		# Log entries
+		# Log entries. We cannot load all the uuids at one time, this would take
+		# too much memory. Hence the offset/limit loop.
 		
-		$log_uuids = Db::select_column("select uuid from cache_logs");
-		$log_uuid_groups = Okapi::make_groups($log_uuids, 500);
-		unset($log_uuids);
-		foreach ($log_uuid_groups as $log_uuids)
+		$offset = 0;
+		while (true)
 		{
-			$basename = "part".str_pad($i, 5, "0", STR_PAD_LEFT);
-			$json_files[] = $basename.".json";
-			$entries = self::generate_changelog_entries('services/logs/entries', 'log', 'log_uuids',
-				'uuid', $log_uuids, self::$logged_log_entry_fields, true, false);
-			$filtered = array();
-			foreach ($entries as $entry)
-				if ($entry['change_type'] == 'replace')
-					$filtered[] = $entry;
-			unset($entries);
-			$fp = fopen("$dir/$basename.json", "wb");
-			fwrite($fp, json_encode($filtered));
-			fclose($fp);
-			unset($filtered);
-			$i++;
+			$log_uuids = Db::select_column("select uuid from cache_logs order by uuid limit $offset, 10000");
+			if (count($log_uuids) == 0)
+				break;
+			$offset += 10000;
+			$log_uuid_groups = Okapi::make_groups($log_uuids, 500);
+			unset($log_uuids);
+			foreach ($log_uuid_groups as $log_uuids)
+			{
+				$basename = "part".str_pad($i, 5, "0", STR_PAD_LEFT);
+				$json_files[] = $basename.".json";
+				$entries = self::generate_changelog_entries('services/logs/entries', 'log', 'log_uuids',
+					'uuid', $log_uuids, self::$logged_log_entry_fields, true, false);
+				$filtered = array();
+				foreach ($entries as $entry)
+					if ($entry['change_type'] == 'replace')
+						$filtered[] = $entry;
+				unset($entries);
+				$fp = fopen("$dir/$basename.json", "wb");
+				fwrite($fp, json_encode($filtered));
+				fclose($fp);
+				unset($filtered);
+				$i++;
+			}
 		}
-
+		
 		# Package data.
 		
 		$metadata = array(
