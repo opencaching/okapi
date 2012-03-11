@@ -280,4 +280,5 @@ class View
 	}
 	
 	private static function ver36() { Db::execute("alter table okapi_cache modify column `key` varchar(64) not null"); }
+	private static function ver37() { Db::execute("delete from okapi_vars where var='last_clog_update'"); }
 }

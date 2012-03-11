@@ -63,14 +63,10 @@ class ReplicateCommon
 	/** Check for modifications in the database and update the changelog table accordingly. */
 	public static function update_clog_table()
 	{
-		$now = Db::select_value("select unix_timestamp(now())");
+		$now = Db::select_value("select now()");
+		$last_update = Okapi::get_var('last_clog_update', $now);
 		
-		# Skip the update, if it was already done during the last 60 seconds
-		# OR if it is BEING done right now.
-		
-		$last_update = Okapi::get_var('last_clog_update', $now - 86400) + 0;
-		if ($now - $last_update < 60)
-			return;
+		# Skip the update, if it is BEING done right now.
 		
 		$lock = Db::select_value("select get_lock('okapi_changelog_update', 0)");
 		if (!$lock)
@@ -88,7 +84,7 @@ class ReplicateCommon
 		$cache_codes = Db::select_column("
 			select wp_oc
 			from caches
-			where last_modified > from_unixtime('".mysql_real_escape_string($last_update)."');
+			where last_modified > '".mysql_real_escape_string($last_update)."';
 		");
 		$cache_code_groups = Okapi::make_groups($cache_codes, 50);
 		unset($cache_codes);
@@ -102,6 +98,7 @@ class ReplicateCommon
 		}
 		
 		# Same as above, for log entries.
+		# WRTODO: add offset/limit; this will fail (memory limit) if all comments were to be modified
 		
 		$log_uuids = Db::select_column("
 			select uuid
