@@ -353,7 +353,7 @@ class ReplicateCommon
 			if (count($log_uuids) == 0)
 				break;
 			$offset += 10000;
-			$log_uuid_groups = Okapi::make_groups($log_uuids, 1000);
+			$log_uuid_groups = Okapi::make_groups($log_uuids, 500);
 			unset($log_uuids);
 			foreach ($log_uuid_groups as $log_uuids)
 			{
