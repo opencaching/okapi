@@ -16,7 +16,7 @@ use okapi\views\menu\OkapiMenu;
 
 $GLOBALS['rootpath'] = '../'; # this is for OC-code compatibility, OC requires this
 $GLOBALS['no-session'] = true; # turn off OC-code session starting
-$GLOBALS['no-gzip'] = true; # turn off OC-code GZIP output buffering
+$GLOBALS['no-ob'] = true; # turn off OC-code GZIP output buffering
 
 require_once($GLOBALS['rootpath'].'okapi/core.php');
 OkapiErrorHandler::$treat_notices_as_errors = true;
@@ -26,7 +26,10 @@ require_once($GLOBALS['rootpath'].'okapi/urls.php');
 # requests to be fired from browser.
 if (session_id())
 	throw new Exception("Session started when should not be! You have to patch your OC installation. ".
-		"Please contact OKAPI developers.");
+		"Check $GLOBALS['no-session'] variable before starting session.");
+if (ob_started???)
+	throw new Exception("Output buffering started while it should not be! You have to patch you OC ".
+		"installation. Check $GLOBALS['no-ob'] variable before starting output buffering.");
 
 class OkapiScriptEntryPointController
 {

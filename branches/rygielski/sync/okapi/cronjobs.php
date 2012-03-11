@@ -60,7 +60,7 @@ class CronJobController
 			{
 				if ($cronjob->get_type() != $type)
 				{
-					$next_run = time() - 1;
+					$next_run = isset($schedule[$name]) ? $schedule[$name] : (time() - 1);
 				}
 				else
 				{
@@ -234,7 +234,7 @@ class StatsWriterCronJob extends PrerequestCronJob
 }
 
 /**
- * Once per hour, put a test entry in the database. This is to make sure
+ * Once per hour, puts a test entry in the database. This is to make sure
  * that crontab is set up properly.
  */
 class CheckCronTab1 extends Cron5Job
@@ -247,8 +247,8 @@ class CheckCronTab1 extends Cron5Job
 }
 
 /**
- * Twice an hour, upon request, check if the test entry in the
- * database is up-to-date (the one which was saved by CheckCronTab1 job).
+ * Twice an hour, upon request, checks if the test entry (previously put by
+ * CheckCronTab1 job) is up-to-date (the one which was saved by CheckCronTab1 job).
  */
 class CheckCronTab2 extends PrerequestCronJob
 {
@@ -293,7 +293,7 @@ class CheckCronTab2 extends PrerequestCronJob
 }
 
 /**
- * Once per 10 minutes, search for changes in the database and update the changelog.
+ * Once per 10 minutes, searches for changes in the database and updates the changelog.
  */
 class ChangeLogWriterJob extends Cron5Job
 {
@@ -306,7 +306,7 @@ class ChangeLogWriterJob extends Cron5Job
 }
 
 /**
- * Once per week, generate the fulldump archive.
+ * Once per week, generates the fulldump archive.
  */
 class FulldumpGeneratorJob extends Cron5Job
 {
@@ -318,7 +318,7 @@ class FulldumpGeneratorJob extends Cron5Job
 	}
 }
 
-/** Once per day, remove all revisions older than 10 days from okapi_clog table. */
+/** Once per day, removes all revisions older than 10 days from okapi_clog table. */
 class ChangeLogCleanerJob extends Cron5Job
 {
 	public function get_period() { return 86400; }

@@ -425,6 +425,7 @@ class OkapiHttpResponse
 	public $content_type = "text/plain; charset=utf-8";
 	public $content_disposition = null;
 	public $allow_gzip = true;
+	public $connection_close = false;
 	
 	/** Use this only as a setter, use get_body or print_body for reading! */
 	public $body;
@@ -475,7 +476,8 @@ class OkapiHttpResponse
 		header("HTTP/1.1 ".$this->status);
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: ".$this->content_type);
-		header("Connection: close");
+		if ($this->connection_close)
+			header("Connection: close");
 		if ($this->content_disposition)
 			header("Content-Disposition: ".$this->content_disposition);
 		
@@ -484,7 +486,7 @@ class OkapiHttpResponse
 		if (!empty($_SERVER["HTTP_ACCEPT_ENCODING"]) && strpos("gzip", $_SERVER["HTTP_ACCEPT_ENCODING"]) === null)
 			$try_gzip = false;
 
-		# Gziping the data here will disable gziping by Apache. This way, we can
+		# We will gzip the data ourselves, while disabling gziping by Apache. This way, we can
 		# set the Content-Length correctly which is handy in some scenarios.
 		
 		if ($try_gzip && is_string($this->body))
