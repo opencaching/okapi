@@ -255,7 +255,9 @@ class CheckCronTab2 extends PrerequestCronJob
 	public function get_period() { return 30 * 60; }
 	public function execute()
 	{
-		$last_ping = Cache::get('crontab_last_ping', time() - 86400); # if not set, assume 1 day ago.
+		$last_ping = Cache::get('crontab_last_ping');
+		if ($last_ping === null)
+			$last_ping = time() - 86400; # if not set, assume 1 day ago.
 		if ($last_ping > time() - 3600)
 		{
 			# There was a ping during the last hour. Everything is okay.
@@ -267,7 +269,9 @@ class CheckCronTab2 extends PrerequestCronJob
 		
 		# There was no ping. Decrement the counter. When reached zero, alert.
 		
-		$counter = Cache::get('crontab_check_counter', 3);
+		$counter = Cache::get('crontab_check_counter');
+		if ($counter === null)
+			$counter = 3;
 		$counter--;
 		if ($counter > 0)
 		{
