@@ -64,9 +64,11 @@ class WebService
 				'comment_count' => $doc->entry->count()
 			);
 			
-			# We cache it only for a moment. We want newly added comments to show up quickly.
+			# On one hand, we want newly added comments to show up quickly.
+			# On the other, we don't want OKAPI to contantly query Google Code.
+			# It's difficult to choose a correct timeout for this...
 			
-			Cache::set($cache_key, $result, 30);
+			Cache::set($cache_key, $result, 3600);
 		}
 		return Okapi::formatted_response($request, $result);
 	}

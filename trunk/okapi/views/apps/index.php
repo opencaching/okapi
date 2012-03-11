@@ -50,7 +50,7 @@ class View
 		ob_start();
 		Okapi::gettext_domain_init($langprefs);
 		include 'index.tpl.php';
-		$response->body = ob_get_clean();
+		$response->body = ob_get_flush();
 		Okapi::gettext_domain_restore();
 		return $response;
 	}

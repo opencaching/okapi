@@ -1,0 +1,38 @@
+<xml>
+	<brief>Get information on current changelog and fulldump state</brief>
+	<issue-id>111</issue-id>
+	<desc>
+		<p>[BETA] Get information on current changelog and fulldump state.</p>
+	</desc>
+	<common-format-params/>
+	<returns>
+		<p>A dictionary of the following structure:</p>
+		<ul>
+			<li>
+				<p><b>changelog</b> - a dictionary of the following structure:</p>
+				<ul>
+					<li><b>min_revision</b> - the lowest allowed value for the <b>since</b> attribute
+					(the ID of the earliest changelog entry kept in our database),</li>
+					<li><b>max_revision</b> - the current revision of the database (the ID of the
+					newest changelog entry kept in our database),</li>
+				</ul>
+			</li>
+			<li>
+				<p><b>latest_fulldump</b> - a dictionary of the following structure:</p>
+				<ul>
+					<li><b>filename</b> - name of the fulldump file (ex. "okapi-dump-r14054.tar.gz"),</li>
+					<li><b>revision</b> - revision of the database saved in the latest fulldump,</li>
+					<li><b>generated_at</b> - date and time (ISO 8601) when the fulldump was generated,</li>
+					<li><b>size</b> - size of the file, in bytes,</li>
+					<li><b>size_uncompressed</b> - approximate size of the uncompressed contents, in bytes.</li>
+				</ul>
+			</li>
+		</ul>
+		<p>The response MAY contain changes recorded before the revision which you stated in your <b>since</b>
+		parameter. This is due to caching. I we already have a response ready, that was produced for a
+		"since" parameter which was a little more in the past, we may want to return this cached copy,
+		instead of producing a new one. It will be faster for us, and you shouldn't even notice. We will
+		still make sure to set the <b>revision</b> and <b>more</b> attributes in a correct way, which
+		in turn will make you query us again, if you need to.</p>
+	</returns>
+</xml>

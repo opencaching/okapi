@@ -139,6 +139,7 @@ class WebService
 		$response->content_disposition = 'Content-Disposition: attachment; filename="results.zip"';
 		$response->stream_length = filesize($tempfilename);
 		$response->body = fopen($tempfilename, "rb");
+		$response->allow_gzip = false;
 		self::add_file_to_unlink($tempfilename);
 		return $response;
 	}
