@@ -71,7 +71,7 @@ class View
 		$response->content_type = "text/html; charset=utf-8";
 		ob_start();
 		include 'signup.tpl.php';
-		$response->body = ob_get_flush();
+		$response->body = ob_get_clean();
 		return $response;
 	}
 }
