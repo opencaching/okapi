@@ -48,8 +48,8 @@ class WebService
 	{
 		require_once 'replicate_common.inc.php';
 		
-		$meta = Cache::get("last_fulldump");
-		if ($meta == null)
+		$data = Cache::get("last_fulldump");
+		if ($data == null)
 			throw new BadRequest("No fulldump found. Try again later. If this doesn't help ".
 				"contact site administrator and/or OKAPI developers.");
 		
@@ -70,10 +70,10 @@ class WebService
 		}
 		
 		$response = new OkapiHttpResponse();
-		$response->content_type = $meta['content_type'];
-		$response->content_disposition = 'Content-Disposition: attachment; filename="'.$meta['public_filename'].'"';
-		$response->stream_length = $meta['compressed_size'];
-		$response->body = fopen($meta['filepath'], "rb");
+		$response->content_type = $data['meta']['content_type'];
+		$response->content_disposition = 'Content-Disposition: attachment; filename="'.$data['meta']['public_filename'].'"';
+		$response->stream_length = $data['meta']['compressed_size'];
+		$response->body = fopen($data['meta']['filepath'], "rb");
 		$response->allow_gzip = false;
 		return $response;
 	}
