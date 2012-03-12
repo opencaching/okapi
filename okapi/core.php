@@ -37,6 +37,9 @@ use okapi\cronjobs\CronJobController;
 /** Throw this when external developer does something wrong. */
 class BadRequest extends Exception {}
 
+/** Thrown on PHP's FATAL errors (detected in a shutdown function). */
+class ReallyFatalError extends ErrorException {}
+
 #
 # We'll try to make PHP into something more decent. Exception and
 # error handling.
@@ -100,12 +103,26 @@ class OkapiExceptionHandler
 			
 			error_log($e->getMessage());
 			
-			$exception_info = "*** ".$e->getMessage()." ***\n\n--- Stack trace ---\n".$e->getTraceAsString().
-				(isset($_SERVER['REQUEST_URI']) ? "\n\n--- OKAPI method called ---\n".preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI']) : "").
-				"\n\n--- Request headers ---\n".implode("\n", array_map(
-					function($k, $v) { return "$k: $v"; },
-					array_keys(getallheaders()), array_values(getallheaders())
-				));
+			$exception_info = "*** ".$e->getMessage()." ***\n\n";
+			if ($e instanceof ReallyFatalError)
+			{
+				# This one doesn't have a stack trace. It is fed directly to OkapiExceptionHandler::handle
+				# by OkapiErrorHandler::handle_shutdown. Instead of printing trace, we will just print
+				# the file and line.
+				
+				$exception_info .= "File: ".$e->getFile()."\nLine: ".$e->getLine()."\n\n";
+			}
+			else
+			{
+				$exception_info .= "--- Stack trace ---\n".$e->getTraceAsString()."\n\n";
+			}
+			
+			$exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
+				preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI'])."\n\n" : "");
+			$exception_info .= "--- Request headers ---\n".implode("\n", array_map(
+				function($k, $v) { return "$k: $v"; },
+				array_keys(getallheaders()), array_values(getallheaders())
+			));
 			
 			if (isset($GLOBALS['debug_page']) && $GLOBALS['debug_page'])
 			{
@@ -161,6 +178,17 @@ class OkapiErrorHandler
 	{
 		set_error_handler(array('\okapi\OkapiErrorHandler', 'handle'));
 	}
+	
+	/** Handle FATAL errors (not catchable, report only). */
+	public static function handle_shutdown()
+	{
+		$error = error_get_last();
+		if ($error !== null)
+		{
+			$e = new ReallyFatalError($error['message'], 0, E_ERROR, $error['file'], $error['line']);
+			OkapiExceptionHandler::handle($e);
+		}
+	}
 }
 
 # Setting handlers. Errors will now throw exceptions, and all exceptions
@@ -169,6 +197,7 @@ class OkapiErrorHandler
 
 set_exception_handler(array('\okapi\OkapiExceptionHandler', 'handle'));
 set_error_handler(array('\okapi\OkapiErrorHandler', 'handle'));
+register_shutdown_function(array('\okapi\OkapiErrorHandler', 'handle_shutdown'));
 
 #
 # Extending exception types (introducing some convenient shortcuts for
