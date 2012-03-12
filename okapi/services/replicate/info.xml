@@ -20,7 +20,6 @@
 			<li>
 				<p><b>latest_fulldump</b> - a dictionary of the following structure:</p>
 				<ul>
-					<li><b>filename</b> - name of the fulldump file (ex. "okapi-dump-r14054.tar.gz"),</li>
 					<li><b>revision</b> - revision of the database saved in the latest fulldump,</li>
 					<li><b>generated_at</b> - date and time (ISO 8601) when the fulldump was generated,</li>
 					<li><b>size</b> - size of the file, in bytes,</li>
