@@ -108,8 +108,8 @@ class ReplicateCommon
 			$log_uuids = Db::select_column("
 				select uuid
 				from cache_logs
-				where last_modified > '".mysql_real_escape_string($last_update)."';
-				limit $offset, 10000
+				where last_modified > '".mysql_real_escape_string($last_update)."'
+				limit $offset, 10000;
 			");
 			if (count($log_uuids) == 0)
 				break;
