@@ -38,7 +38,6 @@ class WebService
 		if ($dump)
 		{
 			$result['latest_fulldump'] = array(
-				'filename' => $dump['meta']['public_filename'],
 				'revision' => $dump['revision'],
 				'generated_at' => $dump['meta']['generated_at'],
 				'size' => $dump['meta']['compressed_size'],
