@@ -2,7 +2,7 @@
 	<brief>Get information on current changelog and fulldump state</brief>
 	<issue-id>111</issue-id>
 	<desc>
-		<p>[BETA] Get information on current changelog and fulldump state.</p>
+		<p><b>Beta status.</b> Get information on current changelog and fulldump state.</p>
 	</desc>
 	<common-format-params/>
 	<returns>

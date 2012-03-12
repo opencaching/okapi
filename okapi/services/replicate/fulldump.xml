@@ -2,7 +2,7 @@
 	<brief>Download OKAPI database snapshot</brief>
 	<issue-id>110</issue-id>
 	<desc>
-		<p>[BETA] Download the latest snapshot of OKAPI database. You should call this method
+		<p><b>Beta status.</b> Download the latest snapshot of OKAPI database. You should call this method
 		only once in your lifetime.</p>
 		
 		<p>For some applications it might be desireable to have a quick access to the entire

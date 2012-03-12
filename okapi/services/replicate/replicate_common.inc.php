@@ -94,7 +94,6 @@ class ReplicateCommon
 		}
 		
 		# Same as above, for log entries.
-		# WRTODO: add offset/limit; this will fail (memory limit) if all comments were to be modified
 		
 		$offset = 0;
 		while (true)

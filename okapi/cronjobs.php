@@ -4,6 +4,7 @@ namespace okapi\cronjobs;
 
 use Exception;
 use okapi\Okapi;
+use okapi\OkapiLock;
 use okapi\Db;
 use okapi\Cache;
 use okapi\services\replicate\ReplicateCommon;
@@ -42,17 +43,9 @@ class CronJobController
 	 */
 	public static function run_jobs($type)
 	{
-		# Get lock. If lock cannot be acquired, then probably other process is running
-		# cronjobs already. We'll just return in this case, and let the other process finish.
-		
-		switch ($type)
-		{
-			case 'pre-request': $lock_name = 22571; break;
-			case 'cron-5': $lock_name = 22572; break;
-			default: throw new Exception();
-		}
-		$lock = sem_get($lock_name);
-		sem_acquire($lock);
+		# We don't want other cronjobs of the same time to run simultanously.
+		$lock = OkapiLock::get('cronjobs-'.$type);
+		$lock->acquire();
 
 		$schedule = Cache::get("cron_schedule");
 		if ($schedule == null)
@@ -79,7 +72,7 @@ class CronJobController
 			if ($time < $nearest)
 				$nearest = $time;
 		Cache::set("cron_schedule", $schedule, 30*86400);
-		sem_release($lock);
+		$lock->release();
 		return $nearest;
 	}
 }
