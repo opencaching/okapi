@@ -68,12 +68,6 @@ class ReplicateCommon
 		if ($last_update === null)
 			$last_update = Db::select_value("select date_add(now(), interval -1 day)");
 		
-		# Skip the update, if it is BEING done right now.
-		
-		$lock = Db::select_value("select get_lock('okapi_changelog_update', 0)");
-		if (!$lock)
-			return;
-		
 		# Usually this will be fast. But, for example, if admin changes ALL the
 		# caches, this will take forever. But we still want it to finish properly
 		# without interruption.
@@ -128,7 +122,6 @@ class ReplicateCommon
 		Okapi::set_var("last_clog_update", $now);
 		$revision = Db::select_value("select max(id) from okapi_clog");
 		Okapi::set_var("clog_revision", $revision);
-		Db::select_value("select release_lock('okapi_changelog_update')");
 	}
 
 	/**
