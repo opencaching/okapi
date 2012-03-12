@@ -27,11 +27,5 @@
 				</ul>
 			</li>
 		</ul>
-		<p>The response MAY contain changes recorded before the revision which you stated in your <b>since</b>
-		parameter. This is due to caching. I we already have a response ready, that was produced for a
-		"since" parameter which was a little more in the past, we may want to return this cached copy,
-		instead of producing a new one. It will be faster for us, and you shouldn't even notice. We will
-		still make sure to set the <b>revision</b> and <b>more</b> attributes in a correct way, which
-		in turn will make you query us again, if you need to.</p>
 	</returns>
 </xml>
