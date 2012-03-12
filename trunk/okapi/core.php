@@ -511,7 +511,7 @@ class OkapiHttpResponse
 		header("HTTP/1.1 ".$this->status);
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: ".$this->content_type);
-		header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0");
 		if ($this->connection_close)
 			header("Connection: close");
 		if ($this->content_disposition)
@@ -551,6 +551,30 @@ class OkapiRedirectResponse extends OkapiHttpResponse
 		header("HTTP/1.1 303 See Other");
 		header("Location: ".$this->url);
 	}
+}
+
+class OkapiLock
+{
+	private $lock;
+	
+	public static function get($name)
+	{
+		return new OkapiLock($name);
+	}
+	
+	private function __construct($name)
+	{
+		$lockfile = $GLOBALS['dynbasepath']."/okapi-lock-".$name;
+		if (!file_exists($lockfile))
+		{
+			$fp = fopen($lockfile, "wb");
+			fclose($fp);
+		}
+		$this->lock = sem_get(fileinode($lockfile));
+	}
+	
+	public function acquire() { sem_acquire($this->lock); }
+	public function release() { sem_release($this->lock); }
 }
 
 /** Container for various OKAPI functions. */

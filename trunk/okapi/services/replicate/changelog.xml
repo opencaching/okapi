@@ -2,7 +2,7 @@
 	<brief>Get the list of changes for your database</brief>
 	<issue-id>109</issue-id>
 	<desc>
-		<p>[BETA] Get the list of changes to be replayed on your own copy of OpenCaching database. Use this method
+		<p><b>Beta status.</b> Get the list of changes to be replayed on your own copy of OpenCaching database. Use this method
 		periodically (ex. once per hour) to keep your database in sync with ours.</p>
 		
 		<p>For some applications it might be desireable to have a quick access to the entire
