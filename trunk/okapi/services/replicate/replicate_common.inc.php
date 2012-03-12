@@ -102,17 +102,25 @@ class ReplicateCommon
 		# Same as above, for log entries.
 		# WRTODO: add offset/limit; this will fail (memory limit) if all comments were to be modified
 		
-		$log_uuids = Db::select_column("
-			select uuid
-			from cache_logs
-			where last_modified > '".mysql_real_escape_string($last_update)."';
-		");
-		$log_uuid_groups = Okapi::make_groups($log_uuids, 100);
-		unset($log_uuids);
-		foreach ($log_uuid_groups as $log_uuids)
+		$offset = 0;
+		while (true)
 		{
-			self::generate_changelog_entries('services/logs/entries', 'log', 'log_uuids',
-				'uuid', $log_uuids, self::$logged_log_entry_fields, false, true, 3600);
+			$log_uuids = Db::select_column("
+				select uuid
+				from cache_logs
+				where last_modified > '".mysql_real_escape_string($last_update)."';
+				limit $offset, 10000
+			");
+			if (count($log_uuids) == 0)
+				break;
+			$offset += 10000;
+			$log_uuid_groups = Okapi::make_groups($log_uuids, 100);
+			unset($log_uuids);
+			foreach ($log_uuid_groups as $log_uuids)
+			{
+				self::generate_changelog_entries('services/logs/entries', 'log', 'log_uuids',
+					'uuid', $log_uuids, self::$logged_log_entry_fields, false, true, 3600);
+			}
 		}
 		
 		# Update state variables and release DB lock.
