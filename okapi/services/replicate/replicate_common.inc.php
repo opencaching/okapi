@@ -105,7 +105,7 @@ class ReplicateCommon
 		$log_uuids = Db::select_column("
 			select uuid
 			from cache_logs
-			where last_modified > from_unixtime('".mysql_real_escape_string($last_update)."');
+			where last_modified > '".mysql_real_escape_string($last_update)."';
 		");
 		$log_uuid_groups = Okapi::make_groups($log_uuids, 100);
 		unset($log_uuids);
