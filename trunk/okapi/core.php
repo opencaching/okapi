@@ -1200,7 +1200,11 @@ class Cache
 			catch (ErrorException $e)
 			{
 				unset($dict[$row['key']]);
-				Okapi::mail_admins("Debug: Unserialize error", "Could not unserialize key '".$row['key']."' from Cache:\n\n".gzinflate($row['value']));
+				Okapi::mail_admins("Debug: Unserialize error",
+					"Could not unserialize key '".$row['key']."' from Cache.\n".
+					"Probably something REALLY big was put there and data has been truncated.\n".
+					"Consider upgrading cache table to LONGBLOB.\n\n".
+					"Length of data, compressed: ".strlen($row['value']));
 			}
 		}
 		if (count($dict) < count($keys))
