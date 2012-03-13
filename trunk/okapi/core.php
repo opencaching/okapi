@@ -38,8 +38,7 @@ use okapi\cronjobs\CronJobController;
 function get_admin_emails()
 {
 	return array(
-		// isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost'
-		'rygielski@mimuw.edu.pl' # temporary, for debugging cron
+		isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost',
 	);
 }
 
