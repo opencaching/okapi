@@ -1196,7 +1196,7 @@ class Cache
 			$dict[$row['key']] = @unserialize(gzinflate($row['value']));
 			if (!$dict[$row['key']])
 			{
-				unset($dict[$row['key']);
+				unset($dict[$row['key']]);
 				mail_admins("Debug: Unserialize error", "Could not unserialize key '".$row['key']."' from Cache:\n\n".gzinflate($row['value']));
 			}
 		}
