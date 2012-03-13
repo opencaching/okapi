@@ -141,7 +141,7 @@ class ReplicateCommon
 	{
 		# Retrieve the previous versions of all objects from OKAPI cache.
 		
-		if ($use_cache != null)
+		if ($use_cache)
 		{
 			$cache_keys = array();
 			foreach ($key_values as $key)
@@ -175,7 +175,8 @@ class ReplicateCommon
 					'change_type' => 'replace',
 					'data' => ($use_cache ? $diff : $object),
 				);
-				$cached_values['clog#'.$object_type.'#'.$key] = $object;
+				if ($use_cache)
+					$cached_values['clog#'.$object_type.'#'.$key] = $object;
 			}
 			else
 			{
@@ -184,7 +185,8 @@ class ReplicateCommon
 					'object_key' => array($key_name => $key),
 					'change_type' => 'delete',
 				);
-				$cached_values['clog#'.$object_type.'#'.$key] = null;
+				if ($use_cache)
+					$cached_values['clog#'.$object_type.'#'.$key] = null;
 			}
 		}
 		
@@ -209,7 +211,8 @@ class ReplicateCommon
 			
 			# Update the values kept in OKAPI cache.
 			
-			Cache::set_many($cached_values, $cache_timeout);
+			if ($use_cache)
+				Cache::set_many($cached_values, $cache_timeout);
 		}
 	}
 	

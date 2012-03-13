@@ -88,12 +88,6 @@ class View
 		self::out("\nUpdate complete.");
 	}
 	
-	private static function force_all_cronjobs_rerun()
-	{
-		Okapi::set_var("cron_nearest_event", 0);
-		Cache::delete('cron_schedule');
-	}
-	
 	private static function ver1()
 	{
 		Db::execute("
@@ -290,6 +284,16 @@ class View
 	private static function ver38() { Db::execute("alter table okapi_clog modify column data mediumblob"); }
 	private static function ver39() { Db::execute("delete from okapi_clog"); }
 	private static function ver40() { Db::execute("alter table okapi_cache modify column value mediumblob"); }
-	private static function ver41() { self::force_all_cronjobs_rerun(); }
+	
+	private static function ver41()
+	{
+		# Force changelog reset (will be produced one day back)
+		Db::execute("delete from okapi_vars where var='last_clog_update'");
+
+		# Force all cronjobs rerun
+		Okapi::set_var("cron_nearest_event", 0);
+		Cache::delete('cron_schedule');
+	}
+	
 	private static function ver42() { Db::execute("delete from okapi_cache where length(value) = 65535"); }
 }
