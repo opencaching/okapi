@@ -5,7 +5,7 @@
 		<p>Search for geocaches using some simple filters.
 		All of them are optional, but you surely want to use at least some of them.</p>
 		<p>If you're looking for a way to keep your geocaching database in sync with ours,
-		have a peek on the <b>replicate</b> module.</p>
+		have a peek at the <b>replicate</b> module.</p>
 	</desc>
 	<opt name='type'>
 		<p>Pipe-separated list of cache type codes. If given, the results will be limited
@@ -123,7 +123,7 @@
 		<p>An offset, the amount of items to skip at the beginning of the result. Combined with limit
 		allows pagination of the result set. Please note, that the sum of offset and limit still cannot
 		exceed 500. You MAY NOT use this method to list all the caches, it is for searching only.
-		Have a peek on the <b>replicate</b> module if you need all the caches.</p>
+		Have a peek at the <b>replicate</b> module if you need all the caches.</p>
 	</opt>
 	<opt name='order_by' default='0'>
 		<p>Pipe separated list of fields to order the results by. Prefix the field name with
