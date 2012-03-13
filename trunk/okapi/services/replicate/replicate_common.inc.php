@@ -29,11 +29,16 @@ class ReplicateCommon
 	}
 
 	/** Return the number of the oldest changelog revision kept in database. */
-	public static function get_min_revision()
+	public static function get_min_since()
 	{
 		static $cache = null;
 		if ($cache == null)
-			$cache = Db::select_value("select min(id) from okapi_clog") + 0;
+		{
+			$cache = Db::select_value("select min(id) from okapi_clog");
+			if ($cache === null)
+				$cache = 1;
+			$cache -= 1;
+		}
 		return $cache;
 	}
 

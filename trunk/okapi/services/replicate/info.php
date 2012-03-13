@@ -31,8 +31,8 @@ class WebService
 
 		$result = array();
 		$result['changelog'] = array(
-			'min_revision' => ReplicateCommon::get_min_revision(),
-			'max_revision' => ReplicateCommon::get_revision(),
+			'min_since' => ReplicateCommon::get_min_since(),
+			'revision' => ReplicateCommon::get_revision(),
 		);
 		$dump = Cache::get("last_fulldump");
 		if ($dump)
