@@ -90,6 +90,7 @@ class View
 	
 	private static function force_all_cronjobs_rerun()
 	{
+		Okapi::set_var("cron_nearest_event", 0);
 		Cache::delete('cron_schedule');
 	}
 	
