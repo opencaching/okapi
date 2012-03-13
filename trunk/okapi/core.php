@@ -528,7 +528,7 @@ class OkapiHttpResponse
 		
 		# Make sure that gzip is supported by the client.
 		$try_gzip = $this->allow_gzip;
-		if (empty($_SERVER["HTTP_ACCEPT_ENCODING"]) || (strpos("gzip", $_SERVER["HTTP_ACCEPT_ENCODING"]) === null))
+		if (empty($_SERVER["HTTP_ACCEPT_ENCODING"]) || (strpos("gzip", $_SERVER["HTTP_ACCEPT_ENCODING"]) === false))
 			$try_gzip = false;
 
 		# We will gzip the data ourselves, while disabling gziping by Apache. This way, we can
