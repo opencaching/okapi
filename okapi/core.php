@@ -1200,7 +1200,7 @@ class Cache
 			catch (ErrorException $e)
 			{
 				unset($dict[$row['key']]);
-				mail_admins("Debug: Unserialize error", "Could not unserialize key '".$row['key']."' from Cache:\n\n".gzinflate($row['value']));
+				Okapi::mail_admins("Debug: Unserialize error", "Could not unserialize key '".$row['key']."' from Cache:\n\n".gzinflate($row['value']));
 			}
 		}
 		if (count($dict) < count($keys))
