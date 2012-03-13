@@ -34,6 +34,15 @@ use OAuthSignatureMethod_HMAC_SHA1;
 use OAuthRequest;
 use okapi\cronjobs\CronJobController;
 
+/** Return an array of email addresses which always get notified on OKAPI errors. */
+function get_admin_emails()
+{
+	return array(
+		// isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost'
+		'rygielski@mimuw.edu.pl' # temporary, for debugging cron
+	);
+}
+
 /** Throw this when external developer does something wrong. */
 class BadRequest extends Exception {}
 
@@ -130,7 +139,7 @@ class OkapiExceptionHandler
 				print "Let's cut to the chase then:";
 				print "\n\n".$exception_info;
 			}
-			$admin_email = isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost';
+			$admin_email = implode(", ", get_admin_emails());
 			$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
 			mail(
 				$admin_email,
@@ -364,7 +373,8 @@ class OkapiInternalConsumer extends OkapiConsumer
 {
 	public function __construct()
 	{
-		parent::__construct('internal', null, "OpenCaching site", null, isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost');
+		$admins = get_admin_emails();
+		parent::__construct('internal', null, "OpenCaching site", null, $admins[0]);
 	}
 }
 
@@ -623,9 +633,8 @@ class Okapi
 	/** Send an email message to local OKAPI administrators. */
 	public static function mail_admins($subject, $message)
 	{
-		$admin_email = isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost';
 		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
-		mail($admin_email, $subject, $message,
+		mail(implode(", ", get_admin_emails()), $subject, $message,
 			"Content-Type: text/plain; charset=utf-8\n".
 			"From: OKAPI <$sender_email>\n".
 			"Reply-To: $sender_email\n"
@@ -806,18 +815,15 @@ class Okapi
 			"From: OKAPI <$sender_email>\n".
 			"Reply-To: $sender_email\n"
 		);
-		if (isset($GLOBALS['sql_errormail']))
-		{
-			mail($GLOBALS['sql_errormail'], "New OKAPI app registered!",
-				"Name: $consumer->name\n".
-				"Developer: $consumer->email\n".
-				($consumer->url ? "URL: $consumer->url\n" : "").
-				"Consumer Key: $consumer->key\n",
-				"Content-Type: text/plain; charset=utf-8\n".
-				"From: OKAPI <$sender_email>\n".
-				"Reply-To: $sender_email\n"
-			);
-		}
+		Okapi::mail_admins("New OKAPI app registered!",
+			"Name: $consumer->name\n".
+			"Developer: $consumer->email\n".
+			($consumer->url ? "URL: $consumer->url\n" : "").
+			"Consumer Key: $consumer->key\n",
+			"Content-Type: text/plain; charset=utf-8\n".
+			"From: OKAPI <$sender_email>\n".
+			"Reply-To: $sender_email\n"
+		);
 		Db::execute("
 			insert into okapi_consumers (`key`, name, secret, url, email, date_created)
 			values (
@@ -1186,7 +1192,14 @@ class Cache
 				and expires > now()
 		");
 		while ($row = mysql_fetch_assoc($rs))
-			$dict[$row['key']] = unserialize(gzinflate($row['value']));
+		{
+			$dict[$row['key']] = @unserialize(gzinflate($row['value']));
+			if (!$dict[$row['key']])
+			{
+				unset($dict[$row['key']);
+				mail_admins("Debug: Unserialize error", "Could not unserialize key '".$row['key']."' from Cache:\n\n".gzinflate($row['value']));
+			}
+		}
 		if (count($dict) < count($keys))
 			foreach ($keys as $key)
 				if (!isset($dict[$key]))
