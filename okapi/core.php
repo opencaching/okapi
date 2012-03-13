@@ -1193,8 +1193,11 @@ class Cache
 		");
 		while ($row = mysql_fetch_assoc($rs))
 		{
-			$dict[$row['key']] = @unserialize(gzinflate($row['value']));
-			if (!$dict[$row['key']])
+			try
+			{
+				$dict[$row['key']] = unserialize(gzinflate($row['value']));
+			}
+			catch (ErrorException $e)
 			{
 				unset($dict[$row['key']]);
 				mail_admins("Debug: Unserialize error", "Could not unserialize key '".$row['key']."' from Cache:\n\n".gzinflate($row['value']));
