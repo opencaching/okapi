@@ -15,7 +15,9 @@
 	</req>
 	<opt name='radius'>
 		<p>Maximal distance (from the center point) for the cache to
-		be included in the results.</p>
+		be included in the results. Unlike in most other places, this
+		distance is given <b>in kilometers</b> instead of meters
+		(it can contain a floating point though).</p>
 	</opt>
 	<import-params method='services/caches/search/all'/>
 	<common-format-params/>
