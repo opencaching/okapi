@@ -1,8 +1,8 @@
 <xml>
-	<brief>Get a list of USOS API methods with brief descriptions</brief>
+	<brief>Get a list of OKAPI methods with brief descriptions</brief>
 	<issue-id>12</issue-id>
 	<desc>
-		<p>Get a list of USOS API methods with brief descriptions.</p>
+		<p>Get a list of OKAPI methods with brief descriptions.</p>
 	</desc>
 	<common-format-params/>
 	<returns>
