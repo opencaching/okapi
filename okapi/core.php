@@ -18,10 +18,6 @@ namespace okapi;
 
 # I hope this will come in handy...  - WR.
 
-#
-# First - base exception types.
-#
-
 use Exception;
 use ErrorException;
 use OAuthException;
@@ -42,11 +38,15 @@ function get_admin_emails()
 	);
 }
 
+#
+# Base exception types.
+#
+
 /** Throw this when external developer does something wrong. */
 class BadRequest extends Exception {}
 
 /** Thrown on PHP's FATAL errors (detected in a shutdown function). */
-class ReallyFatalError extends ErrorException {}
+class FatalError extends ErrorException {}
 
 #
 # We'll try to make PHP into something more decent. Exception and
@@ -112,7 +112,7 @@ class OkapiExceptionHandler
 			error_log($e->getMessage());
 			
 			$exception_info = "*** ".$e->getMessage()." ***\n\n";
-			if ($e instanceof ReallyFatalError)
+			if ($e instanceof FatalError)
 			{
 				# This one doesn't have a stack trace. It is fed directly to OkapiExceptionHandler::handle
 				# by OkapiErrorHandler::handle_shutdown. Instead of printing trace, we will just print
@@ -199,7 +199,7 @@ class OkapiErrorHandler
 		
 		if (($error !== null) && ($error['type'] == E_ERROR))
 		{
-			$e = new ReallyFatalError($error['message'], 0, $error['type'], $error['file'], $error['line']);
+			$e = new FatalError($error['message'], 0, $error['type'], $error['file'], $error['line']);
 			OkapiExceptionHandler::handle($e);
 		}
 	}
@@ -290,7 +290,6 @@ class Db
 		mysql_free_result($rs);
 	}
 
-	
 	public static function select_value($query)
 	{
 		$column = self::select_column($query);
@@ -756,6 +755,7 @@ class Okapi
 		static $init_made = false;
 		if ($init_made)
 			return;
+		ini_set('memory_limit', '128M');
 		if (!self::$data_store)
 			self::$data_store = new OkapiDataStore();
 		if (!self::$server)

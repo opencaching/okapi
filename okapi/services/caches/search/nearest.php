@@ -66,6 +66,7 @@ class WebService
 			$radius = floatval($tmp);
 			if ($radius <= 0)
 				throw new InvalidParam('radius', "Has to be a positive number.");
+			$radius *= 1000; # this one is given in kilemeters, converting to meters!
 			$where_conds[] = "$distance_formula <= '".mysql_real_escape_string($radius)."'";
 		}
 		
