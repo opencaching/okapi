@@ -8,7 +8,7 @@ $m = $vars['method'];
 <html lang='en'>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title>OKAPI Reference - <?= $m['name'] ?></title>
+		<title><?= $m['brief_description'] ?> - OKAPI Reference</title>
 		<link rel="stylesheet" href="/okapi/static/common.css?<?= $vars['okapi_rev'] ?>">
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
