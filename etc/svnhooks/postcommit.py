@@ -136,7 +136,7 @@ try:
 		stdout=sys.stdout, stderr=sys.stdout)
 	subprocess.call(["svn", "commit", deployment_name + "/okapi", "--non-interactive", "--username",
 		ocpl_username, "--password", ocpl_password, "--no-auth-cache", "-m",
-		"OKAPI Project update (r" + str(revision) + ")"],
+		"Automatic OKAPI Project update (r" + str(revision) + ")"],
 		stdout=sys.stdout, stderr=sys.stdout)
 	print "Cleanup..."
 	subprocess.call(["rm", "-rf", deployment_name])
