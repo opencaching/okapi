@@ -2,36 +2,47 @@
 # -*- coding: utf-8 -*-
 
 # This script is executed by Google Code upon every SVN commit.
+# It is currently installed on one of my servers. Contact me for
+# details (rygielski@mimuw.edu.pl).
+
 # What it does:
-#   - verifies that the requests came from Google (HMAC signature),
+#   - verifies that the request came from Google (HMAC signature),
 #   - checks if SVN commit changed anything within trunk/ (except the
 #     trunk/etc/ directory),
 #   - exports trunk to a temporary location,
 #   - removes etc/,
 #   - replaces Okapi::$revision field in okapi/core.php,
 #   - builds a package (okapi-rNNN.tar.gz),
-#   - posts the package on the Project Homepage.
-
-# A file called auth.py is required to run this script:
-# auth_key = '(Post-Commit Authentication Key)'
-# password = '(my googlecode.com password)'
+#   - posts the package on the Project Homepage,
+#   - checks out okapi directory of the opencaching-pl project,
+#   - replaces the okapi directory with the new version,
+#   - commits the changes to opencaching-pl project.
 
 print "Content-Type: text/plain; charset=utf-8"
 print
 print "Hello there!"
 print
 
-from auth import auth_key, password
+import sys
 
+try:
+	from auth import okapi_auth_key, okapi_username, okapi_password, ocpl_username, ocpl_password
+except ImportError:
+	print "A file called auth.py is required to run this script. The contents are:"
+	print
+	print 'okapi_auth_key = "Post-Commit Authentication Key for opencaching-api project"'
+	print 'okapi_username = "Username with RW rights to opencaching-api project"'
+	print 'okapi_password = "User\'s commit-password"'
+	print 'ocpl_username = "Username with RW rights to opencaching-pl project"'
+	print 'ocpl_password = "User\'s commit-password"'
+	sys.exit(1)
+	
 import cgi
 import cgitb
 cgitb.enable()
-
-import sys
 import os
 import hmac
 import json
-
 from googlecode_upload import upload_find_auth
 
 # Reading request body and signature.
@@ -50,14 +61,14 @@ print
 
 # Validating the signature.
 
-m = hmac.new(auth_key)
+m = hmac.new(okapi_auth_key)
 m.update(body)
 digest = m.hexdigest()
 if digest == signature:
 	print "Signature is VALID."
 else:
 	print "Signature is INVALID. Aborting your request."
-	sys.exit()
+	sys.exit(1)
 
 data = json.loads(body)
 filenames = []
@@ -75,7 +86,7 @@ important_filenames = filter(lambda filename: filename.startswith("/trunk/"), fi
 important_filenames = filter(lambda filename: not filename.startswith("/trunk/etc/"), important_filenames)
 if len(important_filenames) == 0:
 	print "Deployment package was unaffected by this commit. Aborting."
-	sys.exit()
+	sys.exit(0)
 
 import subprocess
 
@@ -100,18 +111,29 @@ try:
 	fp.close()
 	print "Creating archive..."
 	sys.stdout.flush()
-	subprocess.call(["tar", "-cf", deployment_name + ".tar", deployment_name])
-	subprocess.call(["gzip", deployment_name + ".tar"])
+	subprocess.call(["tar", "-czf", deployment_name + ".tar.gz", deployment_name])
 	subprocess.call(["chmod", "666", deployment_name + ".tar.gz"])
-	print "Removing source files..."
 	subprocess.call(["rm", "-rf", deployment_name])
+	print "Uploading to the Downloads page..."
 	sys.stdout.flush()
-except OSError:
+	upload_find_auth(deployment_name + ".tar.gz", "opencaching-api",
+		"OKAPI revision " + str(revision) + " (automatic deployment)",
+		user_name=okapi_username, password=okapi_password)
+	print "Checking out opencaching-pl/trunk/okapi..."
+	sys.stdout.flush()
+	subprocess.call(["svn", "co", "http://opencaching-pl.googlecode.com/svn/trunk/okapi",
+		deployment_name], stdout=sys.stdout, stderr=sys.stdout)
+	sys.stdout.flush()
+	print "Replacing opencaching.pl's okapi contents with the latest version..."
+	subprocess.call(["rm", "-rf", deployment_name + "/*"], shell=True)
+	subprocess.call(["tar", "--overwrite", "-xf", deployment_name + ".tar.gz"])
+	#subprocess.call(["svn", "commit", "--non-interactive", "--username", ocpl_username,
+	#	"--password", ocpl_password, "--no-auth-cache", "-m", "OKAPI Project update (r" + str(revision) + ")"],
+	#	stdout=sys.stdout, stderr=sys.stdout)
+	#subprocess.call(["rm", "-rf", deployment_name])
+except OSError, e:
 	print "Error :("
-	sys.exit()
+	print str(e)
+	sys.exit(1)
 
-print "Deploying..."
-upload_find_auth(deployment_name + ".tar.gz", "opencaching-api",
-	"OKAPI revision " + str(revision) + " (automatic deployment)",
-	user_name="rygielski@gmail.com", password=password)
-print "Deployed."
+print "Deployment complete."
