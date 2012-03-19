@@ -121,19 +121,28 @@ try:
 		user_name=okapi_username, password=okapi_password)
 	print "Checking out opencaching-pl/trunk/okapi..."
 	sys.stdout.flush()
-	subprocess.call(["svn", "co", "http://opencaching-pl.googlecode.com/svn/trunk/okapi",
-		deployment_name], stdout=sys.stdout, stderr=sys.stdout)
+	subprocess.call(["svn", "co", "https://opencaching-pl.googlecode.com/svn/trunk/okapi",
+		deployment_name + "/okapi"], stdout=sys.stdout, stderr=sys.stdout)
 	sys.stdout.flush()
 	print "Replacing opencaching.pl's okapi contents with the latest version..."
-	subprocess.call(["rm", "-rf", deployment_name + "/*"], shell=True)
-	subprocess.call(["tar", "--overwrite", "-xf", deployment_name + ".tar.gz"])
-	#subprocess.call(["svn", "commit", "--non-interactive", "--username", ocpl_username,
-	#	"--password", ocpl_password, "--no-auth-cache", "-m", "OKAPI Project update (r" + str(revision) + ")"],
-	#	stdout=sys.stdout, stderr=sys.stdout)
-	#subprocess.call(["rm", "-rf", deployment_name])
+	## Currently I have only svn 1.6 on the server where this script is being run.
+	## Therefore, I cannot simply remove all the contents (.svn directories need to
+	## be there). This can be fixed once svn on my server gets upgraded.
+	# subprocess.call(["rm", "-rf", deployment_name + "/*"], shell=True)
+	subprocess.call(["tar", "--overwrite", "-xf", deployment_name + ".tar.gz"],
+		stdout=sys.stdout, stderr=sys.stdout)
+	subprocess.call(["svn", "add", "--force", "."], cwd = deployment_name + "/okapi",
+		stdout=sys.stdout, stderr=sys.stdout)
+	subprocess.call(["svn", "commit", deployment_name + "/okapi", "--non-interactive", "--username",
+		ocpl_username, "--password", ocpl_password, "--no-auth-cache", "-m",
+		"OKAPI Project update (r" + str(revision) + ")"],
+		stdout=sys.stdout, stderr=sys.stdout)
+	print "Cleanup..."
+	subprocess.call(["rm", "-rf", deployment_name])
 except OSError, e:
 	print "Error :("
 	print str(e)
 	sys.exit(1)
 
 print "Deployment complete."
+
