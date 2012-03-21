@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\views\attrlist;
+namespace okapi\views\devel\attrlist;
 
 use Exception;
 use okapi\Okapi;
@@ -28,12 +28,12 @@ class View
 		$chunks = array();
 		foreach ($dict as $internal_id => $langs)
 		{
-			$chunks[] = "<attr code='...' internal_id='$internal_id'";
+			$chunks[] = "internal_id='$internal_id'";
 			$langkeys = array_keys($langs);
 			sort($langkeys);
 			foreach ($langkeys as $langkey)
 				$chunks[] = " $langkey='".$langs[$langkey]."'";
-			$chunks[] = " />\n";
+			$chunks[] = "\n";
 		}
 		
 		$response = new OkapiHttpResponse();

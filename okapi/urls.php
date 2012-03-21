@@ -22,6 +22,7 @@ class OkapiUrls
 		'^apps/revoke_access$' => 'apps/revoke_access',
 		'^update/?$' => 'update',
 		'^cron5$' => 'cron5',
-		'^attrlist$' => 'attrlist',
+		'^devel/attrlist$' => 'devel/attrlist',
+		'^devel/dbstruct$' => 'devel/dbstruct',
 	);
 }
