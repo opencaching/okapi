@@ -27,6 +27,9 @@ class View
 		$dbname = $GLOBALS['dbname'];
 		$struct = shell_exec("mysqldump --no-data -u$user -p$password $dbname");
 		
+		# Remove the "AUTO_INCREMENT=..." values. They break the diffs.
+		$struct = preg_replace("/ AUTO_INCREMENT=([0-9]+)/i", "", $struct);
+		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "text/plain; charset=utf-8";
 		$response->body = $struct;
