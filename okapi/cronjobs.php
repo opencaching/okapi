@@ -377,7 +377,7 @@ class AdminStatsSender extends Cron5Job
 		ob_start();
 		$apisrv_stats = OkapiServiceRunner::call('services/apisrv/stats', new OkapiInternalRequest(
 			new OkapiInternalConsumer(), null, array()));
-		$weekly_stats = Db::select_value("
+		$weekly_stats = Db::select_row("
 			select
 				count(distinct s.consumer_key) as active_apps_count,
 				sum(s.http_calls) as total_http_calls
@@ -403,6 +403,7 @@ class AdminStatsSender extends Cron5Job
 					on s.consumer_key = c.`key`
 			where s.period_start > date_add(now(), interval -7 day)
 			group by s.consumer_key
+			having sum(s.http_calls) > 0
 			order by sum(s.http_calls) desc
 		");
 		print "== Consumers ==\n\n";
