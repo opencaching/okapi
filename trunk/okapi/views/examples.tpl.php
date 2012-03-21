@@ -103,17 +103,15 @@ print "Five nearest unfound caches: ".implode(", ", $cache_codes)."\n";
 </pre>
 
 <p>Please note that the above examples use very simple error checking routines.
-If you want to be "professional", you should catch HTTP 400 Responses, display their
+If you want to be "professional", you should catch HTTP 400 Responses, read their
 bodies (OKAPI error messages), and deal with them more gracefully.</p>
 
 <h2>JavaScript Example</h2>
 
 <p>It is possible to access OKAPI directly from user's browser, without the
-need for server backend. OKAPI methods allow both
-<a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a>
-output format and
-<a href='http://en.wikipedia.org/wiki/XMLHttpRequest#Cross-domain_requests'>Cross-domain
-XHR requests</a>. There are some limitations of both these techniques though.</p>
+need for server backend. OKAPI allows <a href='http://en.wikipedia.org/wiki/XMLHttpRequest#Cross-domain_requests'>Cross-domain
+XHR requests</a>. You can also use <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> output format.
+There are some limitations of both these techniques though.</p>
 
 <p>This example does the following:</p>
 <ul>
@@ -121,7 +119,7 @@ XHR requests</a>. There are some limitations of both these techniques though.</p
 	from one of the OKAPI servers and displays it in a select-box. Note, that this method does not
 	require Consumer Key (Level 0 Authentication).</li>
 	<li>Asks you to share your location (modern browser can do that).</li>
-	<li>Retrieves a list of nearest geocaches. This time, it uses the Consumer Key you have to supply.</li>
+	<li>Retrieves a list of nearest geocaches. (This time, it uses the Consumer Key you have to supply.)</li>
 </ul>
 
 <p><a href='/okapi/static/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>

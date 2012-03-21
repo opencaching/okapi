@@ -45,11 +45,13 @@ class WebService
 				"),
 				'apps_count' => 0 + Db::select_value("select count(*) from okapi_consumers;"),
 				'apps_active' => 0 + Db::select_value("
-					select count(*) from (
-						select distinct consumer_key
-						from okapi_stats_hourly
-						where period_start >= date_add(now(), interval -30 day)
-					) as t;
+					select count(distinct s.consumer_key)
+					from
+						okapi_stats_hourly s,
+						okapi_consumers c
+					where
+						s.consumer_key = c.`key`
+						and s.period_start > date_add(now(), interval -30 day)
 				"),
 			);
 			Cache::set($cachekey, $result, 86400); # cache it for one day

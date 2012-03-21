@@ -124,26 +124,27 @@ OKAPI does not allow usage of PUT and DELETE requests.</p>
 
 <h2 id='common-formatting'>Common formatting parameters</h2>
 
-<p>Most of the methods return simple objects, such as list and dictionaries
+<p>Most of the methods return simple objects, such as lists and dictionaries
 of strings and integers. Such objects can be formatted in several ways using
-<i>common formatting parameters</i>:
+<i>common formatting parameters</i> (supplied by you along all the other
+parameters required for the method to run):</p>
 
 <ul>
 	<li>
 		<p><b>format</b> - name of the format in which you'd like your result
-		to be returned in. Currently supported output formats:</p>
+		to be returned in. Currently supported output formats include:</p>
 		<ul>
 			<li>
 				<p><b>json</b> - <a href='http://en.wikipedia.org/wiki/JSON'>JSON</a> format (default),</p>
-				<p><b>Important:</b> Use <a href='https://chrome.google.com/webstore/detail/chklaanhfefbnpoihckbnefhakgolnmc'>Chrome</a>
+				<p>Use <a href='https://chrome.google.com/webstore/detail/chklaanhfefbnpoihckbnefhakgolnmc'>Chrome</a>
 				or <a href='https://addons.mozilla.org/en-US/firefox/addon/jsonview/'>Firefox</a> extensions
-				to view JSON results directly in your browser. This simplifies debugging <b>a lot</b>!</p>
+				to view JSON results directly in your browser. This simplifies debugging a lot!</p>
 			</li>
 			<li><b>jsonp</b> - <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> format, if
 			you choose this one, you have to specify the <b>callback</b> parameter,</li>
 			<li><b>xmlmap</b> - XML format. This is produced by mapping JSON datatypes to XML elements.
-			Keep in mind, that XML format is larger than JSON and it takes more time to generate.
-			Try to use JSON when it's possible.</li>
+			Keep in mind, that XML format is larger than JSON and it takes more time to generate
+			and parse. Try to use JSON when it's possible.</li>
 		</ul>
 	</li>
 	<li>
@@ -153,11 +154,11 @@ of strings and integers. Such objects can be formatted in several ways using
 </ul>
 
 <p><b><u>Important:</u></b> Almost all of the returned datatypes are <b>extendible</b>. This means,
-that (in future) they <b>may contain data that you do not expect to be there</b>.
+that (in future) they <b>may contain data that currently they don't</b>.
 Such data will be included in backward-compatible manner, but still you should remember about
-it in some cases (i.e. when iterating over attributes of an object). The additional data might
-include special elements in GPX files or special keys in JSON responses.
-Your software must ignore such occurances if it doesn't understand them!</p>
+it in some cases (i.e. when iterating over attributes of an object). This additional data may
+appear as extra elements in GPX files or extra keys in JSON responses.
+Your software <b>must ignore</b> such occurances if it doesn't understand them!</p>
 
 <p>Some methods expose some <b>special formatting</b> of their own, for example, they may return
 a JPEG or a GPX file. Such methods do not accept <i>common formatting parameters</i>.</p>
@@ -203,9 +204,9 @@ method calls and redirects which provide you with an Access Token).</p>
 	</li>
 	<li>
 		<p><b>Access Tokens do not expire</b> (but can be revoked). This means, that once the user
-		authorizes your application, you receive a "lifetime access" to his/her account (it does
-		not expire after several hours). User may still <b>revoke access</b> to his account from your
-		application - when this happens, you will have to redo the autorization dance.</p>
+		authorizes your application, you receive a "lifetime access" to his/her account.
+		User may still <b>revoke access</b> to his account from your
+		application - when this happens, you will have to redo the authorization dance.</p>
 	</li>
 </ul>
 
@@ -229,7 +230,7 @@ if you want.</p>
 
 <h2 id='method_index'>List of available methods</h2>
 
-<p>Currently available OKAPI web services (methods):</p>
+<p>OKAPI web services (methods) currently available on this server:</p>
 
 <ul>
 	<? foreach ($vars['method_index'] as $method_info) { ?>
