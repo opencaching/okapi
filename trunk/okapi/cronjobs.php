@@ -40,7 +40,7 @@ class CronJobController
 				new ChangeLogWriterJob(),
 				new ChangeLogCleanerJob(),
 				new AdminStatsSender(),
-				new FulldumpGeneratorJob();
+				new FulldumpGeneratorJob(),
 			);
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
