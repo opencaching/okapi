@@ -2,11 +2,25 @@
 
 namespace okapi\cronjobs;
 
+# HOW TO DEBUG CRONJOBS:
+#
+# OKAPI uses two cache layers in order to decide if the cronjob has to be run,
+# or even if the cronjobs.php file should be included. If you want to force OKAPI
+# to run all cronjobs , then you should run these two queries on your database:
+#
+# - delete from okapi_vars where var='cron_nearest_event';
+# - delete from okapi_cache where `key`='cron_schedule';
+#
+# Then, visit http://yoursite/okapi/cron5.
+
 use Exception;
 use okapi\Okapi;
 use okapi\OkapiLock;
 use okapi\Db;
 use okapi\Cache;
+use okapi\OkapiServiceRunner;
+use okapi\OkapiInternalRequest;
+use okapi\OkapiInternalConsumer;
 use okapi\services\replicate\ReplicateCommon;
 
 class CronJobController
@@ -25,6 +39,7 @@ class CronJobController
 				new CheckCronTab2(),
 				new ChangeLogWriterJob(),
 				new ChangeLogCleanerJob(),
+				new AdminStatsSender(),
 			);
 			# If you want fulldump generated for your development machine, comment
 			# the 'if' out.
@@ -43,6 +58,8 @@ class CronJobController
 	 */
 	public static function run_jobs($type)
 	{
+		require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
+		
 		# We don't want other cronjobs of the same time to run simultanously.
 		$lock = OkapiLock::get('cronjobs-'.$type);
 		$lock->acquire();
@@ -294,11 +311,11 @@ class CheckCronTab2 extends PrerequestCronJob
 }
 
 /**
- * Once per 10 minutes, searches for changes in the database and updates the changelog.
+ * Once per 5 minutes, searches for changes in the database and updates the changelog.
  */
 class ChangeLogWriterJob extends Cron5Job
 {
-	public function get_period() { return 600; }
+	public function get_period() { return 300; }
 	public function execute()
 	{
 		require_once 'services/replicate/replicate_common.inc.php';
@@ -347,4 +364,95 @@ class ChangeLogCleanerJob extends Cron5Job
 		");
 		Cache::set($cache_key, $new_data, 10*86400);
 	}
+}
+
+/**
+ * Once per week, sends simple OKAPI usage stats to the admins.
+ */
+class AdminStatsSender extends Cron5Job
+{
+	public function get_period() { return 7*86400; }
+	public function execute()
+	{
+		ob_start();
+		$apisrv_stats = OkapiServiceRunner::call('services/apisrv/stats', new OkapiInternalRequest(
+			new OkapiInternalConsumer(), null, array()));
+		$weekly_stats = Db::select_value("
+			select
+				count(distinct s.consumer_key) as active_apps_count,
+				sum(s.http_calls) as total_http_calls
+			from
+				okapi_stats_hourly s,
+				okapi_consumers c
+			where
+				s.consumer_key = c.`key`
+				and s.period_start > date_add(now(), interval -7 day)
+		");
+		print "Hello! This is your weekly summary of OKAPI usage.\n\n";
+		print "Apps active this week: ".$weekly_stats['active_apps_count']." out of ".$apisrv_stats['apps_count'].".\n";
+		print "Total of ".$weekly_stats['total_http_calls']." requests were made.\n\n";
+		$consumers = Db::select_all("
+			select
+				s.consumer_key,
+				c.name,
+				sum(s.http_calls) as http_calls,
+				sum(s.http_runtime) as http_runtime
+			from
+				okapi_stats_hourly s
+				left join okapi_consumers c
+					on s.consumer_key = c.`key`
+			where s.period_start > date_add(now(), interval -7 day)
+			group by s.consumer_key
+			order by sum(s.http_calls) desc
+		");
+		print "== Consumers ==\n\n";
+		print "Consumer Name                         Calls      Runtime\n";
+		print "----------------------------------- ------- ------------\n";
+		foreach ($consumers as $row)
+		{
+			$name = $row['name'];
+			if ($name == null)
+				$name = $row['consumer_key'];
+			if (mb_strlen($name) > 35)
+				$name = mb_substr($name, 0, 32)."...";
+			print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
+			print str_pad($row['http_calls'], 8, " ", STR_PAD_LEFT);
+			print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)." s\n";
+		}
+		print "\n";
+		$methods = Db::select_all("
+			select
+				s.service_name,
+				sum(s.http_calls) as http_calls,
+				sum(s.http_runtime) as http_runtime
+			from okapi_stats_hourly s
+			where s.period_start > date_add(now(), interval -7 day)
+			group by s.service_name
+			having sum(s.http_calls) > 0
+			order by sum(s.http_calls) desc
+		");
+		print "== Methods ==\n\n";
+		print "Service name                          Calls      Runtime\n";
+		print "----------------------------------- ------- ------------\n";
+		foreach ($methods as $row)
+		{
+			$name = $row['service_name'];
+			if (mb_strlen($name) > 35)
+				$name = mb_substr($name, 0, 32)."...";
+			print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
+			print str_pad($row['http_calls'], 8, " ", STR_PAD_LEFT);
+			print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)." s\n";
+		}
+		print "\n";
+		print "Note: This report includes only requests from *external* consumers.\n";
+		print "All OKAPI methods used by cronjobs or within OC code are ignored.\n\n";
+		$message = ob_get_clean();
+		Okapi::mail_admins("Weekly OKAPI usage report", $message);
+	}
+	
+	private static function mb_str_pad($input, $pad_length, $pad_string, $pad_style)
+	{ 
+		return str_pad($input, strlen($input) - mb_strlen($input) + $pad_length,
+			$pad_string, $pad_style); 
+	} 
 }
