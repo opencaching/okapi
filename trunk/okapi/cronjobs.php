@@ -40,11 +40,8 @@ class CronJobController
 				new ChangeLogWriterJob(),
 				new ChangeLogCleanerJob(),
 				new AdminStatsSender(),
+				new FulldumpGeneratorJob();
 			);
-			# If you want fulldump generated for your development machine, comment
-			# the 'if' out.
-			if ((!isset($GLOBALS['debug_page'])) || (!$GLOBALS['debug_page']))
-				$cache[] = new FulldumpGeneratorJob();
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
 					throw new Exception("Cronjob '".$cronjob->get_name()."' has an invalid (unsupported) type.");
