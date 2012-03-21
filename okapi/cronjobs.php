@@ -6,7 +6,7 @@ namespace okapi\cronjobs;
 #
 # OKAPI uses two cache layers in order to decide if the cronjob has to be run,
 # or even if the cronjobs.php file should be included. If you want to force OKAPI
-# to run all cronjobs , then you should run these two queries on your database:
+# to run ALL cronjobs, then you should run these two queries on your database:
 #
 # - delete from okapi_vars where var='cron_nearest_event';
 # - delete from okapi_cache where `key`='cron_schedule';
@@ -377,11 +377,8 @@ class AdminStatsSender extends Cron5Job
 		ob_start();
 		$apisrv_stats = OkapiServiceRunner::call('services/apisrv/stats', new OkapiInternalRequest(
 			new OkapiInternalConsumer(), null, array()));
-		$weekly_stats = Db::select_row("
-			select
-				count(distinct s.consumer_key) as active_apps_count,
-				sum(s.http_calls) as total_http_calls,
-				sum(s.http_runtime) as total_http_runtime
+		$active_apps_count = Db::select_value("
+			select count(distinct s.consumer_key)
 			from
 				okapi_stats_hourly s,
 				okapi_consumers c
@@ -389,8 +386,17 @@ class AdminStatsSender extends Cron5Job
 				s.consumer_key = c.`key`
 				and s.period_start > date_add(now(), interval -7 day)
 		");
+		$weekly_stats = Db::select_row("
+			select
+				sum(s.http_calls) as total_http_calls,
+				sum(s.http_runtime) as total_http_runtime
+			from okapi_stats_hourly s
+			where
+				s.consumer_key != 'internal' -- we don't want to exclude 'anonymous'
+				and s.period_start > date_add(now(), interval -7 day)
+		");
 		print "Hello! This is your weekly summary of OKAPI usage.\n\n";
-		print "Apps active this week: ".$weekly_stats['active_apps_count']." out of ".$apisrv_stats['apps_count'].".\n";
+		print "Apps active this week: ".$active_apps_count." out of ".$apisrv_stats['apps_count'].".\n";
 		print "Total of ".$weekly_stats['total_http_calls']." requests were made (".sprintf("%01.1f", $weekly_stats['total_http_runtime'])." seconds).\n\n";
 		$consumers = Db::select_all("
 			select
@@ -408,13 +414,13 @@ class AdminStatsSender extends Cron5Job
 			order by sum(s.http_calls) desc
 		");
 		print "== Consumers ==\n\n";
-		print "Consumer Name                         Calls      Runtime\n";
+		print "Consumer name                         Calls      Runtime\n";
 		print "----------------------------------- ------- ------------\n";
 		foreach ($consumers as $row)
 		{
 			$name = $row['name'];
-			if ($name == null)
-				$name = $row['consumer_key'];
+			if ($row['consumer_key'] == 'anonymous')
+				$name = "Anonymous (Level 0 Authentication)";
 			if (mb_strlen($name) > 35)
 				$name = mb_substr($name, 0, 32)."...";
 			print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
@@ -446,6 +452,30 @@ class AdminStatsSender extends Cron5Job
 			print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)." s\n";
 		}
 		print "\n";
+		$oauth_users = Db::select_all("
+			select
+				c.name,
+				count(*) as users
+			from
+				okapi_authorizations a,
+				okapi_consumers c
+			where a.consumer_key = c.`key`
+			group by a.consumer_key
+			order by count(*) desc;
+		");
+		print "== Current OAuth usage by Consumers ==\n\n";
+		print "Consumer name                              Users\n";
+		print "---------------------------------------- -------\n";
+		foreach ($oauth_users as $row)
+		{
+			$name = $row['name'];
+			if (mb_strlen($name) > 40)
+				$name = mb_substr($name, 0, 36)."...";
+			print self::mb_str_pad($name, 40, " ", STR_PAD_RIGHT);
+			print str_pad($row['users'], 8, " ", STR_PAD_LEFT)."\n";
+		}
+		print "\n";
+		
 		print "Note: This report includes only requests from *external* consumers.\n";
 		print "All OKAPI methods used by cronjobs or within OC code are ignored.\n";
 		$message = ob_get_clean();
