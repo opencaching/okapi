@@ -380,7 +380,8 @@ class AdminStatsSender extends Cron5Job
 		$weekly_stats = Db::select_row("
 			select
 				count(distinct s.consumer_key) as active_apps_count,
-				sum(s.http_calls) as total_http_calls
+				sum(s.http_calls) as total_http_calls,
+				sum(s.http_runtime) as total_http_runtime
 			from
 				okapi_stats_hourly s,
 				okapi_consumers c
@@ -390,7 +391,7 @@ class AdminStatsSender extends Cron5Job
 		");
 		print "Hello! This is your weekly summary of OKAPI usage.\n\n";
 		print "Apps active this week: ".$weekly_stats['active_apps_count']." out of ".$apisrv_stats['apps_count'].".\n";
-		print "Total of ".$weekly_stats['total_http_calls']." requests were made.\n\n";
+		print "Total of ".$weekly_stats['total_http_calls']." requests were made (".sprintf("%01.1f", $weekly_stats['total_http_runtime'])." seconds).\n\n";
 		$consumers = Db::select_all("
 			select
 				s.consumer_key,
@@ -446,7 +447,7 @@ class AdminStatsSender extends Cron5Job
 		}
 		print "\n";
 		print "Note: This report includes only requests from *external* consumers.\n";
-		print "All OKAPI methods used by cronjobs or within OC code are ignored.\n\n";
+		print "All OKAPI methods used by cronjobs or within OC code are ignored.\n";
 		$message = ob_get_clean();
 		Okapi::mail_admins("Weekly OKAPI usage report", $message);
 	}
