@@ -13,6 +13,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
+use okapi\cronjobs\CronJobController;
 
 /**
  * This is an entry point for system's crontab. System's crontab will be
@@ -25,6 +26,12 @@ class View
 		ignore_user_abort(true);
 		set_time_limit(0);
 		header("Content-Type: text/plain; charset=utf-8");
+		
+		# Uncomment the following if you want to debug a specific cronjob. If will be run
+		# every 5 minutes AND additionally every time you visit http://yoursite/okapi/cron5
+		
+		# require_once 'cronjobs.php'; CronJobController::force_run("JOB_NAME"); die();
+		
 		Okapi::execute_cron5_cronjobs();
 	}
 }

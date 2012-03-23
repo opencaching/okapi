@@ -2,14 +2,15 @@
 
 namespace okapi\cronjobs;
 
-# HOW TO DEBUG CRONJOBS:
-#
-# OKAPI uses two cache layers in order to decide if the cronjob has to be run,
+# If you want to debug ONE specific cronjob - see views/cron5.php file!
+
+# If you want to debug the entire "system", then you should now that OKAPI
+# uses two cache layers in order to decide if the cronjob has to be run,
 # or even if the cronjobs.php file should be included. If you want to force OKAPI
 # to run ALL cronjobs, then you should run these two queries on your database:
 #
-# - delete from okapi_vars where var='cron_nearest_event';
 # - delete from okapi_cache where `key`='cron_schedule';
+# - delete from okapi_vars where var='cron_nearest_event';
 #
 # Then, visit http://yoursite/okapi/cron5.
 
@@ -88,6 +89,23 @@ class CronJobController
 		Cache::set("cron_schedule", $schedule, 30*86400);
 		$lock->release();
 		return $nearest;
+	}
+	
+	/**
+	 * Force a specified cronjob to run. Throw an exception if cronjob not found.
+	 * $job_name mast equal one of the names returned by ->get_name() method.
+	 */
+	public static function force_run($job_name)
+	{
+		foreach (self::get_enabled_cronjobs() as $cronjob)
+		{
+			if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\cronjobs\\".$job_name))
+			{
+				$cronjob->execute();
+				return;
+			}
+		}
+		throw new Exception("CronJob $job_name not found.");
 	}
 }
 
@@ -411,8 +429,8 @@ class AdminStatsSender extends Cron5Job
 			order by sum(s.http_calls) desc
 		");
 		print "== Consumers ==\n\n";
-		print "Consumer name                         Calls      Runtime\n";
-		print "----------------------------------- ------- ------------\n";
+		print "Consumer name                         Calls     Runtime\n";
+		print "----------------------------------- ------- -----------\n";
 		foreach ($consumers as $row)
 		{
 			$name = $row['name'];
@@ -422,7 +440,7 @@ class AdminStatsSender extends Cron5Job
 				$name = mb_substr($name, 0, 32)."...";
 			print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
 			print str_pad($row['http_calls'], 8, " ", STR_PAD_LEFT);
-			print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)." s\n";
+			print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)."s\n";
 		}
 		print "\n";
 		$methods = Db::select_all("
@@ -437,8 +455,8 @@ class AdminStatsSender extends Cron5Job
 			order by sum(s.http_calls) desc
 		");
 		print "== Methods ==\n\n";
-		print "Service name                          Calls      Runtime\n";
-		print "----------------------------------- ------- ------------\n";
+		print "Service name                          Calls     Runtime      Avg\n";
+		print "----------------------------------- ------- ----------- --------\n";
 		foreach ($methods as $row)
 		{
 			$name = $row['service_name'];
@@ -446,7 +464,10 @@ class AdminStatsSender extends Cron5Job
 				$name = mb_substr($name, 0, 32)."...";
 			print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
 			print str_pad($row['http_calls'], 8, " ", STR_PAD_LEFT);
-			print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)." s\n";
+			print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)."s";
+			print str_pad(sprintf("%01.4f", (
+				($row['http_calls'] > 0) ? ($row['http_runtime'] / $row['http_calls']) : 0
+				)), 8, " ", STR_PAD_LEFT)."s\n";
 		}
 		print "\n";
 		$oauth_users = Db::select_all("
@@ -461,14 +482,14 @@ class AdminStatsSender extends Cron5Job
 			order by count(*) desc;
 		");
 		print "== Current OAuth usage by Consumers ==\n\n";
-		print "Consumer name                              Users\n";
-		print "---------------------------------------- -------\n";
+		print "Consumer name                         Users\n";
+		print "----------------------------------- -------\n";
 		foreach ($oauth_users as $row)
 		{
 			$name = $row['name'];
-			if (mb_strlen($name) > 40)
-				$name = mb_substr($name, 0, 36)."...";
-			print self::mb_str_pad($name, 40, " ", STR_PAD_RIGHT);
+			if (mb_strlen($name) > 35)
+				$name = mb_substr($name, 0, 32)."...";
+			print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
 			print str_pad($row['users'], 8, " ", STR_PAD_LEFT)."\n";
 		}
 		print "\n";
