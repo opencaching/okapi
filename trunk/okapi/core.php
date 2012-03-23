@@ -628,6 +628,12 @@ class Okapi
 		self::$okapi_vars[$varname] = $value;
 	}
 	
+	/** Return true if the server is running in a debug mode. */
+	public static function debug_mode()
+	{
+		return (isset($GLOBALS['debug_page']) && $GLOBALS['debug_page']);
+	}
+	
 	/** Send an email message to local OKAPI administrators. */
 	public static function mail_admins($subject, $message)
 	{

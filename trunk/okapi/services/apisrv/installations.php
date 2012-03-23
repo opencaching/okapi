@@ -56,10 +56,18 @@ class WebService
 					return Okapi::formatted_response($request, $results);
 				}
 				
-				# Backup has expired (or have never been cached). Something is just wrong...
+				# Backup has expired (or have never been cached). If we're on a development
+				# server then probably it's okay. In production this SHOULD NOT happen.
 				
-				throw new Exception("Could not retrieve installations list from the Google Code site. ".
-					"Also, failed to load it from the 30-days cache.");
+				$results = array(
+					array(
+						'site_url' => $GLOBALS['absolute_server_URI'],
+						'site_name' => "Unable to retrieve!",
+						'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
+					)
+				);
+				Cache::set($cachekey, $results, 12 * 3600); # so to retry no earlier than after 12 hours
+				return Okapi::formatted_response($request, $results);
 			}
 			
 			$doc = simplexml_load_string($xml);
