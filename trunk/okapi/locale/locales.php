@@ -6,8 +6,32 @@ class Locales
 {
 	public static $languages = array(
 		'pl' => array('lang' => 'pl', 'locale' => 'pl_PL.utf8', 'name' => 'Polish'),
-		'en' => array('lang' => 'en', 'locale' => 'POSIX',      'name' => 'English'),
+		'en' => array('lang' => 'en', 'locale' => 'en_US.utf8', 'name' => 'English'),
 	);
+	
+	/**
+	 * Get the list of locales that should be installed on the system in order
+	 * for all translations to work properly.
+	 */
+	public static function get_required_locales()
+	{
+		$arr = array('POSIX');
+		foreach (self::$languages as $key => $value)
+			$arr[] = $value['locale'];
+		return $arr;
+	}
+	
+	/**
+	 * Get the list of locales installed on the current system.
+	 */
+	public static function get_installed_locales()
+	{
+		$arr = array();
+		foreach (explode("\n", shell_exec("locale -a")) as $item)
+			if ($item)
+				$arr[] = $item;
+		return $arr;
+	}
 	
 	private static function get_locale_for_language($lang)
 	{
