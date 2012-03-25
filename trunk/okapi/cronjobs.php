@@ -537,7 +537,7 @@ class LocaleChecker extends Cron5Job
 		foreach ($missing as $locale)
 		{
 			print " - ".$locale."\n";
-			$prefixed[substr($locale, 0, 2)] = true;
+			$prefixes[substr($locale, 0, 2)] = true;
 		}
 		$prefixes = array_keys($prefixes);
 		print "\n";
