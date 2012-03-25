@@ -544,7 +544,7 @@ class LocaleChecker extends Cron5Job
 		print "On Debian, try the following:\n\n";
 		foreach ($prefixes as $lang)
 			print "sudo apt-get install language-pack-".$lang."-base\n";
-		print "sudo service apache2 restart\n"
+		print "sudo service apache2 restart\n";
 		print "\n";
 		print "Thanks!\n\n";
 		print "-- \n";
