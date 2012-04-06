@@ -131,9 +131,13 @@ class WebService
 		
 		$zip->close();
 		
-		# The result could be big. Bigger than our memory limit. That's why we don't
-		# even keep in in the memory. We simply return an open file stream.
+		# The result could be big. Bigger than our memory limit. We will
+		# return an open file stream instead of a string. We also should
+		# set a higher time limit, because downloading this response may
+		# take some time over slow network connections (and I'm not sure
+		# what is the PHP's default way of handling such scenario).
 		
+		set_time_limit(600);
 		$response = new OkapiHttpResponse();
 		$response->content_type = "application/zip";
 		$response->content_disposition = 'Content-Disposition: attachment; filename="results.zip"';

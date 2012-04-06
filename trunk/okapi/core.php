@@ -366,13 +366,29 @@ class OkapiConsumer extends OAuthConsumer
 	}
 }
 
-/** Use this when calling OKAPI internally from OC code. */
+/**
+ * Use this when calling OKAPI methods internally from OKAPI code. (If you want call
+ * OKAPI from other OC code, you must use Facade class - see facade.php)
+ */
 class OkapiInternalConsumer extends OkapiConsumer
 {
 	public function __construct()
 	{
 		$admins = get_admin_emails();
-		parent::__construct('internal', null, "OpenCaching site", null, $admins[0]);
+		parent::__construct('internal', null, "Internal OKAPI jobs", null, $admins[0]);
+	}
+}
+
+/**
+ * Used by calls made via Facade class. SHOULD NOT be referenced anywhere else from
+ * within OKAPI code.
+ */
+class OkapiFacadeConsumer extends OkapiConsumer
+{
+	public function __construct()
+	{
+		$admins = get_admin_emails();
+		parent::__construct('facade', null, "Internal usage via Facade", null, $admins[0]);
 	}
 }
 
@@ -415,12 +431,21 @@ class OkapiAccessToken extends OkapiToken
 	}
 }
 
-/** Use this when calling OKAPI internally from OC code. */
+/** Use this in conjunction with OkapiInternalConsumer. */
 class OkapiInternalAccessToken extends OkapiAccessToken
 {
 	public function __construct($user_id)
 	{
 		parent::__construct('internal-'.$user_id, null, 'internal', $user_id);
+	}
+}
+
+/** Use this in conjunction with OkapiFacadeConsumer. */
+class OkapiFacadeAccessToken extends OkapiAccessToken
+{
+	public function __construct($user_id)
+	{
+		parent::__construct('facade-'.$user_id, null, 'facade', $user_id);
 	}
 }
 
