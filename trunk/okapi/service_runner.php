@@ -142,6 +142,11 @@ class OkapiServiceRunner
 		$consumer_key = ($request->consumer != null) ? $request->consumer->key : 'anonymous';
 		$user_id = (($request->token != null) && ($request->token instanceof OkapiAccessToken)) ? $request->token->user_id : -1;
 		
+		if ($request->is_http_request())
+			$calltype = 'http';
+		else
+			$calltype = 'internal';
+		
 		Db::execute("
 			insert into okapi_stats_temp (`datetime`, consumer_key, user_id, service_name, calltype, runtime)
 			values (
@@ -149,7 +154,7 @@ class OkapiServiceRunner
 				'".mysql_real_escape_string($consumer_key)."',
 				'".mysql_real_escape_string($user_id)."',
 				'".mysql_real_escape_string($service_name)."',
-				'".(($request instanceof OkapiHttpRequest) ? "http" : "internal")."',
+				'".mysql_real_escape_string($calltype)."',
 				'".mysql_real_escape_string($runtime)."'
 			);
 		");

@@ -36,6 +36,7 @@ class Facade
 			($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,
 			$parameters
 		);
+		$request->perceive_as_http_request = true;
 		return OkapiServiceRunner::call($service_name, $request);
 	}
 }
