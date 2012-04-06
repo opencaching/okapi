@@ -315,7 +315,10 @@ class CheckCronTab2 extends PrerequestCronJob
 				"Hello. OKAPI detected, that it's crontab is not working properly.\n".
 				"Please check your configuration or contact OKAPI developers.\n\n".
 				"This line should be present among your crontab entries:\n\n".
-				"*/5 * * * * wget -O - -q -t 1 ".$GLOBALS['absolute_server_URI']."okapi/cron5"
+				"*/5 * * * * wget -O - -q -t 1 ".$GLOBALS['absolute_server_URI']."okapi/cron5\n\n".
+				"If you're receiving this in Virtual Machine development environment, then\n".
+				"ignore it. Probably you just paused (or switched off) your VM for some time\n".
+				"(which would be considered an error in production environment)."
 			);
 			
 			# Schedule the next admin-nagging. Each subsequent notification will be sent
@@ -409,7 +412,7 @@ class AdminStatsSender extends Cron5Job
 				sum(s.http_runtime) as total_http_runtime
 			from okapi_stats_hourly s
 			where
-				s.consumer_key != 'internal' -- we don't want to exclude 'anonymous'
+				s.consumer_key != 'internal' -- we don't want to exclude 'anonymous' nor 'facade'
 				and s.period_start > date_add(now(), interval -7 day)
 		");
 		print "Hello! This is your weekly summary of OKAPI usage.\n\n";
@@ -438,6 +441,8 @@ class AdminStatsSender extends Cron5Job
 			$name = $row['name'];
 			if ($row['consumer_key'] == 'anonymous')
 				$name = "Anonymous (Level 0 Authentication)";
+			elseif ($row['consumer_key'] == 'facade')
+				$name = "Internal usage via Facade";
 			if (mb_strlen($name) > 35)
 				$name = mb_substr($name, 0, 32)."...";
 			print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
@@ -541,11 +546,21 @@ class LocaleChecker extends Cron5Job
 		}
 		$prefixes = array_keys($prefixes);
 		print "\n";
-		print "On Debian, try the following:\n\n";
-		foreach ($prefixes as $lang)
-			print "sudo apt-get install language-pack-".$lang."-base\n";
-		print "sudo service apache2 restart\n";
-		print "\n";
+		if ((count($missing) == 1) && ($missing[0] == 'POSIX'))
+		{
+			# I don't remember how to install POSIX, probably everyone has it anyway.
+		}
+		else
+		{
+			print "On Debian, try the following:\n\n";
+			foreach ($prefixes as $lang)
+			{
+				if ($lang != 'PO') # Two first letters cut from POSIX.
+					print "sudo apt-get install language-pack-".$lang."-base\n";
+			}
+			print "sudo service apache2 restart\n";
+			print "\n";
+		}
 		print "Thanks!\n\n";
 		print "-- \n";
 		print "OKAPI Team";

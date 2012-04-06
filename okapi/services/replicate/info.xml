@@ -12,7 +12,7 @@
 				<p><b>changelog</b> - a dictionary of the following structure:</p>
 				<ul>
 					<li><b>min_since</b> - the lowest allowed value for the <b>since</b> attribute
-					(the ID of the last changelog entry which have been already removed from our database),</li>
+					(the ID of the last changelog entry was already removed from our database),</li>
 					<li><b>revision</b> - the current revision of the database (the ID of the
 					newest changelog entry kept in our database),</li>
 				</ul>

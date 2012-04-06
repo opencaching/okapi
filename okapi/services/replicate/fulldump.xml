@@ -11,7 +11,7 @@
 		is the primary replication service which you will use. However, to correctly set up
 		your first database copy, you will need to use the <b>fulldump</b> method.</p>
 
-		<p><b>Important:</b> This method MAY change substantially or might even get removed.
+		<p><b>Important:</b> This method MAY change substantially or it might even get removed.
 		We don't plan on doing this, but we may be forced to (i.e. to prevent abuse).</p>
 		
 		<p>A couple of things for you to remember:</p>
@@ -21,7 +21,7 @@
 			NOT for the individual users. We don't want users to download a fresh snapshot of
 			the entire database every time they want, this could kill our servers.
 			If you want to enable such features for your users, you can do it, but you
-			must use <b>your own server</b> for data traffic.</li>
+			must use <b>your own server</b> for data traffic (especially, fulldump requests).</li>
 			<li>Fulldump is a copy of the entire database. We generate such copy once every couple of
 			days. This copy if intended for you to start only, later you must use the changelog to
 			keep it up-to-date.</li>

@@ -28,7 +28,7 @@
 <p><b>OKAPI</b> is a <b>public API</b> project for National OpenCaching sites (also known as
 OpenCaching Nodes).</p>
 <ul>
-	<li>It provides your site with a set of useful well-documented API methods,</li>
+	<li>It provides OC site with a set of useful well-documented API methods,</li>
 	<li>Allows external developers to easily <b>read public</b> OpenCaching data,</li>
 	<li>Allows <b>read and write private</b> (user-related) data with OAuth 3-legged authentication.</li>
 </ul>
