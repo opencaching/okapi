@@ -1285,11 +1285,21 @@ abstract class OkapiRequest
 	 * $_GET or $_POST or $_REQUEST.
 	 */
 	public abstract function get_parameter($name);
+	
+	/** Return true, if this requests is to be logged as HTTP request in okapi_stats. */
+	public abstract function is_http_request();
 }
 
 class OkapiInternalRequest extends OkapiRequest
 {
 	private $parameters;
+	
+	/**
+	 * Set this to true, if you want this request to be considered as HTTP request
+	 * in okapi_stats tables. This is useful when running requests through Facade
+	 * (we want them logged and displayed in weekly report).
+	 */
+	public $perceive_as_http_request = false;
 	
 	/**
 	 * Set this to true, if you want to receive OkapiResponse instead of
@@ -1311,6 +1321,8 @@ class OkapiInternalRequest extends OkapiRequest
 		else
 			return null;
 	}
+	
+	public function is_http_request() { return $this->perceive_as_http_request; }
 }
 
 class OkapiHttpRequest extends OkapiRequest
@@ -1432,4 +1444,6 @@ class OkapiHttpRequest extends OkapiRequest
 			throw new InvalidParam($name, "Make sure you are using '$name' no more than ONCE in your URL.");
 		return $value;
 	}
+	
+	public function is_http_request() { return true; }
 }
