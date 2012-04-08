@@ -840,6 +840,9 @@ class Okapi
 			"You don't need Consumer Secret for Level 1 Authentication.\n\n".
 			"Now you may easily access Level 1 methods of OKAPI! For example:\n".
 			$GLOBALS['absolute_server_URI']."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n".
+			"If you plan on using OKAPI for a longer time, then you should subscribe\n".
+			"to the OKAPI News blog to stay up-to-date. Check it out here:\n".
+			"http://opencaching-api.blogspot.com/\n\n".
 			"Have fun!",
 			"Content-Type: text/plain; charset=utf-8\n".
 			"From: OKAPI <$sender_email>\n".
