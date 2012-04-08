@@ -41,7 +41,12 @@ Check out other OKAPI installations:</p>
 	<? foreach ($vars['installations'] as $inst) { ?>
 		<li><?= $inst['site_name'] ?> - <a href='<?= $inst['okapi_base_url'] ?>'><?= $inst['okapi_base_url'] ?></a></li>
 	<? } ?>
+</ul>
+
+<p>And also:</p>
+<ul>
 	<li>OKAPI Project Homepage - <a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></li>
+	<li>OKAPI News blog - <a href='http://opencaching-api.blogspot.com/'>http://opencaching-api.blogspot.com/</a></li>
 </ul>
 
 <div class='issue-comments' issue_id='28'></div>
