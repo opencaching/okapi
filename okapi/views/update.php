@@ -377,4 +377,18 @@ class View
 	}
 	
 	private static function ver49() { Db::execute("alter table caches add key okapi_syncbase (okapi_syncbase);"); }
+	private static function ver50() { Db::execute("update caches set okapi_syncbase=now() where last_found >= '2012-03-11';"); }
+	
+	private static function ver51()
+	{
+		Db::execute("alter table cache_logs modify column last_modified timestamp not null;");
+		ob_start();
+		print "Hi!\n\n";
+		print "OKAPI just modified 'last_modified' field in your 'cache_logs' table.\n";
+		print "Its type was changed to 'timestamp'.\n\n";
+		self::print_common_db_alteration_info();
+		print "-- \n";
+		print "OKAPI Team";
+		Okapi::mail_admins("Database modification notice: cache_logs.last_modified", ob_get_clean());
+	}
 }
