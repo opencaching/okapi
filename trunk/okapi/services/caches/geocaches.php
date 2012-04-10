@@ -213,7 +213,7 @@ class WebService
 					case 'trackables_count': /* handled separately */ break;
 					case 'trackables': /* handled separately */ break;
 					case 'alt_wpts': /* handled separately */ break;
-					case 'last_found': $entry['last_found'] = $row['last_found'] ? date('c', strtotime($row['last_found'])) : null; break;
+					case 'last_found': $entry['last_found'] = ($row['last_found'] > '1980') ? date('c', strtotime($row['last_found'])) : null; break;
 					case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
 					case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
 					case 'date_hidden': $entry['date_hidden'] = date('c', strtotime($row['date_hidden'])); break;
