@@ -18,7 +18,7 @@ use okapi\Cache;
 class ReplicateCommon
 {
 	private static $chunk_size = 200;
-	private static $logged_cache_fields = 'code|names|location|type|status|url|owner|founds|notfounds|size|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|descriptions|hints|images|attrnames|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden';
+	private static $logged_cache_fields = 'code|names|location|type|status|url|owner|founds|notfounds|size|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|descriptions|hints|images|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden';
 	
 	private static $logged_log_entry_fields = 'uuid|cache_code|date|user|type|comment';
 	
@@ -85,7 +85,7 @@ class ReplicateCommon
 		$cache_codes = Db::select_column("
 			select wp_oc
 			from caches
-			where last_modified > '".mysql_real_escape_string($last_update)."';
+			where okapi_syncbase > '".mysql_real_escape_string($last_update)."';
 		");
 		$cache_code_groups = Okapi::make_groups($cache_codes, 50);
 		unset($cache_codes);
@@ -106,7 +106,7 @@ class ReplicateCommon
 			$log_uuids = Db::select_column("
 				select uuid
 				from cache_logs
-				where last_modified > '".mysql_real_escape_string($last_update)."'
+				where okapi_syncbase > '".mysql_real_escape_string($last_update)."'
 				limit $offset, 10000;
 			");
 			if (count($log_uuids) == 0)

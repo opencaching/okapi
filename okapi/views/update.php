@@ -13,6 +13,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
+use okapi\cronjobs\CronJobController;
 
 class View
 {
@@ -86,6 +87,25 @@ class View
 		Okapi::execute_prerequest_cronjobs();
 		
 		self::out("\nUpdate complete.");
+	}
+	
+	/**
+	 * Return the list of email addresses of developers who used any of the given
+	 * method names at least once. If $days is not null, then only consumers which
+	 * used the method in last X $days will be returned.
+	 */
+	public static function get_consumers_of($service_names, $days = null)
+	{
+		return Db::select_column("
+			select distinct c.email
+			from
+				okapi_consumers c,
+				okapi_stats_hourly sh
+			where
+				sh.consumer_key = c.`key`
+				and sh.service_name in ('".implode("','", array_map('mysql_real_escape_string', $service_names))."')
+				".(($days != null) ? "and sh.period_start > date_add(now(), interval -".$days." day)" : "")."
+		");
 	}
 	
 	private static function ver1()
@@ -296,4 +316,65 @@ class View
 	}
 	
 	private static function ver42() { Db::execute("delete from okapi_cache where length(value) = 65535"); }
+	
+	private static function ver43()
+	{
+		$emails = self::get_consumers_of(array('services/replicate/changelog', 'services/replicate/fulldump'), 14);
+		ob_start();
+		print "Hi!\n\n";
+		print "We send this email to all developers who used 'replicate' module\n";
+		print "in last 14 days. Thank you for testing our BETA-status module.\n\n";
+		print "As you probably know, BETA status implies that we may decide to\n";
+		print "modify something in a backward-incompatible way. One of such\n";
+		print "modifications just happened and it may concern you.\n\n";
+		print "We removed 'attrnames' from the list of synchronized fields of\n";
+		print "'geocache'-type objects. Watch our blog for updates!\n\n";
+		print "-- \n";
+		print "OKAPI Team";
+		Okapi::mail_from_okapi($emails, "A change in the 'replicate' module.", ob_get_clean());
+	}
+	
+	private static function ver44() { Db::execute("alter table caches add column okapi_syncbase timestamp not null after last_modified;"); }
+	private static function ver45() { Db::execute("update caches set okapi_syncbase=last_modified;"); }
+	private static function ver46() { Db::execute("update caches set okapi_syncbase=now() where last_found < '1980-01-01'"); }
+	
+	private static function ver47()
+	{
+		Db::execute("
+			update caches
+			set okapi_syncbase=now()
+			where cache_id in (
+				select cache_id
+				from cache_logs
+				where date_created > '2012-03-11' -- the day when 'replicate' module was introduced
+			);
+		");
+	}
+	
+	private static function ver48()
+	{
+		ob_start();
+		print "Hi!\n\n";
+		print "OKAPI just added additional field (along with an index) 'okapi_syncbase'\n";
+		print "on your 'caches' table. It is required by OKAPI's 'replicate' module to\n";
+		print "function properly.\n\n";
+		self::print_common_db_alteration_info();
+		print "-- \n";
+		print "OKAPI Team";
+		Okapi::mail_admins("Database modification notice: caches.okapi_syncbase", ob_get_clean());
+	}
+	
+	private static function print_common_db_alteration_info()
+	{
+		print "-- About OKAPI's database modifications --\n\n";
+		print "OKAPI takes care of its own tables (the ones with the \"okapi_\"\n";
+		print "prefix), but it won't usually alter other tables in your\n";
+		print "database. Still, sometimes we may change something\n";
+		print "slightly (either to make OKAPI work properly OR as a part of\n";
+		print "bigger \"international OpenCaching unification\" ideas).\n\n";
+		print "We will let you know every time OKAPI alters database structure\n";
+		print "(outside of the \"okapi_\" table-scope).\n\n";
+	}
+	
+	private static function ver49() { Db::execute("alter table caches add key okapi_syncbase (okapi_syncbase);"); }
 }
