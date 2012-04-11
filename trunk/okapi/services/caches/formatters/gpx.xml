@@ -120,6 +120,20 @@
 		waypoints and their geocaches. Please note that not many applications are currently able to
 		properly understand GSAK metadata.</p>
 	</opt>
+	<opt name='mark_found' default='false'>
+		<p>Boolean. If <b>true</b> then all caches which are already found, will be marked appropriately
+		(i.e. with an "found cache" symbol).</p>
+		<p>This field requires you to use the <b>user_uuid</b> parameter (or Level 3 Authentication).</p>
+	</opt>
+	<opt name="user_uuid">
+		<p>User'd ID. Required to mark found caches using <b>Level 1</b> Authentication.</p>
+		<p>If you use <b>Level 3</b> Authentication, you shouldn't use this parameter. Or, to be exact:</p>
+		<ul>
+			<li><b>user_uuid</b> will be extracted from the Access Token you use. You don't have to provide it.</li>
+			<li>If you provide <b>user_uuid</b>, then it HAS TO match your Access Token. If it doesn't, OKAPI
+			will respond with HTTP 400 error.</li>
+		</ul>
+	</opt>
 	<returns>
 		<p>GPX file. All invalid cache codes will be skipped without any notice!</p>
 	</returns>

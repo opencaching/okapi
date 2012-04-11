@@ -28,6 +28,9 @@
 	<opt name='lpc' default='10'>
 		Same as in the services/caches/geocache method.
 	</opt>
+	<opt name='user_uuid'>
+		Same as in the services/caches/geocache method.
+	</opt>
 	<common-format-params/>
 	<returns>
 		<p>A dictionary. Cache codes you provide will be mapped to dictionary keys,

@@ -1317,11 +1317,18 @@ class OkapiInternalRequest extends OkapiRequest
 	 */
 	public $i_want_okapi_response = false;
 	
+	/**
+	 * You may use "null" values in parameters if you want them skipped
+	 * (null-ized keys will be removed from parameters).
+	 */
 	public function __construct($consumer, $token, $parameters)
 	{
 		$this->consumer = $consumer;
 		$this->token = $token;
-		$this->parameters = $parameters;
+		$this->parameters = array();
+		foreach ($parameters as $key => $value)
+			if ($value !== null)
+				$this->parameters[$key] = $value;
 	}
 	
 	public function get_parameter($name)
