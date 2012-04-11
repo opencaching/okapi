@@ -25,7 +25,7 @@ class WebService
 	}
 	
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
-		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'founds',
+		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'is_found', 'founds',
 		'notfounds', 'size', 'difficulty', 'terrain', 'rating', 'rating_votes', 'recommendations',
 		'req_passwd', 'description', 'descriptions', 'hint', 'hints', 'images', 'attrnames',
 		'latest_logs', 'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
@@ -49,17 +49,32 @@ class WebService
 				"caches is 500. You provided ".count($cache_codes)." cache codes.");
 		if (count($cache_codes) != count(array_unique($cache_codes)))
 			throw new InvalidParam('cache_codes', "Duplicate codes detected (make sure each cache is referenced only once).");
+		
 		$langpref = $request->get_parameter('langpref');
 		if (!$langpref) $langpref = "en";
 		$langpref = explode("|", $langpref);
+		
 		$fields = $request->get_parameter('fields');
 		if (!$fields) $fields = "code|name|location|type|status";
 		$fields = explode("|", $fields);
 		foreach ($fields as $field)
 			if (!in_array($field, self::$valid_field_names))
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
-		if (in_array('my_notes', $fields) && $request->token == null)
-			throw new BadRequest("Level 3 Authentication is required to access 'my_notes' field.");
+		
+		$user_uuid = $request->get_parameter('user_uuid');
+		if ($user_uuid != null)
+		{
+			$user_id = Db::select_value("select user_id from user where uuid='".mysql_real_escape_string($user_uuid)."'");
+			if ($user_id == null)
+				throw new InvalidParam('user_uuid', "User not found.");
+			if (($request->token != null) && ($this->token->user_id != $user_id))
+				throw new InvalidParam('user_uuid', "User does not match the Access Token used.");
+		}
+		elseif (($user_uuid == null) && ($request->token != null))
+			$user_id = $request->token->user_id;
+		else
+			$user_id = null;
+		
 		$lpc = $request->get_parameter('lpc');
 		if ($lpc === null) $lpc = 10;
 		if ($lpc == 'all')
@@ -72,7 +87,7 @@ class WebService
 			if ($lpc < 0)
 				throw new InvalidParam('lpc', "Must be a positive value.");
 		}
-
+		
 		if (in_array('distance', $fields) || in_array('bearing', $fields) || in_array('bearing2', $fields)
 			|| in_array('bearing3', $fields))
 		{
@@ -99,7 +114,7 @@ class WebService
 		{
 			# DE branch:
 			# - Caches do not have ratings.
-			# - Total numbers of found and notfounds are kept in the "stat_caches" table.
+			# - Total numbers of founds and notfounds are kept in the "stat_caches" table.
 			
 			$rs = Db::query("
 				select
@@ -176,7 +191,8 @@ class WebService
 						$entry['distance'] = (int)Okapi::get_distance($center_lat, $center_lon, $row['latitude'], $row['longitude']);
 						break;
 					case 'bearing':
-						$entry['bearing'] = ((int)(10*Okapi::get_bearing($center_lat, $center_lon, $row['latitude'], $row['longitude']))) / 10.0;
+						$tmp = Okapi::get_bearing($center_lat, $center_lon, $row['latitude'], $row['longitude']);
+						$entry['bearing'] = ($tmp !== null) ? ((int)(10*$tmp)) / 10.0 : null;
 						break;
 					case 'bearing2':
 						$tmp = Okapi::get_bearing($center_lat, $center_lon, $row['latitude'], $row['longitude']);
@@ -186,6 +202,7 @@ class WebService
 						$tmp = Okapi::get_bearing($center_lat, $center_lon, $row['latitude'], $row['longitude']);
 						$entry['bearing3'] = Okapi::bearing_as_three_letters($tmp);
 						break;
+					case 'is_found': /* handled separately */ break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
 					case 'size': $entry['size'] = ($row['size'] < 7) ? $row['size'] - 1 : null; break;
@@ -224,6 +241,29 @@ class WebService
 			$results[$row['wp_oc']] = $entry;
 		}
 		mysql_free_result($rs);
+		
+		# is_found
+		
+		if (in_array('is_found', $fields))
+		{
+			if ($user_id == null)
+				throw new BadRequest("Either 'user_uuid' parameter OR Level 3 Authentication is required to access 'is_found' field.");
+			$tmp = Db::select_column("
+				select c.wp_oc
+				from
+					caches c,
+					cache_logs cl
+				where
+					c.cache_id = cl.cache_id
+					and cl.type = '".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."'
+					and cl.user_id = '".mysql_real_escape_string($user_id)."'
+			");
+			$tmp2 = array();
+			foreach ($tmp as $cache_code)
+				$tmp2[$cache_code] = true;
+			foreach ($results as $cache_code => &$result_ref)
+				$result_ref['is_found'] = isset($tmp2[$cache_code]);
+		}
 		
 		# Descriptions and hints.
 		
@@ -403,6 +443,8 @@ class WebService
 		
 		if (in_array('my_notes', $fields))
 		{
+			if ($request->token == null)
+				throw new BadRequest("Level 3 Authentication is required to access 'my_notes' field.");
 			foreach ($results as &$result_ref)
 				$result_ref['my_notes'] = null;
 			$rs = Db::query("

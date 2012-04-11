@@ -70,7 +70,7 @@ class WebService
 		
 		$langpref = $request->get_parameter('langpref');
 		if (!$langpref) $langpref = "en";
-		foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'latest_logs', 'alt_wpts') as $param)
+		foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'latest_logs', 'alt_wpts', 'mark_found') as $param)
 		{
 			$val = $request->get_parameter($param);
 			if (!$val) $val = "false";
@@ -116,6 +116,8 @@ class WebService
 		$lpc = $request->get_parameter('lpc');
 		if ($lpc === null) $lpc = 10; # will be checked in services/caches/geocaches call
 		
+		$user_uuid = $request->get_parameter('user_uuid');
+		
 		# We can get all the data we need from the services/caches/geocaches method.
 		# We don't need to do any additional queries here.
 		
@@ -137,10 +139,12 @@ class WebService
 			$fields .= "|my_notes";
 		if ($vars['latest_logs'])
 			$fields .= "|latest_logs";
+		if ($vars['mark_found'])
+			$fields .= "|is_found";
 		
 		$vars['caches'] = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
-			'langpref' => $langpref, 'fields' => $fields, 'lpc' => $lpc)));
+			'langpref' => $langpref, 'fields' => $fields, 'lpc' => $lpc, 'user_uuid' => $user_uuid)));
 		$vars['installation'] = OkapiServiceRunner::call('services/apisrv/installation', new OkapiInternalRequest(
 			new OkapiInternalConsumer(), null, array()));
 		$vars['cache_GPX_types'] = self::$cache_GPX_types;
