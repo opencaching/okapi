@@ -40,7 +40,8 @@ class View
 	public static function out($str)
 	{
 		print $str;
-		ob_flush();
+		# No ob_flush(). Output buffering should not be started (see controller.php).
+		# Therefore, calling ob_flush would give an error.
 		flush();
 	}
 	
