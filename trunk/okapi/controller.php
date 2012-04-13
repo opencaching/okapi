@@ -34,12 +34,21 @@ if (session_id())
 
 # Make sure OC did not start anything suspicious, like ob_start('ob_gzhandler').
 # OKAPI makes it's own decisions whether "to gzip or not to gzip".
-if (ob_list_handlers() != array('default output handler'))
+if (ob_list_handlers() == array('default output handler'))
+{
+	# We will assume that this one comes from "output_buffering" being turned on
+	# in PHP config. This is very common and probably is good for most other OC
+	# pages. But we don't need it in OKAPI. We will just turn this off.
+	
+	ob_end_clean();
+}
+
+if (count(ob_list_handlers()) > 0)
 {
 	# WRTODO: Move this to some kind of cronjob, to prevent admin-spamming in case on an error.
 	throw new Exception("Output buffering started while it should not be! You have to patch you OC ".
 		"installation (probable lib/common.inc.php file). You have to check \"if ((!isset(\$GLOBALS['no-ob'])) ".
-		"|| (\$GLOBALS['no-ob'] == false))\" before executing ob_start.");
+		"|| (\$GLOBALS['no-ob'] == false))\" before executing ob_start. Refer to installation docs.");
 }
 
 class OkapiScriptEntryPointController

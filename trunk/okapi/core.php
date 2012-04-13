@@ -521,7 +521,7 @@ class OkapiHttpResponse
 	}
 	
 	/**
-	 * Note: You can call this only once! The result might be huge,
+	 * Note: You can call this only once! The result might be huge (a stream),
 	 * it is usually better to print it directly with ->print_body().
 	 */
 	public function get_body()
