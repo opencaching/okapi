@@ -63,6 +63,13 @@ final class Settings
 		 * Use this variable when you want it to use your own domain.
 		 */
 		'GETTEXT_DOMAIN' => 'okapi_messages',
+		
+		/**
+		 * By default, OKAPI sends messages to email address defined in $GLOBALS['sql_errormail'].
+		 * However, there can be only one address defined there. If you want to add more, you may
+		 * use this setting to provide a list of additional emails.
+		 */
+		'EXTRA_ADMINS' => array(),
 	);
 	
 	/** 
