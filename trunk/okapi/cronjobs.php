@@ -17,6 +17,7 @@ namespace okapi\cronjobs;
 use Exception;
 use okapi\Okapi;
 use okapi\OkapiLock;
+use okapi\OkapiExceptionHandler;
 use okapi\Db;
 use okapi\Cache;
 use okapi\Locales;
@@ -78,7 +79,15 @@ class CronJobController
 				}
 				else
 				{
-					$cronjob->execute();
+					try
+					{
+						$cronjob->execute();
+					}
+					catch (Exception $e)
+					{
+						Okapi::mail_admins("Cronjob error: ".$cronjob->get_name(),
+							OkapiExceptionHandler::get_exception_info($e));
+					}
 					$next_run = $cronjob->get_next_scheduled_run(isset($schedule[$name]) ? $schedule[$name] : time());
 				}
 				$schedule[$name] = $next_run;
