@@ -122,26 +122,7 @@ class OkapiExceptionHandler
 			
 			error_log($e->getMessage());
 			
-			$exception_info = "*** ".$e->getMessage()." ***\n\n";
-			if ($e instanceof FatalError)
-			{
-				# This one doesn't have a stack trace. It is fed directly to OkapiExceptionHandler::handle
-				# by OkapiErrorHandler::handle_shutdown. Instead of printing trace, we will just print
-				# the file and line.
-				
-				$exception_info .= "File: ".$e->getFile()."\nLine: ".$e->getLine()."\n\n";
-			}
-			else
-			{
-				$exception_info .= "--- Stack trace ---\n".$e->getTraceAsString()."\n\n";
-			}
-			
-			$exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
-				preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI'])."\n\n" : "");
-			$exception_info .= "--- Request headers ---\n".implode("\n", array_map(
-				function($k, $v) { return "$k: $v"; },
-				array_keys(getallheaders()), array_values(getallheaders())
-			));
+			$exception_info = self::get_exception_info($e);
 			
 			if (isset($GLOBALS['debug_page']) && $GLOBALS['debug_page'])
 			{
@@ -166,6 +147,32 @@ class OkapiExceptionHandler
 				"Reply-To: $sender_email\n"
 				);
 		}
+	}
+	
+	public static function get_exception_info($e)
+	{
+		$exception_info = "*** ".$e->getMessage()." ***\n\n";
+		if ($e instanceof FatalError)
+		{
+			# This one doesn't have a stack trace. It is fed directly to OkapiExceptionHandler::handle
+			# by OkapiErrorHandler::handle_shutdown. Instead of printing trace, we will just print
+			# the file and line.
+			
+			$exception_info .= "File: ".$e->getFile()."\nLine: ".$e->getLine()."\n\n";
+		}
+		else
+		{
+			$exception_info .= "--- Stack trace ---\n".$e->getTraceAsString()."\n\n";
+		}
+		
+		$exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
+			preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI'])."\n\n" : "");
+		$exception_info .= "--- Request headers ---\n".implode("\n", array_map(
+			function($k, $v) { return "$k: $v"; },
+			array_keys(getallheaders()), array_values(getallheaders())
+		));
+		
+		return $exception_info;
 	}
 }
 

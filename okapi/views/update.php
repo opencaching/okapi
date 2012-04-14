@@ -386,7 +386,8 @@ class View
 		ob_start();
 		print "Hi!\n\n";
 		print "OKAPI just modified 'last_modified' field in your 'cache_logs' table.\n";
-		print "Its type was changed to 'timestamp'.\n\n";
+		print "Its type was changed to 'timestamp'. It is required by OKAPI's 'replicate'\n";
+		print "module to function properly.\n\n";
 		self::print_common_db_alteration_info();
 		print "-- \n";
 		print "OKAPI Team";
