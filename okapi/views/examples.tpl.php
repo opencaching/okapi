@@ -33,18 +33,19 @@
 
 <p>Here you will find basic examples of OKAPI usage with popular programming languages.</p>
 
-<h2>External libraries</h2>
+<h2>Are there any client libraries?</h2>
 
-<p>OKAPI doesn't require you to use any third-party libraries (see below for some crude examples), but some such
-libraries exist and you can use them if you want. With proper libraries, OKAPI might be easier to use.</p>
-
-<ul>
-	<li><b>Oliver Dietz</b> published a <a target='_blank' href='http://code.google.com/p/okapi-dotnet-client/'>.NET client library for OKAPI</a>.
-	He keeps it up-to-date (see his page for details).</li>
-</ul>
-
-<p>If you developed your own library and would like it to be included here, post the details in a comment thread below. Please note, that it might
-take some time before we respond, sorry about that.</p>
+<p>OKAPI <b>does not</b> require you to use any special libraries, usually you will want to
+use OKAPI "as is", via basic HTTP requests and responses.</p>
+<p>However, some third-party libraries exist and you can use them if you want. With proper
+libraries, OKAPI might be easier to use. For example, if you're developing with .NET, you
+may check out <a target='_blank' href='http://code.google.com/p/okapi-dotnet-client/'>.NET
+client library</a> by Oliver Dietz.</p>
+<p>You should check with the author of the library before you use it, to make sure it is
+up-to-date. If you believe it is not, then keep in mind that learning to use our REST
+protocol might be the safest choice.</p>
+<p>If you developed your own library and would like to include it here, post the details
+in a comment thread below.</p>
 
 <div class='issue-comments' issue_id='96'></div>
 
