@@ -4,6 +4,8 @@
 	<desc>
 		<p>Find the nearest geocaches. Unless overriden, results are ordered by the distance from
 		the given center point.</p>
+		<p>Usually you will want to use search_and_retrieve method instead of this one.
+		This way, you can get much more data in <b>one request</b>.</p>
 	</desc>
 	<req name='center'>
 		<p>The center point (typically - the user's location), in the
