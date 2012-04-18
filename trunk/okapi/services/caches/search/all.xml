@@ -4,8 +4,12 @@
 	<desc>
 		<p>Search for geocaches using some simple filters.
 		All of them are optional, but you surely want to use at least some of them.</p>
-		<p>If you're looking for a way to keep your geocaching database in sync with ours,
-		have a peek at the <b>replicate</b> module.</p>
+		<ul>
+			<li>If you're looking for a way to keep your geocaching database in sync with ours,
+			have a peek at the <b>replicate</b> module.</li>
+			<li>Usually you will want to use search_and_retrieve method instead of this one.
+			This way, you can get much more data in <b>one request</b>.</li>
+		</ul>
 	</desc>
 	<opt name='type'>
 		<p>Pipe-separated list of cache type codes. If given, the results will be limited
