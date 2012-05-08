@@ -79,7 +79,8 @@
 				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li>
-				<p><b>is_found</b> - boolean, true if user already found this cache.</p>
+				<p><b>is_found</b> - boolean, true if user already found this cache. See also <b>found_status</b> parameter
+				of the services/caches/search/all method.</p>
 				<p>This field requires you to use the <b>user_uuid</b> parameter (or Level 3 Authentication).</p>
 			</li>
 			<li><b>founds</b> - number of times the geocache was successfully found,</li>

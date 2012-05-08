@@ -543,7 +543,9 @@ class AdminStatsSender extends Cron5Job
 		
 		print "This report includes requests from external consumers and those made via\n";
 		print "Facade class (used by OC code). It does not include methods used by OKAPI\n";
-		print "internally (i.e. while running cronjobs).\n";
+		print "internally (i.e. while running cronjobs). Runtimes do not include HTTP\n";
+		print "request handling overhead.\n";
+		
 		$message = ob_get_clean();
 		Okapi::mail_admins("Weekly OKAPI usage report", $message);
 	}
