@@ -77,7 +77,7 @@ class OkapiDataStore extends OAuthDataStore
 
 	public function new_request_token(OkapiConsumer $consumer, $callback)
 	{
-		if ((preg_match("#^[a-z0-9_]+://#", $callback) > 0) ||
+		if ((preg_match("#^[a-z][a-z0-9_.-]*://#", $callback) > 0) ||
 			$callback == "oob")
 		{ /* ok */ }
 		else { throw new BadRequest("oauth_callback should begin with <scheme>://, or should equal 'oob'."); }
