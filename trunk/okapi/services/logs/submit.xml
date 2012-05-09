@@ -16,9 +16,9 @@
 		<p>Text to be submitted with the log entry. Plain-text (no HTML).</p>
 	</opt>
 	<opt name='when'>
-		<p>A date and time string, in any reasonable format (any acceptable by
-		PHP's <a href='http://pl2.php.net/strtotime'>strtotime</a> function,
-		ISO 8601 preffered).</p>
+		<p>A date and time string. This should be in ISO 8601 format (although currently
+		any format acceptable by PHP's <a href='http://pl2.php.net/strtotime'>strtotime</a>
+		function also will do).</p>
 		<p>Indicates when the cache was found. If given, the log will be published
 		with the given date and time. If not, log will be published using the current
 		date and time.</p>
