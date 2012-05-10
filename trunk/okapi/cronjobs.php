@@ -4,7 +4,7 @@ namespace okapi\cronjobs;
 
 # If you want to debug ONE specific cronjob - see views/cron5.php file!
 
-# If you want to debug the entire "system", then you should now that OKAPI
+# If you want to debug the entire "system", then you should know that OKAPI
 # uses two cache layers in order to decide if the cronjob has to be run,
 # or even if the cronjobs.php file should be included. If you want to force OKAPI
 # to run ALL cronjobs, then you should run these two queries on your database:
