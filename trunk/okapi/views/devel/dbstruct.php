@@ -50,13 +50,25 @@ class View
 					"-- Differences obtained with help of cool library by Kirill Gerasimenko.\n\n".
 					"-- Note: The following script has some limitations. It will render database\n".
 					"-- structure compatible, but not necessarilly EXACTLY the same. It might be\n".
-					"-- better to use manual diff instead.\n\n".
-					"-- The following will alter [1], so that it has the structure of [2].\n".
-					"-- 1. ".$GLOBALS['absolute_server_URI']."okapi/devel/dbstruct (".md5($struct).")\n".
-					"-- 2. ".$_GET['compare_to']." (".md5($alternate_struct).")\n\n";
+					"-- better to use manual diff instead.\n\n";
 				require_once 'comparator.inc.php';
 				$updater = new \dbStructUpdater();
-				$alters = $updater->getUpdates($struct, $alternate_struct);
+				if (isset($_GET['reverse']) && ($_GET['reverse'] == 'true'))
+				{
+					$response->body .=
+						"-- REVERSE MODE. The following will alter [2], so that it has the structure of [1].\n".
+						"-- 1. ".$GLOBALS['absolute_server_URI']."okapi/devel/dbstruct (".md5($struct).")\n".
+						"-- 2. ".$_GET['compare_to']." (".md5($alternate_struct).")\n\n";
+					$alters = $updater->getUpdates($alternate_struct, $struct);
+				}
+				else
+				{
+					$response->body .=
+						"-- The following will alter [1], so that it has the structure of [2].\n".
+						"-- 1. ".$GLOBALS['absolute_server_URI']."okapi/devel/dbstruct (".md5($struct).")\n".
+						"-- 2. ".$_GET['compare_to']." (".md5($alternate_struct).")\n\n";
+					$alters = $updater->getUpdates($struct, $alternate_struct);
+				}
 				if (count($alters) > 0)
 					$response->body .= implode(";\n", $alters).";\n";
 				else
