@@ -69,8 +69,22 @@ class View
 						"-- 2. ".$_GET['compare_to']." (".md5($alternate_struct).")\n\n";
 					$alters = $updater->getUpdates($struct, $alternate_struct);
 				}
+				# Add semicolons
+				foreach ($alters as &$alter_ref)
+					$alter_ref .= ";";
+				# Comment out all differences containing "okapi_". These should be executed
+				# by OKAPI update scripts.
+				foreach ($alters as &$alter_ref)
+				{
+					if (strpos($alter_ref, "okapi_") !== false)
+					{
+						$lines = explode("\n", $alter_ref);
+						$alter_ref = "-- Probably you should NOT execute this one. Use okapi/update instead.\n-- {{{\n--   ".
+							implode("\n--   ", $lines)."\n-- }}}";
+					}
+				}
 				if (count($alters) > 0)
-					$response->body .= implode(";\n", $alters).";\n";
+					$response->body .= implode("\n", $alters)."\n";
 				else
 					$response->body .= "-- No differences found\n";
 			}
