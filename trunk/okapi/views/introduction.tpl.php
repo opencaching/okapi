@@ -217,6 +217,124 @@ method calls and redirects which provide you with an Access Token).</p>
 
 <div class='issue-comments' issue_id='29'></div>
 
+<h2 id='errors'>Advanced error handling</h2>
+
+<p>Basic rules apply:</p>
+<ul>
+	<li>If all goes well, OKAPI will respond with a <b>HTTP 200</b> status.</li>
+	<li>If there is something wrong with your request, you will get a <b>HTTP 4xx</b>
+	response (with a JSON object described below). These kind of responses should
+	trigger some kind of an exception inside your application.</li>
+	<li>If something goes wrong <b>on our part</b>, you will get a <b>HTTP 5xx</b> response.
+	We will try to fix such errors as soon as possible.</li>
+</ul>
+
+<p>Each <b>HTTP 4xx</b> error will be properly described in the response, using a <b>JSON error
+response</b>. You may retrieve the body of such response and use it inside your application
+(for example, to construct various exception subclasses). In most of the cases, only OAuth applications
+need to do this. All other applications are fine with threating all HTTP 4xx errors the same.</p>
+
+<p>The error response is a dictionary with a single <b>error</b> key. Its value contains
+<b>at least</b> the following keys:</p>
+<ul>
+	<li><b>developer_message</b> - description of the error,</li>
+	<li><b>reason_stack</b> - list of keywords (see below for valid values) which may be
+		use to subclass exceptions,</li>
+	<li><b>status</b> - HTTP status code (the same which you'll get in response headers),
+	<li><b>more_info</b> - url pointing to a more detailed description of the error
+		(or, more probably, to the page you're now reading).</li>
+</ul>
+
+<p>Depending on the values on the <b>reason_stack</b>, the <b>error</b> dictionary may
+contain additional keys. Possible values of the <b>reason_stack</b> include:</p>
+
+<ul>
+	<li>
+		<p><b>["bad_request"]</b> - you've made a bad request.
+		<p>Subclasses:</p>
+		<ul>
+			<li>
+				<p><b>[ ... , "missing_parameter"]</b> - you didn't supply a required
+				parameter. Extra keys:</p>
+				<ul>
+					<li><b>parameter</b> - the name of the missing parameter.</li>
+				</ul>
+			</li>
+			<li>
+				<p><b>[ ... , "invalid_parameter"]</b> - one of your parameters
+				has invalid value. Extra keys:</p>
+				<ul>
+					<li><b>parameter</b> - the name of the parameter,</li>
+					<li><b>whats_wrong_about_it</b> - description of what was wrong about it.</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<p><b>["invalid_oauth_request"]</b> - you've tried to use OAuth, but your request
+		was invalid.</p>
+		<p>Subclasses:</p>
+		<ul>
+			<li>
+				<p><b>[ ... , "unsupported_oauth_version"]</b> - you tried
+				to use unsupported OAuth version (OKAPI requires OAuth 1.0a).</p>
+			</li>
+			<li>
+				<p><b>[ ... , "missing_parameter"]</b> - you didn't supply
+				a required parameter. Extra keys:</p>
+				<ul>
+					<li><b>parameter</b> - the name of the missing parameter.</li>
+				</ul>
+			</li>
+			<li>
+				<p><b>[ ... , "unsupported_signature_method"]</b> - you
+				tried to use an unsupported OAuth signature method (OKAPI requires
+				HMAC-SHA1).</p>
+			</li>
+			<li>
+				<p><b>[ ... , "invalid_consumer"]</b> - your consumer
+				does not exist.</p>
+			</li>
+			<li>
+				<p><b>[ ... , "invalid_token"]</b> - your token
+				does not exist. This is pretty common, it may have expired (in case
+				of request tokens) or may have been revoked (in case of access tokens).
+				You should ask your user to redo the authorization dance.</p>
+			</li>
+			<li>
+				<p><b>[ ... , "invalid_signature"]</b> - your request
+				signature was invalid.</p>
+			</li>
+			<li>
+				<p><b>[ ... , "invalid_timestamp"]</b> - you used a timestamp
+				which was too far off, compared to the current server time. This is
+				pretty common, especially when your app is for mobile phones. You should
+				ask your user to fix the clock or use the provided extra keys to adjust
+				it yourself. Extra keys:</p>
+				<ul>
+					<li><b>yours</b> - timestamp you have supplied,</li>
+					<li><b>ours</b> - timestamp on our server,</li>
+					<li><b>difference</b> - the difference (to be added to your clock),</li>
+					<li><b>threshold</b> - the maximum allowed difference.</li>
+				</ul>
+			</li>
+			<li>
+				<p><b>[ ... , "nonce_already_used"]</b> - most probably,
+				you have supplied the same request twice (user double-clicked something?).
+				Or, you have some error in the nonce generator in your OAuth client.</p>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+<p>Almost always, you should be fine with catching just three of those:</p>
+<ul>
+	<li><b>["invalid_oauth_request", "invalid_token"]</b> (reauthorize),</li>
+	<li><b>["invalid_oauth_request", "invalid_timestamp"]</b> (adjust the timestamp),</li>
+	<li>and <i>"any other 4xx status exception"</i> (send yourself a bug report).</li>
+</ul>
+
+<div class='issue-comments' issue_id='117'></div>
 
 <h2 id='participate'>How can I participate in OKAPI development?</h2>
 

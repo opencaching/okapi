@@ -20,9 +20,9 @@ namespace okapi;
 
 use Exception;
 use ErrorException;
-use OAuthException;
-use OAuth400Exception;
-use OAuth401Exception;
+use OAuthServerException;
+use OAuthServer400Exception;
+use OAuthServer401Exception;
 use OAuthConsumer;
 use OAuthToken;
 use OAuthServer;
@@ -53,8 +53,22 @@ function get_admin_emails()
 # Base exception types.
 #
 
-/** Throw this when external developer does something wrong. */
-class BadRequest extends Exception {}
+/** A base class for all bad request exceptions. */
+class BadRequest extends Exception {
+	protected function provideExtras(&$extras) {
+		$extras['reason_stack'][] = 'bad_request';
+		$extras['status'] = 400;
+	}
+	public function getOkapiJSON() {
+		$extras = array(
+			'developer_message' => $this->getMessage(),
+			'reason_stack' => array(),
+		);
+		$this->provideExtras($extras);
+		$extras['more_info'] = "http://opencaching.pl/okapi/introduction.html#errors";
+		return json_encode(array("error" => $extras));
+	}
+}
 
 /** Thrown on PHP's FATAL errors (detected in a shutdown function). */
 class FatalError extends ErrorException {}
@@ -70,26 +84,20 @@ class OkapiExceptionHandler
 	/** Handle exception thrown while executing OKAPI request. */
 	public static function handle($e)
 	{
-		if ($e instanceof OAuth400Exception)
+		if ($e instanceof OAuthServerException)
 		{
-			# This is thrown on improperly constructed OAuth requests.
-			header("HTTP/1.0 400 Bad Request");
+			# This is thrown on invalid OAuth requests. There are many subclasses
+			# of this exception. All of them result in HTTP 400 or HTTP 401 error
+			# code. See also: http://oauth.net/core/1.0a/#http_codes
+			
+			if ($e instanceof OAuthServer400Exception)
+				header("HTTP/1.0 400 Bad Request");
+			else
+				header("HTTP/1.0 401 Unauthorized");
 			header("Access-Control-Allow-Origin: *");
 			header("Content-Type: text/plain; charset=utf-8");
 			
-			print $e->getMessage();
-		}
-		elseif ($e instanceof OAuth401Exception)
-		{
-			# This is thrown on improperly signed OAuth requests or when
-			# invalid/expired Tokens or Consumer Keys are used. See also:
-			# http://oauth.net/core/1.0a/#http_codes
-			
-			header("HTTP/1.0 401 Unauthorized");
-			header("Access-Control-Allow-Origin: *");
-			header("Content-Type: text/plain; charset=utf-8");
-			
-			print $e->getMessage();
+			print $e->getOkapiJSON();
 		}
 		elseif ($e instanceof BadRequest)
 		{
@@ -101,7 +109,7 @@ class OkapiExceptionHandler
 			header("Access-Control-Allow-Origin: *");
 			header("Content-Type: text/plain; charset=utf-8");
 			
-			print $e->getMessage();
+			print $e->getOkapiJSON();
 		}
 		else # (ErrorException, MySQL exception etc.)
 		{
@@ -241,20 +249,34 @@ class Http404 extends BadRequest {}
 /** Common type of BadRequest: Required parameter is missing. */
 class ParamMissing extends BadRequest
 {
-	public function __construct($paramName, $code = 0)
+	private $paramName;
+	protected function provideExtras(&$extras) {
+		parent::provideExtras($extras);
+		$extras['reason_stack'][] = 'missing_parameter';
+		$extras['parameter'] = $this->paramName;
+	}
+	public function __construct($paramName)
 	{
-		parent::__construct("Required parameter '$paramName' is missing.", $code);
+		parent::__construct("Required parameter '$paramName' is missing.");
+		$this->paramName = $paramName;
 	}
 }
 
 /** Common type of BadRequest: Parameter has invalid value. */
 class InvalidParam extends BadRequest
 {
+	private $paramName;
 	/** What was wrong about the param? */
 	public $whats_wrong_about_it;
-	
+	protected function provideExtras(&$extras) {
+		parent::provideExtras($extras);
+		$extras['reason_stack'][] = 'invalid_parameter';
+		$extras['parameter'] = $this->paramName;
+		$extras['whats_wrong_about_it'] = $this->whats_wrong_about_it;
+	}
 	public function __construct($paramName, $whats_wrong_about_it = "", $code = 0)
 	{
+		$this->paramName = $paramName;
 		$this->whats_wrong_about_it = $whats_wrong_about_it;
 		if ($whats_wrong_about_it)
 			parent::__construct("Parameter '$paramName' has invalid value: ".$whats_wrong_about_it, $code);

@@ -15,9 +15,10 @@ use okapi\BadRequest;
 
 
 /** 
- * This exception is thrown by WebService::_call method, when there was an user-error
- * publishing the log entry. It is VERY different from other BadRequest exceptions:
- * It does not imply that the Consumer did anything wrong.
+ * This exception is thrown by WebService::_call method, when error is detected in
+ * user-supplied data. It is not a BadRequest exception - it does not imply that
+ * the Consumer did anything wrong (it's the user who did). This exception shouldn't
+ * be used outside of this file.
  */
 class CannotPublishException extends Exception {}
 
