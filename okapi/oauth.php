@@ -1,12 +1,18 @@
 <?php
 
-# MODIFIED, August 2011, Wojciech Rygielski <rygielski@mimuw.edu.pl>.
+# MODIFIED, May 2012, Wojciech Rygielski <rygielski@mimuw.edu.pl>.
+#
 # This is a splightly modifier version of the original library.
-# The original wasn't 100% consistent with the OAuth response codes
-# advice on http://oauth.net/core/1.0a/#http_codes, it threw the same
-# OAuthException in both cases rather than splitting it into two
-# different exception classes. I split it into two more exceptions
-# (OAuth400Exception, OAuth401Exception).
+# The original library couldn't be used if we wanted to be 100%
+# consistent with the OAuth response codes advice on
+# http://oauth.net/core/1.0a/#http_codes - it threw only one type
+# of Exception. I added many subclasses in order to be able to
+# report the error more properly.
+#
+# I also added a helper method for server exception named getOkapiJSON.
+# This produces a non-standard (because there is no REST standard for
+# this), JSON-formatted description of the error, to be passed within
+# the response.
 
 
 /* === The original copyright and permission notice === *//*
@@ -35,14 +41,127 @@ THE SOFTWARE.
 
 */
 
-/* Generic exception class
- */
-class OAuthException extends Exception {
-  // pass
+/** Base exception type for all exceptions thrown by this module. */
+abstract class OAuthException extends Exception {}
+
+# All OAuthExceptions fall back into these two categories:
+
+/** OAuth client errors. */
+class OAuthClientException extends OAuthException {}
+/** OAuth server errors. */
+abstract class OAuthServerException extends OAuthException {
+  abstract public function getHttpStatusCode();
+  protected function provideExtras(&$extras) {
+    $extras['reason_stack'][] = 'invalid_oauth_request';
+  }
+  public function getOkapiJSON() {
+    $extras = array(
+      'developer_message' => $this->getMessage(),
+      'reason_stack' => array(),
+    );
+    $this->provideExtras($extras);
+    $extras['more_info'] = "http://opencaching.pl/okapi/introduction.html#errors";
+    return json_encode(array("error" => $extras));
+  }
 }
 
-class OAuth400Exception extends OAuthException {}
-class OAuth401Exception extends OAuthException {}
+# More subclasses of server exceptions.
+
+/** OAuth server errors which should result in HTTP 400 response. */
+abstract class OAuthServer400Exception extends OAuthServerException {
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['status'] = 400;
+  }
+  public function getHttpStatusCode() { return 400; }
+}
+/** OAuth server errors which should result in HTTP 401 response. */
+abstract class OAuthServer401Exception extends OAuthServerException {
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['status'] = 401;
+  }
+  public function getHttpStatusCode() { return 401; }
+}
+
+/** Client asked for an unsupported OAuth version (not 1.0). */
+class OAuthVersionNotSupportedException extends OAuthServer400Exception {
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['reason_stack'][] = 'unsupported_oauth_version';
+  }
+}
+/** Client didn't provide one of the key OAuth parameters. */
+class OAuthMissingParameterException extends OAuthServer400Exception {
+  protected $param_name;
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['reason_stack'][] = 'missing_parameter';
+    $extras['parameter'] = $this->param_name;
+  }
+  public function __construct($param_name) {
+    parent::__construct("Missing '$param_name' parameter. This parameter is required.");
+    $this->param_name = $param_name;
+  }
+  public function getParamName() { return $this->param_name; }
+}
+/** Client used unsupported signature method. */
+class OAuthUnsupportedSignatureMethodException extends OAuthServer400Exception {
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['reason_stack'][] = 'unsupported_signature_method';
+  }
+}
+/** Client provided invalid Consumer Key. */
+class OAuthInvalidConsumerException extends OAuthServer401Exception {
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['reason_stack'][] = 'invalid_consumer';
+  }
+}
+/** Client provider invalid token (either Request Token or Access Token). */
+class OAuthInvalidTokenException extends OAuthServer401Exception {
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['reason_stack'][] = 'invalid_token';
+  }
+}
+/** Client's signature was invalid. */
+class OAuthInvalidSignatureException extends OAuthServer401Exception {
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['reason_stack'][] = 'invalid_signature';
+  }
+}
+/** Client used expired timestamp (or timestamp too far in future). */
+class OAuthExpiredTimestampException extends OAuthServer400Exception {
+  protected $usersTimestamp;
+  protected $ourTimestamp;
+  protected $threshold;
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['reason_stack'][] = 'invalid_timestamp';
+    $extras['yours'] = $this->usersTimestamp;
+    $extras['ours'] = $this->ourTimestamp;
+    $extras['difference'] = $this->ourTimestamp - $this->usersTimestamp;
+    $extras['threshold'] = $this->threshold;
+  }
+  public function __construct($users, $ours, $threshold) {
+    $this->usersTimestamp = $users;
+    $this->ourTimestamp = $ours;
+    $this->threshold = $threshold;
+    parent::__construct("Expired timestamp, yours $this->usersTimestamp, ours $this->ourTimestamp (threshold $this->threshold).");
+  }
+  public function getUsersTimestamp() { return $this->usersTimestamp; }
+  public function getOurTimestamp() { return $this->ourTimestamp; }
+}
+/** Client used the same nonce for the second time. */
+class OAuthNonceAlreadyUsedException extends OAuthServer400Exception {
+  protected function provideExtras(&$extras) {
+    parent::provideExtras($extras);
+    $extras['reason_stack'][] = 'nonce_already_used';
+  }
+}
 
 class OAuthConsumer {
   public $key;
@@ -470,7 +589,7 @@ class OAuthRequest {
    */
   public function to_header($realm=null) {
     $first = true;
-	if($realm) {
+    if($realm) {
       $out = 'Authorization: OAuth realm="' . OAuthUtil::urlencode_rfc3986($realm) . '"';
       $first = false;
     } else
@@ -480,7 +599,7 @@ class OAuthRequest {
     foreach ($this->parameters as $k => $v) {
       if (substr($k, 0, 5) != "oauth") continue;
       if (is_array($v)) {
-        throw new OAuth400Exception('Arrays not supported in headers');
+        throw new OAuthClientException('Arrays not supported in headers.');
       }
       $out .= ($first) ? ' ' : ',';
       $out .= OAuthUtil::urlencode_rfc3986($k) .
@@ -613,7 +732,7 @@ class OAuthServer {
       $version = '1.0';
     }
     if ($version !== $this->version) {
-      throw new OAuth400Exception("OAuth version '$version' not supported");
+      throw new OAuthVersionNotSupportedException("OAuth version '$version' not supported.");
     }
     return $version;
   }
@@ -629,15 +748,15 @@ class OAuthServer {
     if (!$signature_method) {
       // According to chapter 7 ("Accessing Protected Ressources") the signature-method
       // parameter is required, and we can't just fallback to PLAINTEXT
-      throw new OAuth400Exception('No signature method parameter. This parameter is required');
+      throw new OAuthMissingParameterException('oauth_signature_method');
     }
 
     if (!in_array($signature_method,
                   array_keys($this->signature_methods))) {
-      throw new OAuth400Exception(
+      throw new OAuthUnsupportedSignatureMethodException(
         "Signature method '$signature_method' not supported " .
         "try one of the following: " .
-        implode(", ", array_keys($this->signature_methods))
+        implode(", ", array_keys($this->signature_methods)) . "."
       );
     }
     return $this->signature_methods[$signature_method];
@@ -652,12 +771,12 @@ class OAuthServer {
         : NULL;
 
     if (!$consumer_key) {
-      throw new OAuth401Exception("Invalid consumer key");
+      throw new OAuthMissingParameterException('oauth_consumer_key');
     }
 
     $consumer = $this->data_store->lookup_consumer($consumer_key);
     if (!$consumer) {
-      throw new OAuth401Exception("Invalid consumer");
+      throw new OAuthInvalidConsumerException("Invalid consumer");
     }
 
     return $consumer;
@@ -670,12 +789,14 @@ class OAuthServer {
     $token_field = $request instanceof OAuthRequest
          ? $request->get_parameter('oauth_token')
          : NULL;
-
+    if (!$token_field) {
+      throw new OAuthMissingParameterException('oauth_token');
+    }
     $token = $this->data_store->lookup_token(
       $consumer, $token_type, $token_field
     );
     if (!$token) {
-      throw new OAuth401Exception("Invalid $token_type token: $token_field");
+      throw new OAuthInvalidTokenException("Invalid $token_type token: $token_field.");
     }
     return $token;
   }
@@ -707,7 +828,7 @@ class OAuthServer {
     );
 
     if (!$valid_sig) {
-      throw new OAuth401Exception("Invalid signature");
+      throw new OAuthInvalidSignatureException("Invalid signature.");
     }
   }
 
@@ -716,16 +837,13 @@ class OAuthServer {
    */
   private function check_timestamp($timestamp) {
     if( ! $timestamp )
-      throw new OAuth400Exception(
-        'Missing timestamp parameter. The parameter is required'
-      );
+      throw new OAuthMissingParameterException('oauth_timestamp');
     
     // verify that timestamp is recentish
     $now = time();
     if (abs($now - $timestamp) > $this->timestamp_threshold) {
-      throw new OAuth400Exception(
-        "Expired timestamp, yours $timestamp, ours $now"
-      );
+      throw new OAuthExpiredTimestampException($timestamp, $now,
+        $this->timestamp_threshold);
     }
   }
 
@@ -734,9 +852,7 @@ class OAuthServer {
    */
   private function check_nonce($consumer, $token, $nonce, $timestamp) {
     if( ! $nonce )
-      throw new OAuth400Exception(
-        'Missing nonce parameter. The parameter is required'
-      );
+      throw new OAuthMissingParameterException('oauth_nonce');
 
     // verify that the nonce is uniqueish
     $found = $this->data_store->lookup_nonce(
@@ -746,7 +862,7 @@ class OAuthServer {
       $timestamp
     );
     if ($found) {
-      throw new OAuth400Exception("Nonce already used: $nonce");
+      throw new OAuthNonceAlreadyUsedException("Nonce already used: $nonce.");
     }
   }
 
