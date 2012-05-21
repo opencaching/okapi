@@ -511,7 +511,7 @@ class OkapiOAuthServer extends OAuthServer
 		$consumer = $this->get_consumer($request);
 		try {
 			$token = $this->get_token($request, $consumer, $token_type);
-		} catch (OAuthException $e) {
+		} catch (OAuthServerException $e) {
 			if ($token_required)
 				throw $e;
 			else
