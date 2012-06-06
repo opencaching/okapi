@@ -209,7 +209,7 @@ class WebService
 					case 'difficulty': $entry['difficulty'] = round($row['difficulty'] / 2.0, 1); break;
 					case 'terrain': $entry['terrain'] = round($row['terrain'] / 2.0, 1); break;
 					case 'rating':
-						if ($row['votes'] <= 3) $entry['rating'] = null;
+						if ($row['votes'] < 3) $entry['rating'] = null;
 						elseif ($row['score'] >= 2.2) $entry['rating'] = 5;
 						elseif ($row['score'] >= 1.4) $entry['rating'] = 4;
 						elseif ($row['score'] >= 0.1) $entry['rating'] = 3;
