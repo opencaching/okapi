@@ -126,7 +126,7 @@ final class Settings
 		$locale = Locales::get_best_locale($langprefs);
 		putenv("LC_ALL=$locale");
 		setlocale(LC_ALL, $locale);
-		setlocale(LC_NUMERIC, "POSIX"); # We don't one *this one* to get out of control.
+		setlocale(LC_NUMERIC, "POSIX"); # We don't want *this one* to get out of control.
 		bindtextdomain("okapi_messages", $GLOBALS['rootpath'].'okapi/locale');
 		return $locale;
 	}

@@ -39,6 +39,8 @@ class WebService
 	{
 		# Developers! Please notice the fundamental difference between throwing
 		# CannotPublishException and standard BadRequest/InvalidParam exceptions!
+		# Notice, that this is "_call" method, not the usual "call" (see below
+		# for "call").
 		
 		$cache_code = $request->get_parameter('cache_code');
 		if (!$cache_code) throw new ParamMissing('cache_code');
@@ -55,9 +57,9 @@ class WebService
 			$when = strtotime($tmp);
 			if (!$when)
 				throw new InvalidParam('when', "'$tmp' is not in a valid format or is not a valid date.");
-			if ($when > time())
-				throw new CannotPublishException("You are trying to publish a log entry with a date in future. ".
-					"Cache log entries are allowed to be published in the past, but NOT in the future.");
+			if ($when > time() + 5*60)
+				throw new CannotPublishException(_("You are trying to publish a log entry with a date in future. ".
+					"Cache log entries are allowed to be published in the past, but NOT in the future."));
 		}
 		else
 			$when = time();
@@ -83,11 +85,11 @@ class WebService
 			if ($user['is_admin'] || ($user['uuid'] == $cache['owner']['uuid'])) {
 				/* pass */
 			} else {
-				throw new CannotPublishException("This cache is archived. Only admins and the owner are allowed to add a log entry.");
+				throw new CannotPublishException(_("This cache is archived. Only admins and the owner are allowed to add a log entry."));
 			}
 		}
 		if ($cache['type'] == 'Event' && $logtype != 'Comment')
-			throw new CannotPublishException('This cache is an Event cache. You cannot "Find it"! (But - you may "Comment" on it.)');
+			throw new CannotPublishException(_('This cache is an Event cache. You cannot "Find it"! (But - you may "Comment" on it.)'));
 		if ($rating && $logtype != 'Found it')
 			throw new BadRequest("Rating is allowed only for 'Found it' logtypes.");
 		if ($logtype == 'Found it')
@@ -102,7 +104,7 @@ class WebService
 					and deleted = 0
 			");
 			if ($has_already_found_it)
-				throw new CannotPublishException("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!");
+				throw new CannotPublishException(_("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"));
 		}
 		if ($rating)
 		{
@@ -114,10 +116,10 @@ class WebService
 					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 			");
 			if ($has_already_rated)
-				throw new CannotPublishException("You have already rated this cache once. Your rating cannot be changed.");
+				throw new CannotPublishException(_("You have already rated this cache once. Your rating cannot be changed."));
 		}
 		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
-			throw new CannotPublishException("Your have to supply some text for your comment.");
+			throw new CannotPublishException(_("Your have to supply some text for your comment."));
 		if ($logtype == 'Found it' && $cache['req_passwd'])
 		{
 			$valid_password = Db::select_value("
@@ -127,9 +129,9 @@ class WebService
 			");
 			$supplied_password = $request->get_parameter('password');
 			if (!$supplied_password)
-				throw new CannotPublishException("This cache requires a password. You didn't provide one!");
+				throw new CannotPublishException(_("This cache requires a password. You didn't provide one!"));
 			if (strtolower($supplied_password) != strtolower($valid_password))
-				throw new CannotPublishException("Invalid password!");
+				throw new CannotPublishException(_("Invalid password!"));
 		}
 		
 		# Add the log entry.
@@ -223,17 +225,26 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
+		$langpref = $request->get_parameter('langpref');
+		if (!$langpref) $langpref = "en";
+		
+		# Error messages thrown via CannotPublishException exceptions should be localized.
+		# They will be delivered for end user to display in his language.
+		
+		Okapi::gettext_domain_init(explode("|", $langpref));
 		try
 		{
 			$log_uuid = self::_call($request);
 			$result = array(
 				'success' => true,
-				'message' => "Your cache log entry was posted successfully.",
+				'message' => _("Your cache log entry was posted successfully."),
 				'log_uuid' => $log_uuid
 			);
+			Okapi::gettext_domain_restore();
 		}
 		catch (CannotPublishException $e)
 		{
+			Okapi::gettext_domain_restore();
 			$result = array(
 				'success' => false,
 				'message' => $e->getMessage(),

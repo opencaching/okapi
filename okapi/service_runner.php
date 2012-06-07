@@ -121,10 +121,16 @@ class OkapiServiceRunner
 		
 		$time_started = microtime(true);
 		Okapi::gettext_domain_init();
-		require_once "$service_name.php";
-		$response = call_user_func(array('\\okapi\\'.
-			str_replace('/', '\\', $service_name).'\\WebService', 'call'), $request);
-		Okapi::gettext_domain_restore();
+		try
+		{
+			require_once "$service_name.php";
+			$response = call_user_func(array('\\okapi\\'.
+				str_replace('/', '\\', $service_name).'\\WebService', 'call'), $request);
+			Okapi::gettext_domain_restore();
+		} catch (Exception $e) {
+			Okapi::gettext_domain_restore();
+			throw $e;
+		}
 		$runtime = microtime(true) - $time_started;
 		
 		# Log the request to the stats table. Only valid requests (these which didn't end up
