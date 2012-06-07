@@ -799,30 +799,78 @@ class Okapi
 		}
 	}
 	
-	private static $gettext_last_used_langprefs = null;
-	private static $gettext_last_set_locale = null;
-	private static $gettext_original_domain;
-	private static $gettext_current_depth = 0;
+	private static function gettext_set_lang($langprefs)
+	{
+		static $gettext_last_used_langprefs = null;
+		static $gettext_last_set_locale = null;
+		
+		# We remember the last $langprefs argument which we've been called with.
+		# This way, we don't need to call the actual locale-switching code most
+		# of the times.
+		
+		if ($gettext_last_used_langprefs != $langprefs)
+		{
+			$gettext_last_set_locale = call_user_func(Settings::get("GETTEXT_INIT"), $langprefs);
+			$gettext_last_used_langprefs = $langprefs;
+			textdomain(Settings::get("GETTEXT_DOMAIN"));
+		}
+		return $gettext_last_set_locale;
+	}
+	
+	private static $gettext_original_domain = null;
+	private static $gettext_langprefs_stack = array();
+	
+	/**
+	 * Attempt to switch the language based on the preference array given.
+	 * Previous language settings will be remembered (in a stack). You SHOULD
+	 * restore them later by calling gettext_domain_restore.
+	 */
 	public static function gettext_domain_init($langprefs = null)
 	{
+		# Put the langprefs on the stack.
+		
 		if ($langprefs == null)
 			$langprefs = array(Settings::get('SITELANG'));
-		if (self::$gettext_last_used_langprefs != $langprefs)
+		self::$gettext_langprefs_stack[] = $langprefs;
+		
+		if (count(self::$gettext_langprefs_stack) == 1)
 		{
-			self::$gettext_last_set_locale = call_user_func(Settings::get("GETTEXT_INIT"), $langprefs);
-			self::$gettext_last_used_langprefs = $langprefs;
-		}
-		if (self::$gettext_current_depth == 0)
+			# This is the first time gettext_domain_init is called. In order to
+			# properly reinitialize the original settings after gettext_domain_restore
+			# is called for the last time, we need to save current textdomain (which
+			# should be different than the one which we use - Settings::get("GETTEXT_DOMAIN")).
+			
 			self::$gettext_original_domain = textdomain(null);
-		textdomain(Settings::get("GETTEXT_DOMAIN"));
-		self::$gettext_current_depth++;
-		return self::$gettext_last_set_locale;
+		}
+		
+		# Attempt to change the language. Acquire the actual locale code used
+		# (might differ from expected when language was not found).
+
+		$locale_code = self::gettext_set_lang($langprefs);
+		return $locale_code;
 	}
 	public static function gettext_domain_restore()
 	{
-		self::$gettext_current_depth--;
-		if (self::$gettext_current_depth == 0)
+		# Dismiss the last element on the langpref stack. This is the language
+		# which we've been actualy using until now. We want it replaced with
+		# the language below it.
+		
+		array_pop(self::$gettext_langprefs_stack);
+		
+		$size = count(self::$gettext_langprefs_stack);
+		if ($size > 0)
+		{
+			$langprefs = self::$gettext_langprefs_stack[$size - 1];
+			self::gettext_set_lang($langprefs);
+		}
+		else
+		{
+			# The stack is empty. This means we're going out of OKAPI code and
+			# we want the original textdomain reestablished.
+			
 			textdomain(self::$gettext_original_domain);
+			self::$gettext_original_domain = null;
+		}
 	}
 	
 	/**

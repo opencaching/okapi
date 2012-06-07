@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-02 16:42+0100\n"
-"PO-Revision-Date: 2012-02-02 16:42+0100\n"
+"POT-Creation-Date: 2012-06-07 21:46+0100\n"
+"PO-Revision-Date: 2012-06-07 21:46+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,16 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: services/caches/formatters/gpxfile.tpl.php:26
-#: services/caches/formatters/gpxfile.tpl.php:43
+#: services/caches/geocaches.php:552
+msgid "Stage"
+msgstr "Etap"
+
+#: services/caches/formatters/gpxfile.tpl.php:27
+#: services/caches/formatters/gpxfile.tpl.php:44
 msgid "hidden by"
 msgstr "ukryta przez"
 
-#: services/caches/formatters/gpxfile.tpl.php:45
+#: services/caches/formatters/gpxfile.tpl.php:46
 #, php-format
 msgid "%d recommendation"
 msgid_plural "%d recommendations"
@@ -30,7 +34,7 @@ msgstr[0] "%d rekomendacja"
 msgstr[1] "%d rekomendacje"
 msgstr[2] "%d rekomendacji"
 
-#: services/caches/formatters/gpxfile.tpl.php:46
+#: services/caches/formatters/gpxfile.tpl.php:47
 #, php-format
 msgid "from among %d vote"
 msgid_plural "from among %d votes"
@@ -38,7 +42,7 @@ msgstr[0] "spośród %d oceny"
 msgstr[1] "spośród %d ocen"
 msgstr[2] "spośród %d ocen"
 
-#: services/caches/formatters/gpxfile.tpl.php:49
+#: services/caches/formatters/gpxfile.tpl.php:50
 #, php-format
 msgid "%d trackable"
 msgid_plural "%d trackables"
@@ -46,29 +50,65 @@ msgstr[0] "%d GeoKret (lub TravelBug)"
 msgstr[1] "%d GeoKrety (lub TravelBugi)"
 msgstr[2] "%d GeoKretów (lub TravelBugów)"
 
-#: services/caches/formatters/gpxfile.tpl.php:53
+#: services/caches/formatters/gpxfile.tpl.php:54
 msgid "Personal notes"
 msgstr "Osobiste notatki"
 
-#: services/caches/formatters/gpxfile.tpl.php:57
+#: services/caches/formatters/gpxfile.tpl.php:58
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: services/caches/formatters/gpxfile.tpl.php:61
+#: services/caches/formatters/gpxfile.tpl.php:62
 msgid "Trackables"
 msgstr "Geokrety, Travelbugi itp."
 
-#: services/caches/formatters/gpxfile.tpl.php:79
+#: services/caches/formatters/gpxfile.tpl.php:80
 msgid "Images"
 msgstr "Obrazki"
 
-#: services/caches/formatters/gpxfile.tpl.php:86
+#: services/caches/formatters/gpxfile.tpl.php:87
 msgid "Spoilers"
 msgstr "Spoilery"
 
-#: services/caches/formatters/gpxfile.tpl.php:94
+#: services/caches/formatters/gpxfile.tpl.php:95
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
+
+#: services/logs/submit.php:61
+msgid "You are trying to publish a log entry with a date in future. Cache log entries are allowed to be published in the past, but NOT in the future."
+msgstr "Próbujesz opublikować wpis do logbooka używając daty w przyszłości. Wpisy mogą być publikowane z datą przeszłości, ale NIE w przyszłości."
+
+#: services/logs/submit.php:88
+msgid "This cache is archived. Only admins and the owner are allowed to add a log entry."
+msgstr "Ta skrzynka jest zarchiwizowana. Jedynie administratorzy oraz właściciel mogą dodawać komentarze."
+
+#: services/logs/submit.php:92
+msgid "This cache is an Event cache. You cannot \"Find it\"! (But - you may \"Comment\" on it.)"
+msgstr "Ta skrzynka jest typu Wydarzenie. Nie możesz jej \"znaleźć\"! (Ale - możesz dodać wpis typu \"Komentarz\".)"
+
+#: services/logs/submit.php:107
+msgid "You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"
+msgstr "Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz możesz dodawać jedynie \"Komentarze\"!"
+
+#: services/logs/submit.php:119
+msgid "You have already rated this cache once. Your rating cannot be changed."
+msgstr "Już oceniłeś tę skrzynkę. Ocena nie może być zmieniona."
+
+#: services/logs/submit.php:122
+msgid "Your have to supply some text for your comment."
+msgstr "Wpis typu \"Komentarz\" wymagania wpisania komentarza."
+
+#: services/logs/submit.php:132
+msgid "This cache requires a password. You didn't provide one!"
+msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
+
+#: services/logs/submit.php:134
+msgid "Invalid password!"
+msgstr "Niepoprawne hasło!"
+
+#: services/logs/submit.php:240
+msgid "Your cache log entry was posted successfully."
+msgstr "Twój wpis do logbooka został opublikowany pomyślnie."
 
 #: views/apps/authorize.tpl.php:5
 msgid "Authorization Form"

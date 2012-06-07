@@ -28,7 +28,7 @@ if (session_id())
 {
 	# WRTODO: Move this to some kind of cronjob, to prevent admin-spamming in case on an error.
 	throw new Exception("Session started when should not be! You have to patch your OC installation. ".
-		"You have to check \"if ((!isset(\$GLOBALS['no-session'])) || (\$GLOBALS['no-ob'] == false))\" ".
+		"You have to check \"if ((!isset(\$GLOBALS['no-session'])) || (\$GLOBALS['no-session'] == false))\" ".
 		"before executing session_start.");
 }
 
