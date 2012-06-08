@@ -171,6 +171,8 @@
 						names (such as "Flag, Green" or "Parking Area"),</li>
 					<li><b>description</b> - plain-text longer description of the waypoint.</li>
 				</ul>
+				<p><b>Notice:</b> Some OpenCaching sites do not provide additional waypoints data.
+				OKAPI will always return an empty list on such sites.</p>
 			</li>
 			<li><b>last_found</b> - date and time (ISO 8601) when the
 				geocache was last found <b>or null</b> when it hasn't been yet found,</li>
