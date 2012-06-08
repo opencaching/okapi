@@ -11,6 +11,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
+use okapi\Settings;
 
 class WebService
 {
@@ -37,7 +38,7 @@ class WebService
 						from cache_logs
 						where
 							type in (1,2)
-							and deleted = 0
+							and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
 						UNION DISTINCT
 						select distinct user_id
 						from caches

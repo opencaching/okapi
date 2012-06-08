@@ -388,7 +388,7 @@ class WebService
 				from cache_logs
 				where
 					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
-					and deleted = 0
+					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
 			");
 			$logids = array();
 			if ($lpc !== null)
@@ -418,7 +418,7 @@ class WebService
 				from cache_logs cl, user u
 				where
 					cl.id in ('".implode("','", array_map('mysql_real_escape_string', $logids))."')
-					and cl.deleted = 0
+					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "cl.deleted = 0" : "true")."
 					and cl.user_id = u.user_id
 				order by cl.cache_id, cl.id desc
 			");

@@ -14,6 +14,7 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
 use okapi\Cache;
+use okapi\Settings;
 
 class ReplicateCommon
 {
@@ -119,6 +120,21 @@ class ReplicateCommon
 				self::generate_changelog_entries('services/logs/entries', 'log', 'log_uuids',
 					'uuid', $log_uuids, self::$logged_log_entry_fields, false, true, 3600);
 			}
+		}
+		if (Settings::get('OC_BRANCH') == 'oc.de')
+		{
+			# On OCDE branch, deleted log entries are MOVED to another table.
+			# So the above queries won't detect them. We need to run one more.
+			# We will assume there are not so many of them and we don't have to
+			# split them in groups as we did above.
+			
+			$DELETED_uuids = Db::select_column("
+				select uuid
+				from cache_logs_archived
+				where last_modified > '".mysql_real_escape_string($last_update)."'
+			");
+			self::generate_changelog_entries('services/logs/entries', 'log', 'log_uuids',
+				'uuid', $DELETED_uuids, self::$logged_log_entry_fields, false, true, 3600);
 		}
 		
 		# Update state variables and release DB lock.
@@ -358,9 +374,13 @@ class ReplicateCommon
 		$offset = 0;
 		while (true)
 		{
-			# Note: the lack of "deleted = 0" condition in the following query is intentional. We
-			# are searching for log entries which were changed OR deleted.
-			$log_uuids = Db::select_column("select uuid from cache_logs order by uuid limit $offset, 10000");
+			$log_uuids = Db::select_column("
+				select uuid
+				from cache_logs
+				where ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
+				order by uuid
+				limit $offset, 10000
+			");
 			if (count($log_uuids) == 0)
 				break;
 			$offset += 10000;

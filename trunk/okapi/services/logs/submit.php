@@ -10,6 +10,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\Settings;
 use okapi\services\caches\search\SearchAssistant;
 use okapi\BadRequest;
 
@@ -101,7 +102,7 @@ class WebService
 					user_id = '".mysql_real_escape_string($user['internal_id'])."'
 					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 					and type = '".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."'
-					and deleted = 0
+					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
 			");
 			if ($has_already_found_it)
 				throw new CannotPublishException(_("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"));

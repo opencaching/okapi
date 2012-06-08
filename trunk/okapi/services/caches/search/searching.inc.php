@@ -9,6 +9,7 @@ use okapi\OkapiServiceRunner;
 use okapi\OkapiRequest;
 use okapi\InvalidParam;
 use okapi\BadRequest;
+use okapi\Settings;
 use Exception;
 
 class SearchAssistant
@@ -205,14 +206,7 @@ class SearchAssistant
 				throw new InvalidParam('found_status', "'$tmp'");
 			if ($tmp != 'either')
 			{
-				$found_cache_ids = Db::select_column("
-					select cache_id
-					from cache_logs
-					where
-						user_id = '".mysql_real_escape_string($request->token->user_id)."'
-						and type = 1
-						and deleted = 0
-				");
+				$found_cache_ids = self::get_found_cache_ids($request->token->user_id);
 				$operator = ($tmp == 'found_only') ? "in" : "not in";
 				$where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
 			}
@@ -230,14 +224,7 @@ class SearchAssistant
 			} catch (InvalidParam $e) { # invalid uuid
 				throw new InvalidParam('found_by', $e->whats_wrong_about_it);
 			}
-			$found_cache_ids = Db::select_column("
-				select cache_id
-				from cache_logs
-				where
-					user_id = '".mysql_real_escape_string($user['internal_id'])."'
-					and type = 1
-					and deleted = 0
-			");
+			$found_cache_ids = self::get_found_cache_ids($request->token->user_id);
 			$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
 		}
 		
@@ -253,14 +240,7 @@ class SearchAssistant
 			} catch (InvalidParam $e) { # invalid uuid
 				throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
 			}
-			$found_cache_ids = Db::select_column("
-				select cache_id
-				from cache_logs
-				where
-					user_id = '".mysql_real_escape_string($user['internal_id'])."'
-					and type = 1
-					and deleted = 0
-			");
+			$found_cache_ids = self::get_found_cache_ids($user['internal_id']);
 			$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
 		}
 		
@@ -410,5 +390,21 @@ class SearchAssistant
 			'more' => $more,
 		);
 		return $result;
+	}
+	
+	/** 
+	 * Get the list of cache IDs which were found by given user. 
+	 * Parameter needs to be *internal* user id, not uuid.
+	 */
+	private static function get_found_cache_ids($internal_user_id)
+	{
+		return Db::select_column("
+			select cache_id
+			from cache_logs
+			where
+				user_id = '".mysql_real_escape_string($internal_user_id)."'
+				and type = 1
+				and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
+		");
 	}
 }
