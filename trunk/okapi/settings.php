@@ -70,6 +70,12 @@ final class Settings
 		 * use this setting to provide a list of additional emails.
 		 */
 		'EXTRA_ADMINS' => array(),
+		
+		/**
+		 * Where should OKAPI store dynamically generated cache files? If you leave it at null,
+		 * OKAPI will try to guess (not recommended).
+		 */
+		'VAR_DIR' => null,
 	);
 	
 	/** 
@@ -103,7 +109,7 @@ final class Settings
 		if (self::$SETTINGS == null)
 			self::load_settings();
 		
-		if (!isset(self::$SETTINGS[$key]))
+		if (!array_key_exists($key, self::$SETTINGS))
 			throw new Exception("Tried to access an invalid settings key: '$key'");
 		
 		return self::$SETTINGS[$key];
