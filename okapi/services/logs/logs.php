@@ -10,6 +10,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\Settings;
 use okapi\services\caches\search\SearchAssistant;
 
 class WebService
@@ -50,7 +51,7 @@ class WebService
 			from cache_logs
 			where
 				cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-				and deleted = 0
+				and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
 			order by date desc
 			limit $offset, $limit
 		");

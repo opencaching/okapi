@@ -10,6 +10,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\Settings;
 use okapi\services\caches\search\SearchAssistant;
 
 class WebService
@@ -52,7 +53,7 @@ class WebService
 			from cache_logs cl, user u, caches c
 			where
 				cl.uuid in ('".implode("','", array_map('mysql_real_escape_string', $log_uuids))."')
-				and cl.deleted = 0
+				and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "cl.deleted = 0" : "true")."
 				and cl.user_id = u.user_id
 				and c.cache_id = cl.cache_id
 		");

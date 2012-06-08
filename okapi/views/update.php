@@ -13,6 +13,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
+use okapi\Settings;
 use okapi\cronjobs\CronJobController;
 
 class View
@@ -127,6 +128,19 @@ class View
 				PRIMARY KEY  (var)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 		");
+		ob_start();
+		print "Hi!\n\n";
+		print "Since this is your first time you run okapi/update, you should be\n";
+		print "prepared to receive a bunch of update-history emails. These are all\n";
+		print "the emails that all the other OC admins received \"over the years\",\n";
+		print "whenever they have updated OKAPI.\n\n";
+		print "Each email describes an action which OKAPI performed on your\n";
+		print "database, OR which we need YOU to perform.\n\n";
+		print "If may receive any error messages during the update process,\n";
+		print "please contact me - rygielski@mimuw.edu.pl.\n\n";
+		print "-- \n";
+		print "Wojciech Rygielski, OKAPI developer";
+		Okapi::mail_admins("Database modification notice: cache_logs.last_modified", ob_get_clean());
 	}
 	
 	private static function ver2()
@@ -349,19 +363,7 @@ class View
 	
 	private static function ver44() { Db::execute("alter table caches add column okapi_syncbase timestamp not null after last_modified;"); }
 	private static function ver45() { Db::execute("update caches set okapi_syncbase=last_modified;"); }
-	
-	private static function ver46()
-	{
-		try
-		{
-			Db::execute("update caches set okapi_syncbase=now() where last_found < '1980-01-01'");
-		}
-		catch (Exception $e)
-		{
-			# Some OC installations don't have last_found field. (This query is not required
-			# on these installations anyway.)
-		}
-	}
+	private static function ver46() { /* no longer necessary */ }
 	
 	private static function ver47()
 	{
@@ -402,19 +404,7 @@ class View
 	}
 	
 	private static function ver49() { Db::execute("alter table caches add key okapi_syncbase (okapi_syncbase);"); }
-	
-	private static function ver50()
-	{ 
-		try
-		{
-			Db::execute("update caches set okapi_syncbase=now() where last_found >= '2012-03-11';");
-		}
-		catch (Exception $e)
-		{
-			# Some OC installations don't have last_found field. (This query is not required
-			# on these installations anyway.)
-		}
-	}
+	private static function ver50() { /* no longer necessary */ }
 	
 	private static function ver51()
 	{
@@ -422,6 +412,25 @@ class View
 		ob_start();
 		print "Hi!\n\n";
 		print "OKAPI just modified 'last_modified' field in your 'cache_logs' table.\n";
+		print "Its type was changed to 'timestamp'. It is required by OKAPI's 'replicate'\n";
+		print "module to function properly.\n\n";
+		self::print_common_db_alteration_info();
+		print "-- \n";
+		print "OKAPI Team";
+		Okapi::mail_admins("Database modification notice: cache_logs.last_modified", ob_get_clean());
+	}
+	
+	private static function ver52()
+	{
+		if (Settings::get('OC_BRANCH') == 'oc.pl')
+		{
+			# OCPL does not have cache_logs_archived table.
+			return;
+		}
+		Db::execute("alter table cache_logs_archived modify column last_modified timestamp not null;");
+		ob_start();
+		print "Hi!\n\n";
+		print "OKAPI just modified 'last_modified' field in your 'cache_logs_archived' table.\n";
 		print "Its type was changed to 'timestamp'. It is required by OKAPI's 'replicate'\n";
 		print "module to function properly.\n\n";
 		self::print_common_db_alteration_info();
