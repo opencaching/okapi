@@ -19,7 +19,16 @@ class View
 {
 	public static function get_current_version()
 	{
-		return Okapi::get_var('db_version', 0) + 0;
+		try
+		{
+			return Okapi::get_var('db_version', 0) + 0;
+		}
+		catch (Exception $e)
+		{
+			if (strpos($e->getMessage(), "okapi_vars' doesn't exist") !== false)
+				return 0;
+			throw $e;
+		}
 	}
 	
 	public static function get_max_version()
@@ -267,11 +276,14 @@ class View
 	
 	private static function ver33()
 	{
-		$spec = Db::select_value("show create table cache_logs");
-		$key_exists = (strpos($spec, "(`uuid`") !== false);
-		if ($key_exists)
-			return;
-		Db::execute("alter table cache_logs add key `uuid` (`uuid`)");
+		try
+		{
+			Db::execute("alter table cache_logs add key `uuid` (`uuid`)");
+		}
+		catch (Exception $e)
+		{
+			// key exists
+		}
 	}
 	
 	private static function ver34()
@@ -337,7 +349,19 @@ class View
 	
 	private static function ver44() { Db::execute("alter table caches add column okapi_syncbase timestamp not null after last_modified;"); }
 	private static function ver45() { Db::execute("update caches set okapi_syncbase=last_modified;"); }
-	private static function ver46() { Db::execute("update caches set okapi_syncbase=now() where last_found < '1980-01-01'"); }
+	
+	private static function ver46()
+	{
+		try
+		{
+			Db::execute("update caches set okapi_syncbase=now() where last_found < '1980-01-01'");
+		}
+		catch (Exception $e)
+		{
+			# Some OC installations don't have last_found field. (This query is not required
+			# on these installations anyway.)
+		}
+	}
 	
 	private static function ver47()
 	{
@@ -378,7 +402,19 @@ class View
 	}
 	
 	private static function ver49() { Db::execute("alter table caches add key okapi_syncbase (okapi_syncbase);"); }
-	private static function ver50() { Db::execute("update caches set okapi_syncbase=now() where last_found >= '2012-03-11';"); }
+	
+	private static function ver50()
+	{ 
+		try
+		{
+			Db::execute("update caches set okapi_syncbase=now() where last_found >= '2012-03-11';");
+		}
+		catch (Exception $e)
+		{
+			# Some OC installations don't have last_found field. (This query is not required
+			# on these installations anyway.)
+		}
+	}
 	
 	private static function ver51()
 	{

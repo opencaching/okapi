@@ -55,8 +55,6 @@ class OkapiScriptEntryPointController
 {
 	public static function dispatch_request($uri)
 	{
-		Okapi::init_internals();
-		
 		# Chop off the ?args=... part.
 		
 		if (strpos($uri, '?') !== false)
@@ -74,6 +72,13 @@ class OkapiScriptEntryPointController
 		if (strpos($uri, "/okapi/") !== 0)
 			throw new Exception("'$uri' is outside of the /okapi/ path.");
 		$uri = substr($uri, 7);
+		
+		# Initializing internals and running pre-request cronjobs (we don't want
+		# cronjobs to be run before "okapi/update", for example before database
+		# was installed).
+		
+		$allow_cronjobs = ($uri != "update");
+		Okapi::init_internals($allow_cronjobs);
 		
 		# Checking for allowed patterns...
 		

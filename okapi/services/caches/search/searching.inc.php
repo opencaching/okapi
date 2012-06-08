@@ -211,6 +211,7 @@ class SearchAssistant
 					where
 						user_id = '".mysql_real_escape_string($request->token->user_id)."'
 						and type = 1
+						and deleted = 0
 				");
 				$operator = ($tmp == 'found_only') ? "in" : "not in";
 				$where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
@@ -235,6 +236,7 @@ class SearchAssistant
 				where
 					user_id = '".mysql_real_escape_string($user['internal_id'])."'
 					and type = 1
+					and deleted = 0
 			");
 			$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
 		}
@@ -257,6 +259,7 @@ class SearchAssistant
 				where
 					user_id = '".mysql_real_escape_string($user['internal_id'])."'
 					and type = 1
+					and deleted = 0
 			");
 			$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
 		}

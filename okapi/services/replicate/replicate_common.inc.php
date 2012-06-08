@@ -317,7 +317,7 @@ class ReplicateCommon
 		
 		$revision = self::get_revision();
 		$generated_at = date('c', time());
-		$dir = $GLOBALS['dynbasepath']."/okapi-db-dump";
+		$dir = Okapi::getDynBasePath()."/okapi-db-dump";
 		$i = 1;
 		$json_files = array();
 		
@@ -358,6 +358,8 @@ class ReplicateCommon
 		$offset = 0;
 		while (true)
 		{
+			# Note: the lack of "deleted = 0" condition in the following query is intentional. We
+			# are searching for log entries which were changed OR deleted.
 			$log_uuids = Db::select_column("select uuid from cache_logs order by uuid limit $offset, 10000");
 			if (count($log_uuids) == 0)
 				break;
@@ -418,12 +420,12 @@ class ReplicateCommon
 		# Move the archive one directory upwards, replacing the previous one.
 		# Remove the temporary directory.
 		
-		shell_exec("mv -f $dir/$dumpfilename ".$GLOBALS['dynbasepath']);
+		shell_exec("mv -f $dir/$dumpfilename ".Okapi::getDynBasePath());
 		shell_exec("rmdir $dir");
 		
 		# Update the database info.
 		
-		$metadata['meta']['filepath'] = $GLOBALS['dynbasepath'].'/'.$dumpfilename;
+		$metadata['meta']['filepath'] = Okapi::getDynBasePath().'/'.$dumpfilename;
 		$metadata['meta']['content_type'] = ($use_bzip2 ? "application/octet-stream" : "application/x-gzip");
 		$metadata['meta']['public_filename'] = 'okapi-dump-r'.$metadata['revision'].'.tar.'.($use_bzip2 ? "bz2" : "gz");
 		$metadata['meta']['uncompressed_size'] = $size;
