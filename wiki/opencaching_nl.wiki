@@ -1,0 +1,5 @@
+#summary OKAPI on OpenCaching.NL
+
+= Introduction =
+
+This is a report on proceedings on OKAPI integration with OpenCaching.NL. OpenCaching.NL is based on OpenCaching.DE code which is significantly different from OpenCaching.PL branch. OKAPI is currently deployed on sites running OpenCaching.PL branch. Hence report describing all the differences is indeed needed.
