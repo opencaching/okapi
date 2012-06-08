@@ -4,16 +4,19 @@
 
 *This is a report on OKAPI and OpenCaching.NL integration proceedings.*
 
-OCNL is based on OCDE code which is significantly different from OCPL branch. OKAPI is currently tested (and deployed) on sites originating from OCPL branch only. When this integration succeeds, OKAPI will be become 100% compatible with OCNL and (probably) 99% compatible with all other sites originating from OCDE branch.
+Summary:
 
-Note, that all proposed solutions involve changing *OKAPI code only*. I don't want to change anything in any of the any OC logic (I didn't change anything in OCPL too).
+  * OCNL is based on OCDE code which is significantly different from OCPL branch.
+  * OKAPI is currently tested (and deployed) on sites originating from OCPL branch only. We want it to work on OCNL too.
+  * When this integration succeeds, OKAPI will be become 100% compatible with OCNL and (probably) 99% compatible with all other sites originating from OCDE branch.
+  * All proposed solutions involve changing *OKAPI code only*. We don't want to change *anything* in *any* of the OC servers, unless we have to. 
 
 = Comparison method =
 
   * Downloaded all the code and MySQL structure from OCNL.
   * Did a detailed diff on both MySQL structures.
-    * I dismissed the tables which existed on both sides and WERE NOT used by OKAPI.
-    * I compared all the others, side by side, and dismissed all which clearly had nothing to do with logic exposed by OKAPI.
+    * Dismissed the tables which existed on both sides and WERE NOT used by OKAPI.
+    * Compared all the others, side by side, and dismissed all which clearly had nothing to do with logic exposed by OKAPI.
   * For all tables which I haven't been sure, I grepped the OCNL code in order to understand their logic.
 
 = Problems and solutions =
@@ -26,17 +29,17 @@ Problem:
 
 *SOLUTION:*
 
-OKAPI exposes attribute names in various methods, but the actual loading takes place in single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#351 permalink]). We will simply add a proper condition there (if branch == OCDE then use different query).
+OKAPI exposes attribute names in various methods, but the actual loading takes place in single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#349 permalink]). We will simply add a proper condition there.
 
 == Log Time Problem (minor) ==
 
 Problem:
-  * OCPL's `cache_logs.date` field is of type `datetime`. Developers may expect to receive exact time along with all the log entries.
-  * OCNL's `cache_logs.date` field is of type `date`. All times are being truncated.
+  * OCPL's `cache_logs.date` field is of type `datetime`. OKAPI users expect to receive exact time along with all the log entries.
+  * OCNL's `cache_logs.date` field is of type `date`. All times will be truncated.
 
 *SOLUTION:*
 
-We don't need to modify anything in OKAPI code (MySQL will simply truncate the time-part of INSERT quries made by OKAPI). But we should mention in the documentation, that some servers won't store the time, and will always return "00:00:00" when asked for time of any log entry.
+We don't need to modify anything in OKAPI code (MySQL will simply truncate the time-part of INSERT quries made by OKAPI). But we should mention in the docs, that some servers won't store the time, and will always return "00:00:00" when asked for time of any log entry.
 
 == Deleted Logs Problem (average) ==
 
@@ -50,6 +53,10 @@ OKAPI never loads deleted entries, but uses `cache_logs` table in many queries. 
 
 BTW, OKAPI does not delete log entries (but it can add them).
 
+<wiki:comment>
+parametrize* - this might be done by introducting new method (getCacheLogTableName()) and using it queries like "SELECT * FROM ".getCacheLogTableName(), this method would return "cache_logs" in OCNL and "(select * from cache_logs where deleted=0)" on OCPL.
+</wiki:comment>
+
 == Personal Notes Problem (trivial) ==
 
 Problem:
@@ -58,7 +65,7 @@ Problem:
 
 *SOLUTION:*
 
-Currently OKAPI does not allow editing peronal notes, but it allows the developer to read them (only if he holds user's Access Token). We will simply always return null in case of OCNL. Notes are always loaded using a single block of code, therefore only this single block will require any changes ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#444 permalink]).
+Currently OKAPI does not allow editing peronal notes, but it allows the developer to read them (only if he holds user's Access Token). We will simply always return null in case of OCNL. Personal Notes are loaded in a single place in code only ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#444 permalink]).
 
 == Cache and User Stats Problem (average) ==
 
@@ -70,7 +77,7 @@ Problem:
 
   * OKAPI reads cache stats in a single block of code, we can easily add a proper condition ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#113 permalink], with a sample IF statement added).
   * OKAPI currently does not actualy read user stats (but it can update them, see below).
-  * OKAPI also *updates* cache _and_ user stats, after a new log entry have been submitted. This is more delicate matter, but also is done in a single place of code and should be easily dealt with using the same condition-adding method ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/logs/submit.php?r=345#166 permalink).
+  * OKAPI also *updates* cache _and_ user stats, after a new log entry have been submitted. This is more delicate matter, but also is done in a single place of code and should be easily dealt with using the same condition-adding method ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/logs/submit.php?r=345#166 permalink]).
 
 == Log-type Name Problem (trivial) ==
 
@@ -101,7 +108,7 @@ OCNL uses `rating_tops` table, but the reason for it's existance is not clear to
   * OKAPI outputs a cache rating on a 1..5 scale. I am not sure how to compute such value on OCNL.
   * Currently OKAPI does not allow casting votes, but users really want it. Vote casting in OCPL consists of a user simply submitting a value on a 1..5 scale. I'm not sure if such voting strategy would be compatible with OCNL.
 
-Until I understand this more, I won't attempt to propose a solution.
+Until I understand more, I won't attempt to propose a solution for this problem.
 
 <wiki:comment>
 
