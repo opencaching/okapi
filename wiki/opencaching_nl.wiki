@@ -2,4 +2,14 @@
 
 = Introduction =
 
-This is a report on proceedings on OKAPI integration with OpenCaching.NL. OpenCaching.NL is based on OpenCaching.DE code which is significantly different from OpenCaching.PL branch. OKAPI is currently deployed on sites running OpenCaching.PL branch. Hence report describing all the differences is indeed needed.
+*This is a report on OKAPI and OpenCaching.NL integration proceedings.*
+
+OCNL is based on OCDE code which is significantly different from OCPL branch. OKAPI is currently deployed on sites running OCPL branch only. If integration succeeds, OKAPI will be become compatible with OCDE branch.
+
+= Comparison method =
+
+  * Downloaded all the code and MySQL structure from OCNL.
+  * Did a detailed diff on both MySQL structures.
+    * I dismissed the tables which existed on both sides and WERE NOT used by OKAPI.
+    * I compared all the others, side by side, and dismissed all which clearly had nothing to do with logic exposed by OKAPI.
+  * For all tables which I haven't been sure, I grepped the OCNL code in order to understand their logic.
