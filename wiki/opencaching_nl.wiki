@@ -18,6 +18,7 @@ Summary:
     * Dismissed the tables which existed on both sides and WERE NOT used by OKAPI.
     * Compared all the others, side by side, and dismissed all which clearly had nothing to do with logic exposed by OKAPI.
   * For all tables which I haven't been sure, I grepped the OCNL code in order to understand their logic.
+  * Before commiting solutions, I tested them (briefly!) in a VM environment (using OCNL code and database structure).
 
 = Problems and solutions =
 
@@ -41,7 +42,7 @@ Problem:
 
 We don't need to modify anything in OKAPI code (MySQL will simply truncate the time-part of INSERT quries made by OKAPI). But we should mention in the docs, that some servers won't store the time, and will always return "00:00:00" when asked for time of any log entry.
 
-== Deleted Logs Problem (average) ==
+== Deleted Logs Problem (average) - FIXED r356 ==
 
 Problem:
   * OCPL uses `deleted` field to mark deleted logs.
@@ -89,7 +90,7 @@ Problem:
 
 OKAPI loads type names in a single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/core.php?r=345#1173 permalink]). We will add a simple condition.
 
-== Waypoints Problem (minor) ==
+== Waypoints Problem (minor) - FIXED r354 ==
 
 Problem:
   * OCPL stores additional waypoints (releated to each geocache) in `waypoints` table.
@@ -110,12 +111,12 @@ OCNL uses `rating_tops` table, but the reason for it's existance is not clear to
 
 Until I understand more, I won't attempt to propose a solution for this problem.
 
-<wiki:comment>
+== Other possible issues ==
 
-Other matters:
+If you can think of any, post a comment.
 
-cache_logs.last_modified datetime vs timestamp
-okapi_syncbase timestamp in `caches` table is not needed in OCNL.
-NL does not have user.uuid index?
-
-</wiki:comment>
+  * Someone was worried about OKAPI making visible caches in OCNL which should not be visible. Something about a special status of a cache I think? I would like to hear more about it.
+  * OCNL has two config files (one in `lib/`, other in `config/`) - is it safe to rely that both of them will stay there?
+  * OKAPI changes `cache_logs.last_modified` type to timestamp (on OCNL it is datetime with a trigger on it). This should create any problem though.
+  * OKAPI creates an extra `caches.okapi_syncbase` (timestamp) field which might be redundant with `last_modified` field in OCNL (but in OCPL it's not). This should create any problem though.
+  
