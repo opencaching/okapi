@@ -31,6 +31,43 @@ class SearchAssistant
 	public static function get_common_search_params(OkapiRequest $request)
 	{
 		$where_conds = array('true');
+		$extra_tables = array();
+		
+		# At the beginning we have to set up some "magic e$Xpressions".
+		# We will use them to make our query run on both OCPL and OCDE databases.
+		
+		if (Settings::get('OC_BRANCH') == 'oc.pl')
+		{
+			# OCPL's 'caches' table contains some fields which OCDE's does not
+			# (topratings, founds, notfounds, last_found, votes, score). If
+			# we're being run on OCPL installation, we will simply use them.
+			
+			$X_TOPRATINGS = 'caches.topratings';
+			$X_FOUNDS = 'caches.founds';
+			$X_NOTFOUNDS = 'caches.notfounds';
+			$X_LAST_FOUND = 'caches.last_found';
+			$X_VOTES = 'caches.votes';
+			$X_SCORE = 'caches.score';
+		}
+		else
+		{
+			# OCDE holds this data in a separate table. Additionally, OCDE
+			# does not provide a rating system (votes and score fields).
+			# If we're being run on OCDE database, we will include this
+			# additional table in our query (along with a proper WHERE
+			# condition) and we will map the field expressions to
+			# approriate places.
+			
+			$extra_tables[] = 'stat_caches';
+			$where_conds[] = 'stat_caches.cache_id = caches.cache_id';
+			
+			$X_TOPRATINGS = 'stat_caches.toprating';
+			$X_FOUNDS = 'stat_caches.found';
+			$X_NOTFOUNDS = 'stat_caches.notfound';
+			$X_LAST_FOUND = 'stat_caches.last_found';
+			$X_VOTES = '0'; // no support for ratings 
+			$X_SCORE = '0'; // no support for ratings
+		}
 		
 		#
 		# type
@@ -126,11 +163,18 @@ class SearchAssistant
 						$where_conds[] = "caches.size between $min+1 and $max+1";
 						break;
 					case 'rating':
-						$divisors = array(-3.0, -1.0, 0.1, 1.4, 2.2, 3.0);
-						$min = $divisors[$min - 1];
-						$max = $divisors[$max];
-						$where_conds[] = "caches.score between $min and $max";
-						$where_conds[] = "caches.votes > 3";
+						if (Settings::get('OC_BRANCH') == 'oc.pl')
+						{
+							$divisors = array(-3.0, -1.0, 0.1, 1.4, 2.2, 3.0);
+							$min = $divisors[$min - 1];
+							$max = $divisors[$max];
+							$where_conds[] = "$X_SCORE between $min and $max";
+							$where_conds[] = "$X_VOTES > 3";
+						}
+						else
+						{
+							# OCDE does not support rating. We will ignore this parameter.
+						}
 						break;
 				}
 			}
@@ -151,12 +195,12 @@ class SearchAssistant
 				if ($tmp > 100 || $tmp < 0)
 					throw new InvalidParam('min_rcmds', "'$tmp'");
 				$tmp = floatval($tmp) / 100.0;
-				$where_conds[] = "caches.topratings >= caches.founds * '".mysql_real_escape_string($tmp)."'";
-				$where_conds[] = "caches.founds > 0";
+				$where_conds[] = "$X_TOPRATINGS >= $X_FOUNDS * '".mysql_real_escape_string($tmp)."'";
+				$where_conds[] = "$X_FOUNDS > 0";
 			}
 			if (!is_numeric($tmp))
 				throw new InvalidParam('min_rcmds', "'$tmp'");
-			$where_conds[] = "caches.topratings >= '".mysql_real_escape_string($tmp)."'";
+			$where_conds[] = "$X_TOPRATINGS >= '".mysql_real_escape_string($tmp)."'";
 		}
 		
 		#
@@ -167,7 +211,7 @@ class SearchAssistant
 		{
 			if (!is_numeric($tmp))
 				throw new InvalidParam('min_founds', "'$tmp'");
-			$where_conds[] = "caches.founds >= '".mysql_real_escape_string($tmp)."'";
+			$where_conds[] = "$X_FOUNDS >= '".mysql_real_escape_string($tmp)."'";
 		}
 		
 		#
@@ -178,7 +222,7 @@ class SearchAssistant
 		{
 			if (!is_numeric($tmp))
 				throw new InvalidParam('max_founds', "'$tmp'");
-			$where_conds[] = "caches.founds <= '".mysql_real_escape_string($tmp)."'";
+			$where_conds[] = "$X_FOUNDS <= '".mysql_real_escape_string($tmp)."'";
 		}
 		
 		#
@@ -263,10 +307,12 @@ class SearchAssistant
 		#
 		
 		if ($tmp = $request->get_parameter('name'))
-		{	
+		{
+			# WRTODO: Make this more user-friendly. See:
+			# http://code.google.com/p/opencaching-api/issues/detail?id=121
+			
 			if (strlen($tmp) > 100)
 				throw new InvalidParam('name', "Maximum length of 'name' parameter is 100 characters");
-			# This param uses "*" wildcard instead of SQL's "%".
 			$tmp = str_replace("*", "%", str_replace("%", "%%", $tmp));	
 			$where_conds[] = "caches.name LIKE '".mysql_real_escape_string($tmp)."'";
 		}
@@ -318,10 +364,10 @@ class SearchAssistant
 				{
 					case 'code': $cl = "caches.wp_oc"; break;
 					case 'name': $cl = "caches.name"; break;
-					case 'founds': $cl = "caches.founds"; break;
-					case 'rcmds': $cl = "caches.topratings"; break;
+					case 'founds': $cl = "$X_FOUNDS"; break;
+					case 'rcmds': $cl = "$X_TOPRATINGS"; break;
 					case 'rcmds%':
-						$cl = "caches.topratings / if(caches.founds = 0, 1, caches.founds)";
+						$cl = "$X_TOPRATINGS / if($X_FOUNDS = 0, 1, $X_FOUNDS)";
 						break;
 					default:
 						throw new InvalidParam('order_by', "Unsupported field '$field'");
@@ -335,7 +381,7 @@ class SearchAssistant
 			'offset' => (int)$offset,
 			'limit' => (int)$limit,
 			'order_by' => $order_clauses,
-			'extra_tables' => array(),
+			'extra_tables' => $extra_tables,
 		);
 
 		return $ret_array;
