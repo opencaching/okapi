@@ -21,7 +21,11 @@
 		<p>Log entries. A dictionary of the following format:</p>
 		<ul>
 			<li><b>uuid</b> - ID of the log entry,</li>
-			<li><b>date</b> - date and time (ISO 8601) when the log entry was submitted,</li>
+			<li>
+				<p><b>date</b> - date and time (ISO 8601) when the log entry was submitted.</p>
+				<p>Note, that some OpenCaching servers don't store the exact times along
+				with the log entries.</p>
+			</li>
 			<li><b>cache_code</b> - code of the geocache,</li>
 			<li>
 				<p><b>type</b> - string; log type. This could be <b>pretty much everything</b>, but
