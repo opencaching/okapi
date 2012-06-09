@@ -583,30 +583,23 @@ class WebService
 		{
 			foreach ($results as &$result_ref)
 				$result_ref['alt_wpts'] = array();
-			if (Settings::get('OC_BRANCH') == 'oc.pl')
+			$rs = Db::query("
+				select cache_id, stage, latitude, longitude, `desc`, type
+				from waypoints
+				where
+					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+					and status = 1
+				order by cache_id, stage, `desc`
+			");
+			while ($row = mysql_fetch_assoc($rs))
 			{
-				$rs = Db::query("
-					select cache_id, stage, latitude, longitude, `desc`, type
-					from waypoints
-					where
-						cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
-						and status = 1
-					order by cache_id, stage, `desc`
-				");
-				while ($row = mysql_fetch_assoc($rs))
-				{
-					$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
-						'name' => $cacheid2wptcode[$row['cache_id']]."-".($row['stage'] ? $row['stage'] : "wpt"),
-						'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
-						'sym' => (($row['type'] == 3) ? "Flag, Red" : (($row['type'] == 4) ? "Circle with X" : 
-							(($row['type'] == 5) ? "Parking Area" : "Flag, Green"))),
-						'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
-					);
-				}
-			}
-			else
-			{
-				# oc.de branch does not provide alternate cache waypoints.
+				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
+					'name' => $cacheid2wptcode[$row['cache_id']]."-".($row['stage'] ? $row['stage'] : "wpt"),
+					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+					'sym' => (($row['type'] == 3) ? "Flag, Red" : (($row['type'] == 4) ? "Circle with X" : 
+						(($row['type'] == 5) ? "Parking Area" : "Flag, Green"))),
+					'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
+				);
 			}
 		}
 		
