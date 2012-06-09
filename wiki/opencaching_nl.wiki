@@ -42,7 +42,7 @@ http://i.imgur.com/mBuv6.png
 
 http://i.imgur.com/ipZuU.png
 
-== Log Time Problem (minor) ==
+== FIXED r361 - Log Time Problem (minor) ==
 
 Problem:
   * OCPL's `cache_logs.date` field is of type `datetime`. OKAPI users expect to receive exact time along with all the log entries.
@@ -51,6 +51,10 @@ Problem:
 *SOLUTION:*
 
 We don't need to modify anything in OKAPI code (MySQL will simply truncate the time-part of INSERT quries made by OKAPI). But we should mention in the docs, that some servers won't store the time, and will always return "00:00:00" when asked for time of any log entry.
+
+*TESTING SHOTS:*
+
+http://i.imgur.com/5rpAJ.png
 
 == FIXED r356 - Deleted Logs Problem (average) ==
 
