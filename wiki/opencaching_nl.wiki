@@ -26,7 +26,7 @@ Summary:
 
 = Problems and solutions =
 
-== Attributes Problem (trivial) - FIXED r358 ==
+== FIXED r358 - Attributes Problem (trivial) ==
 
 Problem:
   * OCPL uses `cache_attrib` for storing attribute names.
@@ -36,8 +36,10 @@ Problem:
 
 OKAPI exposes attribute names in various methods, but the actual loading takes place in single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#349 permalink]). We will simply add a proper condition there.
 
-TESTING SHOTS:
+*TESTING SHOTS:*
+
 http://i.imgur.com/mBuv6.png
+
 http://i.imgur.com/ipZuU.png
 
 == Log Time Problem (minor) ==
@@ -50,7 +52,7 @@ Problem:
 
 We don't need to modify anything in OKAPI code (MySQL will simply truncate the time-part of INSERT quries made by OKAPI). But we should mention in the docs, that some servers won't store the time, and will always return "00:00:00" when asked for time of any log entry.
 
-== Deleted Logs Problem (average) - FIXED r356 ==
+== FIXED r356 - Deleted Logs Problem (average) ==
 
 Problem:
   * OCPL uses `deleted` field to mark deleted logs.
@@ -98,7 +100,7 @@ Problem:
 
 OKAPI loads type names in a single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/core.php?r=345#1173 permalink]). We will add a simple condition.
 
-== Waypoints Problem (minor) - FIXED? r354 ==
+== FIXED? r354 - Waypoints Problem (minor) ==
 
 Problem:
   * OCPL stores additional waypoints (releated to each geocache) in `waypoints` table.
