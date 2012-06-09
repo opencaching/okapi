@@ -133,19 +133,32 @@ OKAPI reads these waypoints in a single place ([http://code.google.com/p/opencac
 
 http://i.imgur.com/qfDph.png
 
-== Ratings Problem (average or major) ==
+== Ratings Problem (major) ==
 
 Problem:
+  * OCPL uses rating system. Each cache has a rating on a 1..5 scale.
+  * OCDE does not use a rating system. They have the recommendation-system only.
 
-OCNL uses `rating_tops` table, but the reason for it's existance is not clear to me. It seems to be a cache table, composed as a result of lengthy queries made on `cache_location`, `stat_caches`, `caches` and `cache_rating` tables. As I understand, all this contitutes a completely different rating system, than the one used in OCPL (which is rather simple).
+Discussion extract: ;)
 
-  * OKAPI outputs a cache rating on a 1..5 scale. I am not sure how to compute such value on OCNL.
-  * Currently OKAPI does not allow casting votes, but users really want it. Vote casting in OCPL consists of a user simply submitting a value on a 1..5 scale. I'm not sure if such voting strategy would be compatible with OCNL.
+  * *harrieklomp50:* is it possible to make a kind of rating?, like a cache is found 10 times and 3 has given a recommendation so the result out of 100% is 30(%)
+  * *rygielski:* This way, you could not make a difference between an average cache (which doesn't usually get recommendations) and REALLY BAD one.
+  * *rygielski:* (on OCPL most average geocaches don't get any recommendations)
+  * *harrieklomp50:* okay, no rating :-)
 
-Until I understand more, I won't attempt to propose a solution for this problem.
+*SOLUTION:*
+
+  * When user is retrieving cache data, he may ask for fields such as `rating` and `votes`. What should be OKAPI's response in case of OCNL?
+    * A `null` value. We will update the docs and warn developers that the rating system is not implemented on some OC nodes. We will also worn them that it might change in the future.
+  * When user is searching for caches and he wants to retrieve only those with a rating between 4 and 5?
+    * We will completely ignore these conditions. All caches will be returned.
+  * When user wants to order the results by rating?
+    * Results will be ordered arbitrarily.
+  * When user a rating along with his new log entry?
+    * Such rating will be ignored, but its copy will be also saved in a dedicated table. This way, it could be used later, if OCDE decided to support ratings.
 
 
-== Other possible issues ==
+= Other possible issues =
 
 If you can think of any, post a comment.
 
