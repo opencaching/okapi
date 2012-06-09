@@ -1,8 +1,12 @@
 #summary OKAPI on OpenCaching.NL
 
+*Contents*
+
+<wiki:toc max_depth="3" />
+
 = Introduction =
 
-*This is a report on OKAPI and OpenCaching.NL integration proceedings.*
+*This is a report on OKAPI and OpenCaching.NL integration "proceedings".*
 
 Summary:
 
@@ -22,7 +26,7 @@ Summary:
 
 = Problems and solutions =
 
-== Attributes Problem (trivial) ==
+== Attributes Problem (trivial) - FIXED r358 ==
 
 Problem:
   * OCPL uses `cache_attrib` for storing attribute names.
@@ -31,6 +35,10 @@ Problem:
 *SOLUTION:*
 
 OKAPI exposes attribute names in various methods, but the actual loading takes place in single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#349 permalink]). We will simply add a proper condition there.
+
+TESTING SHOTS:
+http://i.imgur.com/mBuv6.png
+http://i.imgur.com/ipZuU.png
 
 == Log Time Problem (minor) ==
 
@@ -90,11 +98,11 @@ Problem:
 
 OKAPI loads type names in a single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/core.php?r=345#1173 permalink]). We will add a simple condition.
 
-== Waypoints Problem (minor) - FIXED r354 ==
+== Waypoints Problem (minor) - FIXED? r354 ==
 
 Problem:
   * OCPL stores additional waypoints (releated to each geocache) in `waypoints` table.
-  * OCNL does not have such functionality.
+  * OCNL does not have such functionality. *CHECK THIS*
   
 *SOLUTION:*
 
@@ -119,4 +127,5 @@ If you can think of any, post a comment.
   * OCNL has two config files (one in `lib/`, other in `config/`) - is it safe to rely that both of them will stay there?
   * OKAPI changes `cache_logs.last_modified` type to timestamp (on OCNL it is datetime with a trigger on it). This should create any problem though.
   * OKAPI creates an extra `caches.okapi_syncbase` (timestamp) field which might be redundant with `last_modified` field in OCNL (but in OCPL it's not). This should create any problem though.
+  * OCNL does not equal OCDE. Some more thingss mat be a little different.
   
