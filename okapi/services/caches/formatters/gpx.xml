@@ -119,8 +119,6 @@
 		<p>Combine this with <b>ns_gsak</b> if you want the result to include additional references between
 		waypoints and their geocaches. Please note that not many applications are currently able to
 		properly understand GSAK metadata.</p>
-		<p><b>Notice:</b> Some OpenCaching sites do not provide additional waypoints data.
-		OKAPI will always return an empty list on such sites.</p>
 	</opt>
 	<opt name='mark_found' default='false'>
 		<p>Boolean. If <b>true</b> then all caches which are already found, will be marked appropriately
