@@ -160,7 +160,7 @@ class OkapiExceptionHandler
 	
 	public static function get_exception_info($e)
 	{
-		$exception_info = "*** ".$e->getMessage()." ***\n\n";
+		$exception_info = "===== ERROR MESSAGE =====\n".trim($e->getMessage())."\n=========================\n\n";
 		if ($e instanceof FatalError)
 		{
 			# This one doesn't have a stack trace. It is fed directly to OkapiExceptionHandler::handle
