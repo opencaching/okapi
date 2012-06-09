@@ -224,7 +224,7 @@ class SearchAssistant
 			} catch (InvalidParam $e) { # invalid uuid
 				throw new InvalidParam('found_by', $e->whats_wrong_about_it);
 			}
-			$found_cache_ids = self::get_found_cache_ids($request->token->user_id);
+			$found_cache_ids = self::get_found_cache_ids($user['internal_id']);
 			$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
 		}
 		
