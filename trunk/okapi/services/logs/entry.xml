@@ -12,7 +12,11 @@
 		<ul>
 			<li><b>uuid</b> - unique ID of the log entry,</li>
 			<li><b>cache_code</b> - code of the cache which the log entry refers to,</li>
-			<li><b>date</b> - date and time (ISO 8601) when the log entry was submitted,</li>
+			<li>
+				<p><b>date</b> - date and time (ISO 8601) when the log entry was submitted.</p>
+				<p>Note, that some OpenCaching servers don't store the exact times along
+				with the log entries.</p>
+			</li>
 			<li>
 				<p><b>user</b> - a dictionary:</p>
 				<ul>
