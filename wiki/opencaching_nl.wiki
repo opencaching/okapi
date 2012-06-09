@@ -75,18 +75,19 @@ OKAPI never loads deleted entries, but uses `cache_logs` table in many queries. 
 BTW, OKAPI does not delete log entries (but it can add them).
 
 
-== Personal Notes Problem (trivial) ==
+== FIXED r365 - Personal Notes Problem (trivial) ==
 
 Problem:
   * OCPL stores users' personal notes for each geocache in `cache_notes` table.
-  * OCNL ??? *CHECK THIS*
+  * OCNL stores users' personal notes for each geocache in `coordinates` table (with type=2).
 
-<wiki:comment>
 *SOLUTION:*
 
-Currently OKAPI does not allow editing peronal notes, but it allows the developer to read them (only if he holds user's Access Token). We will simply always return null in case of OCNL. Personal Notes are loaded in a single place in code only ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#444 permalink]).
-</wiki:comment>
+Currently OKAPI does not allow editing peronal notes, but it allows the developer to read them (only if he holds user's Access Token). Personal Notes are loaded in a single place in code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#444 permalink]). We will add a proper condition.
 
+*TESTING SHOTS:*
+
+http://i.imgur.com/dgZpU.png
 
 == Cache and User Stats Problem (average) ==
 
@@ -112,18 +113,19 @@ Problem:
 OKAPI loads type names in a single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/core.php?r=345#1173 permalink]). We will add a simple condition.
 
 
-== FIXED? r354 - Waypoints Problem (minor) ==
+== FIXED r367 - Waypoints Problem (minor) ==
 
 Problem:
-  * OCPL stores additional waypoints (releated to each geocache) in `waypoints` table.
-  * OCNL ??? *CHECK THIS*
+  * OCPL stores additional waypoints in `waypoints` table.
+  * OCNL stores additional waypoints in `coordinates` table (with type=1).
 
-<wiki:comment>
 *SOLUTION:*
 
-OKAPI reads these waypoints in a single place ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#531 permalink]). We will simply add a proper condition and always return an empty list. We will also update the documentation to include notice, that some servers always return empty list of additional waypoints.
-</wiki:comment>
+OKAPI reads these waypoints in a single place ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#531 permalink]). We will add a proper condition.
 
+*TESTING SHOTS:*
+
+http://i.imgur.com/qfDph.png
 
 == Ratings Problem (average or major) ==
 
