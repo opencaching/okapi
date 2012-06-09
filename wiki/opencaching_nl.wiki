@@ -12,8 +12,8 @@
 Summary:
 
   * OCNL is based on OCDE code which is significantly different from OCPL branch.
-  * OKAPI is currently tested (and deployed) on sites originating from OCPL branch only. We want it to work on OCNL too.
-  * When this integration succeeds, OKAPI will be become 100% compatible with OCNL and (probably) 99% compatible with all other sites originating from OCDE branch (which is the real reason for doing this).
+  * Before this report was started, OKAPI was tested (and deployed) on sites originating from OCPL branch only. We want it to work on OCNL too.
+  * When this integration succeeds, OKAPI should become 100% compatible with OCNL and (probably) 99% compatible with all other sites originating from OCDE branch (which is the real reason for doing this).
   * All proposed solutions involve changing *OKAPI code only*. We don't want to change *anything* in *any* of the OC servers, unless we have to. 
 
   
@@ -89,7 +89,7 @@ Currently OKAPI does not allow editing peronal notes, but it allows the develope
 
 http://i.imgur.com/dgZpU.png
 
-== FIXED r369 - Cache and User Stats Problem (average) ==
+== FIXED r369 r374 - Cache and User Stats Problem (average) ==
 
 (see also r81)
 
@@ -99,12 +99,21 @@ Problem:
 
 *SOLUTION:*
 
-  * OKAPI reads cache stats in a single block of code, we can easily add a proper condition ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#113 permalink], with a sample IF statement added).
-  * OKAPI currently does not actualy read user stats (but it can update them, see below).
+  * OKAPI exposes cache stats via geocaches method, we will add a proper condition there ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#113 permalink], with a sample IF statement added).
+  * OKAPI allows extended searching on these attributes. We will need to modify the searching procedure. This won't be very hard though.
+  * OKAPI currently does not actualy use user stats (but it can update them, see below).
   * OKAPI also *updates* cache _and_ user stats, after a new log entry have been submitted. This is done in a single place of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/logs/submit.php?r=345#166 permalink]).
   * I grepped the code. It would seem that OCNL takes care of both `stat_` tables *using MySQL triggers*. This means, that OKAPI simply dosn't need to handle these updates on OCNL. I will add a proper condition.
 
-  
+*TEST:*
+
+http://i.imgur.com/yYbpn.png
+
+http://i.imgur.com/jXt3Z.png
+
+http://i.imgur.com/gsfIt.png
+
+
 == FIXED r370 - Log-type Name Problem (trivial) ==
 
 Problem:
@@ -133,7 +142,7 @@ OKAPI reads these waypoints in a single place ([http://code.google.com/p/opencac
 
 http://i.imgur.com/qfDph.png
 
-== Ratings Problem (major) ==
+== FIXED r374 r375 - Ratings Problem (major) ==
 
 Problem:
   * OCPL uses rating system. Each cache has a rating on a 1..5 scale.
@@ -149,14 +158,20 @@ Discussion extract: ;)
 *SOLUTION:*
 
   * When user is retrieving cache data, he may ask for fields such as `rating` and `votes`. What should be OKAPI's response in case of OCNL?
-    * A `null` value. We will update the docs and warn developers that the rating system is not implemented on some OC nodes. We will also worn them that it might change in the future.
+    * A `null` value for `rating`, and 0 (zero) for `votes`. The docs already warn developers that the rating system is not implemented on some OC nodes and they do expect such values.
   * When user is searching for caches and he wants to retrieve only those with a rating between 4 and 5?
-    * We will completely ignore these conditions. All caches will be returned.
+    * We will ignore these conditions. All caches will be returned.
   * When user wants to order the results by rating?
     * Results will be ordered arbitrarily.
-  * When user a rating along with his new log entry?
-    * Such rating will be ignored, but its copy will be also saved in a dedicated table. This way, it could be used later, if OCDE decided to support ratings.
+  * When user submits a rating along with his new log entry?
+    * There are three options: a) ignore it, b) report it as a user error, c) report it as a developer error. I don't like any of these options, but I will choose option A, it seems the least evil.
+	* BTW. At this moment, OKAPI does not support posting ratings yet. I've been postponing this after I knew something more about OCDE database structure. I am planning to release support for this soon.
 
+*TEST:*
+
+http://i.imgur.com/D0IKa.png
+
+http://i.imgur.com/dtqcd.png
 
 = Other possible issues =
 
