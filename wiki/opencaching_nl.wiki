@@ -13,7 +13,7 @@ Summary:
 
   * OCNL is based on OCDE code which is significantly different from OCPL branch.
   * OKAPI is currently tested (and deployed) on sites originating from OCPL branch only. We want it to work on OCNL too.
-  * When this integration succeeds, OKAPI will be become 100% compatible with OCNL and (probably) 99% compatible with all other sites originating from OCDE branch.
+  * When this integration succeeds, OKAPI will be become 100% compatible with OCNL and (probably) 99% compatible with all other sites originating from OCDE branch (which is the real reason for doing this).
   * All proposed solutions involve changing *OKAPI code only*. We don't want to change *anything* in *any* of the OC servers, unless we have to. 
 
   
@@ -40,7 +40,7 @@ Problem:
 
 OKAPI exposes attribute names in various methods, but the actual loading takes place in single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#349 permalink]). We will simply add a proper condition there.
 
-*TESTING SHOTS:*
+*TEST:*
 
 http://i.imgur.com/mBuv6.png
 
@@ -57,7 +57,7 @@ Problem:
 
 We don't need to modify anything in OKAPI code (MySQL will simply truncate the time-part of INSERT queries made by OKAPI). But we should mention in the docs, that some servers won't store the time, and will always return "00:00:00" when asked for time of any log entry.
 
-*TESTING SHOTS:*
+*TEST:*
 
 http://i.imgur.com/5rpAJ.png
 
@@ -85,11 +85,13 @@ Problem:
 
 Currently OKAPI does not allow editing peronal notes, but it allows the developer to read them (only if he holds user's Access Token). Personal Notes are loaded in a single place in code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#444 permalink]). We will add a proper condition.
 
-*TESTING SHOTS:*
+*TEST:*
 
 http://i.imgur.com/dgZpU.png
 
-== Cache and User Stats Problem (average) ==
+== FIXED r369 - Cache and User Stats Problem (average) ==
+
+(see also r81)
 
 Problem:
   * OCPL stores cache statistics (number of founds, not founds etc.) in `caches` and `user` tables.
@@ -99,10 +101,11 @@ Problem:
 
   * OKAPI reads cache stats in a single block of code, we can easily add a proper condition ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#113 permalink], with a sample IF statement added).
   * OKAPI currently does not actualy read user stats (but it can update them, see below).
-  * OKAPI also *updates* cache _and_ user stats, after a new log entry have been submitted. This is more delicate matter, but also is done in a single place of code and should be easily dealt with using the same condition-adding method ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/logs/submit.php?r=345#166 permalink]).
+  * OKAPI also *updates* cache _and_ user stats, after a new log entry have been submitted. This is done in a single place of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/logs/submit.php?r=345#166 permalink]).
+  * I grepped the code. It would seem that OCNL takes care of both `stat_` tables *using MySQL triggers*. This means, that OKAPI simply dosn't need to handle these updates on OCNL. I will add a proper condition.
 
   
-== Log-type Name Problem (trivial) ==
+== FIXED r370 - Log-type Name Problem (trivial) ==
 
 Problem:
   * OCPL stores log-type names in `log_types` table.
@@ -112,6 +115,9 @@ Problem:
 
 OKAPI loads type names in a single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/core.php?r=345#1173 permalink]). We will add a simple condition.
 
+*TEST:*
+
+http://i.imgur.com/0s6d5.png
 
 == FIXED r367 - Waypoints Problem (minor) ==
 
@@ -123,7 +129,7 @@ Problem:
 
 OKAPI reads these waypoints in a single place ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#531 permalink]). We will add a proper condition.
 
-*TESTING SHOTS:*
+*TEST:*
 
 http://i.imgur.com/qfDph.png
 
