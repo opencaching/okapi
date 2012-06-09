@@ -113,6 +113,10 @@ http://i.imgur.com/jXt3Z.png
 
 http://i.imgur.com/gsfIt.png
 
+http://i.imgur.com/D0IKa.png
+
+http://i.imgur.com/GfPYB.png
+
 
 == FIXED r370 - Log-type Name Problem (trivial) ==
 
@@ -168,8 +172,6 @@ Discussion extract: ;)
 	* BTW. At this moment, OKAPI does not support posting ratings yet. I've been postponing this after I knew something more about OCDE database structure. I am planning to release support for this soon.
 
 *TEST:*
-
-http://i.imgur.com/D0IKa.png
 
 http://i.imgur.com/dtqcd.png
 
