@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-07 21:46+0100\n"
-"PO-Revision-Date: 2012-06-07 21:46+0100\n"
+"POT-Creation-Date: 2012-06-09 15:13+0100\n"
+"PO-Revision-Date: 2012-06-09 15:14+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: services/caches/geocaches.php:552
+#: services/caches/geocaches.php:637
 msgid "Stage"
 msgstr "Etap"
 
@@ -36,11 +36,11 @@ msgstr[2] "%d rekomendacji"
 
 #: services/caches/formatters/gpxfile.tpl.php:47
 #, php-format
-msgid "from among %d vote"
-msgid_plural "from among %d votes"
-msgstr[0] "spośród %d oceny"
-msgstr[1] "spośród %d ocen"
-msgstr[2] "spośród %d ocen"
+msgid "found %d time"
+msgid_plural "found %d times"
+msgstr[0] "znaleziona %d raz"
+msgstr[1] "znaleziona %d razy"
+msgstr[2] "znaleziona %d razy"
 
 #: services/caches/formatters/gpxfile.tpl.php:50
 #, php-format
@@ -74,39 +74,39 @@ msgstr "Spoilery"
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 
-#: services/logs/submit.php:61
+#: services/logs/submit.php:62
 msgid "You are trying to publish a log entry with a date in future. Cache log entries are allowed to be published in the past, but NOT in the future."
 msgstr "Próbujesz opublikować wpis do logbooka używając daty w przyszłości. Wpisy mogą być publikowane z datą przeszłości, ale NIE w przyszłości."
 
-#: services/logs/submit.php:88
+#: services/logs/submit.php:89
 msgid "This cache is archived. Only admins and the owner are allowed to add a log entry."
 msgstr "Ta skrzynka jest zarchiwizowana. Jedynie administratorzy oraz właściciel mogą dodawać komentarze."
 
-#: services/logs/submit.php:92
+#: services/logs/submit.php:93
 msgid "This cache is an Event cache. You cannot \"Find it\"! (But - you may \"Comment\" on it.)"
 msgstr "Ta skrzynka jest typu Wydarzenie. Nie możesz jej \"znaleźć\"! (Ale - możesz dodać wpis typu \"Komentarz\".)"
 
-#: services/logs/submit.php:107
+#: services/logs/submit.php:108
 msgid "You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"
 msgstr "Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz możesz dodawać jedynie \"Komentarze\"!"
 
-#: services/logs/submit.php:119
+#: services/logs/submit.php:120
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr "Już oceniłeś tę skrzynkę. Ocena nie może być zmieniona."
 
-#: services/logs/submit.php:122
+#: services/logs/submit.php:123
 msgid "Your have to supply some text for your comment."
 msgstr "Wpis typu \"Komentarz\" wymagania wpisania komentarza."
 
-#: services/logs/submit.php:132
+#: services/logs/submit.php:133
 msgid "This cache requires a password. You didn't provide one!"
 msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
 
-#: services/logs/submit.php:134
+#: services/logs/submit.php:135
 msgid "Invalid password!"
 msgstr "Niepoprawne hasło!"
 
-#: services/logs/submit.php:240
+#: services/logs/submit.php:261
 msgid "Your cache log entry was posted successfully."
 msgstr "Twój wpis do logbooka został opublikowany pomyślnie."
 
@@ -214,6 +214,13 @@ msgstr ""
 "<p>Dzięki platformie <a href='%s'>OKAPI</a> możesz dawać zewnętrznym aplikacjom\n"
 "dostęp do Twojego konta <b>%s</b>. Aktualnie nie pozwalasz żadnej aplikacji na działania\n"
 "w Twoim imieniu. Jeśli kiedyś dodasz jakieś aplikacje, to ich lista pojawi się tutaj.</p>"
+
+#~ msgid "from among %d vote"
+
+#~ msgid_plural "from among %d votes"
+#~ msgstr[0] "spośród %d oceny"
+#~ msgstr[1] "spośród %d ocen"
+#~ msgstr[2] "spośród %d ocen"
 
 #~ msgid "I don't agree"
 #~ msgstr "Odmawiam"
