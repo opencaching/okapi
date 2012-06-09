@@ -4,6 +4,7 @@
 
 <wiki:toc max_depth="3" />
 
+
 = Introduction =
 
 *This is a report on OKAPI and OpenCaching.NL integration "proceedings".*
@@ -15,6 +16,7 @@ Summary:
   * When this integration succeeds, OKAPI will be become 100% compatible with OCNL and (probably) 99% compatible with all other sites originating from OCDE branch.
   * All proposed solutions involve changing *OKAPI code only*. We don't want to change *anything* in *any* of the OC servers, unless we have to. 
 
+  
 = Comparison method =
 
   * Downloaded all the code and MySQL structure from OCNL.
@@ -24,7 +26,9 @@ Summary:
   * For all tables which I haven't been sure, I grepped the OCNL code in order to understand their logic.
   * Before commiting solutions, I tested them (briefly!) in a VM environment (using OCNL code and database structure).
 
+  
 = Problems and solutions =
+
 
 == FIXED r358 - Attributes Problem (trivial) ==
 
@@ -42,6 +46,7 @@ http://i.imgur.com/mBuv6.png
 
 http://i.imgur.com/ipZuU.png
 
+
 == FIXED r361 - Log Time Problem (minor) ==
 
 Problem:
@@ -50,13 +55,14 @@ Problem:
 
 *SOLUTION:*
 
-We don't need to modify anything in OKAPI code (MySQL will simply truncate the time-part of INSERT quries made by OKAPI). But we should mention in the docs, that some servers won't store the time, and will always return "00:00:00" when asked for time of any log entry.
+We don't need to modify anything in OKAPI code (MySQL will simply truncate the time-part of INSERT queries made by OKAPI). But we should mention in the docs, that some servers won't store the time, and will always return "00:00:00" when asked for time of any log entry.
 
 *TESTING SHOTS:*
 
 http://i.imgur.com/5rpAJ.png
 
-== FIXED r356 - Deleted Logs Problem (average) ==
+
+== FIXED r356 r363 - Deleted Logs Problem (average) ==
 
 Problem:
   * OCPL uses `deleted` field to mark deleted logs.
@@ -68,19 +74,19 @@ OKAPI never loads deleted entries, but uses `cache_logs` table in many queries. 
 
 BTW, OKAPI does not delete log entries (but it can add them).
 
-<wiki:comment>
-parametrize* - this might be done by introducting new method (getCacheLogTableName()) and using it queries like "SELECT * FROM ".getCacheLogTableName(), this method would return "cache_logs" in OCNL and "(select * from cache_logs where deleted=0)" on OCPL.
-</wiki:comment>
 
 == Personal Notes Problem (trivial) ==
 
 Problem:
-  * OCPL can store users' personal notes for each geocache in `cache_notes` table.
-  * OCNL does not allow such functionality.
+  * OCPL stores users' personal notes for each geocache in `cache_notes` table.
+  * OCNL ??? *CHECK THIS*
 
+<wiki:comment>
 *SOLUTION:*
 
 Currently OKAPI does not allow editing peronal notes, but it allows the developer to read them (only if he holds user's Access Token). We will simply always return null in case of OCNL. Personal Notes are loaded in a single place in code only ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#444 permalink]).
+</wiki:comment>
+
 
 == Cache and User Stats Problem (average) ==
 
@@ -94,6 +100,7 @@ Problem:
   * OKAPI currently does not actualy read user stats (but it can update them, see below).
   * OKAPI also *updates* cache _and_ user stats, after a new log entry have been submitted. This is more delicate matter, but also is done in a single place of code and should be easily dealt with using the same condition-adding method ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/logs/submit.php?r=345#166 permalink]).
 
+  
 == Log-type Name Problem (trivial) ==
 
 Problem:
@@ -104,15 +111,19 @@ Problem:
 
 OKAPI loads type names in a single block of code ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/core.php?r=345#1173 permalink]). We will add a simple condition.
 
+
 == FIXED? r354 - Waypoints Problem (minor) ==
 
 Problem:
   * OCPL stores additional waypoints (releated to each geocache) in `waypoints` table.
-  * OCNL does not have such functionality. *CHECK THIS*
-  
+  * OCNL ??? *CHECK THIS*
+
+<wiki:comment>
 *SOLUTION:*
 
 OKAPI reads these waypoints in a single place ([http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/caches/geocaches.php?r=345#531 permalink]). We will simply add a proper condition and always return an empty list. We will also update the documentation to include notice, that some servers always return empty list of additional waypoints.
+</wiki:comment>
+
 
 == Ratings Problem (average or major) ==
 
@@ -125,6 +136,7 @@ OCNL uses `rating_tops` table, but the reason for it's existance is not clear to
 
 Until I understand more, I won't attempt to propose a solution for this problem.
 
+
 == Other possible issues ==
 
 If you can think of any, post a comment.
@@ -134,4 +146,3 @@ If you can think of any, post a comment.
   * OKAPI changes `cache_logs.last_modified` type to timestamp (on OCNL it is datetime with a trigger on it). This should create any problem though.
   * OKAPI creates an extra `caches.okapi_syncbase` (timestamp) field which might be redundant with `last_modified` field in OCNL (but in OCPL it's not). This should create any problem though.
   * OCNL does not equal OCDE. Some more thingss mat be a little different.
-  
