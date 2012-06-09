@@ -134,7 +134,7 @@ class WebService
 		if ($vars['alt_wpts'] == 'true')
 			$fields .= "|alt_wpts";
 		if ($vars['recommendations'] != 'none')
-			$fields .= "|recommendations|rating_votes";
+			$fields .= "|recommendations|founds";
 		if ($vars['my_notes'] != 'none')
 			$fields .= "|my_notes";
 		if ($vars['latest_logs'])
