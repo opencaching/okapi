@@ -66,8 +66,10 @@
 		<p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
 		Only caches with an overall rating between these numbers (inclusive) will be returned
 		(1 - poor, 5 - excellent).</p>
-		<p><b>Notice:</b> If you use this parameter, all caches with less than 4 votes will be
+		<p><b>Notice:</b> If you use this parameter, all caches with too few votes will be
 		excluded from results.</p>
+		<p><b>Notice:</b> Some OC installations do not provide ratings for their geocaches.
+		On such installation, this parameter will be ignored.</p>
 	</opt>
 	<opt name='min_rcmds'>
 		<p>There are two possible value-types for this argument:</p>
@@ -133,7 +135,7 @@
 		<p>Pipe separated list of fields to order the results by. Prefix the field name with
 		a '-' sign to indicate a descending order.</p>
 		<p>Currently, fields which you can order by include: <b>code</b>, <b>name</b>,
-		<b>founds</b>, <b>rcmds</b>, <b>rcmds%</b>.</p>
+		<b>founds</b>, <b>rcmds</b>, <b>rcmds%</b> (tell us if you want more).</p>
 		<p><b>Examples:</b></p>
 		<ul>
 			<li>to order by cache name use "order_by=name" or "order_by=+name",</li>
