@@ -168,51 +168,71 @@ class WebService
 		
 		# Update cache stats.
 		
-		if ($logtype == 'Found it')
+		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
-			Db::execute("
-				update caches
-				set
-					founds = founds + 1,
-					last_found = from_unixtime('".mysql_real_escape_string($when)."')
-				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-			");
-		}
-		elseif ($logtype == "Didn't find it")
-		{
-			Db::execute("
-				update caches
-				set notfounds = notfounds + 1
-				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-			");
-		}
-		elseif ($logtype == 'Comment')
-		{
-			Db::execute("
-				update caches
-				set notes = notes + 1
-				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-			");
+			# OCDE handles cache stats updates using triggers. We don't need to do
+			# anything.
 		}
 		else
 		{
-			throw new Exception("Missing logtype '$logtype' in an if..elseif chain.");
+			# OCPL doesn't have triggers for this. We need to update manually.
+			
+			if ($logtype == 'Found it')
+			{
+				Db::execute("
+					update caches
+					set
+						founds = founds + 1,
+						last_found = from_unixtime('".mysql_real_escape_string($when)."')
+					where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+				");
+			}
+			elseif ($logtype == "Didn't find it")
+			{
+				Db::execute("
+					update caches
+					set notfounds = notfounds + 1
+					where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+				");
+			}
+			elseif ($logtype == 'Comment')
+			{
+				Db::execute("
+					update caches
+					set notes = notes + 1
+					where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+				");
+			}
+			else
+			{
+				throw new Exception("Missing logtype '$logtype' in an if..elseif chain.");
+			}
 		}
 		
 		# Update user stats.
 		
-		switch ($logtype)
+		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
-			case 'Found it': $field_to_increment = 'founds_count'; break;
-			case "Didn't find it": $field_to_increment = 'notfounds_count'; break;
-			case 'Comment': $field_to_increment = 'log_notes_count'; break;
-			default: throw new Exception("Missing logtype '$logtype' in a switch..case statetment.");
+			# OCDE handles cache stats updates using triggers. We don't need to do
+			# anything.
 		}
-		Db::execute("
-			update user
-			set $field_to_increment = $field_to_increment + 1
-			where user_id = '".mysql_real_escape_string($user['internal_id'])."'
-		");
+		else
+		{
+			# OCPL doesn't have triggers for this. We need to update manually.
+			
+			switch ($logtype)
+			{
+				case 'Found it': $field_to_increment = 'founds_count'; break;
+				case "Didn't find it": $field_to_increment = 'notfounds_count'; break;
+				case 'Comment': $field_to_increment = 'log_notes_count'; break;
+				default: throw new Exception("Missing logtype '$logtype' in a switch..case statetment.");
+			}
+			Db::execute("
+				update user
+				set $field_to_increment = $field_to_increment + 1
+				where user_id = '".mysql_real_escape_string($user['internal_id'])."'
+			");
+		}
 		
 		# Call a proper outside event handler.
 		
