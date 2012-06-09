@@ -477,14 +477,33 @@ class WebService
 				throw new BadRequest("Level 3 Authentication is required to access 'my_notes' field.");
 			foreach ($results as &$result_ref)
 				$result_ref['my_notes'] = null;
-			$rs = Db::query("
-				select cache_id, max(date) as date, group_concat(`desc`) as `desc`
-				from cache_notes
-				where
-					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
-					and user_id = '".mysql_real_escape_string($request->token->user_id)."'
-				group by cache_id
-			");
+			if (Settings::get('OC_BRANCH') == 'oc.pl')
+			{
+				# OCPL uses cache_notes table to store notes.
+				
+				$rs = Db::query("
+					select cache_id, max(date) as date, group_concat(`desc`) as `desc`
+					from cache_notes
+					where
+						cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+						and user_id = '".mysql_real_escape_string($request->token->user_id)."'
+					group by cache_id
+				");
+			}
+			else
+			{
+				# OCDE uses coordinates table (with type == 2) to store notes (this is somewhat weird).
+				
+				$rs = Db::query("
+					select cache_id, null as date, group_concat(description) as `desc`
+					from coordinates
+					where
+						type = 2  -- personal note
+						and cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+						and user_id = '".mysql_real_escape_string($request->token->user_id)."'
+					group by cache_id
+				");
+			}
 			while ($row = mysql_fetch_assoc($rs))
 			{
 				# This one is plain-text. We may add my_notes_html for those who want it in HTML.
