@@ -67,6 +67,10 @@ class WebService
 		$rating = $request->get_parameter('rating');
 		if ($rating !== null && (!in_array($rating, array(1,2,3,4,5))))
 			throw new InvalidParam('rating', "If present, it must be an integer between 1 and 5.");
+		if ($rating !== null && (Settings::get('OC_BRANCH') == 'oc.de'))
+			self::$success_message = _("Your cache log entry was posted successfully.").
+				" ".sprintf(_("However, your cache rating was ignored, because %s does not have a rating system."),
+				Okapi::get_normalized_site_name());
 		
 		# Check if cache exists and retrieve cache internal ID (this will throw
 		# a proper exception on invalid cache_code). Also, get the user object.
@@ -244,6 +248,7 @@ class WebService
 		return $log_uuid;
 	}
 	
+	private static $success_message = null;
 	public static function call(OkapiRequest $request)
 	{
 		$langpref = $request->get_parameter('langpref');
@@ -255,10 +260,12 @@ class WebService
 		Okapi::gettext_domain_init(explode("|", $langpref));
 		try
 		{
+			# If appropriate, $success_message might be changed inside the _call.
+			self::$success_message = _("Your cache log entry was posted successfully.");
 			$log_uuid = self::_call($request);
 			$result = array(
 				'success' => true,
-				'message' => _("Your cache log entry was posted successfully."),
+				'message' => self::$success_message,
 				'log_uuid' => $log_uuid
 			);
 			Okapi::gettext_domain_restore();
