@@ -66,7 +66,7 @@ class BadRequest extends Exception {
 			'reason_stack' => array(),
 		);
 		$this->provideExtras($extras);
-		$extras['more_info'] = "http://opencaching.pl/okapi/introduction.html#errors";
+		$extras['more_info'] = $GLOBALS['absolute_server_URI']."okapi/introduction.html#errors";
 		return json_encode(array("error" => $extras));
 	}
 }
