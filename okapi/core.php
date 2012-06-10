@@ -761,7 +761,7 @@ class Okapi
 		}
 			
 		$dict = array();
-		while ($row = mysql_fetch_assoc($rs))
+		while ($row = mysql_fetch_assoc($rs)) {
 			$dict[$row['id']][strtolower($row['language'])] = $row['text_long'];
 		}
 		return $dict;
