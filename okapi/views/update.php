@@ -136,7 +136,7 @@ class View
 		print "whenever they have updated OKAPI.\n\n";
 		print "Each email describes an action which OKAPI performed on your\n";
 		print "database, OR which we need YOU to perform.\n\n";
-		print "If may receive any error messages during the update process,\n";
+		print "If you receive any error messages during the update process,\n";
 		print "please contact me - rygielski@mimuw.edu.pl.\n\n";
 		print "-- \n";
 		print "Wojciech Rygielski, OKAPI developer";
