@@ -169,7 +169,7 @@ Discussion extract: ;)
     * Results will be ordered arbitrarily.
   * When user submits a rating along with his new log entry?
     * There are three options: a) ignore it, b) report it as a user error, c) report it as a developer error. I don't like any of these options, but I will choose option A, it seems the least evil.
-	* BTW. At this moment, OKAPI does not support posting ratings yet. I've been postponing this after I knew something more about OCDE database structure. I am planning to release support for this soon.
+    * BTW. At this moment, OKAPI does not support posting ratings yet. I've been postponing this after I knew something more about OCDE database structure. I am planning to release support for this soon.
 
 *TEST:*
 
@@ -180,7 +180,7 @@ http://i.imgur.com/dtqcd.png
 If you can think of any, post a comment.
 
   * Someone was worried about OKAPI making visible caches in OCNL which should not be visible. Something about a special status of a cache I think? I would like to hear more about it.
-  * OCNL has two config files (one in `lib/`, other in `config/`) - is it safe to rely that both of them will stay there?
+  * OCNL has two config files (one in `lib/`, other in `config/`) - is it safe to rely that both of them will stay there? Which one should I use for $OKAPI_SETTINGS?
   * OKAPI changes `cache_logs.last_modified` type to timestamp (on OCNL it is datetime with a trigger on it). This should create any problem though.
   * OKAPI creates an extra `caches.okapi_syncbase` (timestamp) field which might be redundant with `last_modified` field in OCNL (but in OCPL it's not). This should create any problem though.
-  * OCNL does not equal OCDE. Some more thingss mat be a little different.
+  * OCNL does not equal OCDE. Some more things may be a little different.
