@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-09 18:05+0100\n"
-"PO-Revision-Date: 2012-06-09 18:06+0100\n"
+"POT-Creation-Date: 2012-06-11 12:12+0100\n"
+"PO-Revision-Date: 2012-06-11 12:12+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: services/caches/geocaches.php:637
+#: services/caches/geocaches.php:609
 msgid "Stage"
 msgstr "Etap"
 
@@ -74,45 +74,49 @@ msgstr "Spoilery"
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 
-#: services/logs/submit.php:62
+#: services/logs/submit.php:63
 msgid "You are trying to publish a log entry with a date in future. Cache log entries are allowed to be published in the past, but NOT in the future."
 msgstr "Próbujesz opublikować wpis do logbooka używając daty w przyszłości. Wpisy mogą być publikowane z datą przeszłości, ale NIE w przyszłości."
 
-#: services/logs/submit.php:71
-#: services/logs/submit.php:264
+#: services/logs/submit.php:79
+#: services/logs/submit.php:315
 msgid "Your cache log entry was posted successfully."
 msgstr "Twój wpis do logbooka został opublikowany pomyślnie."
 
-#: services/logs/submit.php:72
+#: services/logs/submit.php:80
 #, php-format
 msgid "However, your cache rating was ignored, because %s does not have a rating system."
 msgstr "Niestety Twoja ocena skrzynki nie została zapisana, ponieważ %s nie prowadzi oceny skrzynek."
 
-#: services/logs/submit.php:93
+#: services/logs/submit.php:104
 msgid "This cache is archived. Only admins and the owner are allowed to add a log entry."
 msgstr "Ta skrzynka jest zarchiwizowana. Jedynie administratorzy oraz właściciel mogą dodawać komentarze."
 
-#: services/logs/submit.php:97
+#: services/logs/submit.php:108
 msgid "This cache is an Event cache. You cannot \"Find it\"! (But - you may \"Comment\" on it.)"
 msgstr "Ta skrzynka jest typu Wydarzenie. Nie możesz jej \"znaleźć\"! (Ale - możesz dodać wpis typu \"Komentarz\".)"
 
-#: services/logs/submit.php:112
+#: services/logs/submit.php:121
 msgid "You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"
 msgstr "Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz możesz dodawać jedynie \"Komentarze\"!"
 
-#: services/logs/submit.php:124
+#: services/logs/submit.php:133
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr "Już oceniłeś tę skrzynkę. Ocena nie może być zmieniona."
 
-#: services/logs/submit.php:127
-msgid "Your have to supply some text for your comment."
-msgstr "Wpis typu \"Komentarz\" wymagania wpisania komentarza."
+#: services/logs/submit.php:135
+msgid "You are the owner of this cache. You cannot rate it."
+msgstr "Jesteś właścicielem tej skrzynki. Nie możesz jej oceniać."
 
-#: services/logs/submit.php:137
+#: services/logs/submit.php:138
+msgid "Your have to supply some text for your comment."
+msgstr "Wpis typu \"Komentarz\" wymaga wpisania komentarza."
+
+#: services/logs/submit.php:148
 msgid "This cache requires a password. You didn't provide one!"
 msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
 
-#: services/logs/submit.php:139
+#: services/logs/submit.php:150
 msgid "Invalid password!"
 msgstr "Niepoprawne hasło!"
 

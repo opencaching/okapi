@@ -10,6 +10,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\OkapiAccessToken;
 use okapi\Settings;
 use okapi\services\caches\search\SearchAssistant;
 use okapi\BadRequest;
@@ -66,11 +67,20 @@ class WebService
 			$when = time();
 		$rating = $request->get_parameter('rating');
 		if ($rating !== null && (!in_array($rating, array(1,2,3,4,5))))
-			throw new InvalidParam('rating', "If present, it must be an integer between 1 and 5.");
+			throw new InvalidParam('rating', "If present, it must be an integer in the 1..5 scale.");
+		if ($rating && $logtype != 'Found it')
+			throw new BadRequest("Rating is allowed only for 'Found it' logtypes.");
 		if ($rating !== null && (Settings::get('OC_BRANCH') == 'oc.de'))
+		{
+			# We will remove the rating request and change the success message
+			# (which will be returned IF the rest of the query will meet all the
+			# requirements).
+			
 			self::$success_message = _("Your cache log entry was posted successfully.").
 				" ".sprintf(_("However, your cache rating was ignored, because %s does not have a rating system."),
 				Okapi::get_normalized_site_name());
+			$rating = null;
+		}
 		
 		# Check if cache exists and retrieve cache internal ID (this will throw
 		# a proper exception on invalid cache_code). Also, get the user object.
@@ -95,8 +105,6 @@ class WebService
 		}
 		if ($cache['type'] == 'Event' && $logtype != 'Comment')
 			throw new CannotPublishException(_('This cache is an Event cache. You cannot "Find it"! (But - you may "Comment" on it.)'));
-		if ($rating && $logtype != 'Found it')
-			throw new BadRequest("Rating is allowed only for 'Found it' logtypes.");
 		if ($logtype == 'Found it')
 		{
 			$has_already_found_it = Db::select_value("
@@ -122,6 +130,8 @@ class WebService
 			");
 			if ($has_already_rated)
 				throw new CannotPublishException(_("You have already rated this cache once. Your rating cannot be changed."));
+			if ($user['uuid'] == $cache['owner']['uuid'])
+				throw new CannotPublishException(_("You are the owner of this cache. You cannot rate it."));
 		}
 		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
 			throw new CannotPublishException(_("Your have to supply some text for your comment."));
@@ -168,7 +178,47 @@ class WebService
 			);
 		");
 		
-		# WRTODO: Add rating.
+		# Add rating.
+		
+		if ($rating)
+		{
+			# This code will be called for OCPL branch only. Earlier, we made sure,
+			# to set $rating to null, if we're running on OCDE.
+			
+			# OCPL has a little strange way of storing cumulative rating. Instead
+			# of storing the sum of all ratings, they store the computed average
+			# and update it using multiple floating-point operations. Moreover,
+			# the "score" field in the database is on the -3..3 scale (NOT 1..5),
+			# and the translation made at retrieval time is DIFFERENT than the
+			# one made here (both of them are non-linear). Also, once submitted,
+			# the rating can never be changed. It's hard to say if this has any
+			# logic to it, but it surely feels quite inconsistent.
+			
+			switch ($rating)
+			{
+				case 1: $db_score = -2.0; break;
+				case 2: $db_score = -0.5; break;
+				case 3: $db_score = 0.7; break;
+				case 4: $db_score = 1.7; break;
+				case 5: $db_score = 3.0; break;
+				default: throw new Exception();
+			}
+			Db::execute("
+				update caches
+				set
+					score = (score*votes + '".mysql_real_escape_string($db_score)."')/(votes + 1),
+					votes = votes + 1
+				where cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+			");
+			Db::execute("
+				insert into scores (user_id, cache_id, score)
+				values (
+					'".mysql_real_escape_string($user['internal_id'])."',
+					'".mysql_real_escape_string($cache['internal_id'])."',
+					'".mysql_real_escape_string($db_score)."'
+				);
+			");
+		}
 		
 		# Update cache stats.
 		
