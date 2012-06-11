@@ -103,10 +103,6 @@ final class Settings
 				self::$SETTINGS[$key] = $GLOBALS['OKAPI_SETTINGS'][$key];
 				self::verify($key, self::$SETTINGS[$key]);
 			}
-			else
-			{
-				throw new Exception("'$key' is not a valid Settings key.");
-			}
 		}
 	}
 	
