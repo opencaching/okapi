@@ -97,8 +97,24 @@ final class Settings
 			return;
 
 		foreach (self::$SETTINGS as $key => $_)
+		{
 			if (isset($GLOBALS['OKAPI_SETTINGS'][$key]))
+			{
 				self::$SETTINGS[$key] = $GLOBALS['OKAPI_SETTINGS'][$key];
+				self::verify($key, self::$SETTINGS[$key]);
+			}
+			else
+			{
+				throw new Exception("'$key' is not a valid Settings key.");
+			}
+		}
+	}
+	
+	/** Throw an exception, if given $value is invalid for the given $key. */
+	private static function verify($key, $value)
+	{
+		if (($key == 'OC_BRANCH') && (!in_array($value, array('oc.pl', 'oc.de'))))
+			throw new Exception("Currently, OC_BRANCH has to be either 'oc.pl' or 'oc.de'. Hint: Whom did you get your code from?");
 	}
 	
 	/** 
@@ -135,5 +151,10 @@ final class Settings
 		setlocale(LC_NUMERIC, "POSIX"); # We don't want *this one* to get out of control.
 		bindtextdomain("okapi_messages", $GLOBALS['rootpath'].'okapi/locale');
 		return $locale;
+	}
+	
+	public static function describe_settings()
+	{
+		return print_f(self::$SETTINGS, true);
 	}
 }

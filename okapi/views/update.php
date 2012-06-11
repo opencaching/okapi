@@ -65,7 +65,13 @@ class View
 		$current_ver = self::get_current_version();
 		$max_ver = self::get_max_version();
 		self::out("Current OKAPI database version: $current_ver\n");
-		if ($max_ver == $current_ver)
+		if ($current_ver == 0 && ((!isset($_GET['install'])) || ($_GET['install'] != 'true')))
+		{
+			self::out("Current OKAPI settings are:\n\n".Settings::describe_settings()."\n\n".
+				"Make sure they are correct, then append '&install=true' to your query.");
+			return;
+		}
+		elseif ($max_ver == $current_ver)
 		{
 			self::out("It is up-to-date.\n\n");
 		}
@@ -121,13 +127,6 @@ class View
 	
 	private static function ver1()
 	{
-		Db::execute("
-			CREATE TABLE okapi_vars (
-				var varchar(32) charset ascii collate ascii_bin NOT NULL,
-				value text,
-				PRIMARY KEY  (var)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-		");
 		ob_start();
 		print "Hi!\n\n";
 		print "Since this is your first time you run okapi/update, you should be\n";
@@ -141,6 +140,14 @@ class View
 		print "-- \n";
 		print "Wojciech Rygielski, OKAPI developer";
 		Okapi::mail_admins("Database modification notice: cache_logs.last_modified", ob_get_clean());
+
+		Db::execute("
+			CREATE TABLE okapi_vars (
+				var varchar(32) charset ascii collate ascii_bin NOT NULL,
+				value text,
+				PRIMARY KEY  (var)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+		");
 	}
 	
 	private static function ver2()
