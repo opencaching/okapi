@@ -4,8 +4,8 @@ namespace okapi;
 
 # This is the list of OKAPI views. Regexps are mapped to namespaces.
 # Each namespace should expose the Webservice class with a method "call".
-# The "call" method should take OkapiRequest and return OkapiResponse,
-# or throw a BadRequest exception.
+# The "call" method should return OkapiResponse, or throw a BadRequest
+# exception.
 
 class OkapiUrls
 {
