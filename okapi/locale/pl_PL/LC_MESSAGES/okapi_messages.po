@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-11 12:12+0100\n"
-"PO-Revision-Date: 2012-06-11 12:12+0100\n"
+"PO-Revision-Date: 2012-06-12 22:45+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -76,7 +76,7 @@ msgstr "Opisy obrazków"
 
 #: services/logs/submit.php:63
 msgid "You are trying to publish a log entry with a date in future. Cache log entries are allowed to be published in the past, but NOT in the future."
-msgstr "Próbujesz opublikować wpis do logbooka używając daty w przyszłości. Wpisy mogą być publikowane z datą przeszłości, ale NIE w przyszłości."
+msgstr "Próbujesz opublikować wpis do logbooka używając daty w przyszłości. Wpisy mogą być publikowane z datą w przeszłości, ale NIE w przyszłości."
 
 #: services/logs/submit.php:79
 #: services/logs/submit.php:315
