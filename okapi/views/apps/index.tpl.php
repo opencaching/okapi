@@ -23,7 +23,7 @@
 
 		<div class='okapi'>
 			<a href='/okapi/'><img src='/okapi/static/logo-xsmall.gif' alt='OKAPI' style='float: right; margin-left: 10px;'></a>
-			<a href='/'><img src="/images/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
+			<a href='/'><img src="/okapi/static/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
 			<a class='opencaching'><?= $vars['site_name'] ?></a>
 			
 			<h1 style='clear: both'><?= _("Your external applications") ?></h1>
