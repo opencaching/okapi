@@ -83,6 +83,10 @@
 				of the services/caches/search/all method.</p>
 				<p>This field requires you to use the <b>user_uuid</b> parameter (or Level 3 Authentication).</p>
 			</li>
+			<li>
+				<p><b>is_not_found</b> - boolean, true if user has submitted "Didn't find it" log entry for this cache.</p>
+				<p>This field requires you to use the <b>user_uuid</b> parameter (or Level 3 Authentication).</p>
+			</li>
 			<li><b>founds</b> - number of times the geocache was successfully found,</li>
 			<li><b>notfounds</b> - number of times the geocache was not found,</li>
 			<li><b>size</b> - float (between 1 and 5), size rating of the container, or

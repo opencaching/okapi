@@ -32,16 +32,29 @@
 		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
 		order of preference in which language will be chosen for error messages.</p>
 	</opt>
-	<!--
-	This not yet implemented. Remove the comment when/if you implement this.
+	<opt name='on_duplicate' default='silent_success'>
+		<p>How should OKAPI react when you are trying to submit a duplicate entry?
+		One of the following values:</p>
+		<ul>
+			<li><b>silent_success</b> - try to respond with success=true, but don't
+			add a new log entry (existing log_uuid will be returned),</li>
+			<li><b>user_error</b> - respond with success=false and a proper user message,</li>
+			<li><b>continue</b> - don't detect duplicates (note, that this will still
+			fail in some cases, i.e. when you're trying to submit a "Found it" entry for an
+			already found cache).</li>
+		</ul>
+		<p>Note, that duplicate detection may take the <b>when</b> parameter into account.
+		When you don't supply it, "when" is generated for you. This means that you may
+		have to supply the "when" parameter if you want duplicate detection to work.</p>
+	</opt>
 	<opt name='rating'>
 		<p>An integer in range between 1 and 5 - user's optional rating of a found cache.</p>
-		<p>Important: <b>logtype</b> has to be "Found it" in order to use the <b>rating</b> argument.
-		If you use rating with other type of logtype, you will get a HTTP 400 error (instead of
-		a dictionary).</p>
-		<p>Note: you should allow your user to <b>not</b> rate a found cache.</p>
+		<p>Important: <b>logtype</b> has to be "Found it" in order to use the <b>rating</b> argument.</p>
+		<p>Note: You should allow your user to <b>not</b> rate a found cache.</p>
+		<p>Note: Currently, some OC installations do not support cache ratings. On such installations
+		user's rating will be <b>ignored</b> (if you include the rating, log entry will be posted
+		successfully, but rating will be ignored).</p>
 	</opt>
-	-->
 	<common-format-params/>
 	<returns>
 		<p>A dictionary of the following structure:</p>

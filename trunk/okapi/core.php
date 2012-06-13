@@ -421,6 +421,18 @@ class OkapiInternalConsumer extends OkapiConsumer
 }
 
 /**
+ * Used when debugging methods using DEBUG_AS_USERNAME flag.
+ */
+class OkapiDebugConsumer extends OkapiConsumer
+{
+	public function __construct()
+	{
+		$admins = get_admin_emails();
+		parent::__construct('debug', null, "DEBUG_AS_USERNAME Debugger", null, $admins[0]);
+	}
+}
+
+/**
  * Used by calls made via Facade class. SHOULD NOT be referenced anywhere else from
  * within OKAPI code.
  */
@@ -487,6 +499,15 @@ class OkapiFacadeAccessToken extends OkapiAccessToken
 	public function __construct($user_id)
 	{
 		parent::__construct('facade-'.$user_id, null, 'facade', $user_id);
+	}
+}
+
+/** Used when debugging with DEBUG_AS_USERNAME. */
+class OkapiDebugAccessToken extends OkapiAccessToken
+{
+	public function __construct($user_id)
+	{
+		parent::__construct('debug-'.$user_id, null, 'debug', $user_id);
 	}
 }
 
@@ -1518,6 +1539,7 @@ class OkapiHttpRequest extends OkapiRequest
 		#
 		# Parsing options.
 		#
+		$DEBUG_AS_USERNAME = null;
 		foreach ($options as $key => $value)
 		{
 			switch ($key)
@@ -1536,12 +1558,31 @@ class OkapiHttpRequest extends OkapiRequest
 					}
 					$this->opt_token_type = $value;
 					break;
+				case 'DEBUG_AS_USERNAME':
+					$DEBUG_AS_USERNAME = $value;
+					break;
 				default:
 					throw new Exception("Unknown option: $key");
 					break;
 			}
 		}
 		if ($this->opt_min_auth_level === null) throw new Exception("Required 'min_auth_level' option is missing.");
+		
+		if ($DEBUG_AS_USERNAME != null)
+		{
+			# Enables debugging Level 2 and Level 3 methods. Should not be committed
+			# at any time! If run on production server, make it an error.
+			
+			if (!Okapi::debug_mode())
+			{
+				throw new Exception("Attempted to set DEBUG_AS_USERNAME set in ".
+					"non-debug environment. Accidental commit?");
+			}
+			
+			# Lower required authentication to Level 0, to pass the checks.
+			
+			$this->opt_min_auth_level = 0;
+		}
 		
 		#
 		# Let's see if the request is signed. If it is, verify the signature.
@@ -1595,6 +1636,21 @@ class OkapiHttpRequest extends OkapiRequest
 		#
 		
 		$_GET = $_POST = $_REQUEST = null;
+		
+		# When debugging, simulate as if been run using a proper Level 3 Authentication.
+		
+		if ($DEBUG_AS_USERNAME != null)
+		{
+			# Note, that this will override any other valid authentication the
+			# developer might have issued.
+			
+			$debug_user_id = Db::select_value("select user_id from user where username='".
+				mysql_real_escape_string($options['DEBUG_AS_USERNAME'])."'");
+			if ($debug_user_id == null)
+				throw new Exception("Invalid user name in DEBUG_AS_USERNAME: '".$options['DEBUG_AS_USERNAME']."'");
+			$this->consumer = new OkapiDebugConsumer();
+			$this->token = new OkapiDebugAccessToken($debug_user_id);
+		}
 	}
 	
 	private function init_request()

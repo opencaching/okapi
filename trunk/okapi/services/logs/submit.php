@@ -65,6 +65,10 @@ class WebService
 		}
 		else
 			$when = time();
+		$on_duplicate = $request->get_parameter('on_duplicate');
+		if (!$on_duplicate) $on_duplicate = "silent_success";
+		if (!in_array($on_duplicate, array('silent_success', 'user_error', 'continue')))
+			throw new InvalidParam('on_duplicate', "Unknown option: '$on_duplicate'.");
 		$rating = $request->get_parameter('rating');
 		if ($rating !== null && (!in_array($rating, array(1,2,3,4,5))))
 			throw new InvalidParam('rating', "If present, it must be an integer in the 1..5 scale.");
@@ -105,36 +109,11 @@ class WebService
 		}
 		if ($cache['type'] == 'Event' && $logtype != 'Comment')
 			throw new CannotPublishException(_('This cache is an Event cache. You cannot "Find it"! (But - you may "Comment" on it.)'));
-		if ($logtype == 'Found it')
-		{
-			$has_already_found_it = Db::select_value("
-				select 1
-				from cache_logs
-				where
-					user_id = '".mysql_real_escape_string($user['internal_id'])."'
-					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-					and type = '".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."'
-					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
-			");
-			if ($has_already_found_it)
-				throw new CannotPublishException(_("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"));
-		}
-		if ($rating)
-		{
-			$has_already_rated = Db::select_value("
-				select 1
-				from scores
-				where
-					user_id = '".mysql_real_escape_string($user['internal_id'])."'
-					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
-			");
-			if ($has_already_rated)
-				throw new CannotPublishException(_("You have already rated this cache once. Your rating cannot be changed."));
-			if ($user['uuid'] == $cache['owner']['uuid'])
-				throw new CannotPublishException(_("You are the owner of this cache. You cannot rate it."));
-		}
 		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
 			throw new CannotPublishException(_("Your have to supply some text for your comment."));
+		
+		# Password check.
+		
 		if ($logtype == 'Found it' && $cache['req_passwd'])
 		{
 			$valid_password = Db::select_value("
@@ -149,7 +128,77 @@ class WebService
 				throw new CannotPublishException(_("Invalid password!"));
 		}
 		
-		# Add the log entry.
+		# Duplicate detection.
+		
+		if ($on_duplicate != 'continue')
+		{
+			# Attempt to find a log entry made by the same user, for the cache, with
+			# the same date, type, comment, etc. (Note, that these are not ALL the fields
+			# we could check, but should be good enough.)
+			
+			$duplicate_uuid = Db::select_value("
+				select uuid
+				from cache_logs
+				where
+					user_id = '".mysql_real_escape_string($request->token->user_id)."'
+					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+					and type = '".mysql_real_escape_string($logtype_id)."'
+					and date = from_unixtime('".mysql_real_escape_string($when)."')
+					and text = '".mysql_real_escape_string(htmlspecialchars($comment, ENT_QUOTES))."'
+				limit 1
+			");
+			if ($duplicate_uuid != null)
+			{
+				if ($on_duplicate == 'silent_success')
+				{
+					# Act as if the log has been submitted successfully.
+					return $duplicate_uuid;
+				}
+				elseif ($on_duplicate == 'user_error')
+				{
+					throw new CannotPublishException(_("You have already submitted a log entry with exactly the same contents."));
+				}
+			}
+		}
+		
+		# Check if already found it.
+		
+		if ($logtype == 'Found it')
+		{
+			$has_already_found_it = Db::select_value("
+				select 1
+				from cache_logs
+				where
+					user_id = '".mysql_real_escape_string($user['internal_id'])."'
+					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+					and type = '".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."'
+					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
+			");
+			if ($has_already_found_it)
+				throw new CannotPublishException(_("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"));
+		}
+		
+		# Check if the user has already rated the cache. BTW: I don't get this one.
+		# If we already know, that the cache was NOT found yet, then HOW could the
+		# user submit a rating for it? Anyway, I will stick to the procedure
+		# found in log.php.
+		
+		if ($rating)
+		{
+			$has_already_rated = Db::select_value("
+				select 1
+				from scores
+				where
+					user_id = '".mysql_real_escape_string($user['internal_id'])."'
+					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+			");
+			if ($has_already_rated)
+				throw new CannotPublishException(_("You have already rated this cache once. Your rating cannot be changed."));
+			if ($user['uuid'] == $cache['owner']['uuid'])
+				throw new CannotPublishException(_("You are the owner of this cache. You cannot rate it."));
+		}
+		
+		# Finally! Add the log entry.
 		
 		$log_uuid = create_uuid();
 		Db::execute("
@@ -168,7 +217,8 @@ class WebService
 		");
 		$log_internal_id = Db::last_insert_id();
 		
-		# Also, store the information on consumer_key which have created this log entry.
+		# Store additional information on consumer_key which have created this log entry.
+		# (Maybe we will want to display this somewhere later.)
 		
 		Db::execute("
 			insert into okapi_cache_logs (log_id, consumer_key)
@@ -178,7 +228,7 @@ class WebService
 			);
 		");
 		
-		# Add rating.
+		# Store the rating.
 		
 		if ($rating)
 		{
@@ -186,13 +236,14 @@ class WebService
 			# to set $rating to null, if we're running on OCDE.
 			
 			# OCPL has a little strange way of storing cumulative rating. Instead
-			# of storing the sum of all ratings, they store the computed average
+			# of storing the sum of all ratings, OCPL stores the computed average
 			# and update it using multiple floating-point operations. Moreover,
 			# the "score" field in the database is on the -3..3 scale (NOT 1..5),
 			# and the translation made at retrieval time is DIFFERENT than the
 			# one made here (both of them are non-linear). Also, once submitted,
-			# the rating can never be changed. It's hard to say if this has any
-			# logic to it, but it surely feels quite inconsistent.
+			# the rating can never be changed. It surely feels quite inconsistent,
+			# but presumably has some deep logic into it. See also here (Polish):
+			# http://wiki.opencaching.pl/index.php/Oceny_skrzynek
 			
 			switch ($rating)
 			{
@@ -224,12 +275,11 @@ class WebService
 		
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
-			# OCDE handles cache stats updates using triggers. We don't need to do
-			# anything.
+			# OCDE handles cache stats updates using triggers.
 		}
 		else
 		{
-			# OCPL doesn't have triggers for this. We need to update manually.
+			# OCPL doesn't use triggers for this. We need to update manually.
 			
 			if ($logtype == 'Found it')
 			{
@@ -267,8 +317,7 @@ class WebService
 		
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
-			# OCDE handles cache stats updates using triggers. We don't need to do
-			# anything.
+			# OCDE handles cache stats updates using triggers.
 		}
 		else
 		{
@@ -288,12 +337,13 @@ class WebService
 			");
 		}
 		
-		# Call a proper outside event handler.
+		# Call OC's event handler. (BTW, event handlers seem a good idea, but why
+		# "updating stats" needs to be implemented here, instead of inside such handler?)
 		
 		require_once($GLOBALS['rootpath'].'lib/eventhandler.inc.php');
 		event_new_log($cache['internal_id'], $user['internal_id']);
 		
-		# Return the uuid.
+		# Success. Return the uuid.
 		
 		return $log_uuid;
 	}

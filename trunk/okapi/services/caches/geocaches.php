@@ -25,10 +25,11 @@ class WebService
 	}
 	
 	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
-		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'is_found', 'founds',
-		'notfounds', 'size', 'difficulty', 'terrain', 'rating', 'rating_votes', 'recommendations',
-		'req_passwd', 'description', 'descriptions', 'hint', 'hints', 'images', 'attrnames',
-		'latest_logs', 'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
+		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'is_found',
+		'is_not_found', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
+		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description',
+		'descriptions', 'hint', 'hints', 'images', 'attrnames', 'latest_logs',
+		'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
 		'last_modified', 'date_created', 'date_hidden', 'internal_id');
 	
 	public static function call(OkapiRequest $request)
@@ -203,6 +204,7 @@ class WebService
 						$entry['bearing3'] = Okapi::bearing_as_three_letters($tmp);
 						break;
 					case 'is_found': /* handled separately */ break;
+					case 'is_not_found': /* handled separately */ break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
 					case 'size': $entry['size'] = ($row['size'] < 7) ? $row['size'] - 1 : null; break;
@@ -263,6 +265,29 @@ class WebService
 				$tmp2[$cache_code] = true;
 			foreach ($results as $cache_code => &$result_ref)
 				$result_ref['is_found'] = isset($tmp2[$cache_code]);
+		}
+		
+		# is_not_found
+		
+		if (in_array('is_not_found', $fields))
+		{
+			if ($user_id == null)
+				throw new BadRequest("Either 'user_uuid' parameter OR Level 3 Authentication is required to access 'is_not_found' field.");
+			$tmp = Db::select_column("
+				select c.wp_oc
+				from
+					caches c,
+					cache_logs cl
+				where
+					c.cache_id = cl.cache_id
+					and cl.type = '".mysql_real_escape_string(Okapi::logtypename2id("Didn't find it"))."'
+					and cl.user_id = '".mysql_real_escape_string($user_id)."'
+			");
+			$tmp2 = array();
+			foreach ($tmp as $cache_code)
+				$tmp2[$cache_code] = true;
+			foreach ($results as $cache_code => &$result_ref)
+				$result_ref['is_not_found'] = isset($tmp2[$cache_code]);
 		}
 		
 		# Descriptions and hints.
