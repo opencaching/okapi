@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-14 10:58+0100\n"
-"PO-Revision-Date: 2012-06-14 11:32+0100\n"
+"POT-Creation-Date: 2012-06-14 23:42+0100\n"
+"PO-Revision-Date: 2012-06-14 23:44+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,6 @@ msgid "Attributes"
 msgstr "Attributen"
 
 #: okapi/services/caches/formatters/gpxfile.tpl.php:62
-#, fuzzy
 msgid "Trackables"
 msgstr "Trackables"
 
@@ -93,9 +92,8 @@ msgstr "Deze cache is gearchiveerd. Alleen admins en de eigenaar kunnen een log 
 
 # The user will see this error when he is trying to submit a "Fount it" entry on an event cache. "Attended" or "Will attend" log entries are not the same as "Found it". Currently OKAPI does not allow to submit "Attended" nor "Will attend" log entries, that's why user can only "Comment" on it.
 #: okapi/services/logs/submit.php:111
-#, fuzzy
 msgid "This cache is an Event cache. You cannot \"Find it\"! (But - you may \"Comment\" on it.)"
-msgstr "Dit is een eventcache. Deze kan niet als \"Gevonden\" gelogd worden. "
+msgstr "Dit is een eventcache. Deze kan niet als \"Gevonden\" gelogd worden.  Maar wel als \"Notitie\"."
 
 #: okapi/services/logs/submit.php:113
 msgid "Your have to supply some text for your comment."
@@ -110,21 +108,23 @@ msgid "Invalid password!"
 msgstr "Verkeerd wachtwoord!"
 
 # This error will be shown to the user when he tries to submit a log entry which is EXACTLY the same as one he had submitted before.
-#: okapi/services/logs/submit.php:159
+#: okapi/services/logs/submit.php:172
 msgid "You have already submitted a log entry with exactly the same contents."
-msgstr ""
+msgstr "Deze log is reeds met dezelfde tekst verzonden."
 
-#: okapi/services/logs/submit.php:178
+#: okapi/services/logs/submit.php:191
 msgid "You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"
 msgstr "Je hebt deze cache al als \"Gevonden\" gelogd.  Je kunt nu wel een \"Notitie\" plaatsen."
 
-#: okapi/services/logs/submit.php:196
+# The English text was changed from "you cannot rate it" to "you cannot find it". The translation remained.
+#: okapi/services/logs/submit.php:193
+#, fuzzy
+msgid "You are the owner of this cache. You cannot \"Find it\"."
+msgstr "Als eigenaar van deze cache. Kan deze cache niet gewaardeerd worden."
+
+#: okapi/services/logs/submit.php:211
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr "Je hebt deze cache al gewaardeerd. De waardering kan niet veranderd worden."
-
-#: okapi/services/logs/submit.php:198
-msgid "You are the owner of this cache. You cannot rate it."
-msgstr "Als eigenaar van deze cache. Kan deze cache niet gewaardeerd worden."
 
 #: okapi/views/apps/authorize.tpl.php:5
 msgid "Authorization Form"
@@ -140,7 +140,7 @@ msgstr "Helaas, de aanvraag is verlopen. Probeer het nogmaals."
 
 #: okapi/views/apps/authorize.tpl.php:49
 msgid "External application is requesting access..."
-msgstr "De externe toepassing verzoekt om toegang..."
+msgstr "Een externe toepassing verzoekt om toegang..."
 
 #: okapi/views/apps/authorize.tpl.php:50
 #, php-format
@@ -159,7 +159,7 @@ msgstr "Afwijzen"
 # This message is shown to the user when external application is trying to get user's permission to access his account.
 # Sample: http://i.imgur.com/ZCJNT.png
 #: okapi/views/apps/authorize.tpl.php:56
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "\n"
 "\t\t\t\t\t<p>Once permission is granted it is valid until its withdrawal on\n"
@@ -170,6 +170,14 @@ msgid ""
 "\t\t\t\t\tYou can revoke this permission at any moment.</p>\n"
 "\t\t\t\t"
 msgstr ""
+"\n"
+"\t\t\t\t\t<p>Wanneer toegestemd is blijft deze geldig tot intrekking op\n"
+"\t\t\t\t\tde <a href='%s'>toepassingsbeheer</a> pagina.</p>\n"
+"\t\t\t\t\t<p>De toepassing zal toegang krijgen via jouw account op <a href='%s'>the OKAPI Framework</a>.\n"
+"\t\t\t\t\tWanneer je toestemming geeft voor deze toepassing zullen de mogelijkheden\n"
+"\t\t\t\t\tvan OKAPI Framework toegepast worden, b.v. het loggen van een cache.\n"
+"\t\t\t\t\tDe toestemming kan elk moment ingetrokken worden.</p>\n"
+"\t\t\t\t"
 
 #: okapi/views/apps/authorized.tpl.php:5
 msgid "Authorization Succeeded"
@@ -181,13 +189,17 @@ msgstr "Met succes toegang verleend"
 
 # This MIGHT be shown AFTER user grants external application permission to access his account.
 #: okapi/views/apps/authorized.tpl.php:29
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "\n"
 "\t\t\t\t<p><b>You've just granted %s application access to your %s account.</b>\n"
 "\t\t\t\tTo complete the operation, go back to %s and enter the following PIN code:</p>\n"
 "\t\t\t"
 msgstr ""
+"\n"
+"\t\t\t\t<p><b>Je hebt toegang verleent voor %s toepassing op jouw %s account.</b>\n"
+"\t\t\t\tOm de aktie te voltooien, ga terug naar %s en gebruik de volgende PIN code:</p>\n"
+"\t\t\t"
 
 #: okapi/views/apps/index.tpl.php:5
 msgid "My Apps"
@@ -200,7 +212,7 @@ msgstr "Jouw externe toepassingen"
 # This will be shown when user visits /okapi/apps page.
 # Sample: http://i.imgur.com/ZCJNT.png
 #: okapi/views/apps/index.tpl.php:31
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "\n"
 "\t\t\t\t\t<p>This is the list of applications which you granted access to your <b>%s</b> account.\n"
@@ -209,6 +221,12 @@ msgid ""
 "\t\t\t\t\tactions on your behalf.</p>\n"
 "\t\t\t\t"
 msgstr ""
+"\n"
+"\t\t\t\t\t<p>Dit is een lijst met toegestane toepassingen op jouw <b>%s</b> account.\n"
+"\t\t\t\t\tOp deze pagina kun je alle toestemmingen intrekken die gegeven zijn.\n"
+"\t\t\t\t\tMet een klik op \"verwijderen\" zal de toepassing verwijderen en is dan ook niet meer beschikbaar\n"
+"\t\t\t\t\voor anderen.</p>\n"
+"\t\t\t\t"
 
 #: okapi/views/apps/index.tpl.php:45
 msgid "remove"
