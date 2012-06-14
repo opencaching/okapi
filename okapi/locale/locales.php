@@ -7,6 +7,7 @@ class Locales
 	public static $languages = array(
 		'pl' => array('lang' => 'pl', 'locale' => 'pl_PL.utf8', 'name' => 'Polish'),
 		'en' => array('lang' => 'en', 'locale' => 'en_US.utf8', 'name' => 'English'),
+		'nl' => array('lang' => 'nl', 'locale' => 'nl_NL.utf8', 'name' => 'Dutch'),
 	);
 	
 	/**
