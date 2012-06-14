@@ -174,7 +174,7 @@ class WebService
 			}
 		}
 		
-		# Check if already found it.
+		# Check if already found it (and make sure the user is not the owner).
 		
 		if ($logtype == 'Found it')
 		{
@@ -189,6 +189,8 @@ class WebService
 			");
 			if ($has_already_found_it)
 				throw new CannotPublishException(_("You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"));
+			if ($user['uuid'] == $cache['owner']['uuid'])
+				throw new CannotPublishException(_("You are the owner of this cache. You cannot \"Find it\"."));
 		}
 		
 		# Check if the user has already rated the cache. BTW: I don't get this one.
@@ -207,8 +209,6 @@ class WebService
 			");
 			if ($has_already_rated)
 				throw new CannotPublishException(_("You have already rated this cache once. Your rating cannot be changed."));
-			if ($user['uuid'] == $cache['owner']['uuid'])
-				throw new CannotPublishException(_("You are the owner of this cache. You cannot rate it."));
 		}
 		
 		# Finally! Add the log entry.
