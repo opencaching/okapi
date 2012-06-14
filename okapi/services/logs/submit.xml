@@ -14,6 +14,9 @@
 	</req>
 	<opt name='comment'>
 		<p>Text to be submitted with the log entry. Plain-text (no HTML).</p>
+		<p><b>Note:</b> Due to <a href='http://code.google.com/p/opencaching-api/issues/detail?id=124'>some issues</a>
+		(which we cannot currently fix), you MAY be allowed to use some basic HTML tags (on some OC installations).
+		However, you should not (this may stop working at any time).</p>
 	</opt>
 	<opt name='when'>
 		<p>A date and time string. This should be in ISO 8601 format (although currently

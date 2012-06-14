@@ -198,6 +198,19 @@ class WebService
 				throw new CannotPublishException(_("You are the owner of this cache. You cannot rate it."));
 		}
 		
+		# Very weird part (as usual). OCPL stores HTML-lized comments in the database
+		# (it doesn' really matter if 'text_html' field is set to FALSE). OKAPI must
+		# save it in HTML either way. However, escaping plain-text doesn't work.
+		# If we put "&lt;b&gt;" in, it still gets converted to "<b>" before display!
+		# NONE of this process is documented. There doesn't seem to be ANY way to force
+		# OCPL to treat a string as either plain-text nor HTML. It's always something
+		# in between! In other words, we cannot guarantee how it gets displayed in
+		# the end. Since text_html=0 doesn't add <br/>s on its own, we can only add
+		# proper <br/>s and hope it's okay.
+		
+		$PSEUDOENCODED_comment = htmlspecialchars($comment, ENT_QUOTES);
+		$PSEUDOENCODED_comment = nl2br($PSEUDOENCODED_comment);
+		
 		# Finally! Add the log entry.
 		
 		$log_uuid = create_uuid();
@@ -209,7 +222,7 @@ class WebService
 				'".mysql_real_escape_string($request->token->user_id)."',
 				'".mysql_real_escape_string($logtype_id)."',
 				from_unixtime('".mysql_real_escape_string($when)."'),
-				'".mysql_real_escape_string(htmlspecialchars($comment, ENT_QUOTES))."',
+				'".mysql_real_escape_string($PSEUDOENCODED_comment)."',
 				now(),
 				now(),
 				'".mysql_real_escape_string($GLOBALS['oc_nodeid'])."'
