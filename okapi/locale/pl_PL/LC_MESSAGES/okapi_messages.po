@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-14 11:06+0100\n"
-"PO-Revision-Date: 2012-06-14 11:07+0100\n"
+"POT-Creation-Date: 2012-06-14 12:07+0100\n"
+"PO-Revision-Date: 2012-06-14 12:07+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -108,21 +108,21 @@ msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
 msgid "Invalid password!"
 msgstr "Niepoprawne hasło!"
 
-#: services/logs/submit.php:159
+#: services/logs/submit.php:172
 msgid "You have already submitted a log entry with exactly the same contents."
 msgstr "Już opublikowałeś wcześniej wpis z dokładnie taką samą treścią."
 
-#: services/logs/submit.php:178
+#: services/logs/submit.php:191
 msgid "You have already submitted a \"Found it\" log entry once. Now you may submit \"Comments\" only!"
 msgstr "Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz możesz dodawać jedynie \"Komentarze\"!"
 
-#: services/logs/submit.php:196
+#: services/logs/submit.php:193
+msgid "You are the owner of this cache. You cannot \"Find it\"."
+msgstr "Jesteś właścicielem tej skrzynki. Nie możesz jej \"Znaleźć\"."
+
+#: services/logs/submit.php:211
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr "Już oceniłeś tę skrzynkę. Ocena nie może być zmieniona."
-
-#: services/logs/submit.php:198
-msgid "You are the owner of this cache. You cannot rate it."
-msgstr "Jesteś właścicielem tej skrzynki. Nie możesz jej oceniać."
 
 #: views/apps/authorize.tpl.php:5
 msgid "Authorization Form"
