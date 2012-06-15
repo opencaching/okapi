@@ -79,7 +79,7 @@ class View
 				# can't just call it. The only thing that comes to mind is...
 				# Destroy EVERYTHING.
 				
-				$past = time() - 3600;
+				$past = time() - 86400;
 				foreach ($_COOKIE as $key => $value)
 					setcookie($key, $value, $past, '/');
 			}
