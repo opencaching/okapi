@@ -732,6 +732,8 @@ class Okapi
 	/** Send an email message from OKAPI to the given recipients. */
 	public static function mail_from_okapi($email_addresses, $subject, $message)
 	{
+		if (!is_array($email_addresses))
+			$email_addresses = array($email_addresses);
 		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
 		mail(implode(", ", $email_addresses), $subject, $message,
 			"Content-Type: text/plain; charset=utf-8\n".
@@ -999,31 +1001,31 @@ class Okapi
 		else
 			$sample_cache_code = "CACHECODE";
 		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
-		mail($email, "Your OKAPI Consumer Key",
-			"This is the key-pair we've generated for your application:\n\n".
-			"Consumer Key: $consumer->key\n".
-			"Consumer Secret: $consumer->secret\n\n".
-			"Note: Consumer Secret is needed only when you intend to use OAuth.\n".
-			"You don't need Consumer Secret for Level 1 Authentication.\n\n".
-			"Now you may easily access Level 1 methods of OKAPI! For example:\n".
-			$GLOBALS['absolute_server_URI']."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n".
-			"If you plan on using OKAPI for a longer time, then you should subscribe\n".
-			"to the OKAPI News blog to stay up-to-date. Check it out here:\n".
-			"http://opencaching-api.blogspot.com/\n\n".
-			"Have fun!",
-			"Content-Type: text/plain; charset=utf-8\n".
-			"From: OKAPI <$sender_email>\n".
-			"Reply-To: $sender_email\n"
-		);
-		Okapi::mail_admins("New OKAPI app registered!",
-			"Name: $consumer->name\n".
-			"Developer: $consumer->email\n".
-			($consumer->url ? "URL: $consumer->url\n" : "").
-			"Consumer Key: $consumer->key\n",
-			"Content-Type: text/plain; charset=utf-8\n".
-			"From: OKAPI <$sender_email>\n".
-			"Reply-To: $sender_email\n"
-		);
+		
+		# Message for the Consumer.
+		ob_start();
+		print "This is the key-pair we've generated for your application:\n\n";
+		print "Consumer Key: $consumer->key\n";
+		print "Consumer Secret: $consumer->secret\n\n";
+		print "Note: Consumer Secret is needed only when you intend to use OAuth.\n";
+		print "You don't need Consumer Secret for Level 1 Authentication.\n\n";
+		print "Now you may easily access Level 1 methods of OKAPI! For example:\n";
+		print $GLOBALS['absolute_server_URI']."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n";
+		print "If you plan on using OKAPI for a longer time, then you should subscribe\n";
+		print "to the OKAPI News blog to stay up-to-date. Check it out here:\n";
+		print "http://opencaching-api.blogspot.com/\n\n";
+		print "Have fun!";
+		Okapi::mail_from_okapi($email, "Your OKAPI Consumer Key", ob_get_clean());
+		
+		# Message for the Admins.
+		
+		ob_start();
+		print "Name: $consumer->name\n";
+		print "Developer: $consumer->email\n";
+		print ($consumer->url ? "URL: $consumer->url\n" : "");
+		print "Consumer Key: $consumer->key\n";
+		Okapi::mail_admins("New OKAPI app registered!", ob_get_clean());
+		
 		Db::execute("
 			insert into okapi_consumers (`key`, name, secret, url, email, date_created)
 			values (

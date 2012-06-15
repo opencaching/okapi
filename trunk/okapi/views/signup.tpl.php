@@ -73,9 +73,12 @@
 								</tr>
 							</table>
 							<p>* - required fields</p>
-							<p>Application homepage URL will be used for hyperlinks, to allow users to find your
-							application more easily. It must be a "http://" web address. (In case you were wondering,
-							it has nothing to do with OAuth callback.)</p>
+							<p>If you want to test OKAPI only, use your email address as application name.
+							Provide a real email address at which we may contact you later.</p>
+							<p>Application homepage URL is optional and will be used for hyperlinks,
+							to allow users to find your application more easily. If provided, it must
+							be a "http://" web address. (In case you were wondering, it has nothing
+							to do with OAuth callback.)</p>
 						</form>
 
 						<h2>Terms of Use</h2>
