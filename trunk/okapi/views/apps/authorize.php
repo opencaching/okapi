@@ -74,8 +74,11 @@ class View
 		{
 			if ($force_relogin)
 			{
-				# Let's be cruel.
-				session_destroy();
+				# OCPL holds all user data inside $_SESSION. We don't need to
+				# destroy the whole session (delete cookies), we just need to
+				# log out the current user.
+				session_start();
+				$_SESSION = array();
 			}
 			$after_login = "okapi/apps/authorize?oauth_token=$token_key".(($langpref != Settings::get('SITELANG'))?"&langpref=".$langpref:"");
 			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login)
