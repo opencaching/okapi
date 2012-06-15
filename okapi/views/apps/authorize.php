@@ -79,6 +79,7 @@ class View
 				# log out the current user.
 				session_start();
 				$_SESSION = array();
+				session_destroy();
 			}
 			$after_login = "okapi/apps/authorize?oauth_token=$token_key".(($langpref != Settings::get('SITELANG'))?"&langpref=".$langpref:"");
 			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login)
