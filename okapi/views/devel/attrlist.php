@@ -13,30 +13,111 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
+use okapi\Settings;
 
 class View
 {
 	public static function call()
 	{
 		# This is a hidden page for OKAPI developers. It will list all
-		# attributes defined in this OC installation.
+		# attributes defined in this OC installation (and some other stuff).
 		
+		ob_start();
+		
+		print "Cache Types:\n\n";
+		foreach (self::get_all_cachetypes() as $id => $name)
+			print "$id: $name\n";
+			
+		print "\nLog Types:\n\n";
+		foreach (self::get_all_logtypes() as $id => $name)
+			print "$id: $name\n";
+			
+		print "\nAttributes:\n\n";
 		$dict = Okapi::get_all_atribute_names();
-		$chunks = array();
 		foreach ($dict as $internal_id => $langs)
 		{
-			$chunks[] = "internal_id='$internal_id'";
+			print $internal_id.": ";
 			$langkeys = array_keys($langs);
 			sort($langkeys);
+			if (in_array('en', $langkeys))
+				print strtoupper($langs['en'])."\n";
+			else
+				print ">>>> ENGLISH NAME UNSET! <<<<\n";
 			foreach ($langkeys as $langkey)
-				$chunks[] = " $langkey='".$langs[$langkey]."'";
-			$chunks[] = "\n";
+				print "        $langkey: ".$langs[$langkey]."\n";
 		}
-		
+
 		$response = new OkapiHttpResponse();
 		$response->content_type = "text/plain; charset=utf-8";
-		$response->body = implode("", $chunks);
+		$response->body = ob_get_clean();
 		return $response;
 	}
 
+	/**
+	 * Get an array of all site-specific cache-types (id => name in English).
+	 */
+	private static function get_all_cachetypes()
+	{
+		if (Settings::get('OC_BRANCH') == 'oc.pl')
+		{
+			# OCPL branch does not store cache types in many languages (just two).
+			
+			$rs = Db::query("select id, en from cache_type order by id");
+		}
+		else
+		{
+			# OCDE branch uses translation tables.
+			
+			$rs = Db::query("
+				select
+					ct.id,
+					stt.text as en
+				from
+					cache_type ct,
+					sys_trans_text stt
+				where ct.trans_id = stt.trans_id
+				order by ct.id
+			");
+		}
+			
+		$dict = array();
+		while ($row = mysql_fetch_assoc($rs)) {
+			$dict[$row['id']] = $row['en'];
+		}
+		return $dict;
+	}
+	
+	/**
+	 * Get an array of all site-specific log-types (id => name in English).
+	 */
+	private static function get_all_logtypes()
+	{
+		if (Settings::get('OC_BRANCH') == 'oc.pl')
+		{
+			# OCPL branch does not store cache types in many languages (just two).
+			
+			$rs = Db::query("select id, en from log_types order by id");
+		}
+		else
+		{
+			# OCDE branch uses translation tables.
+			
+			$rs = Db::query("
+				select
+					lt.id,
+					stt.text as en
+				from
+					log_types lt,
+					sys_trans_text stt
+				where lt.trans_id = stt.trans_id
+				order by lt.id
+			");
+		}
+			
+		$dict = array();
+		while ($row = mysql_fetch_assoc($rs)) {
+			$dict[$row['id']] = $row['en'];
+		}
+		return $dict;
+	}
 }
