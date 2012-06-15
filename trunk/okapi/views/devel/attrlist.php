@@ -73,9 +73,10 @@ class View
 					ct.id,
 					stt.text as en
 				from
-					cache_type ct,
-					sys_trans_text stt
-				where ct.trans_id = stt.trans_id
+					cache_type ct
+					left join sys_trans_text stt
+						on ct.trans_id = stt.trans_id
+						and stt.lang = 'EN'
 				order by ct.id
 			");
 		}
@@ -107,9 +108,10 @@ class View
 					lt.id,
 					stt.text as en
 				from
-					log_types lt,
-					sys_trans_text stt
-				where lt.trans_id = stt.trans_id
+					log_types lt
+					left join sys_trans_text stt
+						on lt.trans_id = stt.trans_id
+						and stt.lang = 'EN'
 				order by lt.id
 			");
 		}
