@@ -74,13 +74,18 @@ class View
 		{
 			if ($force_relogin)
 			{
-				# OCPL holds all user data inside $_SESSION. We don't need to
-				# destroy the whole session (delete cookies), we just need to
-				# log out the current user.
-				session_start();
-				$_SESSION = array();
-				session_destroy();
+				# OC uses REAL MAGIC for session handling. I don't get ANY of it.
+				# The logout.php DOES NOT support the "target" parameter, so we
+				# can't just call it. The only thing that comes to mind is...
+				# Destroy EVERYTHING.
+				
+				$past = time() - 3600;
+				foreach ($_COOKIE as $key => $value)
+					setcookie($key, $value, $past, '/');
 			}
+			
+			# We should be logged out now. Let's login again.
+			
 			$after_login = "okapi/apps/authorize?oauth_token=$token_key".(($langpref != Settings::get('SITELANG'))?"&langpref=".$langpref:"");
 			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login)
 				."&langpref=".$langpref;
