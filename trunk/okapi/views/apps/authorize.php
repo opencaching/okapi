@@ -22,6 +22,12 @@ class View
 		foreach (Locales::$languages as $lang => $attrs)
 			$locales[$attrs['locale']] = $attrs;
 		
+		# Current implementation of the "interactivity" parameter is: If developer
+		# wants to "confirm_user", then just log out the current user before we
+		# continue.
+		
+		$force_relogin = (isset($_GET['interactivity']) && $_GET['interactivity'] == 'confirm_user');
+		
 		$token = Db::select_row("
 			select
 				t.`key` as `key`,
@@ -62,10 +68,15 @@ class View
 			return $response;
 		}
 		
-		# Ensure a user is logged in.
+		# Ensure a user is logged in (or force re-login).
 	
-		if ($GLOBALS['usr'] == false)
+		if ($force_relogin || ($GLOBALS['usr'] == false))
 		{
+			if ($force_relogin)
+			{
+				# Let's be cruel.
+				session_destroy();
+			}
 			$after_login = "okapi/apps/authorize?oauth_token=$token_key".(($langpref != Settings::get('SITELANG'))?"&langpref=".$langpref:"");
 			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login)
 				."&langpref=".$langpref;
