@@ -85,6 +85,13 @@ class WebService
 				Okapi::get_normalized_site_name());
 			$rating = null;
 		}
+		$recommend = $request->get_parameter('recommend');
+		if (!$recommend) $recommend = 'false';
+		if (!in_array($recommend, array('true', 'false')))
+			throw new InvalidParam('recommend', "Unknown option: '$recommend'.");
+		$recommend = ($recommend == 'true');
+		if ($recommend && $logtype != 'Found it')
+			throw new BadRequest(_("Recommending is allowed only for 'Found it' logtypes."));
 		
 		# Check if cache exists and retrieve cache internal ID (this will throw
 		# a proper exception on invalid cache_code). Also, get the user object.
@@ -94,7 +101,7 @@ class WebService
 			'fields' => 'internal_id|status|owner|type|req_passwd')));
 		$user = OkapiServiceRunner::call('services/users/by_internal_id', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('internal_id' => $request->token->user_id,
-			'fields' => 'is_admin|uuid|internal_id')));
+			'fields' => 'is_admin|uuid|internal_id|caches_found|rcmds_given')));
 		
 		# Various integrity checks.
 		
@@ -196,7 +203,7 @@ class WebService
 		# Check if the user has already rated the cache. BTW: I don't get this one.
 		# If we already know, that the cache was NOT found yet, then HOW could the
 		# user submit a rating for it? Anyway, I will stick to the procedure
-		# found in log.php.
+		# found in log.php. On the bright side, it's fail-safe.
 		
 		if ($rating)
 		{
@@ -209,6 +216,30 @@ class WebService
 			");
 			if ($has_already_rated)
 				throw new CannotPublishException(_("You have already rated this cache once. Your rating cannot be changed."));
+		}
+		
+		# If user wants to recommend...
+		
+		if ($recommend)
+		{
+			# Do the same "fail-safety" check as we did for the rating.
+			
+			$already_recommended = Db::select_value("
+				select 1
+				from cache_rating
+				where
+					user_id = '".mysql_real_escape_string($user['internal_id'])."'
+					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+			");
+			if ($already_recommended)
+				throw new CannotPublishException(_("You have already recommended this cache once."));
+			
+			# Check the number of recommendations.
+			
+			$founds = $user['caches_found'] + 1;  // +1, because he'll find THIS ONE in a moment, right?
+			$rcmds_left = floor($founds / 10.0) - $user['rcmds_given'];
+			if ($rcmds_left <= 0)
+				throw new CannotPublishException(_("You don't have any recommendations to give. Find more caches first!"));
 		}
 		
 		# Finally! Add the log entry.
@@ -241,7 +272,7 @@ class WebService
 			);
 		");
 		
-		# Store the rating.
+		# Save the rating.
 		
 		if ($rating)
 		{
@@ -280,6 +311,23 @@ class WebService
 					'".mysql_real_escape_string($user['internal_id'])."',
 					'".mysql_real_escape_string($cache['internal_id'])."',
 					'".mysql_real_escape_string($db_score)."'
+				);
+			");
+		}
+		
+		# Save recommendation.
+		
+		if ($recommend)
+		{
+			# Both OCPL and OCDE don't have any additional inserts/updates in their
+			# log.php code. If they update anything else, they do this elsewhere
+			# (e.g. an event handler called below?).
+			
+			Db::execute("
+				insert into cache_rating (user_id, cache_id)
+				values (
+					'".mysql_real_escape_string($user['internal_id'])."',
+					'".mysql_real_escape_string($cache['internal_id'])."'
 				);
 			");
 		}
