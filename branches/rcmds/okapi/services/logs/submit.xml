@@ -65,6 +65,16 @@
 		set on him by the OC site. If criteria are not met, the request will
 		end with user error (HTTP 200, success=false).</p>
 	</opt>
+	<opt name='needs_maintenance' default='false'>
+		<p>Set to <b>true</b> if the user thinks that the cache needs some special attension
+		of its owner.</p>
+		<p>Note: Depending on OC installation and user's log entry type, OKAPI may actually publish
+		two separate log entries when you check this flag (one of them with empty comment).
+		Even then, you will still receive only one UUID reference (pointing to one of those entries).
+		Moreover, on some OC servers this flag might be <b>completely ignored</b>
+		(just some OC servers support this feature). Users should describe the need
+		for maintenance in their comments.</p>
+	</opt>
 	<common-format-params/>
 	<returns>
 		<p>A dictionary of the following structure:</p>
