@@ -22,7 +22,7 @@ class WebService
 		);
 	}
 	
-	public static $valid_field_names = array('uuid', 'cache_code', 'date', 'user', 'type', 'comment');
+	private static $valid_field_names = array('uuid', 'cache_code', 'date', 'user', 'type', 'comment');
 
 	public static function call(OkapiRequest $request)
 	{
