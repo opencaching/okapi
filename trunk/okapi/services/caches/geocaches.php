@@ -24,7 +24,7 @@ class WebService
 		);
 	}
 	
-	public static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
+	private static $valid_field_names = array('code', 'name', 'names', 'location', 'type',
 		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'is_found',
 		'is_not_found', 'founds', 'notfounds', 'size', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description',

@@ -8,15 +8,15 @@ use okapi\Locales;
 # DO NOT MODIFY THIS FILE. This file should always look like the original here:
 # http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/settings.php
 #
-# HOW TO MODIFY OKAPI SETTINGS: I you want a setting X to have a value of Y,
+# HOW TO MODIFY OKAPI SETTINGS: If you want a setting X to have a value of Y,
 # add following lines to your OC's lib/settings.inc.php file:
 #
 #     $OKAPI_SETTINGS = array(
 #         'X' => 'Y',
-#         // ... other settings may come here ...
+#         // ... etc ...
 #     );
 #
-#     // E.g. $OKAPI_SETTINGS = array('OC_BRANCH', 'oc.de');
+#     // E.g. $OKAPI_SETTINGS = array('OC_BRANCH' => 'oc.de', 'SITELANG' => 'de');
 #
 # This file provides documentation and DEFAULT values for those settings.
 #
@@ -42,17 +42,17 @@ final class Settings
 		 * which all the names of caches are entered. What is the ISO 639-1 code
 		 * of this language? Note: ISO 639-1 codes are always lowercase.
 		 * 
-		 * E.g. "pl", "en" or "de".
+		 * E.g. "pl", "en", "de".
 		 */
 		'SITELANG' => "en",
 		
 		/**
 		 * All OKAPI documentation pages should remain English-only, but some
-		 * other pages (and results!) should be translated to their localized
+		 * other pages (and results) might be translated to their localized
 		 * versions. We try to catch up to all OKAPI instances and
 		 * fill our default translation tables with all the languages of all
 		 * OKAPI installations. But we also give you an option to use your own
-		 * translation table if you want to. Use this variable to pass your
+		 * translation table if you really need to. Use this variable to pass your
 		 * own gettext initialization function/method. See default_gettext_init
 		 * function below for details.
 		 */
@@ -67,15 +67,23 @@ final class Settings
 		/**
 		 * By default, OKAPI sends messages to email address defined in $GLOBALS['sql_errormail'].
 		 * However, there can be only one address defined there. If you want to add more, you may
-		 * use this setting to provide a list of additional emails.
+		 * use this setting to provide a list of additional email addresses.
 		 */
 		'EXTRA_ADMINS' => array(),
 		
 		/**
 		 * Where should OKAPI store dynamically generated cache files? If you leave it at null,
-		 * OKAPI will try to guess (not recommended).
+		 * OKAPI will try to guess (not recommended). If you move this directory, it's better
+		 * if you also move all the files which were inside.
 		 */
 		'VAR_DIR' => null,
+		
+		/**
+		 * Set to true, if your installation supports "Needs maintenance" log type (with
+		 * log type id == 5). If your users are not allowed to submit "Needs maintenance"
+		 * log entries, leave it at false.
+		 */
+		'SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE' => false,
 	);
 	
 	/** 
@@ -111,6 +119,8 @@ final class Settings
 	{
 		if (($key == 'OC_BRANCH') && (!in_array($value, array('oc.pl', 'oc.de'))))
 			throw new Exception("Currently, OC_BRANCH has to be either 'oc.pl' or 'oc.de'. Hint: Whom did you get your code from?");
+		if (($key == 'SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE') && (!in_array($value, array(true, false))))
+			throw new Exception("Invalid value for $key.");
 	}
 	
 	/** 
