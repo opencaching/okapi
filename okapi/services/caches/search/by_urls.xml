@@ -3,9 +3,10 @@
 	<issue-id>116</issue-id>
 	<desc>
 		<p>Given a set of URLs, determine codes of geocaches referenced within them.</p>
-		<p>This might be useful if you have a link to a geocache page, but you're
-		not able to extract cache code from such link. One geocache page may be referenced
-		with many different URLs, and not all of them contain the its code.</p>
+		<p>This might be useful if you have a link to an OpenCaching geocache page, but you're
+		not able to extract cache code from such link (and you need the cache code to operate
+		on a cache using OKAPI). Geocache pages may be referenced using various types of URLs,
+		only some of them contain the cache code.</p>
 	</desc>
 	<req name='urls'>
 		<p>Pipe-separated list of URLs. No more than 500.</p>

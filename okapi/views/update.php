@@ -407,7 +407,8 @@ class View
 		print "slightly (either to make OKAPI work properly OR as a part of\n";
 		print "bigger \"international OpenCaching unification\" ideas).\n\n";
 		print "We will let you know every time OKAPI alters database structure\n";
-		print "(outside of the \"okapi_\" table-scope).\n\n";
+		print "(outside of the \"okapi_\" table-scope). If you have any comments\n";
+		print "on this procedure, please submit them to our issue tracker.\n\n";
 	}
 	
 	private static function ver49() { Db::execute("alter table caches add key okapi_syncbase (okapi_syncbase);"); }
@@ -443,6 +444,6 @@ class View
 		self::print_common_db_alteration_info();
 		print "-- \n";
 		print "OKAPI Team";
-		Okapi::mail_admins("Database modification notice: cache_logs.last_modified", ob_get_clean());
+		Okapi::mail_admins("Database modification notice: cache_logs_archived.last_modified", ob_get_clean());
 	}
 }
