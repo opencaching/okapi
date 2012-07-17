@@ -207,16 +207,16 @@ class WebService
 					case 'is_not_found': /* handled separately */ break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
-					case 'size': $entry['size'] = ($row['size'] < 7) ? $row['size'] - 1 : null; break;
+					case 'size': $entry['size'] = ($row['size'] < 7) ? (float)($row['size'] - 1) : null; break;
 					case 'difficulty': $entry['difficulty'] = round($row['difficulty'] / 2.0, 1); break;
 					case 'terrain': $entry['terrain'] = round($row['terrain'] / 2.0, 1); break;
 					case 'rating':
 						if ($row['votes'] < 3) $entry['rating'] = null;
-						elseif ($row['score'] >= 2.2) $entry['rating'] = 5;
-						elseif ($row['score'] >= 1.4) $entry['rating'] = 4;
-						elseif ($row['score'] >= 0.1) $entry['rating'] = 3;
-						elseif ($row['score'] >= -1.0) $entry['rating'] = 2;
-						else $entry['rating'] = 1;
+						elseif ($row['score'] >= 2.2) $entry['rating'] = 5.0;
+						elseif ($row['score'] >= 1.4) $entry['rating'] = 4.0;
+						elseif ($row['score'] >= 0.1) $entry['rating'] = 3.0;
+						elseif ($row['score'] >= -1.0) $entry['rating'] = 2.0;
+						else $entry['rating'] = 1.0;
 						break;
 					case 'rating_votes': $entry['rating_votes'] = $row['votes'] + 0; break;
 					case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
