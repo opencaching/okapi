@@ -123,6 +123,12 @@ class SearchAssistant
 		
 		if ($tmp = $request->get_parameter('owner_uuid'))
 		{
+			$operator = "in";
+			if ($tmp[0] == '-')
+			{
+				$tmp = substr($tmp, 1);
+				$operator = "not in";
+			}
 			try
 			{
 				$users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
@@ -135,7 +141,7 @@ class SearchAssistant
 			$user_ids = array();
 			foreach ($users as $user)
 				$user_ids[] = $user['internal_id'];
-			$where_conds[] = "caches.user_id in ('".implode("','", array_map('mysql_real_escape_string', $user_ids))."')";
+			$where_conds[] = "caches.user_id $operator ('".implode("','", array_map('mysql_real_escape_string', $user_ids))."')";
 		}
 		
 		#
