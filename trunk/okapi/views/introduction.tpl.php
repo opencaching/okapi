@@ -147,7 +147,8 @@ parameters required for the method to run):</p>
 			</li>
 			<li><b>jsonp</b> - <a href='http://en.wikipedia.org/wiki/JSONP'>JSONP</a> format, if
 			you choose this one, you have to specify the <b>callback</b> parameter,</li>
-			<li><b>xmlmap</b> - XML format. This is produced by mapping JSON datatypes to XML elements.
+			<li class='deprecated'><b>xmlmap</b> - deprecated (<a href='http://code.google.com/p/opencaching-api/issues/detail?id=128'>why?</a>),</li>
+			<li><b>xmlmap2</b> - XML format. This is produced by mapping JSON datatypes to XML elements.
 			Keep in mind, that XML format is larger than JSON and it takes more time to generate
 			and parse. Try to use JSON when it's possible.</li>
 		</ul>

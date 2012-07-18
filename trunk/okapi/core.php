@@ -1123,7 +1123,7 @@ class Okapi
 		}
 		$format = $request->get_parameter('format');
 		if ($format == null) $format = 'json';
-		if (!in_array($format, array('json', 'jsonp', 'xmlmap')))
+		if (!in_array($format, array('json', 'jsonp', 'xmlmap', 'xmlmap2')))
 			throw new InvalidParam('format', "'$format'");
 		$callback = $request->get_parameter('callback');
 		if ($callback && $format != 'jsonp')
@@ -1148,10 +1148,23 @@ class Okapi
 		}
 		elseif ($format == 'xmlmap')
 		{
+			# Deprecated (see issue 128). Keeping this for backward-compatibility.
 			$response = new OkapiHttpResponse();
 			$response->content_type = "text/xml; charset=utf-8";
 			$response->body = self::xmlmap_dumps($object);
 			return $response;
+		}
+		elseif ($format == 'xmlmap2')
+		{
+			$response = new OkapiHttpResponse();
+			$response->content_type = "text/xml; charset=utf-8";
+			$response->body = self::xmlmap2_dumps($object);
+			return $response;
+		}
+		else
+		{
+			# Should not happen (as we do a proper check above).
+			throw new Exception();
 		}
 	}
 	
@@ -1209,15 +1222,80 @@ class Okapi
 		}
 		else
 		{
+			# That's a bug.
 			throw new Exception("Cannot encode as xmlmap: " + print_r($obj, true));
 		}
 	}
+
+	private static function _xmlmap2_add(&$chunks, &$obj, $key)
+	{
+		$attrs = ($key !== null) ? " key=\"".self::xmlentities($key)."\"" : "";
+		if (is_string($obj))
+		{
+			$chunks[] = "<string$attrs>";
+			$chunks[] = self::xmlentities($obj);
+			$chunks[] = "</string>";
+		}
+		elseif (is_int($obj))
+		{
+			$chunks[] = "<number$attrs>$obj</number>";
+		}
+		elseif (is_float($obj))
+		{
+			$chunks[] = "<number$attrs>$obj</number>";
+		}
+		elseif (is_bool($obj))
+		{
+			$chunks[] = $obj ? "<boolean$attrs>true</boolean>" : "<boolean$attrs>false</boolean>";
+		}
+		elseif (is_null($obj))
+		{
+			$chunks[] = "<null$attrs/>";
+		}
+		elseif (is_array($obj))
+		{
+			# Have to check if this is associative or not! Shit. I hate PHP.
+			if (array_keys($obj) === range(0, count($obj) - 1))
+			{
+				# Not assoc.
+				$chunks[] = "<array$attrs>";
+				foreach ($obj as &$item_ref)
+				{
+					self::_xmlmap2_add($chunks, $item_ref, null);
+				}
+				$chunks[] = "</array>";
+			}
+			else
+			{
+				# Assoc.
+				$chunks[] = "<object$attrs>";
+				foreach ($obj as $key => &$item_ref)
+				{
+					self::_xmlmap2_add($chunks, $item_ref, $key);
+				}
+				$chunks[] = "</object>";
+			}
+		}
+		else
+		{
+			# That's a bug.
+			throw new Exception("Cannot encode as xmlmap2: " + print_r($obj, true));
+		}
+	}
 	
-	/** Return the object in a serialized version, in the "xmlmap" format. */
+	/** Return the object in a serialized version, in the (deprecated) "xmlmap" format. */
 	public static function xmlmap_dumps(&$obj)
 	{
 		$chunks = array();
 		self::_xmlmap_add($chunks, $obj);
+		return implode('', $chunks);
+	}
+
+	/** Return the object in a serialized version, in the "xmlmap2" format. */
+	public static function xmlmap2_dumps(&$obj)
+	{
+		$chunks = array();
+		self::_xmlmap2_add($chunks, $obj, null);
 		return implode('', $chunks);
 	}
 	
