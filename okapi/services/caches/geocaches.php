@@ -407,11 +407,11 @@ class WebService
 			foreach ($results as &$result_ref)
 				$result_ref['latest_logs'] = array();
 			
-			# Get log IDs and dates. Sort in groups. Filter out latest ones. This is the fastest
+			# Get all log IDs with dates. Sort in groups. Filter out latest ones. This is the fastest
 			# technique I could think of...
 			
 			$rs = Db::query("
-				select cache_id, id
+				select cache_id, id, date
 				from cache_logs
 				where
 					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
@@ -423,11 +423,17 @@ class WebService
 				# User wants some of the latest logs.
 				$tmp = array();
 				while ($row = mysql_fetch_assoc($rs))
-					$tmp[$row['cache_id']][] = $row['id'];
-				foreach ($tmp as $cache_key => &$logids_ref)
+					$tmp[$row['cache_id']][] = $row;
+				foreach ($tmp as $cache_key => &$rowslist_ref)
 				{
-					rsort($logids_ref);
-					$logids = array_merge($logids, array_slice($logids_ref, 0, $lpc));
+					usort($rowslist_ref, function($rowa, $rowb) {
+						# (reverse order by date)
+						return ($rowa['date'] < $rowb['date']) ? 1 : (($rowa['date'] == $rowb['date']) ? 0 : -1);
+					});
+					for ($i = 0; $i < min(count($rowslist_ref), $lpc); $i++)
+					{
+						$logids[] = $rowslist_ref[$i]['id'];
+					}
 				}
 			}
 			else
@@ -447,7 +453,7 @@ class WebService
 					cl.id in ('".implode("','", array_map('mysql_real_escape_string', $logids))."')
 					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "cl.deleted = 0" : "true")."
 					and cl.user_id = u.user_id
-				order by cl.cache_id, cl.id desc
+				order by cl.cache_id, cl.date desc
 			");
 			$cachelogs = array();
 			while ($row = mysql_fetch_assoc($rs))
