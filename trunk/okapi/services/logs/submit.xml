@@ -52,7 +52,7 @@
 	</opt>
 	<opt name='rating'>
 		<p>An integer in range between 1 and 5 - user's optional rating of a found cache.</p>
-		<p>Important: <b>logtype</b> has to be "Found it" in order to use the <b>rating</b> argument.</p>
+		<p>Important: <b>logtype</b> has to be "Found it" in order to use this argument.</p>
 		<p>Note: You should allow your user to <b>not</b> rate a found cache.</p>
 		<p>Note: Currently, some OC installations do not support cache ratings. On such installations
 		user's rating will be <b>ignored</b> (if you include the rating, log entry will be posted
@@ -60,7 +60,7 @@
 	</opt>
 	<opt name='recommend' default='false'>
 		<p>Set to <b>true</b> if the user wants to recommend this cache.</p>
-		<p>Important: <b>logtype</b> has to be "Found it" in order to use the <b>rating</b> argument.</p>
+		<p>Important: <b>logtype</b> has to be "Found it" in order to use this argument.</p>
 		<p>Recommending may only succeed when the user meets certain criteria
 		set on him by the OC site. If criteria are not met, the request will
 		end with user error (HTTP 200, success=false).</p>
@@ -68,13 +68,12 @@
 	<!--
 	<opt name='needs_maintenance' default='false'>
 		<p>Set to <b>true</b> if the user thinks that the cache needs some special attension
-		of its owner.</p>
-		<p>Note: Depending on OC installation and user's log entry type, OKAPI may actually publish
-		two separate log entries when you check this flag (one of them with empty comment).
-		Even then, you will still receive only one UUID reference (pointing to one of those entries).
-		Moreover, on some OC servers this flag might be <b>completely ignored</b>
-		(just some OC servers support this feature). Users should describe the need
-		for maintenance in their comments.</p>
+		of its owner. Users should describe the reason for maintenance in their comments.</p>
+		<p>Note: Depending on OC installation and user's log entry type, OKAPI may actually
+		publish two separate log entries when you check this flag (one of them with empty
+		comment). Even then, you will still receive only one UUID reference (pointing to
+		only one of those entries). Moreover, on some OC servers this flag might be
+		<b>completely ignored</b> (not all OC servers support this feature).</p>
 	</opt>
 	-->
 	<common-format-params/>
