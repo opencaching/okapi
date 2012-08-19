@@ -9,12 +9,12 @@ $m = $vars['method'];
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title><?= $m['brief_description'] ?> - OKAPI Reference</title>
-		<link rel="stylesheet" href="/okapi/static/common.css?<?= $vars['okapi_rev'] ?>">
+		<link rel="stylesheet" href="<?= $vars['okapi_base_url'] ?>static/common.css?<?= $vars['okapi_rev'] ?>">
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
 			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
 		</script>
-		<script src='/okapi/static/common.js?<?= $vars['okapi_rev'] ?>'></script>
+		<script src='<?= $vars['okapi_base_url'] ?>static/common.js?<?= $vars['okapi_rev'] ?>'></script>
 	</head>
 	<body class='api'>
 		<div class='okd_mid'>
@@ -35,7 +35,7 @@ $m = $vars['method'];
 								<td class='precaption' colspan='3'>
 									<table><tr>
 										<td>Minimum Authentication: <span class='level level<?= $m['auth_options']['min_auth_level'] ?>'>Level <?= $m['auth_options']['min_auth_level'] ?></span></td>
-										<td>(see <a href='/okapi/introduction#auth_level'>Authentication Levels</a>)</td>
+										<td>(see <a href='<?= $vars['okapi_base_url'] ?>introduction#auth_level'>Authentication Levels</a>)</td>
 									</tr></table>
 								</td>
 							</tr>

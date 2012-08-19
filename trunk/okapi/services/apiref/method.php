@@ -55,9 +55,10 @@ class WebService
 		if (!isset($options['min_auth_level']))
 			throw new Exception("Method $methodname is missing a required 'min_auth_level' option!");
 		$docs = simplexml_load_string(OkapiServiceRunner::docs($methodname));
+		$exploded = explode("/", $methodname);
 		$result = array(
 			'name' => $methodname,
-			'short_name' => end(explode("/", $methodname)),
+			'short_name' => end($exploded),
 			'ref_url' => $GLOBALS['absolute_server_URI']."okapi/$methodname.html",
 			'auth_options' => array(
 				'min_auth_level' => $options['min_auth_level'],

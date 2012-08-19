@@ -14,7 +14,7 @@ class OkapiMenu
 {
 	private static function link($current_path, $link_path, $link_name)
 	{
-		return "<a href='/okapi/$link_path'".(($current_path == $link_path)
+		return "<a href='".$GLOBALS['absolute_server_URI']."okapi/$link_path'".(($current_path == $link_path)
 			? " class='selected'" : "").">$link_name</a><br>";
 	}
 	

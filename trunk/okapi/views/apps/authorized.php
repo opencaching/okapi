@@ -41,6 +41,7 @@ class View
 		}
 		
 		$vars = array(
+			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 			'token' => $token,
 			'verifier' => $verifier,
 			'site_name' => Okapi::get_normalized_site_name()

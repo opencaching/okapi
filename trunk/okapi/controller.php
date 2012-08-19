@@ -60,11 +60,11 @@ class OkapiScriptEntryPointController
 		if (strpos($uri, '?') !== false)
 			$uri = substr($uri, 0, strpos($uri, '?'));
 		
-		# Check if REQUEST_URI contains scheme and domain, if it does, chop it off.
-		# This sometimes happens, but I don't really understand why. See here for more info:
+		# Chop off everything before "/okapi/". This should work for okay for most "weird"
+		# server configurations. It will also address a more subtle issue described here:
 		# http://stackoverflow.com/questions/8040461/request-uri-unexpectedly-contains-fqdn
 		
-		if ((strpos($uri, "http") === 0) && (strpos($uri, "/okapi/") !== false))
+		if (strpos($uri, "/okapi/") !== false)
 			$uri = substr($uri, strpos($uri, "/okapi/"));
 		
 		# Make sure we're in the right directory (.htaccess should make sure of that).
