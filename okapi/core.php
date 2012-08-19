@@ -139,22 +139,30 @@ class OkapiExceptionHandler
 				print "Let's cut to the chase then:";
 				print "\n\n".$exception_info;
 			}
-			$admin_email = implode(", ", get_admin_emails());
-			$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
-			mail(
-				$admin_email,
-				"OKAPI Method Error - ".(
-					isset($GLOBALS['absolute_server_URI'])
-					? $GLOBALS['absolute_server_URI'] : "unknown location"
-				),
-				"OKAPI caught the following exception while executing API method request.\n".
-				"This is an error in OUR code and should be fixed. Please contact the\n".
-				"developer of the module that threw this error. Thanks!\n\n".
-				$exception_info,
-				"Content-Type: text/plain; charset=utf-8\n".
-				"From: OKAPI <$sender_email>\n".
-				"Reply-To: $sender_email\n"
-				);
+			if (class_exists("okapi\\Settings") && (Settings::get('DEBUG_PREVENT_EMAILS')))
+			{
+				# Sending emails was blocked on admin's demand.
+				# This is possible only on development environment.
+			}
+			else
+			{
+				$admin_email = implode(", ", get_admin_emails());
+				$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
+				mail(
+					$admin_email,
+					"OKAPI Method Error - ".(
+						isset($GLOBALS['absolute_server_URI'])
+						? $GLOBALS['absolute_server_URI'] : "unknown location"
+					),
+					"OKAPI caught the following exception while executing API method request.\n".
+					"This is an error in OUR code and should be fixed. Please contact the\n".
+					"developer of the module that threw this error. Thanks!\n\n".
+					$exception_info,
+					"Content-Type: text/plain; charset=utf-8\n".
+					"From: OKAPI <$sender_email>\n".
+					"Reply-To: $sender_email\n"
+					);
+			}
 		}
 	}
 	
@@ -661,17 +669,35 @@ class OkapiLock
 	
 	private function __construct($name)
 	{
-		$lockfile = Okapi::get_var_dir()."/okapi-lock-".$name;
-		if (!file_exists($lockfile))
+		if (Settings::get('DEBUG_PREVENT_SEMAPHORES'))
 		{
-			$fp = fopen($lockfile, "wb");
-			fclose($fp);
+			# Using semaphores is forbidden on this server by its admin.
+			# This is possible only on development environment.
+			$this->lock = null;
 		}
-		$this->lock = sem_get(fileinode($lockfile));
+		else
+		{
+			$lockfile = Okapi::get_var_dir()."/okapi-lock-".$name;
+			if (!file_exists($lockfile))
+			{
+				$fp = fopen($lockfile, "wb");
+				fclose($fp);
+			}
+			$this->lock = sem_get(fileinode($lockfile));
+		}
 	}
 	
-	public function acquire() { sem_acquire($this->lock); }
-	public function release() { sem_release($this->lock); } 
+	public function acquire()
+	{
+		if ($this->lock !== null)
+			sem_acquire($this->lock);
+	}
+	
+	public function release()
+	{
+		if ($this->lock !== null)
+			sem_release($this->lock);
+	}
 }
 
 /** Container for various OKAPI functions. */
@@ -732,6 +758,12 @@ class Okapi
 	/** Send an email message from OKAPI to the given recipients. */
 	public static function mail_from_okapi($email_addresses, $subject, $message)
 	{
+		if (class_exists("okapi\\Settings") && (Settings::get('DEBUG_PREVENT_EMAILS')))
+		{
+			# Sending emails was blocked on admin's demand.
+			# This is possible only on development environment.
+			return;
+		}
 		if (!is_array($email_addresses))
 			$email_addresses = array($email_addresses);
 		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
