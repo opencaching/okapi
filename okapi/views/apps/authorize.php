@@ -53,6 +53,7 @@ class View
 			# by the user, who knows nothing on tokens and OAuth. Let's be nice then!
 			
 			$vars = array(
+				'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 				'token' => $token,
 				'token_expired' => true,
 				'site_name' => Okapi::get_normalized_site_name(),
@@ -140,6 +141,7 @@ class View
 			{
 				# Not yet authorized. Display an authorization request.
 				$vars = array(
+					'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 					'token' => $token,
 					'site_name' => Okapi::get_normalized_site_name(),
 					'locales' => $locales,

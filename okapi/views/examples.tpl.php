@@ -3,18 +3,18 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>OKAPI Examples</title>
-		<link rel="stylesheet" href="/okapi/static/common.css?<?= $vars['okapi_rev'] ?>">
-		<link type="text/css" rel="stylesheet" href="/okapi/static/syntax_highlighter/SyntaxHighlighter.css"></link>
+		<link rel="stylesheet" href="<?= $vars['okapi_base_url'] ?>static/common.css?<?= $vars['okapi_rev'] ?>">
+		<link type="text/css" rel="stylesheet" href="<?= $vars['okapi_base_url'] ?>static/syntax_highlighter/SyntaxHighlighter.css"></link>
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
 			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
 		</script>
-		<script src='/okapi/static/common.js?<?= $vars['okapi_rev'] ?>'></script>
-		<script language="javascript" src="/okapi/static/syntax_highlighter/shCore.js"></script>
-		<script language="javascript" src="/okapi/static/syntax_highlighter/shBrushPhp.js"></script>
+		<script src='<?= $vars['okapi_base_url'] ?>static/common.js?<?= $vars['okapi_rev'] ?>'></script>
+		<script language="javascript" src="<?= $vars['okapi_base_url'] ?>static/syntax_highlighter/shCore.js"></script>
+		<script language="javascript" src="<?= $vars['okapi_base_url'] ?>static/syntax_highlighter/shBrushPhp.js"></script>
 		<script language="javascript">
 			$(function() {
-				dp.SyntaxHighlighter.ClipboardSwf = '/okapi/static/syntax_highlighter/clipboard.swf';
+				dp.SyntaxHighlighter.ClipboardSwf = '<?= $vars['okapi_base_url'] ?>static/syntax_highlighter/clipboard.swf';
 				dp.SyntaxHighlighter.HighlightAll('code');
 			});
 		</script>
@@ -120,14 +120,14 @@ There are some limitations of both these techniques though.</p>
 
 <p>This example does the following:</p>
 <ul>
-	<li>Pulls the <a href='/okapi/services/apisrv/installations.html'>list of all OKAPI installations</a>
+	<li>Pulls the <a href='<?= $vars['okapi_base_url'] ?>services/apisrv/installations.html'>list of all OKAPI installations</a>
 	from one of the OKAPI servers and displays it in a select-box. Note, that this method does not
 	require Consumer Key (Level 0 Authentication).</li>
 	<li>Asks you to share your location (modern browser can do that).</li>
 	<li>Retrieves a list of nearest geocaches. (This time, it uses the Consumer Key you have to supply.)</li>
 </ul>
 
-<p><a href='/okapi/static/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>
+<p><a href='<?= $vars['okapi_base_url'] ?>static/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>
 
 <h2>Comments</h2>
 

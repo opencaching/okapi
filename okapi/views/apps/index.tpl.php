@@ -22,8 +22,8 @@
 	<body>
 
 		<div class='okapi'>
-			<a href='/okapi/'><img src='/okapi/static/logo-xsmall.gif' alt='OKAPI' style='float: right; margin-left: 10px;'></a>
-			<a href='/'><img src="/okapi/static/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
+			<a href='<?= $vars['okapi_base_url'] ?>'><img src='<?= $vars['okapi_base_url'] ?>static/logo-xsmall.gif' alt='OKAPI' style='float: right; margin-left: 10px;'></a>
+			<a href='/'><img src="<?= $vars['okapi_base_url'] ?>static/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
 			<a class='opencaching'><?= $vars['site_name'] ?></a>
 			
 			<h1 style='clear: both'><?= _("Your external applications") ?></h1>
@@ -42,7 +42,7 @@
 							<? } else { ?>
 								<?= htmlspecialchars($app['name'], ENT_QUOTES, 'utf-8') ?>
 							<? } ?>
-							- <a href='/okapi/apps/revoke_access?consumer_key=<?= $app['key'] ?>'><?= _("remove") ?></a>
+							- <a href='<?= $vars['okapi_base_url'] ?>apps/revoke_access?consumer_key=<?= $app['key'] ?>'><?= _("remove") ?></a>
 						</li>
 					<? } ?>
 				</ul>
@@ -51,7 +51,7 @@
 					<p>Thanks to the <a href='%s'>OKAPI Framework</a> you can grant external applications
 					access to your <b>%s</b> account. Currently no applications are authorized to act
 					on your behalf. Once you start using external OpenCaching applications, they will appear here.</p>
-				"), "/okapi/", $vars['site_name']) ?>
+				"), $vars['okapi_base_url'], $vars['site_name']) ?>
 			<? } ?>
 		</div>
 

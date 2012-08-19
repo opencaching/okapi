@@ -39,6 +39,7 @@ class View
 			order by c.name
 		");
 		$vars = array();
+		$vars['okapi_base_url'] = $GLOBALS['absolute_server_URI']."okapi/";
 		$vars['site_name'] = Okapi::get_normalized_site_name();
 		$vars['apps'] = array();
 		while ($row = mysql_fetch_assoc($rs))

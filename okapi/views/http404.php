@@ -14,6 +14,7 @@ class View
 		require_once 'menu.inc.php';
 		
 		$vars = array(
+			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
 			'menu' => OkapiMenu::get_menu_html(),
 			'installations' => OkapiMenu::get_installations(),
 			'okapi_rev' => Okapi::$revision,

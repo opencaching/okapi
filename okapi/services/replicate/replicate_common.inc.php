@@ -333,7 +333,7 @@ class ReplicateCommon
 		
 		$revision = self::get_revision();
 		$generated_at = date('c', time());
-		$dir = Okapi::getDynBasePath()."/okapi-db-dump";
+		$dir = Okapi::get_var_dir()."/okapi-db-dump";
 		$i = 1;
 		$json_files = array();
 		
@@ -440,12 +440,12 @@ class ReplicateCommon
 		# Move the archive one directory upwards, replacing the previous one.
 		# Remove the temporary directory.
 		
-		shell_exec("mv -f $dir/$dumpfilename ".Okapi::getDynBasePath());
+		shell_exec("mv -f $dir/$dumpfilename ".Okapi::get_var_dir());
 		shell_exec("rmdir $dir");
 		
 		# Update the database info.
 		
-		$metadata['meta']['filepath'] = Okapi::getDynBasePath().'/'.$dumpfilename;
+		$metadata['meta']['filepath'] = Okapi::get_var_dir().'/'.$dumpfilename;
 		$metadata['meta']['content_type'] = ($use_bzip2 ? "application/octet-stream" : "application/x-gzip");
 		$metadata['meta']['public_filename'] = 'okapi-dump-r'.$metadata['revision'].'.tar.'.($use_bzip2 ? "bz2" : "gz");
 		$metadata['meta']['uncompressed_size'] = $size;

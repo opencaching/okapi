@@ -101,14 +101,22 @@ final class Settings
 		
 		self::$SETTINGS = self::$DEFAULT_SETTINGS;
 		
-		if (!isset($GLOBALS['OKAPI_SETTINGS']))
-			return;
+		$ref = null;
+		if (isset($GLOBALS['OKAPI_SETTINGS']))
+		{
+			$ref = &$GLOBALS['OKAPI_SETTINGS'];
+		}
+		else
+		{
+			throw new Exception("Could not locate OKAPI settings! Put your settings array in ".
+				"\$GLOBALS['OKAPI_SETTINGS']]. Settings may be empty, but must exist.");
+		}
 
 		foreach (self::$SETTINGS as $key => $_)
 		{
-			if (isset($GLOBALS['OKAPI_SETTINGS'][$key]))
+			if (isset($ref[$key]))
 			{
-				self::$SETTINGS[$key] = $GLOBALS['OKAPI_SETTINGS'][$key];
+				self::$SETTINGS[$key] = $ref[$key];
 				self::verify($key, self::$SETTINGS[$key]);
 			}
 		}
@@ -161,6 +169,6 @@ final class Settings
 	
 	public static function describe_settings()
 	{
-		return print_f(self::$SETTINGS, true);
+		return print_r(self::$SETTINGS, true);
 	}
 }

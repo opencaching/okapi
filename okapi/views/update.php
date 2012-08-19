@@ -68,7 +68,7 @@ class View
 		if ($current_ver == 0 && ((!isset($_GET['install'])) || ($_GET['install'] != 'true')))
 		{
 			self::out("Current OKAPI settings are:\n\n".Settings::describe_settings()."\n\n".
-				"Make sure they are correct, then append '&install=true' to your query.");
+				"Make sure they are correct, then append '?install=true' to your query.");
 			return;
 		}
 		elseif ($max_ver == $current_ver)

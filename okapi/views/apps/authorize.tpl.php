@@ -29,7 +29,7 @@
 	<body>
 
 		<div class='okapi'>
-			<a href='/okapi/'><img src='/okapi/static/logo-xsmall.gif' alt='OKAPI' style='float: right; margin-left: 10px;'></a>
+			<a href='<?= $vars['okapi_base_url'] ?>'><img src='<?= $vars['okapi_base_url'] ?>static/logo-xsmall.gif' alt='OKAPI' style='float: right; margin-left: 10px;'></a>
 			<a href='/'><img src="/images/oc_logo.png" alt='OpenCaching' style='float: left; margin-right: 10px'></a>
 			<a class='opencaching'><?= $vars['site_name'] ?></a>
 			
@@ -60,7 +60,7 @@
 					If you allow this request application will be able to access all methods delivered
 					by the OKAPI Framework, i.e. post log entries on geocaches in your name.
 					You can revoke this permission at any moment.</p>
-				"), "/okapi/apps/", "/okapi/") ?>
+				"), $vars['okapi_base_url']."apps/", <?= $vars['okapi_base_url'] ?>) ?>
 			<? } ?>
 		</div>
 
