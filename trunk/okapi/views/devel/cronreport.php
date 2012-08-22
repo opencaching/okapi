@@ -65,9 +65,14 @@ class View
 			print "NEVER";
 		print " (crontab_check_counter: ".Cache::get('crontab_check_counter').").\n";
 		print "clog_revisions_daily: ";
-		foreach (Cache::get('clog_revisions_daily') as $time => $rev)
-			print "$rev ";
-		print "\n";
+		if (Cache::get('clog_revisions_daily'))
+		{
+			foreach (Cache::get('clog_revisions_daily') as $time => $rev)
+				print "$rev ";
+			print "\n";
+		} else {
+			print "NULL\n";
+		}
 		$response->body = ob_get_clean();
 		return $response;
 	}
