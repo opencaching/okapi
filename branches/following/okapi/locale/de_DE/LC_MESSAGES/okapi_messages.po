@@ -145,7 +145,7 @@ msgstr ""
 #: c:\source\oc\server-3.0\htdocs\okapi/services/logs/submit.php:215
 msgid "You are the owner of this cache. You may submit \"Comments\" only!"
 msgstr ""
-"Als Besitzer des Caches kannsts du nur Hinweise loggen, keine Funde oder "
+"Als Besitzer des Caches kannst du nur Hinweise loggen, keine Funde oder "
 "Nichtfunde."
 
 #: c:\source\oc\server-3.0\htdocs\okapi/services/logs/submit.php:233
