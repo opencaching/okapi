@@ -493,4 +493,40 @@ class View
 				and c.status > 3
 		");
 	}
+
+	private static function ver60()
+	{
+		# Turns out there can be only one valid TIMESTAMP field in one table!
+		# Fields added ver53-ver59 don't work properly *if* ver51-ver52 had been run.
+		#
+		# We'll check if ver51-ver52 had been run and try to withdraw it AND
+		# *rerun* missing ver53-ver59 updates.
+		#
+		$row = Db::select_row("show create table cache_logs");
+		$stmt = $row["Create Table"];
+		if (strpos($stmt, "timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'") > 0)
+		{
+			Db::execute("alter table cache_logs modify column last_modified datetime not null;");
+			Db::execute("alter table cache_logs modify column okapi_syncbase timestamp not null;");
+			Db::execute("update cache_logs set okapi_syncbase=now() where okapi_syncbase='0000-00-00 00:00:00';");
+			if (Settings::get('OC_BRANCH') == 'oc.de')
+			{
+				Db::execute("alter table cache_logs_archived modify column last_modified datetime not null;");
+				Db::execute("alter table cache_logs_archived modify column okapi_syncbase timestamp not null;");
+				Db::execute("update cache_logs_archived set okapi_syncbase=now() where okapi_syncbase='0000-00-00 00:00:00';");
+			}
+		}
+	}
+	
+	private static function ver61() { Db::execute("alter table cache_logs add key okapi_syncbase (okapi_syncbase);"); }
+	
+	private static function ver62()
+	{
+		if (Settings::get('OC_BRANCH') == 'oc.pl')
+		{
+			# OCPL does not have cache_logs_archived table.
+			return;
+		}
+		Db::execute("alter table cache_logs_archived add key okapi_syncbase (okapi_syncbase);");
+	}
 }
