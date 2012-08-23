@@ -50,7 +50,7 @@ class ReplicateCommon
 	 */
 	private static function get_diff($old, $new)
 	{
-		if ($old === null)
+		if (!$old)
 			return $new;
 		$changed_keys = array();
 		foreach ($new as $key => $value)
