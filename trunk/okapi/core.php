@@ -96,7 +96,7 @@ class OkapiExceptionHandler
 			else
 				header("HTTP/1.0 401 Unauthorized");
 			header("Access-Control-Allow-Origin: *");
-			header("Content-Type: text/plain; charset=utf-8");
+			header("Content-Type: application/json; charset=utf-8");
 			
 			print $e->getOkapiJSON();
 		}
@@ -108,7 +108,7 @@ class OkapiExceptionHandler
 			
 			header("HTTP/1.0 400 Bad Request");
 			header("Access-Control-Allow-Origin: *");
-			header("Content-Type: text/plain; charset=utf-8");
+			header("Content-Type: application/json; charset=utf-8");
 			
 			print $e->getOkapiJSON();
 		}
