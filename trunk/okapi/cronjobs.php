@@ -251,7 +251,7 @@ class CacheCleanupCronJob extends Cron5Job
 			delete from okapi_cache
 			where expires < now()
 		");
-		Db::execute("optimize table okapi_cache");
+		Db::query("optimize table okapi_cache");
 	}
 }
 
@@ -424,7 +424,7 @@ class ChangeLogCleanerJob extends Cron5Job
 			where id < '".mysql_real_escape_string($new_min_revision)."'
 		");
 		Cache::set($cache_key, $new_data, 10*86400);
-		Db::execute("optimize table okapi_clog");
+		Db::query("optimize table okapi_clog");
 	}
 }
 
