@@ -241,16 +241,17 @@ class OAuthCleanupCronJob extends PrerequestCronJob
 	}
 }
 
-/** Deletes all expired cache elements, once per hour. */
+/** Deletes all expired cache elements, once per day. */
 class CacheCleanupCronJob extends Cron5Job
 {
-	public function get_period() { return 3600; } # 1 hour
+	public function get_period() { return 86400; }
 	public function execute()
 	{
 		Db::execute("
 			delete from okapi_cache
 			where expires < now()
 		");
+		Db::execute("optimize table okapi_cache");
 	}
 }
 
@@ -423,6 +424,7 @@ class ChangeLogCleanerJob extends Cron5Job
 			where id < '".mysql_real_escape_string($new_min_revision)."'
 		");
 		Cache::set($cache_key, $new_data, 10*86400);
+		Db::execute("optimize table okapi_clog");
 	}
 }
 
