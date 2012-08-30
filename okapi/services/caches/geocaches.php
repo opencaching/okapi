@@ -165,7 +165,7 @@ class WebService
 
 		$results = array();
 		$cacheid2wptcode = array();
-		$onwer_ids = array();
+		$owner_ids = array();
 		while ($row = mysql_fetch_assoc($rs))
 		{
 			$entry = array();
@@ -243,7 +243,7 @@ class WebService
 		
 		# owner
 		
-		if (in_array('owner', $fields))
+		if (in_array('owner', $fields) && (count($results) > 0))
 		{
 			$rs = Db::query("
 				select user_id, uuid, username
