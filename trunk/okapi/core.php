@@ -1614,6 +1614,13 @@ abstract class OkapiRequest
 	 */
 	public abstract function get_parameter($name);
 	
+	/**
+	 * Return the list of all request parameters. You should use this method
+	 * ONLY when you use <import-params/> in your documentation and you want
+	 * to pass all unknown parameters onto the other method.
+	 */
+	public abstract function get_all_parameters_including_unknown();
+	
 	/** Return true, if this requests is to be logged as HTTP request in okapi_stats. */
 	public abstract function is_http_request();
 }
@@ -1636,6 +1643,13 @@ class OkapiInternalRequest extends OkapiRequest
 	public $i_want_okapi_response = false;
 	
 	/**
+	 * Set this to true, for some method to allow you to set higher "limit"
+	 * parameter than usually allowed. This should be used ONLY by trusted,
+	 * fast and *cacheable* code!
+	 */
+	public $skip_limits = false;
+	
+	/**
 	 * You may use "null" values in parameters if you want them skipped
 	 * (null-ized keys will be removed from parameters).
 	 */
@@ -1655,6 +1669,11 @@ class OkapiInternalRequest extends OkapiRequest
 			return $this->parameters[$name];
 		else
 			return null;
+	}
+	
+	public function get_all_parameters_including_unknown()
+	{
+		return $this->parameters;
 	}
 	
 	public function is_http_request() { return $this->perceive_as_http_request; }
@@ -1813,6 +1832,11 @@ class OkapiHttpRequest extends OkapiRequest
 		if (is_array($value))
 			throw new InvalidParam($name, "Make sure you are using '$name' no more than ONCE in your URL.");
 		return $value;
+	}
+	
+	public function get_all_parameters_including_unknown()
+	{
+		return $this->request->get_parameters();
 	}
 	
 	public function is_http_request() { return true; }

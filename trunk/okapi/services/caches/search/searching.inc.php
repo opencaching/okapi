@@ -175,7 +175,7 @@ class SearchAssistant
 							$min = $divisors[$min - 1];
 							$max = $divisors[$max];
 							$where_conds[] = "$X_SCORE between $min and $max";
-							$where_conds[] = "$X_VOTES > 3";
+							$where_conds[] = "$X_VOTES >= 3";
 						}
 						else
 						{
@@ -331,7 +331,7 @@ class SearchAssistant
 		if ($limit == null) $limit = "100";
 		if (!is_numeric($limit))
 			throw new InvalidParam('limit', "'$limit'");
-		if ($limit < 1 || $limit > 500)
+		if ($limit < 1 || (($limit > 500) && (!$request->skip_limits)))
 			throw new InvalidParam('limit', "Has to be between 1 and 500.");
 		
 		#
@@ -342,7 +342,7 @@ class SearchAssistant
 		if ($offset == null) $offset = "0";
 		if (!is_numeric($offset))
 			throw new InvalidParam('offset', "'$offset'");
-		if ($offset + $limit > 500)
+		if (($offset + $limit > 500) && (!$request->skip_limits))
 			throw new BadRequest("The sum of offset and limit may not exceed 500.");
 		if ($offset < 0 || $offset > 499)
 			throw new InvalidParam('offset', "Has to be between 0 and 499.");
