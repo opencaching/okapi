@@ -118,6 +118,12 @@
 		<p>User UUID. If given, the response will only include geocaches not found by
 		the given user.</p>
 	</opt>
+	<opt name='exclude_ignored' default='false'>
+		<p><b>Notice:</b> This parameter may be used only for requests signed
+		with an Access Token (you will need to use <b>Level 3</b> Authentication).</p>
+		<p>Boolean. If set to <b>true</b>, caches which the user has marked as ignored
+		will not be included in the result.</p>
+	</opt>
 	<opt name='exclude_my_own' default='false'>
 		<p><b>Notice:</b> This parameter may be used only for requests signed
 		with an Access Token (you will need to use <b>Level 3</b> Authentication).

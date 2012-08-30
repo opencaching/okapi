@@ -295,6 +295,27 @@ class SearchAssistant
 		}
 		
 		#
+		# exclude_ignored
+		#
+		
+		if ($tmp = $request->get_parameter('exclude_ignored'))
+		{
+			if ($request->token == null)
+				throw new InvalidParam('exclude_ignored', "Might be used only for requests signed with an Access Token.");
+			if (!in_array($tmp, array('true', 'false')))
+				throw new InvalidParam('exclude_ignored', "'$tmp'");
+			if ($tmp == 'true') {
+				$ignored_cache_ids = Db::select_column("
+					select cache_id
+					from cache_ignore
+					where user_id = '".mysql_real_escape_string($request->token->user_id)."'
+				");
+				$where_conds[] = "cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $ignored_cache_ids))."')";
+			}
+		}
+		
+		
+		#
 		# exclude_my_own
 		#
 		
