@@ -258,7 +258,7 @@ class WebService
 			if ($cache['rating'] >= 4.2)
 			{
 				if (($cache['founds'] > 6) && (($cache['recommendations'] / $cache['founds']) > 0.3)) {
-					$icon = self::get_image("grin");
+					$icon = self::get_image("rating_grin");
 					imagecopy($im, $icon, $pt['x'] - 7 - 6, $pt['y'] - $center_y - 8, 0, 0, 16, 16);
 					$icon = self::get_image("rating_star");
 					imagecopy($im, $icon, $pt['x'] - 7 + 6, $pt['y'] - $center_y - 8, 0, 0, 16, 16);
