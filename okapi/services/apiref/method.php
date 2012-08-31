@@ -93,12 +93,25 @@ class WebService
 			$referenced_methodname = $attrs['method'];
 			$referenced_method_info = OkapiServiceRunner::call('services/apiref/method',
 				new OkapiInternalRequest(new OkapiInternalConsumer(), null, array('name' => $referenced_methodname)));
+			$skip_list = isset($attrs['skip']) ? explode("|", $attrs['skip']) : null;
 			foreach ($referenced_method_info['arguments'] as $arg)
 			{
 				if ($arg['class'] == 'common-formatting')
 					continue;
-				$arg['description'] = "<i>Inherited from <a href='".$referenced_method_info['ref_url'].
-					"'>".$referenced_method_info['name']."</a> method.</i>";
+				if ($skip_list === null)
+				{
+					$arg['description'] = "<i>Inherited from <a href='".$referenced_method_info['ref_url'].
+						"'>".$referenced_method_info['name']."</a> method.</i>";
+				}
+				elseif (in_array($arg['name'], $skip_list))
+				{
+					continue;
+				}
+				else
+				{
+					$arg['description'] = "<i>Same as in the <a href='".$referenced_method_info['ref_url'].
+						"'>".$referenced_method_info['name']."</a> method.</i>";
+				}
 				$arg['class'] = 'inherited';
 				$result['arguments'][] = $arg;
 			}
