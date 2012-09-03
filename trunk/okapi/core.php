@@ -1607,6 +1607,13 @@ abstract class OkapiRequest
 {
 	public $consumer;
 	public $token;
+
+	/**
+	 * Set this to true, for some method to allow you to set higher "limit"
+	 * parameter than usually allowed. This should be used ONLY by trusted,
+	 * fast and *cacheable* code!
+	 */
+	public $skip_limits = false;
 	
 	/**
 	 * Return request parameter, or NULL when not found. Use this instead of
@@ -1641,13 +1648,6 @@ class OkapiInternalRequest extends OkapiRequest
 	 * the actual object.
 	 */
 	public $i_want_okapi_response = false;
-	
-	/**
-	 * Set this to true, for some method to allow you to set higher "limit"
-	 * parameter than usually allowed. This should be used ONLY by trusted,
-	 * fast and *cacheable* code!
-	 */
-	public $skip_limits = false;
 	
 	/**
 	 * You may use "null" values in parameters if you want them skipped
