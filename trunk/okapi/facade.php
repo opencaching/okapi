@@ -8,8 +8,8 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiFacadeConsumer;
 use okapi\OkapiFacadeAccessToken;
 
-require_once('core.php');
-require_once('service_runner.php');
+require_once($GLOBALS['rootpath']."okapi/core.php");
+require_once($GLOBALS['rootpath']."okapi/service_runner.php");
 
 /**
  * Use this class to access OKAPI from OC code. This is the *ONLY* internal OKAPI file that is

@@ -4,6 +4,7 @@ namespace okapi;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Settings;
 use okapi\views\menu\OkapiMenu;
 
 #
@@ -14,7 +15,7 @@ use okapi\views\menu\OkapiMenu;
 # To learn more about OKAPI, see core.php.
 #
 
-$GLOBALS['rootpath'] = '../'; # this is for OC-code compatibility, OC requires this
+$GLOBALS['rootpath'] = '../'; # this is for OC-code compatibility
 $GLOBALS['no-session'] = true; # turn off OC-code session starting
 $GLOBALS['no-ob'] = true; # turn off OC-code GZIP output buffering
 
@@ -47,7 +48,7 @@ if (count(ob_list_handlers()) > 0)
 {
 	# WRTODO: Move this to some kind of cronjob, to prevent admin-spamming in case on an error.
 	throw new Exception("Output buffering started while it should not be! You have to patch you OC ".
-		"installation (probable lib/common.inc.php file). You have to check \"if ((!isset(\$GLOBALS['no-ob'])) ".
+		"installation (probably lib/common.inc.php file). You have to check \"if ((!isset(\$GLOBALS['no-ob'])) ".
 		"|| (\$GLOBALS['no-ob'] == false))\" before executing ob_start. Refer to installation docs.");
 }
 
@@ -92,7 +93,7 @@ class OkapiScriptEntryPointController
 					# Pattern matched! Moving on to the proper View...
 					
 					array_shift($matches);
-					require_once "views/$namespace.php";
+					require_once($GLOBALS['rootpath']."okapi/views/$namespace.php");
 					$response = call_user_func_array(array('\\okapi\\views\\'.
 						str_replace('/', '\\', $namespace).'\\View', 'call'), $matches);
 					if ($response)
@@ -108,7 +109,7 @@ class OkapiScriptEntryPointController
 		
 		# None of the patterns matched OR method threw the Http404 exception.
 		
-		require_once "views/http404.php";
+		require_once($GLOBALS['rootpath']."okapi/views/http404.php");
 		$response = \okapi\views\http404\View::call();
 		$response->display();
 	}

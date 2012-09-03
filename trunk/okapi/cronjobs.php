@@ -16,6 +16,7 @@ namespace okapi\cronjobs;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Settings;
 use okapi\OkapiLock;
 use okapi\OkapiExceptionHandler;
 use okapi\Db;
@@ -59,7 +60,7 @@ class CronJobController
 	 */
 	public static function run_jobs($type)
 	{
-		require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
+		require_once($GLOBALS['rootpath'].'okapi/service_runner.php');
 		
 		# We don't want other cronjobs of the same time to run simultanously.
 		$lock = OkapiLock::get('cronjobs-'.$type);
@@ -356,7 +357,7 @@ class CheckCronTab2 extends PrerequestCronJob
 				"Hello. OKAPI detected, that it's crontab is not working properly.\n".
 				"Please check your configuration or contact OKAPI developers.\n\n".
 				"This line should be present among your crontab entries:\n\n".
-				"*/5 * * * * wget -O - -q -t 1 ".$GLOBALS['absolute_server_URI']."okapi/cron5\n\n".
+				"*/5 * * * * wget -O - -q -t 1 ".Settings::get('SITE_URL')."okapi/cron5\n\n".
 				"If you're receiving this in Virtual Machine development environment, then\n".
 				"ignore it. Probably you just paused (or switched off) your VM for some time\n".
 				"(which would be considered an error in production environment)."
@@ -379,7 +380,7 @@ class ChangeLogWriterJob extends Cron5Job
 	public function get_period() { return 300; }
 	public function execute()
 	{
-		require_once 'services/replicate/replicate_common.inc.php';
+		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
 		ReplicateCommon::update_clog_table();
 	}
 }
@@ -392,7 +393,7 @@ class FulldumpGeneratorJob extends Cron5Job
 	public function get_period() { return 7*86400; }
 	public function execute()
 	{
-		require_once 'services/replicate/replicate_common.inc.php';
+		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
 		ReplicateCommon::generate_fulldump();
 	}
 }
@@ -403,7 +404,7 @@ class ChangeLogCleanerJob extends Cron5Job
 	public function get_period() { return 86400; }
 	public function execute()
 	{
-		require_once 'services/replicate/replicate_common.inc.php';
+		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
 		$max_revision = ReplicateCommon::get_revision();
 		$cache_key = 'clog_revisions_daily';
 		$data = Cache::get($cache_key);
@@ -568,7 +569,7 @@ class LocaleChecker extends Cron5Job
 	public function get_period() { return 7*86400; }
 	public function execute()
 	{
-		require_once 'locale/locales.php';
+		require_once($GLOBALS['rootpath']."okapi/locale/locales.php");
 		$required = Locales::get_required_locales();
 		$installed = Locales::get_installed_locales();
 		$missing = array();

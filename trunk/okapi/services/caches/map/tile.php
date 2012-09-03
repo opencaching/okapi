@@ -4,6 +4,7 @@ namespace okapi\services\caches\map\tile;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Settings;
 use okapi\Cache;
 use okapi\Db;
 use okapi\OkapiRequest;
@@ -75,12 +76,18 @@ class WebService
 		$e = $rect->x + $rect->width * (1.0 + $margin);
 		$params['bbox'] = "$s|$w|$n|$e";
 		
-		# Find caches.
+		# Find caches. This caching method is temporary (won't do much good).
 		
-		$internal_request = new OkapiInternalRequest($request->consumer, $request->token, $params);
-		$internal_request->skip_limits = true;
-		$response = OkapiServiceRunner::call("services/caches/search/bbox", $internal_request);
-		$cache_codes = $response['results'];
+		$cache_key = "tsp/".$request->user_id."/".md5(print_r($params, true));
+		$cache_codes = Cache::get($cache_key);
+		if ($cache_codes === null)
+		{
+			$internal_request = new OkapiInternalRequest($request->consumer, $request->token, $params);
+			$internal_request->skip_limits = true;
+			$response = OkapiServiceRunner::call("services/caches/search/bbox", $internal_request);
+			$cache_codes = $response['results'];
+			Cache::set($cache_key, $cache_codes, 5*60);
+		}
 		
 		# We will often ask for the same set of caches here. The moment I write this,
 		# "geocaches" method doesn't cache data at all (to make sure it's always fresh).
@@ -300,22 +307,18 @@ class WebService
 
 	private static function xyz_to_latlon_rect($x, $y, $zoom)
 	{
-		$debug    = false;
-		$lon      = -180; // x
-		$lonWidth = 360; // width 360
+		$lon = -180;
+		$lonWidth = 360;
 		
-		$lat       = -1;
+		$lat = -1;
 		$latHeight = 2;
 		
 		$tilesAtThisZoom = 1 << ($zoom);
-		$lonWidth        = 360.0 / $tilesAtThisZoom;
-		$lon             = -180 + ($x * $lonWidth);
-		$latHeight       = 2.0 / $tilesAtThisZoom;
-		$lat             = (($tilesAtThisZoom / 2 - $y - 1) * $latHeight);
+		$lonWidth = 360.0 / $tilesAtThisZoom;
+		$lon = -180 + ($x * $lonWidth);
+		$latHeight = 2.0 / $tilesAtThisZoom;
+		$lat = (($tilesAtThisZoom / 2 - $y - 1) * $latHeight);
 		
-		if ($debug) {
-			echo ("(uniform) lat:$lat latHt:$latHeight<br />");
-		}
 		// convert lat and latHeight to degrees in a transverse mercator projection
 		// note that in fact the coordinates go from about -85 to +85 not -90 to 90!
 		$latHeight += $lat;
@@ -324,32 +327,24 @@ class WebService
 		
 		$lat = (2 * atan(exp(PI() * $lat))) - (PI() / 2);
 		$lat *= (180 / PI());
-		
-		
-		if ($debug) {
-			echo ("pre subtract lat: $lat latHeight $latHeight<br />");
-		}
+
 		$latHeight -= $lat;
-		if ($debug) {
-			echo ("lat: $lat latHeight $latHeight<br />");
-		}
 		
 		if ($lonWidth < 0) {
-			$lon      = $lon + $lonWidth;
+			$lon = $lon + $lonWidth;
 			$lonWidth = -$lonWidth;
 		}
 		
 		if ($latHeight < 0) {
-			$lat       = $lat + $latHeight;
+			$lat = $lat + $latHeight;
 			$latHeight = -$latHeight;
 		}
 		
-		
-		$rect         = new Rectangle();
-		$rect->x      = $lon;
-		$rect->y      = $lat;
+		$rect = new Rectangle();
+		$rect->x = $lon;
+		$rect->y = $lat;
 		$rect->height = $latHeight;
-		$rect->width  = $lonWidth;
+		$rect->width = $lonWidth;
 		
 		return $rect;
 	}

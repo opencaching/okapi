@@ -180,7 +180,7 @@ class WebService
 					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
 					case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
-					case 'url': $entry['url'] = $GLOBALS['absolute_server_URI']."viewcache.php?wp=".$row['wp_oc']; break;
+					case 'url': $entry['url'] = Settings::get('SITE_URL')."viewcache.php?wp=".$row['wp_oc']; break;
 					case 'owner':
 						$owner_ids[$row['wp_oc']] = $row['user_id'];
 						/* continued later */
@@ -259,7 +259,7 @@ class WebService
 				$result_ref['owner'] = array(
 					'uuid' => $row['uuid'],
 					'username' => $row['username'],
-					'profile_url' => $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id']
+					'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
 				);
 			}
 		}
@@ -484,7 +484,7 @@ class WebService
 					'user' => array(
 						'uuid' => $row['user_uuid'],
 						'username' => $row['username'],
-						'profile_url' => $GLOBALS['absolute_server_URI']."viewprofile.php?userid=".$row['user_id'],
+						'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id'],
 					),
 					'type' => Okapi::logtypeid2name($row['type']),
 					'comment' => $row['text']
@@ -724,7 +724,7 @@ class WebService
 	
 	public static function get_cache_attribution_note($cache_id, $lang)
 	{
-		$site_url = $GLOBALS['absolute_server_URI'];
+		$site_url = Settings::get('SITE_URL');
 		$site_name = Okapi::get_normalized_site_name();
 		$cache_url = $site_url."viewcache.php?cacheid=$cache_id";
 		
