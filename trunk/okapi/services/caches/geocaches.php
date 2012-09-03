@@ -121,7 +121,7 @@ class WebService
 				select
 					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
-					c.terrain, c.wp_oc, c.logpw, c.user_id
+					c.terrain, c.wp_oc, c.logpw, c.user_id,
 					
 					ifnull(sc.toprating, 0) as topratings,
 					ifnull(sc.found, 0) as founds,
