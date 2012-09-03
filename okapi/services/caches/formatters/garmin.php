@@ -3,6 +3,7 @@
 namespace okapi\services\caches\formatters\garmin;
 
 use okapi\Okapi;
+use okapi\Settings;
 use okapi\OkapiRequest;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiInternalRequest;
@@ -119,7 +120,7 @@ class WebService
 					# Note: Oliver Dietz (oc.de) replied that images with 'local' set to 0 could not
 					# be accessed locally. But all the files have 'local' set to 1 anyway.
 					
-					$syspath = $GLOBALS['picdir']."/".$img['uuid'].".jpg";
+					$syspath = Settings::get('IMAGES_DIR')."/".$img['uuid'].".jpg";
 					if (!file_exists($syspath))
 						continue;
 					$file = file_get_contents($syspath);

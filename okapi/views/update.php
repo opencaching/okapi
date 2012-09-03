@@ -326,7 +326,7 @@ class View
 			"Hello there, you've just updated OKAPI on your server. Thanks!\n\n".
 			"We need you to do one more thing. This version of OKAPI requires\n".
 			"additional crontab entry. Please add the following line to your crontab:\n\n".
-			"*/5 * * * * wget -O - -q -t 1 ".$GLOBALS['absolute_server_URI']."okapi/cron5\n\n".
+			"*/5 * * * * wget -O - -q -t 1 ".Settings::get('SITE_URL')."okapi/cron5\n\n".
 			"This is required for OKAPI to function properly from now on.\n\n".
 			"-- \n".
 			"Thanks, OKAPI developers."

@@ -63,7 +63,7 @@ class OkapiServiceRunner
 	{
 		if (!self::exists($service_name))
 			throw new Exception();
-		require_once "$service_name.php";
+		require_once($GLOBALS['rootpath']."okapi/$service_name.php");
 		try
 		{
 			return call_user_func(array('\\okapi\\'.
@@ -124,7 +124,7 @@ class OkapiServiceRunner
 		Okapi::gettext_domain_init();
 		try
 		{
-			require_once "$service_name.php";
+			require_once($GLOBALS['rootpath']."okapi/$service_name.php");
 			$response = call_user_func(array('\\okapi\\'.
 				str_replace('/', '\\', $service_name).'\\WebService', 'call'), $request);
 			Okapi::gettext_domain_restore();

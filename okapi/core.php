@@ -34,19 +34,19 @@ use okapi\cronjobs\CronJobController;
 /** Return an array of email addresses which always get notified on OKAPI errors. */
 function get_admin_emails()
 {
-	$emails = array(
-		isset($GLOBALS['sql_errormail']) ? $GLOBALS['sql_errormail'] : 'root@localhost',
-	);
+	$emails = array();
 	if (class_exists("okapi\\Settings"))
 	{
 		try
 		{
-			foreach (Settings::get('EXTRA_ADMINS') as $email)
+			foreach (Settings::get('ADMINS') as $email)
 				if (!in_array($email, $emails))
 					$emails[] = $email;
 		}
 		catch (Exception $e) { /* pass */ }
 	}
+	if (count($emails) == 0)
+		$emails[] = 'root@localhost';
 	return $emails;
 }
 
@@ -66,7 +66,7 @@ class BadRequest extends Exception {
 			'reason_stack' => array(),
 		);
 		$this->provideExtras($extras);
-		$extras['more_info'] = $GLOBALS['absolute_server_URI']."okapi/introduction.html#errors";
+		$extras['more_info'] = Settings::get('SITE_URL')."okapi/introduction.html#errors";
 		return json_encode(array("error" => $extras));
 	}
 }
@@ -133,7 +133,7 @@ class OkapiExceptionHandler
 			
 			$exception_info = self::get_exception_info($e);
 			
-			if (isset($GLOBALS['debug_page']) && $GLOBALS['debug_page'])
+			if (class_exists("okapi\\Settings") && (Settings::get('DEBUG')))
 			{
 				print "\n\nBUT! Since the DEBUG flag is on, then you probably ARE a developer yourself.\n";
 				print "Let's cut to the chase then:";
@@ -147,12 +147,12 @@ class OkapiExceptionHandler
 			else
 			{
 				$admin_email = implode(", ", get_admin_emails());
-				$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
+				$sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
 				mail(
 					$admin_email,
 					"OKAPI Method Error - ".(
-						isset($GLOBALS['absolute_server_URI'])
-						? $GLOBALS['absolute_server_URI'] : "unknown location"
+						class_exists("okapi\\Settings")
+						? Settings::get('SITE_URL') : "unknown location"
 					),
 					"OKAPI caught the following exception while executing API method request.\n".
 					"This is an error in OUR code and should be fixed. Please contact the\n".
@@ -304,6 +304,20 @@ class DbException extends Exception {}
 /** Database access class. Use this instead of mysql_query, sql or sqlValue. */
 class Db
 {
+	private static $connected = false;
+	
+	public static function connect()
+	{
+		if (mysql_connect(Settings::get('DB_SERVER'), Settings::get('DB_USERNAME'), Settings::get('DB_PASSWORD')))
+		{
+			mysql_select_db(Settings::get('DB_NAME'));
+			mysql_query("set names 'utf8'");
+			self::$connected = true;
+		}
+		else
+			throw new Exception("Could not connect to MySQL: ".mysql_error());
+	}
+	
 	public static function select_row($query)
 	{
 		$rows = self::select_all($query);
@@ -379,6 +393,8 @@ class Db
 	
 	public static function query($query)
 	{
+		if (!self::$connected)
+			self::connect();
 		$rs = mysql_query($query);
 		if (!$rs)
 		{
@@ -392,7 +408,7 @@ class Db
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.
 #
 
-require_once('oauth.php');
+require_once($GLOBALS['rootpath']."okapi/oauth.php");
 
 class OkapiConsumer extends OAuthConsumer
 {
@@ -556,8 +572,8 @@ class OkapiOAuthServer extends OAuthServer
 
 # Including local datastore and settings (connecting SQL database etc.).
 
-require_once('settings.php');
-require_once('datastore.php');
+require_once($GLOBALS['rootpath']."okapi/settings.php");
+require_once($GLOBALS['rootpath']."okapi/datastore.php");
 
 class OkapiHttpResponse
 {
@@ -743,12 +759,6 @@ class Okapi
 		self::$okapi_vars[$varname] = $value;
 	}
 	
-	/** Return true if the server is running in a debug mode. */
-	public static function debug_mode()
-	{
-		return (isset($GLOBALS['debug_page']) && $GLOBALS['debug_page']);
-	}
-	
 	/** Send an email message to local OKAPI administrators. */
 	public static function mail_admins($subject, $message)
 	{
@@ -766,7 +776,7 @@ class Okapi
 		}
 		if (!is_array($email_addresses))
 			$email_addresses = array($email_addresses);
-		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
+		$sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
 		mail(implode(", ", $email_addresses), $subject, $message,
 			"Content-Type: text/plain; charset=utf-8\n".
 			"From: OKAPI <$sender_email>\n".
@@ -780,7 +790,7 @@ class Okapi
 		$dir = Settings::get('VAR_DIR');
 		if ($dir != null)
 			return rtrim($dir, "/");
-		return isset($GLOBALS['dynbasepath']) ? $GLOBALS['dynbasepath'] : "/tmp";
+		throw new Exception("You need to set a valid VAR_DIR.");
 	}
 	
 	/**
@@ -826,7 +836,7 @@ class Okapi
 	public static function get_normalized_site_name($site_url = null)
 	{
 		if ($site_url == null)
-			$site_url = $GLOBALS['absolute_server_URI'];
+			$site_url = Settings::get('SITE_URL');
 		$matches = null;
 		if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $site_url, $matches)) {
 			return "OpenCaching.".strtoupper($matches[2]);
@@ -881,7 +891,7 @@ class Okapi
 		$nearest_event = Okapi::get_var("cron_nearest_event");
 		if ($nearest_event + 0 <= time())
 		{
-			require_once 'cronjobs.php';
+			require_once($GLOBALS['rootpath']."okapi/cronjobs.php");
 			$nearest_event = CronJobController::run_jobs('pre-request');
 			Okapi::set_var("cron_nearest_event", $nearest_event);
 		}
@@ -898,7 +908,7 @@ class Okapi
 		{
 			set_time_limit(0);
 			ignore_user_abort(true); 
-			require_once 'cronjobs.php';
+			require_once($GLOBALS['rootpath']."okapi/cronjobs.php");
 			$nearest_event = CronJobController::run_jobs('cron-5');
 			Okapi::set_var("cron_nearest_event", $nearest_event);
 		}
@@ -1023,7 +1033,7 @@ class Okapi
 	 */
 	public static function register_new_consumer($appname, $appurl, $email)
 	{
-		include_once 'service_runner.php';
+		require_once($GLOBALS['rootpath']."okapi/service_runner.php");
 		$consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
 			$appname, $appurl, $email);
 		$sample_cache = OkapiServiceRunner::call("services/caches/search/all",
@@ -1032,7 +1042,6 @@ class Okapi
 			$sample_cache_code = $sample_cache['results'][0];
 		else
 			$sample_cache_code = "CACHECODE";
-		$sender_email = isset($GLOBALS['emailaddr']) ? $GLOBALS['emailaddr'] : 'root@localhost';
 		
 		# Message for the Consumer.
 		ob_start();
@@ -1042,7 +1051,7 @@ class Okapi
 		print "Note: Consumer Secret is needed only when you intend to use OAuth.\n";
 		print "You don't need Consumer Secret for Level 1 Authentication.\n\n";
 		print "Now you may easily access Level 1 methods of OKAPI! For example:\n";
-		print $GLOBALS['absolute_server_URI']."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n";
+		print Settings::get('SITE_URL')."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n";
 		print "If you plan on using OKAPI for a longer time, then you should subscribe\n";
 		print "to the OKAPI News blog to stay up-to-date. Check it out here:\n";
 		print "http://opencaching-api.blogspot.com/\n\n";
@@ -1726,7 +1735,7 @@ class OkapiHttpRequest extends OkapiRequest
 			# Enables debugging Level 2 and Level 3 methods. Should not be committed
 			# at any time! If run on production server, make it an error.
 			
-			if (!Okapi::debug_mode())
+			if (!Settings::get('DEBUG'))
 			{
 				throw new Exception("Attempted to set DEBUG_AS_USERNAME set in ".
 					"non-debug environment. Accidental commit?");
