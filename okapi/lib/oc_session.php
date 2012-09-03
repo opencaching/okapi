@@ -15,7 +15,7 @@ class OCSession
 		if ($cached_result !== false)
 			return $cached_result;
 		
-		$OC_data = unserialize(base64_decode($_COOKIE['ocnldata']));
+		$OC_data = unserialize(base64_decode(Settings::get('OC_COOKIE_NAME')));
 		$OC_sessionid = $OC_data['sessionid'];
 		unset($OC_data);
 		
