@@ -9,6 +9,7 @@ use okapi\OkapiFacadeConsumer;
 use okapi\OkapiFacadeAccessToken;
 
 require_once($GLOBALS['rootpath']."okapi/core.php");
+OkapiErrorHandler::$treat_notices_as_errors = true;
 require_once($GLOBALS['rootpath']."okapi/service_runner.php");
 
 /**

@@ -16,10 +16,12 @@ use okapi\DoesNotExist;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
-
+use okapi\OkapiLock;
 
 class WebService
 {
+	private static $FLAG_STAR = 0x01;
+	
 	public static function options()
 	{
 		return array(
@@ -40,8 +42,6 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
-		$NOCACHE = false;  # Set to true when debugging.
-		
 		# Make sure the request is internal.
 		
 		if (!in_array($request->consumer->key, array('internal', 'facade')))
@@ -52,139 +52,268 @@ class WebService
 		$x = self::require_uint($request, 'x');
 		$y = self::require_uint($request, 'y');
 		$zoom = self::require_uint($request, 'z');
+		if ($zoom > 21)
+			throw new InvalidParam('z', "Maximum value for this parameter is 21.");
 
-		# Import all other parameters. They will be passed on to the search/bbox
-		# method.
+		# Prepare the list of found caches (to be marked as found when drawing)
 		
-		$params = array();
-		foreach ($request->get_all_parameters_including_unknown() as $k => $v)
+		$cache_key = "found/".$request->token->user_id;
+		$found_cache_dict = Cache::get($cache_key);
+		if ($found_cache_dict === null)
 		{
-			if (in_array($k, array('x', 'y', 'zoom', 'limit', 'offset', 'order_by')))
-				continue;
-			$params[$k] = $v;
-		}
-		$params['limit'] = "10000";
-		$params['order_by'] = "code";
-		
-		# Convert x, y and zoom to proper bbox parameter for the search/bbox method.
-		
-		$rect = self::xyz_to_latlon_rect($x, $y, $zoom);
-		$margin = ($zoom <= 12) ? 0.05 : 0.15;
-		$s = $rect->y - $rect->height * $margin;
-		$n = $rect->y + $rect->height * (1.0 + $margin);
-		$w = $rect->x - $rect->width * $margin;
-		$e = $rect->x + $rect->width * (1.0 + $margin);
-		$params['bbox'] = "$s|$w|$n|$e";
-		
-		# Find caches. This caching method is temporary (won't do much good).
-		
-		$cache_key = "tsp/".$request->user_id."/".md5(print_r($params, true));
-		$cache_codes = Cache::get($cache_key);
-		if ($cache_codes === null)
-		{
-			$internal_request = new OkapiInternalRequest($request->consumer, $request->token, $params);
-			$internal_request->skip_limits = true;
-			$response = OkapiServiceRunner::call("services/caches/search/bbox", $internal_request);
-			$cache_codes = $response['results'];
-			Cache::set($cache_key, $cache_codes, 5*60);
+			$rs = Db::query("
+				select distinct cache_id
+				from cache_logs
+				where user_id = '".mysql_real_escape_string($request->token->user_id)."'
+			");
+			$found_cache_dict = array();
+			while (list($cache_id) = mysql_fetch_row($rs))
+				$found_cache_dict[$cache_id] = true;
+			Cache::set($cache_key, $found_cache_dict, 60);
 		}
 		
-		# We will often ask for the same set of caches here. The moment I write this,
-		# "geocaches" method doesn't cache data at all (to make sure it's always fresh).
-		# However, in this case, we want the result cached. We will cache it ourselves.
+		# Get caches within the tile (+ those around the borders). All filtering
+		# options need to be applied here.
 		
-		$cache_key = "tc".$zoom."/".md5(implode("|", $cache_codes));
-		$caches = $NOCACHE ? null : Cache::get($cache_key);
-		if ($caches === null)
-		{
-			$internal_request = new OkapiInternalRequest($request->consumer, $request->token, array(
-				'cache_codes' => implode('|', $cache_codes),
-				'fields' => 'code|name|location|type|status|rating|recommendations|founds|is_found'
-			));
-			$internal_request->skip_limits = true;
-			$caches = OkapiServiceRunner::call("services/caches/geocaches", $internal_request);
-
-			# Filter caches based on proximity to other groups of caches.
-			# We want to avoid putting multiple markers in one place. This
-			# method is slow, we want its results cached.
+		$rs = self::query_fast($zoom, $x, $y);
 		
-			$caches = self::choose_caches($x, $y, $zoom, $caches);
-			
-			# We want to cache lower zoom levels longer. We don't want to cache
-			# highest zoom levels at all (they should be fast enough to generate,
-			# and we don't want to clutter the cache table).
-			
-			if ($zoom <= 5) $timeout = 7 * 86400;
-			elseif ($zoom == 6) $timeout = 3 * 86400;
-			elseif (($zoom >= 7) && ($zoom <= 9)) $timeout = 86400;
-			elseif ($zoom == 10) $timeout = 12 * 3600;
-			elseif ($zoom == 11) $timeout = 6 * 3600;
-			elseif ($zoom == 12) $timeout = 3 * 3600;
-			elseif (($zoom >= 13) && ($zoom <= 16)) $timeout = 3600;
-			else $timeout = 0;
-			if ($timeout > 0)
-				Cache::set($cache_key, $caches, $timeout);
-		}
-		
-		# Every image has its unique hash. We will compute this hash before
-		# we draw the image. This will allow us to retrieve the image from
-		# cache if we had already drawn such image.
+		# Draw the image. WRTODO: Selective PNG cache.
 		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "image/png";
-		$cache_key = self::compute_hash($x, $y, $zoom, $caches);
-		$response->body = $NOCACHE ? null : Cache::get($cache_key);
-		if ($response->body === null)
-		{
-			$im = imagecreatetruecolor(256, 256);
-			imagealphablending($im, false); 
-			$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
-			imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
-			imagealphablending($im, true);
-			foreach ($caches as $cache)
-				self::draw_cache($im, $x, $y, $zoom, $cache);
-			ob_start();
-			imagesavealpha($im, true);
-			imagepng($im);
-			imagedestroy($im);
-			$response->body = ob_get_clean();
-			Cache::set($cache_key, $response->body, 14*86400);
-		}
+		$im = imagecreatetruecolor(256, 256);
+		imagealphablending($im, false); 
+		$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
+		imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
+		imagealphablending($im, true);
+		while ($row = mysql_fetch_row($rs))
+			self::draw_cache($im, $zoom, $row, $found_cache_dict);
+		ob_start();
+		imagesavealpha($im, true);
+		imagepng($im);
+		imagedestroy($im);
+		$response->body = ob_get_clean();
 
 		return $response;
 	}
 	
-	private static function compute_hash($x, $y, $zoom, $caches)
+	/**
+	 * Return null if not computed, 1 if computed and empty, 2 if computed and not empty.
+	 */
+	private static function get_tile_status($zoom, $x, $y)
 	{
-		$version = 7;
-		$data = array($version, $x, $y, $zoom);
-
-		# Currently, image depends only on cache locations.
-		
-		foreach ($caches as $cache)
-			$data[] = $cache['location'];
-		return "tile/".md5(implode("|", $data));
+		return Db::select_value("
+			select status
+			from okapi_tile_status
+			where
+				z = '".mysql_real_escape_string($zoom)."'
+				and x = '".mysql_real_escape_string($x)."'
+				and y = '".mysql_real_escape_string($y)."'
+		");
 	}
 	
-	private static function choose_caches($x, $y, $zoom, $caches)
+	/**
+	 * Return MySQL's result set iterator over all caches matched by your query.
+	 *
+	 * Each row is an array of the following format:
+	 * list(cache_id, $pixel_x, $pixel_y, status, type, rating, flags, count).
+	 *
+	 * Note that $pixels can also be negative or >=256 (up to a margin of 32px).
+	 * Count is the number of other caches "eclipsed" by this geocache (such
+	 * eclipsed geocaches are not included in the result).
+	 */
+	private static function query_fast($zoom, $x, $y)
 	{
-		# Divide our rect into squares of size 4x4. We will put AT MOST
-		# one cache in each square. If N caches fit into the square, only
-		# the *last* one from list will occupy it.
+		# First, we check if the cache-set for this tile was already computed
+		# (and if it was, was it empty).
 		
-		$squares = array();
-		foreach ($caches as $cache)
+		$status = self::get_tile_status($zoom, $x, $y);
+		if ($status === null)  # Not yet computed.
 		{
-			list($lat, $lon) = explode('|', $cache['location']);
-			$pt = self::latlon_to_tile_xy($x, $y, $zoom, $lat, $lon);
-			$key = floor($pt['x'] / 4) * 64 + floor($pt['y'] / 4);
-			if (isset($squares[$key]))
-				$cache['covers_more'] = true;
-			$squares[$key] = $cache;
+			# Note, that computing the tile does not involve taking any
+			# filtering parameters.
+			
+			$status = self::compute_tile($zoom, $x, $y);
 		}
-		return array_values($squares);
+		if ($status === 1)  # Computed and empty.
+		{
+			# This tile was already computed and it is empty.
+			return array();
+		}
+		
+		# If we got here, then the tile is computed and not empty (status 2).
+		# Since all search parameters are aggregated, we just need a simple
+		# SQL query to get the filtered result.
+		
+		$tile_upper_x = $x << 8;
+		$tile_leftmost_y = $y << 8;
+		
+		return Db::query("
+			select
+				cache_id, cast(z21x >> (21 - $zoom) as signed) - $tile_upper_x, cast(z21y >> (21 - $zoom) as signed) - $tile_leftmost_y,
+				status, type, rating, flags, count(*)
+			from okapi_tile_caches
+			where
+				z = '".mysql_real_escape_string($zoom)."'
+				and x = '".mysql_real_escape_string($x)."'
+				and y = '".mysql_real_escape_string($y)."'
+			group by
+				z21x >> (3 + (21 - $zoom)),
+				z21y >> (3 + (21 - $zoom))
+		");
 	}
-
+	
+	/**
+	 * Precache the ($zoom, $x, $y) slot in the okapi_tile_caches table.
+	 */
+	private static function compute_tile($zoom, $x, $y)
+	{
+		if ($zoom <= 2)
+		{
+			# Confirm the status is uncomputed (multiple processes may try to compute
+			# tiles simulatanously. For low zoom levels we will protect this with
+			# semaphores.
+			
+			$lock = OkapiLock::get("tile-computation-$zoom-$x-$y");
+			$lock->acquire();
+			$status = self::get_tile_status($zoom, $x, $y);
+			if ($status !== null)
+				return $status;
+		}
+		
+		if ($zoom === 0)
+		{
+			# When computing zoom zero, we don't have a parent to speed up
+			# the computation. We need to use the caches table. Note, that
+			# zoom level 0 contains *entire world*, so we don't have to use
+			# any WHERE condition in the following query.
+			
+			# This can be done a little faster (without the use of internal requests),
+			# but there is *no need* to - this query is run seldom and is cached.
+			
+			$params = array();
+			$params['status'] = "Available|Temporarily unavailable|Archived";  # we want them all
+			$params['limit'] = "10000000";  # no limit
+			
+			$internal_request = new OkapiInternalRequest(new OkapiInternalConsumer(), null, $params);
+			$internal_request->skip_limits = true;
+			$response = OkapiServiceRunner::call("services/caches/search/all", $internal_request);
+			$cache_codes = $response['results'];
+			
+			$internal_request = new OkapiInternalRequest(new OkapiInternalConsumer(), null, array(
+				'cache_codes' => implode('|', $cache_codes),
+				'fields' => 'internal_id|code|name|location|type|status|rating|recommendations|founds'
+			));
+			$internal_request->skip_limits = true;
+			$caches = OkapiServiceRunner::call("services/caches/geocaches", $internal_request);
+			
+			foreach ($caches as $cache)
+			{
+				list($lat, $lon) = explode("|", $cache['location']);
+				list($z21x, $z21y) = self::latlon_to_z21xy($lat, $lon);
+				$flags = 0;
+				if (($cache['founds'] > 6) && (($cache['recommendations'] / $cache['founds']) > 0.3))
+					$flags |= self::$FLAG_STAR;
+				Db::execute("
+					replace into okapi_tile_caches (
+						z, x, y, cache_id, z21x, z21y, status, type, rating, flags
+					) values (
+						0, 0, 0,
+						'".mysql_real_escape_string($cache['internal_id'])."',
+						'".mysql_real_escape_string($z21x)."',
+						'".mysql_real_escape_string($z21y)."',
+						'".mysql_real_escape_string(Okapi::cache_status_name2id($cache['status']))."',
+						'".mysql_real_escape_string(Okapi::cache_type_name2id($cache['type']))."',
+						".(($cache['rating'] === null) ? "null" : $cache['rating']).",
+						'".mysql_real_escape_string($flags)."'
+					);
+				");
+			}
+			$status = 2;
+		}
+		else
+		{
+			# We will use the parent tile to compute the contents of this tile.
+			
+			$parent_zoom = $zoom - 1;
+			$parent_x = $x >> 1;
+			$parent_y = $y >> 1;
+			
+			$status = self::get_tile_status($parent_zoom, $parent_x, $parent_y);
+			if ($status === null)  # Not computed.
+			{
+				$status = self::compute_tile($parent_zoom, $parent_x, $parent_y);
+			}
+			if ($status === 1)  # Computed and empty.
+			{
+				# No need to check.
+			}
+			else  # Computed, not empty.
+			{
+				$scale = 8 + 21 - $zoom;
+				$parentcenter_z21x = (($parent_x << 1) | 1) << $scale;
+				$parentcenter_z21y = (($parent_y << 1) | 1) << $scale;
+				$margin = 1 << ($scale - 3);
+				$left_z21x = (($parent_x << 1) << $scale) - $margin;
+				$right_z21x = ((($parent_x + 1) << 1) << $scale) + $margin;
+				$top_z21y = (($parent_y << 1) << $scale) - $margin;
+				$bottom_z21y = ((($parent_y + 1) << 1) << $scale) + $margin;
+				
+				# Choose the right quarter.
+				# |1 2|
+				# |3 4|
+				
+				if ($x & 1)  # 2 or 4
+					$left_z21x = $parentcenter_z21x - $margin;
+				else  # 1 or 3
+					$right_z21x = $parentcenter_z21x + $margin;
+				if ($y & 1)  # 3 or 4
+					$top_z21y = $parentcenter_z21y - $margin;
+				else  # 1 or 2
+					$bottom_z21y = $parentcenter_z21y + $margin;
+				
+				# Cache the result.
+				
+				Db::execute("
+					replace into okapi_tile_caches (
+						z, x, y, cache_id, z21x, z21y, status, type, rating, flags
+					)
+					select
+						'".mysql_real_escape_string($zoom)."',
+						'".mysql_real_escape_string($x)."',
+						'".mysql_real_escape_string($y)."',
+						cache_id, z21x, z21y, status, type, rating, flags
+					from okapi_tile_caches
+					where
+						z = '".mysql_real_escape_string($parent_zoom)."'
+						and x = '".mysql_real_escape_string($parent_x)."'
+						and y = '".mysql_real_escape_string($parent_y)."'
+						and z21x between $left_z21x and $right_z21x
+						and z21y between $top_z21y and $bottom_z21y
+				");
+			}
+		}
+		
+		# Mark tile as computed.
+		
+		Db::execute("
+			replace into okapi_tile_status (z, x, y, status)
+			values (
+				'".mysql_real_escape_string($zoom)."',
+				'".mysql_real_escape_string($x)."',
+				'".mysql_real_escape_string($y)."',
+				'".mysql_real_escape_string($status)."'
+			);
+		");
+		
+		if ($zoom <= 2)
+		{
+			# Resume other processes which begun low-zoom tile computation.
+			$lock->release();
+		}
+		return $status;
+	}
+	
 	private static $images = array();
 	private static function get_image($key)
 	{
@@ -194,14 +323,15 @@ class WebService
 		return self::$images[$key];
 	}
 	
-	private static function draw_cache($im, $x, $y, $zoom, $cache)
+	private static function draw_cache($im, $zoom, &$cache_struct, &$found_cache_dict)
 	{
-		switch ($cache['type']) {
-			case 'Traditional': $key = 'traditional'; break;
-			case 'Multi': $key = 'multi'; break;
-			case 'Event': $key = 'event'; break;
-			case 'Quiz': $key = 'quiz'; break;
-			case 'Virtual': $key = 'virtual'; break;
+		list($cache_id, $px, $py, $status, $type, $rating, $flags, $count) = $cache_struct;
+		switch ($type) {
+			case 2: $key = 'traditional'; break;
+			case 3: $key = 'multi'; break;
+			case 6: $key = 'event'; break;
+			case 7: $key = 'quiz'; break;
+			case 4: $key = 'virtual'; break;
 			default: $key = 'other'; break;
 		}
 		if ($zoom <= 9)
@@ -235,123 +365,66 @@ class WebService
 			$markercenter_y = 12;
 		}
 		
-		# Convert lat,lon to x,y.
-		
-		list($lat, $lon) = explode('|', $cache['location']);
-		$pt = self::latlon_to_tile_xy($x, $y, $zoom, $lat, $lon);
-		
 		# If cache covers more caches, then put two markers instead of one.
 		
-		if (isset($cache['covers_more']))
-			imagecopy($im, $marker, $pt['x'] - $center_x + 3, $pt['y'] - $center_y - 2, 0, 0, $width, $height);
+		if ($count > 1)
+			imagecopy($im, $marker, $px - $center_x + 3, $py - $center_y - 2, 0, 0, $width, $height);
 		
 		# Put the marker.
 		
-		imagecopy($im, $marker, $pt['x'] - $center_x, $pt['y'] - $center_y, 0, 0, $width, $height);
+		imagecopy($im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
 		
 		# Mark unavailable caches with an X.
 		
-		if ($zoom >= 10 && ($cache['status'] != "Available"))
+		if ($zoom >= 10 && ($status != 1))
 		{
 			$icon = self::get_image("status_unavailable");
-			imagecopy($im, $icon, $pt['x'] - ($center_x - $markercenter_x) - 7,
-				$pt['y'] - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
+			imagecopy($im, $icon, $px - ($center_x - $markercenter_x) - 7,
+				$py - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
 		}
 		
 		# Put the rating smile. :)
 		
 		if ($zoom >= 13)
 		{
-			if ($cache['rating'] >= 4.2)
+			if ($rating >= 4.2)
 			{
-				if (($cache['founds'] > 6) && (($cache['recommendations'] / $cache['founds']) > 0.3)) {
+				if ($flags & self::$FLAG_STAR) {
 					$icon = self::get_image("rating_grin");
-					imagecopy($im, $icon, $pt['x'] - 7 - 6, $pt['y'] - $center_y - 8, 0, 0, 16, 16);
+					imagecopy($im, $icon, $px - 7 - 6, $py - $center_y - 8, 0, 0, 16, 16);
 					$icon = self::get_image("rating_star");
-					imagecopy($im, $icon, $pt['x'] - 7 + 6, $pt['y'] - $center_y - 8, 0, 0, 16, 16);
+					imagecopy($im, $icon, $px - 7 + 6, $py - $center_y - 8, 0, 0, 16, 16);
 				} else {
 					$icon = self::get_image("rating_grin");
-					imagecopy($im, $icon, $pt['x'] - 7, $pt['y'] - $center_y - 8, 0, 0, 16, 16);
+					imagecopy($im, $icon, $px - 7, $py - $center_y - 8, 0, 0, 16, 16);
 				}
 			}
-			elseif ($cache['rating'] >= 3.6) {
+			elseif ($rating >= 3.6) {
 				$icon = self::get_image("rating_smile");
-				imagecopy($im, $icon, $pt['x'] - 7, $pt['y'] - $center_y - 8, 0, 0, 16, 16);
+				imagecopy($im, $icon, $px - 7, $py - $center_y - 8, 0, 0, 16, 16);
 			}
 		}
 		
 		# Mark found caches with V.
 		
-		if ($zoom >= 10 && $cache['is_found'])
+		if ($zoom >= 10 && (isset($found_cache_dict[$cache_id])))
 		{
 			$icon = self::get_image("found");
 			if ($zoom >= 13) {
-				imagecopy($im, $icon, $pt['x'] - 2, $pt['y'] - $center_y - 3, 0, 0, 16, 16);
+				imagecopy($im, $icon, $px - 2, $py - $center_y - 3, 0, 0, 16, 16);
 			} else {
-				imagecopy($im, $icon, $pt['x'] - ($center_x - $markercenter_x) - 7,
-					$pt['y'] - ($center_y - $markercenter_y) - 9, 0, 0, 16, 16);
+				imagecopy($im, $icon, $px - ($center_x - $markercenter_x) - 7,
+					$py - ($center_y - $markercenter_y) - 9, 0, 0, 16, 16);
 			}
 		}
 	}
-
-	private static function latlon_to_tile_xy($nx, $ny, $zoom, $lat, $lon)
+	
+	private static function latlon_to_z21xy($lat, $lon)
 	{
-		$offset = 256 << ($zoom-1);
+		$offset = 128 << 21;
 		$x = round($offset + ($offset * $lon / 180));
 		$y = round($offset - $offset/pi() * log((1 + sin($lat * pi() / 180)) / (1 - sin($lat * pi() / 180))) / 2);
-		return array(
-			'x' => $x - 256*$nx,
-			'y' => $y - 256*$ny,
-		);
-	}
-
-	private static function xyz_to_latlon_rect($x, $y, $zoom)
-	{
-		$lon = -180;
-		$lonWidth = 360;
-		
-		$lat = -1;
-		$latHeight = 2;
-		
-		$tilesAtThisZoom = 1 << ($zoom);
-		$lonWidth = 360.0 / $tilesAtThisZoom;
-		$lon = -180 + ($x * $lonWidth);
-		$latHeight = 2.0 / $tilesAtThisZoom;
-		$lat = (($tilesAtThisZoom / 2 - $y - 1) * $latHeight);
-		
-		// convert lat and latHeight to degrees in a transverse mercator projection
-		// note that in fact the coordinates go from about -85 to +85 not -90 to 90!
-		$latHeight += $lat;
-		$latHeight = (2 * atan(exp(PI() * $latHeight))) - (PI() / 2);
-		$latHeight *= (180 / PI());
-		
-		$lat = (2 * atan(exp(PI() * $lat))) - (PI() / 2);
-		$lat *= (180 / PI());
-
-		$latHeight -= $lat;
-		
-		if ($lonWidth < 0) {
-			$lon = $lon + $lonWidth;
-			$lonWidth = -$lonWidth;
-		}
-		
-		if ($latHeight < 0) {
-			$lat = $lat + $latHeight;
-			$latHeight = -$latHeight;
-		}
-		
-		$rect = new Rectangle();
-		$rect->x = $lon;
-		$rect->y = $lat;
-		$rect->height = $latHeight;
-		$rect->width = $lonWidth;
-		
-		return $rect;
+		return array($x, $y);
 	}
 }
 
-class Rectangle
-{
-	var $x, $y;
-	var $width, $height;
-}

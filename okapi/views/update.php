@@ -529,4 +529,36 @@ class View
 		}
 		Db::execute("alter table cache_logs_archived add key okapi_syncbase (okapi_syncbase);");
 	}
+	
+	private static function ver63()
+	{
+		Db::execute("
+			CREATE TABLE `okapi_tile_status` (
+				`z` tinyint(2) NOT NULL,
+				`x` mediumint(6) unsigned NOT NULL,
+				`y` mediumint(6) unsigned NOT NULL,
+				`status` tinyint(1) unsigned NOT NULL,
+				PRIMARY KEY (`z`,`x`,`y`)
+			) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+		");
+	}
+	
+	private static function ver64()
+	{
+		Db::execute("
+			CREATE TABLE `okapi_tile_caches` (
+				`z` tinyint(2) NOT NULL,
+				`x` mediumint(6) unsigned NOT NULL,
+				`y` mediumint(6) unsigned NOT NULL,
+				`cache_id` mediumint(6) unsigned NOT NULL,
+				`z21x` int(10) unsigned NOT NULL,
+				`z21y` int(10) unsigned NOT NULL,
+				`status` tinyint(1) unsigned NOT NULL,
+				`type` tinyint(1) unsigned NOT NULL,
+				`rating` tinyint(1) unsigned DEFAULT NULL,
+				`flags` tinyint(1) unsigned NOT NULL,
+				PRIMARY KEY (`z`,`x`,`y`,`cache_id`)
+			) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+		");
+	}
 }
