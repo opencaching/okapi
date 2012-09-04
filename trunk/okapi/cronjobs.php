@@ -46,6 +46,7 @@ class CronJobController
 				new AdminStatsSender(),
 				new LocaleChecker(),
 				new FulldumpGeneratorJob(),
+				new TileTreeUpdater(),
 			);
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
@@ -109,6 +110,8 @@ class CronJobController
 	 */
 	public static function force_run($job_name)
 	{
+		require_once($GLOBALS['rootpath'].'okapi/service_runner.php');
+		
 		foreach (self::get_enabled_cronjobs() as $cronjob)
 		{
 			if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\cronjobs\\".$job_name))
@@ -395,6 +398,41 @@ class FulldumpGeneratorJob extends Cron5Job
 	{
 		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
 		ReplicateCommon::generate_fulldump();
+	}
+}
+
+/**
+ * Listen for changelog updates. Update okapi_tile_caches accordingly.
+ */
+class TileTreeUpdater extends Cron5Job
+{
+	public function get_period() { return 5*60; }
+	public function execute()
+	{
+		$current_clog_revision = Okapi::get_var('clog_revision', 0);
+		$tiletree_revision = Okapi::get_var('clog_followup_revision', 0);
+		if ($tiletree_revision === $current_clog_revision) {
+			# No update necessary.
+		} elseif ($tiletree_revision < $current_clog_revision) {
+			require_once($GLOBALS['rootpath']."okapi/services/caches/map/replicate_listener.inc.php");
+			if ($current_clog_revision - $tiletree_revision < 1000)
+			{
+				for ($i=0; $i<10; $i++)  # To avoid infinite loop.
+				{
+					$response = OkapiServiceRunner::call('services/replicate/changelog', new OkapiInternalRequest(
+						new OkapiInternalConsumer(), null, array('since' => $tiletree_revision)));
+					\okapi\services\caches\map\ReplicateListener::receive($response['changelog']);
+					$tiletree_revision = $response['revision'];
+					Okapi::set_var('clog_followup_revision', $tiletree_revision);
+					if (!$response['more'])
+						break;
+				}
+			} else {
+				# Some kind of bigger update. Resetting TileTree might be a better option.
+				\okapi\services\caches\map\ReplicateListener::reset();
+				Okapi::set_var('clog_followup_revision', $current_clog_revision);
+			}
+		}
 	}
 }
 

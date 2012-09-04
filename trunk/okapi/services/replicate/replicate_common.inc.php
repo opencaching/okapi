@@ -140,7 +140,7 @@ class ReplicateCommon
 				'uuid', $DELETED_uuids, self::$logged_log_entry_fields, false, true, 3600);
 		}
 		
-		# Update state variables and release DB lock.
+		# Update state variables.
 		
 		Okapi::set_var("last_clog_update", $now);
 		$revision = Db::select_value("select max(id) from okapi_clog");
