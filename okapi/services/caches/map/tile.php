@@ -131,7 +131,10 @@ class WebService
 			$rs = Db::query("
 				select distinct cache_id
 				from cache_logs
-				where user_id = '".mysql_real_escape_string($request->token->user_id)."'
+				where
+					user_id = '".mysql_real_escape_string($request->token->user_id)."'
+					and type = 1
+					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
 			");
 			$user['found'] = array();
 			while (list($cache_id) = mysql_fetch_row($rs))
@@ -174,6 +177,26 @@ class WebService
 			{
 				foreach ($user['owned'] as $cache_id => $v)
 					$excluded_dict[$cache_id] = true;
+			}
+		}
+		
+		#
+		# found_status
+		#
+		
+		if ($tmp = $request->get_parameter('found_status'))
+		{
+			if (!in_array($tmp, array('found_only', 'notfound_only', 'either')))
+				throw new InvalidParam('found_status', "'$tmp'");
+			if ($tmp == 'either') {
+				# Do nothing.
+			} elseif ($tmp == 'notfound_only') {
+				# Easy.
+				foreach ($user['found'] as $cache_id => $v)
+					$excluded_dict[$cache_id] = true;
+			} else {
+				# Found only. This will slow down queries somewhat. But it is rare.
+				$filter_conds[] = "cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($user['found'])))."')";
 			}
 		}
 		
