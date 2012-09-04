@@ -49,11 +49,37 @@ class WebService
 		
 		# Import required tile-specific parameters.
 		
-		$x = self::require_uint($request, 'x');
-		$y = self::require_uint($request, 'y');
 		$zoom = self::require_uint($request, 'z');
 		if ($zoom > 21)
 			throw new InvalidParam('z', "Maximum value for this parameter is 21.");
+		$x = self::require_uint($request, 'x');
+		$y = self::require_uint($request, 'y');
+		if ($x >= 1<<$zoom)
+			throw new InvalidParam('x', "Should be in 0..".((1<<$zoom) - 1).".");
+		if ($y >= 1<<$zoom)
+			throw new InvalidParam('y', "Should be in 0..".((1<<$zoom) - 1).".");
+		
+		# Import filtering parameters.
+		
+		$filter_conds = array();
+		$tmp = $request->get_parameter('status');
+		if ($tmp == null) $tmp = "Available";
+		$allowed_status_codes = array();
+		foreach (explode("|", $tmp) as $name)
+		{
+			try
+			{
+				$allowed_status_codes[] = Okapi::cache_status_name2id($name);
+			}
+			catch (Exception $e)
+			{
+				throw new InvalidParam('status', "'$name' is not a valid cache status.");
+			}
+		}
+		if (count($allowed_status_codes) == 0)
+			throw new InvalidParam('status');
+		if (count($allowed_status_codes) < 3)
+			$filter_conds[] = "status in ('".implode("','", array_map('mysql_real_escape_string', $allowed_status_codes))."')";
 
 		# Prepare the list of found caches (to be marked as found when drawing)
 		
@@ -75,7 +101,7 @@ class WebService
 		# Get caches within the tile (+ those around the borders). All filtering
 		# options need to be applied here.
 		
-		$rs = self::query_fast($zoom, $x, $y);
+		$rs = self::query_fast($zoom, $x, $y, $filter_conds);
 		
 		# Draw the image. WRTODO: Selective PNG cache.
 		
@@ -122,7 +148,7 @@ class WebService
 	 * Count is the number of other caches "eclipsed" by this geocache (such
 	 * eclipsed geocaches are not included in the result).
 	 */
-	private static function query_fast($zoom, $x, $y)
+	private static function query_fast($zoom, $x, $y, $filter_conds)
 	{
 		# First, we check if the cache-set for this tile was already computed
 		# (and if it was, was it empty).
@@ -148,6 +174,8 @@ class WebService
 		$tile_upper_x = $x << 8;
 		$tile_leftmost_y = $y << 8;
 		
+		if (count($filter_conds) == 0)
+			$filter_conds[] = "true";
 		return Db::query("
 			select
 				cache_id, cast(z21x >> (21 - $zoom) as signed) - $tile_upper_x, cast(z21y >> (21 - $zoom) as signed) - $tile_leftmost_y,
@@ -157,6 +185,7 @@ class WebService
 				z = '".mysql_real_escape_string($zoom)."'
 				and x = '".mysql_real_escape_string($x)."'
 				and y = '".mysql_real_escape_string($y)."'
+				and (".implode(") and (", $filter_conds).")
 			group by
 				z21x >> (3 + (21 - $zoom)),
 				z21y >> (3 + (21 - $zoom))
@@ -365,27 +394,37 @@ class WebService
 			$markercenter_y = 12;
 		}
 		
-		# If cache covers more caches, then put two markers instead of one.
+		# Put the marker. If cache covers more caches, then put two markers instead of one.
 		
 		if ($count > 1)
+		{
 			imagecopy($im, $marker, $px - $center_x + 3, $py - $center_y - 2, 0, 0, $width, $height);
-		
-		# Put the marker.
-		
-		imagecopy($im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
-		
-		# Mark unavailable caches with an X.
-		
-		if ($zoom >= 10 && ($status != 1))
+			imagecopy($im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
+		}
+		else
+		{
+			# For lower zoom levels, put X only (without the marker).
+			
+			if ($zoom >= 13 || ($status == 1))
+				imagecopy($im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
+		}
+
+		# If the cache is unavailable, mark it with X. 
+
+		if (($status != 1) && (($count == 1) || ($zoom >= 13)))
 		{
 			$icon = self::get_image("status_unavailable");
-			imagecopy($im, $icon, $px - ($center_x - $markercenter_x) - 7,
-				$py - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
+			if ($zoom < 13) {
+				imagecopy($im, $icon, $px - ($center_x - $markercenter_x) - 6,
+					$py - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
+			} else {
+				imagecopy($im, $icon, $px - 1, $py - $center_y - 4, 0, 0, 16, 16);
+			}
 		}
 		
 		# Put the rating smile. :)
 		
-		if ($zoom >= 13)
+		if (($status == 1) && ($zoom >= 13))
 		{
 			if ($rating >= 4.2)
 			{

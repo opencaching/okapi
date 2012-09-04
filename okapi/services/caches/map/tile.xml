@@ -8,9 +8,11 @@
 		<p>Use this method to retrieve a tile-map of all caches included in your search
 		result.</p>
 	</desc>
+	<req name='z'>Zoom level (0..21).</req>
 	<req name='x'>Tile number on the X axis.</req>
 	<req name='y'>Tile number on the Y axis.</req>
-	<req name='z'>Zoom level.</req>
+	<import-params method="services/caches/search/all"
+		params="status"/>
 	<returns>
 		The PNG image with the requested map tile.
 	</returns>

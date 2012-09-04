@@ -561,4 +561,7 @@ class View
 			) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 		");
 	}
+	
+	private static function ver65() { Db::execute("alter table okapi_tile_status engine=innodb;"); }
+	private static function ver66() { Db::execute("alter table okapi_tile_caches engine=innodb;"); }
 }
