@@ -218,6 +218,30 @@ class WebService
 			$filter_conds[] = "flags & ".self::$FLAG_NOT_YET_FOUND;
 		}
 		
+		# rating
+		
+		if ($tmp = $request->get_parameter('rating'))
+		{
+			if (!preg_match("/^[1-5]-[1-5](\|X)?$/", $tmp))
+				throw new InvalidParam($param_name, "'$tmp'");
+			list($min, $max) = explode("-", $tmp);
+			if (strpos($max, "|X") !== false)
+			{
+				$max = $max[0];
+				$allow_null = true;
+			} else {
+				$allow_null = false;
+			}
+			if ($min > $max)
+				throw new InvalidParam($param_name, "'$tmp'");
+			if (($min == 1) && ($max == 5) && $allow_null) {
+				/* no extra condition necessary */
+			} else {
+				$filter_conds[] = "(rating between $min and $max)".
+					($allow_null ? " or rating is null" : "");
+			}
+		}
+		
 		# Get caches within the tile (+ those around the borders). All filtering
 		# options need to be applied here.
 		
