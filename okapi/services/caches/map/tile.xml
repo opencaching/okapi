@@ -13,6 +13,9 @@
 	<req name='y'>Tile number on the Y axis.</req>
 	<import-params method="services/caches/search/all"
 		params="status|type|exclude_ignored|exclude_my_own|found_status"/>
+	<opt name='with_trackables_only' default='false'>
+		All geocaches without trackables will be skipped.
+	</opt>
 	<returns>
 		The PNG image with the requested map tile.
 	</returns>
