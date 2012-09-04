@@ -47,7 +47,7 @@ class WebService
 		if (!in_array($request->consumer->key, array('internal', 'facade')))
 			throw new BadRequest("Your Consumer Key has not been allowed to access this method.");
 		
-		# Import required tile-specific parameters.
+		# zoom, x, y - required tile-specific parameters.
 		
 		$zoom = self::require_uint($request, 'z');
 		if ($zoom > 21)
@@ -59,7 +59,7 @@ class WebService
 		if ($y >= 1<<$zoom)
 			throw new InvalidParam('y', "Should be in 0..".((1<<$zoom) - 1).".");
 		
-		# Import filtering parameters.
+		# status
 		
 		$filter_conds = array();
 		$tmp = $request->get_parameter('status');
@@ -80,6 +80,9 @@ class WebService
 			throw new InvalidParam('status');
 		if (count($allowed_status_codes) < 3)
 			$filter_conds[] = "status in ('".implode("','", array_map('mysql_real_escape_string', $allowed_status_codes))."')";
+		
+		# type
+		
 		if ($tmp = $request->get_parameter('type'))
 		{
 			$operator = "in";
@@ -103,22 +106,51 @@ class WebService
 			}
 			$filter_conds[] = "type $operator ('".implode("','", array_map('mysql_real_escape_string', $types))."')";
 		}
-			
-		# Prepare the list of found caches (to be marked as found when drawing)
 		
-		$cache_key = "found/".$request->token->user_id;
-		$found_cache_dict = Cache::get($cache_key);
-		if ($found_cache_dict === null)
+		# User-specific geocaches (cached together).
+		
+		$cache_key = "tileuser/".$request->token->user_id;
+		$user = Cache::get($cache_key);
+		if ($user === null)
 		{
+			$user = array();
+			
+			# Ignored caches.
+			
+			$rs = Db::query("
+				select cache_id
+				from cache_ignore
+				where user_id = '".mysql_real_escape_string($request->token->user_id)."'
+			");
+			$user['ignored'] = array();
+			while (list($cache_id) = mysql_fetch_row($rs))
+				$user['ignored'][$cache_id] = true;
+			
+			# Found caches.
+			
 			$rs = Db::query("
 				select distinct cache_id
 				from cache_logs
 				where user_id = '".mysql_real_escape_string($request->token->user_id)."'
 			");
-			$found_cache_dict = array();
+			$user['found'] = array();
 			while (list($cache_id) = mysql_fetch_row($rs))
-				$found_cache_dict[$cache_id] = true;
-			Cache::set($cache_key, $found_cache_dict, 60);
+				$user['found'][$cache_id] = true;
+
+			Cache::set($cache_key, $user, 30);
+		}
+
+		# exclude_ignored
+		
+		$tmp = $request->get_parameter('exclude_ignored');
+		if ($tmp === null) $tmp = "false";
+		if (!in_array($tmp, array('true', 'false'), true))
+			throw new InvalidParam('exclude_ignored', "'$tmp'");
+		if ($tmp == 'true')
+		{
+			$excluded_dict = $user['ignored'];
+		} else {
+			$excluded_dict = array();
 		}
 		
 		# Get caches within the tile (+ those around the borders). All filtering
@@ -136,7 +168,7 @@ class WebService
 		imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
 		imagealphablending($im, true);
 		while ($row = mysql_fetch_row($rs))
-			self::draw_cache($im, $zoom, $row, $found_cache_dict);
+			self::draw_cache($im, $zoom, $row, $user['found'], $excluded_dict);
 		ob_start();
 		imagesavealpha($im, true);
 		imagepng($im);
@@ -375,9 +407,11 @@ class WebService
 		return self::$images[$key];
 	}
 	
-	private static function draw_cache($im, $zoom, &$cache_struct, &$found_cache_dict)
+	private static function draw_cache($im, $zoom, &$cache_struct, &$found_cache_dict, &$excluded_dict)
 	{
 		list($cache_id, $px, $py, $status, $type, $rating, $flags, $count) = $cache_struct;
+		if (isset($excluded_dict[$cache_id]))
+			return;
 		switch ($type) {
 			case 2: $key = 'traditional'; break;
 			case 3: $key = 'multi'; break;
