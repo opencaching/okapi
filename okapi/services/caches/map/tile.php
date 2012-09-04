@@ -22,6 +22,7 @@ class WebService
 {
 	private static $FLAG_STAR = 0x01;
 	private static $FLAG_HAS_TRACKABLES = 0x02;
+	private static $FLAG_NOT_YET_FOUND = 0x04;
 	
 	public static function options()
 	{
@@ -208,6 +209,15 @@ class WebService
 			$filter_conds[] = "flags & ".self::$FLAG_HAS_TRACKABLES;
 		}
 		
+		# not_yet_found_only
+		
+		if ($tmp = $request->get_parameter('not_yet_found_only'))
+		{
+			if (!in_array($tmp, array('true', 'false'), 1))
+				throw new InvalidParam('not_yet_found_only', "'$tmp'");
+			$filter_conds[] = "flags & ".self::$FLAG_NOT_YET_FOUND;
+		}
+		
 		# Get caches within the tile (+ those around the borders). All filtering
 		# options need to be applied here.
 		
@@ -355,6 +365,8 @@ class WebService
 					$flags |= self::$FLAG_STAR;
 				if ($cache['trackables_count'] > 0)
 					$flags |= self::$FLAG_HAS_TRACKABLES;
+				if ($cache['founds'] == 0)
+					$flags |= self::$FLAG_NOT_YET_FOUND;
 				Db::execute("
 					replace into okapi_tile_caches (
 						z, x, y, cache_id, z21x, z21y, status, type, rating, flags
