@@ -137,6 +137,17 @@ class WebService
 			while (list($cache_id) = mysql_fetch_row($rs))
 				$user['found'][$cache_id] = true;
 
+			# Owned caches.
+			
+			$rs = Db::query("
+				select distinct cache_id
+				from caches
+				where user_id = '".mysql_real_escape_string($request->token->user_id)."'
+			");
+			$user['owned'] = array();
+			while (list($cache_id) = mysql_fetch_row($rs))
+				$user['owned'][$cache_id] = true;
+			
 			Cache::set($cache_key, $user, 30);
 		}
 
@@ -151,6 +162,19 @@ class WebService
 			$excluded_dict = $user['ignored'];
 		} else {
 			$excluded_dict = array();
+		}
+		
+		# exclude_my_own
+		
+		if ($tmp = $request->get_parameter('exclude_my_own'))
+		{
+			if (!in_array($tmp, array('true', 'false'), 1))
+				throw new InvalidParam('exclude_my_own', "'$tmp'");
+			if (($tmp == 'true') && (count($user['owned']) > 0))
+			{
+				foreach ($user['owned'] as $cache_id => $v)
+					$excluded_dict[$cache_id] = true;
+			}
 		}
 		
 		# Get caches within the tile (+ those around the borders). All filtering

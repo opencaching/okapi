@@ -342,7 +342,6 @@ class SearchAssistant
 			}
 		}
 		
-		
 		#
 		# exclude_my_own
 		#
