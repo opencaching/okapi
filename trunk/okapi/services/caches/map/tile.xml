@@ -18,7 +18,7 @@
 		All geocaches which have been already found by someone, will be skipped.
 	</opt>
 	<import-params method="services/caches/search/all"
-		params="status|type|exclude_ignored|exclude_my_own|found_status"/>
+		params="status|type|exclude_ignored|exclude_my_own|found_status|rating"/>
 	<returns>
 		The PNG image with the requested map tile.
 	</returns>
