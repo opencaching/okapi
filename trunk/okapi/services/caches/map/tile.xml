@@ -12,7 +12,7 @@
 	<req name='x'>Tile number on the X axis.</req>
 	<req name='y'>Tile number on the Y axis.</req>
 	<import-params method="services/caches/search/all"
-		params="status"/>
+		params="status|type"/>
 	<returns>
 		The PNG image with the requested map tile.
 	</returns>
