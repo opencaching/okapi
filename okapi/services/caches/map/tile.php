@@ -16,7 +16,6 @@ use okapi\DoesNotExist;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
-use okapi\OkapiLock;
 
 use okapi\services\caches\map\TileTree;
 

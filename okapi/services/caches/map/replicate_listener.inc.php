@@ -16,9 +16,9 @@ use okapi\DoesNotExist;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
-use okapi\OkapiLock;
 
 use okapi\services\caches\map\TileTree;
+use okapi\services\caches\map\TileLock;
 
 
 require_once 'tiletree.inc.php';
@@ -32,7 +32,7 @@ class ReplicateListener
 		# changelog. The format of $changelog is described in the replicate module
 		# (NOT the entire response, just the "changelog" key).
 		
-		$lock = OkapiLock::get("tile-computation-0-0-0");  # lock access to zoom 0
+		$lock = TileLock::get(0, 0, 0);  # lock access to zoom 0
 		$lock->acquire();
 		foreach ($changelog as $c)
 		{
@@ -52,7 +52,7 @@ class ReplicateListener
 		# This will be called when there are "too many" entries in the changelog
 		# and the replicate module thinks it better to just reset the entire TileTree.
 		
-		$lock = OkapiLock::get("tile-computation-0-0-0");  # lock access to zoom 0
+		$lock = TileLock::get(0, 0, 0);  # lock access to zoom 0
 		$lock->acquire();
 		Db::execute("delete from okapi_tile_status");
 		Db::execute("delete from okapi_tile_caches");
