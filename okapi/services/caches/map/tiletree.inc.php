@@ -18,6 +18,33 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiLock;
 
+class TileLock
+{
+	public static function get($zoom, $x, $y)
+	{
+		# We cannot create locks for EVERY tile (there is a limit of 128 semaphores
+		# to be used with sem_get). We don't want for other processes to wait on
+		# locks which they don't have to actually wait for, BUT we don't want them
+		# to deadlock even more.
+		
+		# We need at least one lock per every zoom level. This way, since every
+		# tile is computed from its parent only (it doesn't use any tiles
+		# from the same zoom level), they won't dead lock.
+		
+		# To speed up parallel computation we will add more locks for intermediate
+		# zoom levels.
+		
+		if ($zoom <= 7)
+			$lockname = "tile-$zoom";  # 1 lock for each zoom in 0..7
+		elseif ($zoom <= 15)
+			$lockname = "tile-$zoom-".($x & 1);  # 2 locks for each zoom in 8..15
+		else
+			$lockname = "tile-$zoom";  # 1 lock for each zoom in 16..21.
+
+		return OkapiLock::get($lockname);
+	}
+}
+
 class TileTree
 {
 	public static $FLAG_STAR = 0x01;
@@ -98,18 +125,14 @@ class TileTree
 	 */
 	public static function compute_tile($zoom, $x, $y)
 	{
-		if ($zoom <= 2)
-		{
-			# Confirm the status is uncomputed (multiple processes may try to compute
-			# tiles simulatanously. For low zoom levels we will protect this with
-			# semaphores.
+		# Lock the tile and confirm the status is uncomputed (multiple processes
+		# may try to compute tiles simulatanously).
 			
-			$lock = OkapiLock::get("tile-computation-$zoom-$x-$y");
-			$lock->acquire();
-			$status = self::get_tile_status($zoom, $x, $y);
-			if ($status !== null)
-				return $status;
-		}
+		$lock = TileLock::get($zoom, $x, $y);
+		$lock->acquire();
+		$status = self::get_tile_status($zoom, $x, $y);
+		if ($status !== null)
+			return $status;
 		
 		if ($zoom === 0)
 		{
@@ -232,11 +255,8 @@ class TileTree
 			);
 		");
 		
-		if ($zoom <= 2)
-		{
-			# Resume other processes which begun low-zoom tile computation.
-			$lock->release();
-		}
+		$lock->release();
+
 		return $status;
 	}
 	
