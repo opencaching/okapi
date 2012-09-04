@@ -678,6 +678,13 @@ class OkapiLock
 {
 	private $lock;
 	
+	/** Note: This does NOT tell you if someone currently locked it! */
+	public static function exists($name)
+	{
+		$lockfile = Okapi::get_var_dir()."/okapi-lock-".$name;
+		return file_exists($lockfile);
+	}
+	
 	public static function get($name)
 	{
 		return new OkapiLock($name);
@@ -713,6 +720,12 @@ class OkapiLock
 	{
 		if ($this->lock !== null)
 			sem_release($this->lock);
+	}
+	
+	public function remove()
+	{
+		if ($this->lock !== null)
+			sem_remove($this->lock);
 	}
 }
 

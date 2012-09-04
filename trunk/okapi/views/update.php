@@ -3,6 +3,7 @@
 namespace okapi\views\update;
 
 use Exception;
+
 use okapi\Okapi;
 use okapi\Cache;
 use okapi\Db;
@@ -14,7 +15,10 @@ use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
 use okapi\Settings;
+use okapi\OkapiLock;
+
 use okapi\cronjobs\CronJobController;
+
 
 class View
 {
@@ -564,4 +568,18 @@ class View
 	
 	private static function ver65() { Db::execute("alter table okapi_tile_status engine=innodb;"); }
 	private static function ver66() { Db::execute("alter table okapi_tile_caches engine=innodb;"); }
+	
+	private static function ver67()
+	{
+		# Remove unused locks (these might have been created in previous versions of OKAPI).
+		
+		for ($z=0; $z<=2; $z++)
+			for ($x=0; $x<(1<<$z); $x++)
+				for ($y=0; $y<(1<<$z); $y++)
+				{
+					$lockname = "tile-computation-$z-$x-$y";
+					if (OkapiLock::exists($lockname))
+						OkapiLock::get($lockname)->remove();
+				}
+	}
 }
