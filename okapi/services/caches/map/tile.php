@@ -80,7 +80,30 @@ class WebService
 			throw new InvalidParam('status');
 		if (count($allowed_status_codes) < 3)
 			$filter_conds[] = "status in ('".implode("','", array_map('mysql_real_escape_string', $allowed_status_codes))."')";
-
+		if ($tmp = $request->get_parameter('type'))
+		{
+			$operator = "in";
+			if ($tmp[0] == '-')
+			{
+				$tmp = substr($tmp, 1);
+				$operator = "not in";
+			}
+			$types = array();
+			foreach (explode("|", $tmp) as $name)
+			{
+				try
+				{
+					$id = Okapi::cache_type_name2id($name);
+					$types[] = $id;
+				}
+				catch (Exception $e)
+				{
+					throw new InvalidParam('type', "'$name' is not a valid cache type.");
+				}
+			}
+			$filter_conds[] = "type $operator ('".implode("','", array_map('mysql_real_escape_string', $types))."')";
+		}
+			
 		# Prepare the list of found caches (to be marked as found when drawing)
 		
 		$cache_key = "found/".$request->token->user_id;
