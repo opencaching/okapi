@@ -21,7 +21,6 @@ use okapi\services\caches\map\TileTree;
 
 require_once 'tiletree.inc.php';
 
-
 class ReplicateListener
 {
 	public static function receive($changelog)
