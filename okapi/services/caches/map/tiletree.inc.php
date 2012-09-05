@@ -18,6 +18,7 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiLock;
 
+/*
 class TileLock
 {
 	public static function get($zoom, $x, $y)
@@ -44,6 +45,7 @@ class TileLock
 		return OkapiLock::get($lockname);
 	}
 }
+*/
 
 class TileTree
 {
@@ -92,7 +94,7 @@ class TileTree
 		if ($status === 1)  # Computed and empty.
 		{
 			# This tile was already computed and it is empty.
-			return array();
+			return null;
 		}
 		
 		# If we got here, then the tile is computed and not empty (status 2).
@@ -128,8 +130,6 @@ class TileTree
 		# Lock the tile and confirm the status is uncomputed (multiple processes
 		# may try to compute tiles simulatanously).
 			
-		$lock = TileLock::get($zoom, $x, $y);
-		$lock->acquire();
 		$status = self::get_tile_status($zoom, $x, $y);
 		if ($status !== null)
 			return $status;
@@ -240,6 +240,19 @@ class TileTree
 						and z21x between $left_z21x and $right_z21x
 						and z21y between $top_z21y and $bottom_z21y
 				");
+				$test = Db::select_value("
+					select 1
+					from okapi_tile_caches
+					where
+						z = '".mysql_real_escape_string($zoom)."'
+						and x = '".mysql_real_escape_string($x)."'
+						and y = '".mysql_real_escape_string($y)."'
+					limit 1;
+				");
+				if ($test)
+					$status = 2;
+				else
+					$status = 1;
 			}
 		}
 		
@@ -255,8 +268,6 @@ class TileTree
 			);
 		");
 		
-		$lock->release();
-
 		return $status;
 	}
 	

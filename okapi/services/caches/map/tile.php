@@ -257,8 +257,9 @@ class WebService
 		$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
 		imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
 		imagealphablending($im, true);
-		while ($row = mysql_fetch_row($rs))
-			self::draw_cache($im, $zoom, $row, $user['found'], $excluded_dict);
+		if ($rs !== null)
+			while ($row = mysql_fetch_row($rs))
+				self::draw_cache($im, $zoom, $row, $user['found'], $excluded_dict);
 		ob_start();
 		imagesavealpha($im, true);
 		imagepng($im);
