@@ -582,4 +582,19 @@ class View
 						OkapiLock::get($lockname)->remove();
 				}
 	}
+	
+	private static function ver68()
+	{
+		# Once again, remove unused locks.
+		
+		for ($z=0; $z<=21; $z++)
+		{
+			foreach (array("", "-0", "-1") as $suffix)
+			{
+				$lockname = "tile-$z$suffix";
+				if (OkapiLock::exists($lockname))
+					OkapiLock::get($lockname)->remove();
+			}
+		}
+	}
 }
