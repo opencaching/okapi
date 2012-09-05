@@ -52,6 +52,7 @@ class ReplicateListener
 		# This will be called when there are "too many" entries in the changelog
 		# and the replicate module thinks it better to just reset the entire TileTree.
 		
+		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: ReplicateListener::reset called", "");
 		$lock = TileLock::get(0, 0, 0);  # lock access to zoom 0
 		$lock->acquire();
 		Db::execute("delete from okapi_tile_status");
@@ -101,6 +102,8 @@ class ReplicateListener
 		
 		if ($mode == 'force_refresh')
 		{
+			Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: force_refresh", "");
+			
 			# Update cache at zero level. Remove all other levels (force refresh).
 			
 			Db::execute("
