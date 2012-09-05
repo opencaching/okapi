@@ -46,7 +46,7 @@ class CronJobController
 				new AdminStatsSender(),
 				new LocaleChecker(),
 				new FulldumpGeneratorJob(),
-				// new TileTreeUpdater(),
+				new TileTreeUpdater(),
 			);
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
@@ -415,9 +415,9 @@ class TileTreeUpdater extends Cron5Job
 			# No update necessary.
 		} elseif ($tiletree_revision < $current_clog_revision) {
 			require_once($GLOBALS['rootpath']."okapi/services/caches/map/replicate_listener.inc.php");
-			if ($current_clog_revision - $tiletree_revision < 1000)
+			if ($current_clog_revision - $tiletree_revision < 10000)
 			{
-				for ($i=0; $i<10; $i++)  # To avoid infinite loop.
+				for ($i=0; $i<100; $i++)  # Just to avoid infinite loop.
 				{
 					$response = OkapiServiceRunner::call('services/replicate/changelog', new OkapiInternalRequest(
 						new OkapiInternalConsumer(), null, array('since' => $tiletree_revision)));

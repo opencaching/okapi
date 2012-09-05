@@ -45,6 +45,7 @@ class ReplicateListener
 	{
 		# This will be called when there are "too many" entries in the changelog
 		# and the replicate module thinks it better to just reset the entire TileTree.
+		# For the first hours after such reset maps may work very slow!
 		
 		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: ReplicateListener::reset called", "");
 		Db::execute("delete from okapi_tile_status");
@@ -53,6 +54,8 @@ class ReplicateListener
 	
 	private static function handle_geocache_replace($c)
 	{
+		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: handle_geocache_replace", print_r($c, true));
+		
 		# Check if any relevant geocache attributes have changed.
 		# We will pick up "our" copy of the cache from zero-zoom level.
 		
@@ -78,83 +81,174 @@ class ReplicateListener
 		{
 			# Aaah, a new geocache! How nice... ;)
 			
-			$mode = 'force_refresh';
+			self::add_geocache_to_cached_tiles($theirs);
 		}
 		elseif (($ours[1] != $theirs[1]) || ($ours[2] != $theirs[2]))  # z21x & z21y fields
 		{
 			# Location changed.
 			
-			$mode = 'force_refresh';
+			self::remove_geocache_from_cached_tiles($ours[0]);
+			self::add_geocache_to_cached_tiles($theirs);
+		}
+		elseif ($ours != $theirs)
+		{
+			self::update_geocache_attributes_in_cached_tiles($theirs);
 		}
 		else
 		{
-			$mode = 'update_references';
+			# No need to update anything. This is very common (i.e. when the
+			# cache was simply found, not actually changed). Replicate module generates
+			# many updates which do not influence our cache.
+		}
+	}
+	
+	private static function remove_geocache_from_cached_tiles($cache_id)
+	{
+		# Simply remove all traces of this geocache from all tiles.
+		# This includes all references along tiles' borders, etc.
+		
+		Db::execute("
+			delete from okapi_tile_caches
+			where cache_id = '".mysql_real_escape_string($cache_id)."'
+		");
+		
+		# Note, that after this operation, okapi_tile_status may be out-of-date.
+		# There might exist some rows with status==2, but they should be in status==1.
+		# Currently, we can ignore this, because status==1 is just a shortcut to
+		# avoid making unnecessary queries.
+	}
+	
+	private static function add_geocache_to_cached_tiles(&$row)
+	{
+		# This one is the most complicated. We need to identify all tiles
+		# where the cache should be present. This include 22 obvious "exact match"
+		# tiles (one per each zoom level), *and* all "just outside the border"
+		# tiles (one geocache can be present in up to 4 tiles per zoom level).
+		# This gives us max. 88 tiles to add the geocache to.
+		
+		$tiles_to_update = array();
+		
+		# We will begin at zoom 21 and then go down to zoom 0.
+		
+		$z21x = $row[1];
+		$z21y = $row[2];
+		$ex = $z21x >> 8;  # initially, z21x / <tile width>
+		$ey = $z21y >> 8;  # initially, z21y / <tile height>
+		for ($zoom = 21; $zoom >= 0; $zoom--, $ex >>= 1, $ey >>= 1)
+		{
+			# ($ex, $ey) points to the "exact match" tile. We need to determine
+			# tile-range to check for "just outside the border" tiles. We will
+			# go with the simple approach and check all 1+8 bordering tiles.
+			
+			$tiles_in_this_region = array();
+			for ($x=$ex-1; $x<=$ex+1; $x++)
+				for ($y=$ey-1; $y<=$ey+1; $y++)
+					if (($x >= 0) && ($x < 1<<$zoom) && ($y >= 0) && ($y < 1<<$zoom))
+						$tiles_in_this_region[] = array($x, $y);
+			
+			foreach ($tiles_in_this_region as $coords)
+			{
+				list($x, $y) = $coords;
+				
+				$scale = 8 + 21 - $zoom;
+				$margin = 1 << ($scale - 3);  # 32px of current $zoom level, measured in z21 pixels.
+				
+				$left_z21x = ($x << $scale) - $margin;
+				$right_z21x = (($x + 1) << $scale) + $margin;
+				$top_z21y = ($y << $scale) - $margin;
+				$bottom_z21y = (($y + 1) << $scale) + $margin;
+				
+				if ($z21x < $left_z21x)
+					continue;
+				if ($z21x > $right_z21x)
+					continue;
+				if ($z21y < $top_z21y)
+					continue;
+				if ($z21y > $bottom_z21y)
+					continue;
+				
+				# We found a match. Store it for later.
+				
+				$tiles_to_update[] = array($zoom, $x, $y);
+			}
 		}
 		
-		if ($mode == 'force_refresh')
+		# We have a list of all possible tiles that need updating.
+		# Most of these tiles aren't cached at all. We need to update
+		# only the cached ones.
+		
+		$alternatives = array();
+		foreach ($tiles_to_update as $coords)
 		{
-			Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: force_refresh", "");
-			
-			# Update cache at zero level. Remove all other levels (force refresh).
-			
-			Db::execute("
-				replace into okapi_tile_caches (
-					z, x, y, cache_id, z21x, z21y, status, type, rating, flags
-				) values (
-					0, 0, 0,
-					'".mysql_real_escape_string($theirs[0])."',
-					'".mysql_real_escape_string($theirs[1])."',
-					'".mysql_real_escape_string($theirs[2])."',
-					'".mysql_real_escape_string($theirs[3])."',
-					'".mysql_real_escape_string($theirs[4])."',
-					".(($theirs[5] === null) ? "null" : $theirs[5]).",
-					'".mysql_real_escape_string($theirs[6])."'
-				);
-			");
-			Db::execute("delete from okapi_tile_status where z > 0");
-			Db::execute("delete from okapi_tile_caches where z > 0");
+			list($z, $x, $y) = $coords;
+			$alternatives[] = "(
+				z = '".mysql_real_escape_string($z)."'
+				and x = '".mysql_real_escape_string($x)."'
+				and y = '".mysql_real_escape_string($y)."'
+			)";
 		}
-		elseif ($mode == 'update_references')
-		{
-			if ($ours == $theirs)
-			{
-				# No need to update anything. This is quite common (i.e. when the
-				# cache was simply found, not changed).
-			}
-			else
-			{
-				# Update all references (for all levels).
-				Db::execute("
-					update okapi_tile_caches
-					set
-						status = '".mysql_real_escape_string($theirs[3])."',
-						type = '".mysql_real_escape_string($theirs[4])."',
-						rating = ".(($theirs[5] === null) ? "null" : $theirs[5]).",
-						flags = '".mysql_real_escape_string($theirs[6])."'
-					where
-						cache_id = '".mysql_real_escape_string($theirs[0])."'
-				");
-			}
-		}
-		else throw new Exception();  # No such case.
+		Db::execute("
+			replace into okapi_tile_caches (
+				z, x, y, cache_id, z21x, z21y, status, type, rating, flags
+			)
+			select
+				z, x, y,
+				'".mysql_real_escape_string($row[0])."',
+				'".mysql_real_escape_string($row[1])."',
+				'".mysql_real_escape_string($row[2])."',
+				'".mysql_real_escape_string($row[3])."',
+				'".mysql_real_escape_string($row[4])."',
+				".(($row[5] === null) ? "null" : $row[5]).",
+				'".mysql_real_escape_string($row[6])."'
+			from okapi_tile_status
+			where
+				(".implode(" or ", $alternatives).")
+				and status in (1,2)
+		");
+		
+		# We might have just filled some empty tiles (status 1) with data.
+		# We need to update their status to 2.
+		
+		Db::execute("
+			update okapi_tile_status
+			set status=2
+			where
+				(".implode(" or ", $alternatives).")
+				and status=1
+		");
+		
+		# And that's all. That should do the trick.
+	}
+	
+	private static function update_geocache_attributes_in_cached_tiles(&$row)
+	{
+		# Update all attributes (for all levels). Note, that we don't need to
+		# update location ($row[1] and $row[2]) - this method is called ONLY
+		# when location stayed untouched!
+		
+		Db::execute("
+			update okapi_tile_caches
+			set
+				status = '".mysql_real_escape_string($row[3])."',
+				type = '".mysql_real_escape_string($row[4])."',
+				rating = ".(($row[5] === null) ? "null" : $row[5]).",
+				flags = '".mysql_real_escape_string($row[6])."'
+			where
+				cache_id = '".mysql_real_escape_string($row[0])."'
+		");
 	}
 	
 	private static function handle_geocache_delete($c)
 	{
-		# Delete cache at zero level. Remove all other levels (force refresh).
+		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: handle_geocache_delete", print_r($c, true));
+		
+		# Simply delete the cache at all zoom levels.
 		
 		$cache_id = Db::select_value("
 			select cache_id
 			from caches
 			where wp_oc='".mysql_real_escape_string($c['object_key']['code'])."'
 		");
-		Db::execute("
-			delete from okapi_tile_caches
-			where
-				z = 0
-				and cache_id = '".mysql_real_escape_string($cache_id)."';
-		");
-		Db::execute("delete from okapi_tile_status where z > 0");
-		Db::execute("delete from okapi_tile_caches where z > 0");
+		self::remove_geocache_from_cached_tiles($cache_id);
 	}
 }

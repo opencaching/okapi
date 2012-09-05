@@ -107,9 +107,10 @@ class TileTree
 	 */
 	public static function compute_tile($zoom, $x, $y)
 	{
-		# Lock the tile and confirm the status is uncomputed (multiple processes
-		# may try to compute tiles simulatanously).
-			
+		# Note, that multiple threads may try to compute tiles simulatanously.
+		# For low-level tiles, this can be expensive. WRTODO: Think of some
+		# appropriate locks.
+
 		$status = self::get_tile_status($zoom, $x, $y);
 		if ($status !== null)
 			return $status;
