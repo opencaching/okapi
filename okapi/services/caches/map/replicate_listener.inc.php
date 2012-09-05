@@ -18,11 +18,8 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
 
 use okapi\services\caches\map\TileTree;
-use okapi\services\caches\map\TileLock;
-
 
 require_once 'tiletree.inc.php';
-
 
 class ReplicateListener
 {
@@ -32,8 +29,6 @@ class ReplicateListener
 		# changelog. The format of $changelog is described in the replicate module
 		# (NOT the entire response, just the "changelog" key).
 		
-		$lock = TileLock::get(0, 0, 0);  # lock access to zoom 0
-		$lock->acquire();
 		foreach ($changelog as $c)
 		{
 			if ($c['object_type'] == 'geocache')
@@ -44,7 +39,6 @@ class ReplicateListener
 					self::handle_geocache_delete($c);
 			}
 		}
-		$lock->release();
 	}
 	
 	public static function reset()
@@ -53,11 +47,8 @@ class ReplicateListener
 		# and the replicate module thinks it better to just reset the entire TileTree.
 		
 		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: ReplicateListener::reset called", "");
-		$lock = TileLock::get(0, 0, 0);  # lock access to zoom 0
-		$lock->acquire();
 		Db::execute("delete from okapi_tile_status");
 		Db::execute("delete from okapi_tile_caches");
-		$lock->release();
 	}
 	
 	private static function handle_geocache_replace($c)
