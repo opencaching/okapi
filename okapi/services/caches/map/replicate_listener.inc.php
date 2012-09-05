@@ -54,8 +54,6 @@ class ReplicateListener
 	
 	private static function handle_geocache_replace($c)
 	{
-		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: handle_geocache_replace", print_r($c, true));
-		
 		# Check if any relevant geocache attributes have changed.
 		# We will pick up "our" copy of the cache from zero-zoom level.
 		
@@ -104,6 +102,8 @@ class ReplicateListener
 	
 	private static function remove_geocache_from_cached_tiles($cache_id)
 	{
+		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: remove_geocache_from_cached_tiles", $cache_id);
+		
 		# Simply remove all traces of this geocache from all tiles.
 		# This includes all references along tiles' borders, etc.
 		
@@ -120,6 +120,8 @@ class ReplicateListener
 	
 	private static function add_geocache_to_cached_tiles(&$row)
 	{
+		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: add_geocache_to_cached_tiles", print_r($row, true));
+		
 		# This one is the most complicated. We need to identify all tiles
 		# where the cache should be present. This include 22 obvious "exact match"
 		# tiles (one per each zoom level), *and* all "just outside the border"
@@ -240,8 +242,6 @@ class ReplicateListener
 	
 	private static function handle_geocache_delete($c)
 	{
-		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: handle_geocache_delete", print_r($c, true));
-		
 		# Simply delete the cache at all zoom levels.
 		
 		$cache_id = Db::select_value("
