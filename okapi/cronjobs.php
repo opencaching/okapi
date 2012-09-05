@@ -46,7 +46,7 @@ class CronJobController
 				new AdminStatsSender(),
 				new LocaleChecker(),
 				new FulldumpGeneratorJob(),
-				new TileTreeUpdater(),
+				// new TileTreeUpdater(),
 			);
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
