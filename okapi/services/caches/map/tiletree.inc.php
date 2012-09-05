@@ -18,34 +18,6 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiLock;
 
-/*
-class TileLock
-{
-	public static function get($zoom, $x, $y)
-	{
-		# We cannot create locks for EVERY tile (there is a limit of 128 semaphores
-		# to be used with sem_get). We don't want for other processes to wait on
-		# locks which they don't have to actually wait for, BUT we don't want them
-		# to deadlock even more.
-		
-		# We need at least one lock per every zoom level. This way, since every
-		# tile is computed from its parent only (it doesn't use any tiles
-		# from the same zoom level), they won't dead lock.
-		
-		# To speed up parallel computation we will add more locks for intermediate
-		# zoom levels.
-		
-		if ($zoom <= 7)
-			$lockname = "tile-$zoom";  # 1 lock for each zoom in 0..7
-		elseif ($zoom <= 15)
-			$lockname = "tile-$zoom-".($x & 1);  # 2 locks for each zoom in 8..15
-		else
-			$lockname = "tile-$zoom";  # 1 lock for each zoom in 16..21.
-
-		return OkapiLock::get($lockname);
-	}
-}
-*/
 
 class TileTree
 {
@@ -89,8 +61,16 @@ class TileTree
 			# Note, that computing the tile does not involve taking any
 			# filtering parameters.
 			
+			$time_started = microtime(true);
 			$status = self::compute_tile($zoom, $x, $y);
+			$runtime = microtime(true) - $time_started;
+			OkapiServiceRunner::save_stats_extra("tile/cache1/direct-miss", null, $runtime);
 		}
+		else
+		{
+			OkapiServiceRunner::save_stats_extra("tile/cache1/direct-hit", null, 0);
+		}
+		
 		if ($status === 1)  # Computed and empty.
 		{
 			# This tile was already computed and it is empty.
@@ -144,6 +124,8 @@ class TileTree
 			# This can be done a little faster (without the use of internal requests),
 			# but there is *no need* to - this query is run seldom and is cached.
 			
+			$time_started = microtime(true);
+			
 			$params = array();
 			$params['status'] = "Available|Temporarily unavailable|Archived";  # we want them all
 			$params['limit'] = "10000000";  # no limit
@@ -179,6 +161,9 @@ class TileTree
 				");
 			}
 			$status = 2;
+			
+			$runtime = microtime(true) - $time_started;
+			OkapiServiceRunner::save_stats_extra("tile/cache1/rebuild-0", null, $runtime);
 		}
 		else
 		{
@@ -191,8 +176,16 @@ class TileTree
 			$status = self::get_tile_status($parent_zoom, $parent_x, $parent_y);
 			if ($status === null)  # Not computed.
 			{
+				$time_started = microtime(true);
 				$status = self::compute_tile($parent_zoom, $parent_x, $parent_y);
+				$runtime = microtime(true) - $time_started;
+				OkapiServiceRunner::save_stats_extra("tile/cache1/internal-miss", null, $runtime);
 			}
+			else
+			{
+				OkapiServiceRunner::save_stats_extra("tile/cache1/internal-hit", null, 0);
+			}
+			
 			if ($status === 1)  # Computed and empty.
 			{
 				# No need to check.

@@ -248,25 +248,60 @@ class WebService
 		
 		$rs = TileTree::query_fast($zoom, $x, $y, $filter_conds);
 		
-		# Draw the image. WRTODO: Selective PNG cache.
+		# Draw the image.
 		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "image/png";
-		$im = imagecreatetruecolor(256, 256);
-		imagealphablending($im, false); 
-		$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
-		imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
-		imagealphablending($im, true);
-		if ($rs !== null)
-			while ($row = mysql_fetch_row($rs))
-				self::draw_cache($im, $zoom, $row, $user['found'], $excluded_dict);
-		ob_start();
-		imagesavealpha($im, true);
-		imagepng($im);
-		imagedestroy($im);
-		$response->body = ob_get_clean();
+		if ($rs === null)
+		{
+			# Empty tile. This is very common. We will permanently hold a ready-to-serve
+			# copy of empty PNG image, especially for this case.
+			
+			$response->body = self::get_empty_tile_png();
+		}
+		else
+		{
+			$time_started = microtime(true);
+			
+			$im = imagecreatetruecolor(256, 256);
+			imagealphablending($im, false); 
+			$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
+			imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
+			imagealphablending($im, true);
+			if ($rs !== null)
+				while ($row = mysql_fetch_row($rs))
+					self::draw_cache($im, $zoom, $row, $user['found'], $excluded_dict);
+			ob_start();
+			imagesavealpha($im, true);
+			imagepng($im);
+			imagedestroy($im);
+			$response->body = ob_get_clean();
+			
+			$runtime = microtime(true) - $time_started;
+			OkapiServiceRunner::save_stats_extra("tile/drawpng", null, $runtime);
+		}
 
 		return $response;
+	}
+	
+	private static function get_empty_tile_png()
+	{
+		$cache_key = "tilepng/empty";
+		$tile = Cache::get($cache_key);
+		if ($tile === null)
+		{
+			$im = imagecreatetruecolor(256, 256);
+			imagealphablending($im, false); 
+			$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
+			imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
+			ob_start();
+			imagesavealpha($im, true);
+			imagepng($im);
+			imagedestroy($im);
+			$tile = ob_get_clean();
+			Cache::set($cache_key, $tile, 86400);
+		}
+		return $tile;
 	}
 	
 	private static $images = array();
