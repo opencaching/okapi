@@ -21,9 +21,13 @@ use okapi\OkapiLock;
 
 class TileTree
 {
+	# Static flags (stored in the database).
 	public static $FLAG_STAR = 0x01;
 	public static $FLAG_HAS_TRACKABLES = 0x02;
 	public static $FLAG_NOT_YET_FOUND = 0x04;
+	
+	# Dynamic flags (added at runtime).
+	public static $FLAG_FOUND = 0x0100;
 	
 	/**
 	 * Return null if not computed, 1 if computed and empty, 2 if computed and not empty.

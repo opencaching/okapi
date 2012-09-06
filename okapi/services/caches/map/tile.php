@@ -25,6 +25,9 @@ require_once 'tiletree.inc.php';
 
 class WebService
 {
+	private static $RENDERER_VERSION = 7;  # increment to expire the PNG cache
+	private static $MIN_ZOOM_FOR_FOUND_ICON = 10;
+	
 	public static function options()
 	{
 		return array(
@@ -62,6 +65,15 @@ class WebService
 		if ($y >= 1<<$zoom)
 			throw new InvalidParam('y', "Should be in 0..".((1<<$zoom) - 1).".");
 		
+		# While checking the parameters, we will also decide, if the parameters
+		# are "common enough" for PNG caching to kick in.
+		
+		$uncommon_score = 0;  # the lower the better
+		
+		if ($zoom > 12)
+			$uncommon_score += ($zoom - 12);
+		
+		
 		# status
 		
 		$filter_conds = array();
@@ -79,10 +91,18 @@ class WebService
 				throw new InvalidParam('status', "'$name' is not a valid cache status.");
 			}
 		}
+		sort($allowed_status_codes);
 		if (count($allowed_status_codes) == 0)
 			throw new InvalidParam('status');
 		if (count($allowed_status_codes) < 3)
 			$filter_conds[] = "status in ('".implode("','", array_map('mysql_real_escape_string', $allowed_status_codes))."')";
+		if ($allowed_status_codes == array(1) || $allowed_status_codes == array(1,2)) {
+			# very common
+		} elseif ($allowed_status_codes == array(1,2,3)) {
+			$uncommon_score += 2;  # still common
+		} else {
+			$uncommon_score += 6;  # not so common
+		}
 		
 		# type
 		
@@ -107,7 +127,39 @@ class WebService
 					throw new InvalidParam('type', "'$name' is not a valid cache type.");
 				}
 			}
-			$filter_conds[] = "type $operator ('".implode("','", array_map('mysql_real_escape_string', $types))."')";
+			sort($types);
+			
+			# Check if all cache types were selected. Since we're running
+			# on various OC installations, we don't know which caches types
+			# are "all" here. We have to check.
+			
+			$all = Cache::get('all_cache_types');
+			if ($all === null)
+			{
+				$all = Db::select_column("
+					select distinct type
+					from caches
+					where status in (1,2,3)
+				");
+				Cache::set('all_cache_types', $all, 86400);
+			}
+			$ok = true;
+			foreach ($all as $type)
+				if (!in_array($type, $types))
+				{
+					$ok = false;
+					break;
+				}
+					
+			if ($ok && ($operator == "in"))
+			{
+				# Do nothing. All cache types will be included. This is common.
+			}
+			else
+			{
+				$filter_conds[] = "type $operator ('".implode("','", array_map('mysql_real_escape_string', $types))."')";
+				$uncommon_score += 5;
+			}
 		}
 		
 		# User-specific geocaches (cached together).
@@ -195,9 +247,11 @@ class WebService
 				# Easy.
 				foreach ($user['found'] as $cache_id => $v)
 					$excluded_dict[$cache_id] = true;
+				$uncommon_score += 1;
 			} else {
 				# Found only. This will slow down queries somewhat. But it is rare.
 				$filter_conds[] = "cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($user['found'])))."')";
+				$uncommon_score += 8;
 			}
 		}
 		
@@ -207,16 +261,24 @@ class WebService
 		{
 			if (!in_array($tmp, array('true', 'false'), 1))
 				throw new InvalidParam('with_trackables_only', "'$tmp'");
-			$filter_conds[] = "flags & ".TileTree::$FLAG_HAS_TRACKABLES;
+			if ($tmp == 'true')
+			{
+				$filter_conds[] = "flags & ".TileTree::$FLAG_HAS_TRACKABLES;
+				$uncommon_score += 5;
+			}
 		}
 		
 		# not_yet_found_only
 		
-		if ($tmp = $request->get_parameter('not_yet_found_only'))
+		if ($tmp = $request->get_parameter('not_yet_found_only'))  # ftf hunter
 		{
 			if (!in_array($tmp, array('true', 'false'), 1))
 				throw new InvalidParam('not_yet_found_only', "'$tmp'");
-			$filter_conds[] = "flags & ".TileTree::$FLAG_NOT_YET_FOUND;
+			if ($tmp == 'true')
+			{
+				$filter_conds[] = "flags & ".TileTree::$FLAG_NOT_YET_FOUND;
+				$uncommon_score += 3;
+			}
 		}
 		
 		# rating
@@ -240,68 +302,91 @@ class WebService
 			} else {
 				$filter_conds[] = "(rating between $min and $max)".
 					($allow_null ? " or rating is null" : "");
+				if ($max < 5)
+					$uncommon_score += 6;
+				else
+					$uncommon_score += 2;
 			}
 		}
 		
 		# Get caches within the tile (+ those around the borders). All filtering
-		# options need to be applied here.
+		# options need to be applied here. If the user chose very common
+		# filter_conds and is zoomed-out (large number of caches), then do
+		# a cache-search first.
 		
 		$rs = TileTree::query_fast($zoom, $x, $y, $filter_conds);
+			
+		# Filter out caches in $excluded_dict. You may wonder why there was no
+		# "cache_id not in (...)" condition. This was done on purpose. In the most
+		# common case, only a small fraction of $excluded_dict will be present
+		# in that tile. We think it will be faster to filtered them out AFTER
+		# the query.
+
+		$rows = array();
+		while ($row = mysql_fetch_row($rs))
+		{
+			if (isset($excluded_dict[$row[0]]))
+				continue;
+			
+			# Also, we will add a special "found" flag, to indicate that this cache
+			# needs to be drawn as found.
+
+			if (isset($user['found'][$row[0]]))
+			{
+				$row[6] |= TileTree::$FLAG_FOUND;  # $row[6] is "flags"
+				if ($zoom >= self::$MIN_ZOOM_FOR_FOUND_ICON)
+					$uncommon_score += 5;  # Note: we're inside the loop!
+			}
+
+			$rows[] = $row;
+		}
 		
+		# If the result is empty, force read from cache.
+		
+		if (count($rows) == 0)
+			$uncommon_score = 0;
+
 		# Draw the image.
 		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "image/png";
-		if ($rs === null)
+		
+		# We will hold some most popular PNGs in the cache, ready to be served.
+		
+		$time_started = microtime(true);
+		if ($uncommon_score <= 10)
 		{
-			# Empty tile. This is very common. We will permanently hold a ready-to-serve
-			# copy of empty PNG image, especially for this case.
-			
-			$response->body = self::get_empty_tile_png();
+			$cache_key = "tilepng/".md5(self::$RENDERER_VERSION."/$zoom/$x/$y/".serialize($rows));
+			$response->body = Cache::get($cache_key);
 		}
-		else
+		if ($response->body === null)
 		{
-			$time_started = microtime(true);
-			
 			$im = imagecreatetruecolor(256, 256);
 			imagealphablending($im, false); 
 			$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
 			imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
 			imagealphablending($im, true);
-			if ($rs !== null)
-				while ($row = mysql_fetch_row($rs))
-					self::draw_cache($im, $zoom, $row, $user['found'], $excluded_dict);
+			foreach ($rows as $row)
+				self::draw_cache($im, $zoom, $row);
+			# Debug: Uncomment to see the $uncommon_score.
+			# imagettftext($im, 25, 0, 80, 140, imagecolorallocatealpha($im, 0, 0, 0, 30), $GLOBALS['rootpath'].'util.sec/bt.ttf', "Score $uncommon_score");
 			ob_start();
 			imagesavealpha($im, true);
 			imagepng($im);
 			imagedestroy($im);
 			$response->body = ob_get_clean();
 			
+			if ($uncommon_score <= 3)
+				Cache::set($cache_key, $response->body, 86400);
+			
 			$runtime = microtime(true) - $time_started;
 			OkapiServiceRunner::save_stats_extra("tile/drawpng", null, $runtime);
+		} else {
+			$runtime = microtime(true) - $time_started;
+			OkapiServiceRunner::save_stats_extra("tile/drawpng-from-cache", null, $runtime);
 		}
 
 		return $response;
-	}
-	
-	private static function get_empty_tile_png()
-	{
-		$cache_key = "tilepng/empty";
-		$tile = Cache::get($cache_key);
-		if ($tile === null)
-		{
-			$im = imagecreatetruecolor(256, 256);
-			imagealphablending($im, false); 
-			$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
-			imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
-			ob_start();
-			imagesavealpha($im, true);
-			imagepng($im);
-			imagedestroy($im);
-			$tile = ob_get_clean();
-			Cache::set($cache_key, $tile, 86400);
-		}
-		return $tile;
 	}
 	
 	private static $images = array();
@@ -313,11 +398,9 @@ class WebService
 		return self::$images[$key];
 	}
 	
-	private static function draw_cache($im, $zoom, &$cache_struct, &$found_cache_dict, &$excluded_dict)
+	private static function draw_cache($im, $zoom, &$cache_struct)
 	{
 		list($cache_id, $px, $py, $status, $type, $rating, $flags, $count) = $cache_struct;
-		if (isset($excluded_dict[$cache_id]))
-			return;
 		switch ($type) {
 			case 2: $key = 'traditional'; break;
 			case 3: $key = 'multi'; break;
@@ -409,7 +492,7 @@ class WebService
 		
 		# Mark found caches with V.
 		
-		if ($zoom >= 10 && (isset($found_cache_dict[$cache_id])))
+		if ($zoom >= self::$MIN_ZOOM_FOR_FOUND_ICON && ($flags & TileTree::$FLAG_FOUND))
 		{
 			$icon = self::get_image("found");
 			if ($zoom >= 13) {
