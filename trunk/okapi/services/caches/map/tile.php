@@ -323,22 +323,25 @@ class WebService
 		# the query.
 
 		$rows = array();
-		while ($row = mysql_fetch_row($rs))
+		if ($rs !== null)
 		{
-			if (isset($excluded_dict[$row[0]]))
-				continue;
-			
-			# Also, we will add a special "found" flag, to indicate that this cache
-			# needs to be drawn as found.
-
-			if (isset($user['found'][$row[0]]))
+			while ($row = mysql_fetch_row($rs))
 			{
-				$row[6] |= TileTree::$FLAG_FOUND;  # $row[6] is "flags"
-				if ($zoom >= self::$MIN_ZOOM_FOR_FOUND_ICON)
-					$uncommon_score += 5;  # Note: we're inside the loop!
-			}
+				if (isset($excluded_dict[$row[0]]))
+					continue;
+				
+				# Also, we will add a special "found" flag, to indicate that this cache
+				# needs to be drawn as found.
 
-			$rows[] = $row;
+				if (isset($user['found'][$row[0]]))
+				{
+					$row[6] |= TileTree::$FLAG_FOUND;  # $row[6] is "flags"
+					if ($zoom >= self::$MIN_ZOOM_FOR_FOUND_ICON)
+						$uncommon_score += 5;  # Note: we're inside the loop!
+				}
+
+				$rows[] = $row;
+			}
 		}
 		
 		# If the result is empty, force read from cache.
