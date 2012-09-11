@@ -47,7 +47,17 @@ class ReplicateListener
 		# and the replicate module thinks it better to just reset the entire TileTree.
 		# For the first hours after such reset maps may work very slow!
 		
-		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: ReplicateListener::reset called", "");
+		Okapi::mail_admins("OKAPI TileMap database reset",
+			"Hello,\n\n".
+			"OKAPI's 'replicate' module detected a big database update. As result\n".
+			"of this, OKAPI decided to reset the TileMap cache. This may\n".
+			"temporarily influence TileMap performance. The map may work much\n".
+			"slower during the next few hours or days, while the cache is being\n".
+			"rebuilt.\n\n".
+			"If this happens frequently, please contact OKAPI developers. It may\n".
+			"indicate a bug in OKAPI's 'replicate' module or cronjob settings.\n\n".
+			"Thanks!"
+		);
 		Db::execute("delete from okapi_tile_status");
 		Db::execute("delete from okapi_tile_caches");
 	}
@@ -102,8 +112,6 @@ class ReplicateListener
 	
 	private static function remove_geocache_from_cached_tiles($cache_id)
 	{
-		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: remove_geocache_from_cached_tiles", $cache_id);
-		
 		# Simply remove all traces of this geocache from all tiles.
 		# This includes all references along tiles' borders, etc.
 		
@@ -120,8 +128,6 @@ class ReplicateListener
 	
 	private static function add_geocache_to_cached_tiles(&$row)
 	{
-		Okapi::mail_from_okapi(array('rygielski@mimuw.edu.pl'), "debug: add_geocache_to_cached_tiles", print_r($row, true));
-		
 		# This one is the most complicated. We need to identify all tiles
 		# where the cache should be present. This include 22 obvious "exact match"
 		# tiles (one per each zoom level), *and* all "just outside the border"

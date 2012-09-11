@@ -256,6 +256,21 @@ class CacheCleanupCronJob extends Cron5Job
 			where expires < now()
 		");
 		Db::query("optimize table okapi_cache");
+		
+		# FileCache does not have an expiry date. We will delete all files older
+		# than 24 hours.
+		
+		$dir = Okapi::get_var_dir();
+		if ($dh = opendir($dir)) {
+			while (($file = readdir($dh)) !== false) {
+				if (strpos($file, "okapi_filecache_") === 0) {
+					if (filemtime("$dir/$file") < time() - 86400) {
+						unlink("$dir/$file");
+					}
+				}
+			}
+			closedir($dh);
+		}
 	}
 }
 
@@ -415,9 +430,9 @@ class TileTreeUpdater extends Cron5Job
 			# No update necessary.
 		} elseif ($tiletree_revision < $current_clog_revision) {
 			require_once($GLOBALS['rootpath']."okapi/services/caches/map/replicate_listener.inc.php");
-			if ($current_clog_revision - $tiletree_revision < 10000)
+			if ($current_clog_revision - $tiletree_revision < 100000)  # In the middle of 2012, OCPL generated 30000 entries per week
 			{
-				for ($i=0; $i<100; $i++)  # Just to avoid infinite loop.
+				for ($i=0; $i<100; $i++)  # This gives us no more than 20000 (?) at a time.
 				{
 					$response = OkapiServiceRunner::call('services/replicate/changelog', new OkapiInternalRequest(
 						new OkapiInternalConsumer(), null, array('since' => $tiletree_revision)));

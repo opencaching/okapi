@@ -4,19 +4,8 @@ namespace okapi;
 
 # OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
 
-# Including this file will initialize OKAPI Framework with its default
-# exception and error handlers. OKAPI is strict about PHP warnings and
-# notices. You might need to temporarily disable the error handler in
-# order to get it to work in some legacy code. Do this by calling
-# OkapiErrorHandler::disable() BEFORE calling the "buggy" code, and
-# OkapiErrorHandler::reenable() AFTER returning from it.
-
-# When I was installing it for the first time on the opencaching.pl
-# site, I needed to change some minor things in order to get it to work
-# properly, i.e., turn some "die()"-like statements into exceptions.
-# Contact me for details.
-
-# I hope this will come in handy...  - WR.
+# If you want to include_once/require_once OKAPI in your code,
+# see facade.php. You should not rely on any other file, never!
 
 use Exception;
 use ErrorException;
@@ -146,22 +135,50 @@ class OkapiExceptionHandler
 			}
 			else
 			{
-				$admin_email = implode(", ", get_admin_emails());
-				$sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
-				mail(
-					$admin_email,
-					"OKAPI Method Error - ".(
-						class_exists("okapi\\Settings")
-						? Settings::get('SITE_URL') : "unknown location"
-					),
+				$subject = "OKAPI Method Error - ".(
+					class_exists("okapi\\Settings")
+					? Settings::get('SITE_URL') : "unknown location"
+				);
+				$message = (
 					"OKAPI caught the following exception while executing API method request.\n".
 					"This is an error in OUR code and should be fixed. Please contact the\n".
 					"developer of the module that threw this error. Thanks!\n\n".
-					$exception_info,
-					"Content-Type: text/plain; charset=utf-8\n".
-					"From: OKAPI <$sender_email>\n".
-					"Reply-To: $sender_email\n"
+					$exception_info
+				);
+				try
+				{
+					Okapi::mail_admins($subject, $message);
+				}
+				catch (Exception $e)
+				{
+					# Unable to use full-featured mail_admins version. We'll use a backup.
+					# We need to make sure we're not spamming.
+					
+					$lock_file = "/tmp/okapi-fatal-error-mode";
+					$last_email = false;
+					if (file_exists($lock_file))
+						$last_email = filemtime($lock_file);
+					if ($last_email === false) {
+						# Assume this is the first email.
+						$last_email = 0;
+					}
+					if (time() - $last_email < 60) {
+						# Send no more than one per minute.
+						return;
+					}
+					touch($lock_file);
+					
+					$admin_email = implode(", ", get_admin_emails());
+					$sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
+					$subject = "Fatal error mode: ".$subject;
+					$message = "Fatal error mode: OKAPI will send at most ONE message per minute.\n\n".$message;
+					$headers = (
+						"Content-Type: text/plain; charset=utf-8\n".
+						"From: OKAPI <$sender_email>\n".
+						"Reply-To: $sender_email\n"
 					);
+					mail($admin_email, $subject, $message, $headers);
+				}
 			}
 		}
 	}
@@ -779,7 +796,42 @@ class Okapi
 	/** Send an email message to local OKAPI administrators. */
 	public static function mail_admins($subject, $message)
 	{
-		self::mail_from_okapi(get_admin_emails(), $subject, $message);
+		# First, make sure we're not spamming.
+		
+		$cache_key = 'mail_admins_counter/'.(floor(time() / 3600) * 3600).'/'.md5($subject);
+		$counter = Cache::get($cache_key);
+		if ($counter === null)
+			$counter = 0;
+		$counter++;
+		Cache::set($cache_key, $counter, 3600);
+		if ($counter <= 5)
+		{
+			# We're not spamming yet.
+			
+			self::mail_from_okapi(get_admin_emails(), $subject, $message);
+		}
+		else
+		{
+			# We are spamming. Prevent sending more emails.
+			
+			$content_cache_key_prefix = 'mail_admins_spam/'.(floor(time() / 3600) * 3600).'/';
+			$timeout = 86400;
+			if ($counter == 6)
+			{
+				self::mail_from_okapi(get_admin_emails(), "Anti-spam mode activated for '$subject'",
+					"OKAPI has activated an \"anti-spam\" mode for the following subject:\n\n".
+					"\"$subject\"\n\n".
+					"Anti-spam mode is activiated when more than 5 messages with\n".
+					"the same subject are sent within one hour.\n\n".
+					"Additional debug information:\n".
+					"- counter cache key: $cache_key\n".
+					"- content prefix: $content_cache_key_prefix<n>\n".
+					"- content timeout: $timeout\n"
+				);
+			}
+			$content_cache_key = $content_cache_key_prefix.$counter;
+			Cache::set($content_cache_key, $message, $timeout);
+		}
 	}
 
 	/** Send an email message from OKAPI to the given recipients. */
@@ -1615,6 +1667,34 @@ class Cache
 			delete from okapi_cache
 			where `key` in ('".implode("','", array_map('mysql_real_escape_string', $keys))."')
 		");
+	}
+}
+
+/**
+ * Sometimes it is desireable to get the cached contents in a file,
+ * instead in a string (i.e. for imagecreatefromgd2). In such cases, you
+ * may use this class instead of the Cache class.
+ */
+class FileCache
+{
+	public static function get_file_path($key)
+	{
+		$filename = Okapi::get_var_dir()."/okapi_filecache_".md5($key);
+		if (!file_exists($filename))
+			return null;
+		return $filename;
+	}
+	
+	/**
+	 * Note, there is no $timeout (time to live) parameter. Currently,
+	 * OKAPI will delete every old file after certain amount of time.
+	 * See CacheCleanupCronJob for details.
+	 */
+	public static function set($key, $value)
+	{
+		$filename = Okapi::get_var_dir()."/okapi_filecache_".md5($key);
+		file_put_contents($filename, $value);
+		return $filename;
 	}
 }
 

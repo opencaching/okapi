@@ -71,7 +71,7 @@ class WebService
 		
 		$response = new OkapiHttpResponse();
 		$response->content_type = $data['meta']['content_type'];
-		$response->content_disposition = 'Content-Disposition: attachment; filename="'.$data['meta']['public_filename'].'"';
+		$response->content_disposition = 'attachment; filename="'.$data['meta']['public_filename'].'"';
 		$response->stream_length = $data['meta']['compressed_size'];
 		$response->body = fopen($data['meta']['filepath'], "rb");
 		$response->allow_gzip = false;

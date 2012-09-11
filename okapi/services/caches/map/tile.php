@@ -6,6 +6,7 @@ use Exception;
 use okapi\Okapi;
 use okapi\Settings;
 use okapi\Cache;
+use okapi\FileCache;
 use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\OkapiHttpResponse;
@@ -25,7 +26,8 @@ require_once 'tiletree.inc.php';
 
 class WebService
 {
-	private static $RENDERER_VERSION = 7;  # increment to expire the PNG cache
+	private static $USE_CACHE = true;  # set to false when debugging
+	private static $RENDERER_VERSION = 18;  # increment to expire the PNG cache
 	private static $MIN_ZOOM_FOR_FOUND_ICON = 10;
 	
 	public static function options()
@@ -133,7 +135,7 @@ class WebService
 			# on various OC installations, we don't know which caches types
 			# are "all" here. We have to check.
 			
-			$all = Cache::get('all_cache_types');
+			$all = self::$USE_CACHE ? Cache::get('all_cache_types') : null;
 			if ($all === null)
 			{
 				$all = Db::select_column("
@@ -165,7 +167,7 @@ class WebService
 		# User-specific geocaches (cached together).
 		
 		$cache_key = "tileuser/".$request->token->user_id;
-		$user = Cache::get($cache_key);
+		$user = self::$USE_CACHE ? Cache::get($cache_key) : null;
 		if ($user === null)
 		{
 			$user = array();
@@ -359,8 +361,11 @@ class WebService
 		$time_started = microtime(true);
 		if ($uncommon_score <= 10)
 		{
-			$cache_key = "tilepng/".md5(self::$RENDERER_VERSION."/$zoom/$x/$y/".serialize($rows));
-			$response->body = Cache::get($cache_key);
+			if (count($rows) == 0)
+				$cache_key = "tilepng/empty";
+			else
+				$cache_key = "tilepng/".md5(self::$RENDERER_VERSION."/$zoom/$x/$y/".serialize($rows));
+			$response->body = self::$USE_CACHE ? Cache::get($cache_key) : null;
 		}
 		if ($response->body === null)
 		{
@@ -392,13 +397,58 @@ class WebService
 		return $response;
 	}
 	
-	private static $images = array();
-	private static function get_image($key)
+	private static function get_image($name, $opacity=1)
 	{
-		if (!isset(self::$images[$key]))
-			self::$images[$key] = imagecreatefrompng(
-				$GLOBALS['rootpath']."okapi/static/tilemap/$key.png");
-		return self::$images[$key];
+		static $locmem_cache = array();
+
+		# Check locmem cache.
+		
+		$key = $name."/".$opacity;
+		if (!isset($locmem_cache[$key]))
+		{
+			# Miss. Check file cache.
+			
+			$cache_key = "tilesrc/".Okapi::$revision."/".self::$RENDERER_VERSION."/".$key;
+			$gd2_path = self::$USE_CACHE ? FileCache::get_file_path($cache_key) : null;
+			if ($gd2_path === null)
+			{
+				# Miss again. Read the image from PNG.
+				
+				$locmem_cache[$key] = imagecreatefrompng($GLOBALS['rootpath']."okapi/static/tilemap/$name.png");
+				if ($opacity != 1)
+					self::change_opacity($locmem_cache[$key], $opacity);
+				ob_start();
+				imagegd2($locmem_cache[$key]);
+				$gd2 = ob_get_clean();
+				FileCache::set($cache_key, $gd2);
+			}
+			else
+			{
+				# File cache hit. GD2 files are much faster to read than PNGs.
+				$locmem_cache[$key] = imagecreatefromgd2($gd2_path);
+			}
+		}
+		return $locmem_cache[$key];
+	}
+	
+	function change_opacity($im, $ratio)
+	{
+		imagealphablending($im, false);
+		
+		$w = imagesx($im);
+		$h = imagesy($im);
+
+		for($x = 0; $x < $w; $x++)
+		{
+			for($y = 0; $y < $h; $y++)
+			{
+				$color = imagecolorat($im, $x, $y);
+				//$new_color = ((floor(127 - ((127 - (($color >> 24) & 0x7f)) * $ratio)) & 0x7f) << 24) | ($color & 0x80ffffff);
+				$new_color = ((max(0, floor(127 - ((127 - (($color >> 24) & 0x7f)) * $ratio))) & 0x7f) << 24) | ($color & 0x80ffffff);
+				if (!imagesetpixel($im, $x, $y, $new_color))
+					throw new Exception();
+			}
+		}
 	}
 	
 	private static function draw_cache($im, $zoom, &$cache_struct)
