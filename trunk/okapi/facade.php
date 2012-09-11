@@ -2,6 +2,26 @@
 
 namespace okapi;
 
+# OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
+
+# Include this file if you want to use OKAPI's services with any
+# external code (your service calls will appear under the name "Facade"
+# in the weekly OKAPI usage report).
+
+# Note, that his is the *ONLY* internal OKAPI file that is guaranteed
+# to stay backward-compatible (I'm speaking about INTERNAL files here,
+# all OKAPI methods will stay compatible forever). If you want to use
+# something that has not been exposed through the Facade class, contact
+# OKAPI developers, we will add it here.
+
+# Including this file will initialize OKAPI Framework with its default
+# exception and error handlers. OKAPI is strict about PHP warnings and
+# notices. You might need to temporarily disable the error handler in
+# order to get it to work with some legacy code. Do this by calling
+# OkapiErrorHandler::disable() BEFORE calling the "buggy" code, and
+# OkapiErrorHandler::reenable() AFTER returning from it.
+
+
 use Exception;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
@@ -13,13 +33,7 @@ OkapiErrorHandler::$treat_notices_as_errors = true;
 require_once($GLOBALS['rootpath']."okapi/service_runner.php");
 
 /**
- * Use this class to access OKAPI from OC code. This is the *ONLY* internal OKAPI file that is
- * guaranteed to stay backward-compatible*! You SHOULD NOT include any other okapi file in your
- * code. If you want to use something that has not been exposed through the Facade class,
- * inform OKAPI developers, we will add it.
- *
- *   * - notice that we are talking about INTERNAL files here. Of course, all OKAPI methods
- *       (accessed via HTTP) will stay compatible forever (if possible).
+ * Use this class to access OKAPI's services from external code (i.e. OC code).
  */
 class Facade
 {
@@ -31,7 +45,6 @@ class Facade
 	 */
 	public static function service_call($service_name, $user_id_or_null, $parameters)
 	{
-		// WRTODO: make this count as HTTP call?
 		$request = new OkapiInternalRequest(
 			new OkapiFacadeConsumer(),
 			($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,

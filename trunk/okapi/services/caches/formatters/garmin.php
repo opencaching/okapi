@@ -141,7 +141,7 @@ class WebService
 		set_time_limit(600);
 		$response = new OkapiHttpResponse();
 		$response->content_type = "application/zip";
-		$response->content_disposition = 'Content-Disposition: attachment; filename="results.zip"';
+		$response->content_disposition = 'attachment; filename="results.zip"';
 		$response->stream_length = filesize($tempfilename);
 		$response->body = fopen($tempfilename, "rb");
 		$response->allow_gzip = false;

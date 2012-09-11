@@ -9,15 +9,8 @@ use okapi\Locales;
 # http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/settings.php
 #
 # HOW TO MODIFY OKAPI SETTINGS: If you want a setting X to have a value of Y,
-# create/edit the "<rootpath>/okapi_settings.php" file:
-#
-#     namespace okapi;
-#     function get_okapi_settings() {
-#         return array(
-#             'X' => 'Y',
-#             // ... etc ...
-#         );
-#     }
+# create/edit the "<rootpath>/okapi_settings.php" file. See example here:
+# http://code.google.com/p/opencaching-pl/source/browse/trunk/okapi_settings.php
 #
 # This file provides documentation and DEFAULT values for those settings.
 #
@@ -143,16 +136,13 @@ final class Settings
 	 */
 	private static function load_settings()
 	{
-		# Check the settings_local.php for overrides.
-		
-		self::$SETTINGS = self::$DEFAULT_SETTINGS;
-		
 		try {
 			require_once($GLOBALS['rootpath']."okapi_settings.php");
 			$ref = get_okapi_settings();
 		} catch (Exception $e) {
 			throw new Exception("Could not import <rootpath>/okapi_settings.php:\n".$e->getMessage());
 		}
+		self::$SETTINGS = self::$DEFAULT_SETTINGS;
 		foreach (self::$SETTINGS as $key => $_)
 		{
 			if (isset($ref[$key]))
@@ -184,8 +174,7 @@ final class Settings
 		foreach ($dict as $k => $v)
 			if ((strpos($k, '_DIR') !== false) && ($k[strlen($k) - 1] == '/'))
 				throw new Exception("All *_DIR settings may not end with a slash. Check $k.");
-		$notnull = array('OC_COOKIE_NAME', 'DB_SERVER', 'DB_NAME', 'DB_USERNAME', 'DB_PASSWORD',
-			'SITE_URL', 'OC_NODE_ID');
+		$notnull = array('OC_COOKIE_NAME', 'DB_SERVER', 'DB_NAME', 'DB_USERNAME', 'SITE_URL', 'OC_NODE_ID');
 		foreach ($notnull as $k)
 			if ($dict[$k] === null)
 				throw new Exception("$k cannot be null.");

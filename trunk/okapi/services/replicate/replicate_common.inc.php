@@ -379,9 +379,7 @@ class ReplicateCommon
 				if ($entry['change_type'] == 'replace')
 					$filtered[] = $entry;
 			unset($entries);
-			$fp = fopen("$dir/$basename.json", "wb");
-			fwrite($fp, json_encode($filtered));
-			fclose($fp);
+			file_put_contents("$dir/$basename.json", json_encode($filtered));
 			unset($filtered);
 			$i++;
 		}
@@ -416,9 +414,7 @@ class ReplicateCommon
 					if ($entry['change_type'] == 'replace')
 						$filtered[] = $entry;
 				unset($entries);
-				$fp = fopen("$dir/$basename.json", "wb");
-				fwrite($fp, json_encode($filtered));
-				fclose($fp);
+				file_put_contents("$dir/$basename.json", json_encode($filtered));
 				unset($filtered);
 				$i++;
 			}
@@ -435,9 +431,7 @@ class ReplicateCommon
 				'generated_at' => $generated_at,
 			),
 		);
-		$fp = fopen("$dir/index.json", "wb");
-		fwrite($fp, json_encode($metadata));
-		fclose($fp);
+		file_put_contents("$dir/index.json", json_encode($metadata));
 		
 		# Compute uncompressed size.
 		
