@@ -311,29 +311,28 @@ class WebService
 			}
 		}
 		
+		# Filter out caches in $excluded_dict.
+		
+		if (count($excluded_dict) > 0)
+		{
+			$filter_conds[] = "cache_id not in ('".implode("','", array_keys($excluded_dict))."')";
+			$uncommon_score += 5 * count($excluded_dict);
+		}
+		
 		# Get caches within the tile (+ those around the borders). All filtering
-		# options need to be applied here. If the user chose very common
-		# filter_conds and is zoomed-out (large number of caches), then do
-		# a cache-search first.
+		# options need to be applied here.
 		
 		$rs = TileTree::query_fast($zoom, $x, $y, $filter_conds);
 			
-		# Filter out caches in $excluded_dict. You may wonder why there was no
-		# "cache_id not in (...)" condition. This was done on purpose. In the most
-		# common case, only a small fraction of $excluded_dict will be present
-		# in that tile. We think it will be faster to filtered them out AFTER
-		# the query.
+		# Read the rows and add extra flags to them.
 
 		$rows = array();
 		if ($rs !== null)
 		{
 			while ($row = mysql_fetch_row($rs))
 			{
-				if (isset($excluded_dict[$row[0]]))
-					continue;
-				
-				# Also, we will add a special "found" flag, to indicate that this cache
-				# needs to be drawn as found.
+				# Add the "found" flag, to indicate that this cache needs
+				# to be drawn as found.
 
 				if (isset($user['found'][$row[0]]))
 				{
@@ -344,6 +343,7 @@ class WebService
 
 				$rows[] = $row;
 			}
+			unset($row);
 		}
 		
 		# If the result is empty, force read from cache.
