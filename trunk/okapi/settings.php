@@ -123,6 +123,12 @@ final class Settings
 		
 		/** OKAPI needs this when inserting new data to cache_logs table. */
 		'OC_NODE_ID' => null,
+		
+		/**
+		 * Your OC sites data licencing document. All OKAPI Consumers will be
+		 * required to accept this.
+		 */
+		'DATA_LICENSE_URL' => null,
 	);
 	
 	/** 
