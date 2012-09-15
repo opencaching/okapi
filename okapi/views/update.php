@@ -597,4 +597,13 @@ class View
 			}
 		}
 	}
+	
+	private static function ver69()
+	{
+		# TileTree border margins changed. We need to recalculate all nodes
+		# but the root.
+		
+		Db::execute("delete from okapi_tile_caches where z > 0");
+		Db::execute("delete from okapi_tile_status where z > 0");
+	}
 }

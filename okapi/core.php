@@ -89,6 +89,12 @@ class OkapiExceptionHandler
 			
 			print $e->getOkapiJSON();
 		}
+		elseif ($e instanceof Http304)
+		{
+			# This is thrown for example when ETags are matched.
+			
+			header('HTTP/1.0 304 Not Modified');
+		}
 		elseif ($e instanceof BadRequest)
 		{
 			# Intentionally thrown from within the OKAPI method code.
@@ -166,7 +172,7 @@ class OkapiExceptionHandler
 						# Send no more than one per minute.
 						return;
 					}
-					touch($lock_file);
+					@touch($lock_file);
 					
 					$admin_email = implode(", ", get_admin_emails());
 					$sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
@@ -271,6 +277,7 @@ register_shutdown_function(array('\okapi\OkapiErrorHandler', 'handle_shutdown'))
 #
 
 class Http404 extends BadRequest {}
+class Http304 extends Exception {}
 
 /** Common type of BadRequest: Required parameter is missing. */
 class ParamMissing extends BadRequest
@@ -595,10 +602,12 @@ require_once($GLOBALS['rootpath']."okapi/datastore.php");
 class OkapiHttpResponse
 {
 	public $status = "200 OK";
+	public $cache_control = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0";
 	public $content_type = "text/plain; charset=utf-8";
 	public $content_disposition = null;
 	public $allow_gzip = true;
 	public $connection_close = false;
+	public $etag = null;
 	
 	/** Use this only as a setter, use get_body or print_body for reading! */
 	public $body;
@@ -649,11 +658,13 @@ class OkapiHttpResponse
 		header("HTTP/1.1 ".$this->status);
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: ".$this->content_type);
-		header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0");
+		header("Cache-Control: ".$this->cache_control);
 		if ($this->connection_close)
 			header("Connection: close");
 		if ($this->content_disposition)
 			header("Content-Disposition: ".$this->content_disposition);
+		if ($this->etag)
+			header("ETag: $this->etag");
 		
 		# Make sure that gzip is supported by the client.
 		$try_gzip = $this->allow_gzip;
@@ -1713,6 +1724,7 @@ abstract class OkapiRequest
 {
 	public $consumer;
 	public $token;
+	public $etag;  # see: http://en.wikipedia.org/wiki/HTTP_ETag
 
 	/**
 	 * Set this to true, for some method to allow you to set higher "limit"
@@ -1910,6 +1922,11 @@ class OkapiHttpRequest extends OkapiRequest
 			$this->consumer = new OkapiDebugConsumer();
 			$this->token = new OkapiDebugAccessToken($debug_user_id);
 		}
+		
+		# Read the ETag.
+		
+		if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+			$this->etag = $_SERVER['HTTP_IF_NONE_MATCH'];
 	}
 	
 	private function init_request()

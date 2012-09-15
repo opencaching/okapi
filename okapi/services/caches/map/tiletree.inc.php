@@ -28,6 +28,9 @@ class TileTree
 	
 	# Dynamic flags (added at runtime).
 	public static $FLAG_FOUND = 0x0100;
+	public static $FLAG_OWN = 0x0200;
+	public static $FLAG_NEW = 0x0400;
+	public static $FLAG_DRAW_CAPTION = 0x0800;
 	
 	/**
 	 * Return null if not computed, 1 if computed and empty, 2 if computed and not empty.
@@ -56,6 +59,8 @@ class TileTree
 	 */
 	public static function query_fast($zoom, $x, $y, $filter_conds)
 	{
+		$time_started = microtime(true);
+		
 		# First, we check if the cache-set for this tile was already computed
 		# (and if it was, was it empty).
 		
@@ -65,14 +70,14 @@ class TileTree
 			# Note, that computing the tile does not involve taking any
 			# filtering parameters.
 			
-			$time_started = microtime(true);
 			$status = self::compute_tile($zoom, $x, $y);
-			$runtime = microtime(true) - $time_started;
-			OkapiServiceRunner::save_stats_extra("tile/cache1/direct-miss", null, $runtime);
+			OkapiServiceRunner::save_stats_extra("tiletree/query_fast/preparetile-miss",
+				null, microtime(true) - $time_started);
 		}
 		else
 		{
-			OkapiServiceRunner::save_stats_extra("tile/cache1/direct-hit", null, 0);
+			OkapiServiceRunner::save_stats_extra("tiletree/query_fast/preparetile-hit",
+				null, microtime(true) - $time_started);
 		}
 		
 		if ($status === 1)  # Computed and empty.
@@ -92,7 +97,9 @@ class TileTree
 			$filter_conds[] = "true";
 		return Db::query("
 			select
-				cache_id, cast(z21x >> (21 - $zoom) as signed) - $tile_upper_x, cast(z21y >> (21 - $zoom) as signed) - $tile_leftmost_y,
+				cache_id,
+				cast(z21x >> (21 - $zoom) as signed) - $tile_upper_x as px,
+				cast(z21y >> (21 - $zoom) as signed) - $tile_leftmost_y as py,
 				status, type, rating, flags, count(*)
 			from okapi_tile_caches
 			where
@@ -103,6 +110,9 @@ class TileTree
 			group by
 				z21x >> (3 + (21 - $zoom)),
 				z21y >> (3 + (21 - $zoom))
+			order by
+				z21y >> (3 + (21 - $zoom)),
+				z21x >> (3 + (21 - $zoom))
 		");
 	}
 	
@@ -111,6 +121,8 @@ class TileTree
 	 */
 	public static function compute_tile($zoom, $x, $y)
 	{
+		$time_started = microtime(true);
+		
 		# Note, that multiple threads may try to compute tiles simulatanously.
 		# For low-level tiles, this can be expensive. WRTODO: Think of some
 		# appropriate locks.
@@ -128,8 +140,6 @@ class TileTree
 			
 			# This can be done a little faster (without the use of internal requests),
 			# but there is *no need* to - this query is run seldom and is cached.
-			
-			$time_started = microtime(true);
 			
 			$params = array();
 			$params['status'] = "Available|Temporarily unavailable|Archived";  # we want them all
@@ -167,8 +177,8 @@ class TileTree
 			}
 			$status = 2;
 			
-			$runtime = microtime(true) - $time_started;
-			OkapiServiceRunner::save_stats_extra("tile/cache1/rebuild-0", null, $runtime);
+			OkapiServiceRunner::save_stats_extra("tiletree/compute_tile/rebuild-0",
+				null, microtime(true) - $time_started);
 		}
 		else
 		{
@@ -183,12 +193,13 @@ class TileTree
 			{
 				$time_started = microtime(true);
 				$status = self::compute_tile($parent_zoom, $parent_x, $parent_y);
-				$runtime = microtime(true) - $time_started;
-				OkapiServiceRunner::save_stats_extra("tile/cache1/internal-miss", null, $runtime);
+				OkapiServiceRunner::save_stats_extra("tiletree/compute_tile/build",
+					null, microtime(true) - $time_started);
 			}
 			else
 			{
-				OkapiServiceRunner::save_stats_extra("tile/cache1/internal-hit", null, 0);
+				OkapiServiceRunner::save_stats_extra("tiletree/compute_tile/hit",
+					null, microtime(true) - $time_started);
 			}
 			
 			if ($status === 1)  # Computed and empty.
@@ -200,7 +211,7 @@ class TileTree
 				$scale = 8 + 21 - $zoom;
 				$parentcenter_z21x = (($parent_x << 1) | 1) << $scale;
 				$parentcenter_z21y = (($parent_y << 1) | 1) << $scale;
-				$margin = 1 << ($scale - 3);
+				$margin = 1 << ($scale - 2);
 				$left_z21x = (($parent_x << 1) << $scale) - $margin;
 				$right_z21x = ((($parent_x + 1) << 1) << $scale) + $margin;
 				$top_z21y = (($parent_y << 1) << $scale) - $margin;

@@ -17,18 +17,34 @@ use okapi\DoesNotExist;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
+use okapi\Http304;
 
 use okapi\services\caches\map\TileTree;
+use okapi\services\caches\map\DefaultTileRenderer;
 
 
-require_once 'tiletree.inc.php';
-
+require_once('tiletree.inc.php');
+require_once('tilerenderer.inc.php');
 
 class WebService
 {
-	private static $USE_CACHE = true;  # set to false when debugging
-	private static $RENDERER_VERSION = 18;  # increment to expire the PNG cache
-	private static $MIN_ZOOM_FOR_FOUND_ICON = 10;
+	/**
+	 * Should be always true. You may temporarily set it to false, when you're
+	 * testing/debugging the tile renderer.
+	 */
+	private static $USE_ETAGS_CACHE = true;
+	
+	/**
+	 * Should be always true. You may temporarily set it to false, when you're
+	 * testing/debugging the tile renderer.
+	 */
+	private static $USE_IMAGE_CACHE = true;
+	
+	/**
+	 * Should be always true. You may temporarily set it to false, when you're
+	 * testing/debugging. Grep the code to check when this flag is used.
+	 */
+	private static $USE_OTHER_CACHE = true;
 	
 	public static function options()
 	{
@@ -50,6 +66,8 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
+		$time_started = microtime(true);
+		
 		# Make sure the request is internal.
 		
 		if (!in_array($request->consumer->key, array('internal', 'facade')))
@@ -66,15 +84,6 @@ class WebService
 			throw new InvalidParam('x', "Should be in 0..".((1<<$zoom) - 1).".");
 		if ($y >= 1<<$zoom)
 			throw new InvalidParam('y', "Should be in 0..".((1<<$zoom) - 1).".");
-		
-		# While checking the parameters, we will also decide, if the parameters
-		# are "common enough" for PNG caching to kick in.
-		
-		$uncommon_score = 0;  # the lower the better
-		
-		if ($zoom > 12)
-			$uncommon_score += ($zoom - 12);
-		
 		
 		# status
 		
@@ -98,13 +107,6 @@ class WebService
 			throw new InvalidParam('status');
 		if (count($allowed_status_codes) < 3)
 			$filter_conds[] = "status in ('".implode("','", array_map('mysql_real_escape_string', $allowed_status_codes))."')";
-		if ($allowed_status_codes == array(1) || $allowed_status_codes == array(1,2)) {
-			# very common
-		} elseif ($allowed_status_codes == array(1,2,3)) {
-			$uncommon_score += 2;  # still common
-		} else {
-			$uncommon_score += 6;  # not so common
-		}
 		
 		# type
 		
@@ -135,7 +137,7 @@ class WebService
 			# on various OC installations, we don't know which caches types
 			# are "all" here. We have to check.
 			
-			$all = self::$USE_CACHE ? Cache::get('all_cache_types') : null;
+			$all = self::$USE_OTHER_CACHE ? Cache::get('all_cache_types') : null;
 			if ($all === null)
 			{
 				$all = Db::select_column("
@@ -145,29 +147,28 @@ class WebService
 				");
 				Cache::set('all_cache_types', $all, 86400);
 			}
-			$ok = true;
+			$all_included = true;
 			foreach ($all as $type)
 				if (!in_array($type, $types))
 				{
-					$ok = false;
+					$all_included = false;
 					break;
 				}
 					
-			if ($ok && ($operator == "in"))
+			if ($all_included && ($operator == "in"))
 			{
-				# Do nothing. All cache types will be included. This is common.
+				# All cache types are to be included. This is common.
 			}
 			else
 			{
 				$filter_conds[] = "type $operator ('".implode("','", array_map('mysql_real_escape_string', $types))."')";
-				$uncommon_score += 5;
 			}
 		}
 		
 		# User-specific geocaches (cached together).
 		
 		$cache_key = "tileuser/".$request->token->user_id;
-		$user = self::$USE_CACHE ? Cache::get($cache_key) : null;
+		$user = self::$USE_OTHER_CACHE ? Cache::get($cache_key) : null;
 		if ($user === null)
 		{
 			$user = array();
@@ -249,11 +250,9 @@ class WebService
 				# Easy.
 				foreach ($user['found'] as $cache_id => $v)
 					$excluded_dict[$cache_id] = true;
-				$uncommon_score += 1;
 			} else {
 				# Found only. This will slow down queries somewhat. But it is rare.
 				$filter_conds[] = "cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($user['found'])))."')";
-				$uncommon_score += 8;
 			}
 		}
 		
@@ -266,7 +265,6 @@ class WebService
 			if ($tmp == 'true')
 			{
 				$filter_conds[] = "flags & ".TileTree::$FLAG_HAS_TRACKABLES;
-				$uncommon_score += 5;
 			}
 		}
 		
@@ -279,7 +277,6 @@ class WebService
 			if ($tmp == 'true')
 			{
 				$filter_conds[] = "flags & ".TileTree::$FLAG_NOT_YET_FOUND;
-				$uncommon_score += 3;
 			}
 		}
 		
@@ -304,10 +301,6 @@ class WebService
 			} else {
 				$filter_conds[] = "(rating between $min and $max)".
 					($allow_null ? " or rating is null" : "");
-				if ($max < 5)
-					$uncommon_score += 6;
-				else
-					$uncommon_score += 2;
 			}
 		}
 		
@@ -316,7 +309,6 @@ class WebService
 		if (count($excluded_dict) > 0)
 		{
 			$filter_conds[] = "cache_id not in ('".implode("','", array_keys($excluded_dict))."')";
-			$uncommon_score += 5 * count($excluded_dict);
 		}
 		
 		# Get caches within the tile (+ those around the borders). All filtering
@@ -335,227 +327,57 @@ class WebService
 				# to be drawn as found.
 
 				if (isset($user['found'][$row[0]]))
-				{
 					$row[6] |= TileTree::$FLAG_FOUND;  # $row[6] is "flags"
-					if ($zoom >= self::$MIN_ZOOM_FOR_FOUND_ICON)
-						$uncommon_score += 5;  # Note: we're inside the loop!
-				}
+				if (isset($user['own'][$row[0]]))
+					$row[6] |= TileTree::$FLAG_OWN;  # $row[6] is "flags"
 
 				$rows[] = $row;
 			}
 			unset($row);
 		}
 		
-		# If the result is empty, force read from cache.
+		# Compute a fast image fingerprint. This will be used both for ETags
+		# and internal cache ($cache_key).
 		
-		if (count($rows) == 0)
-			$uncommon_score = 0;
-
-		# Draw the image.
+		$tile = new DefaultTileRenderer($zoom, $rows);
+		$image_fingerprint = $tile->get_unique_hash();
+		
+		# Start creating response.
 		
 		$response = new OkapiHttpResponse();
-		$response->content_type = "image/png";
+		$response->content_type = $tile->get_content_type();
+		$response->cache_control = "Cache-Control: private, max-age=600";
+		$response->etag = 'W/"'.$image_fingerprint.'"';
 		
-		# We will hold some most popular PNGs in the cache, ready to be served.
+		# Check if the request didn't include the same ETag.
 		
-		$time_started = microtime(true);
-		if ($uncommon_score <= 10)
+		if (self::$USE_ETAGS_CACHE && ($request->etag == $response->etag))
 		{
-			if (count($rows) == 0)
-				$cache_key = "tilepng/empty";
-			else
-				$cache_key = "tilepng/".md5(self::$RENDERER_VERSION."/$zoom/$x/$y/".serialize($rows));
-			$response->body = self::$USE_CACHE ? Cache::get($cache_key) : null;
+			# Hit. Report the content was unmodified.
+			
+			OkapiServiceRunner::save_stats_extra("caches/map/tile/etag-hit",
+				null, microtime(true) - $time_started);
+			throw new Http304();
 		}
-		if ($response->body === null)
+		
+		# Check if the image was recently rendered and is kept in image cache.
+		
+		$cache_key = "tile/".$image_fingerprint;
+		$response->body = self::$USE_IMAGE_CACHE ? Cache::get($cache_key) : null;
+		if ($response->body !== null)
 		{
-			$im = imagecreatetruecolor(256, 256);
-			imagealphablending($im, false); 
-			$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
-			imagefilledrectangle($im, 0, 0, 256, 256, $transparent);
-			imagealphablending($im, true);
-			foreach ($rows as $row)
-				self::draw_cache($im, $zoom, $row);
-			# Debug: Uncomment to see the $uncommon_score.
-			# imagettftext($im, 25, 0, 80, 140, imagecolorallocatealpha($im, 0, 0, 0, 30), $GLOBALS['rootpath'].'util.sec/bt.ttf', "Score $uncommon_score");
-			ob_start();
-			imagesavealpha($im, true);
-			imagepng($im);
-			imagedestroy($im);
-			$response->body = ob_get_clean();
+			# Hit. We will use the cached version of the image.
 			
-			if ($uncommon_score <= 3)
-				Cache::set($cache_key, $response->body, 86400);
-			
-			$runtime = microtime(true) - $time_started;
-			OkapiServiceRunner::save_stats_extra("tile/drawpng", null, $runtime);
-		} else {
-			$runtime = microtime(true) - $time_started;
-			OkapiServiceRunner::save_stats_extra("tile/drawpng-from-cache", null, $runtime);
+			OkapiServiceRunner::save_stats_extra("caches/map/tile/imagecache-hit",
+				null, microtime(true) - $time_started);
+			return $response;
 		}
+		
+		# Miss. Render the image. Cache the result.
+	
+		$response->body = $tile->render();
+		Cache::set($cache_key, $response->body, 86400);
 
 		return $response;
 	}
-	
-	private static function get_image($name, $opacity=1)
-	{
-		static $locmem_cache = array();
-
-		# Check locmem cache.
-		
-		$key = $name."/".$opacity;
-		if (!isset($locmem_cache[$key]))
-		{
-			# Miss. Check file cache.
-			
-			$cache_key = "tilesrc/".Okapi::$revision."/".self::$RENDERER_VERSION."/".$key;
-			$gd2_path = self::$USE_CACHE ? FileCache::get_file_path($cache_key) : null;
-			if ($gd2_path === null)
-			{
-				# Miss again. Read the image from PNG.
-				
-				$locmem_cache[$key] = imagecreatefrompng($GLOBALS['rootpath']."okapi/static/tilemap/$name.png");
-				if ($opacity != 1)
-					self::change_opacity($locmem_cache[$key], $opacity);
-				ob_start();
-				imagegd2($locmem_cache[$key]);
-				$gd2 = ob_get_clean();
-				FileCache::set($cache_key, $gd2);
-			}
-			else
-			{
-				# File cache hit. GD2 files are much faster to read than PNGs.
-				$locmem_cache[$key] = imagecreatefromgd2($gd2_path);
-			}
-		}
-		return $locmem_cache[$key];
-	}
-	
-	function change_opacity($im, $ratio)
-	{
-		imagealphablending($im, false);
-		
-		$w = imagesx($im);
-		$h = imagesy($im);
-
-		for($x = 0; $x < $w; $x++)
-		{
-			for($y = 0; $y < $h; $y++)
-			{
-				$color = imagecolorat($im, $x, $y);
-				//$new_color = ((floor(127 - ((127 - (($color >> 24) & 0x7f)) * $ratio)) & 0x7f) << 24) | ($color & 0x80ffffff);
-				$new_color = ((max(0, floor(127 - ((127 - (($color >> 24) & 0x7f)) * $ratio))) & 0x7f) << 24) | ($color & 0x80ffffff);
-				if (!imagesetpixel($im, $x, $y, $new_color))
-					throw new Exception();
-			}
-		}
-	}
-	
-	private static function draw_cache($im, $zoom, &$cache_struct)
-	{
-		list($cache_id, $px, $py, $status, $type, $rating, $flags, $count) = $cache_struct;
-		switch ($type) {
-			case 2: $key = 'traditional'; break;
-			case 3: $key = 'multi'; break;
-			case 6: $key = 'event'; break;
-			case 7: $key = 'quiz'; break;
-			case 4: $key = 'virtual'; break;
-			default: $key = 'other'; break;
-		}
-		if ($zoom <= 9)
-		{
-			$marker = self::get_image("tiny_$key");
-			$width = 10;
-			$height = 10;
-			$center_x = 5;
-			$center_y = 6;
-			$markercenter_x = 5;
-			$markercenter_y = 6;
-		}
-		elseif ($zoom <= 12)
-		{
-			$marker = self::get_image("medium_$key");
-			$width = 14;
-			$height = 14;
-			$center_x = 7;
-			$center_y = 8;
-			$markercenter_x = 7;
-			$markercenter_y = 8;
-		}
-		else
-		{
-			$marker = self::get_image("large_$key");
-			$width = 40;
-			$height = 32;
-			$center_x = 12;
-			$center_y = 26;
-			$markercenter_x = 12;
-			$markercenter_y = 12;
-		}
-		
-		# Put the marker. If cache covers more caches, then put two markers instead of one.
-		
-		if ($count > 1)
-		{
-			imagecopy($im, $marker, $px - $center_x + 3, $py - $center_y - 2, 0, 0, $width, $height);
-			imagecopy($im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
-		}
-		else
-		{
-			# For lower zoom levels, put X only (without the marker).
-			
-			if ($zoom >= 13 || ($status == 1))
-				imagecopy($im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
-		}
-
-		# If the cache is unavailable, mark it with X. 
-
-		if (($status != 1) && (($count == 1) || ($zoom >= 13)))
-		{
-			$icon = self::get_image("status_unavailable");
-			if ($zoom < 13) {
-				imagecopy($im, $icon, $px - ($center_x - $markercenter_x) - 6,
-					$py - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
-			} else {
-				imagecopy($im, $icon, $px - 1, $py - $center_y - 4, 0, 0, 16, 16);
-			}
-		}
-		
-		# Put the rating smile. :)
-		
-		if (($status == 1) && ($zoom >= 13))
-		{
-			if ($rating >= 4.2)
-			{
-				if ($flags & TileTree::$FLAG_STAR) {
-					$icon = self::get_image("rating_grin");
-					imagecopy($im, $icon, $px - 7 - 6, $py - $center_y - 8, 0, 0, 16, 16);
-					$icon = self::get_image("rating_star");
-					imagecopy($im, $icon, $px - 7 + 6, $py - $center_y - 8, 0, 0, 16, 16);
-				} else {
-					$icon = self::get_image("rating_grin");
-					imagecopy($im, $icon, $px - 7, $py - $center_y - 8, 0, 0, 16, 16);
-				}
-			}
-			elseif ($rating >= 3.6) {
-				$icon = self::get_image("rating_smile");
-				imagecopy($im, $icon, $px - 7, $py - $center_y - 8, 0, 0, 16, 16);
-			}
-		}
-		
-		# Mark found caches with V.
-		
-		if ($zoom >= self::$MIN_ZOOM_FOR_FOUND_ICON && ($flags & TileTree::$FLAG_FOUND))
-		{
-			$icon = self::get_image("found");
-			if ($zoom >= 13) {
-				imagecopy($im, $icon, $px - 2, $py - $center_y - 3, 0, 0, 16, 16);
-			} else {
-				imagecopy($im, $icon, $px - ($center_x - $markercenter_x) - 7,
-					$py - ($center_y - $markercenter_y) - 9, 0, 0, 16, 16);
-			}
-		}
-	}
 }
-
-#force push

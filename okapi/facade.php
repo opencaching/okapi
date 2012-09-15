@@ -53,4 +53,24 @@ class Facade
 		$request->perceive_as_http_request = true;
 		return OkapiServiceRunner::call($service_name, $request);
 	}
+	
+	/**
+	 * This works like service_call with two exceptions: 1. It passes all your
+	 * current HTTP request headers to OKAPI (which can make use of them in
+	 * terms of caching), 2. It outputs the service response directly, instead
+	 * of returning it.
+	 */
+	public static function service_display($service_name, $user_id_or_null, $parameters)
+	{
+		$request = new OkapiInternalRequest(
+			new OkapiFacadeConsumer(),
+			($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,
+			$parameters
+		);
+		$request->perceive_as_http_request = true;
+		if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+			$request->etag = $_SERVER['HTTP_IF_NONE_MATCH'];
+		$response = OkapiServiceRunner::call($service_name, $request);
+		$response->display();
+	}
 }
