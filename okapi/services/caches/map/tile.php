@@ -354,8 +354,9 @@ class WebService
 		{
 			# Hit. Report the content was unmodified.
 			
-			OkapiServiceRunner::save_stats_extra("caches/map/tile/etag-hit",
-				null, microtime(true) - $time_started);
+			OkapiServiceRunner::save_stats_extra("caches/map/tile/etag-hit".
+				((count($rows) == 0) ? "-empty" : ""), null,
+				microtime(true) - $time_started);
 			$response->etag = null;
 			$response->status = "304 Not Modified";
 			return $response;
@@ -369,8 +370,9 @@ class WebService
 		{
 			# Hit. We will use the cached version of the image.
 			
-			OkapiServiceRunner::save_stats_extra("caches/map/tile/imagecache-hit",
-				null, microtime(true) - $time_started);
+			OkapiServiceRunner::save_stats_extra("caches/map/tile/imagecache-hit".
+				((count($rows) == 0) ? "-empty" : ""), null,
+				microtime(true) - $time_started);
 			return $response;
 		}
 		
