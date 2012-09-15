@@ -17,7 +17,6 @@ use okapi\DoesNotExist;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
-use okapi\Http304;
 
 use okapi\services\caches\map\TileTree;
 use okapi\services\caches\map\DefaultTileRenderer;
@@ -357,7 +356,9 @@ class WebService
 			
 			OkapiServiceRunner::save_stats_extra("caches/map/tile/etag-hit",
 				null, microtime(true) - $time_started);
-			throw new Http304();
+			$response->etag = null;
+			$response->status = "304 Not Modified";
+			return $response;
 		}
 		
 		# Check if the image was recently rendered and is kept in image cache.
