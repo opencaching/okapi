@@ -197,16 +197,16 @@ class WebService
 			while (list($cache_id) = mysql_fetch_row($rs))
 				$user['found'][$cache_id] = true;
 
-			# Owned caches.
+			# Own caches.
 			
 			$rs = Db::query("
 				select distinct cache_id
 				from caches
 				where user_id = '".mysql_real_escape_string($request->token->user_id)."'
 			");
-			$user['owned'] = array();
+			$user['own'] = array();
 			while (list($cache_id) = mysql_fetch_row($rs))
-				$user['owned'][$cache_id] = true;
+				$user['own'][$cache_id] = true;
 			
 			Cache::set($cache_key, $user, 30);
 		}
@@ -230,9 +230,9 @@ class WebService
 		{
 			if (!in_array($tmp, array('true', 'false'), 1))
 				throw new InvalidParam('exclude_my_own', "'$tmp'");
-			if (($tmp == 'true') && (count($user['owned']) > 0))
+			if (($tmp == 'true') && (count($user['own']) > 0))
 			{
-				foreach ($user['owned'] as $cache_id => $v)
+				foreach ($user['own'] as $cache_id => $v)
 					$excluded_dict[$cache_id] = true;
 			}
 		}
