@@ -54,8 +54,8 @@ class View
 		
 		$total_calls = 0;
 		$total_runtime = 0.0;
-		$calls = array();
-		$runtime = array();
+		$calls = array('A' => 0, 'B' => 0, 'C' => 0, 'D' => 0);
+		$runtime = array('A' => 0.0, 'B' => 0.0, 'C' => 0.0, 'D' => 0.0);
 		
 		while (list($name, $c, $r) = mysql_fetch_array($rs))
 		{
@@ -69,6 +69,12 @@ class View
 				$calls[$name[32]] = $c;
 				$runtime[$name[32]] = $r;
 			}
+		}
+		if ($total_calls != $calls['A'])
+		{
+			print "Partial results. Only ".$calls['A']." out of $total_calls are covered.\n";
+			print "All other will count as \"unaccounted for\".\n\n";
+			$total_calls = $calls['A'];
 		}
 		
 		$calls_left = $total_calls;
@@ -106,7 +112,6 @@ class View
 		
 		print $get_stats()."  All calls passed here after ~".$avg($runtime['A'] + $runtime['B'], $total_calls)."\n";
 
-		assert($total_calls == $calls['B']);
 		$etag_hits = $calls['B'] - $calls['C'];
 		
 		print "\n";
