@@ -65,7 +65,7 @@ class WebService
 	
 	public static function call(OkapiRequest $request)
 	{
-		$time_started = microtime(true);
+		$checkpointA_started = microtime(true);
 		
 		# Make sure the request is internal.
 		
@@ -314,7 +314,10 @@ class WebService
 		# options need to be applied here.
 		
 		$rs = TileTree::query_fast($zoom, $x, $y, $filter_conds);
-			
+		OkapiServiceRunner::save_stats_extra("caches/map/tile/checkpointA", null,
+			microtime(true) - $checkpointA_started);
+		$checkpointB_started = microtime(true);
+
 		# Read the rows and add extra flags to them.
 
 		$rows = array();
@@ -334,7 +337,7 @@ class WebService
 			}
 			unset($row);
 		}
-		
+
 		# Compute a fast image fingerprint. This will be used both for ETags
 		# and internal cache ($cache_key).
 		
@@ -350,13 +353,13 @@ class WebService
 		
 		# Check if the request didn't include the same ETag.
 		
+		OkapiServiceRunner::save_stats_extra("caches/map/tile/checkpointB", null,
+			microtime(true) - $checkpointB_started);
+		$checkpointC_started = microtime(true);
 		if (self::$USE_ETAGS_CACHE && ($request->etag == $response->etag))
 		{
 			# Hit. Report the content was unmodified.
 			
-			OkapiServiceRunner::save_stats_extra("caches/map/tile/etag-hit".
-				((count($rows) == 0) ? "-empty" : ""), null,
-				microtime(true) - $time_started);
 			$response->etag = null;
 			$response->status = "304 Not Modified";
 			return $response;
@@ -366,13 +369,13 @@ class WebService
 		
 		$cache_key = "tile/".$image_fingerprint;
 		$response->body = self::$USE_IMAGE_CACHE ? Cache::get($cache_key) : null;
+		OkapiServiceRunner::save_stats_extra("caches/map/tile/checkpointC", null,
+			microtime(true) - $checkpointC_started);
+		$checkpointD_started = microtime(true);
 		if ($response->body !== null)
 		{
 			# Hit. We will use the cached version of the image.
 			
-			OkapiServiceRunner::save_stats_extra("caches/map/tile/imagecache-hit".
-				((count($rows) == 0) ? "-empty" : ""), null,
-				microtime(true) - $time_started);
 			return $response;
 		}
 		
@@ -380,6 +383,8 @@ class WebService
 	
 		$response->body = $tile->render();
 		Cache::set($cache_key, $response->body, 86400);
+		OkapiServiceRunner::save_stats_extra("caches/map/tile/checkpointD", null,
+			microtime(true) - $checkpointD_started);
 
 		return $response;
 	}
