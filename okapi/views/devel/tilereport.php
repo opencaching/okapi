@@ -36,6 +36,9 @@ class View
 			"Y-m-d 00:00:00", time() - 7*86400);
 		$end = isset($_GET['end']) ? $_GET['end'] : date("Y-m-d 23:59:59");
 		
+		print "From: $start\n";
+		print "  To: $end\n\n";
+		
 		$rs = Db::query("
 			select
 				service_name,
@@ -51,42 +54,20 @@ class View
 		
 		$total_calls = 0;
 		$total_runtime = 0.0;
-		$etag_nonempty_hits = 0;
-		$etag_nonempty_runtime = 0.0;
-		$etag_empty_hits = 0;
-		$etag_empty_runtime = 0.0;
-		$imagecache_nonempty_hits = 0;
-		$imagecache_nonempty_runtime = 0;
-		$imagecache_empty_hits = 0;
-		$imagecache_empty_runtime = 0;
+		$calls = array();
+		$runtime = array();
 		
-		while (list($name, $calls, $runtime) = mysql_fetch_array($rs))
+		while (list($name, $c, $r) = mysql_fetch_array($rs))
 		{
-			switch ($name)
+			if ($name == 'services/caches/map/tile')
 			{
-				case 'services/caches/map/tile':
-					$total_calls = $calls;
-					$total_runtime = $runtime;
-					break;
-				case 'extra/caches/map/tile/etag-hit':
-					$etag_nonempty_hits = $calls;
-					$etag_nonempty_runtime = $runtime;
-					break;
-				case 'extra/caches/map/tile/etag-hit-empty':
-					$etag_empty_hits = $calls;
-					$etag_empty_runtime = $runtime;
-					break;
-				case 'extra/caches/map/tile/imagecache-hit':
-					$imagecache_nonempty_hits = $calls;
-					$imagecache_nonempty_runtime = $runtime;
-					break;
-				case 'extra/caches/map/tile/imagecache-hit-empty':
-					$imagecache_empty_hits = $calls;
-					$imagecache_empty_runtime = $runtime;
-					break;
-				default:
-					# Unknown key. Ingore.
-					break;
+				$total_calls = $c;
+				$total_runtime = $r;
+			}
+			elseif (strpos($name, 'extra/caches/map/tile/checkpoint') === 0)
+			{
+				$calls[$name[32]] = $c;
+				$runtime[$name[32]] = $r;
 			}
 		}
 		
@@ -106,41 +87,58 @@ class View
 		print "%CALLS  %TIME  Description\n";
 		print "====== ======  ======================================================================\n";
 		print $get_stats()."  $total_calls responses served. Total runtime: ".sprintf("%.2f", $total_runtime)."s\n";
+		print "\n";
+		print "               All of these requests needed a TileTree build/lookup. The average runtime of\n";
+		print "               these lookups was ".$avg($runtime['A'], $total_calls).". ".$perc($runtime['A'], $total_runtime)." of total runtime was spent here.\n";
+		print "\n";
+		
+		$runtime_left -= $runtime['A'];
 
-		$etag_hits = $etag_nonempty_hits + $etag_empty_hits;
-		$calls_left -= $etag_hits;
-		$etag_runtime = $etag_nonempty_runtime + $etag_empty_runtime;
-		$runtime_left -= $etag_runtime;
+		print $get_stats()."  All calls passed here after ~".$avg($runtime['A'], $total_calls)."\n";
 		
 		print "\n";
-		print "               All of these requests needed a TileTree lookup. The average runtime of\n";
-		print "               these lookups is currently not included in the stats. Lookup results were\n";
-		print "               then passed on to the TileRenderer which computed an ETag hash string.\n";
+		print "               Lookup result was then processed and \"image description\" was created. It was\n";
+		print "               passed on to the TileRenderer to compute the ETag hash string. The average runtime\n";
+		print "               of this part was ".$avg($runtime['B'], $total_calls).". ".$perc($runtime['B'], $total_runtime)." of total runtime was spent here.\n";
+		print "\n";
+		
+		$runtime_left -= $runtime['B'];
+		
+		print $get_stats()."  All calls passed here after ~".$avg($runtime['A'] + $runtime['B'], $total_calls)."\n";
+
+		assert($total_calls == $calls['B']);
+		$etag_hits = $calls['B'] - $calls['C'];
+		
+		print "\n";
 		print "               $etag_hits of the requests matched the ETag and were served a HTTP 304 response.\n";
-		print "               (".$perc($etag_empty_hits, $etag_hits)." of them were the empty tile.)\n";
-		print "               The average runtime of an ETag HTTP 304 response was ".$avg($etag_runtime, $etag_hits)."\n";
-		print "               (empty ".$avg($etag_empty_runtime, $etag_empty_hits).", non-empty ".$avg($etag_nonempty_runtime, $etag_nonempty_hits).").\n";
 		print "\n";
-		print $get_stats()."  $calls_left calls continued to the next \"level\".\n";
 		
-		$imagecache_hits = $imagecache_nonempty_hits + $imagecache_empty_hits;
-		$calls_left -= $imagecache_hits;
-		$imagecache_runtime = $imagecache_nonempty_runtime + $imagecache_empty_runtime;
-		$runtime_left -= $imagecache_runtime;
+		$calls_left = $calls['C'];
+		
+		print $get_stats()."  $calls_left calls passed here after ~".$avg($runtime['A'] + $runtime['B'], $total_calls)."\n";
+		
+		$imagecache_hits = $calls['C'] - $calls['D'];
 
 		print "\n";
-		print "               $imagecache_hits of the rest hit the server image cache.\n";
-		print "               (".$perc($imagecache_empty_hits, $imagecache_hits)." of them were the empty tile.)\n";
-		print "               The average runtime of image-cache response was ".$avg($imagecache_runtime, $imagecache_hits)."\n";
-		print "               (empty ".$avg($imagecache_empty_runtime, $imagecache_empty_hits).", non-empty ".$avg($imagecache_nonempty_runtime, $imagecache_nonempty_hits).").\n";
-		print "\n";
-		print $get_stats()."  $calls_left calls continued to the next \"level\".\n";
-		print "\n";
-		print "               The calls required the tile to be rendered. On average, it took\n";
-		print "               ".$avg($runtime_left, $calls_left)." to *render* a tile.\n";
+		print "               $imagecache_hits of these calls hit the server image cache.\n";
+		print "               ".$perc($runtime['C'], $total_runtime)." of total runtime was spent to find these.\n";
 		print "\n";
 		
+		$calls_left = $calls['D'];
+		$runtime_left -= $runtime['C'];
+		
+		print $get_stats()."  $calls_left calls passed here after ~".$avg($runtime['A'] + $runtime['B'] + $runtime['C'], $total_calls)."\n";
+		print "\n";
+		print "               These calls required the tile to be rendered. On average, it took\n";
+		print "               ".$avg($runtime['D'], $calls['D'])." to *render* a tile.\n";
+		print "               ".$perc($runtime['D'], $total_runtime)." of total runtime was spent here.\n";
+		print "\n";
+		
+		$runtime_left -= $runtime['D'];
+		
+		print $perc($runtime_left, $total_runtime)." of runtime was unaccounted for (other processing).\n";
 		print "Average response time was ".$avg($total_runtime, $total_calls).".";
+		
 		$response->body = ob_get_clean();
 		return $response;
 	}
