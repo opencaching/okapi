@@ -382,7 +382,7 @@ class WebService
 		# Miss. Render the image. Cache the result.
 	
 		$response->body = $tile->render();
-		Cache::set($cache_key, $response->body, 86400);
+		Cache::set_scored($cache_key, $response->body);
 		OkapiServiceRunner::save_stats_extra("caches/map/tile/checkpointD", null,
 			microtime(true) - $checkpointD_started);
 
