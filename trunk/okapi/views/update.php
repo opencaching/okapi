@@ -606,4 +606,18 @@ class View
 		Db::execute("delete from okapi_tile_caches where z > 0");
 		Db::execute("delete from okapi_tile_status where z > 0");
 	}
+	
+	private static function ver70()
+	{
+		Db::execute("
+			CREATE TABLE `okapi_cache_reads` (
+				`cache_key` varchar(64) NOT NULL
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+		");
+	}
+	
+	private static function ver71() { Db::execute("alter table okapi_cache add column score float(4,2) default null after `key`"); }
+	private static function ver72() { Db::execute("alter table okapi_cache change column expires expires datetime after score"); }
+	private static function ver73() { Db::execute("update okapi_cache set score=1, expires=date_add(now(), interval 360 day) where `key` like 'tile/%'"); }
+	private static function ver74() { Db::execute("update okapi_cache set score=1, expires=date_add(now(), interval 360 day) where `key` like 'tilecaption/%'"); }
 }

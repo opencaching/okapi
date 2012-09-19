@@ -245,15 +245,48 @@ class OAuthCleanupCronJob extends PrerequestCronJob
 	}
 }
 
-/** Deletes all expired cache elements, once per day. */
+/** Clean up the cache, once per hour. */
 class CacheCleanupCronJob extends Cron5Job
 {
-	public function get_period() { return 86400; }
+	public function get_period() { return 3600; }
 	public function execute()
 	{
+		# Delete all expired elements.
+		
 		Db::execute("
 			delete from okapi_cache
 			where expires < now()
+		");
+		
+		# Update the "score" stats.
+		
+		Db::execute("
+			update okapi_cache
+			set score = score * 0.9
+			where score is not null
+		");
+		Db::execute("
+			update
+				okapi_cache c,
+				(
+					select cache_key, count(*) as count
+					from okapi_cache_reads
+					group by cache_key
+				) cr
+			set c.score = c.score + cr.count
+			where
+				c.`key` = cr.cache_key
+				and c.score is not null
+		");
+		Db::execute("truncate okapi_cache_reads");
+		
+		# Delete elements with the lowest score.
+		
+		Db::execute("
+			delete from okapi_cache
+			where
+				score is not null
+				and score < 0.125
 		");
 		Db::query("optimize table okapi_cache");
 		

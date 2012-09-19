@@ -415,7 +415,7 @@ class DefaultTileRenderer implements TileRenderer
 			ob_start();
 			imagegd2($small);
 			$gd2 = ob_get_clean();
-			Cache::set($cache_key, $gd2, rand(30*86400, 60*86400));
+			Cache::set_scored($cache_key, $gd2);
 		}
 		
 		return imagecreatefromstring($gd2);

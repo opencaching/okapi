@@ -142,7 +142,19 @@ class View
 		$runtime_left -= $runtime['D'];
 		
 		print $perc($runtime_left, $total_runtime)." of runtime was unaccounted for (other processing).\n";
-		print "Average response time was ".$avg($total_runtime, $total_calls).".";
+		print "Average response time was ".$avg($total_runtime, $total_calls).".\n\n";
+		
+		print "Current okapi_cache score distribution:\n";
+		$rs = Db::query("
+			select floor(log2(score)), count(*), sum(length(value))
+			from okapi_cache
+			where score is not null
+			group by floor(log2(score))
+		");
+		while (list($log2, $count, $size) = mysql_fetch_array($rs))
+		{
+			print $count." elements ($size bytes) with score between ".pow(2, $log2)." and ".pow(2, $log2 + 1).".\n";
+		}
 		
 		$response->body = ob_get_clean();
 		return $response;

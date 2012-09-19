@@ -1567,17 +1567,38 @@ class Cache
 {
 	/**
 	 * Save object $value under the key $key. Store this object for
-	 * $timeout seconds. $key must be a string of max 32 characters in length.
+	 * $timeout seconds. $key must be a string of max 64 characters in length.
 	 * $value might be any serializable PHP object.
+	 *
+	 * The actual update of the cache might be delayed. In other words, the
+	 * next call to Cache::get MAY return the *previously* set value, not this
+	 * one.
 	 */
 	public static function set($key, $value, $timeout)
 	{
 		Db::execute("
-			replace into okapi_cache (`key`, value, expires)
+			replace delayed into okapi_cache (`key`, value, expires)
 			values (
 				'".mysql_real_escape_string($key)."',
 				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
 				date_add(now(), interval '".mysql_real_escape_string($timeout)."' second)
+			);
+		");
+	}
+	
+	/**
+	 * Scored version of set. Elements set up this way will expire when they're
+	 * not used.
+	 */
+	public static function set_scored($key, $value)
+	{
+		Db::execute("
+			replace delayed into okapi_cache (`key`, value, expires, score)
+			values (
+				'".mysql_real_escape_string($key)."',
+				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
+				date_add(now(), interval 120 day),
+				1.0
 			);
 		");
 	}
@@ -1597,7 +1618,7 @@ class Cache
 			)";
 		}
 		Db::execute("
-			replace into okapi_cache (`key`, value, expires)
+			replace delayed into okapi_cache (`key`, value, expires)
 			values ".implode(", ", $entries)."
 		");
 	}
@@ -1608,15 +1629,23 @@ class Cache
 	 */
 	public static function get($key)
 	{
-		$blob = Db::select_value("
-			select value
+		$rs = Db::query("
+			select value, score
 			from okapi_cache
 			where
 				`key` = '".mysql_real_escape_string($key)."'
 				and expires > now()
 		");
+		list($blob, $score) = mysql_fetch_array($rs);
 		if (!$blob)
 			return null;
+		if ($score != null)  # Only non-null entries are scored.
+		{
+			Db::execute("
+				insert delayed into okapi_cache_reads (`cache_key`)
+				values ('".mysql_real_escape_string($key)."')
+			");
+		}
 		return unserialize(gzinflate($blob));
 	}
 	
