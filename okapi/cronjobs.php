@@ -260,9 +260,18 @@ class CacheCleanupCronJob extends Cron5Job
 		
 		# Update the "score" stats.
 		
+		$multiplier = 0.9;  # Every hour, all scores are multiplied by this.
+		$limit = 0.01;  # When a score reaches this limit, the entry is deleted.
+		
+		# Every time the entry is read, its score is incread by 1. If an entry
+		# is saved, but never read, it will be deleted after log(L,M) hours
+		# (log(0.01, 0.9) = 43h). If an entry is read 1000000 times and then
+		# never read anymore, it will be deleted after log(1000000/L, 1/M)
+		# hours (log(1000000/0.01, 1/0.9) = 174h = 7 days).
+		
 		Db::execute("
 			update okapi_cache
-			set score = score * 0.9
+			set score = score * $multiplier
 			where score is not null
 		");
 		Db::execute("
@@ -280,13 +289,14 @@ class CacheCleanupCronJob extends Cron5Job
 		");
 		Db::execute("truncate okapi_cache_reads");
 		
-		# Delete elements with the lowest score.
+		# Delete elements with the lowest score. Entries which have been set
+		# but never read will be removed after 36 hours (0.9^36 < 0.02 < 0.9^35).
 		
 		Db::execute("
 			delete from okapi_cache
 			where
 				score is not null
-				and score < 0.125
+				and score < $limit
 		");
 		Db::query("optimize table okapi_cache");
 		
