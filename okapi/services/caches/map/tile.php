@@ -284,7 +284,7 @@ class WebService
 		if ($tmp = $request->get_parameter('rating'))
 		{
 			if (!preg_match("/^[1-5]-[1-5](\|X)?$/", $tmp))
-				throw new InvalidParam($param_name, "'$tmp'");
+				throw new InvalidParam('rating', "'$tmp'");
 			list($min, $max) = explode("-", $tmp);
 			if (strpos($max, "|X") !== false)
 			{
@@ -294,7 +294,7 @@ class WebService
 				$allow_null = false;
 			}
 			if ($min > $max)
-				throw new InvalidParam($param_name, "'$tmp'");
+				throw new InvalidParam('rating', "'$tmp'");
 			if (($min == 1) && ($max == 5) && $allow_null) {
 				/* no extra condition necessary */
 			} else {
