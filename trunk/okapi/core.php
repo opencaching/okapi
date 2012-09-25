@@ -1569,15 +1569,11 @@ class Cache
 	 * Save object $value under the key $key. Store this object for
 	 * $timeout seconds. $key must be a string of max 64 characters in length.
 	 * $value might be any serializable PHP object.
-	 *
-	 * The actual update of the cache might be delayed. In other words, the
-	 * next call to Cache::get MAY return the *previously* set value, not this
-	 * one.
 	 */
 	public static function set($key, $value, $timeout)
 	{
 		Db::execute("
-			replace delayed into okapi_cache (`key`, value, expires)
+			replace into okapi_cache (`key`, value, expires)
 			values (
 				'".mysql_real_escape_string($key)."',
 				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
@@ -1593,7 +1589,7 @@ class Cache
 	public static function set_scored($key, $value)
 	{
 		Db::execute("
-			replace delayed into okapi_cache (`key`, value, expires, score)
+			replace into okapi_cache (`key`, value, expires, score)
 			values (
 				'".mysql_real_escape_string($key)."',
 				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
@@ -1618,7 +1614,7 @@ class Cache
 			)";
 		}
 		Db::execute("
-			replace delayed into okapi_cache (`key`, value, expires)
+			replace into okapi_cache (`key`, value, expires)
 			values ".implode(", ", $entries)."
 		");
 	}
@@ -1642,7 +1638,7 @@ class Cache
 		if ($score != null)  # Only non-null entries are scored.
 		{
 			Db::execute("
-				insert delayed into okapi_cache_reads (`cache_key`)
+				insert into okapi_cache_reads (`cache_key`)
 				values ('".mysql_real_escape_string($key)."')
 			");
 		}
