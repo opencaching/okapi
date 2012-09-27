@@ -115,15 +115,6 @@ class WebService
 		
 		# Various integrity checks.
 		
-		if (!in_array($cache['status'], array("Available", "Temporarily unavailable")))
-		{
-			# Only admins and cache owners may publish comments for Archived caches.
-			if ($user['is_admin'] || ($user['uuid'] == $cache['owner']['uuid'])) {
-				/* pass */
-			} else {
-				throw new CannotPublishException(_("This cache is archived. Only admins and the owner are allowed to add a log entry."));
-			}
-		}
 		if ($cache['type'] == 'Event' && $logtype != 'Comment')
 			throw new CannotPublishException(_('This cache is an Event cache. You cannot "Find it"! (But - you may "Comment" on it.)'));
 		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
