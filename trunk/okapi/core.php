@@ -803,11 +803,20 @@ class Okapi
 		# First, make sure we're not spamming.
 		
 		$cache_key = 'mail_admins_counter/'.(floor(time() / 3600) * 3600).'/'.md5($subject);
-		$counter = Cache::get($cache_key);
+		try {
+			$counter = Cache::get($cache_key);
+		} catch (DbException $e) {
+			# Why catching exceptions here? See bug#156.
+			$counter = null;
+		}
 		if ($counter === null)
 			$counter = 0;
 		$counter++;
-		Cache::set($cache_key, $counter, 3600);
+		try {
+			Cache::set($cache_key, $counter, 3600);
+		} catch (DbException $e) {
+			# Why catching exceptions here? See bug#156.
+		}
 		if ($counter <= 5)
 		{
 			# We're not spamming yet.
