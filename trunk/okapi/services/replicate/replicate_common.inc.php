@@ -200,7 +200,7 @@ class ReplicateCommon
 			Okapi::mail_from_okapi(
 				"rygielski@mimuw.edu.pl",
 				"verify_clog_consistency",
-				"Number of invalid entries fixes: $sum"
+				"Number of invalid entries fixed: $sum"
 			);
 		}
 	}
