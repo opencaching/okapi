@@ -491,9 +491,9 @@ class TileTreeUpdater extends Cron5Job
 			# No update necessary.
 		} elseif ($tiletree_revision < $current_clog_revision) {
 			require_once($GLOBALS['rootpath']."okapi/services/caches/map/replicate_listener.inc.php");
-			if ($current_clog_revision - $tiletree_revision < 100000)  # In the middle of 2012, OCPL generated 30000 entries per week
+			if ($current_clog_revision - $tiletree_revision < 30000)  # In the middle of 2012, OCPL generated 30000 entries per week
 			{
-				for ($i=0; $i<100; $i++)  # This gives us no more than 20000 (?) at a time.
+				for ($timeout = time() + 240; time() < $timeout; )  # Try to stop after 4 minutes.
 				{
 					$response = OkapiServiceRunner::call('services/replicate/changelog', new OkapiInternalRequest(
 						new OkapiInternalConsumer(), null, array('since' => $tiletree_revision)));
