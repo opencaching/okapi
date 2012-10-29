@@ -43,6 +43,7 @@ class CronJobController
 				new CheckCronTab2(),
 				new ChangeLogWriterJob(),
 				new ChangeLogCleanerJob(),
+				new ChangeLogCheckerJob(),
 				new AdminStatsSender(),
 				new LocaleChecker(),
 				new FulldumpGeneratorJob(),
@@ -93,6 +94,7 @@ class CronJobController
 					$next_run = $cronjob->get_next_scheduled_run(isset($schedule[$name]) ? $schedule[$name] : time());
 				}
 				$schedule[$name] = $next_run;
+				Cache::set("cron_schedule", $schedule, 30*86400);
 			}
 		}
 		$nearest = time() + 3600;
@@ -443,6 +445,22 @@ class ChangeLogWriterJob extends Cron5Job
 	{
 		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
 		ReplicateCommon::update_clog_table();
+	}
+}
+
+/**
+ * Once per day, compares alle caches to the cached versions
+ * kept by the 'replicate' module. If it finds any inconsistencies, it
+ * emails the developers (such inconsistencies shouldn't happen) and it changes
+ * the okapi_syncbase column accordingly. See issue 157.
+ */
+class ChangeLogCheckerJob extends Cron5Job
+{
+	public function get_period() { return 86400; }
+	public function execute()
+	{
+		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
+		ReplicateCommon::verify_clog_consistency();
 	}
 }
 

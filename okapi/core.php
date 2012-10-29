@@ -1578,9 +1578,18 @@ class Cache
 	 * Save object $value under the key $key. Store this object for
 	 * $timeout seconds. $key must be a string of max 64 characters in length.
 	 * $value might be any serializable PHP object.
+	 *
+	 * If $timeout is null, then the object will be treated as persistent
+	 * (the Cache will do its best to NEVER remove it).
 	 */
 	public static function set($key, $value, $timeout)
 	{
+		if ($timeout == null)
+		{
+			# The current cache implementation is ALWAYS persistent, so we will
+			# just replace it with a big value.
+			$timeout = 100*365*86400;
+		}
 		Db::execute("
 			replace into okapi_cache (`key`, value, expires)
 			values (
@@ -1613,6 +1622,12 @@ class Cache
 	{
 		if (count($dict) == 0)
 			return;
+		if ($timeout == null)
+		{
+			# The current cache implementation is ALWAYS persistent, so we will
+			# just replace it with a big value.
+			$timeout = 100*365*86400;
+		}
 		$entries = array();
 		foreach ($dict as $key => $value)
 		{
