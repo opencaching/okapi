@@ -16,6 +16,7 @@ namespace okapi\cronjobs;
 
 use Exception;
 use okapi\Okapi;
+use okapi\BadRequest;
 use okapi\Settings;
 use okapi\OkapiLock;
 use okapi\OkapiExceptionHandler;
@@ -495,8 +496,17 @@ class TileTreeUpdater extends Cron5Job
 			{
 				for ($timeout = time() + 240; time() < $timeout; )  # Try to stop after 4 minutes.
 				{
-					$response = OkapiServiceRunner::call('services/replicate/changelog', new OkapiInternalRequest(
-						new OkapiInternalConsumer(), null, array('since' => $tiletree_revision)));
+					try {
+						$response = OkapiServiceRunner::call('services/replicate/changelog', new OkapiInternalRequest(
+							new OkapiInternalConsumer(), null, array('since' => $tiletree_revision)));
+					} catch (BadRequest $e) {
+						# Invalid 'since' parameter? May happen whne crontab was
+						# not working for more than 10 days. Or, just after OKAPI
+						# is installed (and this is the first time this cronjob
+						# if being run).
+						\okapi\services\caches\map\ReplicateListener::reset();
+						Okapi::set_var('clog_followup_revision', $current_clog_revision);
+					}
 					\okapi\services\caches\map\ReplicateListener::receive($response['changelog']);
 					$tiletree_revision = $response['revision'];
 					Okapi::set_var('clog_followup_revision', $tiletree_revision);
