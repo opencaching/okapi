@@ -499,6 +499,11 @@ class TileTreeUpdater extends Cron5Job
 					try {
 						$response = OkapiServiceRunner::call('services/replicate/changelog', new OkapiInternalRequest(
 							new OkapiInternalConsumer(), null, array('since' => $tiletree_revision)));
+						\okapi\services\caches\map\ReplicateListener::receive($response['changelog']);
+						$tiletree_revision = $response['revision'];
+						Okapi::set_var('clog_followup_revision', $tiletree_revision);
+						if (!$response['more'])
+							break;
 					} catch (BadRequest $e) {
 						# Invalid 'since' parameter? May happen whne crontab was
 						# not working for more than 10 days. Or, just after OKAPI
@@ -507,11 +512,6 @@ class TileTreeUpdater extends Cron5Job
 						\okapi\services\caches\map\ReplicateListener::reset();
 						Okapi::set_var('clog_followup_revision', $current_clog_revision);
 					}
-					\okapi\services\caches\map\ReplicateListener::receive($response['changelog']);
-					$tiletree_revision = $response['revision'];
-					Okapi::set_var('clog_followup_revision', $tiletree_revision);
-					if (!$response['more'])
-						break;
 				}
 			} else {
 				# Some kind of bigger update. Resetting TileTree might be a better option.
