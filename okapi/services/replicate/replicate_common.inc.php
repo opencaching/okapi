@@ -99,7 +99,7 @@ class ReplicateCommon
 		foreach ($cache_code_groups as $cache_codes)
 		{
 			self::generate_changelog_entries('services/caches/geocaches', 'geocache', 'cache_codes',
-				'code', $cache_codes, self::$logged_cache_fields, false, true, 30*86400);
+				'code', $cache_codes, self::$logged_cache_fields, false, true, null);
 		}
 		
 		# Same as above, for log entries.
@@ -180,7 +180,7 @@ class ReplicateCommon
 		{
 			$entries = self::generate_changelog_entries(
 				'services/caches/geocaches', 'geocache', 'cache_codes',
-				'code', $cache_codes, self::$logged_cache_fields, true, true, 30*86400
+				'code', $cache_codes, self::$logged_cache_fields, true, true, null
 			);
 			foreach ($entries as $entry)
 			{
