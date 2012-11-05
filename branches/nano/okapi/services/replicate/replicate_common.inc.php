@@ -19,7 +19,7 @@ use okapi\Settings;
 class ReplicateCommon
 {
 	private static $chunk_size = 200;
-	private static $logged_cache_fields = 'code|names|location|type|status|url|owner|founds|notfounds|size|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|descriptions|hints|images|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden';
+	private static $logged_cache_fields = 'code|names|location|type|status|url|owner|founds|notfounds|size|size2|oxsize|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|descriptions|hints|images|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden';
 	
 	private static $logged_log_entry_fields = 'uuid|cache_code|date|user|type|comment';
 	
