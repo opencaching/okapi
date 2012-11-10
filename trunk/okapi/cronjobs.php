@@ -98,11 +98,24 @@ class CronJobController
 				Cache::set("cron_schedule", $schedule, 30*86400);
 			}
 		}
+		
+		# Remove "stale" schedule keys (those which are no longer declared).
+		
+		$fixed_schedule = array();
+		foreach (self::get_enabled_cronjobs() as $cronjob)
+		{
+			$name = $cronjob->get_name();
+			$fixed_schedule[$name] = $schedule[$name];
+		}
+		unset($schedule);
+		
+		# Return the nearest scheduled event time.
+		
 		$nearest = time() + 3600;
-		foreach ($schedule as $name => $time)
+		foreach ($fixed_schedule as $name => $time)
 			if ($time < $nearest)
 				$nearest = $time;
-		Cache::set("cron_schedule", $schedule, 30*86400);
+		Cache::set("cron_schedule", $fixed_schedule, 30*86400);
 		$lock->release();
 		return $nearest;
 	}
