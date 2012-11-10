@@ -200,7 +200,8 @@ class ReplicateCommon
 			Okapi::mail_from_okapi(
 				"rygielski@mimuw.edu.pl",
 				"verify_clog_consistency",
-				"Number of invalid entries fixed: $sum"
+				"Number of invalid entries fixed: $sum\n\n".
+				print_r(Db::select_all("select * from okapi_vars"), true)
 			);
 		}
 	}
