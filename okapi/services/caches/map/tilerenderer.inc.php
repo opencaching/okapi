@@ -121,12 +121,20 @@ class DefaultTileRenderer implements TileRenderer
 		{
 			# Miss. Check default cache.  WRTODO: upgrade to normal Cache?
 			
-			$cache_key = "tilesrc/".Okapi::$revision."/".self::$VERSION."/".$key;
-			$gd2_path = self::$USE_STATIC_IMAGE_CACHE
-				? FileCache::get_file_path($cache_key) : null;
-			if ($gd2_path === null)
+			try
 			{
-				# Miss again. Read the image from PNG.
+				$cache_key = "tilesrc/".Okapi::$revision."/".self::$VERSION."/".$key;
+				$gd2_path = self::$USE_STATIC_IMAGE_CACHE
+					? FileCache::get_file_path($cache_key) : null;
+				if ($gd2_path === null)
+					throw new Exception("Not in cache");
+				# File cache hit. GD2 files are much faster to read than PNGs.
+				# This can throw an Exception (see bug#160).
+				$locmem_cache[$key] = imagecreatefromgd2($gd2_path);
+			}
+			catch (Exception $e)
+			{
+				# Miss again (or error decoding). Read the image from PNG.
 				
 				$locmem_cache[$key] = imagecreatefrompng($GLOBALS['rootpath']."okapi/static/tilemap/$name.png");
 				
@@ -150,11 +158,6 @@ class DefaultTileRenderer implements TileRenderer
 				imagegd2($locmem_cache[$key]);
 				$gd2 = ob_get_clean();
 				FileCache::set($cache_key, $gd2);
-			}
-			else
-			{
-				# File cache hit. GD2 files are much faster to read than PNGs.
-				$locmem_cache[$key] = imagecreatefromgd2($gd2_path);
 			}
 		}
 		return $locmem_cache[$key];
