@@ -34,7 +34,7 @@ class DefaultTileRenderer implements TileRenderer
 	 * Changing this will affect all generated hashes. You should increment it
 	 * whenever you alter anything in the drawing algorithm.
 	 */
-	private static $VERSION = 41;
+	private static $VERSION = 42;
 	
 	/**
 	 * Should be always true. You may temporarily set it to false, when you're
@@ -460,6 +460,24 @@ class DefaultTileRenderer implements TileRenderer
 				: "status_archived");
 			imagecopy($this->im, $icon, $px - ($center_x - $markercenter_x) - 6,
 				$py - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
+		}
+		
+		# Put small versions of rating icons.
+		
+		if ($status == 1)
+		{
+			if ($rating >= 4.2)
+			{
+				if ($flags & TileTree::$FLAG_STAR) {
+					$icon = self::get_image("rating_grin_small");
+					imagecopy($this->im, $icon, $px - 5, $py - $center_y - 1, 0, 0, 6, 6);
+					$icon = self::get_image("rating_star_small");
+					imagecopy($this->im, $icon, $px - 2, $py - $center_y - 3, 0, 0, 10, 10);
+				} else {
+					$icon = self::get_image("rating_grin_small");
+					imagecopy($this->im, $icon, $px - 3, $py - $center_y - 1, 0, 0, 6, 6);
+				}
+			}
 		}
 		
 		if ($own)
