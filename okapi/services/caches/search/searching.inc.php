@@ -406,6 +406,39 @@ class SearchAssistant
 		}
 		
 		#
+		# with_trackables_only
+		#
+		
+		if ($tmp = $request->get_parameter('with_trackables_only'))
+		{
+			if (!in_array($tmp, array('true', 'false'), 1))
+				throw new InvalidParam('with_trackables_only', "'$tmp'");
+			if ($tmp == 'true')
+			{
+				$where_conds[] = "
+					caches.wp_oc in (
+						select distinct wp
+						from gk_item_waypoint
+					)
+				";
+			}
+		}
+		
+		#
+		# ftf_hunter
+		#
+		
+		if ($tmp = $request->get_parameter('ftf_hunter'))
+		{
+			if (!in_array($tmp, array('true', 'false'), 1))
+				throw new InvalidParam('not_yet_found_only', "'$tmp'");
+			if ($tmp == 'true')
+			{
+				$where_conds[] = "caches.founds = 0";
+			}
+		}
+		
+		#
 		# limit
 		#
 		
