@@ -232,10 +232,10 @@ class SearchAssistant
 							if (($min == 1) && ($max == 5) && $allow_null) {
 								/* no extra condition necessary */
 							} else {
-								$divisors = array(-3.0, -1.0, 0.1, 1.4, 2.2, 3.0);
+								$divisors = array(-999, -1.0, 0.1, 1.4, 2.2, 999);
 								$min = $divisors[$min - 1];
 								$max = $divisors[$max];
-								$where_conds[] = "(($X_SCORE between $min and $max) and ($X_VOTES >= 3))".
+								$where_conds[] = "($X_SCORE >= $min and $X_SCORE < $max and $X_VOTES >= 3)".
 									($allow_null ? " or ($X_VOTES < 3)" : "");
 							}
 						}
