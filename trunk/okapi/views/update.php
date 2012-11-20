@@ -646,4 +646,5 @@ class View
 		");
 	}
 	
+	private static function ver79() { Db::execute("alter table okapi_search_results engine=MyISAM"); }
 }
