@@ -622,4 +622,28 @@ class View
 	private static function ver74() { Db::execute("update okapi_cache set score=1, expires=date_add(now(), interval 360 day) where `key` like 'tilecaption/%'"); }
 	private static function ver75() { Db::execute("alter table okapi_cache modify column score float default null"); }
 	private static function ver76() { Db::execute("update okapi_cache set expires=date_add(now(), interval 100 year) where `key` like 'clog#geocache#%'"); }
+	
+	private static function ver77()
+	{
+		Db::execute("
+			CREATE TABLE okapi_search_sets (
+				id mediumint(6) unsigned not null auto_increment,
+				params_hash varchar(64) not null,
+				primary key (id),
+				key by_hash (params_hash, id)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+		");
+	}
+
+	private static function ver78()
+	{
+		Db::execute("
+			CREATE TABLE okapi_search_results (
+				set_id mediumint(6) unsigned not null,
+				cache_id mediumint(6) unsigned not null,
+				primary key (set_id, cache_id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		");
+	}
+	
 }

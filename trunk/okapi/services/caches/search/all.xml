@@ -144,6 +144,14 @@
 		<p>Boolean. If set to <b>true</b>, caches which the user is an owner of will
 		not be included in the result.</p>
 	</opt>
+	<opt name='with_trackables_only' default='false'>
+		Boolean. If set to <b>true</b>, only caches with at least one trackable
+		will be included in the result.
+	</opt>
+	<opt name='ftf_hunter' default='false'>
+		Boolean. If set to <b>true</b>, only caches which have not yet been
+		found <b>by anyone</b> will be included.
+	</opt>
 	<opt name='limit' default='100'>
 		<p>Integer in range 1..500. Maximum number of cache codes returned.</p>
 	</opt>

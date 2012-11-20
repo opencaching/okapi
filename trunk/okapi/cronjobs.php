@@ -49,6 +49,7 @@ class CronJobController
 				new LocaleChecker(),
 				new FulldumpGeneratorJob(),
 				new TileTreeUpdater(),
+				new SearchSetsCleanerJob(),
 			);
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
@@ -258,6 +259,17 @@ class OAuthCleanupCronJob extends PrerequestCronJob
 	{
 		if (Okapi::$data_store)
 			Okapi::$data_store->cleanup();
+	}
+}
+
+/** Clean up the search results table, every 5 minutes. */
+class SearchSetsCleanerJob extends Cron5Job
+{
+	public function get_period() { return 300; }
+	public function execute()
+	{
+		Db::execute("truncate okapi_search_sets");
+		Db::execute("truncate okapi_search_results");
 	}
 }
 
