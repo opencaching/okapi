@@ -11,8 +11,7 @@
 	<req name='z'>Zoom level (0..21).</req>
 	<req name='x'>Tile number on the X axis.</req>
 	<req name='y'>Tile number on the Y axis.</req>
-	<import-params method="services/caches/search/all"
-		except="limit|offset|order_by"/>
+	<import-params method="services/caches/search/save"/>
 	<returns>
 		The PNG image with the requested map tile.
 	</returns>
