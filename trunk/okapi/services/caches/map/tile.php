@@ -17,6 +17,7 @@ use okapi\DoesNotExist;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
+use okapi\OkapiLock;
 
 use okapi\services\caches\map\TileTree;
 use okapi\services\caches\map\DefaultTileRenderer;
@@ -104,34 +105,63 @@ class WebService
 		# is cleared every 5 minutes).
 		
 		$params_hash = md5(serialize(array($tables, $where_conds)));
-		$set_id = Db::select_value("
+		$select_set_id_SQL = "
 			select id
 			from okapi_search_sets
 			where params_hash = '".mysql_real_escape_string($params_hash)."'
 			limit 1
-		");
+		";
+		$set_id = Db::select_value($select_set_id_SQL);
 		if ($set_id === null)
 		{
-			# Not yet cached.
-		
-			Db::execute("
-				insert into okapi_search_sets (params_hash)
-				values ('processing in progress')
-			");
-			$set_id = Db::last_insert_id();
-			Db::execute("
-				insert into okapi_search_results (set_id, cache_id)
-				select
-					'".mysql_real_escape_string($set_id)."',
-					caches.cache_id
-				from ".implode(", ", $tables)."
-				where ".implode(" and ", $where_conds)."
-			");
-			Db::execute("
-				update okapi_search_sets
-				set params_hash = '".mysql_real_escape_string($params_hash)."'
-				where id = '".mysql_real_escape_string($set_id)."'
-			");
+			# To avoid caching the same results more than once, we will acquire
+			# a write-lock here.
+			
+			$lock = OkapiLock::get("search-results-writer");
+			$lock->acquire();
+			
+			try
+			{
+				# Make sure we were the first to acquire the lock.
+				
+				$set_id = Db::select_value($select_set_id_SQL);
+				if ($set_id === null)
+				{
+					# We are in the first thread which have acquired the lock.
+					# We will proceed with result-set creation. Other threads
+					# will be waiting until we finish.
+					
+					Db::execute("
+						insert into okapi_search_sets (params_hash)
+						values ('processing in progress')
+					");
+					$set_id = Db::last_insert_id();
+					Db::execute("
+						insert into okapi_search_results (set_id, cache_id)
+						select distinct
+							'".mysql_real_escape_string($set_id)."',
+							caches.cache_id
+						from ".implode(", ", $tables)."
+						where ".implode(" and ", $where_conds)."
+					");
+					Db::execute("
+						update okapi_search_sets
+						set params_hash = '".mysql_real_escape_string($params_hash)."'
+						where id = '".mysql_real_escape_string($set_id)."'
+					");
+				} else {
+					# Some other thread acquired the lock before us and it has
+					# generated the result set. We don't need to do anything.
+				}
+				$lock->release();
+			}
+			catch (Exception $e)
+			{
+				# SQL error? Make sure the lock is released and rethrow.
+				
+				$lock->release();
+				throw $e;
+			}
 		}
 		
 		# Get caches which are present in the result set AND within the tile
