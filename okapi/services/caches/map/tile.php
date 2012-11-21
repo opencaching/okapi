@@ -86,87 +86,13 @@ class WebService
 		if ($y >= 1<<$zoom)
 			throw new InvalidParam('y', "Should be in 0..".((1<<$zoom) - 1).".");
 		
-		# All the other parameters are parsed the same way as in the
-		# caches/search/all method.
+		# Now, we will create a search set (or use one previously created).
+		# Instead of creating a new OkapiInternalRequest object, we will pass
+		# the current request directly. We can do that, because we inherit all
+		# of the "save" method's parameters.
 		
-		$options = SearchAssistant::get_common_search_params($request);
-		$tables = array_merge(
-			array('caches'),
-			$options['extra_tables']
-		);
-		$where_conds = array_merge(
-			array('caches.wp_oc is not null'),
-			$options['where_conds']
-		);
-		unset($options);
-		
-		# Now, we will search for all caches matching criteria (globally).
-		# We will do this only once, the result set is cached (and the cache
-		# is cleared every 5 minutes).
-		
-		$params_hash = md5(serialize(array($tables, $where_conds)));
-		$select_set_id_SQL = "
-			select id
-			from okapi_search_sets
-			where params_hash = '".mysql_real_escape_string($params_hash)."'
-			limit 1
-		";
-		$set_id = Db::select_value($select_set_id_SQL);
-		if ($set_id === null)
-		{
-			# To avoid caching the same results more than once, we will acquire
-			# a write-lock here.
-			
-			$lock = OkapiLock::get("search-results-writer");
-			$lock->acquire();
-			
-			try
-			{
-				# Make sure we were the first to acquire the lock.
-				
-				$set_id = Db::select_value($select_set_id_SQL);
-				if ($set_id === null)
-				{
-					# We are in the first thread which have acquired the lock.
-					# We will proceed with result-set creation. Other threads
-					# will be waiting until we finish.
-					
-					Db::execute("
-						insert into okapi_search_sets (params_hash)
-						values ('processing in progress')
-					");
-					$set_id = Db::last_insert_id();
-					Db::execute("
-						insert into okapi_search_results (set_id, cache_id)
-						select distinct
-							'".mysql_real_escape_string($set_id)."',
-							caches.cache_id
-						from ".implode(", ", $tables)."
-						where ".implode(" and ", $where_conds)."
-					");
-					# Lock barrier, to make sure the data is visible by other
-					# sessions. See http://bugs.mysql.com/bug.php?id=36618
-					Db::execute("lock table okapi_search_results write");
-					Db::execute("unlock tables");
-					Db::execute("
-						update okapi_search_sets
-						set params_hash = '".mysql_real_escape_string($params_hash)."'
-						where id = '".mysql_real_escape_string($set_id)."'
-					");
-				} else {
-					# Some other thread acquired the lock before us and it has
-					# generated the result set. We don't need to do anything.
-				}
-				$lock->release();
-			}
-			catch (Exception $e)
-			{
-				# SQL error? Make sure the lock is released and rethrow.
-				
-				$lock->release();
-				throw $e;
-			}
-		}
+		$search_set = OkapiServiceRunner::call('services/caches/search/save', $request);
+		$set_id = $search_set['set_id'];
 		
 		# Get caches which are present in the result set AND within the tile
 		# (+ those around the borders).

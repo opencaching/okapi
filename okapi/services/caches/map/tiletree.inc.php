@@ -60,8 +60,6 @@ class TileTree
 	 */
 	public static function query_fast($zoom, $x, $y, $set_id)
 	{
-		$time_started = microtime(true);
-		
 		# First, we check if the cache-set for this tile was already computed
 		# (and if it was, was it empty).
 		
@@ -72,13 +70,6 @@ class TileTree
 			# search parameters.
 			
 			$status = self::compute_tile($zoom, $x, $y);
-			OkapiServiceRunner::save_stats_extra("tiletree/query_fast/preparetile-miss",
-				null, microtime(true) - $time_started);
-		}
-		else
-		{
-			OkapiServiceRunner::save_stats_extra("tiletree/query_fast/preparetile-hit",
-				null, microtime(true) - $time_started);
 		}
 		
 		if ($status === 1)  # Computed and empty.
@@ -176,9 +167,6 @@ class TileTree
 				");
 			}
 			$status = 2;
-			
-			OkapiServiceRunner::save_stats_extra("tiletree/compute_tile/rebuild-0",
-				null, microtime(true) - $time_started);
 		}
 		else
 		{
@@ -193,13 +181,6 @@ class TileTree
 			{
 				$time_started = microtime(true);
 				$status = self::compute_tile($parent_zoom, $parent_x, $parent_y);
-				OkapiServiceRunner::save_stats_extra("tiletree/compute_tile/build",
-					null, microtime(true) - $time_started);
-			}
-			else
-			{
-				OkapiServiceRunner::save_stats_extra("tiletree/compute_tile/hit",
-					null, microtime(true) - $time_started);
 			}
 			
 			if ($status === 1)  # Computed and empty.

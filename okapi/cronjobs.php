@@ -262,14 +262,21 @@ class OAuthCleanupCronJob extends PrerequestCronJob
 	}
 }
 
-/** Clean up the search results table, every 5 minutes. */
+/** Clean up the saved search tables, every 10 minutes. */
 class SearchSetsCleanerJob extends Cron5Job
 {
-	public function get_period() { return 300; }
+	public function get_period() { return 600; }
 	public function execute()
 	{
-		Db::execute("truncate okapi_search_sets");
-		Db::execute("truncate okapi_search_results");
+		Db::execute("
+			delete oss, osr
+			from
+				okapi_search_sets oss,
+				okapi_search_results osr
+			where
+				oss.id = osr.set_id
+				and date_add(oss.expires, interval 60 second) < now()
+		");
 	}
 }
 

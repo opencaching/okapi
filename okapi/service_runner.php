@@ -30,6 +30,7 @@ class OkapiServiceRunner
 		'services/caches/search/bbox',
 		'services/caches/search/nearest',
 		'services/caches/search/by_urls',
+		'services/caches/search/save',
 		'services/caches/shortcuts/search_and_retrieve',
 		'services/caches/geocache',
 		'services/caches/geocaches',
