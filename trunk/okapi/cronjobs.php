@@ -271,11 +271,11 @@ class SearchSetsCleanerJob extends Cron5Job
 		Db::execute("
 			delete oss, osr
 			from
-				okapi_search_sets oss,
-				okapi_search_results osr
+				okapi_search_sets oss
+				left join okapi_search_results osr
+					on oss.id = osr.set_id
 			where
-				oss.id = osr.set_id
-				and date_add(oss.expires, interval 60 second) < now()
+				date_add(oss.expires, interval 60 second) < now()
 		");
 	}
 }
