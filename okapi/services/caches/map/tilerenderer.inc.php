@@ -34,7 +34,7 @@ class DefaultTileRenderer implements TileRenderer
 	 * Changing this will affect all generated hashes. You should increment it
 	 * whenever you alter anything in the drawing algorithm.
 	 */
-	private static $VERSION = 42;
+	private static $VERSION = 44;
 	
 	/**
 	 * Should be always true. You may temporarily set it to false, when you're
