@@ -152,6 +152,14 @@
 		Boolean. If set to <b>true</b>, only caches which have not yet been
 		found <b>by anyone</b> will be included.
 	</opt>
+	<opt name='set_and'>
+		<p>ID of a set previously created with the <b>search/save</b> method.
+		If given, the results are <a href='http://en.wikipedia.org/wiki/Logical_conjunction'>AND</a>ed
+		together with this set.</p>
+		<p>If you want to list the set contents only, please note the default
+		value of the <b>status</b> parameter! You may want to override it
+		in order to include unavailable and/or archived geocaches within the set.</p>
+	</opt>
 	<opt name='limit' default='100'>
 		<p>Integer in range 1..500. Maximum number of cache codes returned.</p>
 	</opt>

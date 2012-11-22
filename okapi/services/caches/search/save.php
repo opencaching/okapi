@@ -74,6 +74,14 @@ class WebService
 		);
 		unset($search_params);
 		
+		# Generate, or retrieve an existing set, and return the result.
+		
+		$result = self::get_set($tables, $where_conds, $min_store, $ref_max_age);
+		return Okapi::formatted_response($request, $result);
+	}
+	
+	public static function get_set($tables, $where_conds, $min_store, $ref_max_age)
+	{
 		# Compute the "params hash".
 		
 		$params_hash = md5(serialize(array($tables, $where_conds)));
@@ -160,11 +168,10 @@ class WebService
 			");
 		}
 		
-		$result = array(
+		return array(
 			'set_id' => "$set_id",
 			'generated_at' => date('c', $date_created),
 			'expires' => date('c', $expires),
 		);
-		return Okapi::formatted_response($request, $result);
 	}
 }

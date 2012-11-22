@@ -1079,6 +1079,7 @@ class Okapi
 		if ($init_made)
 			return;
 		ini_set('memory_limit', '128M');
+		Db::connect();
 		if (!self::$data_store)
 			self::$data_store = new OkapiDataStore();
 		if (!self::$server)

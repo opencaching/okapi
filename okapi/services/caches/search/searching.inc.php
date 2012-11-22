@@ -439,6 +439,26 @@ class SearchAssistant
 		}
 		
 		#
+		# set_and
+		#
+		
+		if ($tmp = $request->get_parameter('set_and'))
+		{
+			# Check if the set exists.
+			
+			$exists = Db::select_value("
+				select 1
+				from okapi_search_sets
+				where id = '".mysql_real_escape_string($tmp)."'
+			");
+			if (!$exists)
+				throw new InvalidParam('set_and', "Couldn't find a set by given ID.");
+			$extra_tables[] = "okapi_search_results osr_and";
+			$where_conds[] = "osr_and.cache_id = caches.cache_id";
+			$where_conds[] = "osr_and.set_id = '".mysql_real_escape_string($tmp)."'";
+		}
+		
+		#
 		# limit
 		#
 		
