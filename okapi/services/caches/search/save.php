@@ -156,6 +156,7 @@ class WebService
 			Db::execute("
 				update okapi_search_sets
 				set expires = date_add(now(), interval '".mysql_real_escape_string($min_store + 60)."' second)
+				where id = '".mysql_real_escape_string($set_id)."'
 			");
 		}
 		
