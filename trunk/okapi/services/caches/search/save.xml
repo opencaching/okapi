@@ -1,6 +1,6 @@
 <xml>
 	<brief>Save a search result set</brief>
-	<issue-id>WRTODO</issue-id>
+	<issue-id>163</issue-id>
 	<desc>
 		<p>This works similar to the <b>search/all</b> method, but the returned
 		set of geocaches is temporarilly stored, instead of being directly
