@@ -4,20 +4,11 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>OKAPI Examples</title>
 		<link rel="stylesheet" href="<?= $vars['okapi_base_url'] ?>static/common.css?<?= $vars['okapi_rev'] ?>">
-		<link type="text/css" rel="stylesheet" href="<?= $vars['okapi_base_url'] ?>static/syntax_highlighter/SyntaxHighlighter.css"></link>
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
 			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
 		</script>
 		<script src='<?= $vars['okapi_base_url'] ?>static/common.js?<?= $vars['okapi_rev'] ?>'></script>
-		<script language="javascript" src="<?= $vars['okapi_base_url'] ?>static/syntax_highlighter/shCore.js"></script>
-		<script language="javascript" src="<?= $vars['okapi_base_url'] ?>static/syntax_highlighter/shBrushPhp.js"></script>
-		<script language="javascript">
-			$(function() {
-				dp.SyntaxHighlighter.ClipboardSwf = '<?= $vars['okapi_base_url'] ?>static/syntax_highlighter/clipboard.swf';
-				dp.SyntaxHighlighter.HighlightAll('code');
-			});
-		</script>
 	</head>
 	<body class='api'>
 		<div class='okd_mid'>
@@ -29,9 +20,16 @@
 					</td>
 					<td class='article'>
 
-<h1>Examples and libraries</h1>
+<h1>Examples, libraries and tools</h1>
 
-<p>Here you will find basic examples of OKAPI usage with popular programming languages.</p>
+<h2>Tools</h2>
+
+If you're just getting to know OKAPI, you might want to check out
+<a href='https://github.com/wrygiel/okapi-browser'>OKAPI Browser</a>
+(<a href='https://raw.github.com/wrygiel/okapi-browser/master/extras/screenshot.png'>screenshot</a>),
+a basic OAuth Console for OKAPI methods. It is an open-source project. You can
+<a href='https://github.com/wrygiel/okapi-browser'>fork it</a> on GitHub or simply
+<a href='http://usosphp.mimuw.edu.pl/~rygielski/okapi-browser/'>install it here</a>.
 
 <h2>Are there any client libraries?</h2>
 
@@ -57,55 +55,11 @@ protocol might be the safest choice.</p>
 
 <p><b>Example 1.</b> This will print the number of users in the <?= $vars['site_name'] ?> installation:
 
-<pre name="code" class="php:nogutter:nocontrols">
-&lt;?
-
-$json = file_get_contents("<?= $vars['okapi_base_url'] ?>services/apisrv/stats");
-$data = json_decode($json);
-print "Number of <?= $vars['site_name'] ?> users: ".$data->user_count;
-
-?>
-</pre>
+<script src="https://gist.github.com/4231796.js?file=users.php"></script>
 
 <p><b>Example 2.</b> This will print the codes of some nearest unfound caches:</p>
 
-<pre name="code" class="php:nogutter:nocontrols">
-&lt;?
-
-/* Enter your OKAPI's URL here. */
-$okapi_base_url = "http://opencaching.pl/okapi/";
-
-/* Enter your Consumer Key here. */
-$consumer_key = "YOUR_KEY_HERE";
-
-/* Username. Caches found by the given user will be excluded from the results. */
-$username = "USERNAME_HERE";
-
-/* Your location. */
-$lat = 54.3;
-$lon = 22.3;
-
-/* 1. Get the UUID of the user. */
-$json = @file_get_contents($okapi_base_url."services/users/by_username".
-	"?username=".$username."&amp;fields=uuid&amp;consumer_key=".$consumer_key);
-if (!$json)
-	die("ERROR! Check your consumer_key and/or username!\n");
-$user_uuid = json_decode($json)->uuid;
-print "Your UUID: ".$user_uuid."\n";
-	
-/* 2. Search for caches. */
-$json = @file_get_contents($okapi_base_url."services/caches/search/nearest".
-	"?center=".$lat."|".$lon."&amp;not_found_by=".$user_uuid."&amp;limit=5".
-	"&amp;consumer_key=".$consumer_key);
-if (!$json)
-	die("ERROR!");
-$cache_codes = json_decode($json)->results;
-
-/* Display them. */
-print "Five nearest unfound caches: ".implode(", ", $cache_codes)."\n";
-
-?>
-</pre>
+<script src="https://gist.github.com/4231824.js?file=nearest_unfound.php"></script>
 
 <p>Please note that the above examples use very simple error checking routines.
 If you want to be "professional", you should catch HTTP 400 Responses, read their
@@ -128,6 +82,16 @@ There are some limitations of both these techniques though.</p>
 </ul>
 
 <p><a href='<?= $vars['okapi_base_url'] ?>static/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>
+
+<h2>C# Example</h2>
+
+<p><a href='https://github.com/wrygiel/okapi-browser'>OKAPI Browser</a>
+(already mentioned in the Tools section) is an open-source project. Written in C#.NET, uses
+the <a href='<?= $vars['okapi_base_url'] ?>services/apisrv/installations.html'>apisrv</a>
+and <a href='<?= $vars['okapi_base_url'] ?>services/apiref/method_index.html'>apiref</a>
+modules to dynamically retrieve the current list of OKAPI installations and methods.
+<a href='https://github.com/wrygiel/okapi-browser'>Get the source</a> or
+<a href='http://usosphp.mimuw.edu.pl/~rygielski/okapi-browser/'>try it</a> first.</p>
 
 <h2>Comments</h2>
 
