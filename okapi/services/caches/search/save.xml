@@ -5,10 +5,11 @@
 		<p>This works similar to the <b>search/all</b> method, but the returned
 		set of geocaches is temporarilly stored, instead of being directly
 		returned to you.</p>
-		<p>Usually, you won't need to use this method. However, some other
-		methods may require you to use it.</p>
-		<p>To view a portion of a saved search, use the <b>search/all</b>
-		method with proper <b>status</b> and <b>set_and</b> parameters.</p>
+		<p>You may want to use this method when you don't want your search
+		results modified while the user is browsing through them, page by page.
+		To view a portion of a saved search, use the <b>search/all</b>
+		method with proper <b>set_and</b> <u>and <b>status</b></u> (!)
+		parameters.</p>
 	</desc>
 	<opt name='min_store' default="300">
 		The amount of time (in seconds) after which you allow OKAPI to delete
