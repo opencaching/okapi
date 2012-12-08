@@ -541,8 +541,11 @@ class TileTreeUpdater extends Cron5Job
 						# not working for more than 10 days. Or, just after OKAPI
 						# is installed (and this is the first time this cronjob
 						# if being run).
-						\okapi\services\caches\map\ReplicateListener::reset();
+						
+						$mail_admins = ($tiletree_revision > 0);
+						\okapi\services\caches\map\ReplicateListener::reset($mail_admins);
 						Okapi::set_var('clog_followup_revision', $current_clog_revision);
+						break;
 					}
 				}
 			} else {
