@@ -7,6 +7,12 @@
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
 		<script>
 			var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
+			$(function() {
+				$('h2').each(function() {
+					$('#toc').append($("<div></div>").append($("<a></a>")
+						.text($(this).text()).attr("href", "#" + $(this).attr('id'))));
+				});
+			});
 		</script>
 		<script src='<?= $vars['okapi_base_url'] ?>static/common.js?<?= $vars['okapi_rev'] ?>'></script>
 	</head>
@@ -22,7 +28,9 @@
 
 <h1>Examples, libraries and tools</h1>
 
-<h2>Tools</h2>
+<div id='toc'></div>
+
+<h2 id='tools'>Tools</h2>
 
 If you're just getting to know OKAPI, you might want to check out
 <a href='https://github.com/wrygiel/okapi-browser'>OKAPI Browser</a>
@@ -31,7 +39,7 @@ a basic OAuth Console for OKAPI methods. It is an open-source project. You can
 <a href='https://github.com/wrygiel/okapi-browser'>fork it</a> on GitHub or simply
 <a href='http://usosphp.mimuw.edu.pl/~rygielski/okapi-browser/'>install it here</a>.
 
-<h2>Are there any client libraries?</h2>
+<h2 id='libraries'>Are there any client libraries?</h2>
 
 <p>OKAPI <b>does not</b> require you to use any special libraries, usually you will want to
 use OKAPI "as is", via basic HTTP requests and responses.</p>
@@ -51,21 +59,23 @@ protocol might be the safest choice.</p>
 
 <div class='issue-comments' issue_id='96'></div>
 
-<h2>PHP Example</h2>
+<h2 id='php1'>PHP Example 1 - simple query</h2>
 
-<p><b>Example 1.</b> This will print the number of users in the <?= $vars['site_name'] ?> installation:
-
-<script src="https://gist.github.com/4231796.js?file=users.php"></script>
-
-<p><b>Example 2.</b> This will print the codes of some nearest unfound caches:</p>
-
-<script src="https://gist.github.com/4231824.js?file=nearest_unfound.php"></script>
-
-<p>Please note that the above examples use very simple error checking routines.
+<p>Please note that the examples below use very simple error checking routines.
 If you want to be "professional", you should catch HTTP 400 Responses, read their
 bodies (OKAPI error messages), and deal with them more gracefully.</p>
 
-<h2>JavaScript Example</h2>
+<p>This will print the number of users in the <?= $vars['site_name'] ?> installation:
+
+<script src="https://gist.github.com/4231796.js?file=users.php"></script>
+
+<h2 id='php2'>PHP Example 2 - search for nearest geocaches</h2>
+
+<p>This will print the codes of some nearest unfound caches:</p>
+
+<script src="https://gist.github.com/4231824.js?file=nearest_unfound.php"></script>
+
+<h2 id='js1'>JavaScript Example</h2>
 
 <p>It is possible to access OKAPI directly from user's browser, without the
 need for server backend. OKAPI allows <a href='http://en.wikipedia.org/wiki/XMLHttpRequest#Cross-domain_requests'>Cross-domain
@@ -83,7 +93,7 @@ There are some limitations of both these techniques though.</p>
 
 <p><a href='<?= $vars['okapi_base_url'] ?>static/examples/javascript_nearest.html' style='font-size: 130%; font-weight: bold'>Run this example</a></p>
 
-<h2>C# Example</h2>
+<h2 id='cs1'>C# Example</h2>
 
 <p><a href='https://github.com/wrygiel/okapi-browser'>OKAPI Browser</a>
 (already mentioned in the Tools section) is an open-source project. Written in C#.NET, uses
@@ -93,7 +103,7 @@ modules to dynamically retrieve the current list of OKAPI installations and meth
 <a href='https://github.com/wrygiel/okapi-browser'>Get the source</a> or
 <a href='http://usosphp.mimuw.edu.pl/~rygielski/okapi-browser/'>try it</a> first.</p>
 
-<h2>Comments</h2>
+<h2 id='comments'>Comments</h2>
 
 <div class='issue-comments' issue_id='36'></div>
 
