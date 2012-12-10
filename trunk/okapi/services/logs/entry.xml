@@ -30,8 +30,13 @@
 				there are three primary types: "Found it", "Didn't find it" or "Comment".
 				You may treat every other string as "Comment".</p>
 			</li>
+			<li>
+				<p><b>was_recommended</b> - true, if the author included his recommendation
+				in this log entry,</p>
+			</li>
 			<li><b>comment</b> - HTML string, text entered with the log entry.</li>
 		</ul>
+		<p>Note, that all fields can change in time (users can edit/delete their log entries).</p>
 	</opt>
 	<common-format-params/>
 	<returns>
