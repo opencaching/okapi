@@ -60,7 +60,7 @@ class WebService
 		
 		$logs = OkapiServiceRunner::call('services/logs/entries', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('log_uuids' => implode("|", $log_uuids),
-			'fields' => 'uuid|date|user|type|comment')));
+			'fields' => $fields)));
 		$results = array();
 		foreach ($log_uuids as $log_uuid)
 			$results[] = $logs[$log_uuid];
