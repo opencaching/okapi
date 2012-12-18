@@ -30,7 +30,8 @@ class WebService
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description',
 		'descriptions', 'hint', 'hints', 'images', 'attrnames', 'latest_logs',
 		'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
-		'last_modified', 'date_created', 'date_hidden', 'internal_id');
+		'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
+		'is_ignored');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -202,6 +203,8 @@ class WebService
 						break;
 					case 'is_found': /* handled separately */ break;
 					case 'is_not_found': /* handled separately */ break;
+					case 'is_watched': /* handled separately */ break;
+					case 'is_ignored': /* handled separately */ break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
 					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
 					case 'size':
@@ -326,6 +329,50 @@ class WebService
 				$result_ref['is_not_found'] = isset($tmp2[$cache_code]);
 		}
 		
+		# is_watched
+		
+		if (in_array('is_watched', $fields))
+		{
+			if ($request->token == null)
+				throw new BadRequest("Level 3 Authentication is required to access 'is_watched' field.");
+			$tmp = Db::select_column("
+				select c.wp_oc
+				from
+					caches c,
+					cache_watches cw
+				where
+					c.cache_id = cw.cache_id
+					and cw.user_id = '".mysql_real_escape_string($request->token->user_id)."'
+			");
+			$tmp2 = array();
+			foreach ($tmp as $cache_code)
+				$tmp2[$cache_code] = true;
+			foreach ($results as $cache_code => &$result_ref)
+				$result_ref['is_watched'] = isset($tmp2[$cache_code]);
+		}
+
+		# is_ignored
+		
+		if (in_array('is_ignored', $fields))
+		{
+			if ($request->token == null)
+				throw new BadRequest("Level 3 Authentication is required to access 'is_ignored' field.");
+			$tmp = Db::select_column("
+				select c.wp_oc
+				from
+					caches c,
+					cache_ignore ci
+				where
+					c.cache_id = ci.cache_id
+					and ci.user_id = '".mysql_real_escape_string($request->token->user_id)."'
+			");
+			$tmp2 = array();
+			foreach ($tmp as $cache_code)
+				$tmp2[$cache_code] = true;
+			foreach ($results as $cache_code => &$result_ref)
+				$result_ref['is_ignored'] = isset($tmp2[$cache_code]);
+		}
+
 		# Descriptions and hints.
 		
 		if (in_array('description', $fields) || in_array('descriptions', $fields)

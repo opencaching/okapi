@@ -357,6 +357,27 @@ class SearchAssistant
 		}
 		
 		#
+		# watched_only
+		#
+		
+		if ($tmp = $request->get_parameter('watched_only'))
+		{
+			if ($request->token == null)
+				throw new InvalidParam('watched_only', "Might be used only for requests signed with an Access Token.");
+			if (!in_array($tmp, array('true', 'false')))
+				throw new InvalidParam('watched_only', "'$tmp'");
+			if ($tmp == 'true')
+			{
+				$watched_cache_ids = Db::select_column("
+					select cache_id
+					from cache_watches
+					where user_id = '".mysql_real_escape_string($request->token->user_id)."'
+				");
+				$where_conds[] = "cache_id in ('".implode("','", array_map('mysql_real_escape_string', $watched_cache_ids))."')";
+			}
+		}
+
+		#
 		# exclude_ignored
 		#
 		
