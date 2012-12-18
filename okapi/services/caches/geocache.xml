@@ -79,13 +79,24 @@
 				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li>
-				<p><b>is_found</b> - boolean, true if user already found this cache. See also <b>found_status</b> parameter
+				<p><b>is_found</b> - boolean, true if the user already found this cache. See also <b>found_status</b> parameter
 				of the services/caches/search/all method.</p>
 				<p>This field requires you to use the <b>user_uuid</b> parameter (or Level 3 Authentication).</p>
 			</li>
 			<li>
-				<p><b>is_not_found</b> - boolean, true if user has submitted "Didn't find it" log entry for this cache.</p>
+				<p><b>is_not_found</b> - boolean, true if the user has submitted "Didn't find it" log entry for this cache.</p>
 				<p>This field requires you to use the <b>user_uuid</b> parameter (or Level 3 Authentication).</p>
+			</li>
+			<li>
+				<p><b>is_watched</b> - boolean, true if the user is watching this cache. You may consider highlighting
+				such geocaches in some fashion, as the users may use this functionality to temporarily mark geocaches
+				of particular interest (i.e. geocaches they plan to find today).</p>
+				<p>This is private data. You will need Level 3 Authentication to access this field.</p>
+			</li>
+			<li>
+				<p><b>is_ignored</b> - boolean, true if the user is ignoring this cache. (See also <b>exclude_ignored</b>
+				parameter of all search methods.)</p>
+				<p>This is private data. You will need Level 3 Authentication to access this field.</p>
 			</li>
 			<li><b>founds</b> - number of times the geocache was successfully found,</li>
 			<li><b>notfounds</b> - number of times the geocache was not found,</li>
