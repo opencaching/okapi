@@ -432,7 +432,7 @@ class CheckCronTab2 extends PrerequestCronJob
 			# There was a ping during the last hour. Everything is okay.
 			# Reset the counter and return.
 			
-			Cache::set('crontab_check_counter', 3, 86400);
+			Cache::set('crontab_check_counter', 5, 86400);
 			return;
 		}
 		
@@ -440,7 +440,7 @@ class CheckCronTab2 extends PrerequestCronJob
 		
 		$counter = Cache::get('crontab_check_counter');
 		if ($counter === null)
-			$counter = 3;
+			$counter = 5;
 		$counter--;
 		if ($counter > 0)
 		{
