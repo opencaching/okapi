@@ -1224,9 +1224,11 @@ class Okapi
 		return $names[round(($b / 360.0) * 16.0) % 16];
 	}
 	
-	/** Escape string for use with XML. */
-	public static function xmlentities($string)
+	/** Escape string for use with XML. See issue 169. */
+	public static function xmlescape($string)
 	{
+		static $pattern = '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u';
+		$string = preg_replace($pattern, '', $string);
 		return strtr($string, array("<" => "&lt;", ">" => "&gt;", "\"" => "&quot;", "'" => "&apos;", "&" => "&amp;"));
 	}
 	
@@ -1297,7 +1299,7 @@ class Okapi
 		if (is_string($obj))
 		{
 			$chunks[] = "<string>";
-			$chunks[] = self::xmlentities($obj);
+			$chunks[] = self::xmlescape($obj);
 			$chunks[] = "</string>";
 		}
 		elseif (is_int($obj))
@@ -1337,7 +1339,7 @@ class Okapi
 				$chunks[] = "<dict>";
 				foreach ($obj as $key => &$item_ref)
 				{
-					$chunks[] = "<item key=\"".self::xmlentities($key)."\">";
+					$chunks[] = "<item key=\"".self::xmlescape($key)."\">";
 					self::_xmlmap_add($chunks, $item_ref);
 					$chunks[] = "</item>";
 				}
@@ -1353,11 +1355,11 @@ class Okapi
 
 	private static function _xmlmap2_add(&$chunks, &$obj, $key)
 	{
-		$attrs = ($key !== null) ? " key=\"".self::xmlentities($key)."\"" : "";
+		$attrs = ($key !== null) ? " key=\"".self::xmlescape($key)."\"" : "";
 		if (is_string($obj))
 		{
 			$chunks[] = "<string$attrs>";
-			$chunks[] = self::xmlentities($obj);
+			$chunks[] = self::xmlescape($obj);
 			$chunks[] = "</string>";
 		}
 		elseif (is_int($obj))
