@@ -1,5 +1,9 @@
 <?
 
+namespace okapi\services\caches\formatters\gpx;
+
+use okapi\Okapi;
+
 echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
 
 ?>
