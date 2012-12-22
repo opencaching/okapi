@@ -375,7 +375,7 @@ class WebService
 		# We need to delete the copy of stats-picture for this user. Otherwise,
 		# the legacy OC code won't detect that the picture needs to be refreshed.
 		
-		$filepath = Settings::get('VAR_DIR').'images/statpics/statpic'.$user['internal_id'].'.jpg';
+		$filepath = Okapi::get_var_dir().'/images/statpics/statpic'.$user['internal_id'].'.jpg';
 		if (file_exists($filepath))
 			unlink($filepath);
 

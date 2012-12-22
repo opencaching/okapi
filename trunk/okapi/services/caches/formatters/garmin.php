@@ -45,7 +45,7 @@ class WebService
 		
 		# Start creating ZIP archive.
 		
-		$tempfilename = sys_get_temp_dir()."/garmin".time().rand(100000,999999).".zip";
+		$tempfilename = Okapi::get_var_dir()."/garmin".time().rand(100000,999999).".zip";
 		$zip = new ZipArchive();
 		if ($zip->open($tempfilename, ZIPARCHIVE::CREATE) !== true)
 			throw new Exception("ZipArchive class could not create temp file $tempfilename. Check permissions!");
