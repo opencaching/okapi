@@ -16,6 +16,7 @@ use okapi\OkapiAccessToken;
 use okapi\services\caches\search\SearchAssistant;
 
 use \ZipArchive;
+use \Exception;
 
 class WebService
 {
@@ -153,17 +154,28 @@ class WebService
 								$syspath_other = Settings::get('IMAGES_DIR')."/".$img['uuid'].".".$ext;
 								if (file_exists($syspath_other))
 								{
-									$image = imagecreatefromstring(file_get_contents($syspath_other));
-									ob_start();
-									imagejpeg($image);
-									$jpeg_contents = ob_get_clean();
-									imagedestroy($image);
+									try
+									{
+										$image = imagecreatefromstring(file_get_contents($syspath_other));
+										ob_start();
+										imagejpeg($image);
+										$jpeg_contents = ob_get_clean();
+										imagedestroy($image);
+									}
+									catch (Exception $e)
+									{
+										# GD couldn't parse the file. We will skip it, and cache
+										# the "false" value as the contents. This way, we won't
+										# attempt to parse it during the next 24 hours.
+										
+										$jpeg_contents = false;
+									}
 									Cache::set($cache_key, $jpeg_contents, 86400);
 									break;
 								}
 							}
 						}
-						if ($jpeg_contents)
+						if ($jpeg_contents)  # This can be "null" *or* "false"!
 							$zip->addFromString($zippath, $jpeg_contents);
 					}
 				}
