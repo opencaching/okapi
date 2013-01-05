@@ -34,9 +34,15 @@
 					<li><b>Traditional</b>,</li>
 					<li><b>Multi</b>,</li>
 					<li><b>Quiz</b>,</li>
-					<li><b>Virtual</b>.</li>
+					<li><b>Virtual</b>,</li>
+					<li><b>Event</b>,</li>
 					<li><i>(any other value is valid too)</i></li>
 				</ul>
+				<p><b>Event</b> is a peculiar type of geocache which is NOT a geocache
+				at all, but it <b>is</b> stored as a geocache in OC database (this design
+				decision is old as the OC network itself!). Just keep in mind, that
+				in case of Event Caches, some fields may have a little different meaning
+				than you would tell by their name.</p>
 			</li>
 			<li>
 				<p><b>status</b> - cache status. Valid cache status codes currently include:</p>
@@ -79,9 +85,12 @@
 				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
 			</li>
 			<li>
-				<p><b>is_found</b> - boolean, true if the user already found this cache. See also <b>found_status</b> parameter
-				of the services/caches/search/all method.</p>
-				<p>This field requires you to use the <b>user_uuid</b> parameter (or Level 3 Authentication).</p>
+				<p><b>is_found</b> - boolean, true if the user already found this cache.
+				See also <b>found_status</b> parameter of the services/caches/search/all
+				method.</p>
+				<p>This field requires you to use the <b>user_uuid</b> parameter
+				(or Level 3 Authentication). Please note, that this will also return <b>true</b>
+				for attended Event Caches.</p>
 			</li>
 			<li>
 				<p><b>is_not_found</b> - boolean, true if the user has submitted "Didn't find it" log entry for this cache.</p>
@@ -98,8 +107,19 @@
 				parameter of all search methods.)</p>
 				<p>This is private data. You will need Level 3 Authentication to access this field.</p>
 			</li>
-			<li><b>founds</b> - number of times the geocache was successfully found,</li>
-			<li><b>notfounds</b> - number of times the geocache was not found,</li>
+			<li>
+				<p><b>founds</b> - number of times the geocache was successfully found
+				(or attended, in case of Event Caches),</p>
+			</li>
+			<li>
+				<p><b>notfounds</b> - number of times the geocache was not found
+				(in case of Event Caches this will always be zero),
+			</li>
+			<li>
+				<p><b>willattends</b> - in case of Event Caches, this is the number of
+				"Will attend" log entries. In case of any other cache type, it will
+				be <b>null</b></p>
+			</li>
 			<li class='deprecated'>
 				<b>size</b> - deprecated
 				(<a href='http://code.google.com/p/opencaching-api/issues/detail?id=155'>why?</a>),

@@ -1439,15 +1439,17 @@ class Okapi
 		'oc.pl' => array(
 			# Primary types (documented, cannot change)
 			'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
+			'Event' => 6,
 			# Additional types (may get changed)
-			'Other' => 1, 'Webcam' => 5, 'Event' => 6,
+			'Other' => 1, 'Webcam' => 5,
 			'Moving' => 8, 'Podcast' => 9, 'Own' => 10,
 		),
 		'oc.de' => array(
 			# Primary types (documented, cannot change)
 			'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
+			'Event' => 6,
 			# Additional types (might get changed)
-			'Other' => 1, 'Webcam' => 5, 'Event' => 6,
+			'Other' => 1, 'Webcam' => 5,
 			'Math/Physics' => 8, 'Moving' => 9, 'Drive-In' => 10,
 		)
 	);
@@ -1571,6 +1573,8 @@ class Okapi
 		if ($name == 'Found it') return 1;
 		if ($name == "Didn't find it") return 2;
 		if ($name == 'Comment') return 3;
+		if ($name == 'Attended') return 7;
+		if ($name == 'Will attend') return 8;
 		if (($name == 'Needs maintenance') && (Settings::get('SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE')))
 			return 5;
 		throw new Exception("logtype2id called with invalid log type argument: $name");
@@ -1587,6 +1591,8 @@ class Okapi
 		if ($id == 1) return "Found it";
 		if ($id == 2) return "Didn't find it";
 		if ($id == 3) return "Comment";
+		if ($id == 7) return "Attended";
+		if ($id == 8) return "Will attend";
 		
 		static $other_types = null;
 		if ($other_types === null)

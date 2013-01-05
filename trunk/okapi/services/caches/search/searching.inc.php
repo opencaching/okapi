@@ -611,7 +611,10 @@ class SearchAssistant
 			from cache_logs
 			where
 				user_id = '".mysql_real_escape_string($internal_user_id)."'
-				and type = 1
+				and type in (
+					'".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."',
+					'".mysql_real_escape_string(Okapi::logtypename2id("Attended"))."'
+				)
 				and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
 		");
 	}
