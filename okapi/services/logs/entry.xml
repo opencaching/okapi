@@ -27,8 +27,13 @@
 			</li>
 			<li>
 				<p><b>type</b> - string; log type. This could be <b>pretty much everything</b>, but
-				there are three primary types: "Found it", "Didn't find it" or "Comment".
-				You may treat every other string as "Comment".</p>
+				there are five primary types:</p>
+				<ul>
+					<li>"Found it" and "Didn't find it" - for all Non-Event Caches,</li>
+					<li>"Will attend" and "Attended" - for Event Caches,</li>
+					<li>"Comment" - for all cache types.</li>
+				</ul>
+				<p>You may treat every other string as "Comment".</p>
 			</li>
 			<li>
 				<p><b>was_recommended</b> - true, if the author included his recommendation

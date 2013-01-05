@@ -31,7 +31,7 @@ class WebService
 		'descriptions', 'hint', 'hints', 'images', 'attrnames', 'latest_logs',
 		'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
 		'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
-		'is_ignored');
+		'is_ignored', 'willattends');
 	
 	public static function call(OkapiRequest $request)
 	{
@@ -206,7 +206,23 @@ class WebService
 					case 'is_watched': /* handled separately */ break;
 					case 'is_ignored': /* handled separately */ break;
 					case 'founds': $entry['founds'] = $row['founds'] + 0; break;
-					case 'notfounds': $entry['notfounds'] = $row['notfounds'] + 0; break;
+					case 'notfounds':
+						if ($row['type'] != 6) {  # non-event
+							$entry['notfounds'] = $row['notfounds'] + 0;
+						} else {  # event
+							$entry['notfounds'] = 0;
+						}
+						break;
+					case 'willattends':
+						# OCPL stats count "Will attend" log entries as "notfounds"
+						# (just another pecularity regarding "event caches").
+						# I am not sure about OCDE branch though...
+						if ($row['type'] == 6) {  # event
+							$entry['willattends'] = $row['notfounds'] + 0;
+						} else {  # non-event
+							$entry['willattends'] = 0;
+						}
+						break;
 					case 'size':
 						# Deprecated. Leave it for backward-compatibility. See issue 155.
 						switch (Okapi::cache_sizeid_to_size2($row['size']))
@@ -296,7 +312,10 @@ class WebService
 					cache_logs cl
 				where
 					c.cache_id = cl.cache_id
-					and cl.type = '".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."'
+					and cl.type in (
+						'".mysql_real_escape_string(Okapi::logtypename2id("Found it"))."',
+						'".mysql_real_escape_string(Okapi::logtypename2id("Attended"))."'
+					)
 					and cl.user_id = '".mysql_real_escape_string($user_id)."'
 			");
 			$tmp2 = array();
