@@ -23,7 +23,8 @@ class WebService
 	}
 	
 	private static $valid_field_names = array(
-		'uuid', 'cache_code', 'date', 'user', 'type', 'was_recommended', 'comment'
+		'uuid', 'cache_code', 'date', 'user', 'type', 'was_recommended', 'comment',
+		'internal_id',
 	);
 
 	public static function call(OkapiRequest $request)
@@ -83,7 +84,8 @@ class WebService
 				),
 				'type' => Okapi::logtypeid2name($row['type']),
 				'was_recommended' => $row['was_recommended'] ? true : false,
-				'comment' => $row['text']
+				'comment' => $row['text'],
+				'internal_id' => $row['id'],
 			);
 		}
 		mysql_free_result($rs);
