@@ -34,7 +34,7 @@ class DefaultTileRenderer implements TileRenderer
 	 * Changing this will affect all generated hashes. You should increment it
 	 * whenever you alter anything in the drawing algorithm.
 	 */
-	private static $VERSION = 44;
+	private static $VERSION = 53;
 	
 	/**
 	 * Should be always true. You may temporarily set it to false, when you're
@@ -222,7 +222,8 @@ class DefaultTileRenderer implements TileRenderer
 			$r = 0; $g = 0; $b = 0;
 		} elseif ($found) {
 			$key = 'large_outer_found';
-			$a = 1; $br = 40; $c = 20;
+			$a = ($flags & TileTree::$FLAG_DRAW_CAPTION) ? .7 : .35;
+			$br = 40; $c = 20;
 			//$a = 0.5; $br = 0; $c = 0;
 			$r = 0; $g = 0; $b = 0;
 		} elseif ($new) {
@@ -292,7 +293,7 @@ class DefaultTileRenderer implements TileRenderer
 		
 		if ($found)
 		{
-			$icon = self::get_image("found", 0.7, $br, $c, $r, $g, $b);
+			$icon = self::get_image("found", 0.7*$a, $br, $c, $r, $g, $b);
 			imagecopy($this->im, $icon, $px - 2, $py - $center_y - 3, 0, 0, 16, 16);
 		}
 		
@@ -431,10 +432,14 @@ class DefaultTileRenderer implements TileRenderer
 		$found = $flags & TileTree::$FLAG_FOUND;
 		$own = $flags & TileTree::$FLAG_OWN;
 		$new = $flags & TileTree::$FLAG_NEW;
+		if ($found && (!($flags & TileTree::$FLAG_DRAW_CAPTION)))
+			$a = .35;
+		else
+			$a = 1;
 		
 		# Put the marker (indicates the type).
 		
-		$marker = self::get_image("medium_".self::get_type_suffix($type, false));
+		$marker = self::get_image("medium_".self::get_type_suffix($type, false), $a);
 		$width = 14;
 		$height = 14;
 		$center_x = 7;
@@ -491,7 +496,7 @@ class DefaultTileRenderer implements TileRenderer
 		{
 			# Mark found caches with V.
 			
-			$icon = self::get_image("found", 0.7);
+			$icon = self::get_image("found", 0.7*$a);
 			imagecopy($this->im, $icon, $px - ($center_x - $markercenter_x) - 7,
 				$py - ($center_y - $markercenter_y) - 9, 0, 0, 16, 16);
 		}
