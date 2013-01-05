@@ -34,9 +34,16 @@
 				<p><b>was_recommended</b> - true, if the author included his recommendation
 				in this log entry,</p>
 			</li>
-			<li><b>comment</b> - HTML string, text entered with the log entry.</li>
+			<li><b>comment</b> - HTML string, text entered with the log entry,</li>
+			<li>
+				<p><b>internal_id</b> - undocumented, you <u>should not</u> use
+				this unless you really know you need to. Internal IDs are
+				<b>not</b> unique across various OKAPI installations.
+				Try to use UUIDs instead.</p>
+			</li>
 		</ul>
-		<p>Note, that all fields can change in time (users can edit/delete their log entries).</p>
+		<p>Note, that some fields can change in time (users can edit/delete
+		their log entries).</p>
 	</opt>
 	<common-format-params/>
 	<returns>
