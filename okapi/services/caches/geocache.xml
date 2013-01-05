@@ -113,7 +113,7 @@
 			</li>
 			<li>
 				<p><b>notfounds</b> - number of times the geocache was not found
-				(in case of Event Caches this will always be zero),
+				(in case of Event Caches this will always be zero),</p>
 			</li>
 			<li>
 				<p><b>willattends</b> - in case of Event Caches, this is the number of
