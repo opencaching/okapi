@@ -171,6 +171,7 @@ class WebService
 					and type = '".mysql_real_escape_string(Okapi::logtypename2id($logtype))."'
 					and date = from_unixtime('".mysql_real_escape_string($when)."')
 					and text = '".mysql_real_escape_string($PSEUDOENCODED_comment)."'
+					".((Settings::get('OC_BRANCH') == 'oc.pl') ? "and deleted = 0" : "")."
 				limit 1
 			");
 			if ($duplicate_uuid != null)

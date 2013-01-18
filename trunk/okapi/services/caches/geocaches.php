@@ -317,6 +317,7 @@ class WebService
 						'".mysql_real_escape_string(Okapi::logtypename2id("Attended"))."'
 					)
 					and cl.user_id = '".mysql_real_escape_string($user_id)."'
+					".((Settings::get('OC_BRANCH') == 'oc.pl') ? "and cl.deleted = 0" : "")."
 			");
 			$tmp2 = array();
 			foreach ($tmp as $cache_code)
@@ -340,6 +341,7 @@ class WebService
 					c.cache_id = cl.cache_id
 					and cl.type = '".mysql_real_escape_string(Okapi::logtypename2id("Didn't find it"))."'
 					and cl.user_id = '".mysql_real_escape_string($user_id)."'
+					".((Settings::get('OC_BRANCH') == 'oc.pl') ? "and cl.deleted = 0" : "")."
 			");
 			$tmp2 = array();
 			foreach ($tmp as $cache_code)
