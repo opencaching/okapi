@@ -124,8 +124,8 @@ with capture_and_save() as out:
 	try:
 		print "Exporting revision " + str(revision) + "..."
 		sys.stdout.flush()
-		subprocess.call(["svn", "export", "http://opencaching-api.googlecode.com/svn/trunk/",
-			deployment_name, "-r" + str(revision)], stdout=sys.stdout, stderr=sys.stdout)
+		print subprocess.check_output(["svn", "export", "http://opencaching-api.googlecode.com/svn/trunk/",
+			deployment_name, "-r" + str(revision)], stderr=subprocess.STDOUT)
 		sys.stdout.flush()
 		print "Removing files not intended for deployment..."
 		subprocess.call(["rm", "-rf", deployment_name + "/etc"])
