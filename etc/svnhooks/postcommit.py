@@ -168,11 +168,11 @@ with capture_and_save() as out:
 		my_call(["rm -rf " + deployment_name + "/okapi/*"], shell=True)
 		my_call(["tar", "--overwrite", "-xf", deployment_name + ".tar.gz"])
 		my_call(["svn", "add", "--force", "."], cwd = deployment_name + "/okapi")
-		#my_call(["svn", "commit", deployment_name + "/okapi", "--non-interactive", "--username",
-		#	ocpl_username, "--password", ocpl_password, "--no-auth-cache", "-m",
-		#	"Automatic OKAPI Project update (r" + str(revision) + ")"])
-		#print "Cleanup..."
-		#subprocess.call(["rm", "-rf", deployment_name])
+		my_call(["svn", "commit", deployment_name + "/okapi", "--non-interactive", "--username",
+			ocpl_username, "--password", ocpl_password, "--no-auth-cache", "-m",
+			"Automatic OKAPI Project update (r" + str(revision) + ")"])
+		print "Cleanup..."
+		subprocess.call(["rm", "-rf", deployment_name])
 	except subprocess.CalledProcessError, e:
 		print "Error :("
 		print e.output
