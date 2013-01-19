@@ -34,7 +34,7 @@ from googlecode_upload import upload_find_auth
 
 
 @contextlib.contextmanager
-def capture():
+def capture_and_save():
 	oldout,olderr = sys.stdout, sys.stderr
 	try:
 		out=[StringIO(), StringIO()]
@@ -56,7 +56,7 @@ def capture():
 			with open(name + '.err', 'w') as f:
 				f.write(out[1])
 
-with capture() as out:
+with capture_and_save() as out:
 
 	print "Content-Type: text/plain; charset=utf-8"
 	print
@@ -170,7 +170,7 @@ with capture() as out:
 			stdout=sys.stdout, stderr=sys.stdout)
 		print "Cleanup..."
 		subprocess.call(["rm", "-rf", deployment_name])
-	except OSError, e:
+	except Exception, e:
 		print "Error :("
 		print str(e)
 		sys.exit(1)
