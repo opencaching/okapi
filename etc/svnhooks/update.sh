@@ -5,6 +5,6 @@ chmod 600 googlecode_upload.py
 chmod 600 auth.py
 chmod 600 .htaccess
 setfacl -R -b .
-setfacl -m g:http:rx .
+setfacl -m g:http:rwx .
 setfacl -R -m g:http:rx postcommit.py
 setfacl -R -m g:http:r .htaccess
