@@ -56,6 +56,13 @@ def capture_and_save():
 			with open(name + '.err', 'w') as f:
 				f.write(out[1])
 
+
+def my_call(what, *args, **kwargs):
+	# subprocess.call(what) was not enough, because stdout and stderr are StringIOs now.
+	kwargs['stderr'] = subprocess.STDOUT
+	print subprocess.check_output(what, *args, **kwargs)
+
+
 with capture_and_save() as out:
 
 	print "Content-Type: text/plain; charset=utf-8"
@@ -124,11 +131,11 @@ with capture_and_save() as out:
 	try:
 		print "Exporting revision " + str(revision) + "..."
 		sys.stdout.flush()
-		print subprocess.check_output(["svn", "export", "http://opencaching-api.googlecode.com/svn/trunk/",
-			deployment_name, "-r" + str(revision)], stderr=subprocess.STDOUT)
+		my_call(["svn", "export", "http://opencaching-api.googlecode.com/svn/trunk/",
+			deployment_name, "-r" + str(revision)])
 		sys.stdout.flush()
 		print "Removing files not intended for deployment..."
-		subprocess.call(["rm", "-rf", deployment_name + "/etc"])
+		my_call(["rm", "-rf", deployment_name + "/etc"])
 		print "Adding version information..."
 		fp = open(deployment_name + '/okapi/core.php', 'r')
 		core_contents = fp.read()
@@ -141,10 +148,10 @@ with capture_and_save() as out:
 		fp.close()
 		print "Creating archive..."
 		sys.stdout.flush()
-		subprocess.call(["tar", "-czf", deployment_name + ".tar.gz", deployment_name])
-		subprocess.call(["chmod", "666", deployment_name + ".tar.gz"])
-		subprocess.call(["setfacl", "-m", "u:rygielski:r", deployment_name + ".tar.gz"])
-		subprocess.call(["rm", "-rf", deployment_name])
+		my_call(["tar", "-czf", deployment_name + ".tar.gz", deployment_name])
+		my_call(["chmod", "666", deployment_name + ".tar.gz"])
+		my_call(["setfacl", "-m", "u:rygielski:r", deployment_name + ".tar.gz"])
+		my_call(["rm", "-rf", deployment_name])
 		print "Uploading to the Downloads page..."
 		sys.stdout.flush()
 		upload_find_auth(deployment_name + ".tar.gz", "opencaching-api",
@@ -152,24 +159,20 @@ with capture_and_save() as out:
 			user_name=okapi_username, password=okapi_password)
 		print "Checking out opencaching-pl/trunk/okapi..."
 		sys.stdout.flush()
-		subprocess.call(["svn", "co", "https://opencaching-pl.googlecode.com/svn/trunk/okapi",
-			deployment_name + "/okapi"], stdout=sys.stdout, stderr=sys.stdout)
+		my_call(["svn", "co", "https://opencaching-pl.googlecode.com/svn/trunk/okapi",
+			deployment_name + "/okapi"])
 		sys.stdout.flush()
 		print "Replacing opencaching.pl's okapi contents with the latest version..."
-		## Currently I have only svn 1.6 on the server where this script is being run.
-		## Therefore, I cannot simply remove all the contents (.svn directories need to
-		## be there). This can be fixed once svn on my server gets upgraded.
-		# subprocess.call(["rm", "-rf", deployment_name + "/*"], shell=True)
-		subprocess.call(["tar", "--overwrite", "-xf", deployment_name + ".tar.gz"],
-			stdout=sys.stdout, stderr=sys.stdout)
-		subprocess.call(["svn", "add", "--force", "."], cwd = deployment_name + "/okapi",
-			stdout=sys.stdout, stderr=sys.stdout)
-		subprocess.call(["svn", "commit", deployment_name + "/okapi", "--non-interactive", "--username",
-			ocpl_username, "--password", ocpl_password, "--no-auth-cache", "-m",
-			"Automatic OKAPI Project update (r" + str(revision) + ")"],
-			stdout=sys.stdout, stderr=sys.stdout)
-		print "Cleanup..."
-		subprocess.call(["rm", "-rf", deployment_name])
+		## This will work only with svn >=1.7! For lower versions of svn see revision
+		## history of THIS file.
+		my_call(["rm", "-rf", deployment_name + "/*"], shell=True)
+		my_call(["tar", "--overwrite", "-xf", deployment_name + ".tar.gz"])
+		my_call(["svn", "add", "--force", "."], cwd = deployment_name + "/okapi")
+		#my_call(["svn", "commit", deployment_name + "/okapi", "--non-interactive", "--username",
+		#	ocpl_username, "--password", ocpl_password, "--no-auth-cache", "-m",
+		#	"Automatic OKAPI Project update (r" + str(revision) + ")"])
+		#print "Cleanup..."
+		#subprocess.call(["rm", "-rf", deployment_name])
 	except Exception, e:
 		print "Error :("
 		print str(e)
