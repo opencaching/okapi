@@ -1,5 +1,10 @@
 svn up
-chmod 777 .
-chmod 755 postcommit.py
-chmod 644 googlecode_upload.py
-chmod 644 auth.py
+chmod 700 .
+chmod 700 postcommit.py
+chmod 600 googlecode_upload.py
+chmod 600 auth.py
+chmod 600 .htaccess
+setfacl -R -b .
+setfacl -m g:http:rx .
+setfacl -R -m g:http:rx postcommit.py
+setfacl -R -m g:http:r .htaccess
