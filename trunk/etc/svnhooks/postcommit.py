@@ -32,6 +32,18 @@ from cStringIO import StringIO
 
 from googlecode_upload import upload_find_auth
 
+try:
+	from auth import okapi_auth_key, okapi_username, okapi_password, ocpl_username, ocpl_password
+except ImportError:
+	print "A file called auth.py is required to run this script. The contents are:"
+	print
+	print 'okapi_auth_key = "Post-Commit Authentication Key for opencaching-api project"'
+	print 'okapi_username = "Username with RW rights to opencaching-api project"'
+	print 'okapi_password = "User\'s commit-password"'
+	print 'ocpl_username = "Username with RW rights to opencaching-pl project"'
+	print 'ocpl_password = "User\'s commit-password"'
+	sys.exit(1)
+
 
 @contextlib.contextmanager
 def capture_and_save():
@@ -63,70 +75,7 @@ def my_call(what, *args, **kwargs):
 	print subprocess.check_output(what, *args, **kwargs)
 
 
-with capture_and_save() as out:
-
-	print "Content-Type: text/plain; charset=utf-8"
-	print
-	print "Hello there!"
-	print
-	
-	try:
-		from auth import okapi_auth_key, okapi_username, okapi_password, ocpl_username, ocpl_password
-	except ImportError:
-		print "A file called auth.py is required to run this script. The contents are:"
-		print
-		print 'okapi_auth_key = "Post-Commit Authentication Key for opencaching-api project"'
-		print 'okapi_username = "Username with RW rights to opencaching-api project"'
-		print 'okapi_password = "User\'s commit-password"'
-		print 'ocpl_username = "Username with RW rights to opencaching-pl project"'
-		print 'ocpl_password = "User\'s commit-password"'
-		sys.exit(1)
-	
-	cgitb.enable()
-	
-	# Reading request body and signature.
-	
-	body = sys.stdin.read()
-	# e.g. body = '{"repository_path":"http://opencaching-api.googlecode.com/svn/","project_name":"opencaching-api","revisions":[{"added":["/trunk/test.txt"],"author":"rygielski@gmail.com","url":"http://opencaching-api.googlecode.com/svn-history/r23/","timestamp":1313750735,"message":"Testing SVN hooks.","path_count":1,"removed":[],"modified":[],"revision":23}],"revision_count":1}'
-	signature = os.environ['HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC'] if os.environ.has_key('HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC') else "none"
-	# e.g. signature = '18daa1cd537cb6d5f7eda2935f81b0fb'
-	
-	print "Your request body is:"
-	print
-	print body
-	print
-	print "And your signature is: " + signature
-	print
-	
-	# Validating the signature.
-	
-	m = hmac.new(okapi_auth_key)
-	m.update(body)
-	digest = m.hexdigest()
-	if digest == signature:
-		print "Signature is VALID."
-	else:
-		print "Signature is INVALID. Aborting your request."
-		sys.exit(1)
-	
-	data = json.loads(body)
-	filenames = []
-	revision = None
-	for rev_data in data['revisions']:
-		for key in ['added', 'modified', 'removed']:
-			for filename in rev_data[key]:
-				filenames.append(filename)
-		revision = rev_data['revision']
-	print
-	print "Files affected:\n" + "\n".join(filenames)
-	print
-	
-	important_filenames = filter(lambda filename: filename.startswith("/trunk/"), filenames)
-	important_filenames = filter(lambda filename: not filename.startswith("/trunk/etc/"), important_filenames)
-	if len(important_filenames) == 0:
-		print "Deployment package was unaffected by this commit. Aborting."
-		sys.exit(0)
-	
+def deploy(revision):
 	deployment_name = "okapi-r" + str(revision)
 	try:
 		print "Exporting revision " + str(revision) + "..."
@@ -184,3 +133,59 @@ with capture_and_save() as out:
 		sys.exit(1)
 	
 	print "Deployment complete."
+
+
+if __name__ == '__main__':
+	with capture_and_save() as out:
+
+		print "Content-Type: text/plain; charset=utf-8"
+		print
+		print "Hello there!"
+		print
+		
+		cgitb.enable()
+		
+		# Reading request body and signature.
+		
+		body = sys.stdin.read()
+		# e.g. body = '{"repository_path":"http://opencaching-api.googlecode.com/svn/","project_name":"opencaching-api","revisions":[{"added":["/trunk/test.txt"],"author":"rygielski@gmail.com","url":"http://opencaching-api.googlecode.com/svn-history/r23/","timestamp":1313750735,"message":"Testing SVN hooks.","path_count":1,"removed":[],"modified":[],"revision":23}],"revision_count":1}'
+		signature = os.environ['HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC'] if os.environ.has_key('HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC') else "none"
+		# e.g. signature = '18daa1cd537cb6d5f7eda2935f81b0fb'
+		
+		print "Your request body is:"
+		print
+		print body
+		print
+		print "And your signature is: " + signature
+		print
+		
+		# Validating the signature.
+		
+		m = hmac.new(okapi_auth_key)
+		m.update(body)
+		digest = m.hexdigest()
+		if digest == signature:
+			print "Signature is VALID."
+		else:
+			print "Signature is INVALID. Aborting your request."
+			sys.exit(1)
+		
+		data = json.loads(body)
+		filenames = []
+		revision = None
+		for rev_data in data['revisions']:
+			for key in ['added', 'modified', 'removed']:
+				for filename in rev_data[key]:
+					filenames.append(filename)
+			revision = rev_data['revision']
+		print
+		print "Files affected:\n" + "\n".join(filenames)
+		print
+		
+		important_filenames = filter(lambda filename: filename.startswith("/trunk/"), filenames)
+		important_filenames = filter(lambda filename: not filename.startswith("/trunk/etc/"), important_filenames)
+		if len(important_filenames) == 0:
+			print "Deployment package was unaffected by this commit. Aborting."
+			sys.exit(0)
+		
+		deploy(revision)
