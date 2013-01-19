@@ -165,7 +165,7 @@ with capture_and_save() as out:
 		print "Replacing opencaching.pl's okapi contents with the latest version..."
 		## This will work only with svn >=1.7! For lower versions of svn see revision
 		## history of THIS file.
-		my_call(["rm", "-rf", deployment_name + "/okapi/*"], shell=True)
+		my_call(["rm -rf " + deployment_name + "/okapi/*"], shell=True)
 		my_call(["tar", "--overwrite", "-xf", deployment_name + ".tar.gz"])
 		my_call(["svn", "add", "--force", "."], cwd = deployment_name + "/okapi")
 		#my_call(["svn", "commit", deployment_name + "/okapi", "--non-interactive", "--username",
