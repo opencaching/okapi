@@ -9,7 +9,7 @@
 		<p>Pipe-separated list of ISO 639-1 language codes. This indicates the
 		order of preference in which language will be chosen for fields like
 		<b>name</b> and <b>description</b>.</p>
-		<p>Please note, that you may also access caches descriptions in all
+		<p>Please note, that you may also access caches' descriptions in all
 		available languages. If you want to do this, you should use fields
 		<b>names</b>, <b>descriptions</b> (etc.) instead of <b>name</b> and
 		<b>description</b> (etc.).</p>
@@ -64,25 +64,25 @@
 			<li>
 				<p><b>distance</b> - float, the distance to a cache, in meters.
 				This requires <b>my_location</b> parameter to be provided.</p>
-				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
+				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of querying OKAPI.</p>
 			</li>
 			<li>
 				<p><b>bearing</b> - float, the absolute bearing to the cache, measured in degrees from north,
 				<b>or null</b> if it cannot be calculated (i.e. when you are exactly at the target's location).
 				This requires <b>my_location</b> parameter to be provided.</p>
-				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
+				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of querying OKAPI.</p>
 			</li>
 			<li>
 				<p><b>bearing2</b> - string, the absolute bearing to the cache, represented as a typical direction
 				string of length of 1 or 2 characters (ex. "N", "NE", "E", "SE", etc.), or "n/a" if it cannot be calculated.
 				This requires <b>my_location</b> parameter to be provided.</p>
-				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
+				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of querying OKAPI.</p>
 			</li>
 			<li>
 				<p><b>bearing3</b> - string, the absolute bearing to the cache, represented as a typical directon
 				string of length of 1 or 2 or 3 characters (ex. "N", "NNE", "NE", "ENE", etc.), or "n/a" if it cannot be calculated.
 				This requires <b>my_location</b> parameter to be provided.</p>
-				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of quering OKAPI.</p>
+				<p>Please note, that sometimes it is faster to compute this yourself, on client-side, instead of querying OKAPI.</p>
 			</li>
 			<li>
 				<p><b>is_found</b> - boolean, true if the user already found this cache.
@@ -169,8 +169,8 @@
 				following structure:</p>
 				<ul>
 					<li><b>uuid</b> - UUID of the image,</li>
-					<li><b>url</b> - an URL of the image,</li>
-					<li><b>thumb_url</b> - an URL of a small (thumb) version of the image
+					<li><b>url</b> - URL of the image,</li>
+					<li><b>thumb_url</b> - URL of a small (thumb) version of the image
 						<b>or null</b> when no thumb is available (e.g. there are no thumbs
 						for spoiler images),</li>
 					<li><b>caption</b> - plain-text string, caption of the image,</li>
@@ -219,8 +219,11 @@
 					<li><b>name</b> - plain-text "codename" for the waypoint (not unique),</li>
 					<li><b>location</b> - location of the waypoint in the "lat|lon" format
 						(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
-					<li><b>sym</b> - string, one of globally-recognized waypoint symbol
-						names (such as "Flag, Green" or "Parking Area"),</li>
+					<li>
+						<b>sym</b> - string, one of commonly recognized waypoint symbol
+						names, originally introduced by Garmin in their devices and GPX
+						files (e.g. "Flag, Green" or "Parking Area"),
+					</li>
 					<li><b>description</b> - plain-text longer description of the waypoint.</li>
 				</ul>
 			</li>
@@ -275,6 +278,6 @@
 		query, the result might look something link this:</p>
 		<pre>{"type": "Traditional"}</pre>
 		<p>If given cache code does not exist, the method will
-		respond with a HTTP 400 error.</p>
+		respond with an HTTP 400 error.</p>
 	</returns>
 </xml>
