@@ -538,6 +538,14 @@ class SearchAssistant
 			}
 		}
 		
+		# To avoid join errors, put each of the $where_conds in extra paranthesis.
+		
+		$tmp = array();
+		foreach($where_conds as $cond)
+			$tmp[] = "(".$cond.")";
+		$where_conds = $tmp;
+		unset($tmp);
+		
 		$ret_array = array(
 			'where_conds' => $where_conds,
 			'offset' => (int)$offset,
