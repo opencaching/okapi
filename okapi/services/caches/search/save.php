@@ -127,7 +127,7 @@ class WebService
 							'".mysql_real_escape_string($set_id)."',
 							caches.cache_id
 						from ".implode(", ", $tables)."
-						where ".implode(" and ", $where_conds)."
+						where (".implode(") and (", $where_conds).")
 					");
 					
 					# Lock barrier, to make sure the data is visible by other
