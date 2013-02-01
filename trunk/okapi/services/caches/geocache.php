@@ -42,10 +42,10 @@ class WebService
 		$user_uuid = $request->get_parameter('user_uuid');
 		if ($user_uuid)
 			$params['user_uuid'] = $user_uuid;
-		
+
 		# There's no need to validate the fields/lpc parameters as the 'geocaches'
 		# method does this (it will raise a proper exception on invalid values).
-		
+
 		$results = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, $params));
 		$result = $results[$cache_code];

@@ -54,7 +54,7 @@ class Facade
 		$request->perceive_as_http_request = true;
 		return OkapiServiceRunner::call($service_name, $request);
 	}
-	
+
 	/**
 	 * This works like service_call with two exceptions: 1. It passes all your
 	 * current HTTP request headers to OKAPI (which can make use of them in
@@ -74,7 +74,7 @@ class Facade
 		$response = OkapiServiceRunner::call($service_name, $request);
 		$response->display();
 	}
-	
+
 	/**
 	 * Create a search set from a temporary table. This is very similar to
 	 * the "services/caches/search/save" method, but allows OC server to
