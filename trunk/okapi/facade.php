@@ -103,7 +103,7 @@ class Facade
 	 * Mark the specified caches as *possibly* modified. The replicate module
 	 * will scan for changes within these caches on the next changelog update.
 	 * This is useful in some cases, when OKAPI cannot detect the modification
-	 * for itself (grep OCPL code for examples).
+	 * for itself (grep OCPL code for examples). See issue #179.
 	 *
 	 * $cache_codes may be a single cache code or an array of codes.
 	 */
@@ -116,5 +116,24 @@ class Facade
 			set okapi_syncbase = now()
 			where wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
 		");
+	}
+
+	/**
+	 * You will probably want to call that with FALSE when using Facade
+	 * in buggy, legacy OC code. This will disable OKAPI's default behavior
+	 * of treating NOTICEs as errors.
+	 */
+	public static function disable_error_handling()
+	{
+		OkapiErrorHandler::disable();
+	}
+
+	/**
+	 * If you disabled OKAPI's error handling with disable_error_handling,
+	 * you may reenable it with this method.
+	 */
+	public static function reenable_error_handling()
+	{
+		OkapiErrorHandler::reenable();
 	}
 }
