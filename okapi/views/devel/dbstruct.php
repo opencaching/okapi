@@ -14,6 +14,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
+use okapi\BadRequest;
 
 class View
 {
@@ -45,7 +46,11 @@ class View
 			$scheme = parse_url($_GET['compare_to'], PHP_URL_SCHEME);
 			if (in_array($scheme, array('http', 'https')))
 			{
-				$alternate_struct = @file_get_contents($_GET['compare_to']);
+				try {
+					$alternate_struct = @file_get_contents($_GET['compare_to']);
+				} catch (Exception $e) {
+					throw new BadRequest("Failed to load ".$_GET['compare_to']);
+				}
 				$response->body =
 					"-- Automatically generated database diff. Use with caution!\n".
 					"-- Differences obtained with help of cool library by Kirill Gerasimenko.\n\n".
