@@ -63,6 +63,9 @@ class WebService
 			if (!in_array($field, self::$valid_field_names))
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
 
+		$log_fields = $request->get_parameter('log_fields');
+		if (!$log_fields) $log_fields = "uuid|date|user|type|comment";  // validation is done on call
+
 		$user_uuid = $request->get_parameter('user_uuid');
 		if ($user_uuid != null)
 		{
@@ -517,13 +520,15 @@ class WebService
 			# technique I could think of...
 
 			$rs = Db::query("
-				select cache_id, id, date
+				select cache_id, uuid, date
 				from cache_logs
 				where
 					cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
+				order by cache_id, date desc
 			");
-			$logids = array();
+			$loguuids = array();
+			$log2cache_map = array();
 			if ($lpc !== null)
 			{
 				# User wants some of the latest logs.
@@ -538,7 +543,8 @@ class WebService
 					});
 					for ($i = 0; $i < min(count($rowslist_ref), $lpc); $i++)
 					{
-						$logids[] = $rowslist_ref[$i]['id'];
+						$loguuids[] = $rowslist_ref[$i]['uuid'];
+						$log2cache_map[$rowslist_ref[$i]['uuid']] = $cacheid2wptcode[$rowslist_ref[$i]['cache_id']];
 					}
 				}
 			}
@@ -546,35 +552,46 @@ class WebService
 			{
 				# User wants ALL logs.
 				while ($row = mysql_fetch_assoc($rs))
-					$logids[] = $row['id'];
+				{
+					$loguuids[] = $row['uuid'];
+					$log2cache_map[$row['uuid']] = $cacheid2wptcode[$row['cache_id']];
+				}
 			}
 
-			# Now retrieve text and join.
+			# We need to retrieve logs/entry for each of the $logids. We do this in groups
+			# (there is a limit for log uuids passed to logs/entries method).
 
-			$rs = Db::query("
-				select cl.cache_id, cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
-					u.uuid as user_uuid, u.username, u.user_id
-				from cache_logs cl, user u
-				where
-					cl.id in ('".implode("','", array_map('mysql_real_escape_string', $logids))."')
-					and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "cl.deleted = 0" : "true")."
-					and cl.user_id = u.user_id
-				order by cl.cache_id, cl.date desc
-			");
-			$cachelogs = array();
-			while ($row = mysql_fetch_assoc($rs))
+			try
 			{
-				$results[$cacheid2wptcode[$row['cache_id']]]['latest_logs'][] = array(
-					'uuid' => $row['uuid'],
-					'date' => date('c', $row['date']),
-					'user' => array(
-						'uuid' => $row['user_uuid'],
-						'username' => $row['username'],
-						'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id'],
-					),
-					'type' => Okapi::logtypeid2name($row['type']),
-					'comment' => $row['text']
-				);
+				foreach (Okapi::make_groups($loguuids, 500) as $subset)
+				{
+					$entries = OkapiServiceRunner::call(
+						"services/logs/entries",
+						new OkapiInternalRequest(
+							$request->consumer, $request->token, array(
+								'log_uuids' => implode("|", $subset),
+								'fields' => $log_fields
+							)
+						)
+					);
+					foreach ($subset as $log_uuid)
+					{
+						if ($entries[$log_uuid])
+							$results[$log2cache_map[$log_uuid]]['latest_logs'][] = $entries[$log_uuid];
+					}
+				}
+			}
+			catch (Exception $e)
+			{
+				if (($e instanceof InvalidParam) && ($e->paramName == 'fields'))
+				{
+					throw new InvalidParam('log_fields', $e->whats_wrong_about_it);
+				}
+				else
+				{
+					/* Something is wrong with OUR code. */
+					throw new Exception($e);
+				}
 			}
 		}
 

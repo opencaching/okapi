@@ -28,13 +28,16 @@ class WebService
 		if (!$langpref) $langpref = "en";
 		$fields = $request->get_parameter('fields');
 		if (!$fields) $fields = "code|name|location|type|status";
+		$log_fields = $request->get_parameter('log_fields');
+		if (!$log_fields) $log_fields = "uuid|date|user|type|comment";
 		$lpc = $request->get_parameter('lpc');
 		if (!$lpc) $lpc = 10;
 		$params = array(
 			'cache_codes' => $cache_code,
 			'langpref' => $langpref,
 			'fields' => $fields,
-			'lpc' => $lpc
+			'lpc' => $lpc,
+			'log_fields' => $log_fields
 		);
 		$my_location = $request->get_parameter('my_location');
 		if ($my_location)
