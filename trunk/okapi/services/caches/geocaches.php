@@ -422,7 +422,7 @@ class WebService
 				// strtolower - ISO 639-1 codes are lowercase
 				if ($row['desc'])
 					$results[$cache_code]['descriptions'][strtolower($row['language'])] = $row['desc'].
-						"\n".self::get_cache_attribution_note($row['cache_id'], strtolower($row['language']));
+						"\n".self::get_cache_attribution_note($row['cache_id'], strtolower($row['language']), $langpref);
 				if ($row['hint'])
 					$results[$cache_code]['hints'][strtolower($row['language'])] = $row['hint'];
 			}
@@ -845,22 +845,30 @@ class WebService
 		self::$caption_no = 1;
 	}
 
-	public static function get_cache_attribution_note($cache_id, $lang)
+	/**
+	 * Return attribution note to be included in the cache description.
+	 * The $lang parameter identifies the language of the cache description
+	 * (one cache may have descriptions in multiple languages!). Whereas
+	 * the $langpref parameter is *an array* of language preferences
+	 * extracted from the langpref parameter passed to the method. Both
+	 * values ($lang and $langpref) will be taken into account ($lang
+	 * has the higher priority).
+	 */
+	public static function get_cache_attribution_note($cache_id, $lang, array $langpref)
 	{
 		$site_url = Settings::get('SITE_URL');
 		$site_name = Okapi::get_normalized_site_name();
 		$cache_url = $site_url."viewcache.php?cacheid=$cache_id";
 
-		# This list if to be extended (opencaching.de, etc.). (_)
+		Okapi::gettext_domain_init(array_merge(array($lang), $langpref));
+		$note = "<p>";
+		$note .= sprintf(
+			_("This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</a> site."),
+			$cache_url, $site_url, $site_name
+		);
+		$note .= "</p>";
+		Okapi::gettext_domain_restore();
 
-		switch ($lang)
-		{
-			case 'pl':
-				return "<p>Opis <a href='$cache_url'>skrzynki</a> pochodzi z serwisu <a href='$site_url'>$site_name</a>.</p>";
-				break;
-			default:
-				return "<p>This <a href='$cache_url'>geocache</a> description comes from the <a href='$site_url'>$site_name</a> site.</p>";
-				break;
-		}
+		return $note;
 	}
 }
