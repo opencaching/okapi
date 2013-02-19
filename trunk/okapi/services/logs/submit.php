@@ -360,17 +360,27 @@ class WebService
 
 		if ($recommend)
 		{
-			# Both OCPL and OCDE don't update any stats regarding the number of recommendations
-			# (or - if they do - they do so using triggers). In other words, this is the only
-			# query we have to execute here, regarding the recommendation.
-
-			Db::execute("
-				insert into cache_rating (user_id, cache_id)
-				values (
-					'".mysql_real_escape_string($user['internal_id'])."',
-					'".mysql_real_escape_string($cache['internal_id'])."'
-				);
-			");
+			if (Db::field_exists('cache_rating', 'rating_date'))
+			{
+				Db::execute("
+					insert into cache_rating (user_id, cache_id, rating_date)
+					values (
+						'".mysql_real_escape_string($user['internal_id'])."',
+						'".mysql_real_escape_string($cache['internal_id'])."',
+						from_unixtime('".mysql_real_escape_string($when)."')
+					);
+				");
+			}
+			else
+			{
+				Db::execute("
+					insert into cache_rating (user_id, cache_id)
+					values (
+						'".mysql_real_escape_string($user['internal_id'])."',
+						'".mysql_real_escape_string($cache['internal_id'])."'
+					);
+				");
+			}
 		}
 
 		# We need to delete the copy of stats-picture for this user. Otherwise,

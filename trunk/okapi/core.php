@@ -419,6 +419,23 @@ class Db
 		}
 		return $rs;
 	}
+
+	public static function field_exists($table, $field)
+	{
+		if (!preg_match("/[a-z0-9_]+/", $table.$field))
+			return false;
+		try {
+			$spec = self::select_all("desc ".$table.";");
+		} catch (Exception $e) {
+			/* Table doesn't exist, probably. */
+			return false;
+		}
+		foreach ($spec as &$row_ref) {
+			if (strtoupper($row_ref['Field']) == strtoupper($field))
+				return true;
+		}
+		return false;
+	}
 }
 
 #
