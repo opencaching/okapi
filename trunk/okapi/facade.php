@@ -98,4 +98,23 @@ class Facade
 			$tables, $where_conds, $min_store, $max_ref_age
 		);
 	}
+
+	/**
+	 * Mark the specified caches as *possibly* modified. The replicate module
+	 * will scan for changes within these caches on the next changelog update.
+	 * This is useful in some cases, when OKAPI cannot detect the modification
+	 * for itself (grep OCPL code for examples).
+	 *
+	 * $cache_codes may be a single cache code or an array of codes.
+	 */
+	public static function schedule_geocache_check($cache_codes)
+	{
+		if (!is_array($cache_codes))
+			$cache_codes = array($cache_codes);
+		Db::execute("
+			update caches
+			set okapi_syncbase = now()
+			where wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+		");
+	}
 }
