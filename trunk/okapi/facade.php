@@ -4,22 +4,23 @@ namespace okapi;
 
 # OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
 
-# Include this file if you want to use OKAPI's services with any
-# external code (your service calls will appear under the name "Facade"
-# in the weekly OKAPI usage report).
+# Use this class when you want to use OKAPI's services within OC code.
+# (Your service calls will appear with the name "Facade" in the weekly
+# OKAPI usage report).
 
-# Note, that his is the *ONLY* internal OKAPI file that is guaranteed
-# to stay backward-compatible (I'm speaking about INTERNAL files here,
-# all OKAPI methods will stay compatible forever). If you want to use
-# something that has not been exposed through the Facade class, contact
+# IMPORTANT COMPATIBILITY NOTES:
+
+# Note, that this is the *ONLY* internal OKAPI file that is guaranteed
+# to stay backward-compatible (note that we mean FILES here, all OKAPI
+# methods will stay compatible forever). If you want to use any class or
+# method that has not been exposed through the Facade class, contact
 # OKAPI developers, we will add it here.
 
 # Including this file will initialize OKAPI Framework with its default
 # exception and error handlers. OKAPI is strict about PHP warnings and
-# notices. You might need to temporarily disable the error handler in
-# order to get it to work with some legacy code. Do this by calling
-# OkapiErrorHandler::disable() BEFORE calling the "buggy" code, and
-# OkapiErrorHandler::reenable() AFTER returning from it.
+# notices, so you might need to temporarily disable the error handler in
+# order to get it to work with your code. Just call this after you
+# include the Facade file: OkapiErrorHandler::disable().
 
 
 use Exception;
