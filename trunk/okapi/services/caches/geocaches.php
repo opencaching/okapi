@@ -123,7 +123,7 @@ class WebService
 
 			$rs = Db::query("
 				select
-					c.cache_id, c.name, c.longitude, c.latitude, c.last_modified,
+					c.cache_id, c.name, c.longitude, c.latitude, c.listing_last_modified as last_modified,
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
 					c.terrain, c.wp_oc, c.logpw, c.user_id,
 
