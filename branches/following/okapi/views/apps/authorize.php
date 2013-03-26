@@ -10,6 +10,7 @@ use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
 use okapi\Settings;
 use okapi\Locales;
+use okapi\OCSession;
 
 class View
 {
@@ -21,13 +22,13 @@ class View
 		$locales = array();
 		foreach (Locales::$languages as $lang => $attrs)
 			$locales[$attrs['locale']] = $attrs;
-		
+
 		# Current implementation of the "interactivity" parameter is: If developer
 		# wants to "confirm_user", then just log out the current user before we
 		# continue.
-		
+
 		$force_relogin = (isset($_GET['interactivity']) && $_GET['interactivity'] == 'confirm_user');
-		
+
 		$token = Db::select_row("
 			select
 				t.`key` as `key`,
@@ -44,16 +45,16 @@ class View
 				and t.consumer_key = c.`key`
 				and t.user_id is null
 		");
-		
+
 		$callback_concat_char = (strpos($token['callback'], '?') === false) ? "?" : "&";
-		
+
 		if (!$token)
 		{
 			# Probably Request Token has expired. This will be usually viewed
 			# by the user, who knows nothing on tokens and OAuth. Let's be nice then!
-			
+
 			$vars = array(
-				'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
+				'okapi_base_url' => Settings::get('SITE_URL')."okapi/",
 				'token' => $token,
 				'token_expired' => true,
 				'site_name' => Okapi::get_normalized_site_name(),
@@ -68,10 +69,15 @@ class View
 			Okapi::gettext_domain_restore();
 			return $response;
 		}
-		
+
+		# Determine which user is logged in to OC.
+
+		require_once($GLOBALS['rootpath']."okapi/lib/oc_session.php");
+		$OC_user_id = OCSession::get_user_id();
+
 		# Ensure a user is logged in (or force re-login).
-	
-		if ($force_relogin || ($GLOBALS['usr'] == false))
+
+		if ($force_relogin || ($OC_user_id == null))
 		{
 			if ($force_relogin)
 			{
@@ -79,16 +85,16 @@ class View
 				# The logout.php DOES NOT support the "target" parameter, so we
 				# can't just call it. The only thing that comes to mind is...
 				# Destroy EVERYTHING.
-				
+
 				$past = time() - 86400;
 				foreach ($_COOKIE as $key => $value)
 					setcookie($key, $value, $past, '/');
 			}
-			
+
 			# We should be logged out now. Let's login again.
-			
+
 			$after_login = "okapi/apps/authorize?oauth_token=$token_key".(($langpref != Settings::get('SITELANG'))?"&langpref=".$langpref:"");
-			$login_url = $GLOBALS['absolute_server_URI']."login.php?target=".urlencode($after_login)
+			$login_url = Settings::get('SITE_URL')."login.php?target=".urlencode($after_login)
 				."&langpref=".$langpref;
 			return new OkapiRedirectResponse($login_url);
 		}
@@ -101,7 +107,7 @@ class View
 			select 1
 			from okapi_authorizations
 			where
-				user_id = '".mysql_real_escape_string($GLOBALS['usr']['userid'])."'
+				user_id = '".mysql_real_escape_string($OC_user_id)."'
 				and consumer_key = '".mysql_real_escape_string($token['consumer_key'])."'
 		", 0);
 
@@ -111,14 +117,14 @@ class View
 			{
 				# Not yet authorized, but user have just submitted the authorization form.
 				# WRTODO: CSRF protection
-				
+
 				if ($_POST['authorization_result'] == 'granted')
 				{
 					Db::execute("
 						insert into okapi_authorizations (consumer_key, user_id)
 						values (
 							'".mysql_real_escape_string($token['consumer_key'])."',
-							'".mysql_real_escape_string($GLOBALS['usr']['userid'])."'
+							'".mysql_real_escape_string($OC_user_id)."'
 						);
 					");
 					$authorized = true;
@@ -127,13 +133,13 @@ class View
 				{
 					# User denied access. Nothing sensible to do now. Will try to report
 					# back to the Consumer application with an error.
-					
+
 					if ($token['callback']) {
 						return new OkapiRedirectResponse($token['callback'].$callback_concat_char."error=access_denied");
 					} else {
 						# Consumer did not provide a callback URL (oauth_callback=oob).
 						# We'll have to redirect to the OpenCaching main page then...
-						return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."index.php");
+						return new OkapiRedirectResponse(Settings::get('SITE_URL')."index.php");
 					}
 				}
 			}
@@ -141,7 +147,7 @@ class View
 			{
 				# Not yet authorized. Display an authorization request.
 				$vars = array(
-					'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
+					'okapi_base_url' => Settings::get('SITE_URL')."okapi/",
 					'token' => $token,
 					'site_name' => Okapi::get_normalized_site_name(),
 					'locales' => $locales,
@@ -156,23 +162,23 @@ class View
 				return $response;
 			}
 		}
-		
+
 		# User granted access. Now we can authorize the Request Token.
-		
+
 		Db::execute("
 			update okapi_tokens
-			set user_id = '".mysql_real_escape_string($GLOBALS['usr']['userid'])."'
+			set user_id = '".mysql_real_escape_string($OC_user_id)."'
 			where `key` = '".mysql_real_escape_string($token_key)."';
 		");
-		
+
 		# Redirect to the callback_url.
-		
+
 		if ($token['callback']) {
 			return new OkapiRedirectResponse($token['callback'].$callback_concat_char."oauth_token=".$token_key."&oauth_verifier=".$token['verifier']);
 		} else {
 			# Consumer did not provide a callback URL (probably the user is using a desktop
 			# or mobile application). We'll just have to display the verifier to the user.
-			return new OkapiRedirectResponse($GLOBALS['absolute_server_URI']."okapi/apps/authorized?oauth_token=".$token_key
+			return new OkapiRedirectResponse(Settings::get('SITE_URL')."okapi/apps/authorized?oauth_token=".$token_key
 				."&oauth_verifier=".$token['verifier']."&langpref=".$langpref);
 		}
 	}

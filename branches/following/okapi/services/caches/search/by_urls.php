@@ -2,9 +2,10 @@
 
 namespace okapi\services\caches\search\by_urls;
 
-require_once 'searching.inc.php';
+require_once('searching.inc.php');
 
 use okapi\Okapi;
+use okapi\Settings;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -18,7 +19,7 @@ class WebService
 			'min_auth_level' => 1
 		);
 	}
-	
+
 	/**
 	 * Returns one of: array('cache_code', 'OPXXXX'), array('internal_id', '12345'),
 	 * array('uuid', 'A408C3...') or null.
@@ -26,19 +27,19 @@ class WebService
 	private static function get_cache_key($url)
 	{
 		# Determine our own domain.
-		
+
 		static $host = null;
 		static $length = null;
 		if ($host == null)
 		{
-			$host = parse_url($GLOBALS['absolute_server_URI'], PHP_URL_HOST);
+			$host = parse_url(Settings::get('SITE_URL'), PHP_URL_HOST);
 			if (strpos($host, "www.") === 0)
 				$host = substr($host, 4);
 			$length = strlen($host);
 		}
-		
+
 		# Parse the URL
-			
+
 		$uri = parse_url($url);
 		if ($uri == false)
 			return null;
@@ -46,6 +47,13 @@ class WebService
 			return null;
 		if ((!isset($uri['host'])) || (substr($uri['host'], -$length) != $host))
 			return null;
+		if (!isset($uri['path']))
+			return null;
+		if (preg_match("#^/(O[A-Z][A-Z0-9]{4,5})$#", $uri['path'], $matches))
+		{
+			# Some servers allow "http://oc.xx/<cache_code>" shortcut.
+			return array('cache_code', $matches[1]);
+		}
 		$parts = array();
 		if (isset($uri['query']))
 			$parts = array_merge($parts, explode('&', $uri['query']));
@@ -67,11 +75,11 @@ class WebService
 		}
 		return null;
 	}
-	
+
 	public static function call(OkapiRequest $request)
 	{
 		# Retrieve the list of URLs to check.
-		
+
 		$tmp = $request->get_parameter('urls');
 		if (!$tmp)
 			throw new ParamMissing('urls');
@@ -81,9 +89,9 @@ class WebService
 		if (!in_array($as_dict, array('true', 'false')))
 			throw new InvalidParam('as_dict');
 		$as_dict = ($as_dict == 'true');
-		
+
 		# Generate the lists of keys.
-		
+
 		$results = array();
 		$urls_with = array(
 			'cache_code' => array(),
@@ -98,21 +106,23 @@ class WebService
 			else
 				$results[$url_ref] = null;
 		}
-		
+
 		# Include 'cache_code' references.
-		
+
 		foreach ($urls_with['cache_code'] as $url => $cache_code)
 			$results[$url] = $cache_code;
-		
+
 		# Include 'internal_id' references.
-		
+
 		$internal_ids = array_values($urls_with['internal_id']);
 		if (count($internal_ids) > 0)
 		{
 			$rs = Db::query("
 				select cache_id, wp_oc
 				from caches
-				where cache_id in ('".implode("','", array_map('mysql_real_escape_string', $internal_ids))."')
+				where
+					cache_id in ('".implode("','", array_map('mysql_real_escape_string', $internal_ids))."')
+					and status in (1,2,3)
 			");
 			$dict = array();
 			while ($row = mysql_fetch_assoc($rs))
@@ -125,16 +135,18 @@ class WebService
 					$results[$url] = null;
 			}
 		}
-		
+
 		# Include 'uuid' references.
-		
+
 		$uuids = array_values($urls_with['uuid']);
 		if (count($uuids) > 0)
 		{
 			$rs = Db::query("
 				select uuid, wp_oc
 				from caches
-				where uuid in ('".implode("','", array_map('mysql_real_escape_string', $uuids))."')
+				where
+					uuid in ('".implode("','", array_map('mysql_real_escape_string', $uuids))."')
+					and status in (1,2,3)
 			");
 			$dict = array();
 			while ($row = mysql_fetch_assoc($rs))
@@ -147,9 +159,9 @@ class WebService
 					$results[$url] = null;
 			}
 		}
-		
+
 		# Format the results according to the 'as_dict' parameter.
-		
+
 		if ($as_dict)
 			return Okapi::formatted_response($request, $results);
 		else

@@ -16,7 +16,7 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\services\caches\search\SearchAssistant;
 
-require_once 'searching.inc.php';
+require_once('searching.inc.php');
 
 class WebService
 {
@@ -26,7 +26,7 @@ class WebService
 			'min_auth_level' => 1
 		);
 	}
-	
+
 	public static function call(OkapiRequest $request)
 	{
 		$search_params = SearchAssistant::get_common_search_params($request);

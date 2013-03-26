@@ -10,7 +10,8 @@
 	</req>
 	<req name='logtype'>
 		<p>Type of an entry. This should be one of: <i>Found it</i>, <i>Didn't find it</i>
-		or <i>Comment</i>.</p>
+		or <i>Comment</i>. Currently this method does not support "Will attend" nor "Attended"
+		log types which are used for Event Caches (we are planning to add this).</p>
 	</req>
 	<opt name='comment'>
 		<p>Text to be submitted with the log entry. Plain-text (no HTML).</p>
@@ -19,9 +20,10 @@
 		However, you should not (this may stop working at any time).</p>
 	</opt>
 	<opt name='when'>
-		<p>A date and time string. This should be in ISO 8601 format (although currently
-		any format acceptable by PHP's <a href='http://pl2.php.net/strtotime'>strtotime</a>
-		function also will do).</p>
+		<p>A date and time string. This should be in ISO 8601 format (currently any
+		format acceptable by PHP's <a href='http://pl2.php.net/strtotime'>strtotime</a>
+		function also will do, but most of them don't handle time zones properly,
+		try to use ISO 8601!).</p>
 		<p>Indicates when the cache was found. If given, the log will be published
 		with the given date and time. If not, log will be published using the current
 		date and time.</p>
@@ -65,7 +67,6 @@
 		set on him by the OC site. If criteria are not met, the request will
 		end with user error (HTTP 200, success=false).</p>
 	</opt>
-	<!--
 	<opt name='needs_maintenance' default='false'>
 		<p>Set to <b>true</b> if the user thinks that the cache needs some special attension
 		of its owner. Users should describe the reason for maintenance in their comments.</p>
@@ -75,7 +76,6 @@
 		only one of those entries). Moreover, on some OC servers this flag might be
 		<b>completely ignored</b> (not all OC servers support this feature).</p>
 	</opt>
-	-->
 	<common-format-params/>
 	<returns>
 		<p>A dictionary of the following structure:</p>

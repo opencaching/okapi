@@ -4,6 +4,7 @@ namespace okapi\views\http404;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Settings;
 use okapi\OkapiHttpResponse;
 use okapi\views\menu\OkapiMenu;
 
@@ -11,15 +12,15 @@ class View
 {
 	public static function call()
 	{
-		require_once 'menu.inc.php';
-		
+		require_once('menu.inc.php');
+
 		$vars = array(
-			'okapi_base_url' => $GLOBALS['absolute_server_URI']."okapi/",
+			'okapi_base_url' => Settings::get('SITE_URL')."okapi/",
 			'menu' => OkapiMenu::get_menu_html(),
 			'installations' => OkapiMenu::get_installations(),
 			'okapi_rev' => Okapi::$revision,
 		);
-		
+
 		$response = new OkapiHttpResponse();
 		$response->status = "404 Not Found";
 		$response->content_type = "text/html; charset=utf-8";

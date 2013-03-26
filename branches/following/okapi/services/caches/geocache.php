@@ -23,17 +23,21 @@ class WebService
 	{
 		$cache_code = $request->get_parameter('cache_code');
 		if (!$cache_code) throw new ParamMissing('cache_code');
+		if (strpos($cache_code, "|") !== false) throw new InvalidParam('cache_code');
 		$langpref = $request->get_parameter('langpref');
 		if (!$langpref) $langpref = "en";
 		$fields = $request->get_parameter('fields');
 		if (!$fields) $fields = "code|name|location|type|status";
+		$log_fields = $request->get_parameter('log_fields');
+		if (!$log_fields) $log_fields = "uuid|date|user|type|comment";
 		$lpc = $request->get_parameter('lpc');
 		if (!$lpc) $lpc = 10;
 		$params = array(
 			'cache_codes' => $cache_code,
 			'langpref' => $langpref,
 			'fields' => $fields,
-			'lpc' => $lpc
+			'lpc' => $lpc,
+			'log_fields' => $log_fields
 		);
 		$my_location = $request->get_parameter('my_location');
 		if ($my_location)
@@ -41,10 +45,10 @@ class WebService
 		$user_uuid = $request->get_parameter('user_uuid');
 		if ($user_uuid)
 			$params['user_uuid'] = $user_uuid;
-		
+
 		# There's no need to validate the fields/lpc parameters as the 'geocaches'
 		# method does this (it will raise a proper exception on invalid values).
-		
+
 		$results = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, $params));
 		$result = $results[$cache_code];

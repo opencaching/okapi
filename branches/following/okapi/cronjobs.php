@@ -16,6 +16,8 @@ namespace okapi\cronjobs;
 
 use Exception;
 use okapi\Okapi;
+use okapi\BadRequest;
+use okapi\Settings;
 use okapi\OkapiLock;
 use okapi\OkapiExceptionHandler;
 use okapi\Db;
@@ -42,9 +44,12 @@ class CronJobController
 				new CheckCronTab2(),
 				new ChangeLogWriterJob(),
 				new ChangeLogCleanerJob(),
+				new ChangeLogCheckerJob(),
 				new AdminStatsSender(),
 				new LocaleChecker(),
 				new FulldumpGeneratorJob(),
+				new TileTreeUpdater(),
+				new SearchSetsCleanerJob(),
 			);
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
@@ -52,15 +57,15 @@ class CronJobController
 		}
 		return $cache;
 	}
-	
+
 	/**
 	 * Execute all scheduled cronjobs of given type, reschedule, and return
 	 * UNIX timestamp of the nearest scheduled event.
 	 */
 	public static function run_jobs($type)
 	{
-		require_once $GLOBALS['rootpath'].'okapi/service_runner.php';
-		
+		require_once($GLOBALS['rootpath'].'okapi/service_runner.php');
+
 		# We don't want other cronjobs of the same time to run simultanously.
 		$lock = OkapiLock::get('cronjobs-'.$type);
 		$lock->acquire();
@@ -91,23 +96,39 @@ class CronJobController
 					$next_run = $cronjob->get_next_scheduled_run(isset($schedule[$name]) ? $schedule[$name] : time());
 				}
 				$schedule[$name] = $next_run;
+				Cache::set("cron_schedule", $schedule, 30*86400);
 			}
 		}
+
+		# Remove "stale" schedule keys (those which are no longer declared).
+
+		$fixed_schedule = array();
+		foreach (self::get_enabled_cronjobs() as $cronjob)
+		{
+			$name = $cronjob->get_name();
+			$fixed_schedule[$name] = $schedule[$name];
+		}
+		unset($schedule);
+
+		# Return the nearest scheduled event time.
+
 		$nearest = time() + 3600;
-		foreach ($schedule as $name => $time)
+		foreach ($fixed_schedule as $name => $time)
 			if ($time < $nearest)
 				$nearest = $time;
-		Cache::set("cron_schedule", $schedule, 30*86400);
+		Cache::set("cron_schedule", $fixed_schedule, 30*86400);
 		$lock->release();
 		return $nearest;
 	}
-	
+
 	/**
 	 * Force a specified cronjob to run. Throw an exception if cronjob not found.
 	 * $job_name mast equal one of the names returned by ->get_name() method.
 	 */
 	public static function force_run($job_name)
 	{
+		require_once($GLOBALS['rootpath'].'okapi/service_runner.php');
+
 		foreach (self::get_enabled_cronjobs() as $cronjob)
 		{
 			if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\cronjobs\\".$job_name))
@@ -118,7 +139,7 @@ class CronJobController
 		}
 		throw new Exception("CronJob $job_name not found.");
 	}
-	
+
 	/**
 	 * Reset the schedule of a specified cronjob. This will force the job to
 	 * run on nearest occasion (but not NOW).
@@ -131,10 +152,10 @@ class CronJobController
 				$thejob = $tmp;
 		if ($thejob == null)
 			throw new Exception("Could not reset schedule for job $job_name. $jon_name not found.");
-	
+
 		# We have to acquire lock on the schedule. This might take some time if cron-5 jobs are
 		# currently being run.
-		
+
 		$type = $thejob->get_type();
 		$lock = OkapiLock::get('cronjobs-'.$type);
 		$lock->acquire();
@@ -146,7 +167,7 @@ class CronJobController
 				unset($schedule[$thejob->get_name()]);
 			Cache::set("cron_schedule", $schedule, 30*86400);
 		}
-		
+
 		$lock->release();
 	}
 }
@@ -155,10 +176,10 @@ abstract class CronJob
 {
 	/** Run the job. */
 	public abstract function execute();
-	
+
 	/** Get unique name for this cronjob. */
 	public function get_name() { return get_class($this); }
-	
+
 	/**
 	 * Get the type of this cronjob. Currently there are two: 'pre-request'
 	 * and 'cron-5'. The first can be executed before every request, the second
@@ -168,7 +189,7 @@ abstract class CronJob
 	 * (before 'cron-5' runs).
 	 */
 	public abstract function get_type();
-	
+
 	/**
 	 * Get the next scheduled run (unix timestamp). You may assume this function
 	 * will be called ONLY directly after the job was run. You may use this to say,
@@ -190,12 +211,12 @@ abstract class PrerequestCronJob extends CronJob
 	 */
 	public final function get_type() { return 'pre-request'; }
 
-	/** 
+	/**
 	 * Return number of seconds - a *minimum* time period that should pass between
 	 * running the job.
 	 */
 	public abstract function get_period();
-	
+
 	public function get_next_scheduled_run($previously_scheduled_run)
 	{
 		return time() + $this->get_period();
@@ -212,13 +233,13 @@ abstract class Cron5Job extends CronJob
 	 * Always returns 'cron-5'.
 	 */
 	public final function get_type() { return 'cron-5'; }
-	
-	/** 
+
+	/**
 	 * Return number of seconds - period of time after which cronjob execution
 	 * should be repeated. This should be dividable be 300 (5 minutes).
 	 */
 	public abstract function get_period();
-	
+
 	public function get_next_scheduled_run($previously_scheduled_run)
 	{
 		$t = time() + $this->get_period();
@@ -241,16 +262,93 @@ class OAuthCleanupCronJob extends PrerequestCronJob
 	}
 }
 
-/** Deletes all expired cache elements, once per hour. */
-class CacheCleanupCronJob extends Cron5Job
+/** Clean up the saved search tables, every 10 minutes. */
+class SearchSetsCleanerJob extends Cron5Job
 {
-	public function get_period() { return 3600; } # 1 hour
+	public function get_period() { return 600; }
 	public function execute()
 	{
+		Db::execute("
+			delete oss, osr
+			from
+				okapi_search_sets oss
+				left join okapi_search_results osr
+					on oss.id = osr.set_id
+			where
+				date_add(oss.expires, interval 60 second) < now()
+		");
+	}
+}
+
+/** Clean up the cache, once per hour. */
+class CacheCleanupCronJob extends Cron5Job
+{
+	public function get_period() { return 3600; }
+	public function execute()
+	{
+		# Delete all expired elements.
+
 		Db::execute("
 			delete from okapi_cache
 			where expires < now()
 		");
+
+		# Update the "score" stats.
+
+		$multiplier = 0.9;  # Every hour, all scores are multiplied by this.
+		$limit = 0.01;  # When a score reaches this limit, the entry is deleted.
+
+		# Every time the entry is read, its score is incread by 1. If an entry
+		# is saved, but never read, it will be deleted after log(L,M) hours
+		# (log(0.01, 0.9) = 43h). If an entry is read 1000000 times and then
+		# never read anymore, it will be deleted after log(1000000/L, 1/M)
+		# hours (log(1000000/0.01, 1/0.9) = 174h = 7 days).
+
+		Db::execute("
+			update okapi_cache
+			set score = score * $multiplier
+			where score is not null
+		");
+		Db::execute("
+			update
+				okapi_cache c,
+				(
+					select cache_key, count(*) as count
+					from okapi_cache_reads
+					group by cache_key
+				) cr
+			set c.score = c.score + cr.count
+			where
+				c.`key` = cr.cache_key
+				and c.score is not null
+		");
+		Db::execute("truncate okapi_cache_reads");
+
+		# Delete elements with the lowest score. Entries which have been set
+		# but never read will be removed after 36 hours (0.9^36 < 0.02 < 0.9^35).
+
+		Db::execute("
+			delete from okapi_cache
+			where
+				score is not null
+				and score < $limit
+		");
+		Db::query("optimize table okapi_cache");
+
+		# FileCache does not have an expiry date. We will delete all files older
+		# than 24 hours.
+
+		$dir = Okapi::get_var_dir();
+		if ($dh = opendir($dir)) {
+			while (($file = readdir($dh)) !== false) {
+				if (strpos($file, "okapi_filecache_") === 0) {
+					if (filemtime("$dir/$file") < time() - 86400) {
+						unlink("$dir/$file");
+					}
+				}
+			}
+			closedir($dh);
+		}
 	}
 }
 
@@ -333,16 +431,16 @@ class CheckCronTab2 extends PrerequestCronJob
 		{
 			# There was a ping during the last hour. Everything is okay.
 			# Reset the counter and return.
-			
-			Cache::set('crontab_check_counter', 3, 86400);
+
+			Cache::set('crontab_check_counter', 5, 86400);
 			return;
 		}
-		
+
 		# There was no ping. Decrement the counter. When reached zero, alert.
-		
+
 		$counter = Cache::get('crontab_check_counter');
 		if ($counter === null)
-			$counter = 3;
+			$counter = 5;
 		$counter--;
 		if ($counter > 0)
 		{
@@ -355,15 +453,15 @@ class CheckCronTab2 extends PrerequestCronJob
 				"Hello. OKAPI detected, that it's crontab is not working properly.\n".
 				"Please check your configuration or contact OKAPI developers.\n\n".
 				"This line should be present among your crontab entries:\n\n".
-				"*/5 * * * * wget -O - -q -t 1 ".$GLOBALS['absolute_server_URI']."okapi/cron5\n\n".
+				"*/5 * * * * wget -O - -q -t 1 ".Settings::get('SITE_URL')."okapi/cron5\n\n".
 				"If you're receiving this in Virtual Machine development environment, then\n".
 				"ignore it. Probably you just paused (or switched off) your VM for some time\n".
 				"(which would be considered an error in production environment)."
 			);
-			
+
 			# Schedule the next admin-nagging. Each subsequent notification will be sent
 			# with a greater delay.
-			
+
 			$since_last = time() - $last_ping;
 			Cache::set('crontab_check_counter', (int)($since_last / $this->get_period()), 86400);
 		}
@@ -378,8 +476,24 @@ class ChangeLogWriterJob extends Cron5Job
 	public function get_period() { return 300; }
 	public function execute()
 	{
-		require_once 'services/replicate/replicate_common.inc.php';
+		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
 		ReplicateCommon::update_clog_table();
+	}
+}
+
+/**
+ * Once per day, compares alle caches to the cached versions
+ * kept by the 'replicate' module. If it finds any inconsistencies, it
+ * emails the developers (such inconsistencies shouldn't happen) and it changes
+ * the okapi_syncbase column accordingly. See issue 157.
+ */
+class ChangeLogCheckerJob extends Cron5Job
+{
+	public function get_period() { return 86400; }
+	public function execute()
+	{
+		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
+		ReplicateCommon::verify_clog_consistency();
 	}
 }
 
@@ -391,8 +505,55 @@ class FulldumpGeneratorJob extends Cron5Job
 	public function get_period() { return 7*86400; }
 	public function execute()
 	{
-		require_once 'services/replicate/replicate_common.inc.php';
+		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
 		ReplicateCommon::generate_fulldump();
+	}
+}
+
+/**
+ * Listen for changelog updates. Update okapi_tile_caches accordingly.
+ */
+class TileTreeUpdater extends Cron5Job
+{
+	public function get_period() { return 5*60; }
+	public function execute()
+	{
+		$current_clog_revision = Okapi::get_var('clog_revision', 0);
+		$tiletree_revision = Okapi::get_var('clog_followup_revision', 0);
+		if ($tiletree_revision === $current_clog_revision) {
+			# No update necessary.
+		} elseif ($tiletree_revision < $current_clog_revision) {
+			require_once($GLOBALS['rootpath']."okapi/services/caches/map/replicate_listener.inc.php");
+			if ($current_clog_revision - $tiletree_revision < 30000)  # In the middle of 2012, OCPL generated 30000 entries per week
+			{
+				for ($timeout = time() + 240; time() < $timeout; )  # Try to stop after 4 minutes.
+				{
+					try {
+						$response = OkapiServiceRunner::call('services/replicate/changelog', new OkapiInternalRequest(
+							new OkapiInternalConsumer(), null, array('since' => $tiletree_revision)));
+						\okapi\services\caches\map\ReplicateListener::receive($response['changelog']);
+						$tiletree_revision = $response['revision'];
+						Okapi::set_var('clog_followup_revision', $tiletree_revision);
+						if (!$response['more'])
+							break;
+					} catch (BadRequest $e) {
+						# Invalid 'since' parameter? May happen whne crontab was
+						# not working for more than 10 days. Or, just after OKAPI
+						# is installed (and this is the first time this cronjob
+						# if being run).
+
+						$mail_admins = ($tiletree_revision > 0);
+						\okapi\services\caches\map\ReplicateListener::reset($mail_admins);
+						Okapi::set_var('clog_followup_revision', $current_clog_revision);
+						break;
+					}
+				}
+			} else {
+				# Some kind of bigger update. Resetting TileTree might be a better option.
+				\okapi\services\caches\map\ReplicateListener::reset();
+				Okapi::set_var('clog_followup_revision', $current_clog_revision);
+			}
+		}
 	}
 }
 
@@ -402,7 +563,7 @@ class ChangeLogCleanerJob extends Cron5Job
 	public function get_period() { return 86400; }
 	public function execute()
 	{
-		require_once 'services/replicate/replicate_common.inc.php';
+		require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
 		$max_revision = ReplicateCommon::get_revision();
 		$cache_key = 'clog_revisions_daily';
 		$data = Cache::get($cache_key);
@@ -423,6 +584,7 @@ class ChangeLogCleanerJob extends Cron5Job
 			where id < '".mysql_real_escape_string($new_min_revision)."'
 		");
 		Cache::set($cache_key, $new_data, 10*86400);
+		Db::query("optimize table okapi_clog");
 	}
 }
 
@@ -540,21 +702,21 @@ class AdminStatsSender extends Cron5Job
 			print str_pad($row['users'], 8, " ", STR_PAD_LEFT)."\n";
 		}
 		print "\n";
-		
+
 		print "This report includes requests from external consumers and those made via\n";
 		print "Facade class (used by OC code). It does not include methods used by OKAPI\n";
 		print "internally (i.e. while running cronjobs). Runtimes do not include HTTP\n";
 		print "request handling overhead.\n";
-		
+
 		$message = ob_get_clean();
 		Okapi::mail_admins("Weekly OKAPI usage report", $message);
 	}
-	
+
 	private static function mb_str_pad($input, $pad_length, $pad_string, $pad_style)
-	{ 
+	{
 		return str_pad($input, strlen($input) - mb_strlen($input) + $pad_length,
-			$pad_string, $pad_style); 
-	} 
+			$pad_string, $pad_style);
+	}
 }
 
 /**
@@ -566,7 +728,7 @@ class LocaleChecker extends Cron5Job
 	public function get_period() { return 7*86400; }
 	public function execute()
 	{
-		require_once 'locale/locales.php';
+		require_once($GLOBALS['rootpath']."okapi/locale/locales.php");
 		$required = Locales::get_required_locales();
 		$installed = Locales::get_installed_locales();
 		$missing = array();

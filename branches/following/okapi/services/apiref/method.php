@@ -4,6 +4,7 @@ namespace okapi\services\apiref\method;
 
 use Exception;
 use okapi\Okapi;
+use okapi\Settings;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -19,21 +20,22 @@ class WebService
 			'min_auth_level' => 0
 		);
 	}
-	
+
 	private static function arg_desc($arg_node)
 	{
 		$attrs = $arg_node->attributes();
 		return array(
 			'name' => (string)$attrs['name'],
 			'is_required' => $arg_node->getName() == 'req',
+			'is_deprecated' => (isset($attrs['class']) && (strpos($attrs['class'], 'deprecated') !== false)),
 			'class' => 'public',
 			'description' =>
 				(isset($attrs['default']) ? ("<p>Default value: <b>".$attrs['default']."</b></p>") : "").
 				self::get_inner_xml($arg_node),
-			
+
 		);
 	}
-	
+
 	private static function get_inner_xml($node)
 	{
 		$s = $node->asXML();
@@ -41,7 +43,7 @@ class WebService
 		$length = strlen($s) - $start - (3 + strlen($node->getName()));
 		return substr($s, $start, $length);
 	}
-	
+
 	public static function call(OkapiRequest $request)
 	{
 		$methodname = $request->get_parameter('name');
@@ -59,7 +61,7 @@ class WebService
 		$result = array(
 			'name' => $methodname,
 			'short_name' => end($exploded),
-			'ref_url' => $GLOBALS['absolute_server_URI']."okapi/$methodname.html",
+			'ref_url' => Settings::get('SITE_URL')."okapi/$methodname.html",
 			'auth_options' => array(
 				'min_auth_level' => $options['min_auth_level'],
 				'oauth_consumer' => $options['min_auth_level'] >= 2,
@@ -93,12 +95,26 @@ class WebService
 			$referenced_methodname = $attrs['method'];
 			$referenced_method_info = OkapiServiceRunner::call('services/apiref/method',
 				new OkapiInternalRequest(new OkapiInternalConsumer(), null, array('name' => $referenced_methodname)));
+			$include_list = isset($attrs['params']) ? explode("|", $attrs['params']) : null;
+			$exclude_list = isset($attrs['except']) ? explode("|", $attrs['except']) : array();
 			foreach ($referenced_method_info['arguments'] as $arg)
 			{
 				if ($arg['class'] == 'common-formatting')
 					continue;
-				$arg['description'] = "<i>Inherited from <a href='".$referenced_method_info['ref_url'].
-					"'>".$referenced_method_info['name']."</a> method.</i>";
+				if (($include_list === null) && (count($exclude_list) == 0))
+				{
+					$arg['description'] = "<i>Inherited from <a href='".$referenced_method_info['ref_url'].
+						"'>".$referenced_method_info['name']."</a> method.</i>";
+				}
+				elseif (
+					(($include_list === null) || in_array($arg['name'], $include_list))
+					&& (!in_array($arg['name'], $exclude_list))
+				) {
+					$arg['description'] = "<i>Same as in the <a href='".$referenced_method_info['ref_url'].
+						"'>".$referenced_method_info['name']."</a> method.</i>";
+				} else {
+					continue;
+				}
 				$arg['class'] = 'inherited';
 				$result['arguments'][] = $arg;
 			}
@@ -108,16 +124,21 @@ class WebService
 			$result['arguments'][] = array(
 				'name' => 'format',
 				'is_required' => false,
+				'is_deprecated' => false,
 				'class' => 'common-formatting',
-				'description' => "<i>Standard <a href='".$GLOBALS['absolute_server_URI']."okapi/introduction.html#common-formatting'>common formatting</a> argument.</i>"
+				'description' => "<i>Standard <a href='".Settings::get('SITE_URL')."okapi/introduction.html#common-formatting'>common formatting</a> argument.</i>"
 			);
 			$result['arguments'][] = array(
 				'name' => 'callback',
 				'is_required' => false,
+				'is_deprecated' => false,
 				'class' => 'common-formatting',
-				'description' => "<i>Standard <a href='".$GLOBALS['absolute_server_URI']."okapi/introduction.html#common-formatting'>common formatting</a> argument.</i>"
+				'description' => "<i>Standard <a href='".Settings::get('SITE_URL')."okapi/introduction.html#common-formatting'>common formatting</a> argument.</i>"
 			);
 		}
+		foreach ($result['arguments'] as &$arg_ref)
+			if ($arg_ref['is_deprecated'])
+				$arg_ref['class'] .= " deprecated";
 		if (!$docs->returns)
 			throw new Exception("Missing <returns> element in the $methodname.xml file. ".
 				"If your method does not return anything, you should document in nonetheless.");

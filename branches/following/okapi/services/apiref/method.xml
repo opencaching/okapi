@@ -27,10 +27,10 @@
 				<ul>
 					<li><b>min_auth_level</b> - integer, in range from 0 to 3,
 						see Introduction page.</li>
-					<li><b>oauth_consumer</b> - "required" when min_auth_level >= 2,
-						"optional" otherwise,</li>
-					<li><b>oauth_token</b> - "required" when min_auth_level == 3,
-						"optional" otherwise.</li>
+					<li><b>oauth_consumer</b> - true, if requests are required to be signed
+						with OAuth Consumer Key (min_auth_level >= 2),</li>
+					<li><b>oauth_token</b> - true, if requests are required to include an
+						OAuth Token (min_auth_level == 3).</li>
 				</ul>
 			</li>
 			<li><b>arguments</b> - list of dictionaries, describes method
@@ -38,11 +38,12 @@
 				<ul>
 					<li><b>name</b> - name of an argument,</li>
 					<li><b>is_required</b> - boolean, true if the argument is required,</li>
+					<li><b>is_deprecated</b> - boolean, true if the argument is deprecated,</li>
 					<li><b>description</b> - HTML-formatted description of an argument.</li>
 					<li>
-						<p><b>class</b> - one of the following values: <i>public</i>,
-						<i>inherited</i> or <i>common-formatting</i> (other values might be
-						introduced in future).</p>
+						<p><b>class</b> - space separated list of the following values: <i>public</i>,
+						<i>inherited</i>, <i>common-formatting</i> and <i>deprecated</i>
+						(other values might be introduced in future).</p>
 						<p>Currently these values do not mean anything specific. They are
 						used for different coloring/styling in the documentation pages.</p>
 					</li>
