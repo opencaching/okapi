@@ -731,33 +731,47 @@ class WebService
 						and status = 1
 					order by cache_id, stage, `desc`
 				");
+				$wpt_format = "%s-%d";
 			}
 			else
 			{
 				# OCDE uses 'coordinates' table (with type=1) to store additional waypoints.
 				# All waypoints are are public.
-
-				$rs = Db::query("
-					select
-						cache_id,
-						null as stage,
-						latitude, longitude,
-						description as `desc`,
-						case subtype
-							when 1 then 'Parking Area'
-							else 'Flag, Green'
-						end as sym
+				
+				$waypoints = Db::select_value("
+					select count(*)
 					from coordinates
 					where
 						type = 1
 						and cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
-					order by cache_id, `desc`
+				");
+				$wpt_format = "%s-%0" . (floor(log10(count($waypoints))) + 1) . "d";
+				
+				$rs = Db::query("
+					select
+						cache_id,
+						@stage := @stage + 1 as stage,
+						latitude, longitude,
+						description as `desc`,
+						case subtype
+							when 1 then 'Parking Area'
+							when 3 then 'Flag, Blue'
+							when 4 then 'Circle with X'
+							when 5 then 'Diamond, Green'
+							else 'Flag, Green'
+						end as sym
+					from coordinates
+					join (select @stage := 0) s
+					where
+						type = 1
+						and cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+					order by cache_id, id, `desc`
 				");
 			}
 			while ($row = mysql_fetch_assoc($rs))
 			{
 				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
-					'name' => $cacheid2wptcode[$row['cache_id']]."-".($row['stage'] ? $row['stage'] : "wpt"),
+					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $row['stage']),
 					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
 					'sym' => $row['sym'],
 					'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
