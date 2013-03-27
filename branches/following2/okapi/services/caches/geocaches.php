@@ -709,6 +709,8 @@ class WebService
 		{
 			foreach ($results as &$result_ref)
 				$result_ref['alt_wpts'] = array();
+			$cachelist = implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)));
+
 			if (Settings::get('OC_BRANCH') == 'oc.pl')
 			{
 				# OCPL uses 'waypoints' table to store additional waypoints. OCPL also have
@@ -716,6 +718,13 @@ class WebService
 				# of a multicache). Such hidden waypoints are not exposed by OKAPI. A stage
 				# fields is used for ordering and naming.
 
+				$waypoints = Db::select_value("
+					select count(*)
+					from waypoints
+					where
+						cache_id in ('".$cachelist."')
+						and status = 1
+				");
 				$rs = Db::query("
 					select
 						cache_id, stage, latitude, longitude, `desc`,
@@ -727,7 +736,7 @@ class WebService
 						end as sym
 					from waypoints
 					where
-						cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+						cache_id in ('".$cachelist."')
 						and status = 1
 					order by cache_id, stage, `desc`
 				");
@@ -743,10 +752,8 @@ class WebService
 					from coordinates
 					where
 						type = 1
-						and cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+						and cache_id in ('".$cachelist."')
 				");
-				$wpt_format = "%s-%0" . (floor(log10(count($waypoints))) + 1) . "d";
-				
 				$rs = Db::query("
 					select
 						cache_id,
@@ -764,10 +771,11 @@ class WebService
 					join (select @stage := 0) s
 					where
 						type = 1
-						and cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+						and cache_id in ('".$cachelist."')
 					order by cache_id, id, `desc`
 				");
 			}
+			$wpt_format = "%s-%0" . ($waypoints>0 ? (floor(log10(count($waypoints))) + 1) : "") . "d";
 			while ($row = mysql_fetch_assoc($rs))
 			{
 				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
