@@ -689,7 +689,7 @@ class OkapiHttpResponse
 		if ($try_gzip && is_string($this->body))
 		{
 			header("Content-Encoding: gzip");
-			$gzipped = gzencode($this->body, 5, true);
+			$gzipped = gzencode($this->body, 5);
 			header("Content-Length: ".strlen($gzipped));
 			print $gzipped;
 		}
