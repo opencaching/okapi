@@ -23,12 +23,14 @@
 		order of preference in which language will be chosen for GPX entities.</p>
 	</opt>
 	<opt name='ns_ground' default='false'>
-		Boolean. If <b>true</b> then response will include
+		<p>Boolean. If <b>true</b> then response will include
 		<a href='http://www.groundspeak.com/cache/1/0/cache.xsd'>Groundspeak's
 		GPX extension</a>. This namespace declares an extra &lt;cache&gt; element
 		used by <a href='http://www.geocaching.com/'>geocaching.com</a> and <b>many others</b>.
 		This namespace was initially associatied with geocaching.com, but now seems to
-		be used in every geocaching GPX file. You probably want to have it.
+		be used in every geocaching GPX file. You probably want to have it.</p>
+		<p>Groundspeak GPX version 1.0.1 is used if <b>attrs=gs:attributes</b> is set,
+		version 1.0 otherwise.</p>
 	</opt>
 	<opt name='ns_gsak' default='false'>
 		<p>Boolean. If <b>true</b> then response will include
@@ -70,9 +72,10 @@
 		<ul>
 			<li><b>none</b> - no attributes will be included,</li>
 			<li><b>desc:text</b> - attributes will be listed (in plain-text) within the cache description,</li>
+			<li><b>gs:attributes</b> - attributes will be converted to groundspeak:attribute elements.</li>
 			<li><b>ox:tags</b> - attributes will be converted to Garmin's ox:tag elements.</li>
 		</ul>
-		<p>Note: When using "desc:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
+		<p>Note: When using "desc:" or "gs:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
 		<p>Note: When using "ox:" mode, remember to set <b>ns_ox</b> to <b>true</b>.</p>
 	</opt>
 	<opt name='trackables' default='none'>

@@ -28,7 +28,7 @@ class WebService
 		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'is_found',
 		'is_not_found', 'founds', 'notfounds', 'size', 'size2', 'oxsize', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description',
-		'descriptions', 'hint', 'hints', 'images', 'attrnames', 'latest_logs',
+		'descriptions', 'hint', 'hints', 'images', 'attrnames', 'gs_attributes', 'latest_logs',
 		'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
 		'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
 		'is_ignored', 'willattends', 'country', 'state');
@@ -262,6 +262,7 @@ class WebService
 					case 'hints': /* handled separately */ break;
 					case 'images': /* handled separately */ break;
 					case 'attrnames': /* handled separately */ break;
+					case 'gs_attributes': /* handled separately */ break;
 					case 'latest_logs': /* handled separately */ break;
 					case 'my_notes': /* handles separately */ break;
 					case 'trackables_count': /* handled separately */ break;
@@ -509,6 +510,27 @@ class WebService
 			}
 		}
 
+		# Groundspeak Attributes
+
+		if (in_array('gs_attributes', $fields) && Db::field_exists('cache_attrib', 'gc_id'))
+		{
+			foreach ($results as &$result_ref)
+				$result_ref['gs_attributes'] = array();
+
+			$rs = Db::query("
+				select cache_id, gc_id, gc_inc, gc_name
+				from caches_attributes
+				inner join cache_attrib on cache_attrib.id = caches_attributes.attrib_id
+				where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+			");
+			while ($row = mysql_fetch_assoc($rs))
+			{
+				$cache_code = $cacheid2wptcode[$row['cache_id']];
+				$results[$cache_code]['gs_attributes'][] =
+					array('id' => $row['gc_id'], 'inc' => $row['gc_inc'], 'name' => $row['gc_name']);
+			}
+		}
+
 		# Latest log entries.
 
 		if (in_array('latest_logs', $fields))
@@ -740,7 +762,6 @@ class WebService
 						and status = 1
 					order by cache_id, stage, `desc`
 				");
-				$wpt_format = "%s-%d";
 			}
 			else
 			{

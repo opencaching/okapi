@@ -12,7 +12,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="
 http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd
 http://www.opencaching.com/xmlschemas/opencaching/1/0 http://www.opencaching.com/xmlschemas/opencaching/1/0/opencaching.xsd
-http://www.groundspeak.com/cache/1/0 http://www.groundspeak.com/cache/1/0/cache.xsd
+http://www.groundspeak.com/cache/1/0<? if ($vars['attrs']=='gs:attributes') echo '/1'; ?> http://www.groundspeak.com/cache/1/0<? if ($vars['attrs']=='gs:attributes') echo '/1'; ?>/cache.xsd
 http://geocaching.com.au/geocache/1 http://geocaching.com.au/geocache/1/geocache.xsd
 http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 ">
@@ -105,6 +105,13 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 						<? } ?>
 					</groundspeak:long_description>
 					<groundspeak:encoded_hints><?= Okapi::xmlescape($c['hint']) ?></groundspeak:encoded_hints>
+					<? if ($vars['attrs'] == 'gs:attributes') { /* Does user want us to include gs attributes? */ ?>
+						<groundspeak:attributes>
+							<? foreach ($c['gs_attributes'] as $attrib) { ?>
+								<groundspeak:attribute id="<?= $attrib['id'] ?>" inc="<?= $attrib['inc'] ?>"><?= Okapi::xmlescape($attrib['name']) ?></groundspeak:attribute>
+							<? } ?>
+						</groundspeak:attributes>
+					<? } ?>
 					<? if ($vars['latest_logs']) { /* Does user want us to include latest log entries? */ ?>
 						<groundspeak:logs>
 							<? foreach ($c['latest_logs'] as $log) { ?>

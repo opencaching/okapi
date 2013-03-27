@@ -90,7 +90,7 @@ class WebService
 
 		$tmp = $request->get_parameter('attrs');
 		if (!$tmp) $tmp = 'desc:text';
-		if (!in_array($tmp, array('none', 'desc:text', 'ox:tags')))
+		if (!in_array($tmp, array('none', 'desc:text', 'gs:attributes', 'ox:tags')))
 			throw new InvalidParam('attrs', "'$tmp'");
 		$vars['attrs'] = $tmp;
 
@@ -119,7 +119,7 @@ class WebService
 		if ($vars['images'] != 'none')
 			$fields .= "|images";
 		if ($vars['attrs'] != 'none')
-			$fields .= "|attrnames";
+			$fields .= "|attrnames|gs_attributes";
 		if ($vars['trackables'] == 'desc:list')
 			$fields .= "|trackables";
 		elseif ($vars['trackables'] == 'desc:count')
