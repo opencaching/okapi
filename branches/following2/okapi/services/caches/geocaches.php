@@ -473,7 +473,7 @@ class WebService
 				$results[$cache_code]['images'][] = array(
 					'uuid' => $row['uuid'],
 					'url' => $row['url'],
-					'thumb_url' => $row['thumb_url'] ? $row['thumb_url'] : null,
+					'thumb_url' => Settings::get('SITE_URL') . 'thumbs.php?uuid=' . $row['uuid'],
 					'caption' => $row['title'],
 					'unique_caption' => self::get_unique_caption($row['title']),
 					'is_spoiler' => ($row['spoiler'] ? true : false),
