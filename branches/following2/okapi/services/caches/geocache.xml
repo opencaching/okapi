@@ -191,6 +191,22 @@
 				between all installations.</p>
 			</li>
 			<li>
+				<p><b>gs_attributes</b> - list of dictionaries, each dictionary represents one
+				attribute of the cache; each dictionary has the following structure:</p>
+				<ul>
+					<li><b>id</b> - groundspeak ID of the attribute if applicable;
+					an installation-dependend attribute ID for OC-specific attributes</li>
+					<li><b>inc</b> - <b>1</b> if the groundspeak attribute is included, e.g.
+					"Recommended at night"; <b>0</b> if the groundspeak attribute is excluded (negated),
+					e.g. <em>not</em> "Recommended at night"</li>
+					<li><b>name</b> - the English groundspeak attribute name if applicable;
+					an installation-dependend English name for OC-specific attributes.</li>
+				</ul>
+				<p>Note: the names may change and may be translated according to langpref in the future.
+				<b>gs_attributes</b> is not supported by all OC installations. If not supported, an
+				empty list is returned.</p>
+			</li>
+			<li>
 				<p><b>latest_logs</b> - a couple of latest log entries in the cache.
 				The format is the same as the one returned by the services/logs/logs method.</p>
 				<p>Notice: The number of logs returned can be set with the <b>lpc</b> option.</p>
