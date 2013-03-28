@@ -10,16 +10,16 @@
 	If you're an app developer, then you should NOT read this file (it is not
 	guaranteed to stay backward-compatible!). Use OKAPI's methods instead.
 	-->
-	<attr okapi_attr_id="dogs" groundspeak_id="1">
+	<attr okapi_attr_id="dogs" groundspeak_id="1" groundspeak_inc="true">
 		<internal_id site_url="http://opencaching.pl/">3</internal_id>
 		<internal_id site_url="http://www.opencaching.us/">5</internal_id>
-		<name lang='en'>
-			<yes>Dogs Allowed</yes>
-			<no>Dogs Not Allowed</no>
-		</name>
-		<name lang='pl'>
-			<yes>Można zabrać psa</yes>
-			<no>Nie można zabrać psa</no>
-		</name>
+		<name lang='en'>Dogs Allowed</name>
+		<name lang='pl'>Można zabrać psa</name>
+	</attr>
+	<attr okapi_attr_id="no-dogs" groundspeak_id="1" groundspeak_inc="false">
+		<internal_id site_url="http://opencaching.pl/">4</internal_id>
+		<internal_id site_url="http://www.opencaching.us/">6</internal_id>
+		<name lang='en'>Dogs Not Allowed</name>
+		<name lang='pl'>Nie można zabrać psa</name>
 	</attr>
 </attributes>
