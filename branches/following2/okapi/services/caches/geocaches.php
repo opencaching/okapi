@@ -512,22 +512,25 @@ class WebService
 
 		# Groundspeak Attributes
 
-		if (in_array('gs_attributes', $fields) && Db::field_exists('cache_attrib', 'gc_id'))
+		if (in_array('gs_attributes', $fields))
 		{
 			foreach ($results as &$result_ref)
 				$result_ref['gs_attributes'] = array();
 
-			$rs = Db::query("
-				select cache_id, gc_id, gc_inc, gc_name
-				from caches_attributes
-				inner join cache_attrib on cache_attrib.id = caches_attributes.attrib_id
-				where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
-			");
-			while ($row = mysql_fetch_assoc($rs))
-			{
-				$cache_code = $cacheid2wptcode[$row['cache_id']];
-				$results[$cache_code]['gs_attributes'][] =
-					array('id' => $row['gc_id'], 'inc' => $row['gc_inc'], 'name' => $row['gc_name']);
+ 			if (Db::field_exists('cache_attrib', 'gc_id'))
+ 			{
+				$rs = Db::query("
+					select cache_id, gc_id, gc_inc, gc_name
+					from caches_attributes
+					inner join cache_attrib on cache_attrib.id = caches_attributes.attrib_id
+					where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
+				");
+				while ($row = mysql_fetch_assoc($rs))
+				{
+					$cache_code = $cacheid2wptcode[$row['cache_id']];
+					$results[$cache_code]['gs_attributes'][] =
+						array('id' => $row['gc_id'], 'inc' => $row['gc_inc'], 'name' => $row['gc_name']);
+				}
 			}
 		}
 
