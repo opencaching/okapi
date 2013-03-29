@@ -539,13 +539,13 @@ class TileTreeUpdater extends Cron5Job
 						if (!$response['more'])
 							break;
 					} catch (BadRequest $e) {
-						# Invalid 'since' parameter? May happen whne crontab was
+						# Invalid 'since' parameter? May happen when crontab was
 						# not working for more than 10 days. Or, just after OKAPI
 						# is installed (and this is the first time this cronjob
 						# if being run).
 
 						$mail_admins = ($tiletree_revision > 0);
-						\okapi\services\caches\map\ReplicateListener::reset($mail_admins);
+						\okapi\services\caches\map\ReplicateListener::reset();
 						Okapi::set_var('clog_followup_revision', $current_clog_revision);
 						break;
 					}
