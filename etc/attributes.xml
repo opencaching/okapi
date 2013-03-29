@@ -166,7 +166,7 @@
 	</attr>
 	<attr okapi_attr_id="historic">
 		<opencaching site_url="http://opencaching.pl/" id="61" />
-		<name lang="en">Historic place</name>
+		<name lang="en">Historic site</name>
 		<name lang="pl">Miejsce historyczne</name>
 		<desc lang="pl">
 			W sąsiedztwie miejsca historycznego - zamku, pałacu, pola bitwy,
