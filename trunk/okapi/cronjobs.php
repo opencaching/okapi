@@ -27,6 +27,7 @@ use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\services\replicate\ReplicateCommon;
+use okapi\services\attrs\AttrHelper;
 
 class CronJobController
 {
@@ -50,6 +51,7 @@ class CronJobController
 				new FulldumpGeneratorJob(),
 				new TileTreeUpdater(),
 				new SearchSetsCleanerJob(),
+				new AttrsRefresherJob(),
 			);
 			foreach ($cache as $cronjob)
 				if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
@@ -773,3 +775,17 @@ class LocaleChecker extends Cron5Job
 	}
 }
 
+/**
+ * Once every hour, update the official cache attributes listing.
+ *
+ * WRTODO: Make it 12 hours later.
+ */
+class AttrsRefresherJob extends Cron5Job
+{
+	public function get_period() { return 3600; }
+	public function execute()
+	{
+		require_once($GLOBALS['rootpath']."okapi/services/attrs/attr_helper.inc.php");
+		AttrHelper::refresh_if_stale();
+	}
+}
