@@ -112,7 +112,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 									<groundspeak:date><?= $log['date'] ?></groundspeak:date>
 									<groundspeak:type><?= $log['type'] ?></groundspeak:type>
 									<groundspeak:finder id="<?= $vars['user_uuid_to_internal_id'][$log['user']['uuid']] ?>"><?= Okapi::xmlescape($log['user']['username']) ?></groundspeak:finder>
-									<groundspeak:text encoded="False"><?= Okapi::xmlescape($log['comment']) ?></groundspeak:text>
+									<groundspeak:text encoded="False"><?= $log['was_recommended'] ? "(*) ": "" ?><?= Okapi::xmlescape($log['comment']) ?></groundspeak:text>
 								</groundspeak:log>
 							<? } ?>
 						</groundspeak:logs>
