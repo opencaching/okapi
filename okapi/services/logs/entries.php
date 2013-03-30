@@ -71,7 +71,7 @@ class WebService
 				and c.status in (1,2,3)
 		");
 		$results = array();
-		$log_uuids = array();
+		$log_id2uuid = array(); /* Maps logs' internal_ids to uuids */
 		while ($row = mysql_fetch_assoc($rs))
 		{
 			$results[$row['uuid']] = array(
@@ -89,7 +89,7 @@ class WebService
 				'images' => array(),
 				'internal_id' => $row['id'],
 			);
-			$log_uuids[$row['id']] = $row['uuid'];
+			$log_id2uuid[$row['id']] = $row['uuid'];
 		}
 		mysql_free_result($rs);
 
@@ -102,14 +102,14 @@ class WebService
 				from pictures
 				where
 					object_type = 1
-					and object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($log_uuids)))."')
+					and object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($log_id2uuid)))."')
 					and display = 1   /* currently is always 1 for logpix */
 					and unknown_format = 0
 				order by object_id, last_modified
 			");
 			while ($row = mysql_fetch_assoc($rs))
 			{
-				$results[$log_uuids[$row['object_id']]]['images'][] =
+				$results[$log_id2uuid[$row['object_id']]]['images'][] =
 					array(
 						'uuid' => $row['uuid'],
 						'url' => $row['url'],
