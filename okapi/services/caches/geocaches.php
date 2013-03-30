@@ -65,7 +65,13 @@ class WebService
 
 		# Currently, the "owner" field needs to be included whenever the "description" field is.
 		# That's a little ugly. Grep for "issue 178" below for more insight on this.
-		if ((in_array('description', $fields) || in_array('descriptions', $fields)) && !in_array('owner', $fields))
+		if (
+			(
+				in_array('description', $fields) || in_array('descriptions', $fields)
+				|| in_array('hint', $fields) || in_array('hints', $fields)
+			)
+			&& !in_array('owner', $fields)
+		)
 			$fields[] = "owner";
 
 		$log_fields = $request->get_parameter('log_fields');
