@@ -17,7 +17,8 @@
 		<p>Text to be submitted with the log entry.</p>
 	</opt>
 	<opt name='comment_format' default='(unspecified!)'>
-		<p>Indicates the format of your <b>comment</b>. Two values allowed: <b>html</b> or <b>plaintext</b>.</p>
+		<p>Indicates the format of your <b>comment</b>. It can have the value <b>plaintext</b>
+		on all OC nodes. Some nodes also allow the value <b>html</b>.</p>
 		<p><b>Important note:</b> Due to <a href='http://code.google.com/p/opencaching-api/issues/detail?id=124'>some issues</a>,
 		this switch is currently completelly ignored (!). However, we still advise you to use it,
 		for future-compatibility.</p>

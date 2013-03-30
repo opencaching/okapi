@@ -58,7 +58,10 @@ class WebService
 		$comment_format = $request->get_parameter('comment_format');
 		if ($comment_format)
 		{
-			if (!in_array($comment_format, array('html', 'plaintext')))
+			$allowed_comment_formats = array('plaintext');
+			if (Settings::get('OC_BRANCH') == 'oc.pl')
+				$allowed_comment_formats[] = 'html';
+			if (!in_array($comment_format, $allowed_comment_formats))
 				throw new InvalidParam('comment_format', $comment_format);
 		}
 
