@@ -250,8 +250,9 @@
 	
 	<attr okapi_attr_id="other-type">
 		<!-- This looks redundant to the "unknown type" cache type, but
-		     some owners use "unknown" to hide the cache type, while this
-		     attribute says that is none of the predefined types. -->
+		     it is used vor special variants of basic cache types - e.g. a
+		     multicache where you won't just find a box at the final but have
+				 to meet an additional challenge there. -->
 		<opencaching site_url="http://opencaching.de/" id="57" />
 		<name lang="en">Other cache type</name>
 		<desc lang="en">
@@ -928,24 +929,53 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="nightcache">
+	<attr okapi_attr_id="night-recommended">
 		<!-- GS has "night cache" (52) and "recommended at night" (14).
          night cache = can normally ONLY be done at night, reflectors etc.
          recommended at night = can well be done at night -->
-		<groundspeak id="52" inc="true" name="Night Cache" />
+		<groundspeak id="14" inc="true" name="Recommended at night" />
 		<opencaching site_url="http://opencaching.pl/" id="91" />
-		<opencaching site_url="http://opencaching.de/" id="1" />
-		<name lang="en">Night Cache</name>  <!-- changed from 'Recommended by night' to 'Night Cache' -->
-		<desc lang="en">
-			This geocache can be found at night only - it is a so-called night cache.
-			There may be reflectors which have to be flashlighted and will point 
-			to the hiding place, or other special night-caching mechanisms.
-		</desc>
+		<name lang="en">Recommended by night</name>
 		<name lang="pl">Zalecane szukanie nocą</name>
 		<desc lang="pl">
 			Aby znaleźć skrzynkę zalecane jest poszukiwanie jej nocą, ze
 			względu na miejsce ukrycia lub użyte elementy odblaskowe, których
 			oświetlenie umożliwia odnalezienie skrzynki.
+		</desc>
+		<name lang="de">am besten nachts findbar</name>
+	</attr>
+	
+	<attr okapi_attr_id="nightcache">
+		<!-- GS has "night cache" (52) and "recommended at night" (14).
+         night cache = can normally ONLY be done at night, reflectors etc.
+         recommended at night = can well be done at night -->
+		<groundspeak id="52" inc="true" name="Night Cache" />
+		<opencaching site_url="http://opencaching.de/" id="1" />
+		<name lang="en">Only at night</name>
+		<desc lang="en">
+			This geocache can be found at night only - it is a so-called night cache.
+			There may be reflectors which have to be flashlighted and will point 
+			to the hiding place, or other special night-caching mechanisms.
+		</desc>
+		<name lang="de">nur bei Nacht</name>
+		<desc lang="de">
+			Der Geocache kann nur bei Nacht gelöst werden und wird deshalb Nachtcache
+			genannt. Zum Beispiel mössen Reflektoren mit einer Taschenlampe 
+			angeleuchtet werden, die dann den Weg zum Versteck zeigen.
+		</desc>
+		<name lang="es">Sólo por la noche</name>
+		<desc lang="es">
+			Esta cache se puede encontrar solamente por la noche - tienes que
+			considerar cache notturna. Puede haber placas reflectantes que
+			brillaran y te llevaran al cache, o otros mecanismo especiales para
+			caches nocturnos.
+		</desc>
+		<name lang="it">Solo di notte</name>
+		<desc lang="it">
+			Questa cache può essere trovata solo di notte - è una cosiddetta
+			cache notturna. Ci possono essere targhette riflettenti che devono
+			essere illuminate e ti conducono al nascondiglio, o altri speciali
+			meccanismi di caching notturno.
 		</desc>
 	</attr>
 	
@@ -1694,13 +1724,13 @@
 	<attr okapi_attr_id="children6">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
 		<opencaching site_url="http://opencaching.pl/" id="41" />
-		<name lang="en">Kid friendly (6+ yo)</name>
+		<name lang="en">Kid friendly (up to 6 yo)</name>
 		<name lang="pl">Można zabrać dzieci</name>
 		<desc lang="pl">
 			Jej poszukiwanie jest przyjemne, bezpieczne i można bez obaw
 			wybrać się z dziećmi poniżej 6 roku życia.
 		</desc>
-		<desc lang="de">für Kinder ab 6 Jahren geeignet</desc>
+		<desc lang="de">für Kinder bis 6 Jahre geeignet</desc>
 	</attr>
 	
 	<attr okapi_attr_id="children10">
