@@ -466,15 +466,20 @@ class WebService
 		{
 			foreach ($results as &$result_ref)
 				$result_ref['images'] = array();
+
+			if (Db::field_exists('pictures', 'mappreview'))
+				$preview_field = "mappreview";
+			else
+				$preview_field = "null";
 			$rs = Db::query("
-				select object_id, uuid, url, title, spoiler
+				select object_id, uuid, url, title, spoiler, ".$preview_field." as preview
 				from pictures
 				where
 					object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
 					and display = 1
 					and object_type = 2
 					and unknown_format = 0
-				order by object_id, last_modified
+				order by object_id, date_created
 			");
 			$prev_cache_code = null;
 			while ($row = mysql_fetch_assoc($rs))
@@ -493,6 +498,7 @@ class WebService
 					'caption' => $row['title'],
 					'unique_caption' => self::get_unique_caption($row['title']),
 					'is_spoiler' => ($row['spoiler'] ? true : false),
+					'is_preview' => is_null($row['preview']) ? null : ($row['preview'] != 0),
 				);
 			}
 		}
