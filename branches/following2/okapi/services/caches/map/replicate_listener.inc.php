@@ -45,24 +45,8 @@ class ReplicateListener
 	{
 		# This will be called when there are "too many" entries in the changelog
 		# and the replicate module thinks it better to just reset the entire TileTree.
-		# For the first hours after such reset maps may work very slow!
+		# For the first hours after such reset maps may work a little slower.
 
-		if ($mail_admins)
-		{
-			Okapi::mail_admins("OKAPI TileMap database reset",
-				"Hello,\n\n".
-				"OKAPI's 'replicate' module detected a big database update. As result\n".
-				"of this, OKAPI decided to reset the TileMap cache. This may\n".
-				"temporarily influence TileMap performance. The map may work much\n".
-				"slower during the next few hours or days, while the cache is being\n".
-				"rebuilt.\n\n".
-				"If this happens frequently, please contact OKAPI developers. It may\n".
-				"indicate a bug in OKAPI's 'replicate' module or cronjob settings.\n\n".
-				"Thanks!\n\n".
-				"P.S. This may also happen if you didn't run OKAPI on this server\n".
-				"for a while (your server was down or OKAPI didn't work properly)."
-			);
-		}
 		Db::execute("delete from okapi_tile_status");
 		Db::execute("delete from okapi_tile_caches");
 	}
@@ -200,35 +184,38 @@ class ReplicateListener
 				and y = '".mysql_real_escape_string($y)."'
 			)";
 		}
-		Db::execute("
-			replace into okapi_tile_caches (
-				z, x, y, cache_id, z21x, z21y, status, type, rating, flags
-			)
-			select
-				z, x, y,
-				'".mysql_real_escape_string($row[0])."',
-				'".mysql_real_escape_string($row[1])."',
-				'".mysql_real_escape_string($row[2])."',
-				'".mysql_real_escape_string($row[3])."',
-				'".mysql_real_escape_string($row[4])."',
-				".(($row[5] === null) ? "null" : $row[5]).",
-				'".mysql_real_escape_string($row[6])."'
-			from okapi_tile_status
-			where
-				(".implode(" or ", $alternatives).")
-				and status in (1,2)
-		");
+		if (count($alternatives) > 0)
+		{
+			Db::execute("
+				replace into okapi_tile_caches (
+					z, x, y, cache_id, z21x, z21y, status, type, rating, flags
+				)
+				select
+					z, x, y,
+					'".mysql_real_escape_string($row[0])."',
+					'".mysql_real_escape_string($row[1])."',
+					'".mysql_real_escape_string($row[2])."',
+					'".mysql_real_escape_string($row[3])."',
+					'".mysql_real_escape_string($row[4])."',
+					".(($row[5] === null) ? "null" : $row[5]).",
+					'".mysql_real_escape_string($row[6])."'
+				from okapi_tile_status
+				where
+					(".implode(" or ", $alternatives).")
+					and status in (1,2)
+			");
 
-		# We might have just filled some empty tiles (status 1) with data.
-		# We need to update their status to 2.
+			# We might have just filled some empty tiles (status 1) with data.
+			# We need to update their status to 2.
 
-		Db::execute("
-			update okapi_tile_status
-			set status=2
-			where
-				(".implode(" or ", $alternatives).")
-				and status=1
-		");
+			Db::execute("
+				update okapi_tile_status
+				set status=2
+				where
+					(".implode(" or ", $alternatives).")
+					and status=1
+			");
+		}
 
 		# And that's all. That should do the trick.
 	}
