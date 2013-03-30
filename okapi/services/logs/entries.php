@@ -105,7 +105,7 @@ class WebService
 					and object_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($log_id2uuid)))."')
 					and display = 1   /* currently is always 1 for logpix */
 					and unknown_format = 0
-				order by object_id, last_modified
+				order by date_created
 			");
 			while ($row = mysql_fetch_assoc($rs))
 			{
