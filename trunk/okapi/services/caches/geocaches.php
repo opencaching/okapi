@@ -929,10 +929,10 @@ class WebService
 			$note .= sprintf(
 				_(
 					"<em>&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, ".
-					"<a href='http://creativecommons.org/licenses/by-nc-nd/3.0/en/'>CC-BY-NC-ND</a>, ".
-					"as of Jan 15, 2013; all log entries &copy; their authors</em>"
+					"<a href='http://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, ".
+					"as of %s; all log entries &copy; their authors</em>"
 				),
-				$owner['profile_url'], $owner['username'], $site_url, $site_name
+				$owner['profile_url'], $owner['username'], $cache_url, $site_name, strftime('%x')
 			);
 		}
 		else
