@@ -15,6 +15,12 @@ use okapi\Settings;
 use okapi\services\caches\search\SearchAssistant;
 use okapi\BadRequest;
 
+if (Settings::get('OC_BRANCH') == 'oc.de')
+{
+  # into global namespace, as HTMLPurifier is not namespace-aware
+  require_once $GLOBALS['rootpath'] . '../lib/htmlpurifier-4.2.0/library/HTMLPurifier.auto.php';
+}
+
 
 /**
  * This exception is thrown by WebService::_call method, when error is detected in
@@ -60,6 +66,13 @@ class WebService
 		{
 			if (!in_array($comment_format, array('html', 'plaintext')))
 				throw new InvalidParam('comment_format', $comment_format);
+		}
+		else
+		{
+			if (Settings::get('OC_BRANCH') == 'oc.de')
+				$comment_format = 'html';
+			else
+				$comment_format = null;
 		}
 
 		$tmp = $request->get_parameter('when');
@@ -150,19 +163,36 @@ class WebService
 				throw new CannotPublishException(_("Invalid password!"));
 		}
 
-		# Very weird part (as usual). OC stores HTML-lized comments in the database
-		# (it doesn't really matter if 'text_html' field is set to FALSE). OKAPI must
-		# save it in HTML either way. However, escaping plain-text doesn't work.
-		# If we put "&lt;b&gt;" in, it still gets converted to "<b>" before display!
-		# NONE of this process is documented. There doesn't seem to be ANY way to force
-		# OCPL to treat a string as either plain-text nor HTML. It's always something
-		# in between! In other words, we cannot guarantee how it gets displayed in
-		# the end. Since text_html=0 doesn't add <br/>s on its own, we can only add
-		# proper <br/>s and hope it's okay. We will remove the original $comment
-		# variable from our namespace and act on the "pseudoencoded" one.
+		if (Settings::get('OC_BRANCH') == 'oc.de')
+		{
+			# TODO: variable names need adjustment - oc.de comment is not pseudoencoded
+			if ($comment_format == 'plaintext')
+			{
+				$PSEUDOENCODED_comment = htmlspecialchars($comment, ENT_QUOTES);
+				$PSEUDOENCODED_comment = nl2br($PSEUDOENCODED_comment);
+			}
+			else
+			{
+				$purifier = new \HTMLPurifier();
+				$PSEUDOENCODED_comment = $purifier->purify($comment);
+			}
+		}
+		else
+		{
+			# Very weird part (as usual). OC stores HTML-lized comments in the database
+			# (it doesn't really matter if 'text_html' field is set to FALSE). OKAPI must
+			# save it in HTML either way. However, escaping plain-text doesn't work.
+			# If we put "&lt;b&gt;" in, it still gets converted to "<b>" before display!
+			# NONE of this process is documented. There doesn't seem to be ANY way to force
+			# OCPL to treat a string as either plain-text nor HTML. It's always something
+			# in between! In other words, we cannot guarantee how it gets displayed in
+			# the end. Since text_html=0 doesn't add <br/>s on its own, we can only add
+			# proper <br/>s and hope it's okay. We will remove the original $comment
+			# variable from our namespace and act on the "pseudoencoded" one.
 
-		$PSEUDOENCODED_comment = htmlspecialchars($comment, ENT_QUOTES);
-		$PSEUDOENCODED_comment = nl2br($PSEUDOENCODED_comment);
+			$PSEUDOENCODED_comment = htmlspecialchars($comment, ENT_QUOTES);
+			$PSEUDOENCODED_comment = nl2br($PSEUDOENCODED_comment);
+		}
 		unset($comment);
 
 		# Duplicate detection.
@@ -287,6 +317,7 @@ class WebService
 
 				$second_logtype = 'Needs maintenance';
 				$second_PSEUDOENCODED_comment = "";
+				$second_comment_format = null;
 			}
 			elseif ($logtype == "Didn't find it")
 			{
@@ -298,7 +329,9 @@ class WebService
 
 				$second_logtype = 'Needs maintenance';
 				$second_PSEUDOENCODED_comment = $PSEUDOENCODED_comment;
+				$second_comment_format = $comment_format;
 				$PSEUDOENCODED_comment = "";
+				$comment_format = null;
 			}
 			else
 				throw new Exception();
@@ -315,14 +348,14 @@ class WebService
 		# Finally! Insert the rows into the log entries table. Update
 		# cache stats and user stats.
 
-		$log_uuid = self::insert_log_row($request->consumer->key, $cache['internal_id'], $user['internal_id'], $logtype, $when, $PSEUDOENCODED_comment);
+		$log_uuid = self::insert_log_row($request->consumer->key, $cache['internal_id'], $user['internal_id'], $logtype, $when, $PSEUDOENCODED_comment, $comment_format);
 		self::increment_cache_stats($cache['internal_id'], $when, $logtype);
 		self::increment_user_stats($user['internal_id'], $logtype);
 		if ($second_logtype != null)
 		{
 			# Reminder: This will never be called while SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE is off.
 
-			self::insert_log_row($request->consumer->key, $cache['internal_id'], $user['internal_id'], $second_logtype, $when + 1, $second_PSEUDOENCODED_comment);
+			self::insert_log_row($request->consumer->key, $cache['internal_id'], $user['internal_id'], $second_logtype, $when + 1, $second_PSEUDOENCODED_comment, $second_comment_format);
 			self::increment_cache_stats($cache['internal_id'], $when + 1, $second_logtype);
 			self::increment_user_stats($user['internal_id'], $second_logtype);
 		}
@@ -529,11 +562,11 @@ class WebService
 		);
 	}
 
-	private static function insert_log_row($consumer_key, $cache_internal_id, $user_internal_id, $logtype, $when, $PSEUDOENCODED_comment)
+	private static function insert_log_row($consumer_key, $cache_internal_id, $user_internal_id, $logtype, $when, $PSEUDOENCODED_comment, $comment_format)
 	{
 		$log_uuid = self::create_uuid();
 		Db::execute("
-			insert into cache_logs (uuid, cache_id, user_id, type, date, text, last_modified, date_created, node)
+			insert into cache_logs (uuid, cache_id, user_id, type, date, text, text_html, last_modified, date_created, node)
 			values (
 				'".mysql_real_escape_string($log_uuid)."',
 				'".mysql_real_escape_string($cache_internal_id)."',
@@ -541,6 +574,7 @@ class WebService
 				'".mysql_real_escape_string(Okapi::logtypename2id($logtype))."',
 				from_unixtime('".mysql_real_escape_string($when)."'),
 				'".mysql_real_escape_string($PSEUDOENCODED_comment)."',
+				'".($comment_format == 'html' ? 1 : 0)."',
 				now(),
 				now(),
 				'".mysql_real_escape_string(Settings::get('OC_NODE_ID'))."'
