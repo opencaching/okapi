@@ -2,31 +2,32 @@
 	<!--
 	Current status: WORKING DRAFT
 	
-	This is the list of all official OC attributes supported by OKAPI. This
-	file is periodically read by every OKAPI installation, *directly from
-	the repository*. See the code for services/apisrv/attributes method for
-	explanation.
+	This is the list of all geocache attributes supported by OKAPI. In 
+	practise, it will usually include any atribute used by at least one of 
+	the OpenCaching installations.
 	
-	If you're an app developer, then you should NOT read this file (it is not
-	guaranteed to stay backward-compatible!). Use OKAPI's methods instead.
+	Every OC installation has its own set of internal attributes. This file
+	allows them to be merged with other attributes from other OC installations.
+	It is periodically read by every OKAPI installation, *directly from
+	the repository*.
+	
+	If you're an app developer -- DO NOT read or parse this file in your apps!
+	It is NOT guaranteed to stay backward-compatible. Use official OKAPI
+	methods instead.
+	
+	Contact OKAPI developers for further information.
 	-->
 	
-	<!-- WRTODO: Make http://wiki.opencaching.pl/index.php/Atrybuty_skrzynki
-	a dynamic page rendered from the data in this file? -->
-	
-	<!--
-	Attributes not listed here:
-	  opencaching.de ID 7 = Hyperlink to another caching portal only (discontinued)
-	  opencaching.de ID 53 = Aircraft (discontinued)
-	-->
-	
-	<!-- listing -->
-	<attr okapi_attr_id="oconly">
+	<attr okapi_attr_id="oconly" categories="de-listing">
 		<opencaching site_url="http://opencaching.de/" id="6" />
 		<name lang="en">Only loggable at Opencaching</name>
 		<desc lang="en">
 			This geocache is listed at Opencaching only. This attribute will enable
 			users of other geocaching platforms to find interesting OC caches quickly. 
+		</desc>
+		<name lang="pl">Dostępna tylko na Opencaching</name>
+		<desc lang="pl">
+			Skrzynka "jednosystemowa", dostępna jedynie poprzez serwis Opencaching.
 		</desc>
 		<name lang="de">Nur bei Opencaching logbar</name>
 		<desc lang="de">
@@ -48,8 +49,7 @@
 		</desc>
 	</attr>
 	
-	<!-- cache types -->
-	<attr okapi_attr_id="survey-marker">
+	<attr okapi_attr_id="survey-marker" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="54" />
 		<name lang="en">Survey Marker</name>
 		<name lang="pl">Punkt geodezyjny</name>
@@ -59,7 +59,8 @@
 		</desc>
 		<name lang="de">Vermessungspunkt</name>
 	</attr>
-	<attr okapi_attr_id="wherigo">
+	
+	<attr okapi_attr_id="wherigo" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="55" />
 		<name lang="en">Whereigo Cartridge</name>
 		<name lang="pl">Scenariusz WIGO</name>
@@ -70,9 +71,7 @@
 		<name lang="de">Wherigo</name>
 	</attr>
 	
-	<attr okapi_attr_id="letterbox">
-		<!-- OCPL and OCDE don't have a letterbox cache type. This attribute is used
-		instead. -->
+	<attr okapi_attr_id="letterbox" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="56" />
 		<opencaching site_url="http://opencaching.de/" id="8" />
 		<name lang="en">Letterbox Cache</name>
@@ -109,7 +108,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="geohotel">
+	<attr okapi_attr_id="geohotel" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="43" />
 		<name lang="en">GeoHotel</name>
 		<name lang="pl">GeoHotel</name>
@@ -120,7 +119,8 @@
 		</desc>
 		<name lang="de">GeoHotel</name>
 	</attr>
-	<attr okapi_attr_id="magnet">
+	
+	<attr okapi_attr_id="magnet" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="49" />
 		<name lang="en">Magnetic cache</name>
 		<name lang="pl">Przyczepiona magnesem</name>
@@ -129,7 +129,8 @@
 		</desc>
 		<name lang="de">magnetischer Cache</name>
 	</attr>
-	<attr okapi_attr_id="audiofile">
+	
+	<attr okapi_attr_id="audiofile" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="50" />
 		<name lang="en">Information in an audio file</name> <!-- The file is attached to the cache description. -->
 		<name lang="pl">Informacje w pliku audio</name>
@@ -140,7 +141,8 @@
 		</desc>
 		<name lang="de">Informationen in Audiodatei</name>
 	</attr>
-	<attr okapi_attr_id="offset">
+	
+	<attr okapi_attr_id="offset" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="51" />
 		<name lang="en">Offset cache</name> <!-- Multicache with simple azimuth/distance instructions. -->
 		<name lang="pl">Offset cache</name>
@@ -152,7 +154,8 @@
 		</desc>
 		<name lang="de">Peilungscache</name>
 	</attr>
-	<attr okapi_attr_id="chirp">
+	
+	<attr okapi_attr_id="chirp" categories="de-cache-types">
 		<groundspeak id="60" inc="true" name="Wireless Beacon" />
 		<opencaching site_url="http://opencaching.pl/" id="52" />
 		<name lang="en">Garmin's wireless beacon</name>
@@ -162,8 +165,8 @@
 		</desc>
 		<name lang="de">Funksignal – Garmin Chirp</name>
 	</attr>
-	<!-- WRTODO - what is this?
-	<attr okapi_attr_id="XXXXXXXXXXXXXXXXXX">
+	
+	<attr okapi_attr_id="usb" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="53" />
 		<name lang="en">Dead Drop USB cache</name>
 		<name lang="pl">Dead Drop USB skrzynka</name>
@@ -173,9 +176,8 @@
 			<a href='http://wiki.opencaching.pl/index.php/Skrzynka_Dead_Drop'>Wiecej informacji</a>.
 		</desc>
 	</attr>
-	-->
 	
-	<attr okapi_attr_id="moving">
+	<attr okapi_attr_id="moving" categories="de-cache-types">
 		<!-- This looks redundant to the 'moving cache' type, but it may also be a
 		     moving final of a multi- or quiz cache. -->
 		<opencaching site_url="http://opencaching.de/" id="31" />
@@ -212,9 +214,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="webcam">
-		<!-- This looks redundant to the 'moving cache' type, but it may also be a
-		     webcam final of a multi- or quiz cache. -->
+	<attr okapi_attr_id="webcam" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.de/" id="32" />
 		<name lang="en">Webcam</name>
 		<desc lang="en">
@@ -248,11 +248,13 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="other-type">
-		<!-- This looks redundant to the "unknown type" cache type, but
-		     it is used vor special variants of basic cache types - e.g. a
-		     multicache where you won't just find a box at the final but have
-				 to meet an additional challenge there. -->
+	<attr okapi_attr_id="other-type" categories="de-cache-types">
+		<!--
+		This looks redundant to the "unknown type" cache type, but
+		it is used vor special variants of basic cache types - e.g. a
+		multicache where you won't just find a box at the final but have
+		to meet an additional challenge there.
+		-->
 		<opencaching site_url="http://opencaching.de/" id="57" />
 		<name lang="en">Other cache type</name>
 		<desc lang="en">
@@ -275,8 +277,7 @@
 		</desc>
 	</attr>
 
-	<!-- preconditions -->
-	<attr okapi_attr_id="investigation">
+	<attr okapi_attr_id="investigation" categories="de-preconditions">
 		<opencaching site_url="http://opencaching.de/" id="54" />
 		<name lang="en">Investigation required</name>
 		<desc lang="en">
@@ -297,7 +298,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="puzzle">
+	<attr okapi_attr_id="puzzle" categories="de-preconditions">
 		<groundspeak id="47" inc="true" name="Field puzzle" />
 		<opencaching site_url="http://opencaching.de/" id="55" />
 		<name lang="en">Puzzle / Mystery</name>
@@ -319,7 +320,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="maths">
+	<attr okapi_attr_id="maths" categories="de-preconditions">
 		<opencaching site_url="http://opencaching.de/" id="56" />
 		<name lang="en">Arithmetical problem</name>
 		<desc lang="en">
@@ -344,7 +345,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="ask-owner">
+	<attr okapi_attr_id="ask-owner" categories="de-preconditions">
 		<opencaching site_url="http://opencaching.de/" id="58" />
 		<name lang="en">Ask owner for start conditions</name>
 		<desc lang="en">
@@ -366,8 +367,7 @@
 		</desc>
 	</attr>
 
-	<!-- accessibility, way -->
-	<attr okapi_attr_id="wheelchair">
+	<attr okapi_attr_id="wheelchair" categories="de-accessibility">
 		<groundspeak id="24" inc="true" name="Wheelchair accessible" />
 		<opencaching site_url="http://opencaching.pl/" id="44" />
 		<name lang="en">Wheelchair accessible</name>
@@ -381,7 +381,7 @@
 		<name lang="de">rollstuhltauglich</name>
 	</attr>
 	
-	<attr okapi_attr_id="drivein">
+	<attr okapi_attr_id="drivein" categories="de-accessibility">
 		<groundspeak id="53" inc="true" name="Park and grab" />
 		<opencaching site_url="http://opencaching.de/" id="24" />
 		<name lang="en">Near the parking area</name>
@@ -403,9 +403,7 @@
 		</desc>
 	</attr>
 	
-	<!-- WRTODO:
-	<attr okapi_attr_id="XXXXXXXXXXXXXXX">
-		<groundspeak id="TODO" inc="TODO" />
+	<attr okapi_attr_id="walk-only" categories="de-accessibility">
 		<opencaching site_url="http://opencaching.pl/" id="84" />
 		<name lang="en">Access only by walk</name>
 		<name lang="pl">Dostępna tylko pieszo</name>
@@ -413,9 +411,8 @@
 			Skrzynka dostępna tylko pieszo.
 		</desc>
 	</attr>
-	-->
 	
-	<attr okapi_attr_id="hike">
+	<attr okapi_attr_id="hike" categories="de-accessibility">
 		<groundspeak id="9" inc="true" name="Significant Hike" />
 		<opencaching site_url="http://opencaching.de/" id="25" />
 		<name lang="en">Long walk</name>
@@ -446,7 +443,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="wading">
+	<attr okapi_attr_id="wading" categories="de-accessibility">
 		<groundspeak id="11" inc="true" name="May require wading" />
 		<opencaching site_url="http://opencaching.de/" id="26" />
 		<name lang="en">Swamp, marsh or wading</name>
@@ -477,7 +474,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="steep">
+	<attr okapi_attr_id="steep" categories="de-accessibility">
 		<opencaching site_url="http://opencaching.de/" id="27" />
 		<name lang="en">Hilly area</name>
 		<desc lang="en">
@@ -498,7 +495,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="climbing">
+	<attr okapi_attr_id="climbing" categories="de-accessibility">
 		<groundspeak id="10" inc="true" name="Difficult climbing" />
 		<opencaching site_url="http://opencaching.de/" id="28" />
 		<name lang="en">Some climbing (no gear needed)</name>
@@ -531,7 +528,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="swimming">
+	<attr okapi_attr_id="swimming" categories="de-accessibility">
 		<groundspeak id="12" inc="true" name="May require swimming" />
 		<opencaching site_url="http://opencaching.de/" id="29" />
 		<name lang="en">Swimming required</name>
@@ -560,7 +557,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="fee">
+	<attr okapi_attr_id="fee" categories="de-accessibility">
 		<groundspeak id="2" inc="true" name="Access or parking fee" />
 		<opencaching site_url="http://opencaching.de/" id="36" />
 		<name lang="en">Access or parking fee</name>
@@ -582,7 +579,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="bike">
+	<attr okapi_attr_id="bike" categories="de-accessibility">
 		<groundspeak id="32" inc="true" name="Bicycles" />
 		<opencaching site_url="http://opencaching.pl/" id="85" />
 		<name lang="en">Bikes allowed</name>
@@ -593,8 +590,7 @@
 		<desc lang="de">Fahrräder erlaubt</desc>
 	</attr>
 	
-	<!-- location -->
-	<attr okapi_attr_id="nature">
+	<attr okapi_attr_id="nature" categories="de-location">
 		<opencaching site_url="http://opencaching.pl/" id="60" />
 		<name lang="en">Hidden in natural surroundings (forests, mountains, etc.)</name> <!-- i.e. not in a city?  -->
 		<name lang="pl">Umiejscowiona na łonie natury (lasy, góry, itp.)</name>
@@ -605,7 +601,7 @@
 		<desc lang="de">in freier Natur versteckt</desc>
 	</attr>
 	
-	<attr okapi_attr_id="historic">
+	<attr okapi_attr_id="historic" categories="de-location">
 		<opencaching site_url="http://opencaching.pl/" id="61" />
 		<name lang="en">Historic site</name>
 		<name lang="pl">Miejsce historyczne</name>
@@ -616,7 +612,7 @@
 		<desc lang="de">historischer Ort</desc>
 	</attr>
 	
-	<attr okapi_attr_id="poi">
+	<attr okapi_attr_id="poi" categories="de-location">
 		<opencaching site_url="http://opencaching.de/" id="30" />
 		<name lang="en">Point of interest</name>
 		<desc lang="en">
@@ -644,7 +640,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="indoor">
+	<attr okapi_attr_id="indoor" categories="de-location">
 		<opencaching site_url="http://opencaching.de/" id="33" />
 		<name lang="en">Hidden wihin enclosed rooms (caves, buildings etc.)</name>
 		<desc lang="en">
@@ -668,7 +664,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="submerged">
+	<attr okapi_attr_id="submerged" categories="de-location">
 		<opencaching site_url="http://opencaching.de/" id="34" />
 		<name lang="en">Hidden under water</name>
 		<desc lang="en">
@@ -694,8 +690,7 @@
 		</desc>
 	</attr>
 	
-	<!-- facilities -->
-	<attr okapi_attr_id="parking">
+	<attr okapi_attr_id="parking" categories="de-facilities">
 		<groundspeak id="25" inc="true" name="Parking available" />
 		<opencaching site_url="http://opencaching.de/" id="18" />
 		<name lang="en">Parking area nearby</name>
@@ -719,7 +714,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="public-transport">
+	<attr okapi_attr_id="public-transport" categories="de-facilities">
 		<groundspeak id="26" inc="true" name="Public transportation" />
 		<opencaching site_url="http://opencaching.de/" id="19" />
 		<name lang="en">Public transportation</name>
@@ -744,7 +739,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="drinking-water">
+	<attr okapi_attr_id="drinking-water" categories="de-facilities">
 		<groundspeak id="27" inc="true" name="Drinking water nearby" />
 		<opencaching site_url="http://opencaching.de/" id="20" />
 		<name lang="en">Drinking water nearby</name>
@@ -775,7 +770,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="restrooms">
+	<attr okapi_attr_id="restrooms" categories="de-facilities">
 		<groundspeak id="28" inc="true" name="Public restrooms nearby" />
 		<opencaching site_url="http://opencaching.de/" id="21" />
 		<name lang="en">Public restrooms nearby</name>
@@ -798,7 +793,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="phone">
+	<attr okapi_attr_id="phone" categories="de-facilities">
 		<groundspeak id="29" inc="true" name="Telephone nearby" />
 		<opencaching site_url="http://opencaching.de/" id="22" />
 		<name lang="en">Public phone nearby</name>
@@ -820,7 +815,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="first-aid">
+	<attr okapi_attr_id="first-aid" categories="de-facilities">
 		<opencaching site_url="http://opencaching.de/" id="23" />
 		<name lang="en">First aid available</name>
 		<desc lang="en">
@@ -844,8 +839,7 @@
 		</desc>
 	</attr>
 	
-	<!-- time and seasons -->
-	<attr okapi_attr_id="24-hours">
+	<attr okapi_attr_id="24-hours" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="true" name="Available at all times" />
 		<opencaching site_url="http://opencaching.de/" id="38" />
 		<name lang="en">Available 24 hours</name>
@@ -866,7 +860,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="not-24-hours">  <!-- changed from "working-hours" -->
+	<attr okapi_attr_id="not-24-hours" categories="de-time-and-seasons">  <!-- changed from "working-hours" -->
 		<groundspeak id="13" inc="false" name="Available at all times" />
 		<opencaching site_url="http://opencaching.pl/" id="80" />
 		<opencaching site_url="http://opencaching.de/" id="39" />
@@ -899,7 +893,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="daycache">
+	<attr okapi_attr_id="daycache" categories="de-time-and-seasons">
 		<groundspeak id="14" inc="false" name="Recommended at night" />
 		<opencaching site_url="http://opencaching.de/" id="40" />
 		<name lang="en">By day only</name>
@@ -929,10 +923,12 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="night-recommended">
-		<!-- GS has "night cache" (52) and "recommended at night" (14).
-         night cache = can normally ONLY be done at night, reflectors etc.
-         recommended at night = can well be done at night -->
+	<attr okapi_attr_id="night-recommended" categories="de-time-and-seasons">
+		<!--
+		GS has "night cache" (52) and "recommended at night" (14).
+		night cache = can normally ONLY be done at night, reflectors etc.
+		recommended at night = can well be done at night
+		-->
 		<groundspeak id="14" inc="true" name="Recommended at night" />
 		<opencaching site_url="http://opencaching.pl/" id="91" />
 		<name lang="en">Recommended by night</name>
@@ -945,10 +941,12 @@
 		<name lang="de">am besten nachts findbar</name>
 	</attr>
 	
-	<attr okapi_attr_id="nightcache">
-		<!-- GS has "night cache" (52) and "recommended at night" (14).
-         night cache = can normally ONLY be done at night, reflectors etc.
-         recommended at night = can well be done at night -->
+	<attr okapi_attr_id="nightcache" categories="de-time-and-seasons">
+		<!--
+		GS has "night cache" (52) and "recommended at night" (14).
+		night cache = can normally ONLY be done at night, reflectors etc.
+		recommended at night = can well be done at night
+		-->
 		<groundspeak id="52" inc="true" name="Night Cache" />
 		<opencaching site_url="http://opencaching.de/" id="1" />
 		<name lang="en">Only at night</name>
@@ -979,7 +977,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="all-seasons">
+	<attr okapi_attr_id="all-seasons" categories="de-time-and-seasons">
 		<groundspeak id="62" inc="false" name="Seasonal access" />
 		<opencaching site_url="http://opencaching.de/" id="42" />
 		<name lang="en">All seasons</name>
@@ -1004,7 +1002,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="not-all-seasons">
+	<attr okapi_attr_id="not-all-seasons" categories="de-time-and-seasons">
 		<groundspeak id="62" inc="true" name="Seasonal access" />
 		<opencaching site_url="http://opencaching.de/" id="60" />
 		<name lang="en">Only available during specified seasons</name>
@@ -1029,7 +1027,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="np-season">
+	<attr okapi_attr_id="np-season" categories="de-time-and-seasons">
 		<opencaching site_url="http://opencaching.de/" id="43" />
 		<name lang="en">Breeding season / protected nature</name>
 		<desc lang="en">
@@ -1059,10 +1057,12 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="snow-proof">
-		<!-- TODO: can snow and winter be matched? Current OC.de attribute mapping does so,
-		           and GC has a snowflake icon for this. Applications typically display
-		           attributes by icons instead of names. -->
+	<attr okapi_attr_id="snow-proof" categories="de-time-and-seasons">
+		<!--
+		TODO: can snow and winter be matched? Current OC.de attribute mapping does so,
+		and GC has a snowflake icon for this. Applications typically display
+		attributes by icons instead of names.
+		-->
 		<groundspeak id="15" inc="true" name="Available during winter" />
 		<opencaching site_url="http://opencaching.de/" id="44" />
 		<name lang="en">Snow-proof hiding place</name>
@@ -1092,7 +1092,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="lowwater">
+	<attr okapi_attr_id="lowwater" categories="de-time-and-seasons">
 		<opencaching site_url="http://opencaching.de/" id="41" />
 		<name lang="en">Not at high water level</name>
 		<desc lang="en">
@@ -1108,9 +1108,7 @@
 		<!-- TODO: Spanish and Italian translations -->
 	</attr>
 	
-	
-	<!-- tools required -->
-	<attr okapi_attr_id="compass">
+	<attr okapi_attr_id="compass" categories="de-tools">
 		<opencaching site_url="http://opencaching.pl/" id="47" />
 		<opencaching site_url="http://opencaching.de/" id="47" />
 		<name lang="en">Compass required</name>
@@ -1137,7 +1135,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="pen">
+	<attr okapi_attr_id="pen" categories="de-tools">
 		<opencaching site_url="http://opencaching.pl/" id="48" />
 		<name lang="en">Take something to write</name>
 		<name lang="pl">Weź coś do pisania</name>
@@ -1147,7 +1145,7 @@
 		<desc lang="de">Stift mitbringen</desc>
 	</attr>
 	
-	<attr okapi_attr_id="digging">
+	<attr okapi_attr_id="digging" categories="de-tools">
 		<opencaching site_url="http://opencaching.pl/" id="81" />
 		<name lang="en">You will need a shovel</name>
 		<name lang="pl">Potrzebna łopatka</name>
@@ -1157,7 +1155,7 @@
 		<desc lang="de">Grabwerkzeug benötigt</desc>
 	</attr>
 	
-	<attr okapi_attr_id="flashlight">
+	<attr okapi_attr_id="flashlight" categories="de-tools">
 		<groundspeak id="44" inc="true" name="Flashlight required" />
 		<opencaching site_url="http://opencaching.pl/" id="82" />
 		<opencaching site_url="http://opencaching.de/" id="48" />
@@ -1186,7 +1184,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="climbing-gear">
+	<attr okapi_attr_id="climbing-gear" categories="de-tools">
 		<groundspeak id="3" inc="true" name="Climbing gear" />
 		<opencaching site_url="http://opencaching.de/" id="49" />
 		<name lang="en">Climbing gear required</name>
@@ -1216,7 +1214,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="cave-equipment">
+	<attr okapi_attr_id="cave-equipment" categories="de-tools">
 		<opencaching site_url="http://opencaching.de/" id="50" />
 		<name lang="en">Cave equipment required</name>
 		<desc lang="en">
@@ -1256,7 +1254,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="diving-equipment">
+	<attr okapi_attr_id="diving-equipment" categories="de-tools">
 		<groundspeak id="5" inc="true" name="Scuba gear" />
 		<opencaching site_url="http://opencaching.de/" id="51" />
 		<name lang="en">Diving equipment required</name>
@@ -1292,7 +1290,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="special-tools">
+	<attr okapi_attr_id="special-tools" categories="de-tools">
 		<groundspeak id="51" inc="true" name="Special tool required" />
 		<opencaching site_url="http://opencaching.pl/" id="83" />
 		<opencaching site_url="http://opencaching.de/" id="46" />
@@ -1325,7 +1323,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="boat">
+	<attr okapi_attr_id="boat" categories="de-tools">
 		<groundspeak id="4" inc="true" name="Boat" />
 		<opencaching site_url="http://opencaching.pl/" id="86" />
 		<opencaching site_url="http://opencaching.de/" id="52" />
@@ -1361,7 +1359,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="nogps">
+	<attr okapi_attr_id="nogps" categories="de-tools">
 		<opencaching site_url="http://opencaching.de/" id="35" />
 		<name lang="en">No GPS required</name>
 		<desc lang="en">
@@ -1386,23 +1384,10 @@
 		</desc>
 	</attr>
 	
-	<!-- dangers -->
-	<attr okapi_attr_id="dangerous">
-		<!-- TODO: Is this mapping okay? <groundspeak id="23" inc="true" name="Dangerous area" /> -->
-		<opencaching site_url="http://opencaching.pl/" id="90" />
-		<name lang="en">Dangerous Cache</name>
-		<name lang="pl">Skrzynka niebezpieczna</name>
-		<desc lang="pl">
-			Jej poszukiwania mogą narazić na niebezpieczeństwo wypadku lub
-			urazu.
-		</desc>
-		<desc lang="de">gefährlicher Geocache</desc>
-	</attr>
-	
-	<attr okapi_attr_id="dangerous-area">
-		<!-- TODO: merge with "dangerous"? -->
+	<attr okapi_attr_id="dangerous-area" categories="de-dangers">
 		<groundspeak id="23" inc="true" name="Dangerous area" />
 		<opencaching site_url="http://opencaching.de/" id="9" />
+		<opencaching site_url="http://opencaching.pl/" id="90" />
 		<name lang="en">Dangerous area</name>
 		<desc lang="en">
 			The cache is located within a dangerous area, and danges may not be
@@ -1410,6 +1395,11 @@
 			Security measures should be taken or the cache be omitted, especially
 			when geocaching with children, large groups or at unfavourable weather
 			conditions.
+		</desc>
+		<name lang="pl">Skrzynka niebezpieczna</name>
+		<desc lang="pl">
+			Jej poszukiwania mogą narazić na niebezpieczeństwo wypadku lub
+			urazu.
 		</desc>
 		<name lang="de">gefährliches Gebiet</name>
 		<desc lang="de">
@@ -1437,7 +1427,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="railway">
+	<attr okapi_attr_id="railway" categories="de-dangers">
 		<opencaching site_url="http://opencaching.de/" id="10" />
 		<name lang="en">Active railway nearby</name>
 		<desc lang="en">
@@ -1464,7 +1454,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="cliff">
+	<attr okapi_attr_id="cliff" categories="de-dangers">
 		<groundspeak id="21" inc="true" name="Cliff / falling rocks" />
 		<opencaching site_url="http://opencaching.de/" id="11" />
 		<name lang="en">Cliff / Rocks</name>
@@ -1501,7 +1491,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="hunting">
+	<attr okapi_attr_id="hunting" categories="de-dangers">
 		<groundspeak id="22" inc="true" name="Hunting" />
 		<opencaching site_url="http://opencaching.de/" id="12" />
 		<name lang="en">Hunting</name>
@@ -1532,7 +1522,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="thorns">
+	<attr okapi_attr_id="thorns" categories="de-dangers">
 		<groundspeak id="39" inc="true" name="Thorns" />
 		<opencaching site_url="http://opencaching.de/" id="13" />
 		<name lang="en">Thorns</name>
@@ -1554,7 +1544,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="ticks">
+	<attr okapi_attr_id="ticks" categories="de-dangers">
 		<groundspeak id="19" inc="true" name="Ticks" />
 		<opencaching site_url="http://opencaching.de/" id="14" />
 		<name lang="en">Ticks</name>
@@ -1587,7 +1577,7 @@
 		</desc>
 	</attr>
 		
-	<attr okapi_attr_id="mines">
+	<attr okapi_attr_id="mines" categories="de-dangers">
 		<groundspeak id="20" inc="true" name="Abandoned mines" />
 		<opencaching site_url="http://opencaching.de/" id="15" />
 		<name lang="en">Abandoned mines</name>
@@ -1622,7 +1612,7 @@
 		</desc>
 	</attr>
 
-	<attr okapi_attr_id="poisonous-plants">
+	<attr okapi_attr_id="poisonous-plants" categories="de-dangers">
 		<groundspeak id="17" inc="true" name="Poisonous plants" />
 		<opencaching site_url="http://opencaching.de/" id="16" />
 		<name lang="en">Poisonous plants</name>
@@ -1647,7 +1637,7 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="dangerous-animals">
+	<attr okapi_attr_id="dangerous-animals" categories="de-dangers">
 		<groundspeak id="18" inc="true" name="Dangerous animals" />
 		<opencaching site_url="http://opencaching.de/" id="17" />
 		<name lang="en">Dangerous animals</name>
@@ -1673,8 +1663,7 @@
 		</desc>
 	</attr>
 	
-	<!-- rating -->
-	<attr okapi_attr_id="quick">
+	<attr okapi_attr_id="quick" categories="de-rating">
 		<!-- TODO: There is a groundspeak attribute called "Takes less than
 		1 hour", is it applicable here? I'm not sure... In OCPL this attribute
 		was called "One-minute cache", and the official description includes
@@ -1689,7 +1678,7 @@
 		<desc lang="de">schnell findbar</desc>
 	</attr>
 	
-	<attr okapi_attr_id="overnight">
+	<attr okapi_attr_id="overnight" categories="de-rating">
 		<opencaching site_url="http://opencaching.de/" id="37" />
 		<name lang="en">Overnight stay necessary</name>
 		<desc lang="en">
@@ -1721,19 +1710,19 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="children6">
+	<attr okapi_attr_id="children6" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
 		<opencaching site_url="http://opencaching.pl/" id="41" />
-		<name lang="en">Kid friendly (up to 6 yo)</name>
+		<name lang="en">Kid friendly</name>
 		<name lang="pl">Można zabrać dzieci</name>
 		<desc lang="pl">
 			Jej poszukiwanie jest przyjemne, bezpieczne i można bez obaw
-			wybrać się z dziećmi poniżej 6 roku życia.
+			wybrać się z dziećmi, również poniżej 6 roku życia.
 		</desc>
 		<desc lang="de">für Kinder bis 6 Jahre geeignet</desc>
 	</attr>
 	
-	<attr okapi_attr_id="children10">
+	<attr okapi_attr_id="children10" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
 		<opencaching site_url="http://opencaching.de/" id="59" />
 		<name lang="en">Suited for children (10-12 yo)</name>
