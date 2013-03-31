@@ -197,6 +197,11 @@
 				</ul>
 			</li>
 			<li>
+				<b>preview_image</b> - This is either <b>null</b> or a dictionary describing
+				an image. The structure of the dictionary is the same as in the <b>images</b>
+				field above.
+			</li>
+			<li>
 				<p><b>attrnames</b> - list of names of attributes of the cache; the language will
 				be selected based on the <b>langpref</b> argument.</p>
 				<p>Note: currently each of the OC installations has its own set of attributes. That's
