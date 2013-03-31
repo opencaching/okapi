@@ -153,11 +153,15 @@ class WebService
 
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
-			# OCDE requires us to do additional HTML purification prior to the
-			# insertion of our HTML into the database. However, for some
-			# reason, it also requires us to call htmlspecialchars and nl2br on
-			# the PLAINTEXT comment. It would seem that comments are always
-			# stored in HTML (regardless of the value of 'text_html' db field).
+			# OCDE stores all comments in HTML format, while the 'text_html' field
+			# indicates their *original* format as delivered by the user. This 
+			# allows processing the 'text' field contents without caring about the 
+			# original format, while still being able to re-create the comment in
+			# its original form. It requires us to HTML-encode plaintext comments
+			# and to indicate this by setting 'html_text' to FALSE.
+			#
+			# For user-supplied HTML comments, OCDE requires us to do additional
+			# HTML purification prior to the insertion into the database.
 
 			if ($comment_format == 'plaintext')
 			{
