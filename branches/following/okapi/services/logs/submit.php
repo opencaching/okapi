@@ -188,10 +188,7 @@ class WebService
 				# code does not belong to OKAPI!
 
 				require_once $GLOBALS['rootpath'] . '../lib/htmlpurifier-4.2.0/library/HTMLPurifier.auto.php';
-				$config = \HTMLPurifier_Config::createDefault();
-				if ($comment_format == 'auto')
-					$config->set('AutoFormat', 'AutoParagraph', true);
-				$purifier = new \HTMLPurifier($config);
+				$purifier = new \HTMLPurifier();
 				$formatted_comment = $purifier->purify($comment);
 				$value_for_text_html_field = 1;
 			}
