@@ -480,7 +480,7 @@ class WebService
 			if (Db::field_exists('pictures', 'mappreview'))
 				$preview_field = "mappreview";
 			else
-				$preview_field = "null";
+				$preview_field = "0";
 			$rs = Db::query("
 				select object_id, uuid, url, title, spoiler, ".$preview_field." as preview
 				from pictures
@@ -508,11 +508,10 @@ class WebService
 					'caption' => $row['title'],
 					'unique_caption' => self::get_unique_caption($row['title']),
 					'is_spoiler' => ($row['spoiler'] ? true : false),
-					'is_preview' => is_null($row['preview']) ? null : ($row['preview'] != 0),
 				);
 				if (in_array('images', $fields))
 					$results[$cache_code]['images'][] = $image;
-				if ($image['is_preview'] && in_array('preview_image', $fields))
+				if ($row['preview'] != 0 && in_array('preview_image', $fields))
 					$results[$cache_code]['preview_image'] = $image;
 			}
 		}
