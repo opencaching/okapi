@@ -1976,7 +1976,7 @@ class OkapiHttpRequest extends OkapiRequest
 
 			if (!Settings::get('DEBUG'))
 			{
-				throw new Exception("Attempted to set DEBUG_AS_USERNAME set in ".
+				throw new Exception("Attempted to use DEBUG_AS_USERNAME in ".
 					"non-debug environment. Accidental commit?");
 			}
 

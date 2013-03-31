@@ -178,11 +178,28 @@
 					<li><b>is_spoiler</b> - boolean, if <b>true</b> then the image is
 						a spoiler image and should not be displayed to the user unless
 						the user explicitly asks for it,</li>
-					<li><b>is_preview</b> - boolean, if <b>true</b>, the cache owner has marked
-						the image as <em>preview image</em>, and you are encouraged to display
-						it as a 'teaser' for the cache. Some installations do not support this
-						feature and will return <b>null</b>.</li>
+					<li>
+						<p><b>is_preview</b> - boolean or <b>null</b>:</p>
+						<ul>
+							<li>
+								<b>true</b>, if the image was marked as a preview image,
+								and you are encouraged to display it as a 'teaser' for
+								the cache,
+							</li>
+							<li><b>false</b> otherwise (not a preview image),</li>
+							<li>
+								<b>null</b>, if preview images are not supported in this
+								OKAPI installation (usually you can treat it as you'd
+								treat <b>false</b>).
+							</li>
+						</ul>
+					</li>
 				</ul>
+			</li>
+			<li>
+				<b>preview_image</b> - This is either <b>null</b> or a dictionary describing
+				an image. The structure of the dictionary is the same as in the <b>images</b>
+				field above.
 			</li>
 			<li>
 				<p><b>attrnames</b> - list of names of attributes of the cache; the language will
