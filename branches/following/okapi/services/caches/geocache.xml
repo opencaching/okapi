@@ -178,23 +178,15 @@
 					<li><b>is_spoiler</b> - boolean, if <b>true</b> then the image is
 						a spoiler image and should not be displayed to the user unless
 						the user explicitly asks for it,</li>
-					<li>
-						<p><b>is_preview</b> - boolean or <b>null</b>:</p>
-						<ul>
-							<li>
-								<b>true</b>, if the image was marked as a preview image,
-								and you are encouraged to display it as a 'teaser' for
-								the cache,
-							</li>
-							<li><b>false</b> otherwise (not a preview image),</li>
-							<li>
-								<b>null</b>, if preview images are not supported in this
-								OKAPI installation (usually you can treat it as you'd
-								treat <b>false</b>).
-							</li>
-						</ul>
-					</li>
 				</ul>
+			</li>
+			<li>
+				<p><b>preview_image</b> - This is either <b>null</b> or a dictionary describing
+				an image, which has been marked by the owner as <em>preview image</em>. You are
+				encouraged to display it as a 'teaser' for this cache.
+				The structure of the dictionary is the same as in the <b>images</b> field above.</p>
+				<p>The preview image is no additional image but one of those which
+				are included in the <b>images</b> list.</p>
 			</li>
 			<li>
 				<b>preview_image</b> - This is either <b>null</b> or a dictionary describing
