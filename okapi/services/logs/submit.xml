@@ -18,8 +18,10 @@
 	</opt>
 	<opt name='comment_format' default='auto'>
 		<p>Indicates the format of your <b>comment</b>. Three values allowed:
-		<b>auto</b>, <b>html</b> or <b>plaintext</b>. It's usually the best to leave
-		it at <b>auto</b>.</p>
+		<b>auto</b>, <b>html</b> or <b>plaintext</b>. Usually, you should not
+		use the <b>auto</b> option, because its exact behavior is unspecified
+		and may depend on the installation
+		(<a href='https://code.google.com/p/opencaching-api/issues/detail?id=124'>more info</a>).</p>
 
 		<p><b>Important note:</b> The subset of allowed HTML elements is left undefined
 		and may change in the future. For future-compatibility, you should use only
