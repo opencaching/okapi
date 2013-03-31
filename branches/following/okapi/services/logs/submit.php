@@ -62,11 +62,9 @@ class WebService
 		if (!$comment) $comment = "";
 
 		$comment_format = $request->get_parameter('comment_format');
-		if ($comment_format)
-		{
-			if (!in_array($comment_format, array('html', 'plaintext')))
-				throw new InvalidParam('comment_format', $comment_format);
-		}
+		if (!$comment_format) $comment_format = "auto";
+		if (!in_array($comment_format, array('auto', 'html', 'plaintext')))
+			throw new InvalidParam('comment_format', $comment_format);
 		else
 		{
 			if (Settings::get('OC_BRANCH') == 'oc.de')
@@ -163,35 +161,72 @@ class WebService
 				throw new CannotPublishException(_("Invalid password!"));
 		}
 
+		# Prepare our comment to be inserted into the database. This may require
+		# some reformatting which depends on the current OC installation.
+
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
-			# TODO: variable names need adjustment - oc.de comment is not pseudoencoded
+			# OCDE stores all comments in HTML format, while the 'text_html' field
+			# indicates their *original* format as delivered by the user. This 
+			# allows processing the 'text' field contents without caring about the 
+			# original format, while still being able to re-create the comment in
+			# its original form. It requires us to HTML-encode plaintext comments
+			# and to indicate this by setting 'html_text' to FALSE.
+			#
+			# For user-supplied HTML comments, OCDE requires us to do additional
+			# HTML purification prior to the insertion into the database.
+
 			if ($comment_format == 'plaintext')
 			{
-				$PSEUDOENCODED_comment = htmlspecialchars($comment, ENT_QUOTES);
-				$PSEUDOENCODED_comment = nl2br($PSEUDOENCODED_comment);
+				$formatted_comment = htmlspecialchars($comment, ENT_QUOTES);
+				$formatted_comment = nl2br($formatted_comment);
+				$value_for_text_html_field = 0;
 			}
 			else
 			{
-				$purifier = new \HTMLPurifier();
-				$PSEUDOENCODED_comment = $purifier->purify($comment);
+				# NOTICE: We are including EXTERNAL OCDE library here! This
+				# code does not belong to OKAPI!
+
+				require_once $GLOBALS['rootpath'] . '../lib/htmlpurifier-4.2.0/library/HTMLPurifier.auto.php';
+				$config = \HTMLPurifier_Config::createDefault();
+				if ($comment_format == 'auto')
+					$config->set('AutoFormat', 'AutoParagraph', true);
+				$purifier = new \HTMLPurifier($config);
+				$formatted_comment = $purifier->purify($comment);
+				$value_for_text_html_field = 1;
 			}
 		}
 		else
 		{
-			# Very weird part (as usual). OC stores HTML-lized comments in the database
+			# OCPL is even weirder. It also stores HTML-lized comments in the database
 			# (it doesn't really matter if 'text_html' field is set to FALSE). OKAPI must
-			# save it in HTML either way. However, escaping plain-text doesn't work.
+			# save it in HTML either way. However, escaping plain-text doesn't work!
 			# If we put "&lt;b&gt;" in, it still gets converted to "<b>" before display!
-			# NONE of this process is documented. There doesn't seem to be ANY way to force
-			# OCPL to treat a string as either plain-text nor HTML. It's always something
-			# in between! In other words, we cannot guarantee how it gets displayed in
-			# the end. Since text_html=0 doesn't add <br/>s on its own, we can only add
-			# proper <br/>s and hope it's okay. We will remove the original $comment
-			# variable from our namespace and act on the "pseudoencoded" one.
+			# NONE of this process is documented within OCPL code. OKAPI uses a dirty
+			# "hack" to save PLAINTEXT comments (let us hope the hack will remain valid).
+			#
+			# OCPL doesn't require HTML purification prior to the database insertion.
+			# HTML seems to be purified dynamically, before it is displayed.
 
-			$PSEUDOENCODED_comment = htmlspecialchars($comment, ENT_QUOTES);
-			$PSEUDOENCODED_comment = nl2br($PSEUDOENCODED_comment);
+			if ($comment_format == 'plaintext')
+			{
+				$formatted_comment = htmlspecialchars($comment, ENT_QUOTES);
+				$formatted_comment = nl2br($formatted_comment);
+				$formatted_comment = str_replace("&amp;", "&amp;#38;", $formatted_comment);
+				$formatted_comment = str_replace("&lt;", "&amp;#60;", $formatted_comment);
+				$formatted_comment = str_replace("&gt;", "&amp;#62;", $formatted_comment);
+				$value_for_text_html_field = 0; // WRTODO: get rid of
+			}
+			elseif ($comment_format == 'auto')
+			{
+				$formatted_comment = nl2br($comment);
+				$value_for_text_html_field = 1;
+			}
+			else
+			{
+				$formatted_comment = $comment;
+				$value_for_text_html_field = 1;
+			}
 		}
 		unset($comment);
 
@@ -214,7 +249,7 @@ class WebService
 					and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
 					and type = '".mysql_real_escape_string(Okapi::logtypename2id($logtype))."'
 					and date = from_unixtime('".mysql_real_escape_string($when)."')
-					and text = '".mysql_real_escape_string($PSEUDOENCODED_comment)."'
+					and text = '".mysql_real_escape_string($formatted_comment)."'
 					".((Settings::get('OC_BRANCH') == 'oc.pl') ? "and deleted = 0" : "")."
 				limit 1
 			");
@@ -308,7 +343,7 @@ class WebService
 
 				$logtype = 'Needs maintenance';
 				$second_logtype = null;
-				$second_PSEUDOENCODED_comment = null;
+				$second_formatted_comment = null;
 			}
 			elseif ($logtype == 'Found it')
 			{
@@ -316,7 +351,7 @@ class WebService
 				# original comment, and second one "Needs maintenance" with empty comment.
 
 				$second_logtype = 'Needs maintenance';
-				$second_PSEUDOENCODED_comment = "";
+				$second_formatted_comment = "";
 				$second_comment_format = null;
 			}
 			elseif ($logtype == "Didn't find it")
@@ -328,9 +363,8 @@ class WebService
 				# in the future, but it seems natural to me.)
 
 				$second_logtype = 'Needs maintenance';
-				$second_PSEUDOENCODED_comment = $PSEUDOENCODED_comment;
-				$second_comment_format = $comment_format;
-				$PSEUDOENCODED_comment = "";
+				$second_formatted_comment = $formatted_comment;
+				$formatted_comment = "";
 				$comment_format = null;
 			}
 			else
@@ -342,20 +376,24 @@ class WebService
 			# isn't supported by this server.
 
 			$second_logtype = null;
-			$second_PSEUDOENCODED_comment = null;
+			$second_formatted_comment = null;
 		}
 
 		# Finally! Insert the rows into the log entries table. Update
 		# cache stats and user stats.
 
-		$log_uuid = self::insert_log_row($request->consumer->key, $cache['internal_id'], $user['internal_id'], $logtype, $when, $PSEUDOENCODED_comment, $comment_format);
+		$log_uuid = self::insert_log_row(
+			$request->consumer->key, $cache['internal_id'], $user['internal_id'], $logtype,
+			$when, $formatted_comment, $value_for_text_html_field);
 		self::increment_cache_stats($cache['internal_id'], $when, $logtype);
 		self::increment_user_stats($user['internal_id'], $logtype);
 		if ($second_logtype != null)
 		{
 			# Reminder: This will never be called while SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE is off.
 
-			self::insert_log_row($request->consumer->key, $cache['internal_id'], $user['internal_id'], $second_logtype, $when + 1, $second_PSEUDOENCODED_comment, $second_comment_format);
+			self::insert_log_row(
+				$request->consumer->key, $cache['internal_id'], $user['internal_id'], $second_logtype,
+				$when + 1, $second_formatted_comment, $value_for_text_html_field);
 			self::increment_cache_stats($cache['internal_id'], $when + 1, $second_logtype);
 			self::increment_user_stats($user['internal_id'], $second_logtype);
 		}
@@ -562,7 +600,10 @@ class WebService
 		);
 	}
 
-	private static function insert_log_row($consumer_key, $cache_internal_id, $user_internal_id, $logtype, $when, $PSEUDOENCODED_comment, $comment_format)
+	private static function insert_log_row(
+		$consumer_key, $cache_internal_id, $user_internal_id, $logtype, $when,
+		$formatted_comment, $text_html
+	)
 	{
 		$log_uuid = self::create_uuid();
 		Db::execute("
@@ -573,7 +614,8 @@ class WebService
 				'".mysql_real_escape_string($user_internal_id)."',
 				'".mysql_real_escape_string(Okapi::logtypename2id($logtype))."',
 				from_unixtime('".mysql_real_escape_string($when)."'),
-				'".mysql_real_escape_string($PSEUDOENCODED_comment)."',
+				'".mysql_real_escape_string($formatted_comment)."',
+				'".mysql_real_escape_string($text_html)."',
 				'".($comment_format == 'html' ? 1 : 0)."',
 				now(),
 				now(),
