@@ -11,7 +11,7 @@
 	It is periodically read by every OKAPI installation, *directly from
 	the repository*.
 	
-	If you're an app developer -- DO NOT read or parse this file in your apps!
+	If you're an app developer - DO NOT read or parse this file in your apps!
 	It is NOT guaranteed to stay backward-compatible. Use official OKAPI
 	methods instead.
 	
