@@ -31,7 +31,7 @@ class WebService
 		'descriptions', 'hint', 'hints', 'images', 'attrnames', 'latest_logs',
 		'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
 		'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
-		'is_ignored', 'willattends', 'country', 'state');
+		'is_ignored', 'willattends', 'country', 'state', 'preview_image');
 
 	public static function call(OkapiRequest $request)
 	{
@@ -272,6 +272,7 @@ class WebService
 					case 'hint': /* handled separately */ break;
 					case 'hints': /* handled separately */ break;
 					case 'images': /* handled separately */ break;
+					case 'preview_image': /* handled separately */ break;
 					case 'attrnames': /* handled separately */ break;
 					case 'latest_logs': /* handled separately */ break;
 					case 'my_notes': /* handles separately */ break;
@@ -467,10 +468,14 @@ class WebService
 
 		# Images.
 
-		if (in_array('images', $fields))
+		if (in_array('images', $fields) || in_array('preview_image', $fields))
 		{
-			foreach ($results as &$result_ref)
-				$result_ref['images'] = array();
+			if (in_array('images', $fields))
+				foreach ($results as &$result_ref)
+					$result_ref['images'] = array();
+			if (in_array('preview_image', $fields))
+				foreach ($results as &$result_ref)
+					$result_ref['preview_image'] = null;
 
 			if (Db::field_exists('pictures', 'mappreview'))
 				$preview_field = "mappreview";
@@ -496,7 +501,7 @@ class WebService
 					self::reset_unique_captions();
 					$prev_cache_code = $cache_code;
 				}
-				$results[$cache_code]['images'][] = array(
+				$image = array(
 					'uuid' => $row['uuid'],
 					'url' => $row['url'],
 					'thumb_url' => Settings::get('SITE_URL') . 'thumbs.php?uuid=' . $row['uuid'],
@@ -505,6 +510,10 @@ class WebService
 					'is_spoiler' => ($row['spoiler'] ? true : false),
 					'is_preview' => is_null($row['preview']) ? null : ($row['preview'] != 0),
 				);
+				if (in_array('images', $fields))
+					$results[$cache_code]['images'][] = $image;
+				if ($image['is_preview'] && in_array('preview_image', $fields))
+					$results[$cache_code]['preview_image'] = $image;
 			}
 		}
 
