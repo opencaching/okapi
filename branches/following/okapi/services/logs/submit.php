@@ -15,12 +15,6 @@ use okapi\Settings;
 use okapi\services\caches\search\SearchAssistant;
 use okapi\BadRequest;
 
-if (Settings::get('OC_BRANCH') == 'oc.de')
-{
-  # into global namespace, as HTMLPurifier is not namespace-aware
-  require_once $GLOBALS['rootpath'] . '../lib/htmlpurifier-4.2.0/library/HTMLPurifier.auto.php';
-}
-
 
 /**
  * This exception is thrown by WebService::_call method, when error is detected in
@@ -65,13 +59,6 @@ class WebService
 		if (!$comment_format) $comment_format = "auto";
 		if (!in_array($comment_format, array('auto', 'html', 'plaintext')))
 			throw new InvalidParam('comment_format', $comment_format);
-		else
-		{
-			if (Settings::get('OC_BRANCH') == 'oc.de')
-				$comment_format = 'html';
-			else
-				$comment_format = null;
-		}
 
 		$tmp = $request->get_parameter('when');
 		if ($tmp)
@@ -188,7 +175,10 @@ class WebService
 				# code does not belong to OKAPI!
 
 				require_once $GLOBALS['rootpath'] . '../lib/htmlpurifier-4.2.0/library/HTMLPurifier.auto.php';
-				$purifier = new \HTMLPurifier();
+				$config = \HTMLPurifier_Config::createDefault();
+				if ($comment_format == 'auto')
+					$config->set('AutoFormat', 'AutoParagraph', true);
+				$purifier = new \HTMLPurifier($config);
 				$formatted_comment = $purifier->purify($comment);
 				$value_for_text_html_field = 1;
 			}
@@ -349,7 +339,6 @@ class WebService
 
 				$second_logtype = 'Needs maintenance';
 				$second_formatted_comment = "";
-				$second_comment_format = null;
 			}
 			elseif ($logtype == "Didn't find it")
 			{
@@ -362,7 +351,6 @@ class WebService
 				$second_logtype = 'Needs maintenance';
 				$second_formatted_comment = $formatted_comment;
 				$formatted_comment = "";
-				$comment_format = null;
 			}
 			else
 				throw new Exception();
@@ -613,7 +601,6 @@ class WebService
 				from_unixtime('".mysql_real_escape_string($when)."'),
 				'".mysql_real_escape_string($formatted_comment)."',
 				'".mysql_real_escape_string($text_html)."',
-				'".($comment_format == 'html' ? 1 : 0)."',
 				now(),
 				now(),
 				'".mysql_real_escape_string(Settings::get('OC_NODE_ID'))."'
