@@ -274,7 +274,7 @@
 		</ul>
 	</opt>
 	<opt name='attribution' default='true'>
-		<p>Controls if OKAPI appends attribution notes to all cache descriptions:</p>
+		<p>Controls if OKAPI appends attribution notes to cache descriptions:</p>
 		<ul>
 			<li>
 				If <b>true</b>, OKAPI will append an attribution note to each cache description.
