@@ -459,15 +459,15 @@
 			wird empfohlen. Nach Regenfällen kann das Gelände wesentlich schwerer
 			oder überhaupt nicht begehbar sein.
 		</desc>
+		<!-- TODO: add 'wading' to Spanish translation -->
 		<name lang="es">Pantano / terreno fangoso</name>
 		<desc lang="es">
-			<!-- TODO: add 'wading' to Spanish translation -->
 			Esta cache requiere la superación de pantanos. Usar ropa apropiada.
 			Después de la lluvia, el suelo puede ser difícil o no factible.
 		</desc>
+		<!-- TODO: add 'wading' to Italian translation -->
 		<name lang="it">Palude o marcita</name>
 		<desc lang="it">
-			<!-- TODO: add 'wading' to Italian translation -->
 			Questa cache richiede il superamento di terreno paludoso o
 			acquitrinoso. Indossare un abbigliamento adeguato. Dopo la pioggia,
 			il terreno può essere molto impegnativo o non praticabile a tutti.
@@ -677,14 +677,14 @@
 			Aufgabe zu lösen muss man ggf. das Wasser betreten, schwimmen oder tauchen.
 		</desc>
 		<name lang="es">En el agua</name>
+		<!-- TODO: update Spanish translation, English and German descriptions have slightly changed -->
 		<desc lang="es">
-			<!-- TODO: update Spanish translation, English and German descriptions have slightly changed -->
 			Esta cache o una de sus etapas se encuentran bajo el agua. Usted debe
 			entrar en el agua, nadar o zambullirse.
 		</desc>
 		<name lang="it">Nell'acqua</name>
+		<!-- TODO: update Italian translation, English and German descriptions have slightly changed -->
 		<desc lang="it">
-			<!-- TODO: update Italian translation, English and German descriptions have slightly changed -->
 			Questa cache o uno dei suoi stadi sono posizionati sott'acqua. Devi
 			entrare in acqua, nuotare o fare una immersione.
 		</desc>
