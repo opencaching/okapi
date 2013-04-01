@@ -31,7 +31,7 @@ class WebService
 		'descriptions', 'hint', 'hints', 'images', 'attrnames', 'latest_logs',
 		'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
 		'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
-		'is_ignored', 'willattends', 'country', 'state', 'preview_image');
+		'is_ignored', 'willattends', 'country', 'state', 'preview_image', 'attribution_note');
 
 	public static function call(OkapiRequest $request)
 	{
@@ -73,6 +73,14 @@ class WebService
 			&& !in_array('owner', $fields)
 		)
 			$fields[] = "owner";
+
+		$attribution = $request->get_parameter('attribution');
+		if (!$attribution)
+			$attribution = 'true';
+		else if (!in_array($attribution, array('true','false')))
+			throw new InvalidParam('attribution');
+		if ($attribution == 'false' && !in_array('attribution_note',$fields))
+			$fields[] = 'attribution_note';
 
 		$log_fields = $request->get_parameter('log_fields');
 		if (!$log_fields) $log_fields = "uuid|date|user|type|comment";  // validation is done on call
@@ -286,6 +294,7 @@ class WebService
 					case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
 					case 'date_hidden': $entry['date_hidden'] = date('c', strtotime($row['date_hidden'])); break;
 					case 'internal_id': $entry['internal_id'] = $row['cache_id']; break;
+					case 'attribution_note': /* handled separately */ break;
 					default: throw new Exception("Missing field case: ".$field);
 				}
 			}
@@ -441,13 +450,16 @@ class WebService
 					 * is automatically included, whenever the cache description is included.
 					 * This is because we may need it for the attribution note - see issue 178. */
 
-					$results[$cache_code]['descriptions'][strtolower($row['language'])] = (
-						$row['desc']."\n".
-						self::get_cache_attribution_note(
-							$row['cache_id'], strtolower($row['language']), $langpref,
-							$results[$cache_code]['owner']
-						)
-					);
+					$attributed_description = $row['desc'];
+					if ($attribution == 'true' || Settings::get('OC_BRANCH') == 'oc.pl')
+					{
+						$attributed_description .= "\n" .
+							self::get_cache_attribution_note(
+								$row['cache_id'], strtolower($row['language']), $langpref,
+								$results[$cache_code]['owner'], false
+							);
+					}
+					$results[$cache_code]['descriptions'][strtolower($row['language'])] = $attributed_description;
 				}
 				if ($row['hint'])
 					$results[$cache_code]['hints'][strtolower($row['language'])] = $row['hint'];
@@ -849,6 +861,20 @@ class WebService
 			unset($states);
 		}
 
+		# Attribution note
+		if (in_array('attribution_note', $fields))
+		{
+			/* Regarding the attribution note - please note, that the "owner" field
+			 * is automatically included, whenever the cache description is included.
+			 * This is because we may need it for the attribution note - see issue 178. */
+
+			$results[$cache_code]['attribution_note'] =
+				self::get_cache_attribution_note(
+					$row['cache_id'], strtolower($row['language']), $langpref,
+					$results[$cache_code]['owner'], true
+				);
+		}
+
 		# Check which cache codes were not found and mark them with null.
 		foreach ($cache_codes as $cache_code)
 			if (!isset($results[$cache_code]))
@@ -910,7 +936,8 @@ class WebService
 	}
 
 	/**
-	 * Return attribution note to be included in the cache description.
+	 * Return attribution note to be included in the cache description
+	 * or returned as 'attribution' field.
 	 *
 	 * The $lang parameter identifies the language of the cache description
 	 * to which the attribution note will be appended to (one cache may
@@ -928,33 +955,39 @@ class WebService
 	 * $owner is in object describing the user, it has the same format as
 	 * defined in "geocache" method specs (see the "owner" field).
 	 */
-	public static function get_cache_attribution_note($cache_id, $lang, array $langpref, $owner)
+	public static function get_cache_attribution_note($cache_id, $lang, array $langpref, $owner, $for_attribution_note_field)
 	{
 		$site_url = Settings::get('SITE_URL');
 		$site_name = Okapi::get_normalized_site_name();
 		$cache_url = $site_url."viewcache.php?cacheid=$cache_id";
 
 		Okapi::gettext_domain_init(array_merge(array($lang), $langpref));
-		$note = "<p>";
-		if (Settings::get('OC_BRANCH') == 'oc.de')
+
+		if (Settings::get('OC_BRANCH') == 'oc.pl')
 		{
-			$note .= sprintf(
-				_(
-					"<em>&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, ".
-					"<a href='http://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, ".
-					"as of %s; all log entries &copy; their authors</em>"
-				),
-				$owner['profile_url'], $owner['username'], $cache_url, $site_name, strftime('%x')
-			);
+			if ($for_attribution_note_field)
+				$note = null;
+			else
+				$note = sprintf(
+					_("This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</a> site."),
+					$cache_url, $site_url, $site_name
+				);
 		}
 		else
 		{
-			$note .= sprintf(
-				_("This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</a> site."),
-				$cache_url, $site_url, $site_name
+			$note = sprintf(
+				_(
+					"&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, ".
+					"<a href='http://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, ".
+					"as of %s; all log entries &copy; their authors"
+				),
+				$owner['profile_url'], $owner['username'], $cache_url, $site_name, strftime('%x')
 			);
+			if (!$for_attribution_note_field) $note = "<em>".$note."</em>";
 		}
-		$note .= "</p>";
+
+		if (!$for_attribution_note_field) $note = "<p>".$note."</p>";
+
 		Okapi::gettext_domain_restore();
 
 		return $note;

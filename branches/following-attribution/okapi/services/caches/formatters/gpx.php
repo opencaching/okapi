@@ -138,7 +138,7 @@ class WebService
 
 		$vars['caches'] = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
 			$request->consumer, $request->token, array('cache_codes' => $cache_codes,
-			'langpref' => $langpref, 'fields' => $fields, 'lpc' => $lpc, 'user_uuid' => $user_uuid,
+			'langpref' => $langpref, 'fields' => $fields, 'attribution' => 'true', 'lpc' => $lpc, 'user_uuid' => $user_uuid,
 			'log_fields' => 'uuid|date|user|type|comment|internal_id|was_recommended')));
 		$vars['installation'] = OkapiServiceRunner::call('services/apisrv/installation', new OkapiInternalRequest(
 			new OkapiInternalConsumer(), null, array()));

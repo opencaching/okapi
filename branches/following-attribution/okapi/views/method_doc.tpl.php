@@ -54,7 +54,7 @@ $m = $vars['method'];
 									<td class='argname'><?= $arg['name'] ?></td>
 									<td class='<? echo $arg['is_required'] ? 'required' : 'optional'; ?>'><? echo $arg['is_required'] ? 'required' : 'optional'; ?></td>
 									<td class='argdesc'>
-										<?= $arg['description'] ?>
+										<?= str_replace('$DATALICENSE_URL', \okapi\Settings::get('DATA_LICENSE_URL'), $arg['description']) ?>
 									</td>
 								</tr>
 							<? } ?>

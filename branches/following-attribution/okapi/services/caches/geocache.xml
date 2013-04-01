@@ -197,6 +197,11 @@
 				between all installations.</p>
 			</li>
 			<li>
+			  <p><b>attribution_note</b> - the proper attribution note for the cache listing according
+				to the OC site's <a href="$DATALICENSE_URL">data license</a>; <b>null</b>
+				if the site does not regulate the form of attribution.</p>
+			</li>
+			<li>
 				<p><b>latest_logs</b> - a couple of latest log entries in the cache.
 				The format is the same as the one returned by the services/logs/logs method.</p>
 				<p>Notice: The number of logs returned can be set with the <b>lpc</b> option.</p>
@@ -267,6 +272,27 @@
 			<li><b>internal_id</b> - internal ID of the cache (<b>do not</b> use
 				this, unless you know what you're doing; use the "code" as an identifier).</li>
 		</ul>
+	</opt>
+	<opt name='attribution' default='true'>
+		<p>Controls if OKAPI appends attribution notes to all cache descriptions:</p>
+		<ul>
+			<li>
+				If <b>true</b>, OKAPI will append an attribution note to each cache description.
+			</li>
+			<li>
+				If <b>false</b> and the OC site regulates the form of attribution,
+				the note will not be appended  but instead returned in
+				<b>attribution_note</b> field.
+			</li>
+			<li>
+				If <b>false</b> and the site does <em>not</em> regulate the form of
+				attribution, OKAPI will append an attribution note to each cache
+				description and return <b>null</b> as <b>attribution_note</b>.
+			</li>
+		</ul>
+		<p><b>Note:</b> If you use <b>attribution</b>=<b>false</b>, you MUST
+		take care that the proper attribution is given, according to the
+		site's <a href="$DATALICENSE_URL">data license</a>.</p>
 	</opt>
 	<opt name='lpc' default='10'>
 		Log-entries per cache - the number of logs returned in the <b>latest_logs</b> field.
