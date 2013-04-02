@@ -37,6 +37,7 @@ class View
 			'okapi_base_url' => Settings::get('SITE_URL')."okapi/",
 			'installations' => OkapiMenu::get_installations(),
 			'okapi_rev' => Okapi::$revision,
+			'data_license_url' => Settings::get('DATA_LICENSE_URL'),
 		);
 
 		$response = new OkapiHttpResponse();
