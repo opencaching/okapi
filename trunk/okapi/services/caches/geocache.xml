@@ -142,6 +142,17 @@
 			<li><b>difficulty</b> - float (between 1 and 5), difficulty rating of the cache,</li>
 			<li><b>terrain</b> - float (between 1 and 5), terrain rating of the cache,</li>
 			<li>
+				<b>trip_time</b> - float, approximate total amount of time needed to
+				find the cache, in hours; this will usually include the time to reach the
+				cache location <em>and</em> go back (from/to a parking spot, etc.);
+				<b>null</b> if unknown,
+			</li>
+			<li><b>trip_distance</b> - float, approximate total distance needed to
+				find the cache, in kilometers; this will usually include the time to reach the
+				cache location <em>and</em> go back (from/to a parking spot, etc.);
+				<b>null</b> if unknown,
+			</li>
+			<li>
 				<p><b>rating</b> - float (between 1 and 5), an overall rating of the cache,
 				or <b>null</b> when the geocache does not have a sufficient amount of votes
 				to have a rating.</p>
