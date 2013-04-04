@@ -260,13 +260,12 @@ class ReplicateCommon
 		# and generate changelog entries.
 
 		require_once($GLOBALS['rootpath'].'okapi/service_runner.php');
-		$params = array();
-		$params[$feeder_keys_param] = implode("|", $key_values);
-		$params['fields'] = $fields;
-		if (Settings::get('OC_BRANCH') == 'oc.de' && $object_type == 'geocaches')
-			$params['attribution'] = 'false';
 		$current_values = OkapiServiceRunner::call($feeder_method, new OkapiInternalRequest(
-			new OkapiInternalConsumer(), null, $params));
+			new OkapiInternalConsumer(), null, array(
+				$feeder_keys_param => implode("|", $key_values),
+				'fields' => $fields,
+				'attribution_append' => 'static'  # currently, this is for the "geocaches" method only
+			)));
 		$entries = array();
 		foreach ($current_values as $key => $object)
 		{

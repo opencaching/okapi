@@ -50,11 +50,11 @@ $m = $vars['method'];
 								</td>
 							</tr>
 							<? foreach ($m['arguments'] as $arg) { ?>
-								<tr class='<?= $arg['class'] ?>' id='<?= 'opt_'.$arg['name'] ?>'>
+								<tr class='<?= $arg['class'] ?>' id='<?= 'arg_'.$arg['name'] ?>'>
 									<td class='argname'><?= $arg['name'] ?></td>
 									<td class='<? echo $arg['is_required'] ? 'required' : 'optional'; ?>'><? echo $arg['is_required'] ? 'required' : 'optional'; ?></td>
 									<td class='argdesc'>
-										<?= str_replace('$DATALICENSE_URL', $vars['data_license_url'], $arg['description']) ?>
+										<?= $arg['description'] ?>
 									</td>
 								</tr>
 							<? } ?>

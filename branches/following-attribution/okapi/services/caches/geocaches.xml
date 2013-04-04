@@ -25,7 +25,7 @@
 		of field names which you are interested with.
 		See services/caches/geocache method for a list available values.</p>
 	</opt>
-	<opt name='attribution' default='true'>
+	<opt name='attribution_append' default='full'>
 		<p>Same as in the services/caches/geocache method.</p>
 	</opt>
 	<opt name='lpc' default='10'>

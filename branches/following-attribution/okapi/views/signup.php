@@ -68,7 +68,6 @@ class View
 			'data_license_html' => Settings::get('DATA_LICENSE_URL')
 				? "<a href='".Settings::get('DATA_LICENSE_URL')."'>Data License</a>"
 				: "Data License",
-			'oc_branch' => Settings::get('OC_BRANCH'),
 		);
 
 		$response = new OkapiHttpResponse();

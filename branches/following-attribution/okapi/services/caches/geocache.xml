@@ -197,9 +197,9 @@
 				between all installations.</p>
 			</li>
 			<li>
-			  <p><b>attribution_note</b> - the proper attribution note for the cache listing according
-				to the OC site's <a href="$DATALICENSE_URL">data license</a>; <b>null</b>
-				if the site does not regulate the form of attribution.</p>
+				<p><b>attribution_note</b> - the proper attribution note for the cache listing according
+				to the local OC site's Data License. By default, this note is also appended to geocache
+				descriptions (see the <b>attribution_append</b> parameter).</p>
 			</li>
 			<li>
 				<p><b>latest_logs</b> - a couple of latest log entries in the cache.
@@ -273,26 +273,34 @@
 				this, unless you know what you're doing; use the "code" as an identifier).</li>
 		</ul>
 	</opt>
-	<opt name='attribution' default='true'>
-		<p>Controls if OKAPI appends attribution notes to cache descriptions:</p>
+	<opt name='attribution_append' default='full'>
+		<p>By default, OKAPI appends the value of <b>attribution_note</b> field to all the
+		cache descriptions. If you would like to display the attribution note separately,
+		you may use this parameter. Use one of the following values:</p>
 		<ul>
 			<li>
-				If <b>true</b>, OKAPI will append an attribution note to each cache description.
+				<b>full</b> - OKAPI will append the attribution note to the descriptions of the
+				geocache. The language of the note will match the language of the description
+				(i.e. each value in <b>descriptions</b> may contain attribution notes in
+				a different language).
 			</li>
 			<li>
-				If <b>false</b> and the OC site regulates the form of attribution,
-				the note will not be appended  but instead returned in
-				<b>attribution_note</b> field.
+				<p><b>none</b> - OKAPI will not append the attribution note to geocache
+				descriptions. You will use the <b>attribution_note</b> instead (which depends
+				on the <b>langpref</b> parameter).</p>
+				
+				<p><b>Important note:</b> You are still <b>required</b> to display the
+				<b>attribution_note</b> field in some other way.</p>
 			</li>
 			<li>
-				If <b>false</b> and the site does <em>not</em> regulate the form of
-				attribution, OKAPI will append an attribution note to each cache
-				description and return <b>null</b> as <b>attribution_note</b>.
+				<b>static</b> - OKAPI will append a "static" attribution note to the descriptions
+				of the geocache. This might equal the "full" attribution note, but not necessarilly,
+				since the "full" note may contain a current date
+				(<a href='https://code.google.com/p/opencaching-api/issues/detail?id=178'>why?</a>),
+				and the "static" note will not. This is implemented primarily for internal use
+				(i.e. the replicate module), usually you should not use it.
 			</li>
 		</ul>
-		<p><b>Note:</b> If you use <b>attribution</b>=<b>false</b>, you MUST
-		take care that the proper attribution is given, according to the
-		site's <a href="$DATALICENSE_URL">data license</a>.</p>
 	</opt>
 	<opt name='lpc' default='10'>
 		Log-entries per cache - the number of logs returned in the <b>latest_logs</b> field.
