@@ -298,7 +298,9 @@
 				since the "full" note may contain a current date
 				(<a href='https://code.google.com/p/opencaching-api/issues/detail?id=178'>why?</a>),
 				and the "static" note will not. This is implemented primarily for internal use
-				(i.e. the replicate module), usually you should not use it.
+				(i.e. the replicate module). Usually you should not use it, because on some
+				installations the static note will not be sufficient to meet the data license
+				requirements. 
 			</li>
 		</ul>
 	</opt>
