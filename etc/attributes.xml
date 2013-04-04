@@ -1,21 +1,83 @@
-﻿<attributes>
+﻿<!--
+
+Current status: WORKING DRAFT
+
+This is the list of all geocache attributes supported by OKAPI. In 
+practise, it will usually include any atribute used by at least one of 
+the OpenCaching installations.
+
+
+NOTES FOR EXTERNAL APP DEVELOPERS
+=================================
+
+DO NOT read or parse this file in your apps! It is NOT guaranteed to stay
+backward-compatible. Use public OKAPI methods instead.
+
+
+NOTES FOR OC/OKAPI DEVELOPERS
+=============================
+
+Every OC installation has its own set of internal attributes. This file
+allows them to be merged with other attributes from other OC installations.
+It is periodically read by every OKAPI installation, *directly from
+the repository*.
+
+This file defines the mapping between:
+
+1. Internal attribute IDs of various Opencaching nodes.
+2. Groundspeak's attribute IDs (used by geocaching.com).
+3. OKAPI's attribute IDs.
+
+Important: This is a verbose, many-to-many, optional relationship! Crow's foot
+notation: http://i.imgur.com/cNGz1xt.png. All those attributes may appear not
+very useful when provided this way, but there is nothing OKAPI can do about it.
+We leave the UI clarity problem for app developers.
+
+-->
+
+<xml>
+
 	<!--
-	Current status: WORKING DRAFT
 	
-	This is the list of all geocache attributes supported by OKAPI. In 
-	practise, it will usually include any atribute used by at least one of 
-	the OpenCaching installations.
+	NOTICE: Categories are currently NOT implemented. In particular, the
+	attr[categories] is ignored. See issue 70.
 	
-	Every OC installation has its own set of internal attributes. This file
-	allows them to be merged with other attributes from other OC installations.
-	It is periodically read by every OKAPI installation, *directly from
-	the repository*.
+	<category id="de-cache-types">
+		<name lang="en">TODO</name>
+	</category>
 	
-	If you're an app developer - DO NOT read or parse this file in your apps!
-	It is NOT guaranteed to stay backward-compatible. Use official OKAPI
-	methods instead.
+	<category id="de-location">
+		<name lang="en">TODO</name>
+	</category>
+
+	<category id="de-facilities">
+		<name lang="en">TODO</name>
+	</category>
+
+	<category id="de-time-and-seasons">
+		<name lang="en">TODO</name>
+	</category>
+
+	<category id="de-tools">
+		<name lang="en">TODO</name>
+	</category>
+
+	<category id="de-dangers">
+		<name lang="en">TODO</name>
+	</category>
+
+	<category id="de-rating">
+		<name lang="en">TODO</name>
+	</category>
+
+	<category id="de-preconditions">
+		<name lang="en">TODO</name>
+	</category>
+
+	<category id="de-accessibility">
+		<name lang="en">TODO</name>
+	</category>
 	
-	Contact OKAPI developers for further information.
 	-->
 	
 	<attr okapi_attr_id="oconly" categories="de-listing">
@@ -52,6 +114,10 @@
 	<attr okapi_attr_id="survey-marker" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="54" />
 		<name lang="en">Survey Marker</name>
+		<desc lang="en">
+			The cache is hidden in near proximity of a survey marker (also known
+			as geodetic marks).
+		</desc>
 		<name lang="pl">Punkt geodezyjny</name>
 		<desc lang="pl">
 			Skrzynka ukryta w pobliżu punktu geodezyjnego.
@@ -63,9 +129,15 @@
 	<attr okapi_attr_id="wherigo" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="55" />
 		<name lang="en">Whereigo Cartridge</name>
+		<desc lang="en">
+			Cache description includes a file - the Whereigo cartridge. In order to
+			find the cache, you need to download the file and install it on
+			a proper compatible device.
+		</desc>
 		<name lang="pl">Scenariusz WIGO</name>
 		<desc lang="pl">
-			Skrzynka typu WIGO zawierająca Scenariusz WIGO (Wherigo).
+			Opis skrzynki zawiera scenariusz WIGO (ang. Whereigo). Aby móc zdobyć skrzynkę
+			należy pobrać scenariusz i wgrać go do kompatybilnego z nim urządzenia.
 			<a href='http://wiki.opencaching.pl/index.php/Wherigo_czyli_Scenariusze_WIGO'>Więcej informacji</a>.
 		</desc>
 		<name lang="de">Wherigo</name>
@@ -82,7 +154,10 @@
 		</desc>
 		<name lang="pl">Skrzynka typu Letterbox</name>
 		<desc lang="pl">
-			Skrzynka typu Letterbox.
+			W skrzynce znajduje się pieczątka, której nie można zabrać ze sobą.
+			Możesz jej użyć do ostemplowania swojego osobistego dziennika.
+			Logbook skrzynki powinien z kolei zostać ostemplowany Twoją własną
+			pieczątką.
 			<a href='http://wiki.opencaching.pl/index.php/Letterboxing'>Więcej informacji</a>.
 		</desc>
 		<name lang="de">Letterbox (benötigt Stempel)</name>
@@ -111,6 +186,10 @@
 	<attr okapi_attr_id="geohotel" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="43" />
 		<name lang="en">GeoHotel</name>
+		<desc lang="pl">
+			Primary purpose of the "GeoHotel" caches is to exchange trackables
+			(TravelBugs, GeoKretys, etc.).
+		</desc>
 		<name lang="pl">GeoHotel</name>
 		<desc lang="pl">
 			Atrybut ten oznacza skrzynki których głównym celem jest lokowanie
@@ -123,6 +202,9 @@
 	<attr okapi_attr_id="magnet" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="49" />
 		<name lang="en">Magnetic cache</name>
+		<desc lang="en">
+			This geocache is attached with a magnet.
+		</desc>
 		<name lang="pl">Przyczepiona magnesem</name>
 		<desc lang="pl">
 			Skrzynka zawiera magnes i przymocowana jest za jego pomocą.
@@ -132,7 +214,11 @@
 	
 	<attr okapi_attr_id="audiofile" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="50" />
-		<name lang="en">Information in an audio file</name> <!-- The file is attached to the cache description. -->
+		<name lang="en">Information in an audio file</name>
+		<desc lang="pl">
+			In order to find this cache, you must listen to an audio recording,
+			which is attached to the cache description.
+		</desc>
 		<name lang="pl">Informacje w pliku audio</name>
 		<desc lang="pl">
 			Aby odnaleźć skrzynkę, należy odsłuchać plik dźwiękowy. Może on
@@ -144,7 +230,13 @@
 	
 	<attr okapi_attr_id="offset" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="51" />
-		<name lang="en">Offset cache</name> <!-- Multicache with simple azimuth/distance instructions. -->
+		<name lang="en">Offset cache</name>
+		<desc lang="pl">
+			A specific type of a MultiCache. The coordinates point to a starting
+			point. The description contains simple instructions to follow
+			once you are in the starting point (usually, an azimuth and a
+			distance).
+		</desc>
 		<name lang="pl">Offset cache</name>
 		<desc lang="pl">
 			Szczególny przypadek skrzynki typu multicache, składający się z
@@ -159,6 +251,9 @@
 		<groundspeak id="60" inc="true" name="Wireless Beacon" />
 		<opencaching site_url="http://opencaching.pl/" id="52" />
 		<name lang="en">Garmin's wireless beacon</name>
+		<desc lang="en">
+			Contains Garmin's wireless chirp beacon.
+		</desc>
 		<name lang="pl">Beacon - Garmin Chirp</name>
 		<desc lang="pl">
 			Skrzynka zawiera Beacon Garmin chirp.
@@ -169,10 +264,17 @@
 	<attr okapi_attr_id="usb" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="53" />
 		<name lang="en">Dead Drop USB cache</name>
+		<desc lang="pl">
+			The cache consists of an unmovable USB mass storage device, e.g.
+			fixed into a wall, curb etc. The device contains readme.txt file
+			with cache description and a logbook.txt file where you can log
+			your visit.
+		</desc>
 		<name lang="pl">Dead Drop USB skrzynka</name>
 		<desc lang="pl">
 			Skrzynka typu USB Dead Drop. Pen-drive przymocowany lub wmurowany
-			w ścianę, budynek, krawiężnik itp.
+			w ścianę, budynek, krawiężnik itp. Aby zalogować znalezienie, należy
+			wpisać się do pliku logbook.txt znajdującego się w pamięci urządzenia.
 			<a href='http://wiki.opencaching.pl/index.php/Skrzynka_Dead_Drop'>Wiecej informacji</a>.
 		</desc>
 	</attr>
@@ -371,6 +473,10 @@
 		<groundspeak id="24" inc="true" name="Wheelchair accessible" />
 		<opencaching site_url="http://opencaching.pl/" id="44" />
 		<name lang="en">Wheelchair accessible</name>
+		<desc lang="en">
+			The cache is hidden in a way which makes it possible to be found
+			when moving on a wheelchair.
+		</desc>
 		<name lang="pl">Dostępna dla niepełnosprawnych</name>
 		<desc lang="pl">
 			Skrzynka ukryta w sposób umożliwiający jej znalezienie osobom
@@ -406,6 +512,9 @@
 	<attr okapi_attr_id="walk-only" categories="de-accessibility">
 		<opencaching site_url="http://opencaching.pl/" id="84" />
 		<name lang="en">Access only by walk</name>
+		<desc lang="en">
+			The cache is accessible by walk only.
+		</desc>
 		<name lang="pl">Dostępna tylko pieszo</name>
 		<desc lang="pl">
 			Skrzynka dostępna tylko pieszo.
@@ -583,6 +692,9 @@
 		<groundspeak id="32" inc="true" name="Bicycles" />
 		<opencaching site_url="http://opencaching.pl/" id="85" />
 		<name lang="en">Bikes allowed</name>
+		<desc lang="en">
+			You can reach the cache by bike.
+		</desc>
 		<name lang="pl">Dostępna rowerem</name>
 		<desc lang="pl">
 			Można dojechać do skrzynki rowerem.
@@ -593,6 +705,10 @@
 	<attr okapi_attr_id="nature" categories="de-location">
 		<opencaching site_url="http://opencaching.pl/" id="60" />
 		<name lang="en">Hidden in natural surroundings (forests, mountains, etc.)</name> <!-- i.e. not in a city?  -->
+		<desc lang="en">
+			The cache is hidden in a remote and quick place - a forest, wild
+			meadow, a swap, etc.
+		</desc>
 		<name lang="pl">Umiejscowiona na łonie natury (lasy, góry, itp.)</name>
 		<desc lang="pl">
 			Umiejscowiona na łonie natury, z dala od cywilizacji - las, dzika
@@ -604,6 +720,10 @@
 	<attr okapi_attr_id="historic" categories="de-location">
 		<opencaching site_url="http://opencaching.pl/" id="61" />
 		<name lang="en">Historic site</name>
+		<desc lang="en">
+			The cache is hidden near a historic site - a castle, battleplace,
+			cementary, old bunkers, etc.
+		</desc>
 		<name lang="pl">Miejsce historyczne</name>
 		<desc lang="pl">
 			W sąsiedztwie miejsca historycznego - zamku, pałacu, pola bitwy,
@@ -842,9 +962,9 @@
 	<attr okapi_attr_id="24-hours" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="true" name="Available at all times" />
 		<opencaching site_url="http://opencaching.de/" id="38" />
-		<name lang="en">Available 24 hours</name>
+		<name lang="en">Available 24/7</name>
 		<desc lang="en">
-			This cache can be done both at daylight and at night.
+			This cache can be found at any time of day or week.
 		</desc>
 		<name lang="de">rund um die Uhr machbar</name>
 		<desc lang="de">
@@ -860,17 +980,17 @@
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="not-24-hours" categories="de-time-and-seasons">  <!-- changed from "working-hours" -->
+	<attr okapi_attr_id="not-24-hours" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="false" name="Available at all times" />
 		<opencaching site_url="http://opencaching.pl/" id="80" />
 		<opencaching site_url="http://opencaching.de/" id="39" />
 		<name lang="en">Not 24/7</name>
 		<desc lang="en">
-			This cache can only be done at certain times of day - see the cache
+			This cache can only be done at certain times of day or week - see the cache
 			description for more details. For example, the cache may be placed in an
 			area with restricted opening hours.
 		</desc>
-		<name lang="pl">Dostępna w określonych godzinach</name> <!-- TODO: "lub płatna"? -->
+		<name lang="pl">Dostępna w określonych godzinach</name>
 		<desc lang="pl">
 			Dostępna w określonych dniach, godzinach, często wstęp płatny.
 			Często będzie to muzeum lub skansen. Szczegółowe informacje o
@@ -896,11 +1016,11 @@
 	<attr okapi_attr_id="daycache" categories="de-time-and-seasons">
 		<groundspeak id="14" inc="false" name="Recommended at night" />
 		<opencaching site_url="http://opencaching.de/" id="40" />
-		<name lang="en">By day only</name>
+		<name lang="en">Not recommended at night</name>
 		<desc lang="en">
-			This cache shoud be attempted during daylight only. The area may be dangerous,
-			or using flashlights may be inadvisable because it would look suspicious
-			within a residential area.
+			Searching for this cache is not recommended by night. It might be
+			dangerous, or the cache may be hidden in an area where flashlights
+			may attract unwanted attention.
 		</desc>
 		<name lang="de">nur tagüber</name>
 		<desc lang="de">
@@ -928,10 +1048,18 @@
 		GS has "night cache" (52) and "recommended at night" (14).
 		night cache = can normally ONLY be done at night, reflectors etc.
 		recommended at night = can well be done at night
+		
+		On OCPL there is no distinction between these two. OCPL uses
+		"Recommended at night" attribute for "Night caches" too.
 		-->
 		<groundspeak id="14" inc="true" name="Recommended at night" />
 		<opencaching site_url="http://opencaching.pl/" id="91" />
-		<name lang="en">Recommended by night</name>
+		<name lang="en">Recommended at night</name>
+		<desc lang="pl">
+			It is recommended to search for this cache by night. I.e. there
+			might be some light-reflecting surfaces involved which are usually
+			invisible during daylight.
+		</desc>
 		<name lang="pl">Zalecane szukanie nocą</name>
 		<desc lang="pl">
 			Aby znaleźć skrzynkę zalecane jest poszukiwanie jej nocą, ze
@@ -1058,18 +1186,13 @@
 	</attr>
 	
 	<attr okapi_attr_id="snow-proof" categories="de-time-and-seasons">
-		<!--
-		TODO: can snow and winter be matched? Current OC.de attribute mapping does so,
-		and GC has a snowflake icon for this. Applications typically display
-		attributes by icons instead of names.
-		-->
 		<groundspeak id="15" inc="true" name="Available during winter" />
 		<opencaching site_url="http://opencaching.de/" id="44" />
-		<name lang="en">Snow-proof hiding place</name>
+		<name lang="en">Available during winter</name>
 		<desc lang="en">
 			This cache can be found even after heavy snowing. All stages and the
 			geocache are hidden in a snow-safe way: they will not be covered by
-			fallen snow or by snow-piles created by snow-clearing vehicles.
+			fallen snow, or ice, etc.
 		</desc>
 		<name lang="de">schneesicheres Versteck</name>
 		<desc lang="de">
@@ -1138,6 +1261,9 @@
 	<attr okapi_attr_id="pen" categories="de-tools">
 		<opencaching site_url="http://opencaching.pl/" id="48" />
 		<name lang="en">Take something to write</name>
+		<desc lang="en">
+			There is no pencil in the cache. Take something to write with.
+		</desc>
 		<name lang="pl">Weź coś do pisania</name>
 		<desc lang="pl">
 			Skrzynka nie zawiera ołówka, weź ze sobą coś do pisania.
@@ -1147,7 +1273,10 @@
 	
 	<attr okapi_attr_id="digging" categories="de-tools">
 		<opencaching site_url="http://opencaching.pl/" id="81" />
-		<name lang="en">You will need a shovel</name>
+		<name lang="en">You may need a shovel</name>
+		<desc lang="en">
+			The cache may require more digging. A shovel might come in handy.
+		</desc>
 		<name lang="pl">Potrzebna łopatka</name>
 		<desc lang="pl">
 			Skrzynka jest zakopana w ziemi.
@@ -1161,11 +1290,11 @@
 		<opencaching site_url="http://opencaching.de/" id="48" />
 		<name lang="en">Flashlight required</name>
 		<desc lang="en">
-			A flashlight is required for finding this cache. Don’t forget spare batteries!
+			You will need a flashlight to find this cache.
 		</desc>
 		<name lang="pl">Potrzebna latarka</name>
 		<desc lang="pl">
-			Przy poszukiwaniach tej skrzynki niezbędna jest latarka.
+			Przy poszukiwaniach tej skrzynki potrzebna jest latarka.
 		</desc>
 		<name lang="de">Taschenlampe</name>
 		<desc lang="de">
@@ -1327,16 +1456,18 @@
 		<groundspeak id="4" inc="true" name="Boat" />
 		<opencaching site_url="http://opencaching.pl/" id="86" />
 		<opencaching site_url="http://opencaching.de/" id="52" />
-		<name lang="en">Requires a boat</name>  <!-- changed from "May require a boat" -->
+		<name lang="en">Requires a boat</name>
 		<desc lang="en">
-			This cache usually can be found only using a watercraft. Swimming is
-			difficult or impossible because of the distance or currents.
+			This cache can usually be found only when using a watercraft.
+			Swimming is difficult or impossible because of the distance or currents.
 			See the cache description for more details.
 		</desc>
-		<name lang="pl">Przyda się sprzęt pływający</name>
+		<name lang="pl">Wymaga sprzętu pływającego</name>
 		<desc lang="pl">
-			Skrzynka dostępna tylko przy pomocy łodzi, pontonu, kajaka itp.
-			Np. na wyspie.
+			Skrzynka z tym atrybutem najczęściej może być zdobyta jedynie przy
+			użyciu sprzętu pływającego (łodzi, pontonu, kajaka itp.) Dopłynięcie
+			wpław jest trudne lub niemożliwe, ze względu na dystans, silne
+			prądy itp.
 		</desc>
 		<name lang="de">Wasserfahrzeug</name>
 		<desc lang="de">
@@ -1392,14 +1523,13 @@
 		<desc lang="en">
 			The cache is located within a dangerous area, and danges may not be
 			obvious, e.g. like high-traffic roads, steep ground or falling rocks.
-			Security measures should be taken or the cache be omitted, especially
-			when geocaching with children, large groups or at unfavourable weather
-			conditions.
+			Safety measures should be taken, especially when geocaching with
+			children, large groups of people or during bad weather conditions.
 		</desc>
 		<name lang="pl">Skrzynka niebezpieczna</name>
 		<desc lang="pl">
-			Jej poszukiwania mogą narazić na niebezpieczeństwo wypadku lub
-			urazu.
+			Skrzynka jest ukryta w niebezpiecznym terenie. Jej poszukiwania mogą
+			narazić na niebezpieczeństwo wypadku lub urazu.
 		</desc>
 		<name lang="de">gefährliches Gebiet</name>
 		<desc lang="de">
@@ -1670,6 +1800,10 @@
 		a 15 minutes limit. -->
 		<opencaching site_url="http://opencaching.pl/" id="40" />
 		<name lang="en">Quick cache</name>
+		<desc lang="en">
+			It shouldn't take more than 15 minutes to find this cache. Also,
+			there should be a parking nearby.
+		</desc>
 		<name lang="pl">Szybka skrzynka</name>
 		<desc lang="pl">
 			Jej znalezienie nie powinno zająć więcej niż 15 minut oraz jest
@@ -1711,15 +1845,18 @@
 	</attr>
 	
 	<attr okapi_attr_id="children6" categories="de-rating">
-		<groundspeak id="6" inc="true" name="Recommended for kids" />
+		<groundspeak id="6" inc="true" name="Recommended for kids" /> <!-- Not sure if this is correct. -->
 		<opencaching site_url="http://opencaching.pl/" id="41" />
-		<name lang="en">Kid friendly</name>
+		<name lang="en">Take your children</name>
+		<desc lang="pl">
+			This search if simple and safe. It's okay to take small children
+			with you.
+		</desc>
 		<name lang="pl">Można zabrać dzieci</name>
 		<desc lang="pl">
 			Jej poszukiwanie jest przyjemne, bezpieczne i można bez obaw
-			wybrać się z dziećmi, również poniżej 6 roku życia.
+			wybrać się z małymi dziećmi.
 		</desc>
-		<desc lang="de">für Kinder bis 6 Jahre geeignet</desc>
 	</attr>
 	
 	<attr okapi_attr_id="children10" categories="de-rating">
@@ -1756,4 +1893,4 @@
 		</desc>
 	</attr>
 	
-</attributes>
+</xml>
