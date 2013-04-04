@@ -63,9 +63,9 @@ class WebService
 			if (!in_array($field, self::$valid_field_names))
 				throw new InvalidParam('fields', "'$field' is not a valid field code.");
 
-		# Some fields needs be temporarily included whenever the "description"
+		# Some fields need to be temporarily included whenever the "description"
 		# or "attribution_note" field are included. That's a little ugly, but
-		# helps performance and the DRY rule.
+		# helps performance and conforms to the DRY rule.
 
 		$fields_to_remove_later = array();
 		if (
@@ -92,6 +92,8 @@ class WebService
 			throw new InvalidParam('attribution_append');
 
 		/*
+
+		WRCLEANIT:
 
 		Is this really necessary? Consumer might have downloaded the attribution note
 		in an earlier request so he doesn't have to download it again.
@@ -473,9 +475,8 @@ class WebService
 				// strtolower - ISO 639-1 codes are lowercase
 				if ($row['desc'])
 				{
-					/* Regarding the attribution note - please note, that the "owner" field
-					 * is automatically included, whenever the cache description is included.
-					 * This is because we may need it for the attribution note - see issue 178. */
+					/* Note, that the "owner" and "internal_id" fields are automatically included,
+					 * whenever the cache description is included. */
 
 					$tmp = $row['desc'];
 					if ($attribution_append != 'none')
@@ -893,9 +894,8 @@ class WebService
 
 		if (in_array('attribution_note', $fields))
 		{
-			/* Regarding the attribution note - please note, that the "owner" field
-			 * is automatically included, whenever the attribution_note is included.
-			 * See issue 178. */
+			/* Note, that the "owner" and "internal_id" fields are automatically included,
+			 * whenever the attribution_note is included. */
 
 			foreach ($results as $cache_code => &$result_ref)
 				$result_ref['attribution_note'] =
