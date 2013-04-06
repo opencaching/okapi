@@ -158,7 +158,8 @@ class WebService
 						stt.`text`
 					from
 						coordinates_type ct
-						left join sys_trans_text stt on stt.trans_id = ct.trans_id");
+						left join sys_trans_text stt on stt.trans_id = ct.trans_id
+				");
 				while ($row = mysql_fetch_assoc($rs))
 					$internal_wpt_type_id2names[$row['id']][$row['language']] = $row['text'];
 				mysql_free_result($rs);
@@ -167,11 +168,12 @@ class WebService
 			{
 				$rs = Db::query("
 					select
-						wt.id, pl, en
+						id, pl, en
 					from
-						waypoint_type wt
+						waypoint_type
 					where
-						id > 0");
+						id > 0
+				");
 				while ($row = mysql_fetch_assoc($rs))
 				{
 					$internal_wpt_type_id2names[$row['id']]['pl'] = $row['pl'];
@@ -827,7 +829,7 @@ class WebService
 			{
 				# OCPL uses 'waypoints' table to store additional waypoints and defines
 				# waypoint types in 'waypoint_type' table.
-				# OCPL also have  a special 'status' field to denote a hidden waypoint
+				# OCPL also have a special 'status' field to denote a hidden waypoint
 				# (i.e. final location of a multicache). Such hidden waypoints are not
 				# exposed by OKAPI. A stage fields is used for ordering and naming.
 
@@ -859,7 +861,7 @@ class WebService
 			{
 				# OCDE uses 'coordinates' table (with type=1) to store additional waypoints
 				# and defines waypoint types in 'coordinates_type' table.
-				# All type-1 waypoints are are public.
+				# All additional waypoints are are public.
 
 				$waypoints = Db::select_all("
 					select
