@@ -144,6 +144,42 @@ class WebService
 				throw new InvalidParam('current_position', "Longitudes have to be within -180..180 range.");
 		}
 
+		# build waypoint type-names table
+
+		if (in_array('alt_wpts', $fields))
+		{
+			$internal_wpt_type_id2names = array();
+			if (Settings::get('OC_BRANCH') == 'oc.de')
+			{
+				$rs = Db::query("
+					select
+						ct.id,
+						LOWER(stt.lang) as language,
+						stt.`text`
+					from
+						coordinates_type ct
+						left join sys_trans_text stt on stt.trans_id = ct.trans_id");
+				while ($row = mysql_fetch_assoc($rs))
+					$internal_wpt_type_id2names[$row['id']][$row['language']] = $row['text'];
+				mysql_free_result($rs);
+			}
+			else
+			{
+				$rs = Db::query("
+					select
+						wt.id, pl, en
+					from
+						waypoint_type wt
+					where
+						id > 0");
+				while ($row = mysql_fetch_assoc($rs))
+				{
+					$internal_wpt_type_id2names[$row['id']]['pl'] = $row['pl'];
+					$internal_wpt_type_id2names[$row['id']]['en'] = $row['en'];
+				}
+			}
+		}
+
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
 			# DE branch:
@@ -789,20 +825,29 @@ class WebService
 
 			if (Settings::get('OC_BRANCH') == 'oc.pl')
 			{
-				# OCPL uses 'waypoints' table to store additional waypoints. OCPL also have
-				# a special 'status' field to denote a hidden waypoint (i.e. final location
-				# of a multicache). Such hidden waypoints are not exposed by OKAPI. A stage
-				# fields is used for ordering and naming.
+				# OCPL uses 'waypoints' table to store additional waypoints and defines
+				# waypoint types in 'waypoint_type' table.
+				# OCPL also have  a special 'status' field to denote a hidden waypoint
+				# (i.e. final location of a multicache). Such hidden waypoints are not
+				# exposed by OKAPI. A stage fields is used for ordering and naming.
 
 				$waypoints = Db::select_all("
 					select
 						cache_id, stage, latitude, longitude, `desc`,
+						type as internal_type_id,
 						case type
 							when 3 then 'Flag, Red'
 							when 4 then 'Circle with X'
 							when 5 then 'Parking Area'
 							else 'Flag, Green'
-						end as sym
+						end as sym,
+						case type
+							when 1 then 'physical-stage'
+							when 2 then 'virtual-stage'
+							when 3 then 'final'
+							when 4 then 'poi'
+							when 5 then 'parking'
+							else 'other'
 					from waypoints
 					where
 						cache_id in (".$cache_codes_escaped_and_imploded.")
@@ -812,8 +857,9 @@ class WebService
 			}
 			else
 			{
-				# OCDE uses 'coordinates' table (with type=1) to store additional waypoints.
-				# All waypoints are are public.
+				# OCDE uses 'coordinates' table (with type=1) to store additional waypoints
+				# and defines waypoint types in 'coordinates_type' table.
+				# All type-1 waypoints are are public.
 
 				$waypoints = Db::select_all("
 					select
@@ -821,27 +867,39 @@ class WebService
 						@stage := @stage + 1 as stage,
 						latitude, longitude,
 						description as `desc`,
+						subtype as internal_type_id,
 						case subtype
 							when 1 then 'Parking Area'
 							when 3 then 'Flag, Blue'
 							when 4 then 'Circle with X'
 							when 5 then 'Diamond, Green'
 							else 'Flag, Green'
-						end as sym
+						end as sym,
+						case subtype
+							when 1 then 'parking'
+							when 2 then 'stage'
+							when 3 then 'path'
+							when 4 then 'final'
+							when 5 then 'poi'
+							else 'other'
+						end as type_id
 					from coordinates
 					join (select @stage := 0) s
 					where
 						type = 1
 						and cache_id in (".$cache_codes_escaped_and_imploded.")
-					order by cache_id, id, `desc`
+					order by cache_id, id
 				");
 			}
+
 			$wpt_format = "%s-%0".strlen(count($waypoints))."d";
 			foreach ($waypoints as $index => $row)
 			{
 				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
 					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $index + 1),
 					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+					'type_id' => $row['type_id'],
+					'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langpref),
 					'sym' => $row['sym'],
 					'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
 				);
