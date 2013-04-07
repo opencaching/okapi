@@ -23,8 +23,16 @@
 			<li><b>uuid</b> - ID of the log entry,</li>
 			<li>
 				<p><b>date</b> - date and time (ISO 8601) when the log entry was submitted.</p>
-				<p>Note, that some Opencaching servers don't store the exact times along
-				with the log entries.</p>
+			</li>
+			<li>
+				<p><b>time_is_valid</b> - indicates if <b>date</b> includes the log time,
+				or if the time component should be ignored:
+				<ul>
+					<li><b>true</b> - time component is valid,</li>
+					<li><b>false</b> - time component is invalid,</li>
+					<li><b>null</b> - time component is undefined,</li>
+				</ul>
+				</p>
 			</li>
 			<li><b>cache_code</b> - code of the geocache,</li>
 			<li>

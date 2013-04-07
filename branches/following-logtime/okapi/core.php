@@ -1245,6 +1245,31 @@ class Okapi
 		return $names[round(($b / 360.0) * 16.0) % 16];
 	}
 
+	/** the SQL term to request 'time_is_valid' from the cache_logs table */
+	public static function log_entry_time_is_valid_term()
+	{
+		if (Settings::get('OC_BRANCH') == 'oc.de')
+		{
+			# DE branch:
+			# - users can enter hour and minute or nothing
+			# - '00:00:00' means that no time was entered
+			# - '00:00:01' means that 00:00 was entered
+			# - everything else means that another time than 00:00 was entered
+
+			return "substring(cl.date,12) <> '00:00:00'";
+		}
+		else
+		{
+			# PL branch:
+			# - users must enter hour and minute
+			# - there are old log entries where no time was entered
+			# - '00:00:00' can either mean that no time was entered or that 00:00 was entered
+			# - everything else means that another time than 00:00 was entered
+
+			return "if(substring(cl.date,12) = '00:00:00', null, true)";
+		}
+	}
+
 	/** Escape string for use with XML. See issue 169. */
 	public static function xmlescape($string)
 	{

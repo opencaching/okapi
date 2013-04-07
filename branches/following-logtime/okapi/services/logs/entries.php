@@ -23,7 +23,7 @@ class WebService
 	}
 
 	private static $valid_field_names = array(
-		'uuid', 'cache_code', 'date', 'user', 'type', 'was_recommended', 'comment',
+		'uuid', 'cache_code', 'date', 'time_is_valid', 'user', 'type', 'was_recommended', 'comment',
 		'images', 'internal_id',
 	);
 
@@ -53,7 +53,9 @@ class WebService
 		$rs = Db::query("
 			select
 				cl.id, c.wp_oc as cache_code, cl.uuid, cl.type,
-				unix_timestamp(cl.date) as date, cl.text,
+				unix_timestamp(left(cl.date,16)) as date,  /* strip OCDE fake seconds, see Okapi::function log_entry_time_is_valid_term() */
+				".Okapi::log_entry_time_is_valid_term()." as time_is_valid,
+				cl.text,
 				u.uuid as user_uuid, u.username, u.user_id,
 				if(cr.user_id is null, 0, 1) as was_recommended
 			from
@@ -78,6 +80,7 @@ class WebService
 				'uuid' => $row['uuid'],
 				'cache_code' => $row['cache_code'],
 				'date' => date('c', $row['date']),
+				'time_is_valid' => is_null($row['time_is_valid']) ? null : ($row['time_is_valid'] > 0 ? 'true' : 'false'),
 				'user' => array(
 					'uuid' => $row['user_uuid'],
 					'username' => $row['username'],

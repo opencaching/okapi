@@ -48,7 +48,10 @@ class WebService
 		# User exists. Retrieving logs.
 
 		$rs = Db::query("
-			select cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
+			select cl.id, cl.uuid, cl.type,
+				left(unix_timestamp(cl.date),16) as date,  /* strip OCDE fake seconds, see Okapi::function log_entry_time_is_valid_term() */
+				".Okapi::log_entry_time_is_valid_term()." as time_is_valid,
+				cl.text,
 				c.wp_oc as cache_code
 			from cache_logs cl, caches c
 			where
@@ -65,6 +68,7 @@ class WebService
 			$results[] = array(
 				'uuid' => $row['uuid'],
 				'date' => date('c', $row['date']),
+				'time_is_valid' => is_null($row['time_is_valid']) ? null : ($row['time_is_valid'] > 0 ? 'true' : 'false'),
 				'cache_code' => $row['cache_code'],
 				'type' => Okapi::logtypeid2name($row['type']),
 				'comment' => $row['text']
