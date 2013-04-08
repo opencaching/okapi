@@ -49,7 +49,7 @@ class WebService
 
 		$logtype = $request->get_parameter('logtype');
 		if (!$logtype) throw new ParamMissing('logtype');
-		if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment')))
+		if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended')))
 			throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
 
 		$comment = $request->get_parameter('comment');
@@ -81,8 +81,8 @@ class WebService
 		$rating = $request->get_parameter('rating');
 		if ($rating !== null && (!in_array($rating, array(1,2,3,4,5))))
 			throw new InvalidParam('rating', "If present, it must be an integer in the 1..5 scale.");
-		if ($rating && $logtype != 'Found it')
-			throw new BadRequest("Rating is allowed only for 'Found it' logtypes.");
+		if ($rating && $logtype != 'Found it' && $logtype != 'Attended')
+			throw new BadRequest(_("Rating is allowed only for 'Found it' and 'Attended' logtypes."));
 		if ($rating !== null && (Settings::get('OC_BRANCH') == 'oc.de'))
 		{
 			# We will remove the rating request and change the success message
@@ -99,8 +99,8 @@ class WebService
 		if (!in_array($recommend, array('true', 'false')))
 			throw new InvalidParam('recommend', "Unknown option: '$recommend'.");
 		$recommend = ($recommend == 'true');
-		if ($recommend && $logtype != 'Found it')
-			throw new BadRequest(_("Recommending is allowed only for 'Found it' logtypes."));
+		if ($recommend && $logtype != 'Found it' && $logtype != 'Attended')
+			throw new BadRequest(_("Recommending is allowed only for 'Found it' and 'Attended' logtypes."));
 
 		$needs_maintenance = $request->get_parameter('needs_maintenance');
 		if (!$needs_maintenance) $needs_maintenance = 'false';
@@ -127,14 +127,28 @@ class WebService
 
 		# Various integrity checks.
 
-		if ($cache['type'] == 'Event' && $logtype != 'Comment')
-			throw new CannotPublishException(_('This cache is an Event cache. You cannot "Find it"! (But - you may "Comment" on it.)'));
+		if ($cache['type'] == 'Event')
+		{
+			if (!in_array($logtype, array('Will attend', 'Attended', 'Comment')))
+				throw new CannotPublishException(_('This cache is an Event cache.') .' '. _('You cannot "Find" it (but attend it)!'));
+			/*
+			 * Current OKAPI implementation allows comments on Event caches, while OCPL code does not.
+			 *
+			if (Settings::get('OC_BRANCH') == 'oc.pl' && $logtype == 'Comment')
+				throw new CannotPublishException(_('This cache is an Event cache.') .' '. _('You cannot comment it (but attend it)!'));
+			 */
+		}
+		else if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment')))
+			throw new CannotPublishException(_('This cache is no Event cache. You cannot "Attend" it (but find it)!'));
 		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
 			throw new CannotPublishException(_("Your have to supply some text for your comment."));
 
 		# Password check.
+		# Both OCPL and OCDE branches allow entering a log password in Event cache listings
+		# and logs, but both ignore it when posting 'Attended' logs. This can be considered
+		# as a bug (and will be fixed in OCDE code).
 
-		if ($logtype == 'Found it' && $cache['req_passwd'])
+		if (($logtype == 'Found it' || $logtype == 'Attended') && $cache['req_passwd'])
 		{
 			$valid_password = Db::select_value("
 				select logpw
@@ -267,8 +281,15 @@ class WebService
 		}
 
 		# Check if already found it (and make sure the user is not the owner).
+		# OCDE allows multiple logs of all types per cache, e.g. for multiple finds of a
+		# Moving or re-hidden cache, or multiple attends of a recurring event.
+		#
+		# TODO: Verify if event caches can be "reused" on OCPL sites, so that multiple
+		#       'Will attend' and 'Attended' logs may appear. Otherwise additional
+		#       tests for event logs should be be added here.
 
-		if (($logtype == 'Found it') || ($logtype == "Didn't find it"))
+		if (Settings::get('OC_BRANCH') == 'oc.pl'
+		    && (($logtype == 'Found it') || ($logtype == "Didn't find it")))
 		{
 			$has_already_found_it = Db::select_value("
 				select 1
@@ -363,6 +384,11 @@ class WebService
 				$second_logtype = 'Needs maintenance';
 				$second_formatted_comment = $formatted_comment;
 				$formatted_comment = "";
+			}
+			else if ($logtype == 'Will attend' || $logtype == 'Attended')
+			{
+				# OC branches which know maintenance logs do not allow them on event caches.
+				throw new CannotPublishException(_("Events cannot be \"maintained\"."));
 			}
 			else
 				throw new Exception();

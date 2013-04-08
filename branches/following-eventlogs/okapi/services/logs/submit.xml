@@ -9,9 +9,10 @@
 		<p>Code of the geocache.</p>
 	</req>
 	<req name='logtype'>
-		<p>Type of an entry. This should be one of: <i>Found it</i>, <i>Didn't find it</i>
-		or <i>Comment</i>. Currently this method does not support "Will attend" nor "Attended"
-		log types which are used for Event Caches (we are planning to add this).</p>
+		<p>Type of an entry. This should be one of: <i>Will attend</i> or <i>Attended</i>
+		for Event Caches, or <i>Found it</i>, <i>Didn't find it</i> or <i>Comment</i>
+		for other cache types. Some installations also allow <i>Comment</i> logs
+		on Event Caches.</p>
 	</req>
 	<opt name='comment'>
 		<p>Text to be submitted with the log entry.</p>
@@ -77,7 +78,8 @@
 	</opt>
 	<opt name='needs_maintenance' default='false'>
 		<p>Set to <b>true</b> if the user thinks that the cache needs some special attension
-		of its owner. Users should describe the reason for maintenance in their comments.</p>
+		of its owner. Users should describe the reason for maintenance in their comments.
+		This is <i>not</i> supported for Event Caches.</p>
 		<p>Note: Depending on OC installation and user's log entry type, OKAPI may actually
 		publish two separate log entries when you check this flag (one of them with empty
 		comment). Even then, you will still receive only one UUID reference (pointing to
