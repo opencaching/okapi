@@ -1716,10 +1716,10 @@ class Cache
 			# just replace it with a big value.
 			$timeout = 100*365*86400;
 		}
-		$entries = array();
+		$entries_escaped = array();
 		foreach ($dict as $key => $value)
 		{
-			$entries[] = "(
+			$entries_escaped[] = "(
 				'".mysql_real_escape_string($key)."',
 				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
 				date_add(now(), interval '".mysql_real_escape_string($timeout)."' second)
@@ -1727,7 +1727,7 @@ class Cache
 		}
 		Db::execute("
 			replace into okapi_cache (`key`, value, expires)
-			values ".implode(", ", $entries)."
+			values ".implode(", ", $entries_escaped)."
 		");
 	}
 
