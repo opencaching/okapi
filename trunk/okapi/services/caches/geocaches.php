@@ -179,8 +179,8 @@ class WebService
 			# PL branch:
 			# - Caches have ratings.
 			# - Total numbers of found and notfounds are kept in the "caches" table.
-			# - search_time is round trip and way_length one way; both can be null;
-			#     0 or null = not specified
+			# - search_time is round trip and way_length one way or both ways (this is different on OCDE!);
+			#   both can be null; 0 or null = not specified
 
 			$rs = Db::query("
 				select
@@ -188,7 +188,7 @@ class WebService
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
 					c.terrain, c.wp_oc, c.logpw, c.user_id,
 					if(c.search_time=0, null, c.search_time) as trip_time,
-					if(c.way_length=0, null, 2*c.way_length) as trip_distance,
+					if(c.way_length=0, null, c.way_length) as trip_distance,
 
 					c.topratings,
 					c.founds,
