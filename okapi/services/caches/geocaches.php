@@ -850,17 +850,13 @@ class WebService
 
 		# Country and/or state.
 
-		if (Settings::get('OC_BRANCH') == 'oc.de')
-			$cache_location_state = 'adm2';
-		else
-			$cache_location_state = 'adm3';
 		if (in_array('country', $fields) || in_array('state', $fields))
 		{
 			$rs = Db::query("
 				select
 					c.wp_oc as cache_code,
 					cl.adm1 as country,
-					cl.".$cache_location_state." as state
+					cl.".((Settings::get('OC_BRANCH') == 'oc.de') ? 'adm2' : 'adm3')." as state
 				from
 					caches c,
 					cache_location cl
