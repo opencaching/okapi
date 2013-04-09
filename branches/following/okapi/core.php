@@ -933,14 +933,14 @@ class Okapi
 		return $dict;
 	}
 
-	/** Returns something like "OpenCaching.PL" or "OpenCaching.DE". */
+	/** Returns something like "Opencaching.PL" or "Opencaching.DE". */
 	public static function get_normalized_site_name($site_url = null)
 	{
 		if ($site_url == null)
 			$site_url = Settings::get('SITE_URL');
 		$matches = null;
 		if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $site_url, $matches)) {
-			return "OpenCaching.".strtoupper($matches[2]);
+			return "Opencaching.".strtoupper($matches[2]);
 		} else {
 			return "DEVELSITE";
 		}
@@ -1097,7 +1097,7 @@ class Okapi
 		static $init_made = false;
 		if ($init_made)
 			return;
-		ini_set('memory_limit', '128M');
+		ini_set('memory_limit', '256M');
 		Db::connect();
 		if (Settings::get('TIMEZONE') !== null)
 			date_default_timezone_set(Settings::get('TIMEZONE'));
@@ -1716,10 +1716,10 @@ class Cache
 			# just replace it with a big value.
 			$timeout = 100*365*86400;
 		}
-		$entries = array();
+		$entries_escaped = array();
 		foreach ($dict as $key => $value)
 		{
-			$entries[] = "(
+			$entries_escaped[] = "(
 				'".mysql_real_escape_string($key)."',
 				'".mysql_real_escape_string(gzdeflate(serialize($value)))."',
 				date_add(now(), interval '".mysql_real_escape_string($timeout)."' second)
@@ -1727,7 +1727,7 @@ class Cache
 		}
 		Db::execute("
 			replace into okapi_cache (`key`, value, expires)
-			values ".implode(", ", $entries)."
+			values ".implode(", ", $entries_escaped)."
 		");
 	}
 
