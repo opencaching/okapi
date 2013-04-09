@@ -130,10 +130,15 @@ class WebService
 		if ($cache['type'] == 'Event')
 		{
 			if (!in_array($logtype, array('Will attend', 'Attended', 'Comment')))
-				throw new CannotPublishException(_('This cache is an Event cache. You cannot "Find" it (but attend it)!'));
+				throw new CannotPublishException(_('This cache is an Event cache. You cannot "Find" it (but you can attend it, or comment on it)!'));
 		}
-		else if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment')))
-			throw new CannotPublishException(_('This cache is no Event cache. You cannot "Attend" it (but find it)!'));
+		else  # type != event
+		{
+			if (in_array($logtype, array('Will attend', 'Attended')))
+				throw new CannotPublishException(_('This cache is no Event cache. You cannot "Attend" it (but you can find it, or comment on it)!'));
+			else if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment')))
+				raise Exception("Unknown log entry - should be documented here.");
+		}
 		if ($logtype == 'Comment' && strlen(trim($comment)) == 0)
 			throw new CannotPublishException(_("Your have to supply some text for your comment."));
 
