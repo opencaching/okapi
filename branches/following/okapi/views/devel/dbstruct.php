@@ -42,9 +42,9 @@ class View
 			throw new Exception("wrong database dump arguments"); 
 		$struct = shell_exec($shell_arguments);
 		if (strlen($struct) > 1000000)
-  		throw new Exception("something went terribly wrong while dumping table structures");
+			throw new Exception("something went terribly wrong while dumping table structures");
 		if (stripos($struct,"dumping data") !== FALSE)
-  		throw new Exception("something went terribly wrong while dumping table structures");
+			throw new Exception("something went terribly wrong while dumping table structures");
 
 		# Remove the "AUTO_INCREMENT=..." values. They break the diffs.
 
