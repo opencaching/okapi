@@ -62,10 +62,8 @@ class View
 	public static function call()
 	{
 		# First, let's acquire a lock to make sure the update isn't already running.
-		# We will use one of the existing lock handles, because we don't want to use
-		# to many of them. See issue 141.
 
-		$lock = OkapiLock::get('cronjobs-cron-5');
+		$lock = OkapiLock::get('db-update');
 		$lock->acquire();
 
 		try
@@ -148,7 +146,7 @@ class View
 			where
 				sh.consumer_key = c.`key`
 				and sh.service_name in ('".implode("','", array_map('mysql_real_escape_string', $service_names))."')
-				".(($days != null) ? "and sh.period_start > date_add(now(), interval -".$days." day)" : "")."
+				".(($days != null) ? "and sh.period_start > date_add(now(), interval '".mysql_real_escape_string(-$days)."' day)" : "")."
 		");
 	}
 
@@ -432,7 +430,7 @@ class View
 		print "prefix), but it won't usually alter other tables in your\n";
 		print "database. Still, sometimes we may change something\n";
 		print "slightly (either to make OKAPI work properly OR as a part of\n";
-		print "bigger \"international OpenCaching unification\" ideas).\n\n";
+		print "bigger \"international Opencaching unification\" ideas).\n\n";
 		print "We will let you know every time OKAPI alters database structure\n";
 		print "(outside of the \"okapi_\" table-scope). If you have any comments\n";
 		print "on this procedure, please submit them to our issue tracker.\n\n";

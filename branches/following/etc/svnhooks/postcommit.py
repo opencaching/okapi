@@ -15,8 +15,7 @@
 #   - builds a package (okapi-rNNN.tar.gz),
 #   - posts the package on the Project Homepage,
 #   - checks out okapi directory of the opencaching-pl project,
-#   - replaces the okapi directory with the new version (i.e. currently
-#     all the files which might have been removed will REMAIN),
+#   - replaces the okapi directory with the new version,
 #   - commits the changes to opencaching-pl project.
 
 import contextlib

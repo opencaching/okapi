@@ -192,12 +192,14 @@
 				</ul>
 			</li>
 			<li>
-				<p><b>preview_image</b> - This is either <b>null</b> or a dictionary describing
-				an image, which has been marked by the owner as <em>preview image</em>. You are
-				encouraged to display it as a 'teaser' for this cache.
-				The structure of the dictionary is the same as in the <b>images</b> field above.</p>
-				<p>The preview image is no additional image but one of those which
-				are included in the <b>images</b> list.</p>
+				<p><b>preview_image</b> - On some installations, owners may select one of the <b>images</b>
+				(see above) as a preview image. You are encouraged to display it as a 'teaser'
+				for this cache. On other installations this functionality is disabled and you
+				will always get the <b>null</b> value here.</p>
+
+				<p>The value of <b>preview_image</b> is either <b>null</b> or a dictionary describing
+				an image. The structure of this dictionary is the same as of a single entry on
+				the <b>images</b> list described above.</p>
 			</li>
 			<li>
 				<p><b>attrnames</b> - list of names of attributes of the cache; the language will
@@ -206,6 +208,11 @@
 				why we don't reference them by their IDs - we only return them as text. This could change
 				*if* OC installations would begin to use UUIDs for their attributes and synchronize them
 				between all installations.</p>
+			</li>
+			<li>
+				<p><b>attribution_note</b> - the proper attribution note for the cache listing according
+				to the local OC site's Data License. By default, this note is also appended to geocache
+				descriptions (see the <b>attribution_append</b> parameter).</p>
 			</li>
 			<li>
 				<p><b>latest_logs</b> - a couple of latest log entries in the cache.
@@ -265,7 +272,7 @@
 			<li>
 				<p><b>last_found</b> - date and time (ISO 8601) when the
 				geocache was last found <b>or null</b> when it hasn't been yet found.</p>
-				<p>Note, that some OpenCaching servers don't store the exact times along
+				<p>Note, that some Opencaching servers don't store the exact times along
 				with the log entries.</p>
 			</li>
 			<li><b>last_modified</b> - date and time (ISO 8601) when the
@@ -279,6 +286,37 @@
 			to have multiple universally unique keys. -->
 			<li><b>internal_id</b> - internal ID of the cache (<b>do not</b> use
 				this, unless you know what you're doing; use the "code" as an identifier).</li>
+		</ul>
+	</opt>
+	<opt name='attribution_append' default='full'>
+		<p>By default, OKAPI appends the value of <b>attribution_note</b> field to all the
+		cache descriptions. If you would like to display the attribution note separately,
+		you may use this parameter. Use one of the following values:</p>
+		<ul>
+			<li>
+				<b>full</b> - OKAPI will append the attribution note to the descriptions of the
+				geocache. The language of the note will match the language of the description
+				(i.e. each value in <b>descriptions</b> may contain attribution notes in
+				a different language).
+			</li>
+			<li>
+				<p><b>none</b> - OKAPI will not append the attribution note to geocache
+				descriptions. You will use the <b>attribution_note</b> instead (which depends
+				on the <b>langpref</b> parameter).</p>
+				
+				<p><b>Important note:</b> You are still <b>required</b> to display the
+				<b>attribution_note</b> field in some other way.</p>
+			</li>
+			<li>
+				<b>static</b> - OKAPI will append a "static" attribution note to the descriptions
+				of the geocache. This might equal the "full" attribution note, but not necessarilly,
+				since the "full" note may contain a current date
+				(<a href='https://code.google.com/p/opencaching-api/issues/detail?id=178'>why?</a>),
+				and the "static" note will not. This is implemented primarily for internal use
+				(i.e. the replicate module). Usually you should not use it, because on some
+				installations the static note will not be sufficient to meet the data license
+				requirements. 
+			</li>
 		</ul>
 	</opt>
 	<opt name='lpc' default='10'>
