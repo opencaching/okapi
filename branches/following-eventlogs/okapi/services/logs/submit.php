@@ -135,7 +135,7 @@ class WebService
 		else  # type != event
 		{
 			if (in_array($logtype, array('Will attend', 'Attended')))
-				throw new CannotPublishException(_('This cache is no Event cache. You cannot "Attend" it (but you can find it, or comment on it)!'));
+				throw new CannotPublishException(_('This cache is NOT an Event cache. You cannot "Attend" it (but you can find it, or comment on it)!'));
 			else if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment')))
 				raise Exception("Unknown log entry - should be documented here.");
 		}
