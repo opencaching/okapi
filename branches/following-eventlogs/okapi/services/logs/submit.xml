@@ -9,10 +9,16 @@
 		<p>Code of the geocache.</p>
 	</req>
 	<req name='logtype'>
-		<p>Type of an entry. This should be one of: <i>Will attend</i> or <i>Attended</i>
-		for Event Caches, or <i>Found it</i>, <i>Didn't find it</i> or <i>Comment</i>
-		for other cache types. Some installations also allow <i>Comment</i> logs
-		on Event Caches.</p>
+		<p>Type of an entry. This should be one of:</p>
+		<ul>
+			<li>
+				<i>Will attend</i>, <i>Attended</i> or <i>Comment</i> for Event caches;
+			</li>
+			<li>
+				<i>Found it</i>, <i>Didn't find it</i> or <i>Comment</i> for all other
+				cache types.
+			</li>
+		</ul>
 	</req>
 	<opt name='comment'>
 		<p>Text to be submitted with the log entry.</p>

@@ -82,7 +82,7 @@ class WebService
 		if ($rating !== null && (!in_array($rating, array(1,2,3,4,5))))
 			throw new InvalidParam('rating', "If present, it must be an integer in the 1..5 scale.");
 		if ($rating && $logtype != 'Found it' && $logtype != 'Attended')
-			throw new BadRequest(_("Rating is allowed only for 'Found it' and 'Attended' logtypes."));
+			throw new BadRequest("Rating is allowed only for 'Found it' and 'Attended' logtypes.");
 		if ($rating !== null && (Settings::get('OC_BRANCH') == 'oc.de'))
 		{
 			# We will remove the rating request and change the success message
@@ -100,7 +100,7 @@ class WebService
 			throw new InvalidParam('recommend', "Unknown option: '$recommend'.");
 		$recommend = ($recommend == 'true');
 		if ($recommend && $logtype != 'Found it' && $logtype != 'Attended')
-			throw new BadRequest(_("Recommending is allowed only for 'Found it' and 'Attended' logtypes."));
+			throw new BadRequest("Recommending is allowed only for 'Found it' and 'Attended' logtypes.");
 
 		$needs_maintenance = $request->get_parameter('needs_maintenance');
 		if (!$needs_maintenance) $needs_maintenance = 'false';
@@ -130,13 +130,7 @@ class WebService
 		if ($cache['type'] == 'Event')
 		{
 			if (!in_array($logtype, array('Will attend', 'Attended', 'Comment')))
-				throw new CannotPublishException(_('This cache is an Event cache.') .' '. _('You cannot "Find" it (but attend it)!'));
-			/*
-			 * Current OKAPI implementation allows comments on Event caches, while OCPL code does not.
-			 *
-			if (Settings::get('OC_BRANCH') == 'oc.pl' && $logtype == 'Comment')
-				throw new CannotPublishException(_('This cache is an Event cache.') .' '. _('You cannot comment it (but attend it)!'));
-			 */
+				throw new CannotPublishException(_('This cache is an Event cache. You cannot "Find" it (but attend it)!'));
 		}
 		else if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment')))
 			throw new CannotPublishException(_('This cache is no Event cache. You cannot "Attend" it (but find it)!'));
@@ -145,8 +139,8 @@ class WebService
 
 		# Password check.
 		# Both OCPL and OCDE branches allow entering a log password in Event cache listings
-		# and logs, but both ignore it when posting 'Attended' logs. This can be considered
-		# as a bug (and will be fixed in OCDE code).
+		# and logs, but both ignore it when posting 'Attended' logs. This is considered a
+		# bug in OCDE code and will be fixed; it may be changed in OCPL code, too.
 
 		if (($logtype == 'Found it' || $logtype == 'Attended') && $cache['req_passwd'])
 		{
@@ -281,12 +275,9 @@ class WebService
 		}
 
 		# Check if already found it (and make sure the user is not the owner).
-		# OCDE allows multiple logs of all types per cache, e.g. for multiple finds of a
-		# Moving or re-hidden cache, or multiple attends of a recurring event.
 		#
-		# TODO: Verify if event caches can be "reused" on OCPL sites, so that multiple
-		#       'Will attend' and 'Attended' logs may appear. Otherwise additional
-		#       tests for event logs should be be added here.
+		# OCPL forbids logging 'Found it' or "Didn't find" for an already found cache,
+		# while OCDE allows all kinds of duplicate logs.
 
 		if (Settings::get('OC_BRANCH') == 'oc.pl'
 		    && (($logtype == 'Found it') || ($logtype == "Didn't find it")))
