@@ -144,44 +144,6 @@ class WebService
 				throw new InvalidParam('current_position', "Longitudes have to be within -180..180 range.");
 		}
 
-		# build waypoint type-names table
-
-		if (in_array('alt_wpts', $fields))
-		{
-			$internal_wpt_type_id2names = array();
-			if (Settings::get('OC_BRANCH') == 'oc.de')
-			{
-				$rs = Db::query("
-					select
-						ct.id,
-						LOWER(stt.lang) as language,
-						stt.`text`
-					from
-						coordinates_type ct
-						left join sys_trans_text stt on stt.trans_id = ct.trans_id
-				");
-				while ($row = mysql_fetch_assoc($rs))
-					$internal_wpt_type_id2names[$row['id']][$row['language']] = $row['text'];
-				mysql_free_result($rs);
-			}
-			else
-			{
-				$rs = Db::query("
-					select
-						id, pl, en
-					from
-						waypoint_type
-					where
-						id > 0
-				");
-				while ($row = mysql_fetch_assoc($rs))
-				{
-					$internal_wpt_type_id2names[$row['id']]['pl'] = $row['pl'];
-					$internal_wpt_type_id2names[$row['id']]['en'] = $row['en'];
-				}
-			}
-		}
-
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
 			# DE branch:
@@ -821,6 +783,39 @@ class WebService
 
 		if (in_array('alt_wpts', $fields))
 		{
+			$internal_wpt_type_id2names = array();
+			if (Settings::get('OC_BRANCH') == 'oc.de')
+			{
+				$rs = Db::query("
+					select
+						ct.id,
+						LOWER(stt.lang) as language,
+						stt.`text`
+					from
+						coordinates_type ct
+						left join sys_trans_text stt on stt.trans_id = ct.trans_id
+				");
+				while ($row = mysql_fetch_assoc($rs))
+					$internal_wpt_type_id2names[$row['id']][$row['language']] = $row['text'];
+				mysql_free_result($rs);
+			}
+			else
+			{
+				$rs = Db::query("
+					select
+						id, pl, en
+					from
+						waypoint_type
+					where
+						id > 0
+				");
+				while ($row = mysql_fetch_assoc($rs))
+				{
+					$internal_wpt_type_id2names[$row['id']]['pl'] = $row['pl'];
+					$internal_wpt_type_id2names[$row['id']]['en'] = $row['en'];
+				}
+			}
+
 			foreach ($results as &$result_ref)
 				$result_ref['alt_wpts'] = array();
 			$cache_codes_escaped_and_imploded = "'".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."'";
@@ -850,6 +845,7 @@ class WebService
 							when 4 then 'poi'
 							when 5 then 'parking'
 							else 'other'
+						as okapi_type
 					from waypoints
 					where
 						cache_id in (".$cache_codes_escaped_and_imploded.")
@@ -884,7 +880,7 @@ class WebService
 							when 4 then 'final'
 							when 5 then 'poi'
 							else 'other'
-						end as type_id
+						end as okapi_type
 					from coordinates
 					join (select @stage := 0) s
 					where
@@ -900,7 +896,7 @@ class WebService
 				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
 					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $index + 1),
 					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
-					'type_id' => $row['type_id'],
+					'type' => $row['okapi_type'],
 					'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langpref),
 					'sym' => $row['sym'],
 					'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],

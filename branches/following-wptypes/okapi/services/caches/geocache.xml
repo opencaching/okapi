@@ -241,7 +241,7 @@
 					<li><b>name</b> - plain-text, short, unique "codename" for the waypoint,</li>
 					<li><b>location</b> - location of the waypoint in the "lat|lon" format
 						(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
-					<li><b>type_id</b> - string, unique identifier for the type of waypoint; one
+					<li><b>type</b> - string, unique identifier for the type of waypoint; one
 						of the following: <b>parking</b>, <b>path</b>, <b>stage</b>,
 						<b>physical-stage</b>, <b>virtual-stage</b>, <b>final</b>, <b>poi</b>, <b>other</b>;
 						more types may be added; unknown types should be treated as <b>other</b>,
