@@ -837,10 +837,12 @@ class WebService
 				");
 			}
 			$wpt_format = "%s-%0".strlen(count($waypoints))."d";
-			foreach ($waypoints as $index => $row)
+			$index = 0;
+			foreach ($waypoints as $row)
 			{
+				$index++;
 				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
-					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $index + 1),
+					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $index),
 					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
 					'sym' => $row['sym'],
 					'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
