@@ -381,7 +381,7 @@ class WebService
 			else if ($logtype == 'Will attend' || $logtype == 'Attended')
 			{
 				# OC branches which know maintenance logs do not allow them on event caches.
-				throw new CannotPublishException(_("Events cannot be \"maintained\"."));
+				throw new CannotPublishException(_("Event caches cannot \"need maintenance\"."));
 			}
 			else
 				throw new Exception();
