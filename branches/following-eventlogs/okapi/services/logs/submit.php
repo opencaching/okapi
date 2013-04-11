@@ -143,9 +143,6 @@ class WebService
 			throw new CannotPublishException(_("Your have to supply some text for your comment."));
 
 		# Password check.
-		# Both OCPL and OCDE branches allow entering a log password in Event cache listings
-		# and logs, but both ignore it when posting 'Attended' logs. This is considered a
-		# bug in OCDE code and will be fixed; it may be changed in OCPL code, too.
 
 		if (($logtype == 'Found it' || $logtype == 'Attended') && $cache['req_passwd'])
 		{
