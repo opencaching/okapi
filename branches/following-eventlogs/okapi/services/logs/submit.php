@@ -164,8 +164,8 @@ class WebService
 		if (Settings::get('OC_BRANCH') == 'oc.de')
 		{
 			# OCDE stores all comments in HTML format, while the 'text_html' field
-			# indicates their *original* format as delivered by the user. This 
-			# allows processing the 'text' field contents without caring about the 
+			# indicates their *original* format as delivered by the user. This
+			# allows processing the 'text' field contents without caring about the
 			# original format, while still being able to re-create the comment in
 			# its original form. It requires us to HTML-encode plaintext comments
 			# and to indicate this by setting 'html_text' to FALSE.
@@ -282,7 +282,7 @@ class WebService
 		# while OCDE allows all kinds of duplicate logs.
 
 		if (Settings::get('OC_BRANCH') == 'oc.pl'
-		    && (($logtype == 'Found it') || ($logtype == "Didn't find it")))
+			&& (($logtype == 'Found it') || ($logtype == "Didn't find it")))
 		{
 			$has_already_found_it = Db::select_value("
 				select 1

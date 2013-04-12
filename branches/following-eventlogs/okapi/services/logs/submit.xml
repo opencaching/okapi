@@ -84,13 +84,14 @@
 	</opt>
 	<opt name='needs_maintenance' default='false'>
 		<p>Set to <b>true</b> if the user thinks that the cache needs some special attension
-		of its owner. Users should describe the reason for maintenance in their comments.
-		This is <i>not</i> supported for Event Caches.</p>
+		of its owner. Users should describe the reason for maintenance in their comments.</p>
 		<p>Note: Depending on OC installation and user's log entry type, OKAPI may actually
 		publish two separate log entries when you check this flag (one of them with empty
 		comment). Even then, you will still receive only one UUID reference (pointing to
 		only one of those entries). Moreover, on some OC servers this flag might be
 		<b>completely ignored</b> (not all OC servers support this feature).</p>
+		<p>Note: Currently, this is not allowed for Event Caches (you will get a HTTP 200
+		"user friendly" response).</p>
 	</opt>
 	<common-format-params/>
 	<returns>
