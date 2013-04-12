@@ -845,7 +845,7 @@ class WebService
 							when 4 then 'poi'
 							when 5 then 'parking'
 							else 'other'
-						as okapi_type
+						end as okapi_type
 					from waypoints
 					where
 						cache_id in (".$cache_codes_escaped_and_imploded.")
