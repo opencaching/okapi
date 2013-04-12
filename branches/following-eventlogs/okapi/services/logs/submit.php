@@ -99,8 +99,13 @@ class WebService
 		if (!in_array($recommend, array('true', 'false')))
 			throw new InvalidParam('recommend', "Unknown option: '$recommend'.");
 		$recommend = ($recommend == 'true');
-		if ($recommend && $logtype != 'Found it' && $logtype != 'Attended')
-			throw new BadRequest("Recommending is allowed only for 'Found it' and 'Attended' logtypes.");
+		if ($recommend && $logtype != 'Found it')
+		{
+			if (Settings::get('OC_BRANCH') == 'oc.pl')
+				throw new BadRequest("Recommending is allowed only for 'Found it' logtypes.");
+			else if ($logtype != 'Attended')
+				throw new BadRequest("Recommending is allowed only for 'Found it' and 'Attended' logtypes.");
+		}
 
 		$needs_maintenance = $request->get_parameter('needs_maintenance');
 		if (!$needs_maintenance) $needs_maintenance = 'false';
