@@ -179,8 +179,8 @@ class WebService
 			# PL branch:
 			# - Caches have ratings.
 			# - Total numbers of found and notfounds are kept in the "caches" table.
-			# - search_time is round trip and way_length one way; both can be null;
-			#     0 or null = not specified
+			# - search_time is round trip and way_length one way or both ways (this is different on OCDE!);
+			#   both can be null; 0 or null = not specified
 
 			$rs = Db::query("
 				select
@@ -188,7 +188,7 @@ class WebService
 					c.date_created, c.type, c.status, c.date_hidden, c.size, c.difficulty,
 					c.terrain, c.wp_oc, c.logpw, c.user_id,
 					if(c.search_time=0, null, c.search_time) as trip_time,
-					if(c.way_length=0, null, 2*c.way_length) as trip_distance,
+					if(c.way_length=0, null, c.way_length) as trip_distance,
 
 					c.topratings,
 					c.founds,
@@ -891,10 +891,12 @@ class WebService
 			}
 
 			$wpt_format = "%s-%0".strlen(count($waypoints))."d";
-			foreach ($waypoints as $index => $row)
+			$index = 0;
+			foreach ($waypoints as $row)
 			{
+				$index++;
 				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
-					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $index + 1),
+					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $index),
 					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
 					'type' => $row['okapi_type'],
 					'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langpref),
@@ -906,17 +908,13 @@ class WebService
 
 		# Country and/or state.
 
-		if (Settings::get('OC_BRANCH') == 'oc.de')
-			$cache_location_state = 'adm2';
-		else
-			$cache_location_state = 'adm3';
 		if (in_array('country', $fields) || in_array('state', $fields))
 		{
 			$rs = Db::query("
 				select
 					c.wp_oc as cache_code,
 					cl.adm1 as country,
-					cl.".$cache_location_state." as state
+					cl.".((Settings::get('OC_BRANCH') == 'oc.de') ? 'adm2' : 'adm3')." as state
 				from
 					caches c,
 					cache_location cl
@@ -1072,6 +1070,8 @@ class WebService
 		}
 		else
 		{
+			# OC.de wants the tld in lowercase here
+			$site_name = ucfirst(strtolower($site_name));
 			if ($type == 'full')
 			{
 				$note = sprintf(
