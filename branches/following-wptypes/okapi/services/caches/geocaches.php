@@ -850,7 +850,6 @@ class WebService
 					where
 						cache_id in (".$cache_codes_escaped_and_imploded.")
 						and status = 1
-						and type > 0   /* workaround for OCPL bug, there are WPs with type -1 */
 					order by cache_id, stage, `desc`
 				");
 			}
