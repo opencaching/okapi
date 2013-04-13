@@ -28,14 +28,17 @@
 				</ul>
 			</li>
 			<li>
-				<p><b>type</b> - string; log type. This could be <b>pretty much everything</b>, but
-				there are five primary types:</p>
+				<p><b>type</b> - string; log type. There are eleven pre-defined types:</p>
 				<ul>
-					<li>"Found it" and "Didn't find it" - for all Non-Event Caches,</li>
+					<li>"Found it",  "Didn't find it" and "Needs maintenance" -
+						for all Non-Event Caches,</li>
 					<li>"Will attend" and "Attended" - for Event Caches,</li>
-					<li>"Comment" - for all cache types.</li>
+					<li>"Comment" - for all cache types,</li>
+					<li>"Ready to search", "Temporarily unavailable", "Archived", "Moved",
+						"OC Team comment" - for all cache types, but can be logged by the
+						cache owner or OC admins only.</li>
 				</ul>
-				<p>You may treat every other string as "Comment".</p>
+				<p>Any other strings may appear here as well. You may treat them as "Comment".</p>
 			</li>
 			<li>
 				<p><b>was_recommended</b> - true, if the author included his recommendation

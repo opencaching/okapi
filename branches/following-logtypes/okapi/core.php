@@ -780,6 +780,24 @@ class Okapi
 	public static $revision = null; # This gets replaced in automatically deployed packages
 	private static $okapi_vars = null;
 
+	# Node IDs of all Opencaching sites, including reserved IDs
+	# Source: https://github.com/OpencachingDeutschland/oc-server3/blob/master/htdocs/config2/settings-dist.inc.php
+
+	const OC_NODE_DE = 1;    # includes IT and ES
+	const OC_NODE_PL = 2;
+	const OC_NODE_CZ = 3;
+	const OC_NODE_DEVELSITE = 4; # in use at OC.de developer systems
+	const OC_NODE_DE_TEST = 5;   # OC.de test site, currently not in use
+	const OC_NODE_SE = 6;    # includes NO
+	const OC_NODE_UK = 7;
+		# 8 has been Norway before merger with Sweden
+	const OC_NODE_LV = 9;    # not started, see http://www.opencaching.lv/
+	const OC_NODE_US = 10;
+	const OC_NODE_JP = 11;   # out of service
+	const OC_NODE_RU = 12;   # not started or out of service?
+		# 13 is reserved for opencaching.com
+	const OC_NODE_NL = 14;
+
 	/** Get a variable stored in okapi_vars. If variable not found, return $default. */
 	public static function get_var($varname, $default = null)
 	{
@@ -1605,14 +1623,30 @@ class Okapi
 	{
 		# Various OC nodes use different English names, even for primary
 		# log types. OKAPI needs to have them the same across *all* OKAPI
-		# installations. That's why these 3 are hardcoded (and should
-		# NEVER be changed).
+		# installations. That's why the well-known types are hardcoded
+		# (and should NEVER be changed).
 
 		if ($id == 1) return "Found it";
 		if ($id == 2) return "Didn't find it";
 		if ($id == 3) return "Comment";
 		if ($id == 7) return "Attended";
 		if ($id == 8) return "Will attend";
+
+		# TODO:
+		#   - Add OC_NODE_NL after move to OCPL code.
+		#   - Add US and UK sites after verifying which log types are defined there.
+
+		if (in_array(Settings::get('OC_NODE_ID'),
+		             array(Okapi::OC_NODE_DE, Okapi::OC_NODE_PL, Okapi::OC_NODE_DEVELSITE, Okapi::OC_NODE_DE_TEST)))
+		{
+			# These types are present at OC.pl and reserved at OC.de.
+			if ($id == 4) return "Moved";
+			if ($id == 5) return "Needs maintenance";
+			if ($id == 9) return "Archived";
+			if ($id == 10) return "Ready to search";
+			if ($id == 11) return "Temporarily unavailable";
+			if ($id == 12) return "OC Team comment";
+		}
 
 		static $other_types = null;
 		if ($other_types === null)
