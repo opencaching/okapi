@@ -896,7 +896,7 @@ class WebService
 			{
 				if (!isset($internal_wpt_type_id2names[$row['internal_type_id']]))
 				{
-					# Sanity check. Unknown types won't be accessible via OKAPI.
+					# Sanity check. Waypoints of undefined type won't be accessible via OKAPI.
 					# See issue 219.
 					continue;
 				}
