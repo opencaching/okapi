@@ -23,7 +23,7 @@ the repository*.
 
 This file defines the mapping between:
 
-- Internal attribute IDs of various Opencaching nodes.
+- Internal attribute IDs of various Opencaching nodes ("db_branch").
 - Groundspeak's attribute IDs (used by geocaching.com).
 - OKAPI's attribute IDs.
 
@@ -51,7 +51,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	attr[categories] is ignored. See issue 70.
 	-->
 	<attr okapi_attr_id="A1" categories="de-listing">
-		<opencaching site_url="http://opencaching.de/" id="6" />
+		<opencaching db_branch="OCDE" id="6" />
 		<lang id="en">
 			<name>Listed at Opencaching only</name>
 			<search>
@@ -99,7 +99,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A2" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.pl/" id="54" />
+		<opencaching db_branch="OCPL" id="54" />
 		<lang id="en">
 			<name>Near a Survey Marker</name>
 			<search>
@@ -124,7 +124,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A3" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.pl/" id="55" />
+		<opencaching db_branch="OCPL" id="55" />
 		<lang id="en">
 			<name>Wherigo Cache</name>
 			<search>
@@ -155,8 +155,8 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A4" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.pl/" id="56" />
-		<opencaching site_url="http://opencaching.de/" id="8" />
+		<opencaching db_branch="OCPL" id="56" />
+		<opencaching db_branch="OCDE" id="8" />
 		<lang id="en">
 			<name>Letterbox Cache</name>
 			<desc>
@@ -204,7 +204,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A5" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.pl/" id="43" />
+		<opencaching db_branch="OCPL" id="43" />
 		<lang id="en">
 			<name>GeoHotel Cache</name>
 			<desc>
@@ -225,7 +225,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A6" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.pl/" id="49" />
+		<opencaching db_branch="OCPL" id="49" />
 		<lang id="en">
 			<name>Magnetic Cache</name>
 			<desc>
@@ -243,7 +243,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A7" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.pl/" id="50" />
+		<opencaching db_branch="OCPL" id="50" />
 		<lang id="en">
 			<name>Description contains an audio file</name>
 			<desc>
@@ -261,7 +261,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A8" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.pl/" id="51" />
+		<opencaching db_branch="OCPL" id="51" />
 		<lang id="en">
 			<name>Offset cache</name>
 			<desc>
@@ -286,7 +286,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A9" categories="de-cache-types">
 		<groundspeak id="60" inc="true" name="Wireless Beacon" />
-		<opencaching site_url="http://opencaching.pl/" id="52" />
+		<opencaching db_branch="OCPL" id="52" />
 		<lang id="en">
 			<name>Garmin's wireless beacon</name>
 			<desc>
@@ -304,7 +304,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A10" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.pl/" id="53" />
+		<opencaching db_branch="OCPL" id="53" />
 		<lang id="en">
 			<name>Dead Drop USB cache</name>
 			<desc>
@@ -325,7 +325,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A11" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.de/" id="31" />
+		<opencaching db_branch="OCDE" id="31" />
 		<lang id="en">
 			<name>Has a moving target</name>
 			<desc>
@@ -367,7 +367,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A12" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.de/" id="32" />
+		<opencaching db_branch="OCDE" id="32" />
 		<lang id="en">
 			<name>a webcam is involved</name>
 			<desc>
@@ -408,7 +408,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A13" categories="de-cache-types">
-		<opencaching site_url="http://opencaching.de/" id="57" />
+		<opencaching db_branch="OCDE" id="57" />
 		<lang id="en">
 			<name>Other cache type</name>
 			<desc>
@@ -438,7 +438,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A14" categories="de-preconditions">
-		<opencaching site_url="http://opencaching.de/" id="54" />
+		<opencaching db_branch="OCDE" id="54" />
 		<lang id="en">
 			<name>Investigation required</name>
 			<desc>
@@ -467,7 +467,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A15" categories="de-preconditions">
 		<groundspeak id="47" inc="true" name="Field puzzle" />
-		<opencaching site_url="http://opencaching.de/" id="55" />
+		<opencaching db_branch="OCDE" id="55" />
 		<lang id="en">
 			<name>Puzzle / Mystery</name>
 			<desc>
@@ -495,7 +495,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A16" categories="de-preconditions">
-		<opencaching site_url="http://opencaching.de/" id="56" />
+		<opencaching db_branch="OCDE" id="56" />
 		<lang id="en">
 			<name>Arithmetical problem</name>
 			<desc>
@@ -527,7 +527,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A17" categories="de-preconditions">
-		<opencaching site_url="http://opencaching.de/" id="58" />
+		<opencaching db_branch="OCDE" id="58" />
 		<lang id="en">
 			<name>Ask owner for start conditions</name>
 			<desc>
@@ -557,7 +557,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A18" categories="de-accessibility">
 		<groundspeak id="24" inc="true" name="Wheelchair accessible" />
-		<opencaching site_url="http://opencaching.pl/" id="44" />
+		<opencaching db_branch="OCPL" id="44" />
 		<lang id="en">
 			<name>Wheelchair accessible</name>
 			<desc>
@@ -580,7 +580,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A19" categories="de-accessibility">
 		<groundspeak id="53" inc="true" name="Park and grab" />
-		<opencaching site_url="http://opencaching.de/" id="24" />
+		<opencaching db_branch="OCDE" id="24" />
 		<lang id="en">
 			<name>Near the parking area</name>
 			<desc>
@@ -608,7 +608,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A20" categories="de-accessibility">
-		<opencaching site_url="http://opencaching.pl/" id="84" />
+		<opencaching db_branch="OCPL" id="84" />
 		<lang id="en">
 			<name>Access only by walk</name>
 			<desc>
@@ -624,7 +624,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A21" categories="de-accessibility">
 		<groundspeak id="9" inc="true" name="Significant Hike" />
-		<opencaching site_url="http://opencaching.de/" id="25" />
+		<opencaching db_branch="OCDE" id="25" />
 		<lang id="en">
 			<name>Long walk</name>
 			<desc>
@@ -662,7 +662,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A22" categories="de-accessibility">
 		<groundspeak id="11" inc="true" name="May require wading" />
-		<opencaching site_url="http://opencaching.de/" id="26" />
+		<opencaching db_branch="OCDE" id="26" />
 		<lang id="en">
 			<name>Swamp, marsh or wading</name>
 			<desc>
@@ -697,7 +697,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A23" categories="de-accessibility">
-		<opencaching site_url="http://opencaching.de/" id="27" />
+		<opencaching db_branch="OCDE" id="27" />
 		<lang id="en">
 			<name>Hilly area</name>
 			<desc>
@@ -726,7 +726,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A24" categories="de-accessibility">
 		<groundspeak id="10" inc="true" name="Difficult climbing" />
-		<opencaching site_url="http://opencaching.de/" id="28" />
+		<opencaching db_branch="OCDE" id="28" />
 		<lang id="en">
 			<name>Some climbing (no gear needed)</name>
 			<desc>
@@ -766,7 +766,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A25" categories="de-accessibility">
 		<groundspeak id="12" inc="true" name="May require swimming" />
-		<opencaching site_url="http://opencaching.de/" id="29" />
+		<opencaching db_branch="OCDE" id="29" />
 		<lang id="en">
 			<name>Swimming required</name>
 			<desc>
@@ -802,7 +802,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A26" categories="de-accessibility">
 		<groundspeak id="2" inc="true" name="Access or parking fee" />
-		<opencaching site_url="http://opencaching.de/" id="36" />
+		<opencaching db_branch="OCDE" id="36" />
 		<lang id="en">
 			<name>Access or parking fee</name>
 			<desc>
@@ -831,7 +831,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A27" categories="de-accessibility">
 		<groundspeak id="32" inc="true" name="Bicycles" />
-		<opencaching site_url="http://opencaching.pl/" id="85" />
+		<opencaching db_branch="OCPL" id="85" />
 		<lang id="en">
 			<name>Bikes allowed</name>
 			<desc>
@@ -846,7 +846,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A28" categories="de-location">
-		<opencaching site_url="http://opencaching.pl/" id="60" />
+		<opencaching db_branch="OCPL" id="60" />
 		<lang id="en">
 			<name>Hidden in natural surroundings (forests, mountains, etc.)</name>
 			<desc>
@@ -863,7 +863,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A29" categories="de-location">
-		<opencaching site_url="http://opencaching.pl/" id="61" />
+		<opencaching db_branch="OCPL" id="61" />
 		<lang id="en">
 			<name>Historic site</name>
 			<desc>
@@ -880,7 +880,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A30" categories="de-location">
-		<opencaching site_url="http://opencaching.de/" id="30" />
+		<opencaching db_branch="OCDE" id="30" />
 		<lang id="en">
 			<name>Point of interest</name>
 			<desc>
@@ -915,7 +915,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A31" categories="de-location">
-		<opencaching site_url="http://opencaching.de/" id="33" />
+		<opencaching db_branch="OCDE" id="33" />
 		<lang id="en">
 			<name>Hidden wihin enclosed rooms (caves, buildings etc.)</name>
 			<desc>
@@ -946,7 +946,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A32" categories="de-location">
-		<opencaching site_url="http://opencaching.de/" id="34" />
+		<opencaching db_branch="OCDE" id="34" />
 		<lang id="en">
 			<name>Hidden under water</name>
 			<desc>
@@ -978,7 +978,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A33" categories="de-facilities">
 		<groundspeak id="25" inc="true" name="Parking available" />
-		<opencaching site_url="http://opencaching.de/" id="18" />
+		<opencaching db_branch="OCDE" id="18" />
 		<lang id="en">
 			<name>Parking area nearby</name>
 			<desc>
@@ -1009,7 +1009,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A34" categories="de-facilities">
 		<groundspeak id="26" inc="true" name="Public transportation" />
-		<opencaching site_url="http://opencaching.de/" id="19" />
+		<opencaching db_branch="OCDE" id="19" />
 		<lang id="en">
 			<name>Public transportation</name>
 			<desc>
@@ -1041,7 +1041,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A35" categories="de-facilities">
 		<groundspeak id="27" inc="true" name="Drinking water nearby" />
-		<opencaching site_url="http://opencaching.de/" id="20" />
+		<opencaching db_branch="OCDE" id="20" />
 		<lang id="en">
 			<name>Drinking water nearby</name>
 			<desc>
@@ -1079,7 +1079,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A36" categories="de-facilities">
 		<groundspeak id="28" inc="true" name="Public restrooms nearby" />
-		<opencaching site_url="http://opencaching.de/" id="21" />
+		<opencaching db_branch="OCDE" id="21" />
 		<lang id="en">
 			<name>Public restrooms nearby</name>
 			<desc>
@@ -1109,7 +1109,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A37" categories="de-facilities">
 		<groundspeak id="29" inc="true" name="Telephone nearby" />
-		<opencaching site_url="http://opencaching.de/" id="22" />
+		<opencaching db_branch="OCDE" id="22" />
 		<lang id="en">
 			<name>Public phone nearby</name>
 			<desc>
@@ -1137,7 +1137,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A38" categories="de-facilities">
-		<opencaching site_url="http://opencaching.de/" id="23" />
+		<opencaching db_branch="OCDE" id="23" />
 		<lang id="en">
 			<name>First aid available</name>
 			<desc>
@@ -1169,7 +1169,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A39" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="true" name="Available at all times" />
-		<opencaching site_url="http://opencaching.de/" id="38" />
+		<opencaching db_branch="OCDE" id="38" />
 		<lang id="en">
 			<name>Available 24/7</name>
 			<desc>
@@ -1197,8 +1197,8 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A40" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="false" name="Available at all times" />
-		<opencaching site_url="http://opencaching.pl/" id="80" />
-		<opencaching site_url="http://opencaching.de/" id="39" />
+		<opencaching db_branch="OCPL" id="80" />
+		<opencaching db_branch="OCDE" id="39" />
 		<lang id="en">
 			<name>Not 24/7</name>
 			<desc>
@@ -1239,7 +1239,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A41" categories="de-time-and-seasons">
 		<groundspeak id="14" inc="false" name="Recommended at night" />
-		<opencaching site_url="http://opencaching.de/" id="40" />
+		<opencaching db_branch="OCDE" id="40" />
 		<lang id="en">
 			<name>Not recommended at night</name>
 			<desc>
@@ -1276,7 +1276,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A42" categories="de-time-and-seasons">
 		<groundspeak id="14" inc="true" name="Recommended at night" />
-		<opencaching site_url="http://opencaching.pl/" id="91" />
+		<opencaching db_branch="OCPL" id="91" />
 		<lang id="en">
 			<name>Recommended at night</name>
 		</lang>
@@ -1299,7 +1299,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A43" categories="de-time-and-seasons">
 		<groundspeak id="52" inc="true" name="Night Cache" />
-		<opencaching site_url="http://opencaching.de/" id="1" />
+		<opencaching db_branch="OCDE" id="1" />
 		<lang id="en">
 			<name>Only at night</name>
 			<desc>
@@ -1337,7 +1337,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A44" categories="de-time-and-seasons">
 		<groundspeak id="62" inc="false" name="Seasonal access" />
-		<opencaching site_url="http://opencaching.de/" id="42" />
+		<opencaching db_branch="OCDE" id="42" />
 		<lang id="en">
 			<name>All seasons</name>
 			<desc>
@@ -1369,7 +1369,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A45" categories="de-time-and-seasons">
 		<groundspeak id="62" inc="true" name="Seasonal access" />
-		<opencaching site_url="http://opencaching.de/" id="60" />
+		<opencaching db_branch="OCDE" id="60" />
 		<lang id="en">
 			<name>Only available during specified seasons</name>
 			<desc>
@@ -1400,7 +1400,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A46" categories="de-time-and-seasons">
-		<opencaching site_url="http://opencaching.de/" id="43" />
+		<opencaching db_branch="OCDE" id="43" />
 		<lang id="en">
 			<name>Breeding season / protected nature</name>
 			<desc>
@@ -1438,7 +1438,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A47" categories="de-time-and-seasons">
 		<groundspeak id="15" inc="true" name="Available during winter" />
-		<opencaching site_url="http://opencaching.de/" id="44" />
+		<opencaching db_branch="OCDE" id="44" />
 		<lang id="en">
 			<name>Available during winter</name>
 			<desc>
@@ -1474,7 +1474,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A48" categories="de-time-and-seasons">
-		<opencaching site_url="http://opencaching.de/" id="41" />
+		<opencaching db_branch="OCDE" id="41" />
 		<lang id="en">
 			<name>Not at high water level</name>
 			<desc>
@@ -1492,8 +1492,8 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A49" categories="de-tools">
-		<opencaching site_url="http://opencaching.pl/" id="47" />
-		<opencaching site_url="http://opencaching.de/" id="47" />
+		<opencaching db_branch="OCPL" id="47" />
+		<opencaching db_branch="OCDE" id="47" />
 		<lang id="en">
 			<name>Compass required</name>
 			<desc>
@@ -1528,7 +1528,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A50" categories="de-tools">
-		<opencaching site_url="http://opencaching.pl/" id="48" />
+		<opencaching db_branch="OCPL" id="48" />
 		<lang id="en">
 			<name>Take something to write</name>
 			<desc>
@@ -1543,7 +1543,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A51" categories="de-tools">
-		<opencaching site_url="http://opencaching.pl/" id="81" />
+		<opencaching db_branch="OCPL" id="81" />
 		<lang id="en">
 			<name>You may need a shovel</name>
 			<desc>
@@ -1559,8 +1559,8 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A52" categories="de-tools">
 		<groundspeak id="44" inc="true" name="Flashlight required" />
-		<opencaching site_url="http://opencaching.pl/" id="82" />
-		<opencaching site_url="http://opencaching.de/" id="48" />
+		<opencaching db_branch="OCPL" id="82" />
+		<opencaching db_branch="OCDE" id="48" />
 		<lang id="en">
 			<name>Flashlight required</name>
 			<desc>
@@ -1597,7 +1597,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A53" categories="de-tools">
 		<groundspeak id="3" inc="true" name="Climbing gear" />
-		<opencaching site_url="http://opencaching.de/" id="49" />
+		<opencaching db_branch="OCDE" id="49" />
 		<lang id="en">
 			<name>Climbing gear required</name>
 			<desc>
@@ -1633,7 +1633,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A54" categories="de-tools">
-		<opencaching site_url="http://opencaching.de/" id="50" />
+		<opencaching db_branch="OCDE" id="50" />
 		<lang id="en">
 			<name>Cave equipment required</name>
 			<desc>
@@ -1681,7 +1681,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A55" categories="de-tools">
 		<groundspeak id="5" inc="true" name="Scuba gear" />
-		<opencaching site_url="http://opencaching.de/" id="51" />
+		<opencaching db_branch="OCDE" id="51" />
 		<lang id="en">
 			<name>Diving equipment required</name>
 			<desc>
@@ -1724,8 +1724,8 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A56" categories="de-tools">
 		<groundspeak id="51" inc="true" name="Special tool required" />
-		<opencaching site_url="http://opencaching.pl/" id="83" />
-		<opencaching site_url="http://opencaching.de/" id="46" />
+		<opencaching db_branch="OCPL" id="83" />
+		<opencaching db_branch="OCDE" id="46" />
 		<lang id="en">
 			<name>Special tools required</name>
 			<desc>
@@ -1766,8 +1766,8 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A57" categories="de-tools">
 		<groundspeak id="4" inc="true" name="Boat" />
-		<opencaching site_url="http://opencaching.pl/" id="86" />
-		<opencaching site_url="http://opencaching.de/" id="52" />
+		<opencaching db_branch="OCPL" id="86" />
+		<opencaching db_branch="OCDE" id="52" />
 		<lang id="en">
 			<name>Requires a boat</name>
 			<desc>
@@ -1812,7 +1812,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A58" categories="de-tools">
-		<opencaching site_url="http://opencaching.de/" id="35" />
+		<opencaching db_branch="OCDE" id="35" />
 		<lang id="en">
 			<name>No GPS required</name>
 			<desc>
@@ -1845,8 +1845,8 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A59" categories="de-dangers">
 		<groundspeak id="23" inc="true" name="Dangerous area" />
-		<opencaching site_url="http://opencaching.de/" id="9" />
-		<opencaching site_url="http://opencaching.pl/" id="90" />
+		<opencaching db_branch="OCDE" id="9" />
+		<opencaching db_branch="OCPL" id="90" />
 		<lang id="en">
 			<name>Dangerous area</name>
 			<desc>
@@ -1895,7 +1895,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A60" categories="de-dangers">
-		<opencaching site_url="http://opencaching.de/" id="10" />
+		<opencaching db_branch="OCDE" id="10" />
 		<lang id="en">
 			<name>Active railway nearby</name>
 			<desc>
@@ -1930,7 +1930,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A61" categories="de-dangers">
 		<groundspeak id="21" inc="true" name="Cliff / falling rocks" />
-		<opencaching site_url="http://opencaching.de/" id="11" />
+		<opencaching db_branch="OCDE" id="11" />
 		<lang id="en">
 			<name>Cliff / Rocks</name>
 			<desc>
@@ -1974,7 +1974,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A62" categories="de-dangers">
 		<groundspeak id="22" inc="true" name="Hunting" />
-		<opencaching site_url="http://opencaching.de/" id="12" />
+		<opencaching db_branch="OCDE" id="12" />
 		<lang id="en">
 			<name>Hunting</name>
 			<desc>
@@ -2012,7 +2012,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A63" categories="de-dangers">
 		<groundspeak id="39" inc="true" name="Thorns" />
-		<opencaching site_url="http://opencaching.de/" id="13" />
+		<opencaching db_branch="OCDE" id="13" />
 		<lang id="en">
 			<name>Thorns</name>
 			<desc>
@@ -2041,7 +2041,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A64" categories="de-dangers">
 		<groundspeak id="19" inc="true" name="Ticks" />
-		<opencaching site_url="http://opencaching.de/" id="14" />
+		<opencaching db_branch="OCDE" id="14" />
 		<lang id="en">
 			<name>Ticks</name>
 			<desc>
@@ -2081,7 +2081,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A65" categories="de-dangers">
 		<groundspeak id="20" inc="true" name="Abandoned mines" />
-		<opencaching site_url="http://opencaching.de/" id="15" />
+		<opencaching db_branch="OCDE" id="15" />
 		<lang id="en">
 			<name>Abandoned mines</name>
 			<desc>
@@ -2123,7 +2123,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A66" categories="de-dangers">
 		<groundspeak id="17" inc="true" name="Poisonous plants" />
-		<opencaching site_url="http://opencaching.de/" id="16" />
+		<opencaching db_branch="OCDE" id="16" />
 		<lang id="en">
 			<name>Poisonous plants</name>
 			<desc>
@@ -2155,7 +2155,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A67" categories="de-dangers">
 		<groundspeak id="18" inc="true" name="Dangerous animals" />
-		<opencaching site_url="http://opencaching.de/" id="17" />
+		<opencaching db_branch="OCDE" id="17" />
 		<lang id="en">
 			<name>Dangerous animals</name>
 			<desc>
@@ -2187,7 +2187,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A68" categories="de-rating">
-		<opencaching site_url="http://opencaching.pl/" id="40" />
+		<opencaching db_branch="OCPL" id="40" />
 		<lang id="en">
 			<name>Quick cache</name>
 			<desc>
@@ -2204,7 +2204,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 		</lang>
 	</attr>
 	<attr okapi_attr_id="A69" categories="de-rating">
-		<opencaching site_url="http://opencaching.de/" id="37" />
+		<opencaching db_branch="OCDE" id="37" />
 		<lang id="en">
 			<name>Overnight stay necessary</name>
 			<desc>
@@ -2244,7 +2244,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A70" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
-		<opencaching site_url="http://opencaching.pl/" id="41" />
+		<opencaching db_branch="OCPL" id="41" />
 		<lang id="en">
 			<name>Take your children</name>
 		</lang>
@@ -2262,7 +2262,7 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 	</attr>
 	<attr okapi_attr_id="A71" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
-		<opencaching site_url="http://opencaching.de/" id="59" />
+		<opencaching db_branch="OCDE" id="59" />
 		<lang id="en">
 			<name>Suited for children (10-12 yo)</name>
 			<desc>
