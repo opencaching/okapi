@@ -81,7 +81,7 @@ We leave the UI clarity problem for app developers.
 	
 	-->
 	
-	<attr okapi_attr_id="oconly" categories="de-listing">
+	<attr okapi_attr_id="A1" categories="de-listing">
 		<opencaching site_url="http://opencaching.de/" id="6" />
 		<lang id="en">
 			<name>Listed at Opencaching only</name>
@@ -129,7 +129,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="near-survey-marker" categories="de-cache-types">
+	<attr okapi_attr_id="A2" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="54" />
 		<lang id="en">
 			<name>Near a Survey Marker</name>
@@ -154,7 +154,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="wherigo" categories="de-cache-types">
+	<attr okapi_attr_id="A3" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="55" />
 		<lang id="en">
 			<name>Wherigo Cache</name>
@@ -185,7 +185,7 @@ We leave the UI clarity problem for app developers.
 			<name>Wherigo Cache</name>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="letterbox" categories="de-cache-types">
+	<attr okapi_attr_id="A4" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="56" />
 		<opencaching site_url="http://opencaching.de/" id="8" />
 		<lang id="en">
@@ -234,7 +234,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="geohotel" categories="de-cache-types">
+	<attr okapi_attr_id="A5" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="43" />
 		<lang id="en">
 			<name>GeoHotel Cache</name>
@@ -255,7 +255,7 @@ We leave the UI clarity problem for app developers.
 			<name>GeoHotel Cache</name>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="magnet" categories="de-cache-types">
+	<attr okapi_attr_id="A6" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="49" />
 		<lang id="en">
 			<name>Magnetic Cache</name>
@@ -273,7 +273,7 @@ We leave the UI clarity problem for app developers.
 			<name>magnetischer Cache</name>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="audiofile" categories="de-cache-types">
+	<attr okapi_attr_id="A7" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="50" />
 		<lang id="en">
 			<name>Description contains an audio file</name>
@@ -291,7 +291,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="offset" categories="de-cache-types">
+	<attr okapi_attr_id="A8" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="51" />
 		<lang id="en">
 			<name>Offset cache</name>
@@ -315,7 +315,7 @@ We leave the UI clarity problem for app developers.
 			<name>Peilungscache</name>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="chirp" categories="de-cache-types">
+	<attr okapi_attr_id="A9" categories="de-cache-types">
 		<groundspeak id="60" inc="true" name="Wireless Beacon" />
 		<opencaching site_url="http://opencaching.pl/" id="52" />
 		<lang id="en">
@@ -334,7 +334,7 @@ We leave the UI clarity problem for app developers.
 			<name>Funksignal – Garmin Chirp</name>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="usb" categories="de-cache-types">
+	<attr okapi_attr_id="A10" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.pl/" id="53" />
 		<lang id="en">
 			<name>Dead Drop USB cache</name>
@@ -355,7 +355,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="moving" categories="de-cache-types">
+	<attr okapi_attr_id="A11" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.de/" id="31" />
 		<lang id="en">
 			<name>Has a moving target</name>
@@ -397,7 +397,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="webcam" categories="de-cache-types">
+	<attr okapi_attr_id="A12" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.de/" id="32" />
 		<lang id="en">
 			<name>a webcam is involved</name>
@@ -438,7 +438,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="other-type" categories="de-cache-types">
+	<attr okapi_attr_id="A13" categories="de-cache-types">
 		<opencaching site_url="http://opencaching.de/" id="57" />
 		<lang id="en">
 			<name>Other cache type</name>
@@ -468,7 +468,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="investigation" categories="de-preconditions">
+	<attr okapi_attr_id="A14" categories="de-preconditions">
 		<opencaching site_url="http://opencaching.de/" id="54" />
 		<lang id="en">
 			<name>Investigation required</name>
@@ -496,7 +496,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="puzzle" categories="de-preconditions">
+	<attr okapi_attr_id="A15" categories="de-preconditions">
 		<groundspeak id="47" inc="true" name="Field puzzle" />
 		<opencaching site_url="http://opencaching.de/" id="55" />
 		<lang id="en">
@@ -525,7 +525,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="maths" categories="de-preconditions">
+	<attr okapi_attr_id="A16" categories="de-preconditions">
 		<opencaching site_url="http://opencaching.de/" id="56" />
 		<lang id="en">
 			<name>Arithmetical problem</name>
@@ -557,7 +557,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="ask-owner" categories="de-preconditions">
+	<attr okapi_attr_id="A17" categories="de-preconditions">
 		<opencaching site_url="http://opencaching.de/" id="58" />
 		<lang id="en">
 			<name>Ask owner for start conditions</name>
@@ -586,7 +586,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="wheelchair" categories="de-accessibility">
+	<attr okapi_attr_id="A18" categories="de-accessibility">
 		<groundspeak id="24" inc="true" name="Wheelchair accessible" />
 		<opencaching site_url="http://opencaching.pl/" id="44" />
 		<lang id="en">
@@ -609,7 +609,7 @@ We leave the UI clarity problem for app developers.
 			<name>rollstuhltauglich</name>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="drivein" categories="de-accessibility">
+	<attr okapi_attr_id="A19" categories="de-accessibility">
 		<groundspeak id="53" inc="true" name="Park and grab" />
 		<opencaching site_url="http://opencaching.de/" id="24" />
 		<lang id="en">
@@ -638,7 +638,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="walk-only" categories="de-accessibility">
+	<attr okapi_attr_id="A20" categories="de-accessibility">
 		<opencaching site_url="http://opencaching.pl/" id="84" />
 		<lang id="en">
 			<name>Access only by walk</name>
@@ -653,7 +653,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="hike" categories="de-accessibility">
+	<attr okapi_attr_id="A21" categories="de-accessibility">
 		<groundspeak id="9" inc="true" name="Significant Hike" />
 		<opencaching site_url="http://opencaching.de/" id="25" />
 		<lang id="en">
@@ -691,7 +691,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="wading" categories="de-accessibility">
+	<attr okapi_attr_id="A22" categories="de-accessibility">
 		<groundspeak id="11" inc="true" name="May require wading" />
 		<opencaching site_url="http://opencaching.de/" id="26" />
 		<lang id="en">
@@ -727,7 +727,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="steep" categories="de-accessibility">
+	<attr okapi_attr_id="A23" categories="de-accessibility">
 		<opencaching site_url="http://opencaching.de/" id="27" />
 		<lang id="en">
 			<name>Hilly area</name>
@@ -755,7 +755,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="climbing" categories="de-accessibility">
+	<attr okapi_attr_id="A24" categories="de-accessibility">
 		<groundspeak id="10" inc="true" name="Difficult climbing" />
 		<opencaching site_url="http://opencaching.de/" id="28" />
 		<lang id="en">
@@ -795,7 +795,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="swimming" categories="de-accessibility">
+	<attr okapi_attr_id="A25" categories="de-accessibility">
 		<groundspeak id="12" inc="true" name="May require swimming" />
 		<opencaching site_url="http://opencaching.de/" id="29" />
 		<lang id="en">
@@ -831,7 +831,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="fee" categories="de-accessibility">
+	<attr okapi_attr_id="A26" categories="de-accessibility">
 		<groundspeak id="2" inc="true" name="Access or parking fee" />
 		<opencaching site_url="http://opencaching.de/" id="36" />
 		<lang id="en">
@@ -860,7 +860,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="bike" categories="de-accessibility">
+	<attr okapi_attr_id="A27" categories="de-accessibility">
 		<groundspeak id="32" inc="true" name="Bicycles" />
 		<opencaching site_url="http://opencaching.pl/" id="85" />
 		<lang id="en">
@@ -876,7 +876,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="nature" categories="de-location">
+	<attr okapi_attr_id="A28" categories="de-location">
 		<opencaching site_url="http://opencaching.pl/" id="60" />
 		<lang id="en">
 			<name>Hidden in natural surroundings (forests, mountains, etc.)</name>
@@ -893,7 +893,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="historic" categories="de-location">
+	<attr okapi_attr_id="A29" categories="de-location">
 		<opencaching site_url="http://opencaching.pl/" id="61" />
 		<lang id="en">
 			<name>Historic site</name>
@@ -910,7 +910,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="poi" categories="de-location">
+	<attr okapi_attr_id="A30" categories="de-location">
 		<opencaching site_url="http://opencaching.de/" id="30" />
 		<lang id="en">
 			<name>Point of interest</name>
@@ -945,7 +945,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="indoor" categories="de-location">
+	<attr okapi_attr_id="A31" categories="de-location">
 		<opencaching site_url="http://opencaching.de/" id="33" />
 		<lang id="en">
 			<name>Hidden wihin enclosed rooms (caves, buildings etc.)</name>
@@ -976,7 +976,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="submerged" categories="de-location">
+	<attr okapi_attr_id="A32" categories="de-location">
 		<opencaching site_url="http://opencaching.de/" id="34" />
 		<lang id="en">
 			<name>Hidden under water</name>
@@ -1007,7 +1007,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="parking" categories="de-facilities">
+	<attr okapi_attr_id="A33" categories="de-facilities">
 		<groundspeak id="25" inc="true" name="Parking available" />
 		<opencaching site_url="http://opencaching.de/" id="18" />
 		<lang id="en">
@@ -1038,7 +1038,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="public-transport" categories="de-facilities">
+	<attr okapi_attr_id="A34" categories="de-facilities">
 		<groundspeak id="26" inc="true" name="Public transportation" />
 		<opencaching site_url="http://opencaching.de/" id="19" />
 		<lang id="en">
@@ -1070,7 +1070,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="drinking-water" categories="de-facilities">
+	<attr okapi_attr_id="A35" categories="de-facilities">
 		<groundspeak id="27" inc="true" name="Drinking water nearby" />
 		<opencaching site_url="http://opencaching.de/" id="20" />
 		<lang id="en">
@@ -1108,7 +1108,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="restrooms" categories="de-facilities">
+	<attr okapi_attr_id="A36" categories="de-facilities">
 		<groundspeak id="28" inc="true" name="Public restrooms nearby" />
 		<opencaching site_url="http://opencaching.de/" id="21" />
 		<lang id="en">
@@ -1138,7 +1138,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="phone" categories="de-facilities">
+	<attr okapi_attr_id="A37" categories="de-facilities">
 		<groundspeak id="29" inc="true" name="Telephone nearby" />
 		<opencaching site_url="http://opencaching.de/" id="22" />
 		<lang id="en">
@@ -1167,7 +1167,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="first-aid" categories="de-facilities">
+	<attr okapi_attr_id="A38" categories="de-facilities">
 		<opencaching site_url="http://opencaching.de/" id="23" />
 		<lang id="en">
 			<name>First aid available</name>
@@ -1198,7 +1198,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="24-hours" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A39" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="true" name="Available at all times" />
 		<opencaching site_url="http://opencaching.de/" id="38" />
 		<lang id="en">
@@ -1226,7 +1226,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="not-24-hours" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A40" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="false" name="Available at all times" />
 		<opencaching site_url="http://opencaching.pl/" id="80" />
 		<opencaching site_url="http://opencaching.de/" id="39" />
@@ -1268,7 +1268,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="daycache" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A41" categories="de-time-and-seasons">
 		<groundspeak id="14" inc="false" name="Recommended at night" />
 		<opencaching site_url="http://opencaching.de/" id="40" />
 		<lang id="en">
@@ -1305,7 +1305,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="night-recommended" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A42" categories="de-time-and-seasons">
 		<groundspeak id="14" inc="true" name="Recommended at night" />
 		<opencaching site_url="http://opencaching.pl/" id="91" />
 		<lang id="en">
@@ -1328,7 +1328,7 @@ We leave the UI clarity problem for app developers.
 			<name>am besten nachts findbar</name>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="nightcache" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A43" categories="de-time-and-seasons">
 		<groundspeak id="52" inc="true" name="Night Cache" />
 		<opencaching site_url="http://opencaching.de/" id="1" />
 		<lang id="en">
@@ -1366,7 +1366,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="all-seasons" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A44" categories="de-time-and-seasons">
 		<groundspeak id="62" inc="false" name="Seasonal access" />
 		<opencaching site_url="http://opencaching.de/" id="42" />
 		<lang id="en">
@@ -1398,7 +1398,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="not-all-seasons" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A45" categories="de-time-and-seasons">
 		<groundspeak id="62" inc="true" name="Seasonal access" />
 		<opencaching site_url="http://opencaching.de/" id="60" />
 		<lang id="en">
@@ -1430,7 +1430,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="np-season" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A46" categories="de-time-and-seasons">
 		<opencaching site_url="http://opencaching.de/" id="43" />
 		<lang id="en">
 			<name>Breeding season / protected nature</name>
@@ -1467,7 +1467,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="snow-proof" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A47" categories="de-time-and-seasons">
 		<groundspeak id="15" inc="true" name="Available during winter" />
 		<opencaching site_url="http://opencaching.de/" id="44" />
 		<lang id="en">
@@ -1504,7 +1504,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="lowwater" categories="de-time-and-seasons">
+	<attr okapi_attr_id="A48" categories="de-time-and-seasons">
 		<opencaching site_url="http://opencaching.de/" id="41" />
 		<lang id="en">
 			<name>Not at high water level</name>
@@ -1522,7 +1522,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="compass" categories="de-tools">
+	<attr okapi_attr_id="A49" categories="de-tools">
 		<opencaching site_url="http://opencaching.pl/" id="47" />
 		<opencaching site_url="http://opencaching.de/" id="47" />
 		<lang id="en">
@@ -1558,7 +1558,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="pen" categories="de-tools">
+	<attr okapi_attr_id="A50" categories="de-tools">
 		<opencaching site_url="http://opencaching.pl/" id="48" />
 		<lang id="en">
 			<name>Take something to write</name>
@@ -1573,7 +1573,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="digging" categories="de-tools">
+	<attr okapi_attr_id="A51" categories="de-tools">
 		<opencaching site_url="http://opencaching.pl/" id="81" />
 		<lang id="en">
 			<name>You may need a shovel</name>
@@ -1588,7 +1588,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="flashlight" categories="de-tools">
+	<attr okapi_attr_id="A52" categories="de-tools">
 		<groundspeak id="44" inc="true" name="Flashlight required" />
 		<opencaching site_url="http://opencaching.pl/" id="82" />
 		<opencaching site_url="http://opencaching.de/" id="48" />
@@ -1626,7 +1626,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="climbing-gear" categories="de-tools">
+	<attr okapi_attr_id="A53" categories="de-tools">
 		<groundspeak id="3" inc="true" name="Climbing gear" />
 		<opencaching site_url="http://opencaching.de/" id="49" />
 		<lang id="en">
@@ -1663,7 +1663,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="cave-equipment" categories="de-tools">
+	<attr okapi_attr_id="A54" categories="de-tools">
 		<opencaching site_url="http://opencaching.de/" id="50" />
 		<lang id="en">
 			<name>Cave equipment required</name>
@@ -1710,7 +1710,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="diving-equipment" categories="de-tools">
+	<attr okapi_attr_id="A55" categories="de-tools">
 		<groundspeak id="5" inc="true" name="Scuba gear" />
 		<opencaching site_url="http://opencaching.de/" id="51" />
 		<lang id="en">
@@ -1753,7 +1753,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="special-tools" categories="de-tools">
+	<attr okapi_attr_id="A56" categories="de-tools">
 		<groundspeak id="51" inc="true" name="Special tool required" />
 		<opencaching site_url="http://opencaching.pl/" id="83" />
 		<opencaching site_url="http://opencaching.de/" id="46" />
@@ -1795,7 +1795,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="boat" categories="de-tools">
+	<attr okapi_attr_id="A57" categories="de-tools">
 		<groundspeak id="4" inc="true" name="Boat" />
 		<opencaching site_url="http://opencaching.pl/" id="86" />
 		<opencaching site_url="http://opencaching.de/" id="52" />
@@ -1842,7 +1842,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="nogps" categories="de-tools">
+	<attr okapi_attr_id="A58" categories="de-tools">
 		<opencaching site_url="http://opencaching.de/" id="35" />
 		<lang id="en">
 			<name>No GPS required</name>
@@ -1874,7 +1874,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="dangerous-area" categories="de-dangers">
+	<attr okapi_attr_id="A59" categories="de-dangers">
 		<groundspeak id="23" inc="true" name="Dangerous area" />
 		<opencaching site_url="http://opencaching.de/" id="9" />
 		<opencaching site_url="http://opencaching.pl/" id="90" />
@@ -1925,7 +1925,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="railway" categories="de-dangers">
+	<attr okapi_attr_id="A60" categories="de-dangers">
 		<opencaching site_url="http://opencaching.de/" id="10" />
 		<lang id="en">
 			<name>Active railway nearby</name>
@@ -1959,7 +1959,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="cliff" categories="de-dangers">
+	<attr okapi_attr_id="A61" categories="de-dangers">
 		<groundspeak id="21" inc="true" name="Cliff / falling rocks" />
 		<opencaching site_url="http://opencaching.de/" id="11" />
 		<lang id="en">
@@ -2003,7 +2003,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="hunting" categories="de-dangers">
+	<attr okapi_attr_id="A62" categories="de-dangers">
 		<groundspeak id="22" inc="true" name="Hunting" />
 		<opencaching site_url="http://opencaching.de/" id="12" />
 		<lang id="en">
@@ -2041,7 +2041,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="thorns" categories="de-dangers">
+	<attr okapi_attr_id="A63" categories="de-dangers">
 		<groundspeak id="39" inc="true" name="Thorns" />
 		<opencaching site_url="http://opencaching.de/" id="13" />
 		<lang id="en">
@@ -2070,7 +2070,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="ticks" categories="de-dangers">
+	<attr okapi_attr_id="A64" categories="de-dangers">
 		<groundspeak id="19" inc="true" name="Ticks" />
 		<opencaching site_url="http://opencaching.de/" id="14" />
 		<lang id="en">
@@ -2110,7 +2110,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="mines" categories="de-dangers">
+	<attr okapi_attr_id="A65" categories="de-dangers">
 		<groundspeak id="20" inc="true" name="Abandoned mines" />
 		<opencaching site_url="http://opencaching.de/" id="15" />
 		<lang id="en">
@@ -2152,7 +2152,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="poisonous-plants" categories="de-dangers">
+	<attr okapi_attr_id="A66" categories="de-dangers">
 		<groundspeak id="17" inc="true" name="Poisonous plants" />
 		<opencaching site_url="http://opencaching.de/" id="16" />
 		<lang id="en">
@@ -2184,7 +2184,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="dangerous-animals" categories="de-dangers">
+	<attr okapi_attr_id="A67" categories="de-dangers">
 		<groundspeak id="18" inc="true" name="Dangerous animals" />
 		<opencaching site_url="http://opencaching.de/" id="17" />
 		<lang id="en">
@@ -2217,7 +2217,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="quick" categories="de-rating">
+	<attr okapi_attr_id="A68" categories="de-rating">
 		<opencaching site_url="http://opencaching.pl/" id="40" />
 		<lang id="en">
 			<name>Quick cache</name>
@@ -2234,7 +2234,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="overnight" categories="de-rating">
+	<attr okapi_attr_id="A69" categories="de-rating">
 		<opencaching site_url="http://opencaching.de/" id="37" />
 		<lang id="en">
 			<name>Overnight stay necessary</name>
@@ -2273,7 +2273,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="children6" categories="de-rating">
+	<attr okapi_attr_id="A70" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
 		<opencaching site_url="http://opencaching.pl/" id="41" />
 		<lang id="en">
@@ -2291,7 +2291,7 @@ We leave the UI clarity problem for app developers.
 			</desc>
 		</lang>
 	</attr>
-	<attr okapi_attr_id="children10" categories="de-rating">
+	<attr okapi_attr_id="A71" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
 		<opencaching site_url="http://opencaching.de/" id="59" />
 		<lang id="en">
