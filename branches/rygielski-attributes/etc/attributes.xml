@@ -2,9 +2,8 @@
 
 Current status: WORKING DRAFT
 
-This is the list of all geocache attributes supported by OKAPI. In 
-practise, it will usually include any atribute used by at least one of 
-the Opencaching installations.
+This is the list of all geocache attributes supported by OKAPI. It should
+include any attribute used by at least one of the Opencaching installations.
 
 
 NOTES FOR EXTERNAL APP DEVELOPERS
@@ -24,63 +23,33 @@ the repository*.
 
 This file defines the mapping between:
 
-1. Internal attribute IDs of various Opencaching nodes.
-2. Groundspeak's attribute IDs (used by geocaching.com).
-3. OKAPI's attribute IDs.
+- Internal attribute IDs of various Opencaching nodes.
+- Groundspeak's attribute IDs (used by geocaching.com).
+- OKAPI's attribute IDs.
 
 Important: This is a verbose, many-to-many, optional relationship! Crow's foot
 notation: http://i.imgur.com/cNGz1xt.png. All those attributes may appear not
 very useful when provided this way, but there is nothing OKAPI can do about it.
 We leave the UI clarity problem for app developers.
 
+Additionally, this file defines attribute names and descriptions in several
+languages:
+
+- Descriptive <name> of the attribute - to be used during SHOW.
+- Detailed <desc>ription of the attribute - may be used during SHOW and SEARCH.
+- The <search> element with <inc>lusive and <exc>lusive textual values - to be
+  used during SEARCH. 
+
+SHOW - when showing the attributes of a specific cache. SEARCH - when searching
+for caches with (inclusive) or without (exclusive) specific attributes.
+
 -->
 
 <xml>
-
-
 	<!--
-	
 	NOTICE: Categories are currently NOT implemented. In particular, the
 	attr[categories] is ignored. See issue 70.
-	
-	<category id="de-cache-types">
-		<name lang="en">TODO</name>
-	</category>
-	
-	<category id="de-location">
-		<name lang="en">TODO</name>
-	</category>
-
-	<category id="de-facilities">
-		<name lang="en">TODO</name>
-	</category>
-
-	<category id="de-time-and-seasons">
-		<name lang="en">TODO</name>
-	</category>
-
-	<category id="de-tools">
-		<name lang="en">TODO</name>
-	</category>
-
-	<category id="de-dangers">
-		<name lang="en">TODO</name>
-	</category>
-
-	<category id="de-rating">
-		<name lang="en">TODO</name>
-	</category>
-
-	<category id="de-preconditions">
-		<name lang="en">TODO</name>
-	</category>
-
-	<category id="de-accessibility">
-		<name lang="en">TODO</name>
-	</category>
-	
 	-->
-	
 	<attr okapi_attr_id="A1" categories="de-listing">
 		<opencaching site_url="http://opencaching.de/" id="6" />
 		<lang id="en">
