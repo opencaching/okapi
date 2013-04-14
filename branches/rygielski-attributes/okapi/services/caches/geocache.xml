@@ -202,12 +202,12 @@
 				the <b>images</b> list described above.</p>
 			</li>
 			<li>
-				<p><b>attrnames</b> - list of names of attributes of the cache; the language will
-				be selected based on the <b>langpref</b> argument.</p>
-				<p>Note: currently each of the OC installations has its own set of attributes. That's
-				why we don't reference them by their IDs - we only return them as text. This could change
-				*if* OC installations would begin to use UUIDs for their attributes and synchronize them
-				between all installations.</p>
+				<b>attr_ids</b> - unordered list of IDs of the attributes with which the cache was tagged
+				with. You may use the <b>attrs</b> module to retrieve information on these attributes.
+			</li>
+			<li>
+				<b>attrnames</b> - unordered list of names of theattributes with which the cache was tagged
+				with; the language will be selected based on the <b>langpref</b> parameter.
 			</li>
 			<li>
 				<p><b>attribution_note</b> - the proper attribution note for the cache listing according

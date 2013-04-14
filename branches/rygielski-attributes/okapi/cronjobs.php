@@ -776,9 +776,9 @@ class LocaleChecker extends Cron5Job
 }
 
 /**
- * Once every hour, update the official cache attributes listing.
- *
- * WRTODO: Make it 12 hours later.
+ * Once every hour, check if the cache attributes listing need updating.
+ * Note that the actual refresh is usually performed less frequently (see
+ * AttrHelper class for details).
  */
 class AttrsRefresherJob extends Cron5Job
 {

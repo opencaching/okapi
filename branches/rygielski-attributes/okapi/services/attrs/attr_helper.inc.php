@@ -190,4 +190,48 @@ class AttrHelper
 	{
 		return preg_replace('/(^\s+)|(\s+$)/us', "", preg_replace('/\s+/us', " ", $s));
 	}
+
+	/**
+	 * Get the mapping between internal attribute id => the list of OKAPI A-codes
+	 * to which the internal ID is mapped to. The result is cached!
+	 */
+	public static function get_internal_id_to_acodes_mapping()
+	{
+		$cache_key = "attrhelper/id2acodes";
+		$mapping = Cache::get($cache_key);
+		if (!$mapping)
+		{
+			self::init_from_cache();
+			$mapping = array();
+			foreach (self::$attr_dict as $acode => &$attr_ref)
+			{
+				foreach ($attr_ref['internal_ids'] as $internal_id)
+					$mapping[$internal_id][] = $acode;
+			}
+			Cache::set($cache_key, $mapping, 3600);
+		}
+		return $mapping;
+	}
+
+	/**
+	 * Get the mapping: A-codes => attribute name. The language for the name
+	 * is selected based on the $langpref parameter. The result is cached!
+	 */
+	public static function get_acode_to_name_mapping($langpref)
+	{
+		$cache_key = md5("attrhelper/acode2name".serialize($langpref));
+		$mapping = Cache::get($cache_key);
+		if (!$mapping)
+		{
+			self::init_from_cache();
+			$mapping = array();
+			foreach (self::$attr_dict as $acode => &$attr_ref)
+			{
+				$mapping[$acode] = Okapi::pick_best_language($attr_ref['names'], $langpref);
+			}
+			Cache::set($cache_key, $mapping, 3600);
+		}
+		return $mapping;
+	}
+
 }
