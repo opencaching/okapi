@@ -1605,54 +1605,27 @@ class Okapi
 	{
 		# Various OC nodes use different English names, even for primary
 		# log types. OKAPI needs to have them the same across *all* OKAPI
-		# installations. That's why these 3 are hardcoded (and should
-		# NEVER be changed).
+		# installations. That's why all known types are hardcoded here.
+		# These names are officially documented and may never change!
 
+		# Primary.
 		if ($id == 1) return "Found it";
 		if ($id == 2) return "Didn't find it";
 		if ($id == 3) return "Comment";
 		if ($id == 7) return "Attended";
 		if ($id == 8) return "Will attend";
 
-		static $other_types = null;
-		if ($other_types === null)
-		{
-			# All the other log types are non-standard ones. Their names have to
-			# be delivered from database tables. In general, OKAPI threat such
-			# non-standard log entries as comments, but - perhaps - external
-			# applications can use it in some other way. We decided to expose
-			# ENGLISH (and ONLY English) names of such log entry types. We also
-			# advise external developers to treat unknown log entry types as
-			# comments inside their application.
+		# Other.
+		if ($id == 4) return "Moved";
+		if ($id == 5) return "Needs maintenance";
+		if ($id == 9) return "Archived";
+		if ($id == 10) return "Ready to search";
+		if ($id == 11) return "Temporarily unavailable";
+		if ($id == 12) return "OC Team comment";
 
-			if (Settings::get('OC_BRANCH') == 'oc.pl')
-			{
-				# OCPL uses log_types table to store log type names.
-				$rs = Db::query("select id, en from log_types");
-			}
-			else
-			{
-				# OCDE uses log_types with translation tables.
-
-				$rs = Db::query("
-					select
-						lt.id,
-						stt.text as en
-					from
-						log_types lt,
-						sys_trans_text stt
-					where
-						lt.trans_id = stt.trans_id
-						and stt.lang = 'en'
-				");
-			}
-			$other_types = array();
-			while ($row = mysql_fetch_assoc($rs))
-				$other_types[$row['id']] = $row['en'];
-		}
-
-		if (isset($other_types[$id]))
-			return $other_types[$id];
+		# Important: This set is not closed. Other types may be introduced
+		# in the future. This has to be documented in the public method
+		# description.
 
 		return "Comment";
 	}
