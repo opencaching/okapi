@@ -23,7 +23,7 @@ class OkapiServiceRunner
 		'services/apiref/method',
 		'services/apiref/method_index',
 		'services/apiref/issue',
-		// Issue 70 - in progress: 'services/attrs/info',
+		'services/attrs/allmeta',
 		'services/oauth/request_token',
 		'services/oauth/authorize',
 		'services/oauth/access_token',

@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\attrs\info;
+namespace okapi\services\attrs\allmeta;
 
 use Exception;
 use ErrorException;
@@ -31,7 +31,6 @@ class WebService
 		# displays the cached version of the list.
 
 		require_once 'attr_helper.inc.php';
-		AttrHelper::refresh_if_stale();
 		$results = array(
 			'attributes' => AttrHelper::get_attrdict()
 		);

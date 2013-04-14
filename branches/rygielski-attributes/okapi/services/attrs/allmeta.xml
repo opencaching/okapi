@@ -1,0 +1,72 @@
+<xml>
+	<brief>Get all attribute-related metadata</brief>
+	<issue-id>194</issue-id> <!-- WRTODO: renamed from info -->
+	<desc>
+		This method returns a big chunk of all attribute-related metadata known
+		to OKAPI. Usually you will not want to use this method - the result
+		might be big enough to make your mobile application slow. Consider using
+		one of the other methods in this module.
+	</desc>
+	<common-format-params/>
+	<returns>
+		<p>A dictionary of the following structure:</p>
+		
+		<ul>
+			<li>
+				<p><b>attributes</b> - a dictionary. Attribute IDs are mapped to
+				keys of this dictionary. Each value is a dictionary of the following
+				structure:</p>
+				
+				<ul>
+					<li>
+						<b>id</b> - string, OKAPI's ID of the attribute (the same as the one
+						in the key),
+					</li>
+					<li>
+						<p><b>gs_equivs</b> - a list of Groundspeak (geocaching.com)
+						attributes, which have an exact (or very similar) meaning. Each
+						attribute is described as a dictionary of the following structure:</p>
+						
+						<ul>
+							<li><b>id</b> - ID of the Groundspeak attribute,</li>
+							<li>
+								<b>inc</b> - integer, either 1 or 0. See Geocaching.com's
+								XSD for details on its meaning,
+							</li>
+							<li>
+								<b>name</b> - the name of the attribute (as it is included
+								in Groundspeak's GPX files).
+							</li>
+						</ul>
+						
+						<p>Note, that one Groundspeak ID may be present in many gs_equivs.</p>
+					</li>
+					<li>
+						<p><b>internal_ids</b> - a list of internal attribute IDs which
+						will be mapped to this attribute when encountered in local
+						OC database.</p>
+						
+						<p>Note, that one internal ID may be mapped to many OKAPI attributes.</p>
+					</li>
+					<li>
+						<p><b>names</b> - a dictionary of all known names of the attribute,
+						in various langauges (ISO 639-1 language code is used as dictionary key).</p>
+						
+						<p>If you'd like to help with the translations, see
+						<a href='https://code.google.com/p/opencaching-api/source/browse/trunk/etc/attributes.xml'>here</a>.</p>
+					</li>
+					<li>
+						<p><b>descriptions</b> - a dictionary of all known descriptions of
+						the attribute, in various langauges (ISO 639-1 language code is used
+						as dictionary key).</p>
+						
+						<p>If you'd like to help with the translations, see
+						<a href='https://code.google.com/p/opencaching-api/source/browse/trunk/etc/attributes.xml'>here</a>.</p>
+					</li>
+					<!-- WRTODO: search_inc_captions -->
+					<!-- WRTODO: search_exc_captions -->
+				</ul>
+			</li>
+		</ul>
+	</returns>
+</xml>

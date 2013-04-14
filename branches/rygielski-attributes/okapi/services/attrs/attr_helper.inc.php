@@ -17,7 +17,10 @@ use SimpleXMLElement;
 
 class AttrHelper
 {
-	private static $CACHE_KEY = 'attrs/attrlist/1';
+	//private static $SOURCE_URL = "http://opencaching-api.googlecode.com/svn/trunk/etc/attributes.xml";
+	private static $SOURCE_URL = "http://opencaching-api.googlecode.com/svn/branches/rygielski-attributes/etc/attributes.xml";
+	private static $REFRESH_INTERVAL = 86400;
+	private static $CACHE_KEY = 'attrs/attrlist/2';
 	private static $attr_dict = null;
 	private static $last_refreshed = null;
 
@@ -35,8 +38,7 @@ class AttrHelper
 				)
 			);
 			$context = stream_context_create($opts);
-			$xml = file_get_contents("http://opencaching-api.googlecode.com/svn/trunk/etc/attributes.xml",
-				false, $context);
+			$xml = file_get_contents(self::$SOURCE_URL, false, $context);
 		}
 		catch (ErrorException $e)
 		{
@@ -44,7 +46,27 @@ class AttrHelper
 			return;
 		}
 
-		$my_site_url = "http://opencaching.pl/"; // WRTODO
+		self::refresh_from_file($xml);
+	}
+
+	/**
+	 * Refreshed all attributes from the given file. Usually, this file is
+	 * downloaded from Google Code (using refresh_now).
+	 */
+	public static function refresh_from_file($xml)
+	{
+		/* attribute.xml file defines attribute relationships between various OC
+		 * installations. Each installation uses its own internal ID schema.
+		 * We will temporarily assume that "oc.pl" codebranch uses OCPL's schema
+		 * and "oc.de" codebranch - OCDE's. This is wrong for OCUS and OCORGUK
+		 * nodes, which use "oc.pl" codebranch, but have a schema of their own
+		 * WRTODO. */
+
+		if (Settings::get('OC_BRANCH') == 'oc.pl')
+			$my_schema = "OCPL";
+		else
+			$my_schema = "OCDE";
+
 		$doc = simplexml_load_string($xml);
 		$cachedvalue = array(
 			'attr_dict' => array(),
@@ -53,15 +75,17 @@ class AttrHelper
 		foreach ($doc->attr as $attrnode)
 		{
 			$attr = array(
-				'code' => (string)$attrnode['okapi_attr_id'],
-				'gs_equiv' => null,
-				'internal_id' => null,
+				'id' => (string)$attrnode['okapi_attr_id'],
+				'gs_equivs' => array(),
+				'internal_ids' => array(),
 				'names' => array(),
-				'descriptions' => array()
+				'descriptions' => array(),
+				'search_inc_captions' => array(),
+				'search_exc_captions' => array(),
 			);
 			foreach ($attrnode->groundspeak as $gsnode)
 			{
-				$attr['gs_equiv'] = array(
+				$attr['gs_equivs'][] = array(
 					'id' => (int)$gsnode['id'],
 					'inc' => in_array((string)$gsnode['inc'], array("true", "1")) ? 1 : 0,
 					'name' => (string)$gsnode['name']
@@ -69,21 +93,33 @@ class AttrHelper
 			}
 			foreach ($attrnode->opencaching as $ocnode)
 			{
-				if ((string)$ocnode['site_url'] == $my_site_url) {
-					$attr['internal_id'] = (int)$ocnode['id'];
+				if ((string)$ocnode['schema'] == $my_schema)
+				{
+					$attr['internal_ids'][] = (int)$ocnode['id'];
 				}
 			}
-			foreach ($attrnode->name as $namenode)
+			foreach ($attrnode->lang as $langnode)
 			{
-				$attr['names'][(string)$namenode['lang']] = (string)$namenode;
+				$lang = (string)$langnode['id'];
+				foreach ($langnode->name as $namenode)
+				{
+					$attr['names'][$lang] = (string)$namenode;
+				}
+				foreach ($langnode->search as $searchnode)
+				{
+					foreach ($searchnode->inc as $captionnode)
+						$attr['search_inc_captions'][$lang] = (string)$captionnode;
+					foreach ($searchnode->exc as $captionnode)
+						$attr['search_exc_captions'][$lang] = (string)$captionnode;
+				}
+				foreach ($langnode->desc as $descnode)
+				{
+					$xml = $descnode->asxml(); /* contains "<desc>" and "</desc>" */
+					$innerxml = preg_replace("/(^[^>]+>)|(<[^<]+$)/us", "", $xml);
+					$attr['descriptions'][$lang] = self::cleanup_string($innerxml);
+				}
 			}
-			foreach ($attrnode->desc as $descnode)
-			{
-				$xml = $descnode->asxml(); /* contains "<desc lang="...">" and "</desc>" */
-				$innerxml = preg_replace("/(^[^>]+>)|(<[^<]+$)/us", "", $xml);
-				$attr['descriptions'][(string)$descnode['lang']] = self::cleanup_string($innerxml);
-			}
-			$cachedvalue['attr_dict'][$attr['code']] = $attr;
+			$cachedvalue['attr_dict'][$attr['id']] = $attr;
 		}
 
 		# Cache it for a month (just in case, usually it will be refreshed every day).
@@ -125,9 +161,9 @@ class AttrHelper
 	public static function refresh_if_stale()
 	{
 		self::init_from_cache();
-		if (self::$last_refreshed < time() - 86400)
+		if (self::$last_refreshed < time() - self::$REFRESH_INTERVAL)
 			self::refresh_now();
-		if (self::$last_refreshed < time() - 3 * 86400)
+		if (self::$last_refreshed < time() - 3 * self::$REFRESH_INTERVAL)
 		{
 			Okapi::mail_admins(
 				"OKAPI was unable to refresh attributes",
