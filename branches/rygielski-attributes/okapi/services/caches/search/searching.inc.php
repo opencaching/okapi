@@ -303,7 +303,7 @@ class SearchAssistant
 			require_once($GLOBALS['rootpath'].'/okapi/services/attrs/attr_helper.inc.php');
 			$mapping = AttrHelper::get_acode_to_internal_ids_mapping();
 			$must_have = array();
-			$may_not_have = array();
+			$must_not_have = array();
 			$impossible = false;
 			foreach (explode("|", $tmp) as $token)
 			{
@@ -363,12 +363,12 @@ class SearchAssistant
 					# second query.
 
 					foreach ($mapping[$token] as $internal_id)
-						$may_not_have[] = $internal_id;
+						$must_not_have[] = $internal_id;
 				}
 			}
 
 			sort($must_have);
-			sort($may_not_have);
+			sort($must_not_have);
 
 			if (count($must_have) > 0)
 			{
@@ -385,17 +385,17 @@ class SearchAssistant
 					$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $must_have))."')";
 				}
 			}
-			if (count($may_not_have) > 0)
+			if (count($must_not_have) > 0)
 			{
-				$may_not_have = Db::select_column("
+				$must_not_have = Db::select_column("
 					select distinct cache_id
 					from caches_attributes
-					where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $may_not_have))."')
+					where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $must_not_have))."')
 				");
-				if (count($may_not_have) == 0) {
+				if (count($must_not_have) == 0) {
 					# pass
 				} else {
-					$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $may_not_have))."')";
+					$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $must_not_have))."')";
 				}
 			}
 		}
