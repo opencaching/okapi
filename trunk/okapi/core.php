@@ -337,6 +337,7 @@ class Db
 			throw new Exception("Could not connect to MySQL: ".mysql_error());
 	}
 
+	/** Fetch [{row}], return {row}. */
 	public static function select_row($query)
 	{
 		$rows = self::select_all($query);
@@ -349,6 +350,7 @@ class Db
 		}
 	}
 
+	/** Fetch all [{row}, {row}], return [{row}, {row}]. */
 	public static function select_all($query)
 	{
 		$rows = array();
@@ -356,7 +358,8 @@ class Db
 		return $rows;
 	}
 
-	public static function select_and_push($query, & $arr, $keyField = null)
+	/** Private. */
+	private static function select_and_push($query, & $arr, $keyField = null)
 	{
 		$rs = self::query($query);
 		while (true)
@@ -372,6 +375,23 @@ class Db
 		mysql_free_result($rs);
 	}
 
+	/** Fetch all [(A,A), (A,B), (B,A)], return {A: [{row}, {row}], B: [{row}]}. */
+	public static function select_group_by($keyField, $query)
+	{
+		$groups = array();
+		$rs = self::query($query);
+		while (true)
+		{
+			$row = mysql_fetch_assoc($rs);
+			if ($row === false)
+				break;
+			$groups[$row[$keyField]][] = $row;
+		}
+		mysql_free_result($rs);
+		return $groups;
+	}
+
+	/** Fetch [(A)], return A. */
 	public static function select_value($query)
 	{
 		$column = self::select_column($query);
@@ -382,6 +402,7 @@ class Db
 		throw new DbException("Invalid query. Db::select_value returned more than one row for:\n\n".$query."\n");
 	}
 
+	/** Fetch all [(A), (B), (C)], return [A, B, C]. */
 	public static function select_column($query)
 	{
 		$column = array();

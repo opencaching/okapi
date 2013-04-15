@@ -802,12 +802,9 @@ class WebService
 			else
 			{
 				$rs = Db::query("
-					select
-						id, pl, en
-					from
-						waypoint_type
-					where
-						id > 0
+					select id, pl, en
+					from waypoint_type
+					where id > 0
 				");
 				while ($row = mysql_fetch_assoc($rs))
 				{
@@ -828,7 +825,7 @@ class WebService
 				# (i.e. final location of a multicache). Such hidden waypoints are not
 				# exposed by OKAPI. A stage fields is used for ordering and naming.
 
-				$waypoints = Db::select_all("
+				$cacheid2waypoints = Db::select_group_by("cache_id", "
 					select
 						cache_id, stage, latitude, longitude, `desc`,
 						type as internal_type_id,
@@ -859,7 +856,7 @@ class WebService
 				# and defines waypoint types in 'coordinates_type' table.
 				# All additional waypoints are are public.
 
-				$waypoints = Db::select_all("
+				$cacheid2waypoints = Db::select_group_by("cache_id", "
 					select
 						cache_id,
 						@stage := @stage + 1 as stage,
@@ -890,25 +887,29 @@ class WebService
 				");
 			}
 
-			$wpt_format = "%s-%0".strlen(count($waypoints))."d";
-			$index = 0;
-			foreach ($waypoints as $row)
+			foreach ($cacheid2waypoints as $cache_id => $waypoints)
 			{
-				if (!isset($internal_wpt_type_id2names[$row['internal_type_id']]))
+				$cache_code = $cacheid2wptcode[$cache_id];
+				$wpt_format = $cache_code."-%0".strlen(count($waypoints))."d";
+				$index = 0;
+				foreach ($waypoints as $row)
 				{
-					# Sanity check. Waypoints of undefined type won't be accessible via OKAPI.
-					# See issue 219.
-					continue;
+					if (!isset($internal_wpt_type_id2names[$row['internal_type_id']]))
+					{
+						# Sanity check. Waypoints of undefined type won't be accessible via OKAPI.
+						# See issue 219.
+						continue;
+					}
+					$index++;
+					$results[$cache_code]['alt_wpts'][] = array(
+						'name' => sprintf($wpt_format, $index),
+						'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+						'type' => $row['okapi_type'],
+						'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langpref),
+						'sym' => $row['sym'],
+						'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
+					);
 				}
-				$index++;
-				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
-					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $index),
-					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
-					'type' => $row['okapi_type'],
-					'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langpref),
-					'sym' => $row['sym'],
-					'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
-				);
 			}
 		}
 
