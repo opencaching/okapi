@@ -752,6 +752,14 @@ class OkapiLock
 			flock($this->lock, LOCK_EX);
 	}
 
+	public function try_acquire()
+	{
+		if ($this->lock !== null)
+			return flock($this->lock, LOCK_EX | LOCK_NB);
+		else
+			return true;  # $lock can be null only when debugging
+	}
+
 	public function release()
 	{
 		if ($this->lock !== null)

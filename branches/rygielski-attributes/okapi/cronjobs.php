@@ -776,16 +776,15 @@ class LocaleChecker extends Cron5Job
 }
 
 /**
- * Once every hour, check if the cache attributes listing need updating.
- * Note that the actual refresh is usually performed less frequently (see
- * AttrHelper class for details).
+ * Once every 12 hours, update the attributes from the attributes.xml file
+ * stored in the repository.
  */
 class AttrsRefresherJob extends Cron5Job
 {
-	public function get_period() { return 3600; }
+	public function get_period() { return 12*3600; }
 	public function execute()
 	{
 		require_once($GLOBALS['rootpath']."okapi/services/attrs/attr_helper.inc.php");
-		AttrHelper::refresh_if_stale();
+		AttrHelper::refresh_now();
 	}
 }

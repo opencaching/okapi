@@ -12,23 +12,41 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
+use okapi\OkapiLock;
 use SimpleXMLElement;
 
 
 class AttrHelper
 {
+	/** URL of the source attributes.xml. */
 	//private static $SOURCE_URL = "http://opencaching-api.googlecode.com/svn/trunk/etc/attributes.xml";
 	private static $SOURCE_URL = "http://opencaching-api.googlecode.com/svn/branches/rygielski-attributes/etc/attributes.xml";
-	private static $REFRESH_INTERVAL = 86400;
-	private static $VERSION = 3;
+
+	/**
+	 * Increase this if you need the attributes.xml to be refreshed immediatelly
+	 * after the code update. Usually you won't need that (the attributes are
+	 * refreshed periodically by a cronjob), but it can be handy for testing
+	 * recently commited changes to the attributes.xml file.
+	 */
+	private static $VERSION = 8;
+
 	private static $attr_dict = null;
 	private static $last_refreshed = null;
 
 	/**
 	 * Forces the download of the new attributes from Google Code.
 	 */
-	private static function refresh_now()
+	public static function refresh_now()
 	{
+		$lock = OkapiLock::get("downloader");
+		if (!$lock->try_acquire())
+		{
+			# Other thread is already doing that. We will continue WITHOUT
+			# refreshing. This may cause the current thread to be somewhat
+			# "misinformed", but it is safer.
+
+			return;
+		}
 		try
 		{
 			$opts = array(
@@ -39,14 +57,48 @@ class AttrHelper
 			);
 			$context = stream_context_create($opts);
 			$xml = file_get_contents(self::$SOURCE_URL, false, $context);
+			self::refresh_from_string($xml);
+			$lock->release();
 		}
-		catch (ErrorException $e)
+		catch (Exception $e)
 		{
-			# Google failed on us. We won't update the cached attributes.
+			# Failure. We can't update the cached attributes. Let's check when
+			# the last successful download occured.
+
+			self::init_from_cache(false);
+			$lock->release();
+
+			if (self::$last_refreshed < time() - 36 * 3600)
+			{
+				Okapi::mail_admins(
+					"OKAPI is unable to refresh attributes",
+					"OKAPI periodically refreshes all cache attributes from the list\n".
+					"kept in global repository. OKAPI tried to contact the repository,\n".
+					"but it failed. Your list of attributes might be stale.\n\n".
+					"You should probably update OKAPI or contact OKAPI developers.\n\n".
+					"Debug info:\n".print_r($e, true)
+				);
+			}
+
+			if (self::$last_refreshed == 0)
+			{
+				# That's bad! We don't have ANY copy of the data AND we failed to
+				# download it. We will want OKAPI to keep trying, but we'll want
+				# it to wait a little between retries. We need to cache the fake,
+				# empty data, temporarilly.
+
+				$cache_key = "attrhelper/dict#".self::$VERSION;
+				$cachedvalue = array(
+					'attr_dict' => array(),
+					'last_refreshed' => 0,
+				);
+				Cache::set($cache_key, $cachedvalue, 60);
+			}
+
 			return;
 		}
 
-		self::refresh_from_file($xml);
+		self::refresh_from_string($xml);
 	}
 
 	/**
@@ -132,10 +184,11 @@ class AttrHelper
 
 	/**
 	 * Initialize all the internal attributes (if not yet initialized). This
-	 * loads attribute values from the cache. If they are not present in the cache,
-	 * it won't download them from Google Code, it will initialize them as empty!
+	 * loads attribute values from the cache. If they are not present in the
+	 * cache (very rare), it will acquire a lock and download them from Google
+	 * Code.
 	 */
-	private static function init_from_cache()
+	private static function init_from_cache($allow_download=true)
 	{
 		if (self::$attr_dict !== null)
 		{
@@ -146,35 +199,24 @@ class AttrHelper
 		$cachedvalue = Cache::get($cache_key);
 		if ($cachedvalue === null)
 		{
-			$cachedvalue = array(
-				'attr_dict' => array(),
-				'last_refreshed' => 0,
-			);
+			# This may happen, for example, when the self::$VERSION is changed.
+
+			if ($allow_download)
+			{
+				self::refresh_now();
+				self::init_from_cache(false);
+				return;
+			}
+			else
+			{
+				$cachedvalue = array(
+					'attr_dict' => array(),
+					'last_refreshed' => 0,
+				);
+			}
 		}
 		self::$attr_dict = $cachedvalue['attr_dict'];
 		self::$last_refreshed = $cachedvalue['last_refreshed'];
-	}
-
-	/**
-	 * Check if the cached attribute values might be stale. If they were not
-	 * refreshed in a while, perform the refresh from Google Code. (This might
-	 * take a couple of seconds, it should be done via a cronjob.)
-	 */
-	public static function refresh_if_stale()
-	{
-		self::init_from_cache();
-		if (self::$last_refreshed < time() - self::$REFRESH_INTERVAL)
-			self::refresh_now();
-		if (self::$last_refreshed < time() - 3 * self::$REFRESH_INTERVAL)
-		{
-			Okapi::mail_admins(
-				"OKAPI was unable to refresh attributes",
-				"OKAPI periodically refreshes all cache attributes from the list\n".
-				"kept in global repository. OKAPI tried to contact the repository,\n".
-				"but it failed. Your list of attributes might be stale.\n\n".
-				"You should probably update OKAPI or contact OKAPI developers."
-			);
-		}
 	}
 
 	/**
