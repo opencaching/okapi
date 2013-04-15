@@ -20,7 +20,7 @@ class AttrHelper
 	//private static $SOURCE_URL = "http://opencaching-api.googlecode.com/svn/trunk/etc/attributes.xml";
 	private static $SOURCE_URL = "http://opencaching-api.googlecode.com/svn/branches/rygielski-attributes/etc/attributes.xml";
 	private static $REFRESH_INTERVAL = 86400;
-	private static $CACHE_KEY = 'attrs/attrlist/2';
+	private static $VERSION = 3;
 	private static $attr_dict = null;
 	private static $last_refreshed = null;
 
@@ -50,10 +50,10 @@ class AttrHelper
 	}
 
 	/**
-	 * Refreshed all attributes from the given file. Usually, this file is
+	 * Refreshed all attributes from the given XML. Usually, this file is
 	 * downloaded from Google Code (using refresh_now).
 	 */
-	public static function refresh_from_file($xml)
+	public static function refresh_from_string($xml)
 	{
 		/* attribute.xml file defines attribute relationships between various OC
 		 * installations. Each installation uses its own internal ID schema.
@@ -124,7 +124,8 @@ class AttrHelper
 
 		# Cache it for a month (just in case, usually it will be refreshed every day).
 
-		Cache::set(self::$CACHE_KEY, $cachedvalue, 30*86400);
+		$cache_key = "attrhelper/dict#".self::$VERSION;
+		Cache::set($cache_key, $cachedvalue, 30*86400);
 		self::$attr_dict = $cachedvalue['attr_dict'];
 		self::$last_refreshed = $cachedvalue['last_refreshed'];
 	}
@@ -141,7 +142,8 @@ class AttrHelper
 			/* Already initialized. */
 			return;
 		}
-		$cachedvalue = Cache::get(self::$CACHE_KEY);
+		$cache_key = "attrhelper/dict#".self::$VERSION;
+		$cachedvalue = Cache::get($cache_key);
 		if ($cachedvalue === null)
 		{
 			$cachedvalue = array(
@@ -197,7 +199,11 @@ class AttrHelper
 	 */
 	public static function get_internal_id_to_acodes_mapping()
 	{
-		$cache_key = "attrhelper/id2acodes";
+		static $mapping = null;
+		if ($mapping !== null)
+			return $mapping;
+
+		$cache_key = "attrhelper/id2acodes/".self::$VERSION;
 		$mapping = Cache::get($cache_key);
 		if (!$mapping)
 		{
@@ -214,12 +220,44 @@ class AttrHelper
 	}
 
 	/**
+	 * Get the mapping: acode => the list of internal attribute IDs to which
+	 * the acode is mapped to. The result is cached!
+	 */
+	public static function get_acode_to_internal_ids_mapping()
+	{
+		static $mapping = null;
+		if ($mapping !== null)
+			return $mapping;
+
+		$cache_key = "attrhelper/acode2ids/".self::$VERSION;
+		$mapping = Cache::get($cache_key);
+		if (!$mapping)
+		{
+			self::init_from_cache();
+			$mapping = array();
+			foreach (self::$attr_dict as $acode => &$attr_ref)
+			{
+				$mapping[$acode] = array();
+				foreach ($attr_ref['internal_ids'] as $internal_id)
+					$mapping[$acode][] = $internal_id;
+			}
+			Cache::set($cache_key, $mapping, 3600);
+		}
+		return $mapping;
+	}
+
+
+	/**
 	 * Get the mapping: A-codes => attribute name. The language for the name
 	 * is selected based on the $langpref parameter. The result is cached!
 	 */
 	public static function get_acode_to_name_mapping($langpref)
 	{
-		$cache_key = md5("attrhelper/acode2name".serialize($langpref));
+		static $mapping = null;
+		if ($mapping !== null)
+			return $mapping;
+
+		$cache_key = md5(serialize(array("attrhelper/acode2name", $langpref, self::$VERSION)));
 		$mapping = Cache::get($cache_key);
 		if (!$mapping)
 		{

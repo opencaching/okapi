@@ -10,6 +10,7 @@ use okapi\OkapiRequest;
 use okapi\InvalidParam;
 use okapi\BadRequest;
 use okapi\Settings;
+use okapi\services\attrs\AttrHelper;
 use Exception;
 
 class SearchAssistant
@@ -291,6 +292,112 @@ class SearchAssistant
 			if (!is_numeric($tmp))
 				throw new InvalidParam('max_founds', "'$tmp'");
 			$where_conds[] = "$X_FOUNDS <= '".mysql_real_escape_string($tmp)."'";
+		}
+
+		#
+		# attr_ids
+		#
+
+		if ($tmp = $request->get_parameter('attr_ids'))
+		{
+			require_once($GLOBALS['rootpath'].'/okapi/services/attrs/attr_helper.inc.php');
+			$mapping = AttrHelper::get_acode_to_internal_ids_mapping();
+			$must_have = array();
+			$may_not_have = array();
+			$impossible = false;
+			foreach (explode("|", $tmp) as $token)
+			{
+				$positive = true;
+				if ((strlen($token) > 0) && ($token[0] == "-"))
+				{
+					$positive = false;
+					$token = substr($token, 1);
+				}
+				if (!isset($mapping[$token]))
+				{
+					throw new InvalidParam('attr_ids', "Unknown attribute ID: ".$token);
+				}
+				if ($positive)
+				{
+					if (count($mapping[$token]) == 0)
+					{
+						# Attribute X is required, and X is not supported by this node
+						# (there are no internal IDs to map to). The condition cannot
+						# be met, hence the result will be empty.
+
+						$where_conds[] = "false";
+						break;
+					}
+					elseif (count($mapping[$token]) == 1)
+					{
+						# Attribute X is required, and X has exactly one internal ID
+						# that we can use. We need to simply add the internal ID to the
+						# first of our extra queries.
+
+						$must_have[] = $mapping[$token][0];
+					}
+					else
+					{
+						# Attribute X is required, and X has *more than one* internal ID
+						# mapped to it. *Either one* (not necessarilly both) of these
+						# internal IDs should cause the cache to appear in the result.
+						# In this case, we cannot use it in our group by query! We have
+						# to make a separate one.
+
+						$tmp = Db::select_column("
+							select distinct cache_id
+							from caches_attributes
+							where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $mapping[$token]))."')
+						");
+						if (count($tmp) == 0) {
+							$where_conds[] = "false";
+						} else {
+							$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $tmp))."')";
+						}
+					}
+				}
+				else
+				{
+					# In the negative case, we don't need to differentiate on the
+					# count($mapping[$token]) - all possible cases are covered by our
+					# second query.
+
+					foreach ($mapping[$token] as $internal_id)
+						$may_not_have[] = $internal_id;
+				}
+			}
+
+			sort($must_have);
+			sort($may_not_have);
+
+			if (count($must_have) > 0)
+			{
+				$must_have = Db::select_column("
+					select cache_id
+					from caches_attributes
+					where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $must_have))."')
+					group by cache_id
+					having count(*) = '".mysql_real_escape_string(count($must_have))."'
+				");
+				if (count($must_have) == 0) {
+					$where_conds[] = "false";
+				} else {
+					$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $must_have))."')";
+				}
+			}
+			if (count($may_not_have) > 0)
+			{
+				$may_not_have = Db::select_column("
+					select distinct cache_id
+					from caches_attributes
+					where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $may_not_have))."')
+				");
+				if (count($may_not_have) == 0) {
+					# pass
+				} else {
+					$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $may_not_have))."')";
+				}
+			}
 		}
 
 		#
