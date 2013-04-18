@@ -101,24 +101,16 @@ class WebService
 		$recommend = ($recommend == 'true');
 		if ($recommend && $logtype != 'Found it')
 		{
-			if (Settings::get('OC_BRANCH') == 'oc.pl')
+			if ($logtype != 'Attended')
+				throw new BadRequest("Recommending is allowed only for 'Found it' and 'Attended' logs.");
+			else if (Settings::get('OC_BRANCH') == 'oc.pl')
 			{
-				if ($logtype == 'Attended')
-				{
-					# We will remove the recommendation request and change the success message
-					# (which will be returned IF the rest of the query will meet all the
-					# requirements).
-					self::$success_message .= " ".sprintf(_("However, your cache recommendation was ignored, because %s does not allow recommending event caches."),
-						Okapi::get_normalized_site_name());
-					$recommend = null;
-				}
-				else
-					throw new BadRequest("Recommending is allowed only for 'Found it' logs.");
-			}
-			else  
-			{ # OCDE
-				if ($logtype != 'Attended')
-					throw new BadRequest("Recommending is allowed only for 'Found it' and 'Attended' logs.");
+				# We will remove the recommendation request and change the success message
+				# (which will be returned IF the rest of the query will meet all the
+				# requirements).
+				self::$success_message .= " ".sprintf(_("However, your cache recommendation was ignored, because %s does not allow recommending event caches."),
+					Okapi::get_normalized_site_name());
+				$recommend = null;
 			}
 		}
 
