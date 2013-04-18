@@ -41,8 +41,8 @@
 					<li>"Attended" - a user has attended the event (for Event caches only).</li>
 				</ul>
 				
-				<p>Types which indicate a change of state of the geocache (used only
-				by some Opencaching installations):</p>
+				<p>Types which indicate a change of state of the geocache or confirm the
+				current state (used only by some Opencaching installations):</p>
 				
 				<ul>
 					<li>"Temporarily unavailable" - probably the cache cannot be found,
