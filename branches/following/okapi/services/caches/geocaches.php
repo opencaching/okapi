@@ -783,26 +783,66 @@ class WebService
 
 		if (in_array('alt_wpts', $fields))
 		{
+			$internal_wpt_type_id2names = array();
+			if (Settings::get('OC_BRANCH') == 'oc.de')
+			{
+				$rs = Db::query("
+					select
+						ct.id,
+						LOWER(stt.lang) as language,
+						stt.`text`
+					from
+						coordinates_type ct
+						left join sys_trans_text stt on stt.trans_id = ct.trans_id
+				");
+				while ($row = mysql_fetch_assoc($rs))
+					$internal_wpt_type_id2names[$row['id']][$row['language']] = $row['text'];
+				mysql_free_result($rs);
+			}
+			else
+			{
+				$rs = Db::query("
+					select id, pl, en
+					from waypoint_type
+					where id > 0
+				");
+				while ($row = mysql_fetch_assoc($rs))
+				{
+					$internal_wpt_type_id2names[$row['id']]['pl'] = $row['pl'];
+					$internal_wpt_type_id2names[$row['id']]['en'] = $row['en'];
+				}
+			}
+
 			foreach ($results as &$result_ref)
 				$result_ref['alt_wpts'] = array();
 			$cache_codes_escaped_and_imploded = "'".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."'";
 
 			if (Settings::get('OC_BRANCH') == 'oc.pl')
 			{
-				# OCPL uses 'waypoints' table to store additional waypoints. OCPL also have
-				# a special 'status' field to denote a hidden waypoint (i.e. final location
-				# of a multicache). Such hidden waypoints are not exposed by OKAPI. A stage
-				# fields is used for ordering and naming.
+				# OCPL uses 'waypoints' table to store additional waypoints and defines
+				# waypoint types in 'waypoint_type' table.
+				# OCPL also have a special 'status' field to denote a hidden waypoint
+				# (i.e. final location of a multicache). Such hidden waypoints are not
+				# exposed by OKAPI. A stage fields is used for ordering and naming.
 
-				$waypoints = Db::select_all("
+				$cacheid2waypoints = Db::select_group_by("cache_id", "
 					select
 						cache_id, stage, latitude, longitude, `desc`,
+						type as internal_type_id,
 						case type
 							when 3 then 'Flag, Red'
 							when 4 then 'Circle with X'
 							when 5 then 'Parking Area'
 							else 'Flag, Green'
-						end as sym
+						end as sym,
+						case type
+							when 1 then 'physical-stage'
+							when 2 then 'virtual-stage'
+							when 3 then 'final'
+							when 4 then 'poi'
+							when 5 then 'parking'
+							else 'other'
+						end as okapi_type
 					from waypoints
 					where
 						cache_id in (".$cache_codes_escaped_and_imploded.")
@@ -812,39 +852,64 @@ class WebService
 			}
 			else
 			{
-				# OCDE uses 'coordinates' table (with type=1) to store additional waypoints.
-				# All waypoints are are public.
+				# OCDE uses 'coordinates' table (with type=1) to store additional waypoints
+				# and defines waypoint types in 'coordinates_type' table.
+				# All additional waypoints are are public.
 
-				$waypoints = Db::select_all("
+				$cacheid2waypoints = Db::select_group_by("cache_id", "
 					select
 						cache_id,
 						@stage := @stage + 1 as stage,
 						latitude, longitude,
 						description as `desc`,
+						subtype as internal_type_id,
 						case subtype
 							when 1 then 'Parking Area'
 							when 3 then 'Flag, Blue'
 							when 4 then 'Circle with X'
 							when 5 then 'Diamond, Green'
 							else 'Flag, Green'
-						end as sym
+						end as sym,
+						case subtype
+							when 1 then 'parking'
+							when 2 then 'stage'
+							when 3 then 'path'
+							when 4 then 'final'
+							when 5 then 'poi'
+							else 'other'
+						end as okapi_type
 					from coordinates
 					join (select @stage := 0) s
 					where
 						type = 1
 						and cache_id in (".$cache_codes_escaped_and_imploded.")
-					order by cache_id, id, `desc`
+					order by cache_id, id
 				");
 			}
-			$wpt_format = "%s-%0".strlen(count($waypoints))."d";
-			foreach ($waypoints as $index => $row)
+
+			foreach ($cacheid2waypoints as $cache_id => $waypoints)
 			{
-				$results[$cacheid2wptcode[$row['cache_id']]]['alt_wpts'][] = array(
-					'name' => sprintf($wpt_format, $cacheid2wptcode[$row['cache_id']], $index + 1),
-					'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
-					'sym' => $row['sym'],
-					'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
-				);
+				$cache_code = $cacheid2wptcode[$cache_id];
+				$wpt_format = $cache_code."-%0".strlen(count($waypoints))."d";
+				$index = 0;
+				foreach ($waypoints as $row)
+				{
+					if (!isset($internal_wpt_type_id2names[$row['internal_type_id']]))
+					{
+						# Sanity check. Waypoints of undefined type won't be accessible via OKAPI.
+						# See issue 219.
+						continue;
+					}
+					$index++;
+					$results[$cache_code]['alt_wpts'][] = array(
+						'name' => sprintf($wpt_format, $index),
+						'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+						'type' => $row['okapi_type'],
+						'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langpref),
+						'sym' => $row['sym'],
+						'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
+					);
+				}
 			}
 		}
 
@@ -852,25 +917,89 @@ class WebService
 
 		if (in_array('country', $fields) || in_array('state', $fields))
 		{
-			$rs = Db::query("
-				select
-					c.wp_oc as cache_code,
-					cl.adm1 as country,
-					cl.".((Settings::get('OC_BRANCH') == 'oc.de') ? 'adm2' : 'adm3')." as state
-				from
-					caches c,
-					cache_location cl
-				where
-					c.wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
-					and c.cache_id = cl.cache_id
-			");
 			$countries = array();
 			$states = array();
-			while ($row = mysql_fetch_assoc($rs))
+
+			if (Settings::get('OC_BRANCH') == 'oc.de')
 			{
-				$countries[$row['cache_code']] = $row['country'];
-				$states[$row['cache_code']] = $row['state'];
+				# OCDE:
+				#  - cache_location entries are created by a cronjob *after* listing the
+				#      caches and may not yet exist.
+				#  - The state is in adm2 field.
+				#  - caches.country overrides cache_location.code1/adm1. If both differ,
+				#      cache_location.adm2 to adm4 is invalid and the state unknown.
+				#  - OCDE databases may contain caches with invalid country code.
+				#      Such errors must be handled gracefully.
+				#  - adm1 should always be ignored. Instead, code1 should be translated
+				#      into a country name, depending on langpref.
+
+				# build country code translation table
+				$rs = Db::query("
+					select distinct
+						c.country,
+						lower(stt.lang) as language,
+						stt.`text`
+					from
+						caches c
+						inner join countries on countries.short=c.country
+						inner join sys_trans_text stt on stt.trans_id = countries.trans_id
+					where
+						c.wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+				");
+				$country_codes2names = array();
+				while ($row = mysql_fetch_assoc($rs))
+					$country_codes2names[$row['country']][$row['language']] = $row['text'];
+				mysql_free_result($rs);
+
+				# get geocache countries and states
+				$rs = Db::query("
+					select
+						c.wp_oc as cache_code,
+						c.country as country_code,
+						ifnull(if(c.country<>cl.code1,'',cl.adm2),'') as state
+					from
+						caches c
+						left join cache_location cl on c.cache_id = cl.cache_id
+					where
+						c.wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+				");
+				while ($row = mysql_fetch_assoc($rs))
+				{
+					if (!isset($country_codes2names[$row['country_code']]))
+						$countries[$row['cache_code']] = '';
+					else
+						$countries[$row['cache_code']] = Okapi::pick_best_language($country_codes2names[$row['country_code']], $langpref);
+					$states[$row['cache_code']] = $row['state'];
+				}
+				mysql_free_result($rs);
 			}
+			else
+			{
+				# OCPL:
+				#  - cache_location data is entered by the user.
+				#  - The state is in adm3 field.
+
+				# get geocache countries and states
+				$rs = Db::query("
+					select
+						c.wp_oc as cache_code,
+						cl.adm1 as country,
+						cl.adm3 as state
+					from
+						caches c,
+						cache_location cl
+					where
+						c.wp_oc in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
+						and c.cache_id = cl.cache_id
+				");
+				while ($row = mysql_fetch_assoc($rs))
+				{
+					$countries[$row['cache_code']] = $row['country'];
+					$states[$row['cache_code']] = $row['state'];
+				}
+				mysql_free_result($rs);
+			}
+
 			if (in_array('country', $fields))
 			{
 				foreach ($results as $cache_code => &$row_ref)

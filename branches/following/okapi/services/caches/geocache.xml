@@ -243,6 +243,15 @@
 					<li><b>name</b> - plain-text, short, unique "codename" for the waypoint,</li>
 					<li><b>location</b> - location of the waypoint in the "lat|lon" format
 						(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
+					<li><b>type</b> - string, unique identifier for the type of waypoint; one
+						of the following: <b>parking</b>, <b>path</b>, <b>stage</b>,
+						<b>physical-stage</b>, <b>virtual-stage</b>, <b>final</b>, <b>poi</b>, <b>other</b>;
+						more types may be added; unknown types should be treated as <b>other</b>,
+					</li>
+					<li><b>type_name</b> - string, the human-readable name of the waypoint type,
+						e.g. "Parking area" or "Final location"; the language will be selected
+						based on the langpref argument,
+					</li>
 					<li>
 						<b>sym</b> - string, one of commonly recognized waypoint symbol
 						names, originally introduced by Garmin in their devices and GPX
@@ -252,7 +261,8 @@
 				</ul>
 			</li>
 			<li>
-				<p><b>country</b> - name of the country the cache is placed in.</p>
+				<p><b>country</b> - name of the country the cache is placed in;
+				may be empty ("") if the country is unknown.</p>
 				<p><b>Note:</b> This data is user-supplied and is not validated in
 				any way. Consider using external geocoding services instead. Also,
 				currently you have no way of knowing in which language it will appear
@@ -260,7 +270,8 @@
 				parameter in the future).</p>
 			</li>
 			<li>
-				<p><b>state</b> - name of the state the cache is placed in.</p>
+				<p><b>state</b> - name of the state the cache is placed in;
+				may be empty ("") if the state is unknown.</p>
 				<p><b>Note:</b> On some installations this data is user-supplied and
 				is not validated in any way. Other installations calculate it from
 				cache coordinates but may have problems in border regions.

@@ -37,6 +37,52 @@ We leave the UI clarity problem for app developers.
 
 <xml>
 
+	<!-- Language forms - status: just an idea, unimplemented (see form=""
+	attributes in <attr> elements). TODO: fill missing form="" attributes. -->
+
+	<form id="is / not is">
+		<prefix lang="en">
+			<include><b>Include</b> the cache, only if it is:</include>
+			<exclude><b>Exclude</b> the cache if it is:</exclude>
+		</prefix>
+		<prefix lang="pl">
+			<include><b>Uwzględnij</b> skrzynkę, tylko jeśli jest:</include>
+			<exclude><b>Pomiń</b> skrzynkę, jeśli jest:</exclude>
+		</prefix>
+	</form>
+	
+	<form id="contains / does not contain">
+		<prefix lang="en">
+			<include><b>Include</b> the cache, only if it contains:</include>
+			<exclude><b>Exclude</b> the cache if it contains:</exclude>
+		</prefix>
+		<prefix lang="pl">
+			<include><b>Uwzględnij</b> skrzynkę, tylko jeśli zawiera:</include>
+			<exclude><b>Pomiń</b> skrzynkę, jeśli nie zawiera:</exclude>
+		</prefix>
+	</form>
+	
+	<form id="allowed / not allowed">
+		<prefix lang="en">
+			<include>The following <b>must be allowed</b>:</include>
+			<exclude>The following <b>may not be allowed</b>:</exclude>
+		</prefix>
+	</form>
+	
+	<form id="required / not required">
+		<prefix lang="en">
+			<include>The following <b>must be required</b>:</include>
+			<exclude>The following <b>may not be required</b>:</exclude>
+		</prefix>
+	</form>
+	
+	<form id="if / if not">
+		<prefix lang="en">
+			<include>The following <b>must be true</b>:</include>
+			<exclude>The following <b>may not be true</b>:</exclude>
+		</prefix>
+	</form>
+
 	<!--
 	
 	NOTICE: Categories are currently NOT implemented. In particular, the
@@ -80,12 +126,11 @@ We leave the UI clarity problem for app developers.
 	
 	-->
 	
-	<attr okapi_attr_id="oconly" categories="de-listing">
+	<attr okapi_attr_id="oconly" categories="de-listing" form="is / is not">
 		<opencaching site_url="http://opencaching.de/" id="6" />
-		<name lang="en">Only loggable at Opencaching</name>
+		<name lang="en">Listed at Opencaching only</name>
 		<desc lang="en">
-			This geocache is listed at Opencaching only. This attribute will enable
-			users of other geocaching platforms to find interesting OC caches quickly. 
+			This geocache is listed at Opencaching only. 
 		</desc>
 		<name lang="pl">Dostępna tylko na Opencaching</name>
 		<desc lang="pl">
@@ -111,39 +156,38 @@ We leave the UI clarity problem for app developers.
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="survey-marker" categories="de-cache-types">
+	<attr okapi_attr_id="near-survey-marker" categories="de-cache-types" form="is / is not">
 		<opencaching site_url="http://opencaching.pl/" id="54" />
-		<name lang="en">Survey Marker</name>
+		<name lang="en">Near a Survey Marker</name>
 		<desc lang="en">
 			The cache is hidden in near proximity of a survey marker (also known
 			as geodetic marks).
 		</desc>
-		<name lang="pl">Punkt geodezyjny</name>
+		<name lang="pl">W pobliżu punktu geodezyjnego</name>
 		<desc lang="pl">
 			Skrzynka ukryta w pobliżu punktu geodezyjnego.
 			<a href='http://wiki.opencaching.pl/index.php/Benchmark'>Więcej informacji</a>.
 		</desc>
-		<name lang="de">Vermessungspunkt</name>
 	</attr>
 	
-	<attr okapi_attr_id="wherigo" categories="de-cache-types">
+	<attr okapi_attr_id="wherigo" categories="de-cache-types" form="is / is not">
 		<opencaching site_url="http://opencaching.pl/" id="55" />
-		<name lang="en">Whereigo Cartridge</name>
+		<name lang="en">Whereigo Cache</name>
 		<desc lang="en">
 			Cache description includes a file - the Whereigo cartridge. In order to
 			find the cache, you need to download the file and install it on
 			a proper compatible device.
 		</desc>
-		<name lang="pl">Scenariusz WIGO</name>
+		<name lang="pl">Whereigo Cache</name>
 		<desc lang="pl">
 			Opis skrzynki zawiera scenariusz WIGO (ang. Whereigo). Aby móc zdobyć skrzynkę
 			należy pobrać scenariusz i wgrać go do kompatybilnego z nim urządzenia.
 			<a href='http://wiki.opencaching.pl/index.php/Wherigo_czyli_Scenariusze_WIGO'>Więcej informacji</a>.
 		</desc>
-		<name lang="de">Wherigo</name>
+		<name lang="de">Whereigo Cache</name>
 	</attr>
 	
-	<attr okapi_attr_id="letterbox" categories="de-cache-types">
+	<attr okapi_attr_id="letterbox" categories="de-cache-types" form="is / is not">
 		<opencaching site_url="http://opencaching.pl/" id="56" />
 		<opencaching site_url="http://opencaching.de/" id="8" />
 		<name lang="en">Letterbox Cache</name>
@@ -183,10 +227,10 @@ We leave the UI clarity problem for app developers.
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="geohotel" categories="de-cache-types">
+	<attr okapi_attr_id="geohotel" categories="de-cache-types" form="is / is not">
 		<opencaching site_url="http://opencaching.pl/" id="43" />
 		<name lang="en">GeoHotel</name>
-		<desc lang="pl">
+		<desc lang="en">
 			Primary purpose of the "GeoHotel" caches is to exchange trackables
 			(TravelBugs, GeoKretys, etc.).
 		</desc>
@@ -199,7 +243,7 @@ We leave the UI clarity problem for app developers.
 		<name lang="de">GeoHotel</name>
 	</attr>
 	
-	<attr okapi_attr_id="magnet" categories="de-cache-types">
+	<attr okapi_attr_id="magnet" categories="de-cache-types" form="is / is not">
 		<opencaching site_url="http://opencaching.pl/" id="49" />
 		<name lang="en">Magnetic cache</name>
 		<desc lang="en">
@@ -212,23 +256,22 @@ We leave the UI clarity problem for app developers.
 		<name lang="de">magnetischer Cache</name>
 	</attr>
 	
-	<attr okapi_attr_id="audiofile" categories="de-cache-types">
+	<attr okapi_attr_id="audiofile" categories="de-cache-types" form="if / if not">
 		<opencaching site_url="http://opencaching.pl/" id="50" />
-		<name lang="en">Information in an audio file</name>
+		<name lang="en">Description contains an audio file</name>
 		<desc lang="pl">
 			In order to find this cache, you must listen to an audio recording,
 			which is attached to the cache description.
 		</desc>
-		<name lang="pl">Informacje w pliku audio</name>
+		<name lang="pl">Opis zawiera plik audio</name>
 		<desc lang="pl">
 			Aby odnaleźć skrzynkę, należy odsłuchać plik dźwiękowy. Może on
 			zawierać zakodowane informacje, dźwięki otoczenia, opis dotarcia
 			do skrzynki.
 		</desc>
-		<name lang="de">Informationen in Audiodatei</name>
 	</attr>
 	
-	<attr okapi_attr_id="offset" categories="de-cache-types">
+	<attr okapi_attr_id="offset" categories="de-cache-types" form="is / is not">
 		<opencaching site_url="http://opencaching.pl/" id="51" />
 		<name lang="en">Offset cache</name>
 		<desc lang="pl">
@@ -247,7 +290,7 @@ We leave the UI clarity problem for app developers.
 		<name lang="de">Peilungscache</name>
 	</attr>
 	
-	<attr okapi_attr_id="chirp" categories="de-cache-types">
+	<attr okapi_attr_id="chirp" categories="de-cache-types" form="contains / does not contain">
 		<groundspeak id="60" inc="true" name="Wireless Beacon" />
 		<opencaching site_url="http://opencaching.pl/" id="52" />
 		<name lang="en">Garmin's wireless beacon</name>
@@ -261,7 +304,7 @@ We leave the UI clarity problem for app developers.
 		<name lang="de">Funksignal – Garmin Chirp</name>
 	</attr>
 	
-	<attr okapi_attr_id="usb" categories="de-cache-types">
+	<attr okapi_attr_id="usb" categories="de-cache-types" form="is / is not">
 		<opencaching site_url="http://opencaching.pl/" id="53" />
 		<name lang="en">Dead Drop USB cache</name>
 		<desc lang="pl">
@@ -279,17 +322,18 @@ We leave the UI clarity problem for app developers.
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="moving" categories="de-cache-types">
+	<attr okapi_attr_id="moving" categories="de-cache-types" form="if / if not">
 		<!-- This looks redundant to the 'moving cache' type, but it may also be a
 		     moving final of a multi- or quiz cache. -->
 		<opencaching site_url="http://opencaching.de/" id="31" />
-		<name lang="en">Moving target</name>
+		<name lang="en">Has a moving target</name>
 		<desc lang="en">
 			This geocache is moving around. For example, the owner might regularly
 			move the cache from one place to another, or the finders will do this
 			task and post new coordinates in their log entries. The owner must
 			update coordinates in the cache description after each move.
 		</desc>
+		<!-- TODO: "Has a" was added. -->
 		<name lang="de">bewegliches Ziel</name>
 		<desc lang="de">
 			Der Geocache verändert seine Position und ist deshalb nicht immer am
@@ -316,16 +360,16 @@ We leave the UI clarity problem for app developers.
 		</desc>
 	</attr>
 	
-	<attr okapi_attr_id="webcam" categories="de-cache-types">
+	<attr okapi_attr_id="webcam" categories="de-cache-types" form="is / is not">
 		<opencaching site_url="http://opencaching.de/" id="32" />
-		<name lang="en">Webcam</name>
+		<name lang="en">Webcam Cache</name>
 		<desc lang="en">
 			There is a webcam at the target location. You must record a webcam
 			picture of your visit and include it in your 'found' log entry. There
 			may be additional requirements like a geocaching banner on the photo.
 			The webcam’s address is included in the cache description.
 		</desc>
-		<name lang="de">Webcam am Ziel</name>
+		<name lang="de">Webcam Cache</name>
 		<desc lang="de">
 			Am Ziel befindet sich eine Webcam, und für einen Fund muss man das Bild
 			der Webcam von sich selbst aufnehmen, um nachzuweisen, dass man vor Ort
@@ -333,7 +377,7 @@ We leave the UI clarity problem for app developers.
 			Geocaching-Banner auf dem Bild. Die Webadresse der Webcam ist in der
 			Beschreibung angegeben.
 		</desc>
-		<name lang="es">Webcam</name>
+		<name lang="es">Webcam Cache</name>
 		<desc lang="es">
 			Hay una webcam en el lugar de destino. necesidad a alguien para registrar
 			con un pantallazo de la imagen de la webcam de su visita e incluirlo en
@@ -341,7 +385,7 @@ We leave the UI clarity problem for app developers.
 			geocaching en la imagen. La dirección de la webcam está incluido en la
 			descripción de la cache.
 		</desc>
-		<name lang="it">Webcam</name>
+		<name lang="it">Webcam Cache</name>
 		<desc lang="it">
 			C'è una webcam nella posizione di destinazione. E' necessario registrare
 			una foto con la webcam della vostra visita e includerla nel log. Ci

@@ -337,6 +337,7 @@ class Db
 			throw new Exception("Could not connect to MySQL: ".mysql_error());
 	}
 
+	/** Fetch [{row}], return {row}. */
 	public static function select_row($query)
 	{
 		$rows = self::select_all($query);
@@ -349,6 +350,7 @@ class Db
 		}
 	}
 
+	/** Fetch all [{row}, {row}], return [{row}, {row}]. */
 	public static function select_all($query)
 	{
 		$rows = array();
@@ -356,7 +358,8 @@ class Db
 		return $rows;
 	}
 
-	public static function select_and_push($query, & $arr, $keyField = null)
+	/** Private. */
+	private static function select_and_push($query, & $arr, $keyField = null)
 	{
 		$rs = self::query($query);
 		while (true)
@@ -372,6 +375,23 @@ class Db
 		mysql_free_result($rs);
 	}
 
+	/** Fetch all [(A,A), (A,B), (B,A)], return {A: [{row}, {row}], B: [{row}]}. */
+	public static function select_group_by($keyField, $query)
+	{
+		$groups = array();
+		$rs = self::query($query);
+		while (true)
+		{
+			$row = mysql_fetch_assoc($rs);
+			if ($row === false)
+				break;
+			$groups[$row[$keyField]][] = $row;
+		}
+		mysql_free_result($rs);
+		return $groups;
+	}
+
+	/** Fetch [(A)], return A. */
 	public static function select_value($query)
 	{
 		$column = self::select_column($query);
@@ -382,6 +402,7 @@ class Db
 		throw new DbException("Invalid query. Db::select_value returned more than one row for:\n\n".$query."\n");
 	}
 
+	/** Fetch all [(A), (B), (C)], return [A, B, C]. */
 	public static function select_column($query)
 	{
 		$column = array();
@@ -742,32 +763,31 @@ class OkapiLock
 		else
 		{
 			$this->lockfile = Okapi::get_var_dir()."/okapi-lock-".$name;
-			if (!file_exists($this->lockfile))
-			{
-				$fp = fopen($this->lockfile, "wb");
-				fclose($fp);
-			}
-			$this->lock = sem_get(fileinode($this->lockfile));
+			$this->lock = fopen($this->lockfile, "wb");
 		}
 	}
 
 	public function acquire()
 	{
 		if ($this->lock !== null)
-			sem_acquire($this->lock);
+			flock($this->lock, LOCK_EX);
 	}
 
 	public function release()
 	{
 		if ($this->lock !== null)
-			sem_release($this->lock);
+			flock($this->lock, LOCK_UN);
 	}
 
+	/**
+	 * Use this method clean up obsolete and *unused* lock names (usually there
+	 * is no point in removing locks that can be reused.
+	 */
 	public function remove()
 	{
 		if ($this->lock !== null)
 		{
-			sem_remove($this->lock);
+			fclose($this->lock);
 			unlink($this->lockfile);
 		}
 	}
@@ -1606,54 +1626,27 @@ class Okapi
 	{
 		# Various OC nodes use different English names, even for primary
 		# log types. OKAPI needs to have them the same across *all* OKAPI
-		# installations. That's why these 3 are hardcoded (and should
-		# NEVER be changed).
+		# installations. That's why all known types are hardcoded here.
+		# These names are officially documented and may never change!
 
+		# Primary.
 		if ($id == 1) return "Found it";
 		if ($id == 2) return "Didn't find it";
 		if ($id == 3) return "Comment";
 		if ($id == 7) return "Attended";
 		if ($id == 8) return "Will attend";
 
-		static $other_types = null;
-		if ($other_types === null)
-		{
-			# All the other log types are non-standard ones. Their names have to
-			# be delivered from database tables. In general, OKAPI threat such
-			# non-standard log entries as comments, but - perhaps - external
-			# applications can use it in some other way. We decided to expose
-			# ENGLISH (and ONLY English) names of such log entry types. We also
-			# advise external developers to treat unknown log entry types as
-			# comments inside their application.
+		# Other.
+		if ($id == 4) return "Moved";
+		if ($id == 5) return "Needs maintenance";
+		if ($id == 9) return "Archived";
+		if ($id == 10) return "Ready to search";
+		if ($id == 11) return "Temporarily unavailable";
+		if ($id == 12) return "OC Team comment";
 
-			if (Settings::get('OC_BRANCH') == 'oc.pl')
-			{
-				# OCPL uses log_types table to store log type names.
-				$rs = Db::query("select id, en from log_types");
-			}
-			else
-			{
-				# OCDE uses log_types with translation tables.
-
-				$rs = Db::query("
-					select
-						lt.id,
-						stt.text as en
-					from
-						log_types lt,
-						sys_trans_text stt
-					where
-						lt.trans_id = stt.trans_id
-						and stt.lang = 'en'
-				");
-			}
-			$other_types = array();
-			while ($row = mysql_fetch_assoc($rs))
-				$other_types[$row['id']] = $row['en'];
-		}
-
-		if (isset($other_types[$id]))
-			return $other_types[$id];
+		# Important: This set is not closed. Other types may be introduced
+		# in the future. This has to be documented in the public method
+		# description.
 
 		return "Comment";
 	}
