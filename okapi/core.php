@@ -1218,7 +1218,7 @@ class Okapi
 	 * Return an SQL formula for calculating distance between two geopoints.
 	 * Parameters should be either numberals or strings (SQL field references).
 	 */
-	public function get_distance_sql($lat1, $lon1, $lat2, $lon2)
+	public static function get_distance_sql($lat1, $lon1, $lat2, $lon2)
 	{
 		$x1 = "(90-$lat1) * 3.14159 / 180";
 		$x2 = "(90-$lat2) * 3.14159 / 180";
@@ -1227,7 +1227,7 @@ class Okapi
 	}
 
 	/** Return bearing (float 0..360) from geopoint 1 to 2. */
-	public function get_bearing($lat1, $lon1, $lat2, $lon2)
+	public static function get_bearing($lat1, $lon1, $lat2, $lon2)
 	{
 		if ($lat1 == $lat2 && $lon1 == $lon2)
 			return null;
@@ -1249,7 +1249,7 @@ class Okapi
 	}
 
 	/** Transform bearing (float 0..360) to simple 2-letter string (N, NE, E, SE, etc.) */
-	function bearing_as_two_letters($b)
+	public static function bearing_as_two_letters($b)
 	{
 		static $names = array('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW');
 		if ($b === null) return 'n/a';
@@ -1257,7 +1257,7 @@ class Okapi
 	}
 
 	/** Transform bearing (float 0..360) to simple 3-letter string (N, NNE, NE, ESE, etc.) */
-	function bearing_as_three_letters($b)
+	public static function bearing_as_three_letters($b)
 	{
 		static $names = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
 			'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW');
