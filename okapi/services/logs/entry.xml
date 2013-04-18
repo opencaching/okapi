@@ -41,29 +41,28 @@
 					<li>"Attended" - a user has attended the event (for Event caches only).</li>
 				</ul>
 				
-				<p>Other types, not so frequently used, or used only by some Opencaching
-				installations:</p>
+				<p>Types which indicate a change of state of the geocache (used only
+				by some Opencaching installations):</p>
 				
 				<ul>
-					<li>"Needs maintenance" - a user states that the cache is in need of maintenance.</li>
-					<li>"Temporarily unavailable" - the current owner of the cache
-						decides to temporarily remove the cache from the listing
-						(its <b>status</b> is changed to "Temporarily unavailable").</li>
-					<li>"Ready to search" - the current owner of the cache decides
-						to re-publish the cache (the <b>status</b> is changed back
-						to "Available").</li>
-					<li>"Moved" - a user states that he had moved the cache to
-						a different location (some cache types are allowed to be
-						moved by the users who find them).</li>
-					<li>"Archived" - the current owner of the cache OR an automated
-						"system user" decides to change its <b>status</b> to "Archived".
-						This usually happens after the cache has been "Temporarily
-						unavailable" for a longer period of time.</li>
+					<li>"Temporarily unavailable" - probably the cache cannot be found,
+						but it may be repaired (then, "Ready to search" will be submitted).</li>
+					<li>"Ready to search" - the cache can be found again.</li>
+					<li>"Archived" - the cache cannot be found and probably won't be
+						repaired.</li>
+				</ul>
+				
+				<p>Other types (used only by some Opencaching installations):</p>
+				
+				<ul>
+					<li>"Needs maintenance" - a user states that the cache is
+						in need of maintenance.</li>
+					<li>"Moved" - the cache has been moved to a different location.</li>
 					<li>"OC Team comment" - a comment made by the official OC Team
 						member.</li>
 					<li><i>(to be continued)</i> - this list MAY expand in time!
-						Your application should accept unknown log types - you may
-						treat them as "Comment"s.</li>
+						Your application should accept unknown log types (you may
+						treat them as "Comment"s).</li>
 				</ul>
 			</li>
 			<li>
