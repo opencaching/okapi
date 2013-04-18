@@ -102,9 +102,24 @@ class WebService
 		if ($recommend && $logtype != 'Found it')
 		{
 			if (Settings::get('OC_BRANCH') == 'oc.pl')
-				throw new BadRequest("Recommending is allowed only for 'Found it' logtypes.");
-			else if ($logtype != 'Attended')
-				throw new BadRequest("Recommending is allowed only for 'Found it' and 'Attended' logtypes.");
+			{
+				if ($logtype == 'Attended')
+				{
+					# We will remove the recommendation request and change the success message
+					# (which will be returned IF the rest of the query will meet all the
+					# requirements).
+					self::$success_message .= " ".sprintf(_("However, your cache recommendation was ignored, because %s does not allow recommending event caches."),
+						Okapi::get_normalized_site_name());
+					$recommend = null;
+				}
+				else
+					throw new BadRequest("Recommending is allowed only for 'Found it' logs.");
+			}
+			else  
+			{ # OCDE
+				if ($logtype != 'Attended')
+					throw new BadRequest("Recommending is allowed only for 'Found it' and 'Attended' logs.");
+			}
 		}
 
 		$needs_maintenance = $request->get_parameter('needs_maintenance');
@@ -341,6 +356,9 @@ class WebService
 			# Check the number of recommendations.
 
 			$founds = $user['caches_found'] + 1;  // +1, because he'll find THIS ONE in a moment, right?
+				# Note: caches_found includes event attendance on both, OCDE and OCPL.
+				# Though OCPL does not allow recommending events, for each 10 event
+				# attendances the user may recommend a non-event cache.
 			$rcmds_left = floor($founds / 10.0) - $user['rcmds_given'];
 			if ($rcmds_left <= 0)
 				throw new CannotPublishException(_("You don't have any recommendations to give. Find more caches first!"));

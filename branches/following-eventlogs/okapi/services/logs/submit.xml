@@ -77,7 +77,10 @@
 	</opt>
 	<opt name='recommend' default='false'>
 		<p>Set to <b>true</b> if the user wants to recommend this cache.</p>
-		<p>Important: <b>logtype</b> has to be "Found it" in order to use this argument.</p>
+		<p>Important: <b>logtype</b> has to be "Found it" or "Attended" in order to
+		use this argument. However, some installations do not support recommending
+		event caches (if you include a recommendation, the log entry will be posted
+		successfully, but the recommendation will be <b>ignored</b>).</p>
 		<p>Recommending may only succeed when the user meets certain criteria
 		set on him by the OC site. If criteria are not met, the request will
 		end with user error (HTTP 200, success=false).</p>
