@@ -202,12 +202,24 @@
 				the <b>images</b> list described above.</p>
 			</li>
 			<li>
-				<b>attr_ids</b> - unordered list of IDs of the attributes with which the cache was tagged
-				with. You may use the <b>attrs</b> module to retrieve information on these attributes.
+				<p><b>attr_ids</b> - unordered list of IDs of the attributes with which the cache was tagged.
+				You may use the <b>attrs</b> module to retrieve information on these attributes.</p>
+				<p>Note: This field may contain more attributes than the cache listing at the OC
+				 site, because one local attribute may be represented my multiple OKAPI attributes.</p>
 			</li>
 			<li>
-				<b>attrnames</b> - unordered list of names of theattributes with which the cache was tagged
-				with; the language will be selected based on the <b>langpref</b> parameter.
+				<p><b>primary_attr_ids</b> - a subset of <b>attr_ids</b>, containing a maximum of
+				<i>one</i> OKAPI attribute for each local attribute of the geocache.</p>
+				<p>This field should generally NOT be used, because it may not completely represent
+				the geocache's attributes' meaning. Use it only if you are forced to have a
+				1:1 representation of local attributes.</p>
+			</li>
+			<li>
+				<b>attrnames</b> - unordered list of names of the attributes with which the cache was
+				tagged; the language will be selected based on the <b>langpref</b> parameter.
+			</li>
+			<li>
+				<b>primary_attrnames</b> - a subset of <b>attrnames</b>; see <b>primary_attr_ids,</b>
 			</li>
 			<li>
 				<p><b>attribution_note</b> - the proper attribution note for the cache listing according

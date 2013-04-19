@@ -124,12 +124,14 @@ class AttrHelper
 			'attr_dict' => array(),
 			'last_refreshed' => time(),
 		);
+		$all_internal_ids = array();
 		foreach ($doc->attr as $attrnode)
 		{
 			$attr = array(
 				'id' => (string)$attrnode['okapi_attr_id'],
 				'gs_equivs' => array(),
 				'internal_ids' => array(),
+				'primary_internal_id' => null,
 				'names' => array(),
 				'descriptions' => array(),
 				'search_inc_captions' => array(),
@@ -147,7 +149,14 @@ class AttrHelper
 			{
 				if ((string)$ocnode['schema'] == $my_schema)
 				{
-					$attr['internal_ids'][] = (int)$ocnode['id'];
+					$internal_id = (int)$ocnode['id'];
+					if (isset($all_internal_ids[$internal_id]))
+						throw Exception("The internal ID".$internal_id." is assigned to multiple attributes. Primary and secondary attribute relations needs to be defined.");
+					$all_internal_ids[$internal_id] = true;
+					if (!is_null($attr['primary_internal_id']))
+						throw Exception("There are multiple internal IDs for the ".$attr['id']."attribute. Primary and secondary attribute relations needs to be defined.");
+					$attr['primary_internal_id'] = $internal_id;
+					$attr['internal_ids'][] = $internal_id;
 				}
 			}
 			foreach ($attrnode->lang as $langnode)

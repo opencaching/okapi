@@ -49,6 +49,14 @@
 						<p>Note, that one internal ID may be mapped to many OKAPI attributes.</p>
 					</li>
 					<li>
+						<p><b>primary_internal_id</b> - the internal ID of the attribute which matches
+						this attribute best, or <b>null</b> if there is no matching internal
+						attribute.</p>
+						<p>This field shoud generally NOT be used, because it contains
+						incomplete information. Use it only if your are forced to have a
+						1:1 mapping of internal to OKAPI attributes.</p>
+					</li>
+					<li>
 						<p><b>names</b> - a dictionary of all known names of the attribute,
 						in various langauges (ISO 639-1 language code is used as dictionary key).</p>
 						
