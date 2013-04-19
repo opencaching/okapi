@@ -201,6 +201,7 @@ class OkapiExceptionHandler
 
 		$exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
 			preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI'])."\n\n" : "");
+		$exception_info .= "--- OKAPI revision ---\n".Okapi::$revision."\n\n";
 		$exception_info .= "--- Request headers ---\n".implode("\n", array_map(
 			function($k, $v) { return "$k: $v"; },
 			array_keys(getallheaders()), array_values(getallheaders())
