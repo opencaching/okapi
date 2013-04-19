@@ -151,11 +151,11 @@ class AttrHelper
 				{
 					$internal_id = (int)$ocnode['id'];
 					if (isset($all_internal_ids[$internal_id]))
-						throw Exception("The internal ID".$internal_id." is assigned to multiple attributes. Primary and secondary attribute relations needs to be defined.");
+						throw new Exception("The internal ID".$internal_id." is assigned to multiple attributes. Primary and secondary attribute relations needs to be defined.");
 						# If this exception is thrown, geocaches.primary_attr_ids implementation needs to be changed, too.
 					$all_internal_ids[$internal_id] = true;
 					if (!is_null($attr['primary_internal_id']))
-						throw Exception("There are multiple internal IDs for the ".$attr['id']."attribute. Primary and secondary attribute relations needs to be defined.");
+						throw new Exception("There are multiple internal IDs for the ".$attr['id']."attribute. Primary and secondary attribute relations needs to be defined.");
 					$attr['primary_internal_id'] = $internal_id;
 					$attr['internal_ids'][] = $internal_id;
 				}
