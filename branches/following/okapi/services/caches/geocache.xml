@@ -122,7 +122,7 @@
 			<li>
 				<p><b>willattends</b> - in case of Event Caches, this is the number of
 				"Will attend" log entries. In case of any other cache type, it will
-				be <b>null</b></p>
+				be zero,</p>
 			</li>
 			<li class='deprecated'>
 				<b>size</b> - deprecated
