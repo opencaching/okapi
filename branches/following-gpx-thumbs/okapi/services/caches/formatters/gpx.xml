@@ -62,7 +62,9 @@
 			<li><b>ox:all</b> - all images will be included (including spoilers)
 				as Garmin's &lt;ox:image&gt; references.</li>
 		</ul>
-		<p>Note: When using "descrefs:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
+		<p>Note: When using "descrefs:" mode, remember to set <b>ns_ground</b> to <b>true</b>.
+		The default value is "descrefs:nonspoilers" for compatibilty reasons, but for
+		most applications "descrefs:thumblinks" will be the better choice.</p>
 		<p>Note: When using "ox:" mode, remember to set <b>ns_ox</b> to <b>true</b>. You must also
 		include JPEG files along the GPX for this to work properly - see
 		services/caches/formatters/garmin for more information.</p>
