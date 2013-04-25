@@ -50,11 +50,11 @@
 					</li>
 					<li>
 						<p><b>primary_internal_id</b> - the internal ID of the OC site's attribute
-						which matches this attribute best, or <b>null</b> if there is no
+						which matches this OKAPI attribute best, or <b>null</b> if there is no
 						matching local attribute.</p>
-						<p>This field shoud generally NOT be used, because it may contain
-						incomplete information. Use it only if your are forced to have a
-						1:1 mapping of local to OKAPI attributes.</p>
+						<p>This field shoud generally NOT be used, because it may not be
+						sufficient to completely describe the OKAPI attribute. Use it only if
+						your are forced to have a 1:1 mapping of local attributes.</p>
 					</li>
 					<li>
 						<p><b>names</b> - a dictionary of all known names of the attribute,
