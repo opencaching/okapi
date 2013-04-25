@@ -21,6 +21,7 @@ class AttrHelper
 	/** URL of the source attributes.xml. */
 	//private static $SOURCE_URL = "http://opencaching-api.googlecode.com/svn/trunk/etc/attributes.xml";
 	private static $SOURCE_URL = "http://opencaching-api.googlecode.com/svn/branches/rygielski-attributes/etc/attributes.xml";
+	//private static $SOURCE_URL = "http://local.opencaching.de/oc-server/server-3.0/htdocs/etc/attributes.xml";
 
 	/**
 	 * Increase this if you need the attributes.xml to be refreshed immediatelly
@@ -28,7 +29,7 @@ class AttrHelper
 	 * refreshed periodically by a cronjob), but it can be handy for testing
 	 * recently commited changes to the attributes.xml file.
 	 */
-	private static $VERSION = 8;
+	private static $VERSION = 9;
 
 	private static $attr_dict = null;
 	private static $last_refreshed = null;
@@ -57,8 +58,6 @@ class AttrHelper
 			);
 			$context = stream_context_create($opts);
 			$xml = file_get_contents(self::$SOURCE_URL, false, $context);
-			self::refresh_from_string($xml);
-			$lock->release();
 		}
 		catch (Exception $e)
 		{
@@ -99,6 +98,7 @@ class AttrHelper
 		}
 
 		self::refresh_from_string($xml);
+		$lock->release();
 	}
 
 	/**
@@ -124,7 +124,7 @@ class AttrHelper
 			'attr_dict' => array(),
 			'last_refreshed' => time(),
 		);
-		$all_internal_ids = array();
+		$all_primary_internal_ids = array();
 		foreach ($doc->attr as $attrnode)
 		{
 			$attr = array(
@@ -150,13 +150,18 @@ class AttrHelper
 				if ((string)$ocnode['schema'] == $my_schema)
 				{
 					$internal_id = (int)$ocnode['id'];
-					if (isset($all_internal_ids[$internal_id]))
-						throw new Exception("The internal ID".$internal_id." is assigned to multiple attributes. Primary and secondary attribute relations needs to be defined.");
-						# If this exception is thrown, geocaches.primary_attr_ids implementation needs to be changed, too.
-					$all_internal_ids[$internal_id] = true;
-					if (!is_null($attr['primary_internal_id']))
-						throw new Exception("There are multiple internal IDs for the ".$attr['id']."attribute. Primary and secondary attribute relations needs to be defined.");
-					$attr['primary_internal_id'] = $internal_id;
+					$prio = (int)$ocnode['prio'];
+					if (!$prio)
+						throw new Exception("Missing or invalid attribute prio for internal ID ".$internal_id);
+					if ($prio == 1)
+					{
+						if (isset($all_primary_internal_ids[$internal_id]))
+							throw new Exception("The internal attribute ".$internal_id." has multiple primary assigments to OKAPI attributes.");
+						$all_primary_internal_ids[$internal_id] = true;
+						if (!is_null($attr['primary_internal_id']))
+							throw new Exception("There are multiple primary internal IDs for the ".$attr['id']." attribute.");
+						$attr['primary_internal_id'] = $internal_id;
+					}
 					$attr['internal_ids'][] = $internal_id;
 				}
 			}
