@@ -47,7 +47,7 @@ Check out other OKAPI installations:</p>
 which are "national views" of Opencaching.DE. All three share one
 database, so you can access all their data through the Opencaching.DE
 OKAPI installation and select Italian or Spanish language.</p>
-
+	
 <p>And also:</p>
 <ul>
 	<li>OKAPI Project Homepage - <a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></li>

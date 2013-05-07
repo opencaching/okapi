@@ -33,6 +33,8 @@ class WebService
 		'Virtual' => 'Virtual Cache',
 		'Webcam' => 'Webcam Cache',
 		'Moving' => 'Unknown Cache',
+		'Math/Physics' => 'Unknown Cache',
+		'Drive-In' => 'Traditional Cache',
 		'Own' => 'Unknown Cache',
 		'Other' => 'Unknown Cache'
 	);
@@ -85,7 +87,7 @@ class WebService
 
 		$images = $request->get_parameter('images');
 		if (!$images) $images = 'descrefs:nonspoilers';
-		if (!in_array($images, array('none', 'descrefs:nonspoilers', 'descrefs:all', 'ox:all')))
+		if (!in_array($images, array('none', 'descrefs:thumblinks', 'descrefs:nonspoilers', 'descrefs:all', 'ox:all')))
 			throw new InvalidParam('images', "'$images'");
 		$vars['images'] = $images;
 
