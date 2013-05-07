@@ -23,7 +23,8 @@
 			<li><p><b>gc_code</b> - unique geocaching.com code (GC code) of the
 				geocache; empty string if not crosslisted or unknown.</p>
 				<p>Please note that many cache owners do not provide this information.
-				It may be missing or wrong, or the GC listing may be inactive.</p>
+				It may be missing or wrong, or the GC listing may be inactive
+				(<a href='https://code.google.com/p/opencaching-api/issues/detail?id=195'>Discussion</a>).</p>
 			</li>
 			<li><b>name</b> - name of the geocache,</li>
 			<li><b>names</b> - a dictionary (language code => plain-text string) of
