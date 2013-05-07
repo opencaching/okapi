@@ -226,7 +226,7 @@ class WebService
 						if (preg_match('/^\s*[Gg][Cc][A-Za-z0-9]+\s*$/', $row['wp_gc']))
 							$entry['gc_code'] = strtoupper(trim($row['wp_gc']));
 						else
-							$entry['gc_code'] = '';
+							$entry['gc_code'] = null;
 						break;
 					case 'name': $entry['name'] = $row['name']; break;
 					case 'names': $entry['names'] = array(Settings::get('SITELANG') => $row['name']); break; // for the future
