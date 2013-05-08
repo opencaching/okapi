@@ -51,7 +51,7 @@ class CronJobController
 				new FulldumpGeneratorJob(),
 				new TileTreeUpdater(),
 				new SearchSetsCleanerJob(),
-				new AttrsRefresherJob(),
+				// WRCLEANIT: new AttrsRefresherJob(),
 				new TableOptimizerJob(),
 			);
 			foreach ($cache as $cronjob)
@@ -780,7 +780,9 @@ class LocaleChecker extends Cron5Job
  * Once every hour, update the official cache attributes listing.
  *
  * WRTODO: Make it 12 hours later.
- */
+ *
+ * WRCLEANIT
+ *
 class AttrsRefresherJob extends Cron5Job
 {
 	public function get_period() { return 3600; }
@@ -790,6 +792,7 @@ class AttrsRefresherJob extends Cron5Job
 		AttrHelper::refresh_if_stale();
 	}
 }
+*/
 
 /** Once per day, optimize certain MySQL tables. */
 class TableOptimizerJob extends Cron5Job
