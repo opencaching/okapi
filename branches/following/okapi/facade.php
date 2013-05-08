@@ -120,6 +120,17 @@ class Facade
 	}
 
 	/**
+	 * Run OKAPI database update.
+	 * Will output messages to stdout.
+	 */
+	public static function database_update()
+	{
+		require_once($GLOBALS['rootpath']."okapi/views/update.php");
+		$update = new views\update\View;
+		$update->call();
+	}
+
+	/**
 	 * You will probably want to call that with FALSE when using Facade
 	 * in buggy, legacy OC code. This will disable OKAPI's default behavior
 	 * of treating NOTICEs as errors.
