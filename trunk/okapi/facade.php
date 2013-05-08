@@ -20,7 +20,7 @@ namespace okapi;
 # exception and error handlers. OKAPI is strict about PHP warnings and
 # notices, so you might need to temporarily disable the error handler in
 # order to get it to work with your code. Just call this after you
-# include the Facade file: OkapiErrorHandler::disable().
+# include the Facade file: Facade::disable_error_handling().
 
 
 use Exception;
