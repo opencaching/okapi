@@ -2301,4 +2301,28 @@ for caches with (inclusive) or without (exclusive) specific attributes.
 			</desc>
 		</lang>
 	</attr>
+	<attr okapi_attr_id="A72" categories="de-cache-types">
+		<opencaching schema="OCDE" id="61" prio="1" />
+		<lang id="en">
+			<name>Reverse Cache</name>
+			<desc>
+				This geocache can be found at different places. The places to look for
+				are explained in the cache description. They must be  located "away from
+				home" and exist for a considerable period of time, so that it can be
+				re-visited later. There is no container and no logbook; instead the
+				find must be documented by a photo and noting the coordinates.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>Safari-Cache</name>
+			<desc>
+				Dieser Geocache kann an verschiedenen Orten gefunden werden. Die
+				gesuchten Orte sind in der Cachebeschreibung erläutert. Sie müssen
+				sich „außer Haus“ befinden und über längere Zeit Bestand haben,
+				sodass man sie nach einiger Zeit wieder besuchen kann. Es gibt keinen
+				Behälter und kein Logbuch, sondern der Fund ist mit einem Foto und
+				den Koordinaten des Ortes zu dokumentieren.
+			</desc>
+		</lang>
+	</attr>
 </xml>
