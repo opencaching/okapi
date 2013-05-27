@@ -67,7 +67,12 @@
 				</ul>
 			</li>
 			<li>
-				<p><b>was_recommended</b> - true, if the author included his recommendation
+				<p><b>oc_team_entry</b> - <b>true</b> for administrative log entries
+				which have been submitted by an official OC team member;
+				<b>null</b> if the "team entry status" of the log is unknown,</p>
+			</li>
+			<li>
+				<p><b>was_recommended</b> - <b>true</b>, if the author included his recommendation
 				in this log entry,</p>
 			</li>
 			<li><b>comment</b> - HTML string, text entered with the log entry,</li>
