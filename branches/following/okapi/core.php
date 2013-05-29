@@ -202,10 +202,16 @@ class OkapiExceptionHandler
 		$exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
 			preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI'])."\n\n" : "");
 		$exception_info .= "--- OKAPI revision ---\n".Okapi::$revision."\n\n";
-		$exception_info .= "--- Request headers ---\n".implode("\n", array_map(
-			function($k, $v) { return "$k: $v"; },
-			array_keys(getallheaders()), array_values(getallheaders())
-		));
+
+		// This if-condition will solve SOME problems when trying to execute OKAPI code
+		// from command line; see http://code.google.com/p/opencaching-api/issues/detail?id=243.
+		if (function_exists('getallheaders'))
+		{
+			$exception_info .= "--- Request headers ---\n".implode("\n", array_map(
+				function($k, $v) { return "$k: $v"; },
+				array_keys(getallheaders()), array_values(getallheaders())
+			));
+		}
 
 		return $exception_info;
 	}
