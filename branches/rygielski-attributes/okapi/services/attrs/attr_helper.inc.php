@@ -345,7 +345,7 @@ class AttrHelper
 	{
 		static $mapping = null;
 		if ($mapping == null)
-			$mapping = array_flip(AttrHelper::get_internal_id_to_acode_mapping());
+			$mapping = array_flip(self::get_internal_id_to_acode_mapping());
 		return $mapping;
 	}
 
@@ -355,7 +355,7 @@ class AttrHelper
 	 */
 	public static function acodes_to_internal_ids($acodes)
 	{
-		$mapping = AttrHelper::get_acode_to_internal_id_mapping();
+		$mapping = self::get_acode_to_internal_id_mapping();
 		$internal_ids = array();
 		foreach ($acodes as $acode)
 			if (isset($mapping[$acode]))
