@@ -31,9 +31,24 @@ class WebService
 		# displays the cached version of the list.
 
 		require_once 'attr_helper.inc.php';
-		$results = array(
-			'attributes' => AttrHelper::get_attrdict()
-		);
+		$attribute_set = $request->get_parameter('attribute_set');
+		if ($attribute_set === null)
+			throw new ParamMissing('attribute_set');
+		else if ($attribute_set == 'listing')
+		{
+			$results = array(
+				'attributes' => AttrHelper::get_attrdict()
+			);
+		}
+		else if ($attribute_set == 'search')
+		{
+			$results = array(
+				'attributes' => AttrHelper::get_searchdict()
+			);
+		}
+		else
+			throw new InvalidParam('attribute_set');
+
 		return Okapi::formatted_response($request, $results);
 	}
 }
