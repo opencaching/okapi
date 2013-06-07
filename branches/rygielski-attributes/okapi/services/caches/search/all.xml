@@ -106,12 +106,13 @@
 		been found at most <i>N</i> times. Useful for FTF hunters.</p>
 	</opt>
 	<opt name='attr_ids'>
-		<p>Pipe-separated list of search attribute IDs (S-Codes; see
-		<a href="../../attrs/allmeta.html">services/attrs/allmeta</a>
-		for available S-Codes).
-		These attributes are combined with an AND expession.</p>
-		<p>Example: For the "S1|S5|S14" query, the result will contain all caches
-		which match the S1 <em>and</em> S5 <em>and</em> S14 search attributes.</p>
+		<p>Pipe-separated list of attribute IDs (A-codes). Each ID can be preceded
+		by a dash to indicate a negative search. All these conditions are combined
+		with an AND expession.</p>
+		<p>Example: For the "A1|-A2|A3|-A4" query, the result will contain all caches
+		which <b>do have</b> the A1 <b>and</b> A3 attribute, provided they <b>do
+		not have</b> either of the A2 nor A4 attributes. As in "A1 and (not A2)
+		and A3 and (not A4)".</p>
 	</opt>
 	<opt name='modified_since'>
 		<p>A date and time string. This should be in ISO 8601 format (currently any

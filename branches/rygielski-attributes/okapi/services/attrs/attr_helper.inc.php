@@ -29,10 +29,9 @@ class AttrHelper
 	 * refreshed periodically by a cronjob), but it can be handy for testing
 	 * recently commited changes to the attributes.xml file.
 	 */
-	private static $VERSION = 10;
+	private static $VERSION = 9;
 
 	private static $attr_dict = null;
-	private static $search_dict = null;
 	private static $last_refreshed = null;
 
 	/**
@@ -90,7 +89,6 @@ class AttrHelper
 				$cache_key = "attrhelper/dict#".self::$VERSION;
 				$cachedvalue = array(
 					'attr_dict' => array(),
-					'search_dict' => array(),
 					'last_refreshed' => 0,
 				);
 				Cache::set($cache_key, $cachedvalue, 60);
@@ -124,20 +122,20 @@ class AttrHelper
 		$doc = simplexml_load_string($xml);
 		$cachedvalue = array(
 			'attr_dict' => array(),
-			'search_dict' => array(),
 			'last_refreshed' => time(),
 		);
-
-		# build cache attributes dictionary
-		$all_internal_ids = array();
+		$all_primary_internal_ids = array();
 		foreach ($doc->attr as $attrnode)
 		{
 			$attr = array(
 				'id' => (string)$attrnode['okapi_attr_id'],
 				'gs_equivs' => array(),
-				'internal_id' => null,
+				'internal_ids' => array(),
+				'primary_internal_id' => null,
 				'names' => array(),
 				'descriptions' => array(),
+				'search_inc_captions' => array(),
+				'search_exc_captions' => array(),
 			);
 			foreach ($attrnode->groundspeak as $gsnode)
 			{
@@ -152,12 +150,19 @@ class AttrHelper
 				if ((string)$ocnode['schema'] == $my_schema)
 				{
 					$internal_id = (int)$ocnode['id'];
-					if (isset($all_internal_ids[$internal_id]))
-						throw new Exception("The internal attribute ".$internal_id." has multiple assigments to OKAPI attributes.");
-					$all_internal_ids[$internal_id] = true;
-					if (!is_null($attr['internal_id']))
-						throw new Exception("There are multiple internal IDs for the ".$attr['id']." attribute.");
-					$attr['internal_id'] = $internal_id;
+					$prio = (int)$ocnode['prio'];
+					if (!$prio)
+						throw new Exception("Missing or invalid attribute prio for internal ID ".$internal_id);
+					if ($prio == 1)
+					{
+						if (isset($all_primary_internal_ids[$internal_id]))
+							throw new Exception("The internal attribute ".$internal_id." has multiple primary assigments to OKAPI attributes.");
+						$all_primary_internal_ids[$internal_id] = true;
+						if (!is_null($attr['primary_internal_id']))
+							throw new Exception("There are multiple primary internal IDs for the ".$attr['id']." attribute.");
+						$attr['primary_internal_id'] = $internal_id;
+					}
+					$attr['internal_ids'][] = $internal_id;
 				}
 			}
 			foreach ($attrnode->lang as $langnode)
@@ -166,6 +171,13 @@ class AttrHelper
 				foreach ($langnode->name as $namenode)
 				{
 					$attr['names'][$lang] = (string)$namenode;
+				}
+				foreach ($langnode->search as $searchnode)
+				{
+					foreach ($searchnode->inc as $captionnode)
+						$attr['search_inc_captions'][$lang] = (string)$captionnode;
+					foreach ($searchnode->exc as $captionnode)
+						$attr['search_exc_captions'][$lang] = (string)$captionnode;
 				}
 				foreach ($langnode->desc as $descnode)
 				{
@@ -177,75 +189,12 @@ class AttrHelper
 			$cachedvalue['attr_dict'][$attr['id']] = $attr;
 		}
 
-		# build  search attributes dictionary
-		foreach ($doc->search as $attrnode)
-		{
-			$attr = array(
-				'id' => (string)$attrnode['id'],
-				'musthave' => array(),
-				'mustnothave' => null,
-				'names' => array(),
-				'descriptions' => array(),
-			);
-			foreach ($attrnode->musthave as $musthave_node)
-			{
-				self::verify_search_expression($cachedvalue['attr_dict'], $attr['id'], $musthave_node);
-				$attr['musthave'][] = (string)$musthave_node;
-			}
-			foreach ($attrnode->mustnothave as $mustnothave_node)
-			{
-				if (is_null($attr['mustnothave']))
-				{
-					self::verify_search_expression($cachedvalue['attr_dict'], $attr['id'], $mustnothave_node);
-					$attr['mustnothave'] = (string)$mustnothave_node;
-				}
-				else
-					throw new Exception("multiple 'musthave' definitions for attribute ".$attrnode['id']);
-			}
-			foreach ($attrnode->lang as $langnode)
-			{
-				$lang = (string)$langnode['id'];
-				foreach ($langnode->name as $namenode)
-				{
-					$attr['names'][$lang] = (string)$namenode;
-				}
-				foreach ($langnode->desc as $descnode)
-				{
-					$xml = $descnode->asxml(); /* contains "<desc>" and "</desc>" */
-					$innerxml = preg_replace("/(^[^>]+>)|(<[^<]+$)/us", "", $xml);
-					$attr['descriptions'][$lang] = self::cleanup_string($innerxml);
-				}
-			}
-			$cachedvalue['search_dict'][$attr['id']] = $attr;
-		}
-
 		# Cache it for a month (just in case, usually it will be refreshed every day).
 
 		$cache_key = "attrhelper/dict#".self::$VERSION;
 		Cache::set($cache_key, $cachedvalue, 30*86400);
 		self::$attr_dict = $cachedvalue['attr_dict'];
-		self::$search_dict = $cachedvalue['search_dict'];
 		self::$last_refreshed = $cachedvalue['last_refreshed'];
-	}
-
-	/**
-	 * Verifies the validity of a 'musthave' or 'mustnothave' expression.
-	 * Assumes that the A-Codes are defined BEFORE the S-Codes in attributes.xml.
-	 */
-	private static function verify_search_expression($attr_dict,$scode,$expr)
-	{
-		foreach (explode(' or ',$expr) as $token)
-		{
-			switch (substr($token,0,1))
-			{
-				case 'A': if (!isset($attr_dict[$token]))
-				            throw new Exception("Invalid cache attribute '".$token."' in definition of ".$scode." search atttribute");
-				          break;
-				case 'T': Okapi::cache_type_name2id(substr($token,1));  // thows exception if invalid
-				          break;
-				default:  throw new Exception("Invalid token '".$token."' in definition of ".$scode." search atttribute");
-			}
-		}
 	}
 
 	/**
@@ -256,7 +205,7 @@ class AttrHelper
 	 */
 	private static function init_from_cache($allow_download=true)
 	{
-		if (self::$attr_dict !== null && self::$search_dict != null)
+		if (self::$attr_dict !== null)
 		{
 			/* Already initialized. */
 			return;
@@ -277,36 +226,22 @@ class AttrHelper
 			{
 				$cachedvalue = array(
 					'attr_dict' => array(),
-					'search_dict' => array(),
 					'last_refreshed' => 0,
 				);
 			}
 		}
 		self::$attr_dict = $cachedvalue['attr_dict'];
-		self::$search_dict = $cachedvalue['search_dict'];
 		self::$last_refreshed = $cachedvalue['last_refreshed'];
 	}
 
 	/**
-	 * Return a dictionary of all cache attributes. The format is the same as in the
-	 * "attributes" key returned by the "services/attrs/attrlist" method for
-	 * attribute_set=listing.
+	 * Return a dictionary of all attributes. The format is the same as in the "attributes"
+	 * key returned by the "services/attrs/attrlist" method.
 	 */
 	public static function get_attrdict()
 	{
 		self::init_from_cache();
 		return self::$attr_dict;
-	}
-
-	/**
-	 * Return a dictionary of all search attributes. The format is the same as in the
-	 * "attributes" key returned by the "services/attrs/attrlist" method for
-	 * attribute_set=search.
-	 */
-	public static function get_searchdict()
-	{
-		self::init_from_cache();
-		return self::$search_dict;
 	}
 
 	/** "\n\t\tBla   blabla\n\t\t<b>bla</b>bla.\n\t" => "Bla blabla <b>bla</b>bla." */
@@ -316,52 +251,58 @@ class AttrHelper
 	}
 
 	/**
-	 * Get the mapping table between internal attribute id => OKAPI A-code.
-	 * The result is cached!
+	 * Get the mapping between internal attribute id => the list of OKAPI A-codes
+	 * to which the internal ID is mapped to. The result is cached!
 	 */
-	public static function get_internal_id_to_acode_mapping()
+	public static function get_internal_id_to_acodes_mapping()
 	{
 		static $mapping = null;
 		if ($mapping !== null)
 			return $mapping;
 
-		$cache_key = "attrhelper/id2acode/".self::$VERSION;
+		$cache_key = "attrhelper/id2acodes/".self::$VERSION;
 		$mapping = Cache::get($cache_key);
 		if (!$mapping)
 		{
 			self::init_from_cache();
 			$mapping = array();
 			foreach (self::$attr_dict as $acode => &$attr_ref)
-				$mapping[$attr_ref['internal_id']] = $acode;
+			{
+				foreach ($attr_ref['internal_ids'] as $internal_id)
+					$mapping[$internal_id][] = $acode;
+			}
 			Cache::set($cache_key, $mapping, 3600);
 		}
 		return $mapping;
 	}
 
 	/**
-	 * Get mapping table: acode => internal attribute ID. The result is cached!
+	 * Get the mapping: acode => the list of internal attribute IDs to which
+	 * the acode is mapped to. The result is cached!
 	 */
-	public static function get_acode_to_internal_id_mapping()
+	public static function get_acode_to_internal_ids_mapping()
 	{
 		static $mapping = null;
-		if ($mapping == null)
-			$mapping = array_flip(self::get_internal_id_to_acode_mapping());
+		if ($mapping !== null)
+			return $mapping;
+
+		$cache_key = "attrhelper/acode2ids/".self::$VERSION;
+		$mapping = Cache::get($cache_key);
+		if (!$mapping)
+		{
+			self::init_from_cache();
+			$mapping = array();
+			foreach (self::$attr_dict as $acode => &$attr_ref)
+			{
+				$mapping[$acode] = array();
+				foreach ($attr_ref['internal_ids'] as $internal_id)
+					$mapping[$acode][] = $internal_id;
+			}
+			Cache::set($cache_key, $mapping, 3600);
+		}
 		return $mapping;
 	}
 
-	/**
-	 * Translate an array of acodes to internal IDs.
-	 * Acodes not present on the local installation are omitted.
-	 */
-	public static function acodes_to_internal_ids($acodes)
-	{
-		$mapping = self::get_acode_to_internal_id_mapping();
-		$internal_ids = array();
-		foreach ($acodes as $acode)
-			if (isset($mapping[$acode]))
-				$internal_ids[] = $mapping[$acode];
-		return $internal_ids;
-	}
 
 	/**
 	 * Get the mapping: A-codes => attribute name. The language for the name

@@ -298,164 +298,111 @@ class SearchAssistant
 		# attr_ids
 		#
 
-		if ($attr_ids = $request->get_parameter('attr_ids'))
+		if ($tmp = $request->get_parameter('attr_ids'))
 		{
 			require_once($GLOBALS['rootpath'].'/okapi/services/attrs/attr_helper.inc.php');
-			$sattr_dict = AttrHelper::get_searchdict();
-
-			$musthave_cond = '';
-			$mustnothave_okapi_attribs = array();
-			$mustnothave_okapi_cachetypes = array();
-
-			foreach (explode("|", $attr_ids) as $search_attrib)
+			$mapping = AttrHelper::get_acode_to_internal_ids_mapping();
+			$must_have = array();
+			$must_not_have = array();
+			$impossible = false;
+			foreach (explode("|", $tmp) as $token)
 			{
-				if (!isset($sattr_dict[$search_attrib]))
+				$positive = true;
+				if ((strlen($token) > 0) && ($token[0] == "-"))
 				{
-					throw new InvalidParam('attr_ids', "Unknown search attribute ID: ".$token);
+					$positive = false;
+					$token = substr($token, 1);
 				}
-
-				# A list of matching cache IDs is generated from search attributes' "musthave"
-				# expressions by a nested query. This gives a much better performance than
-				# separate queries.
-				# The innermost query selects the cache IDs which meet the first "musthave"
-				# expression. This cache ID set is fed into an outer query which filters for
-				# the next "musthave" expression, and so on.
-				#
-				# For the "mustnothave" expressions, we construct two simple conditions
-				# which exclude all matching caches.
-				#
-				# Example:
-				#   attr_ids = S1|S2 = S1 and S2
-				#   S1 = (A1 or A2 or MovingCache) and not (A3 or A4)
-				#   S2 = (A5 or A6) and A7 and not (A8 or QuizCache)
-				#
-				# This makes:
-				#   include term: (A1 or A2 or MovingCache) and (A5 or A6) and A7
-				#   exclude term: ~A3 and ~A4 and ~A8 and ~QuizCache
-				#
-				# The following "where condition" is constructed from the include term
-				# (translation of OKAPI IDs to local IDs and some table qualifiers omitted
-				# here for readability):
-				#
-				#   cache_id in
-				#   (
-				#     select distinct cache_id from cache_attributes
-				#     where attrib_id in (A7)  /* S2.2 '/
-				#     and cache_id in
-				#     (
-				#       select distinct cache_id from cache_attributes
-				#       where attrib_id in (A5,A6)  /* S2.1 '/
-				#       and cache_id in
-				#       (
-				#         select distinct cache_id from caches_attributes
-				#         inner join caches on caches.cache_id=caches_attributes.cache_id
-				#         where attrib_id in (A1,A2) or caches.type in (MovingCache)  /* S1 */
-				#       )
-				#     )
-				#   )
-				#
-				# ... and these two "where conditions" for the exclude term:
-				#
-				#   cache_id not in
-				#   (
-				#     select distinct cache_id from caches_attributes
-				#     where attrib_id in (A3,A4)
-				#   )
-				#
-				#   caches.type not in (QuizCache)
-
-				if ($musthave_cond != 'null')
+				if (!isset($mapping[$token]))
 				{
-					# 1. inclusions
-
-					# get OKAPI IDs of attributes and cache types to be included
-					foreach ($sattr_dict[$search_attrib]['musthave'] as $musthave)
+					throw new InvalidParam('attr_ids', "Unknown attribute ID: ".$token);
+				}
+				if ($positive)
+				{
+					if (count($mapping[$token]) == 0)
 					{
-						$musthave_okapi_attribs = array();
-						$musthave_okapi_cachetypes = array();
+						# Attribute X is required, and X is not supported by this node
+						# (there are no internal IDs to map to). The condition cannot
+						# be met, hence the result will be empty.
 
-						foreach (explode(' or ',$musthave) as $token)
-						{
-							if (substr($token,0,1) == 'T')
-								$musthave_okapi_cachetypes[] = substr($token,1);
-							else
-								$musthave_okapi_attribs[] = $token;
-						}
+						$where_conds[] = "false";
+						break;
+					}
+					elseif (count($mapping[$token]) == 1)
+					{
+						# Attribute X is required, and X has exactly one internal ID
+						# that we can use. We need to simply add the internal ID to the
+						# first of our extra queries.
 
-						if (count($musthave_okapi_attribs) || count($musthave_okapi_cachetypes))
-						{
-							# translate OKAPI IDs to internal IDs
-							if (count($musthave_okapi_attribs))
-							{
-								$musthave_internal_attribs = AttrHelper::acodes_to_internal_ids($musthave_okapi_attribs);
-								if (count($musthave_internal_attribs) == 0)
-								{
-									# One or more of the requested attributes are not present on (or defined for)
-									# the local installation; therefore the result set is empty.
-									$musthave_cond = 'null';
-									break;
-								}
-							}
-							$musthave_internal_cachetypes = Okapi::cache_type_names2ids($musthave_okapi_cachetypes);
+						$must_have[] = $mapping[$token][0];
+					}
+					else
+					{
+						# Attribute X is required, and X has *more than one* internal ID
+						# mapped to it. *Either one* (not necessarilly both) of these
+						# internal IDs should cause the cache to appear in the result.
+						# In this case, we cannot use it in our group by query! We have
+						# to make a separate one.
 
+						$tmp = Db::select_column("
+							select distinct cache_id
+							from caches_attributes
+							where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $mapping[$token]))."')
+						");
+						if (count($tmp) == 0) {
+							$where_conds[] = "false";
+						} else {
+							$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $tmp))."')";
 							if ($musthave_cond != '')
-								$musthave_cond = "and caches_attributes.cache_id in (".$musthave_cond.")";
-							if (count($musthave_internal_attribs) && count($musthave_internal_cachetypes))
-							{
-								# the search attribute includes A-codes AND cache types 
-								$musthave_cond = "
-									select distinct caches_attributes.cache_id from caches_attributes
-									inner join caches on caches.cache_id=caches_attributes.cache_id
-								  where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $musthave_internal_attribs))."')
-								  or caches.type in ('".implode("','", array_map('mysql_real_escape_string', $musthave_internal_cachetypes))."')
-									".$musthave_cond;
-							}
-							else if (count($musthave_internal_attribs))
-							{
-								# the search attribute includes only A-codes
-								$musthave_cond = "
-									select distinct cache_id from caches_attributes
-								  where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $musthave_internal_attribs))."')
-									".$musthave_cond;
-							}
-							else
-							{
-								# the search attribute includes only cache types
-								$musthave_cond = "
-									select distinct cache_id
-									from caches
-									where type in ('".implode("','", array_map('mysql_real_escape_string', $musthave_internal_cachetypes))."')
-									".$musthave_cond;
-							}
+								$nextcond = "select cache_id from (".$nextcond.") c".(++$nested_queries)." where cache_id in (".$musthave_cond.")";
+							$musthave_cond = $nextcond;
 						}
-					}  // foreach musthave
+					}
+				}
+				else
+				{
+					# In the negative case, we don't need to differentiate on the
+					# count($mapping[$token]) - all possible cases are covered by our
+					# second query.
 
-					# 2. exclusions
-					if ($sattr_dict[$search_attrib]['mustnothave'] !== null)
-						foreach (explode(' or ',$sattr_dict[$search_attrib]['mustnothave']) as $token)
-						{
-							if (substr($token,0,1) == 'T')
-								$mustnothave_okapi_cachetypes[] = substr($token,1);
-							else
-								$mustnothave_okapi_attribs[] = $token;
-						}
+					foreach ($mapping[$token] as $internal_id)
+						$must_not_have[] = $internal_id;
+				}
+			}
 
-				}  // $musthave_cond != 'null'
-			}  // foreach search attribute
+			sort($must_have);
+			sort($must_not_have);
 
-			# create SQL conditions for the inclusions and exclusions
-			if ($musthave_cond != '')
-				$where_conds[] = "caches.cache_id in (".$musthave_cond.")";
-			if (count($mustnothave_okapi_attribs))
-				$where_conds[] =
-					"caches.cache_id not in (
-						select distinct cache_id from caches_attributes
-						where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', AttrHelper::acodes_to_internal_ids($mustnothave_okapi_attribs)))."')
-					)";
-			if (count($mustnothave_okapi_cachetypes))
-				$where_conds[] = "caches.type not in ('".implode("','", array_map('mysql_real_escape_string', Okapi::cache_type_names2ids($mustnothave_okapi_cachetypes)))."')";
+			if (count($must_have) > 0)
+			{
+				$must_have = Db::select_column("
+					select cache_id
+					from caches_attributes
+					where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $must_have))."')
+					group by cache_id
+					having count(*) = '".mysql_real_escape_string(count($must_have))."'
+				");
+				if (count($must_have) == 0) {
+					$where_conds[] = "false";
+				} else {
+					$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $must_have))."')";
+				}
+			}
+			if (count($must_not_have) > 0)
+			{
+				$must_not_have = Db::select_column("
+					select distinct cache_id
+					from caches_attributes
+					where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $must_not_have))."')
+				");
+				if (count($must_not_have) == 0) {
+					# pass
+				} else {
+					$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $must_not_have))."')";
+				}
+			}
 		}
-
+print_r($where_conds); die();
 		#
 		# modified_since
 		#

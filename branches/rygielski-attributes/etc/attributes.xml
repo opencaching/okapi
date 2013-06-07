@@ -40,6 +40,9 @@ languages:
 - The <search> element with <inc>lusive and <exc>lusive textual values - to be
   used during SEARCH. 
 
+SHOW - when showing the attributes of a specific cache. SEARCH - when searching
+for caches with (inclusive) or without (exclusive) specific attributes.
+
 -->
 
 <xml>
@@ -47,7 +50,6 @@ languages:
 	NOTICE: Categories are currently NOT implemented. In particular, the
 	attr[categories] is ignored. See issue 70.
 	-->
-
 	<attr okapi_attr_id="A1" categories="de-listing">
 		<opencaching schema="OCDE" id="6" prio="1"/>
 		<lang id="en">
@@ -96,7 +98,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A2" categories="de-cache-types">
 		<opencaching schema="OCPL" id="54" prio="1" />
 		<lang id="en">
@@ -122,7 +123,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A3" categories="de-cache-types">
 		<opencaching schema="OCPL" id="55" prio="1" />
 		<lang id="en">
@@ -154,7 +154,6 @@ languages:
 			<name>Wherigo Cache</name>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A4" categories="de-cache-types">
 		<opencaching schema="OCPL" id="56" prio="1" />
 		<opencaching schema="OCDE" id="8" prio="1" />
@@ -204,7 +203,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A5" categories="de-cache-types">
 		<opencaching schema="OCPL" id="43" prio="1" />
 		<lang id="en">
@@ -226,7 +224,6 @@ languages:
 			<name>GeoHotel Cache</name>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A6" categories="de-cache-types">
 		<opencaching schema="OCPL" id="49" prio="1" />
 		<lang id="en">
@@ -245,7 +242,6 @@ languages:
 			<name>magnetischer Cache</name>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A7" categories="de-cache-types">
 		<opencaching schema="OCPL" id="50" />
 		<lang id="en">
@@ -264,7 +260,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A8" categories="de-cache-types">
 		<opencaching schema="OCPL" id="51" prio="1" />
 		<lang id="en">
@@ -289,7 +284,6 @@ languages:
 			<name>Peilungscache</name>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A9" categories="de-cache-types">
 		<groundspeak id="60" inc="true" name="Wireless Beacon" />
 		<opencaching schema="OCPL" id="52" prio="1" />
@@ -309,7 +303,6 @@ languages:
 			<name>Funksignal – Garmin Chirp</name>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A10" categories="de-cache-types">
 		<opencaching schema="OCPL" id="53" prio="1" />
 		<lang id="en">
@@ -331,7 +324,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A11" categories="de-cache-types">
 		<opencaching schema="OCDE" id="31" prio="1" />
 		<lang id="en">
@@ -374,7 +366,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A12" categories="de-cache-types">
 		<opencaching schema="OCDE" id="32" prio="1" />
 		<lang id="en">
@@ -416,7 +407,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A13" categories="de-cache-types">
 		<opencaching schema="OCDE" id="57" prio="1" />
 		<lang id="en">
@@ -447,7 +437,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A14" categories="de-preconditions">
 		<opencaching schema="OCDE" id="54" prio="1" />
 		<lang id="en">
@@ -476,7 +465,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A15" categories="de-preconditions">
 		<groundspeak id="47" inc="true" name="Field puzzle" />
 		<opencaching schema="OCDE" id="55" prio="1" />
@@ -506,7 +494,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A16" categories="de-preconditions">
 		<opencaching schema="OCDE" id="56" prio="1" />
 		<lang id="en">
@@ -539,7 +526,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A17" categories="de-preconditions">
 		<opencaching schema="OCDE" id="58" prio="1" />
 		<lang id="en">
@@ -569,7 +555,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A18" categories="de-accessibility">
 		<groundspeak id="24" inc="true" name="Wheelchair accessible" />
 		<opencaching schema="OCPL" id="44" prio="1" />
@@ -593,7 +578,6 @@ languages:
 			<name>rollstuhltauglich</name>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A19" categories="de-accessibility">
 		<groundspeak id="53" inc="true" name="Park and grab" />
 		<opencaching schema="OCDE" id="24" prio="1" />
@@ -623,7 +607,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-	
 	<attr okapi_attr_id="A20" categories="de-accessibility">
 		<opencaching schema="OCPL" id="84" prio="1" />
 		<lang id="en">
@@ -639,7 +622,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A21" categories="de-accessibility">
 		<groundspeak id="9" inc="true" name="Significant Hike" />
 		<opencaching schema="OCDE" id="25" prio="1" />
@@ -678,7 +660,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A22" categories="de-accessibility">
 		<groundspeak id="11" inc="true" name="May require wading" />
 		<opencaching schema="OCDE" id="26" prio="1" />
@@ -715,7 +696,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A23" categories="de-accessibility">
 		<opencaching schema="OCDE" id="27" prio="1" />
 		<lang id="en">
@@ -744,7 +724,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A24" categories="de-accessibility">
 		<groundspeak id="10" inc="true" name="Difficult climbing" />
 		<opencaching schema="OCDE" id="28" prio="1" />
@@ -785,7 +764,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A25" categories="de-accessibility">
 		<groundspeak id="12" inc="true" name="May require swimming" />
 		<opencaching schema="OCDE" id="29" prio="1" />
@@ -822,7 +800,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A26" categories="de-accessibility">
 		<groundspeak id="2" inc="true" name="Access or parking fee" />
 		<opencaching schema="OCDE" id="36" prio="1" />
@@ -852,7 +829,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A27" categories="de-accessibility">
 		<groundspeak id="32" inc="true" name="Bicycles" />
 		<opencaching schema="OCPL" id="85" prio="1" />
@@ -869,7 +845,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A28" categories="de-location">
 		<opencaching schema="OCPL" id="60" prio="1" />
 		<lang id="en">
@@ -887,7 +862,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A29" categories="de-location">
 		<opencaching schema="OCPL" id="61" prio="1" />
 		<lang id="en">
@@ -905,7 +879,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A30" categories="de-location">
 		<opencaching schema="OCDE" id="30" prio="1" />
 		<lang id="en">
@@ -941,7 +914,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A31" categories="de-location">
 		<opencaching schema="OCDE" id="33" prio="1" />
 		<lang id="en">
@@ -973,7 +945,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A32" categories="de-location">
 		<opencaching schema="OCDE" id="34" prio="1" />
 		<lang id="en">
@@ -1005,7 +976,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A33" categories="de-facilities">
 		<groundspeak id="25" inc="true" name="Parking available" />
 		<opencaching schema="OCDE" id="18" prio="1" />
@@ -1037,7 +1007,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A34" categories="de-facilities">
 		<groundspeak id="26" inc="true" name="Public transportation" />
 		<opencaching schema="OCDE" id="19" prio="1" />
@@ -1070,7 +1039,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A35" categories="de-facilities">
 		<groundspeak id="27" inc="true" name="Drinking water nearby" />
 		<opencaching schema="OCDE" id="20" prio="1" />
@@ -1109,7 +1077,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A36" categories="de-facilities">
 		<groundspeak id="28" inc="true" name="Public restrooms nearby" />
 		<opencaching schema="OCDE" id="21" prio="1" />
@@ -1140,7 +1107,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A37" categories="de-facilities">
 		<groundspeak id="29" inc="true" name="Telephone nearby" />
 		<opencaching schema="OCDE" id="22" prio="1" />
@@ -1170,7 +1136,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A38" categories="de-facilities">
 		<opencaching schema="OCDE" id="23" prio="1" />
 		<lang id="en">
@@ -1202,7 +1167,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A39" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="true" name="Available at all times" />
 		<opencaching schema="OCDE" id="38" prio="1" />
@@ -1231,7 +1195,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A40" categories="de-time-and-seasons">
 		<groundspeak id="13" inc="false" name="Available at all times" />
 		<opencaching schema="OCPL" id="80" prio="1" />
@@ -1274,7 +1237,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A41" categories="de-time-and-seasons">
 		<groundspeak id="14" inc="false" name="Recommended at night" />
 		<opencaching schema="OCDE" id="40" prio="1" />
@@ -1312,7 +1274,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A42" categories="de-time-and-seasons">
 		<groundspeak id="14" inc="true" name="Recommended at night" />
 		<opencaching schema="OCPL" id="91" prio="1" />
@@ -1336,7 +1297,6 @@ languages:
 			<name>am besten nachts findbar</name>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A43" categories="de-time-and-seasons">
 		<groundspeak id="52" inc="true" name="Night Cache" />
 		<opencaching schema="OCDE" id="1" prio="1" />
@@ -1375,7 +1335,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A44" categories="de-time-and-seasons">
 		<groundspeak id="62" inc="false" name="Seasonal access" />
 		<opencaching schema="OCDE" id="42" prio="1" />
@@ -1408,7 +1367,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A45" categories="de-time-and-seasons">
 		<groundspeak id="62" inc="true" name="Seasonal access" />
 		<opencaching schema="OCDE" id="60" prio="1" />
@@ -1441,7 +1399,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A46" categories="de-time-and-seasons">
 		<opencaching schema="OCDE" id="43" prio="1" />
 		<lang id="en">
@@ -1479,7 +1436,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A47" categories="de-time-and-seasons">
 		<groundspeak id="15" inc="true" name="Available during winter" />
 		<opencaching schema="OCDE" id="44" prio="1" />
@@ -1517,7 +1473,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A48" categories="de-time-and-seasons">
 		<opencaching schema="OCDE" id="41" prio="1" />
 		<lang id="en">
@@ -1536,7 +1491,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A49" categories="de-tools">
 		<opencaching schema="OCPL" id="47" prio="1" />
 		<opencaching schema="OCDE" id="47" prio="1" />
@@ -1573,7 +1527,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A50" categories="de-tools">
 		<opencaching schema="OCPL" id="48" prio="1" />
 		<lang id="en">
@@ -1589,7 +1542,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A51" categories="de-tools">
 		<opencaching schema="OCPL" id="81" prio="1" />
 		<lang id="en">
@@ -1605,7 +1557,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A52" categories="de-tools">
 		<groundspeak id="44" inc="true" name="Flashlight required" />
 		<opencaching schema="OCPL" id="82" prio="1" />
@@ -1644,7 +1595,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A53" categories="de-tools">
 		<groundspeak id="3" inc="true" name="Climbing gear" />
 		<opencaching schema="OCDE" id="49" prio="1" />
@@ -1682,7 +1632,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A54" categories="de-tools">
 		<opencaching schema="OCDE" id="50" prio="1" />
 		<lang id="en">
@@ -1730,7 +1679,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A55" categories="de-tools">
 		<groundspeak id="5" inc="true" name="Scuba gear" />
 		<opencaching schema="OCDE" id="51" prio="1" />
@@ -1774,7 +1722,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A56" categories="de-tools">
 		<groundspeak id="51" inc="true" name="Special tool required" />
 		<opencaching schema="OCPL" id="83" prio="1" />
@@ -1817,7 +1764,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A57" categories="de-tools">
 		<groundspeak id="4" inc="true" name="Boat" />
 		<opencaching schema="OCPL" id="86" prio="1" />
@@ -1865,7 +1811,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A58" categories="de-tools">
 		<opencaching schema="OCDE" id="35" prio="1" />
 		<lang id="en">
@@ -1898,7 +1843,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A59" categories="de-dangers">
 		<groundspeak id="23" inc="true" name="Dangerous area" />
 		<opencaching schema="OCDE" id="9" prio="1" />
@@ -1950,7 +1894,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A60" categories="de-dangers">
 		<opencaching schema="OCDE" id="10" prio="1" />
 		<lang id="en">
@@ -1985,7 +1928,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A61" categories="de-dangers">
 		<groundspeak id="21" inc="true" name="Cliff / falling rocks" />
 		<opencaching schema="OCDE" id="11" prio="1" />
@@ -2030,7 +1972,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A62" categories="de-dangers">
 		<groundspeak id="22" inc="true" name="Hunting" />
 		<opencaching schema="OCDE" id="12" prio="1" />
@@ -2069,7 +2010,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A63" categories="de-dangers">
 		<groundspeak id="39" inc="true" name="Thorns" />
 		<opencaching schema="OCDE" id="13" prio="1" />
@@ -2099,7 +2039,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A64" categories="de-dangers">
 		<groundspeak id="19" inc="true" name="Ticks" />
 		<opencaching schema="OCDE" id="14" prio="1" />
@@ -2140,7 +2079,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A65" categories="de-dangers">
 		<groundspeak id="20" inc="true" name="Abandoned mines" />
 		<opencaching schema="OCDE" id="15" prio="1" />
@@ -2183,7 +2121,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A66" categories="de-dangers">
 		<groundspeak id="17" inc="true" name="Poisonous plants" />
 		<opencaching schema="OCDE" id="16" prio="1" />
@@ -2216,7 +2153,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A67" categories="de-dangers">
 		<groundspeak id="18" inc="true" name="Dangerous animals" />
 		<opencaching schema="OCDE" id="17" prio="1" />
@@ -2250,7 +2186,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A68" categories="de-rating">
 		<opencaching schema="OCPL" id="40" prio="1" />
 		<lang id="en">
@@ -2268,7 +2203,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A69" categories="de-rating">
 		<opencaching schema="OCDE" id="37" prio="1" />
 		<lang id="en">
@@ -2308,7 +2242,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A70" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
 		<opencaching schema="OCPL" id="41" prio="1" />
@@ -2327,7 +2260,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A71" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
 		<opencaching schema="OCDE" id="59" prio="1" />
@@ -2369,7 +2301,6 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
 	<attr okapi_attr_id="A72" categories="de-cache-types">
 		<opencaching schema="OCDE" id="61" prio="1" />
 		<lang id="en">
@@ -2394,69 +2325,4 @@ languages:
 			</desc>
 		</lang>
 	</attr>
-
-	<!--
-		search attribute logic:
-
-		<musthave>A1 or A2 or TWebcam</musthave>
-		<musthave>A3</musthave>
-		<mustnothave>A4 or A5</mustnothave>
-		
-		means:  search for caches with (A1 or A2 or type Webcam) and A3 and not (A4 or A5)
-	-->
-	
-	<search id="S1" categories="de-listing">
-		<musthave>A1</musthave>
-	</search>
-
-	<search id="S12" categories="de-cache-types">
-		<musthave>A12 or TWebcam</musthave>
-	</search>
-
-	<search id="S41" categories="de-time-and-seasons">
-		<musthave>A39 or A41</musthave>
-		<mustnothave>A43</mustnothave>
-		<lang id="en">
-			<name>By day</name>
-			<desc>
-				The cache can be found at daylight.
-			</desc>
-		</lang>
-	</search>
-
-	<search id="S42" categories="de-time-and-seasons">
-		<musthave>A39 or A42 or A43</musthave>
-		<mustnothave>A41</mustnothave>
-		<lang id="en">
-			<name>At night</name>
-			<desc>
-				The cache can be found at night.
-			</desc>
-		</lang>
-	</search>
-
-	<search id="S43" categories="de-time-and-seasons">
-		<musthave>A42 or A43</musthave>
-		<mustnothave>A41</mustnothave>
-		<lang id="en">
-			<name>Night Cache</name>
-			<desc>
-				The cache has been designed to be found at night. 
-				There may be reflectors which have to be flashlighted and will point 
-				to the hiding place, or other special night-caching mechanisms.
-			</desc>
-		</lang>
-	</search>
-
-	<search id="S49" categories="de-tools">
-		<mustnothave>A49 or A51 or A52 or A54 or A55 or A56 or A57</mustnothave>
-		<lang id="en">
-			<name>No special tools required</name>
-			<desc>
-				No special tools are required to find the cache, besides of standard
-				geocaching equipment like a GPS device or a pen to sign the loogbook.
-			</desc>
-		</lang>
-	</search>
-	
 </xml>

@@ -7,17 +7,9 @@
 		might be big enough to make your mobile application slow. Consider using
 		one of the other methods in this module.
 	</desc>
-	<req name='attribute_set'>
-		The attribute set to be returned, either
-		<ul>
-			<li><b>listing</b> for the listing attributes returned by the geocache(s)
-			methods (A-Codes), or</li>
-			<li><b>search</b> for the attributes used for searching (S-Codes).</li>
-		</ul>
-	</req>
 	<common-format-params/>
 	<returns>
-		<p>For <em>attribute_set=listing</em>, a dictionary of the following structure:</p>
+		<p>A dictionary of the following structure:</p>
 		
 		<ul>
 			<li>
@@ -27,8 +19,8 @@
 				
 				<ul>
 					<li>
-						<b>id</b> - string, OKAPI's ID of the attribute (A-Code, the same as
-						the one in the key),
+						<b>id</b> - string, OKAPI's ID of the attribute (the same as the one
+						in the key),
 					</li>
 					<li>
 						<p><b>gs_equivs</b> - a list of Groundspeak (geocaching.com)
@@ -50,8 +42,19 @@
 						<p>Note, that one Groundspeak ID may be present in many gs_equivs.</p>
 					</li>
 					<li>
-						<p><b>internal_id</b> - the ID of this attribute in the local OC database.
-						The internal ID is installation-dependent and should generally not be used.</p>
+						<p><b>internal_ids</b> - a list of internal attribute IDs which
+						will be mapped to this attribute when encountered in local
+						OC database.</p>
+						
+						<p>Note, that one internal ID may be mapped to many OKAPI attributes.</p>
+					</li>
+					<li>
+						<p><b>primary_internal_id</b> - the internal ID of the OC site's attribute
+						which matches this OKAPI attribute best, or <b>null</b> if there is no
+						matching local attribute.</p>
+						<p>This field shoud generally NOT be used, because it may not be
+						sufficient to completely describe the OKAPI attribute. Use it only if
+						your are forced to have a 1:1 mapping of local attributes.</p>
 					</li>
 					<li>
 						<p><b>names</b> - a dictionary of all known names of the attribute,
@@ -73,40 +76,5 @@
 				</ul>
 			</li>
 		</ul>
-
-		<p>For <em>attribute_set=search</em>, a dictionary of the following structure:</p>
-
-		<ul>
-			<li>
-				<p><b>attributes</b> - a dictionary. Attribute IDs are mapped to
-				keys of this dictionary. Each value is a dictionary of the following
-				structure:</p>
-
-				<ul>
-					<li>
-						<b>id</b> - string, ID of the attribute (S-Code, the same as
-						the one in the key),
-					</li>
-					<li>
-						<p><b>musthave</b> - list of string expressions which must be met when searching
-						for this attribute, each string consisting of one ore more A-Codes and/or
-						cache types combined with "or"; all tokens within a string separated by single
-						spaces, cache types preceded by "T".</p>
-						<p>Example: "A1 or A5 or TQuiz"</p>
-					</li>
-					<li>
-						<b>mustnothave</b> - a string expression with A-Codes that must not be present
-						for this search, same format as <b>musthave</b>,
-					</li>
-					<li>
-						<b>names</b> - see <em>attribute_set=listing</em>,
-					</li>
-					<li>
-						<b>descriptions</b> - see <em>attribute_set=listing</em>.
-					</li>
-				</ul>
-			</li>
-		</ul>
-
 	</returns>
 </xml>

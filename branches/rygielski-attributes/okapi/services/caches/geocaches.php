@@ -29,7 +29,8 @@ class WebService
 		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'is_found',
 		'is_not_found', 'founds', 'notfounds', 'size', 'size2', 'oxsize', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description',
-		'descriptions', 'hint', 'hints', 'images', 'attr_ids', 'attrnames', 'latest_logs',
+		'descriptions', 'hint', 'hints', 'images', 'attr_ids', 'primary_attr_ids', 'attrnames',
+		'primary_attrnames', 'latest_logs',
 		'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
 		'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
 		'is_ignored', 'willattends', 'country', 'state', 'preview_image',
@@ -311,7 +312,9 @@ class WebService
 					case 'images': /* handled separately */ break;
 					case 'preview_image': /* handled separately */ break;
 					case 'attr_ids': /* handled separately */ break;
+					case 'primary_attr_ids': /* handled separately */ break;
 					case 'attrnames': /* handled separately */ break;
+					case 'primary_attrnames': /* handled separately */ break;
 					case 'latest_logs': /* handled separately */ break;
 					case 'my_notes': /* handles separately */ break;
 					case 'trackables_count': /* handled separately */ break;
@@ -560,7 +563,8 @@ class WebService
 
 		# Attr_ids and attrnames
 
-		if (in_array('attr_ids', $fields) || in_array('attrnames', $fields))
+		if (in_array('attr_ids', $fields) || in_array('primary_attr_ids',$fields) ||
+		    in_array('attrnames', $fields) || in_array('primary_attrnames', $fields))
 		{
 			# Either case, we'll need attr_ids. If the user didn't want them,
 			# remember to remove them later.
@@ -572,10 +576,10 @@ class WebService
 			foreach ($results as &$result_ref)
 				$result_ref['attr_ids'] = array();
 
-			# Load internal_attr_id => attr_id mapping.
+			# Load internal_attr_id => attr_ids mapping.
 
 			require_once($GLOBALS['rootpath'].'/okapi/services/attrs/attr_helper.inc.php');
-			$internal2acode = AttrHelper::get_internal_id_to_acode_mapping();
+			$internal2acodes = AttrHelper::get_internal_id_to_acodes_mapping();
 
 			$rs = Db::query("
 				select cache_id, attrib_id
@@ -586,19 +590,42 @@ class WebService
 			{
 				$cache_code = $cacheid2wptcode[$row['cache_id']];
 				$attr_internal_id = $row['attrib_id'];
-				if (!isset($internal2acode[$attr_internal_id]))
+				if (!isset($internal2acodes[$attr_internal_id]))
 				{
 					# Unknown attribute. Every attribute should be present in the
 					# etc/attributes.xml file!
 					continue;
 				}
-				$results[$cache_code]['attr_ids'][] = $internal2acode[$attr_internal_id];
+				$list_ref = &$results[$cache_code]['attr_ids'];
+				foreach ($internal2acodes[$attr_internal_id] as $acode)
+				{
+					$list_ref[] = $acode;
+				}
+			}
+
+			# To simplify implementation, we assume that there are only 1:1 local:global
+			# attribute relations. If any multiple-relation is defined, an exception
+			# is thrown in attr_helper_inc.php, and the primary vs. secondary
+			# attribute relations need to be defined.
+
+			if (in_array('primary_attr_ids',$fields) || in_array('primary_attrnames', $fields))
+			{
+				# Either case, we'll need primary_attr_ids. If the user didn't want them,
+				# remember to remove them later.
+
+				if (!in_array('primary_attr_ids', $fields))
+				{
+					$fields_to_remove_later[] = 'primary_attr_ids';
+				}
+
+				foreach ($results as &$result_ref)
+					$result_ref['primary_attr_ids'] = $result_ref['attr_ids'];
 			}
 
 			# Now, each cache object has a list of its attr_ids. We may take care
 			# of the attrnames now.
 
-			if (in_array('attrnames', $fields))
+			if (in_array('attrnames', $fields) || in_array('primary_attrnames', $fields))
 			{
 				$acode2bestname = AttrHelper::get_acode_to_name_mapping($langpref);
 				foreach ($results as &$result_ref)
@@ -608,6 +635,12 @@ class WebService
 						$result_ref['attrnames'] = array();
 						foreach ($result_ref['attr_ids'] as $acode)
 							$result_ref['attrnames'][] = $acode2bestname[$acode];
+					}
+					if (in_array('primary_attrnames', $fields))
+					{
+						$result_ref['primary_attrnames'] = array();
+						foreach ($result_ref['primary_attr_ids'] as $acode)
+							$result_ref['primary_attrnames'][] = $acode2bestname[$acode];
 					}
 				}
 			}
