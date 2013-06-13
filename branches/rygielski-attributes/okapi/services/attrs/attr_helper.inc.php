@@ -216,7 +216,7 @@ class AttrHelper
 			# When no <lang> element is defined, it is copyied from the first musthave
 			# A-Code (if applicable):
 			if (!$haslang &&
-			    isset($attr['musthave']) && isset($attr['musthave'][0]) && isset($attr['musthave'][0]['internal_attr_ids']))
+			    count($attr['musthave']) && count($attr['musthave'][0]['internal_attr_ids']))
 			{
 				foreach ($cachedvalue['attr_dict'] as $attrib)
 					if ($attrib['internal_id'] == $attr['musthave'][0]['internal_attr_ids'][0])
