@@ -257,6 +257,12 @@ class AttrHelper
 			'internal_cachetype_ids' => array()
 		);
 
+		# Unknown local attributes and cache types will be stored as local-ID null
+		# in the search attributes dictionary and later evaluated/eliminated in
+		# search code. This solution turned out to be overall less complex than
+		# eleminiting them right here, because it keeps data structures simpler
+		# and easier to document and understand. Performance penalty is neglectable.
+
 		foreach ($tokens as $token)
 		{
 			switch (substr($token,0,1))
