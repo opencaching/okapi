@@ -88,14 +88,18 @@ class SearchAssistant
 				try
 				{
 					$id = Okapi::cache_type_name2id($name);
-					$types[] = $id;
+					if ($id != null)
+						$types[] = $id;
 				}
 				catch (Exception $e)
 				{
 					throw new InvalidParam('type', "'$name' is not a valid cache type.");
 				}
 			}
-			$where_conds[] = "caches.type $operator ('".implode("','", array_map('mysql_real_escape_string', $types))."')";
+			if (count($types) > 0)
+				$where_conds[] = "caches.type $operator ('".implode("','", array_map('mysql_real_escape_string', $types))."')";
+			else if ($operator == "in")
+				$where_conds[] = "false";
 		}
 
 		#
@@ -298,111 +302,263 @@ class SearchAssistant
 		# attr_ids
 		#
 
-		if ($tmp = $request->get_parameter('attr_ids'))
+		if ($attr_ids = $request->get_parameter('attr_ids'))
 		{
 			require_once($GLOBALS['rootpath'].'/okapi/services/attrs/attr_helper.inc.php');
-			$mapping = AttrHelper::get_acode_to_internal_ids_mapping();
-			$must_have = array();
-			$must_not_have = array();
-			$impossible = false;
-			foreach (explode("|", $tmp) as $token)
+			$sattr_dict = AttrHelper::get_searchdict();
+
+			# Example for search attribute handling:
+			#
+			#   attr_ids = S1|S2|S3 = S1 and S2 and S3
+			#   S1 = (A1 or A2 or MovingCache) and not A3 and not (A4 and A14 VirtualCache)
+			#   S2 = (A5 or A6) and A7
+			#   S3 = A9 and VirtualCache and not A10 and not WebcamCache
+			#
+			# S1 consists of three and-combined "search terms", S2 of two and S3 of four.
+			# These nine terms are categorized into four different "term types" and
+			# converted into proper SQL where conditions, depending on the type of the term
+			# (for simplification, we omit the conversion into local IDs here):
+			#
+			# 1. Simple attribute inclusions:
+			#      A7, A9
+			#    These are collected in an array and then temporarily converted into an
+			#    SQL query which retreives the corresponding cache ids
+			#		 (stored for further optimization in $include_cacheid_queries):
+			#        => select cache_id from caches_attributes
+			#           where attrib_id in (A7,A9)
+			#           group by cache_id
+			#           having count(*) = 2
+			#
+			# 2. Simple cachetype inclusions and aggregated inclusions:
+			#      VirtualCache
+			#        => caches.type in (VirtualCache)
+			#      A1 or A2 or MovingCache
+			#        => caches.type in (MovingCache) or
+			#           caches.cache_id in
+			#             (select distinct cache_id from caches_attributes
+			#              where attrib_id in (A1,A2))  [*]
+			#      A5 or A6
+			#    This term can be further optimized as no cache type is included; therefore
+			#    it is also stored in $include_cacheid_queries:
+			#        => select distinct cache_id from caches_attributes
+			#           where attrib_id in (A5,A6)
+			#
+			#  3. Simple Attribute exclusions:
+			#       not A3, not A10
+			#    These are collected in an array and then converted into one WHERE condition
+			#    for "not (A3 or A10)":
+			#         => caches.cache_id not in
+			#              (select distinct cache_id from caches_attributes
+			#               where attrib_id in (A3,A10))  [*]
+			#
+			#  4. Simple Cachetype exclusions and aggregate exclusions:
+			#       not WebcamCache
+			#         => caches.type <> WebcamCache
+			#       not (A4 and A14 and VirtualCache)
+			#         => caches.type <> VirtualCache or  [**]
+			#            caches.cache_id not in
+			#              (select cache_id from caches_attributes
+			#               where attrib_id in (A4,A14)
+			#               group by cache_id
+			#               having count(*) = 2)  [*]
+			#
+			#     [*] the subqueries are not executed as subquery, but as separate
+			#         sql statement, as some MySQL subqueries are awefully slow
+			#     [**] only one Cache Type is allowed in one exclusion term
+			#
+			#  Finally one where condition in the form "caches.cache_ids in (id-list)"
+			#  is constructed from all queries stored in $include_cacheid_queries.
+
+			$musthave_internal_attr_ids = array();
+			$mustnothave_internal_attr_ids = array();
+			$include_cacheid_queries = array();
+			$attrs_done = array();
+
+			foreach (explode("|", $attr_ids) as $search_attrib)
 			{
-				$positive = true;
-				if ((strlen($token) > 0) && ($token[0] == "-"))
+				if (!isset($sattr_dict[$search_attrib]))
+					throw new InvalidParam('attr_ids', "Unknown search attribute ID: ".$search_attrib);
+				if (!$sattr_dict[$search_attrib]['use'])
+					continue;
+				if (in_array($search_attrib,$attrs_done))
 				{
-					$positive = false;
-					$token = substr($token, 1);
+					# Ignore duplicates, for optimization and as security measure
+					# (limits the system load which can be produced by complex search queries).
+					continue;
 				}
-				if (!isset($mapping[$token]))
-				{
-					throw new InvalidParam('attr_ids', "Unknown attribute ID: ".$token);
-				}
-				if ($positive)
-				{
-					if (count($mapping[$token]) == 0)
-					{
-						# Attribute X is required, and X is not supported by this node
-						# (there are no internal IDs to map to). The condition cannot
-						# be met, hence the result will be empty.
+				$attrs_done[] = $search_attrib;
 
-						$where_conds[] = "false";
-						break;
-					}
-					elseif (count($mapping[$token]) == 1)
-					{
-						# Attribute X is required, and X has exactly one internal ID
-						# that we can use. We need to simply add the internal ID to the
-						# first of our extra queries.
+				# Search attribute definitions have been syntax- and semantic-checked when
+				# loading attributes.xml.
 
-						$must_have[] = $mapping[$token][0];
+				# handle inclusions for one search attribute
+				foreach ($sattr_dict[$search_attrib]['musthave'] as $musthave)
+				{
+					$internal_attr_ids = array_diff($musthave['internal_attr_ids'],array(null));
+					$internal_cachetype_ids = array_diff($musthave['internal_cachetype_ids'],array(null));
+					  # The null values returend for locally unknown attributes and cache types
+					  # are useless, therefore we discard them. The ID lists may be empty thereafter.
+
+					if (count($internal_attr_ids) == 1 && count($internal_cachetype_ids) == 0)
+					{
+						# 1. simple attribute inclusion
+						# Duplicate IDs would fool the "group by / having" clause and must be
+						# discarded:
+						if (!in_array($internal_attr_ids[0],$musthave_internal_attr_ids))
+							$musthave_internal_attr_ids[] = $internal_attr_ids[0];
 					}
 					else
 					{
-						# Attribute X is required, and X has *more than one* internal ID
-						# mapped to it. *Either one* (not necessarilly both) of these
-						# internal IDs should cause the cache to appear in the result.
-						# In this case, we cannot use it in our group by query! We have
-						# to make a separate one.
+						# 2. simple cachetype inclusion or aggregate (or-ed) inclusions
+						if (count($internal_cachetype_ids))
+							$cachetype_cond = "caches.type in ".self::escaped_id_set($internal_cachetype_ids);
+						else
+							$cachetype_cond = '';
 
-						$tmp = Db::select_column("
-							select distinct cache_id
-							from caches_attributes
-							where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $mapping[$token]))."')
-						");
-						if (count($tmp) == 0) {
-							$where_conds[] = "false";
-						} else {
-							$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $tmp))."')";
-							if ($musthave_cond != '')
-								$nextcond = "select cache_id from (".$nextcond.") c".(++$nested_queries)." where cache_id in (".$musthave_cond.")";
-							$musthave_cond = $nextcond;
+						if (count($internal_attr_ids))
+						{
+							$attrib_cond =
+								"select distinct cache_id from caches_attributes
+								 where attrib_id in ".self::escaped_id_set($internal_attr_ids);
+							if ($cachetype_cond == '')
+							{
+								# store subquery for further optimization
+								$include_cacheid_queries[] = $attrib_cond;
+								continue;
+							}
+							else
+								$cachetype_cond .= ' or ';
+							$attrib_cond = "caches.cache_id in ".self::get_cache_id_set($attrib_cond);
+						}
+						else
+							$attrib_cond = '';
+
+						if ($cachetype_cond . $attrib_cond <> '')
+						{
+							# The faster cachetype condition goes first.
+							$where_conds[] = $cachetype_cond . $attrib_cond;
 						}
 					}
-				}
-				else
+				}  # foreach musthave
+
+				# handle exclusions for one search attribute
+				foreach ($sattr_dict[$search_attrib]['mustnothave'] as $mustnothave)
 				{
-					# In the negative case, we don't need to differentiate on the
-					# count($mapping[$token]) - all possible cases are covered by our
-					# second query.
+					$internal_attr_ids = $mustnothave['internal_attr_ids'];
+					$internal_cachetype_ids = $mustnothave['internal_cachetype_ids'];
 
-					foreach ($mapping[$token] as $internal_id)
-						$must_not_have[] = $internal_id;
-				}
+					# If the mustnothave and-term contains a locally unknown attribute
+					# (ID null), it is pointless and can be discarded:
+					if (in_array(null,$internal_attr_ids) || in_array(null,$internal_cachetype_ids))
+					{
+						# This condition would also detect 0 IDs,  but we can safely assume
+						# that there are no 0 attribute or type IDs.
+						continue;
+					}
+
+					if (count($internal_attr_ids) == 1 && count($internal_cachetype_ids) == 0)
+					{
+						# 3. simple attribute exclusion
+						# Duplicates are currently no problem here, but it won't hurt to
+						# filter them out:
+						if (!in_array($internal_attr_ids[0],$mustnothave_internal_attr_ids))
+							$mustnothave_internal_attr_ids[] = $internal_attr_ids[0];
+					}
+					else
+					{
+						# 4. simple cachetype exclusion or aggregate (and-ed) exclusions
+
+						if (count($internal_attr_ids) == 0)
+						{
+							if (count($internal_cachetype_ids))  # can only be 0 or 1
+								$where_conds[] = "caches.type <> '".mysql_real_escape_string($internal_cachetype_ids[0])."'";
+						}
+						else  # count($internal_attr_ids) > 0
+						{
+							# Attributes and cachetypes can be integrated into one SQL condition
+							# here, because both are ANDed: we do not miss any cache IDs when
+							# joining the caches table (for the type condition test) to the
+							# cache_attributes table.
+
+							if (count($internal_cachetype_ids))  # can only be 0 or 1
+							{
+								$cachetype_tables = ",caches";
+	   						$cachetype_where =
+								 "caches.cache_id = caches_attributes.cache_id and
+								  caches.type = '".mysql_real_escape_string($internal_cachetype_ids[0])."' and";
+							}
+							else
+								$cachetype_tables = $cachetype_where = '';
+
+							if (count($internal_attr_ids) > 1)
+							{
+								$where_conds[] .=
+									"caches.cache_id not in ".self::get_cache_id_set("
+										select caches_attributes.cache_id from caches_attributes".$cachetype_tables."
+										where ".$cachetype_where." attrib_id in ".self::escaped_id_set($internal_attr_ids)."
+										group by cache_id
+										having count(*) = '".mysql_real_escape_string(count($internal_attr_ids))."'");
+							}
+							else
+							{
+								# optimized version for just one attribute, runs ~ 2-3 times faster
+								$where_conds[] .=
+									"caches.cache_id not in ".self::get_cache_id_set("
+										select distinct caches_attributes.cache_id from caches_attributes".$cachetype_tables."
+										where ".$cachetype_where." attrib_id = '".mysql_real_escape_string($internal_attr_ids[0])."'");
+							}
+						}
+					}
+				}  # foreach mustnothave
+			}  # foreach search attribute
+
+			# create cache ID set queries for all simple inclusions,
+			# and store them for further optimization
+			if (count($musthave_internal_attr_ids) > 1)
+			{
+				$include_cacheid_queries[] = "
+						select cache_id
+						from caches_attributes
+						where attrib_id in ".self::escaped_id_set($musthave_internal_attr_ids)."
+						group by cache_id
+						having count(*) = '".mysql_real_escape_string(count($musthave_internal_attr_ids))."'";
+			}
+			else if (count($musthave_internal_attr_ids) == 1)
+			{
+				# optimized version for just one attribute, runs ~ 2-3 times faster
+				$include_cacheid_queries[] = "
+						select distinct cache_id
+						from caches_attributes
+						where attrib_id = '" . mysql_real_escape_string($musthave_internal_attr_ids[0])."'";
 			}
 
-			sort($must_have);
-			sort($must_not_have);
-
-			if (count($must_have) > 0)
+			# create where conditions for all simple exclusions
+			if (count($mustnothave_internal_attr_ids) > 0)
 			{
-				$must_have = Db::select_column("
-					select cache_id
-					from caches_attributes
-					where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $must_have))."')
-					group by cache_id
-					having count(*) = '".mysql_real_escape_string(count($must_have))."'
-				");
-				if (count($must_have) == 0) {
-					$where_conds[] = "false";
-				} else {
-					$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $must_have))."')";
-				}
+				$where_conds[] = "
+					caches.cache_id not in ".self::get_cache_id_set("
+						select cache_id
+						from caches_attributes
+						where attrib_id in ".self::escaped_id_set($mustnothave_internal_attr_ids));
 			}
-			if (count($must_not_have) > 0)
+
+			// Debugging
+			// var_dump($where_conds); var_dump($include_cacheid_queries); die();
+
+			# create optimized where condition for all stored cache ID sets
+			if (count($include_cacheid_queries))
 			{
-				$must_not_have = Db::select_column("
-					select distinct cache_id
-					from caches_attributes
-					where attrib_id in ('".implode("','", array_map('mysql_real_escape_string', $must_not_have))."')
-				");
-				if (count($must_not_have) == 0) {
-					# pass
-				} else {
-					$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $must_not_have))."')";
+				$cache_ids = Db::select_column(array_shift($include_cacheid_queries));
+				foreach ($include_cacheid_queries as $query)
+				{
+					$cache_ids = Db::select_column(
+						$query . " and cache_id in ".self::escaped_id_set($cache_ids)
+					);
 				}
+				$where_conds[] = "caches.cache_id in ".self::escaped_id_set($cache_ids);
 			}
 		}
-print_r($where_conds); die();
+
 		#
 		# modified_since
 		#
@@ -665,6 +821,26 @@ print_r($where_conds); die();
 		);
 
 		return $ret_array;
+	}
+
+	/**
+	 * return as escaped SQL set for an array of IDs
+	 */
+	private static function escaped_id_set($attr_ids)
+	{
+		return "('".implode("','", array_map('mysql_real_escape_string', $attr_ids))."')";
+	}
+
+	/**
+	 * returns a SQL-formed set of cache IDs from a column query
+	 */
+	private static function get_cache_id_set($query)
+	{
+		$cache_ids = Db::select_column($query);
+		if (count($cache_ids))
+			return "('".implode("','", array_map('mysql_real_escape_string', $cache_ids))."')";
+		else
+			return "(0)";
 	}
 
 	/**

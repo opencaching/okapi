@@ -204,15 +204,6 @@
 			<li>
 				<p><b>attr_ids</b> - unordered list of IDs of the attributes with which the cache was tagged.
 				You may use the <b>attrs</b> module to retrieve information on these attributes.</p>
-				<p>Note: This field may contain more attributes than the cache listing at the OC
-				 site, because one local attribute may be represented my multiple OKAPI attributes.</p>
-			</li>
-			<li>
-				<p><b>primary_attr_ids</b> - a subset of <b>attr_ids</b>, containing a maximum of
-				<i>one</i> OKAPI attribute for each local attribute of the geocache.</p>
-				<p>This field should generally NOT be used, because it may not completely represent
-				the geocache's attributes' meaning. Use it only if you are forced to have a
-				1:1 representation of local attributes.</p>
 			</li>
 			<li>
 				<b>attrnames</b> - unordered list of names of the attributes with which the cache was

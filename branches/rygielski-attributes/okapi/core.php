@@ -1417,29 +1417,39 @@ class Okapi
 	private static $cache_types = array(
 		#
 		# OKAPI does not expose type IDs. Instead, it uses the following
-		# "code words". Only the "primary" cache types are documented.
-		# This means that all other types may (in theory) be altered.
-		# Cache type may become "primary" ONLY when *all* OC servers recognize
-		# that type.
+		# "code words". Cache types not know to a certain OC platform
+		# are defined as ID = null here.
 		#
 		# Changing this may introduce nasty bugs (e.g. in the replicate module).
 		# CONTACT ME BEFORE YOU MODIFY THIS!
 		#
 		'oc.pl' => array(
-			# Primary types (documented, cannot change)
-			'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
+			'Drive-In' => null,
 			'Event' => 6,
-			# Additional types (may get changed)
-			'Other' => 1, 'Webcam' => 5,
-			'Moving' => 8, 'Podcast' => 9, 'Own' => 10,
+			'Math/Physics' => null,
+			'Moving' => 8,
+			'Multi' => 3,
+			'Other' => 1,
+			'Podcast' => 9,
+			'Quiz' => 7,
+			'Traditional' => 2,
+			'Virtual' => 4,
+			'Webcam' => 5,
+			'Own' => 10,   # TODO: Is this really a cache type, or a search option?
 		),
 		'oc.de' => array(
-			# Primary types (documented, cannot change)
-			'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
+		  'Drive-In' => 10,
 			'Event' => 6,
-			# Additional types (might get changed)
-			'Other' => 1, 'Webcam' => 5,
-			'Math/Physics' => 8, 'Moving' => 9, 'Drive-In' => 10,
+			'Math/Physics' => 8,
+			'Moving' => 9,
+			'Multi' => 3,
+			'Other' => 1,
+			'Podcast' => null,
+			'Quiz' => 7,
+			'Traditional' => 2,
+			'Virtual' => 4,
+			'Webcam' => 5,
+			'Own' => null,
 		)
 	);
 
@@ -1449,9 +1459,17 @@ class Okapi
 		$ref = &self::$cache_types[Settings::get('OC_BRANCH')];
 		if (isset($ref[$name]))
 			return $ref[$name];
-		throw new Exception("Method cache_type_name2id called with unsupported cache ".
-			"type name '$name'. You should not allow users to submit caches ".
-			"of non-primary type.");
+		throw new Exception("Method cache_type_name2id called with unknown cache ".
+			"type name '$name'.");
+	}
+
+	/** Do the same for an array of cache type names */
+	public static function cache_type_names2ids($names)
+	{
+		$ids = array();
+		foreach ($names as $name)
+			$ids[] = Okapi::cache_type_name2id($name);
+		return $ids;
 	}
 
 	/** E.g. 2 => 'Traditional'. For unknown ids returns "Other". */
