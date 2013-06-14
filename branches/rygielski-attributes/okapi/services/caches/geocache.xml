@@ -210,9 +210,6 @@
 				tagged; the language will be selected based on the <b>langpref</b> parameter.
 			</li>
 			<li>
-				<b>primary_attrnames</b> - a subset of <b>attrnames</b>; see <b>primary_attr_ids,</b>
-			</li>
-			<li>
 				<p><b>attribution_note</b> - the proper attribution note for the cache listing according
 				to the local OC site's Data License. By default, this note is also appended to geocache
 				descriptions (see the <b>attribution_append</b> parameter).</p>

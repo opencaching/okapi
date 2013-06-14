@@ -1463,15 +1463,6 @@ class Okapi
 			"type name '$name'.");
 	}
 
-	/** Do the same for an array of cache type names */
-	public static function cache_type_names2ids($names)
-	{
-		$ids = array();
-		foreach ($names as $name)
-			$ids[] = Okapi::cache_type_name2id($name);
-		return $ids;
-	}
-
 	/** E.g. 2 => 'Traditional'. For unknown ids returns "Other". */
 	public static function cache_type_id2name($id)
 	{

@@ -260,7 +260,7 @@ class AttrHelper
 		# Unknown local attributes and cache types will be stored as local-ID null
 		# in the search attributes dictionary and later evaluated/eliminated in
 		# search code. This solution turned out to be overall less complex than
-		# eleminiting them right here, because it keeps data structures simpler
+		# eliminating them right here, because it keeps data structures simpler
 		# and easier to document and understand. Performance penalty is neglectable.
 
 		foreach ($tokens as $token)
@@ -269,9 +269,9 @@ class AttrHelper
 			{
 				case 'A':
 					if (!isset($attr_dict[$token]))
-						throw new Exception("Invalid cache attribute '".$token."' in definition of ".$scode." search atttribute");
+						throw new Exception("Invalid listing attribute '".$token."' in definition of ".$scode." search atttribute");
 					$internal_id = $attr_dict[$token]['internal_id'];
-					// is null for types not supported on the local installation
+						# is null for types not supported on the local installation
 					if ($internal_id !== null && in_array($internal_id, $output['internal_attr_ids']))
 					{
 						# Duplicates could make problems later.
@@ -283,8 +283,8 @@ class AttrHelper
 
 				case 'T':
 					$internal_id = Okapi::cache_type_name2id(substr($token,1));
-					// throws exception for unknown types;
-					// is null for types not supported on the local installation
+						# throws exception for unknown types;
+						# is null for types not supported on the local installation
 					if ($internal_id != null && in_array($internal_id, $output['internal_cachetype_ids']))
 						throw new Exception("duplicate internal cachetype ID ".$internal_id." in '".$term."' term of ".$scode." search atttribute");
 					$output['internal_cachetype_ids'][] = $internal_id;
@@ -296,7 +296,7 @@ class AttrHelper
 		}
 
 		if ($operator == 'and' && count($output['internal_cachetype_ids']) > 1)
-			throw new Exception("More than one cachetype condition in mustnothave definitions of ".$scode." search atttribute");
+			throw new Exception("More than one cachetype condition in mustnothave term '".$term."' of ".$scode." search atttribute");
 
 		return $output;
 	}
@@ -341,9 +341,9 @@ class AttrHelper
 	}
 
 	/**
-	 * Return a dictionary of all cache attributes. The format is the same as in the
-	 * "attributes" key returned by the "services/attrs/attrlist" method for
-	 * attribute_set=listing.
+	 * Return a dictionary of all listing attributes. The format is the same as
+	 * in the "attributes" key returned by the "services/attrs/attrlist" method
+	 * for attribute_set=listing.
 	 */
 	public static function get_attrdict()
 	{

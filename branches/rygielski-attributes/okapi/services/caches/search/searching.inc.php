@@ -315,7 +315,7 @@ class SearchAssistant
 			#   S3 = A9 and VirtualCache and not A10 and not WebcamCache
 			#
 			# S1 consists of three and-combined "search terms", S2 of two and S3 of four.
-			# These nine terms are categorized into four different "term types" and
+			# These nine terms are categorized into six different "term types" and
 			# converted into proper SQL where conditions, depending on the type of the term
 			# (for simplification, we omit the conversion into local IDs here):
 			#
@@ -329,9 +329,11 @@ class SearchAssistant
 			#           group by cache_id
 			#           having count(*) = 2
 			#
-			# 2. Simple cachetype inclusions and aggregated inclusions:
+			# 2. Simple cachetype inclusions:
 			#      VirtualCache
 			#        => caches.type in (VirtualCache)
+			#
+			# 3. Aggregated inclusions:
 			#      A1 or A2 or MovingCache
 			#        => caches.type in (MovingCache) or
 			#           caches.cache_id in
@@ -343,7 +345,7 @@ class SearchAssistant
 			#        => select distinct cache_id from caches_attributes
 			#           where attrib_id in (A5,A6)
 			#
-			#  3. Simple Attribute exclusions:
+			#  4. Simple Attribute exclusions:
 			#       not A3, not A10
 			#    These are collected in an array and then converted into one WHERE condition
 			#    for "not (A3 or A10)":
@@ -351,9 +353,11 @@ class SearchAssistant
 			#              (select distinct cache_id from caches_attributes
 			#               where attrib_id in (A3,A10))  [*]
 			#
-			#  4. Simple Cachetype exclusions and aggregate exclusions:
+			#  5. Simple Cachetype exclusions:
 			#       not WebcamCache
 			#         => caches.type <> WebcamCache
+			#
+			#  6. Aggregate exclusions:
 			#       not (A4 and A14 and VirtualCache)
 			#         => caches.type <> VirtualCache or  [**]
 			#            caches.cache_id not in
@@ -380,13 +384,13 @@ class SearchAssistant
 					throw new InvalidParam('attr_ids', "Unknown search attribute ID: ".$search_attrib);
 				if (!$sattr_dict[$search_attrib]['use'])
 					continue;
-				if (in_array($search_attrib,$attrs_done))
+				if (isset($attrs_done[$search_attrib]))
 				{
 					# Ignore duplicates, for optimization and as security measure
 					# (limits the system load which can be produced by complex search queries).
 					continue;
 				}
-				$attrs_done[] = $search_attrib;
+				$attrs_done[$search_attrib] = true;
 
 				# Search attribute definitions have been syntax- and semantic-checked when
 				# loading attributes.xml.
@@ -402,14 +406,12 @@ class SearchAssistant
 					if (count($internal_attr_ids) == 1 && count($internal_cachetype_ids) == 0)
 					{
 						# 1. simple attribute inclusion
-						# Duplicate IDs would fool the "group by / having" clause and must be
-						# discarded:
-						if (!in_array($internal_attr_ids[0],$musthave_internal_attr_ids))
-							$musthave_internal_attr_ids[] = $internal_attr_ids[0];
+						# Caveat: duplicate internal IDs would fool the group/having clause!
+						$musthave_internal_attr_ids[$internal_attr_ids[0]] = true;
 					}
 					else
 					{
-						# 2. simple cachetype inclusion or aggregate (or-ed) inclusions
+						# 2./3. simple cachetype inclusion or aggregate (or-ed) inclusions
 						if (count($internal_cachetype_ids))
 							$cachetype_cond = "caches.type in ".self::escaped_id_set($internal_cachetype_ids);
 						else
@@ -428,7 +430,7 @@ class SearchAssistant
 							}
 							else
 								$cachetype_cond .= ' or ';
-							$attrib_cond = "caches.cache_id in ".self::get_cache_id_set($attrib_cond);
+							$attrib_cond = "caches.cache_id in ".self::get_escaped_cache_id_set($attrib_cond);
 						}
 						else
 							$attrib_cond = '';
@@ -458,23 +460,23 @@ class SearchAssistant
 
 					if (count($internal_attr_ids) == 1 && count($internal_cachetype_ids) == 0)
 					{
-						# 3. simple attribute exclusion
-						# Duplicates are currently no problem here, but it won't hurt to
-						# filter them out:
-						if (!in_array($internal_attr_ids[0],$mustnothave_internal_attr_ids))
-							$mustnothave_internal_attr_ids[] = $internal_attr_ids[0];
+						# 4. simple attribute exclusion
+						$mustnothave_internal_attr_ids[$internal_attr_ids[0]] = true;
 					}
 					else
 					{
-						# 4. simple cachetype exclusion or aggregate (and-ed) exclusions
-
 						if (count($internal_attr_ids) == 0)
 						{
 							if (count($internal_cachetype_ids))  # can only be 0 or 1
+							{
+								# 5. simple cachetype exclusion
 								$where_conds[] = "caches.type <> '".mysql_real_escape_string($internal_cachetype_ids[0])."'";
+							}
 						}
 						else  # count($internal_attr_ids) > 0
 						{
+							# 6. aggregate (and-ed) exclusions
+
 							# Attributes and cachetypes can be integrated into one SQL condition
 							# here, because both are ANDed: we do not miss any cache IDs when
 							# joining the caches table (for the type condition test) to the
@@ -493,7 +495,7 @@ class SearchAssistant
 							if (count($internal_attr_ids) > 1)
 							{
 								$where_conds[] .=
-									"caches.cache_id not in ".self::get_cache_id_set("
+									"caches.cache_id not in ".self::get_escaped_cache_id_set("
 										select caches_attributes.cache_id from caches_attributes".$cachetype_tables."
 										where ".$cachetype_where." attrib_id in ".self::escaped_id_set($internal_attr_ids)."
 										group by cache_id
@@ -503,7 +505,7 @@ class SearchAssistant
 							{
 								# optimized version for just one attribute, runs ~ 2-3 times faster
 								$where_conds[] .=
-									"caches.cache_id not in ".self::get_cache_id_set("
+									"caches.cache_id not in ".self::get_escaped_cache_id_set("
 										select distinct caches_attributes.cache_id from caches_attributes".$cachetype_tables."
 										where ".$cachetype_where." attrib_id = '".mysql_real_escape_string($internal_attr_ids[0])."'");
 							}
@@ -519,7 +521,7 @@ class SearchAssistant
 				$include_cacheid_queries[] = "
 						select cache_id
 						from caches_attributes
-						where attrib_id in ".self::escaped_id_set($musthave_internal_attr_ids)."
+						where attrib_id in ".self::escaped_id_set(array_keys($musthave_internal_attr_ids))."
 						group by cache_id
 						having count(*) = '".mysql_real_escape_string(count($musthave_internal_attr_ids))."'";
 			}
@@ -529,17 +531,17 @@ class SearchAssistant
 				$include_cacheid_queries[] = "
 						select distinct cache_id
 						from caches_attributes
-						where attrib_id = '" . mysql_real_escape_string($musthave_internal_attr_ids[0])."'";
+						where attrib_id = '" . mysql_real_escape_string(key($musthave_internal_attr_ids))."'";
 			}
 
 			# create where conditions for all simple exclusions
 			if (count($mustnothave_internal_attr_ids) > 0)
 			{
 				$where_conds[] = "
-					caches.cache_id not in ".self::get_cache_id_set("
+					caches.cache_id not in ".self::get_escaped_cache_id_set("
 						select cache_id
 						from caches_attributes
-						where attrib_id in ".self::escaped_id_set($mustnothave_internal_attr_ids));
+						where attrib_id in ".self::escaped_id_set(array_keys($mustnothave_internal_attr_ids)));
 			}
 
 			// Debugging
@@ -826,21 +828,24 @@ class SearchAssistant
 	/**
 	 * return as escaped SQL set for an array of IDs
 	 */
-	private static function escaped_id_set($attr_ids)
+	private static function escaped_id_set($ids)
 	{
-		return "('".implode("','", array_map('mysql_real_escape_string', $attr_ids))."')";
+		return "('".implode("','", array_map('mysql_real_escape_string', $ids))."')";
 	}
 
 	/**
-	 * returns a SQL-formed set of cache IDs from a column query
+	 * returns a escaped SQL set of cache IDs from a column query
 	 */
-	private static function get_cache_id_set($query)
+	private static function get_escaped_cache_id_set($query)
 	{
 		$cache_ids = Db::select_column($query);
 		if (count($cache_ids))
 			return "('".implode("','", array_map('mysql_real_escape_string', $cache_ids))."')";
 		else
+		{
+			# we can safely assume that there is no cache with ID 0
 			return "(0)";
+		}
 	}
 
 	/**

@@ -603,12 +603,9 @@ class WebService
 				$acode2bestname = AttrHelper::get_acode_to_name_mapping($langpref);
 				foreach ($results as &$result_ref)
 				{
-					if (in_array('attrnames', $fields))
-					{
-						$result_ref['attrnames'] = array();
-						foreach ($result_ref['attr_ids'] as $acode)
-							$result_ref['attrnames'][] = $acode2bestname[$acode];
-					}
+					$result_ref['attrnames'] = array();
+					foreach ($result_ref['attr_ids'] as $acode)
+						$result_ref['attrnames'][] = $acode2bestname[$acode];
 				}
 			}
 		}
