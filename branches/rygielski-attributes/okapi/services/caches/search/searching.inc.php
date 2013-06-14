@@ -477,7 +477,7 @@ class SearchAssistant
 						{
 							# 6. aggregate (and-ed) exclusions
 
-							# Attributes and cachetypes can be integrated into one SQL condition
+							# Attributes and cachetypes can be integrated into one select statment
 							# here, because both are ANDed: we do not miss any cache IDs when
 							# joining the caches table (for the type condition test) to the
 							# cache_attributes table.
