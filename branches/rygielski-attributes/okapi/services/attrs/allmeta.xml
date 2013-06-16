@@ -88,53 +88,15 @@
 						the one in the key),
 					</li>
 					<li>
-						<p><b>musthave</b> - list of dictionaries, each of the following structure:</p>
-						<ul>
-							<li>
-								<p><b>term</b> - expression which must be met when searching
-								for this attribute, each string consisting of one ore more A-Codes and/or
-								cache types combined with "or"; all tokens within a string separated by single
-								spaces, cache types preceded by "T",</p>
-							</li>
-							<li>
-								<p><b>internal_attr_ids</b> - list of the internal IDs of the
-								attributes in the term; attributes which are not defined on the
-								OC installation are represented by <i>null</i>,</p>
-							</li>
-							<li>
-								<p><b>internal_cachetype_ids</b> - list of the internal IDs of
-								the attributes in the term; cache types which are not defined
-								on the OC installation are represented by <i>null</i>,</p>
-							</li>
-						</ul>
-					</li>
-					<li>
-						<p><b>mustnothave</b> - list of dictionaries, each of the following structure:</p>
-						<ul>
-							<li>
-								<p><b>term</b> - expression which must be met when searching
-								for this attribute, each string consisting of one ore more A-Codes and/or
-								cache types combined with "and"; all tokens within a string separated by single
-								spaces, cache types preceded by "T",</p>
-							</li>
-							<li>
-								<p><b>internal_attr_ids</b> - see <b>musthave</b></p>
-							</li>
-							<li>
-								<p><b>internal_cachetype_ids</b> - see <b>musthave</b>,</p>
-							</li>
-						</ul>
-					</li>
-					<li>
 						<b>names</b> - see <em>attribute_set=listing</em>,
 					</li>
 					<li>
-						<b>descriptions</b> - see <em>attribute_set=listing</em>.
+						<b>descriptions</b> - see <em>attribute_set=listing</em>,
 					</li>
 					<li>
-						<b>use</b> - boolean, <b>true</b> if the attribute is still in use, <b>false</b>
-						if it has been discarded. Discarded attributes will be ignored when seached for
-						and should not be presented to the user.
+						<b>use</b> - boolean, <b>true</b> if the attribute is in use, <b>false</b>
+						if it has been discarded. Discarded attributes will be ignored when searched
+						for and should not be presented to the user.
 					</li>
 				</ul>
 			</li>

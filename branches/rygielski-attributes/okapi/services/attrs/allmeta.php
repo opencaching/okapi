@@ -45,6 +45,11 @@ class WebService
 			$results = array(
 				'attributes' => AttrHelper::get_searchdict()
 			);
+			foreach ($results['attributes'] as &$attrib)
+			{
+				unset($attrib['musthave']);
+				unset($attrib['mustnothave']);
+			}
 		}
 		else
 			throw new InvalidParam('attribute_set');

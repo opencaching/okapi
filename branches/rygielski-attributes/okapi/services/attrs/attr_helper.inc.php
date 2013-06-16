@@ -59,6 +59,8 @@ class AttrHelper
 			);
 			$context = stream_context_create($opts);
 			$xml = file_get_contents(self::$SOURCE_URL, false, $context);
+			self::refresh_from_string($xml);
+			$lock->release();
 		}
 		catch (Exception $e)
 		{
@@ -98,9 +100,6 @@ class AttrHelper
 
 			return;
 		}
-
-		self::refresh_from_string($xml);
-		$lock->release();
 	}
 
 	/**
@@ -179,6 +178,12 @@ class AttrHelper
 		}
 
 		# build  search attributes dictionary
+		#
+		# Besides of the documented fields, each entry contains the arrays 'musthave'
+		# and 'mustnothave' which define search conditions to be met. Each of these
+		# conditions must be met when searching, i.e. they will be ANDed.
+		# See process_s_term() for the structure of the 'musthave' and 'mustnothave'
+		# array elements.
 
 		foreach ($doc->search as $attrnode)
 		{
@@ -257,6 +262,10 @@ class AttrHelper
 			'internal_cachetype_ids' => array()
 		);
 
+		# term:                    search term as defined in attributes.xml; see there on how it is defined
+		# internal_attr_ids:       list of internal IDs of all attributes contained in the term
+		# internal_cachetype_ids:  list of internal IDs of all cache types contained in the term
+		#
 		# Unknown local attributes and cache types will be stored as local-ID null
 		# in the search attributes dictionary and later evaluated/eliminated in
 		# search code. This solution turned out to be overall less complex than
