@@ -141,10 +141,14 @@ class AttrHelper
 				$lang = (string)$langnode['id'];
 				foreach ($langnode->name as $namenode)
 				{
+					if (isset($attr['names'][$lang]))
+						throw new Exception("Duplicate ".$lang." name of attribute ".$attr['acode']);
 					$attr['names'][$lang] = (string)$namenode;
 				}
 				foreach ($langnode->desc as $descnode)
 				{
+					if (isset($attr['descriptions'][$lang]))
+						throw new Exception("Duplicate ".$lang." description of attribute ".$attr['acode']);
 					$xml = $descnode->asxml(); /* contains "<desc>" and "</desc>" */
 					$innerxml = preg_replace("/(^[^>]+>)|(<[^<]+$)/us", "", $xml);
 					$attr['descriptions'][$lang] = self::cleanup_string($innerxml);
