@@ -222,7 +222,7 @@
 			</li>
 			<li>
 				<b>attrnames</b> - if you don't want to dig into <b>attr_acodes</b> just now, then
-				you can use these as a simple alternative; <b>attrnames</b> is an unordered list of
+				you can use these as a simple alternative. <b>attrnames</b> is an unordered list of
 				names of the attributes with which the cache was tagged; the language will be
 				selected based on the <b>langpref</b> parameter.
 			</li>

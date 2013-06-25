@@ -2,12 +2,12 @@
 	<brief>Retrieve data on multiple attributes at once</brief>
 	<issue-id>269</issue-id>
 	<desc>
-		<p>This method works like the <b>attribute</b> method, but works
-		with multiple A-codes (instead of only one). Read the docs for
+		<p>This method works like the <b>attribute</b> method, but
+		with multiple A-codes instead of only one. Read the docs for
 		the <b>attribute</b> method first!</p>
 	</desc>
 	<req name='acodes'>
-		Pipe-separated list of A-codes you're interested with.
+		Pipe-separated list of A-codes you're interested in.
 	</req>
 	<opt name='langpref' default='en'>
 		Works the same as in the <b>attribute</b> method.

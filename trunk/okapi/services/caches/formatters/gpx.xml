@@ -80,19 +80,19 @@
 			<li><b>ox:tags</b> - attributes will be listed as Garmin's <i>ox:tag</i>
 			elements (<b>ns_ox</b> has to be <b>true</b>),</li>
 			<li>
-				<p><b>gc:attrs</b> - attributes will be listed as Grounspeak's
+				<p><b>gc:attrs</b> - attributes will be listed as Groundspeak's
 				<i>groundspeak:attribute</i> elements (<b>ns_ground</b> has to be <b>true</b>),
 				compatible with Geocaching.com (see the list
 				<a href='http://www.geocaching.com/about/icons.aspx'>here</a>).</p>
 				
-				<p>Note, that most Opencaching attributes don't have Geocaching.com counterparts.
+				<p>Note that most Opencaching attributes don't have Geocaching.com counterparts.
 				Such attributes cannot be included as gc:attrs and will be ignored.</p>
 			</li>
 		</ul>
 		
 		<p>If you don't want any attributes to be included, you must pass a single
 		<b>none</b> as the <b>attrs</b> value. Passing an empty string won't work - it will
-		trigger the default (desc:text) to be selected (for backward-compatibility).</p>
+		trigger the default (<b>desc:text</b>) to be selected, for backward-compatibility.</p>
 	</opt>
 	<opt name='trackables' default='none'>
 		<p>This argument controls wether information on trackables is included and how it is included.
