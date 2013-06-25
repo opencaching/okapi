@@ -47,7 +47,7 @@
 			</li>
 			<li>
 				<p><b>names</b> - a dictionary of all known names of the attribute, in
-				various langauges (ISO 639-1 language code is used as dictionary
+				various languages (ISO 639-1 language code is used as dictionary
 				key).</p>
 			
 				<p>If you'd like to help with the translations, see
@@ -59,7 +59,7 @@
 			</li>
 			<li>
 				<p><b>descriptions</b> - a dictionary of all known descriptions of the
-				attribute, in various langauges (ISO 639-1 language code is used as
+				attribute, in various languages (ISO 639-1 language code is used as
 				dictionary key).</p>
 			
 				<p>If you'd like to help with the translations, see
@@ -67,7 +67,7 @@
 			</li>
 			<li>
 				<p><b>gc_equivs</b> - a list of Geocaching.com (Groundspeak)
-				attributes, which have an exact (or very similar) meaning. Each
+				attributes, which have exactly the same (or a very similar) meaning. Each
 				attribute is described as a dictionary of the following structure:</p>
 				
 				<ul>
@@ -82,7 +82,7 @@
 					</li>
 				</ul>
 				
-				<p>Note, that one gc_equivs list may have multiple items on it, and
+				<p>Note that one gc_equivs list may have multiple items on it, and
 				that one Geocaching.com ID may be present in many gc_equivs.</p>
 			</li>
 			<li>
@@ -92,28 +92,26 @@
 				of the <b>geocache</b> method in the *current* OKAPI installation.</p>
 				
 				<p>Since currently you cannot search with A-codes (we're implementing S-codes
-				for that purpose), usually you won't need this field in your app.
-				It is purely informative.</p>
+				for that purpose), this field is purely informative.</p>
 				
-				<p>Note, that this can change in time. Some attributes may get
+				<p>Note that this flag can change in time. Some attributes may get
 				introduced into other installations, whereas other attributes may
-				(teporarilly or permanently) disappear. In general, we are aiming
+				(teporarily or permanently) disappear. In general, we are aiming
 				towards global unification of all attributes between all OC nodes,
-				but this process <b>will</b> take time (and probably it will never
+				but this process will take time (and probably it will never
 				be 100% complete).</p>
 			</li>
 			<li>
 				<p><b>is_deprecated</b> - boolean, indicates if the attribute is deprecated.
 				Or, to be more specific, <b>true</b> means that if *this* OKAPI version
-				were to be installed on all OC servers, then none of them would
+				were installed on all OC servers, then none of them would
 				ever include the attribute in the <b>attr_anodes</b> field of their
 				<b>geocache</b> method.</p>
 				
 				<p>Since currently you cannot search with A-codes (we're implementing S-codes
-				for that purpose), usually you won't need this field in your app.
-				It is purely informative.</p>
+				for that purpose), this field is purely informative.</p>
 				
-				<p>Note, that this can change in time. Deprecated attributes can
+				<p>Note that this flag can change in time. Deprecated attributes can
 				"come back to life" later.</p>
 			</li>
 		</ul>
