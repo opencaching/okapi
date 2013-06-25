@@ -24,9 +24,19 @@
 	<opt name='include_deprecated' default='true'>
 		Deprecated attributes are not used by the newest versions of OKAPI,
 		but they can still appear in some contexts, i.e. within the data you have
-		downloaded prior their deprecation. That's why, by default, all attributes
+		downloaded prior to their deprecation. That's why, by default, all attributes
 		are returned, including the deprecated ones. You may skip the deprecated
 		attributes by passing <b>false</b> to this parameter.
+	</opt>
+	<opt name='only_locally_used' default='false'>
+		<p>By default, all known attributes are returned - including those which
+		were used a couple of years back, or those which are used by other OC nodes
+		(and may perhaps be used by the local OC node in the future). If you're
+		interested only in the attributes *currently used* within *this* Opencaching
+		installation, then you may set <b>true</b> to this parameter.</p>
+		
+		<p>Please note, that by setting <b>true</b> you will also skip all the
+		deprecated attributes (deprecated attributes are never used locally).</p>
 	</opt>
 	<common-format-params/>
 	<returns>

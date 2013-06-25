@@ -112,6 +112,7 @@ class AttrHelper
 				'internal_id' => null,
 				'names' => array(),
 				'descriptions' => array(),
+				'is_deprecated' => true
 			);
 			foreach ($attrnode->groundspeak as $gsnode)
 			{
@@ -123,8 +124,13 @@ class AttrHelper
 			}
 			foreach ($attrnode->opencaching as $ocnode)
 			{
+				/* If it is used by at least one OC node, then it's NOT deprecated. */
+				$attr['is_deprecated'] = false;
+
 				if ((string)$ocnode['schema'] == $my_schema)
 				{
+					/* It is used by THIS OC node. */
+
 					$internal_id = (int)$ocnode['id'];
 					if (isset($all_internal_ids[$internal_id]))
 						throw new Exception("The internal attribute ".$internal_id.
@@ -182,6 +188,7 @@ class AttrHelper
 					" needs to have its OKAPI updated?"
 				)
 			),
+			'is_deprecated' => true
 		);
 	}
 
@@ -220,9 +227,8 @@ class AttrHelper
 	}
 
 	/**
-	 * Return a dictionary of all listing attributes. The format is the same as
-	 * in the "attributes" key returned by the "services/attrs/attrlist" method
-	 * for attribute_set=listing.
+	 * Return a dictionary of all attributes. The format is INTERNAL and PRIVATE,
+	 * it is NOT the same as in the "attributes" method (but it is quite similar).
 	 */
 	public static function get_attrdict()
 	{

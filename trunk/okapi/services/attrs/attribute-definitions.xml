@@ -629,7 +629,7 @@ It also defines attribute names and descriptions in several languages.
 			</desc>
 		</lang>
 	</attr>
-
+	
 	<attr acode="A20" categories="de-accessibility">
 		<opencaching schema="OCPL" id="84" />
 		<lang id="en">
@@ -1155,7 +1155,7 @@ It also defines attribute names and descriptions in several languages.
 			<name>öffentliche Toilette in der Nähe</name>
 			<desc>
 				Während der Cachetour oder in der Nähe des Geocaches ist eine öffentliche
-				Toilette verfügbar.
+				Toilette verfügbar. 
 			</desc>
 		</lang>
 		<lang id="es">
@@ -1381,7 +1381,7 @@ It also defines attribute names and descriptions in several languages.
 			<name>Only at night</name>
 			<desc>
 				This geocache can be found at night only - it is a so-called night cache.
-				There may be reflectors which have to be flashlighted and will point
+				There may be reflectors which have to be flashlighted and will point 
 				to the hiding place, or other special night-caching mechanisms.
 			</desc>
 		</lang>
@@ -1389,7 +1389,7 @@ It also defines attribute names and descriptions in several languages.
 			<name>nur bei Nacht</name>
 			<desc>
 				Der Geocache kann nur bei Nacht gelöst werden und wird deshalb Nachtcache
-				genannt. Zum Beispiel mössen Reflektoren mit einer Taschenlampe
+				genannt. Zum Beispiel mössen Reflektoren mit einer Taschenlampe 
 				angeleuchtet werden, die dann den Weg zum Versteck zeigen.
 			</desc>
 		</lang>
@@ -2411,7 +2411,7 @@ It also defines attribute names and descriptions in several languages.
 				im Alter von 10 bis 12 Jahren selbstständig lösbar und das Gelände ist
 				nicht gefährlich (keine Haupstraßen, Klippen o.ä.). Am Ende des
 				Geocaches sollte sich eine Box mit Tauschgegenständen befinden, und
-				die Aufgaben sollten interessant aufgebaut sein.
+				die Aufgaben sollten interessant aufgebaut sein. 
 			</desc>
 		</lang>
 		<lang id="es">
@@ -2463,12 +2463,12 @@ It also defines attribute names and descriptions in several languages.
 		<groundspeak id="13" inc="false" name="Available at all times" />
 		<opencaching schema="OCPL" id="80" />
 		<lang id="en">
-			<name>Not 24/7, admission fee</name>
+			<name>Available at specified hours (may require access fee)</name>
 			<desc>
 				This cache can only be done at certain times of day or week - see the cache
 				description for more details. For example, the cache may be placed in an
-				area with restricted opening hours (you may be required to pay a fee
-				in order to enter - see the cache description for details).
+				area with restricted opening hours. Also, you may be required to pay a fee
+				in order to enter - see the cache description for details.
 			</desc>
 		</lang>
 		<lang id="pl">

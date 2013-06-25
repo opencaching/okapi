@@ -34,15 +34,39 @@ class WebService
 		$fields = $request->get_parameter('fields');
 		if (!$fields) $fields = "name";
 
-		# Get the list of all valid A-codes.
+		$include_deprecated = $request->get_parameter('include_deprecated');
+		if (!$include_deprecated) $include_deprecated = "true";
+		$include_deprecated = ($include_deprecated == "true");
+
+		$only_locally_used = $request->get_parameter('only_locally_used');
+		if (!$only_locally_used) $only_locally_used = "false";
+		$only_locally_used = ($only_locally_used == "true");
+
+		# Get the list of attributes and filter the A-codes based on the
+		# parameters.
 
 		require_once 'attr_helper.inc.php';
-		$acodes = implode("|", array_keys(AttrHelper::get_attrdict()));
+		$attrdict = AttrHelper::get_attrdict();
+		$acodes = array();
+		foreach ($attrdict as $acode => &$attr_ref)
+		{
+			if ((!$include_deprecated) && ($attr_ref['is_deprecated'])) {
+				/* Skip. */
+				continue;
+			}
+
+			if ($only_locally_used && ($attr_ref['internal_id'] === null)) {
+				/* Skip. */
+				continue;
+			}
+
+			$acodes[] = $acode;
+		}
 
 		# Retrieve the attribute objects and return the results.
 
 		$params = array(
-			'acodes' => $acodes,
+			'acodes' => implode("|", $acodes),
 			'langpref' => $langpref,
 			'fields' => $fields,
 		);
