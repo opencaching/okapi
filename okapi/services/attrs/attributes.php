@@ -25,7 +25,8 @@ class WebService
 	}
 
 	private static $valid_field_names = array(
-		'acode', 'name', 'names', 'description', 'descriptions', 'gc_equivs'
+		'acode', 'name', 'names', 'description', 'descriptions', 'gc_equivs',
+		'is_locally_used', 'is_deprecated'
 	);
 
 	public static function call(OkapiRequest $request)
@@ -66,6 +67,11 @@ class WebService
 		$results = array();
 		foreach ($acodes as $acode)
 		{
+			/* Please note, that the $attr variable from the $attrdict dictionary
+			 * below is NOT fully compatible with the interface of the "attribute"
+			 * method. Some of $attr's fields are private and should not be exposed,
+			 * other fields don't exist and have to be added dynamically! */
+
 			if (isset($attrdict[$acode])) {
 				$attr = $attrdict[$acode];
 			} elseif ($forward_compatible) {
@@ -79,6 +85,10 @@ class WebService
 
 			$attr['name'] = Okapi::pick_best_language($attr['names'], $langpref);
 			$attr['description'] = Okapi::pick_best_language($attr['descriptions'], $langpref);
+
+			# Fill all the other fields not kept in the (private) attrdict.
+
+			$attr['is_locally_used'] = ($attr['internal_id'] !== null);
 
 			# Filter the fields.
 
