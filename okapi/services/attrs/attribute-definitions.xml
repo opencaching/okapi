@@ -51,7 +51,7 @@ It also defines attribute names and descriptions in several languages.
 			</desc>
 		</lang>
 		<lang id="de">
-			<name>Nur bei Opencaching logbar</name>
+			<name>nur bei Opencaching logbar</name>
 			<desc>
 				Der Geocache ist nur bei Opencaching gelistet. Benutzer anderer
 				Geocache-Datenbanken haben so einen schnellen Überblick, welche Geocaches
@@ -92,6 +92,12 @@ It also defines attribute names and descriptions in several languages.
 				<a href="http://wiki.opencaching.pl/index.php/Benchmark">Więcej informacji</a>.
 			</desc>
 		</lang>
+		<lang id="de">
+			<name>an einem Vermessungspunkt</name>
+			<desc>
+				Der Cache ist inder Nähe eines festen Vermessungspunktes versteckt.
+			</desc>
+		</lang>
 	</attr>
 
 	<attr acode="A3" categories="de-cache-types">
@@ -114,7 +120,12 @@ It also defines attribute names and descriptions in several languages.
 			</desc>
 		</lang>
 		<lang id="de">
-			<name>Wherigo Cache</name>
+			<name>Wherigo-Cache</name>
+			<desc>
+				Zur Cachebeschreibung gehört eine Datei, die „Wherigo-Cartridge“. Sie muss
+				heruntergeladen und auf Gerät mit einer entsprechenden Abspielsoftware
+				installiert werden. Der Inhalt der Cartridge führt dich durch den Cache.
+			</desc>
 		</lang>
 	</attr>
 
@@ -174,7 +185,7 @@ It also defines attribute names and descriptions in several languages.
 			<name>GeoHotel Cache</name>
 			<desc>
 				Primary purpose of the "GeoHotel" caches is to exchange trackables
-				(TravelBugs, GeoKretys, etc.).
+				(TravelBugs, GeoKrets, etc.).
 			</desc>
 		</lang>
 		<lang id="pl">
@@ -186,7 +197,11 @@ It also defines attribute names and descriptions in several languages.
 			</desc>
 		</lang>
 		<lang id="de">
-			<name>GeoHotel Cache</name>
+			<name>Geohotel-Cache</name>
+			<desc>
+				Der Cache dient vor allem zum Austausch von Reisenden (GeoKrets,
+				TravelBugs etc.).
+			</desc>
 		</lang>
 	</attr>
 
@@ -206,6 +221,9 @@ It also defines attribute names and descriptions in several languages.
 		</lang>
 		<lang id="de">
 			<name>magnetischer Cache</name>
+			<desc>
+				Der Geocache ist mit einem Mangeten angebracht.
+			</desc>
 		</lang>
 	</attr>
 
@@ -224,6 +242,13 @@ It also defines attribute names and descriptions in several languages.
 				Aby odnaleźć skrzynkę, należy odsłuchać plik dźwiękowy. Może on
 				zawierać zakodowane informacje, dźwięki otoczenia, opis dotarcia
 				do skrzynki.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>Audio-Cache</name>
+			<desc>
+				Um diesen Cache zu finden musst du eine Tonaufnahme anhören,
+				die der Cachbeschreibung beigefügt ist.
 			</desc>
 		</lang>
 	</attr>
@@ -250,6 +275,11 @@ It also defines attribute names and descriptions in several languages.
 		</lang>
 		<lang id="de">
 			<name>Peilungscache</name>
+			<desc>
+				Die Koordinaten zeigen auf einen Startpunkt, von dem aus eine
+				Peilung zum Ziel führt, meist anhand einer Entfernungsangabe
+				und eines Winkels (Azimut).
+			</desc>
 		</lang>
 	</attr>
 
@@ -270,6 +300,11 @@ It also defines attribute names and descriptions in several languages.
 		</lang>
 		<lang id="de">
 			<name>Funksignal – Garmin Chirp</name>
+			<desc>
+				Zusammen mit dem Cache sind ein oder mehrere Garmin-Funksender
+				versteckt. Um den Cache zu finden, müssen die Funksignale empfangen
+				werden. Dazu wird ein passender Empfänger benötigt.
+			</desc>
 		</lang>
 	</attr>
 
@@ -291,6 +326,14 @@ It also defines attribute names and descriptions in several languages.
 				w ścianę, budynek, krawiężnik itp. Aby zalogować znalezienie, należy
 				wpisać się do pliku logbook.txt znajdującego się w pamięci urządzenia.
 				<a href="http://wiki.opencaching.pl/index.php/Skrzynka_Dead_Drop">Wiecej informacji</a>.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>Dead Drop USB-Cache</name>
+			<desc>
+				Der Cache besteht aus einem fest angebrachten USB-Stick. Er enthält
+				eine readme.txt-Datei mit Erläuterungen zum Cache und eine Datei
+				logbook.txt zum Loggen.
 			</desc>
 		</lang>
 	</attr>
@@ -586,7 +629,7 @@ It also defines attribute names and descriptions in several languages.
 			</desc>
 		</lang>
 	</attr>
-	
+
 	<attr acode="A20" categories="de-accessibility">
 		<opencaching schema="OCPL" id="84" />
 		<lang id="en">
@@ -599,6 +642,12 @@ It also defines attribute names and descriptions in several languages.
 			<name>Dostępna tylko pieszo</name>
 			<desc>
 				Skrzynka dostępna tylko pieszo.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>nur per Fußweg</name>
+			<desc>
+				Der Cache ist nur zu Fuß erreichbar.
 			</desc>
 		</lang>
 	</attr>
@@ -831,6 +880,12 @@ It also defines attribute names and descriptions in several languages.
 				Można dojechać do skrzynki rowerem.
 			</desc>
 		</lang>
+		<lang id="de">
+			<name>Fahrräder erlaubt</name>
+			<desc>
+				Der Cache ist mit dem Fahrrad erreichbar.
+			</desc>
+		</lang>
 	</attr>
 
 	<attr acode="A28" categories="de-location">
@@ -839,7 +894,7 @@ It also defines attribute names and descriptions in several languages.
 			<name>Hidden in natural surroundings (forests, mountains, etc.)</name>
 			<desc>
 				The cache is hidden in a remote and quick place - a forest, wild
-				meadow, a swap, etc.
+				meadow, a swamp, etc.
 			</desc>
 		</lang>
 		<lang id="pl">
@@ -847,6 +902,13 @@ It also defines attribute names and descriptions in several languages.
 			<desc>
 				Umiejscowiona na łonie natury, z dala od cywilizacji - las, dzika
 				łąka, mokradła.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>in der Natur</name>
+			<desc>
+				Der Cache ist abseits der Zivilisation in natürlicher Umgebung
+				versteckt – in einem Wald oder einer Wiese, einem Sumpf etc.
 			</desc>
 		</lang>
 	</attr>
@@ -865,6 +927,13 @@ It also defines attribute names and descriptions in several languages.
 			<desc>
 				W sąsiedztwie miejsca historycznego - zamku, pałacu, pola bitwy,
 				cmentarza, ale także fortów czy bunkrów.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>historischer Ort</name>
+			<desc>
+				Der Cache ist an einem historisch bedeutsamen Ort versteckt –
+				einer Burg, einem Friedhof, einer ehemaligem Militäranlage etc.
 			</desc>
 		</lang>
 	</attr>
@@ -947,7 +1016,7 @@ It also defines attribute names and descriptions in several languages.
 			</desc>
 		</lang>
 		<lang id="de">
-			<name>Im Wasser versteckt</name>
+			<name>im Wasser versteckt</name>
 			<desc>
 				Der Geocache oder eine der Stationen ist im Wasser versteckt. Um die
 				Aufgabe zu lösen muss man ggf. das Wasser betreten, schwimmen oder tauchen.
@@ -1086,7 +1155,7 @@ It also defines attribute names and descriptions in several languages.
 			<name>öffentliche Toilette in der Nähe</name>
 			<desc>
 				Während der Cachetour oder in der Nähe des Geocaches ist eine öffentliche
-				Toilette verfügbar. 
+				Toilette verfügbar.
 			</desc>
 		</lang>
 		<lang id="es">
@@ -1280,14 +1349,14 @@ It also defines attribute names and descriptions in several languages.
 		<opencaching schema="OCPL" id="91" />
 		<lang id="en">
 			<name>Recommended at night</name>
-		</lang>
-		<lang id="pl">
-			<name>Zalecane szukanie nocą</name>
 			<desc>
 				It is recommended to search for this cache by night. I.e. there
 				might be some light-reflecting surfaces involved which are usually
 				invisible during daylight.
 			</desc>
+		</lang>
+		<lang id="pl">
+			<name>Zalecane szukanie nocą</name>
 			<desc>
 				Aby znaleźć skrzynkę zalecane jest poszukiwanie jej nocą, ze
 				względu na miejsce ukrycia lub użyte elementy odblaskowe, których
@@ -1296,6 +1365,12 @@ It also defines attribute names and descriptions in several languages.
 		</lang>
 		<lang id="de">
 			<name>am besten nachts findbar</name>
+			<desc>
+				Es wird empfohlen, den Cache nachts zu suchen.
+				It is recommended to search for this cache by night. I.e. there
+				might be some light-reflecting surfaces involved which are usually
+				invisible during daylight.
+			</desc>
 		</lang>
 	</attr>
 
@@ -1306,7 +1381,7 @@ It also defines attribute names and descriptions in several languages.
 			<name>Only at night</name>
 			<desc>
 				This geocache can be found at night only - it is a so-called night cache.
-				There may be reflectors which have to be flashlighted and will point 
+				There may be reflectors which have to be flashlighted and will point
 				to the hiding place, or other special night-caching mechanisms.
 			</desc>
 		</lang>
@@ -1314,7 +1389,7 @@ It also defines attribute names and descriptions in several languages.
 			<name>nur bei Nacht</name>
 			<desc>
 				Der Geocache kann nur bei Nacht gelöst werden und wird deshalb Nachtcache
-				genannt. Zum Beispiel mössen Reflektoren mit einer Taschenlampe 
+				genannt. Zum Beispiel mössen Reflektoren mit einer Taschenlampe
 				angeleuchtet werden, die dann den Weg zum Versteck zeigen.
 			</desc>
 		</lang>
@@ -1382,7 +1457,7 @@ It also defines attribute names and descriptions in several languages.
 			</desc>
 		</lang>
 		<lang id="de">
-			<name>Nur zu bestimmten Zeiten im Jahr</name>
+			<name>nur zu bestimmten Zeiten im Jahr</name>
 			<desc>
 				Dieser Cache lässt sich nur zu bestimmten Zeite im Jahr absolvieren.
 				Näheres ist in der Cachebeschreibung angegeben.
@@ -1550,6 +1625,12 @@ It also defines attribute names and descriptions in several languages.
 				Skrzynka nie zawiera ołówka, weź ze sobą coś do pisania.
 			</desc>
 		</lang>
+		<lang id="de">
+			<name>Stift wird benötigt</name>
+			<desc>
+				Es ist kein Stift zum Loggen im Cache; bringe bitte einen eigenen mit.
+			</desc>
+		</lang>
 	</attr>
 
 	<attr acode="A51" categories="de-tools">
@@ -1564,6 +1645,13 @@ It also defines attribute names and descriptions in several languages.
 			<name>Potrzebna łopatka</name>
 			<desc>
 				Skrzynka jest zakopana w ziemi.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>Schaufel / vergrabener Cache</name>
+			<desc>
+				Der Cache ist vergraben. Wahrscheinlich benötigst du eine Schaufel,
+				um ihn zu heben.
 			</desc>
 		</lang>
 	</attr>
@@ -2229,6 +2317,13 @@ It also defines attribute names and descriptions in several languages.
 				łatwy dojazd w pobliże skrzynki samochodem.
 			</desc>
 		</lang>
+		<lang id="de">
+			<name>schnell zu finden</name>
+			<desc>
+				Der Cache ist üblicherweise in maximal 15 Minuten zu finden.
+				In der Nähe sollte auch ein Parkplatz sein.
+			</desc>
+		</lang>
 	</attr>
 
 	<attr acode="A69" categories="de-rating">
@@ -2276,16 +2371,23 @@ It also defines attribute names and descriptions in several languages.
 		<opencaching schema="OCPL" id="41" />
 		<lang id="en">
 			<name>Take your children</name>
-		</lang>
-		<lang id="pl">
-			<name>Można zabrać dzieci</name>
 			<desc>
 				This search if simple and safe. It's okay to take small children
 				with you.
 			</desc>
+		</lang>
+		<lang id="pl">
+			<name>Można zabrać dzieci</name>
 			<desc>
 				Jej poszukiwanie jest przyjemne, bezpieczne i można bez obaw
 				wybrać się z małymi dziećmi.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>für kleine Kinder geeignet</name>
+			<desc>
+				Der Cache ist einfach und – nach Einschätzungs des Besitzers –
+				ohne besondere Gefahren findbar.
 			</desc>
 		</lang>
 	</attr>
@@ -2309,7 +2411,7 @@ It also defines attribute names and descriptions in several languages.
 				im Alter von 10 bis 12 Jahren selbstständig lösbar und das Gelände ist
 				nicht gefährlich (keine Haupstraßen, Klippen o.ä.). Am Ende des
 				Geocaches sollte sich eine Box mit Tauschgegenständen befinden, und
-				die Aufgaben sollten interessant aufgebaut sein. 
+				die Aufgaben sollten interessant aufgebaut sein.
 			</desc>
 		</lang>
 		<lang id="es">
@@ -2361,7 +2463,7 @@ It also defines attribute names and descriptions in several languages.
 		<groundspeak id="13" inc="false" name="Available at all times" />
 		<opencaching schema="OCPL" id="80" />
 		<lang id="en">
-			<name>Not 24/7 or paid</name>
+			<name>Not 24/7, admission fee</name>
 			<desc>
 				This cache can only be done at certain times of day or week - see the cache
 				description for more details. For example, the cache may be placed in an
@@ -2375,6 +2477,14 @@ It also defines attribute names and descriptions in several languages.
 				Dostępna w określonych dniach, godzinach, często wstęp płatny.
 				Często będzie to muzeum lub skansen. Szczegółowe informacje o
 				dostępności powinny znajdować się w opisie skrzynki.
+			</desc>
+		</lang>
+		<lang id="de">
+			<name>nur zu bestimmten Uhrzeiten, Eintrittsgeld</name>
+			<desc>
+				Der Cache kann nur zu bestimmten Uhrzeiten oder an bestimmten Wochentagen
+				gefunden werden; mehr dazu in der Cachebeschreibung. Häufig handelt es
+				sich um Caches in Museen etc., die Eintrittsgeld verlangen.
 			</desc>
 		</lang>
 	</attr>
