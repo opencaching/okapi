@@ -42,8 +42,8 @@
 				attribute.</p>
 			</li>
 			<li>
-				<b>name</b> - name of the attribute (language is selected based on
-				your <b>langpref</b> parameter),
+				<b>name</b> - plaintext string, name of the attribute (language is
+				selected based on your <b>langpref</b> parameter),
 			</li>
 			<li>
 				<p><b>names</b> - a dictionary of all known names of the attribute, in
@@ -54,7 +54,7 @@
 				<a href='https://code.google.com/p/opencaching-api/source/browse/trunk/okapi/services/attrs/attribute-definitions.xml'>here</a>.</p>
 			</li>
 			<li>
-				<b>description</b> - description of the attribute (language is
+				<b>description</b> - HTML string, description of the attribute (language is
 				selected based on your <b>langpref</b> parameter),
 			</li>
 			<li>
