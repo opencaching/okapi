@@ -145,7 +145,7 @@
 				variant, compatible with the one used by opencaching.com (and lately,
 				Garmin GPS devices).</p>
 				<p><b>Note:</b> The mapping is undocumented and may change without notice.</p>
-				<p><b>Note:</b> Some of OC's size values cannot be properly mapped to <b>oxcode</b>,
+				<p><b>Note:</b> Some of OC's size values cannot be properly mapped to <b>oxsize</b>,
 				i.e. the 'other' size.</p>
 			</li>
 			<li><b>difficulty</b> - float (between 1 and 5), difficulty rating of the cache,</li>
