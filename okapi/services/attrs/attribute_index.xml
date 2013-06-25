@@ -1,0 +1,36 @@
+<xml>
+	<brief>Get the list of all OKAPI attributes (A-codes)</brief>
+	<issue-id>270</issue-id>
+	<desc>
+		<p>This method return <b>all</b> currently defined OKAPI geocache-attributes.
+		Useful when you want to cache the data on the client-side.</p>
+		
+		<p>Keep in mind, that the number of attributes will grow. If your application
+		uses multiple OKAPI servers, then you should use one of the frequently
+		updated servers for pre-caching attribute data (currently, Opencaching.PL
+		is the most frequently updated installation). Also, you should never assume
+		that you have the complete list (why, a new attribute might got created just
+		as you were reading this!).</p>
+		
+		<p>Once an attribute is published via this method, it won't disappear, nor
+		will its meaning change. It may get deprecated though.</p>
+	</desc>
+	<opt name='langpref' default='en'>
+		Works the same as in the <b>attribute</b> method.
+	</opt>
+	<opt name='fields' default='name'>
+		Works the same as in the <b>attribute</b> method.
+	</opt>
+	<opt name='include_deprecated' default='true'>
+		Deprecated attributes are not used by the newest versions of OKAPI,
+		but they can still appear in some contexts, i.e. within the data you have
+		downloaded prior their deprecation. That's why, by default, all attributes
+		are returned, including the deprecated ones. You may skip the deprecated
+		attributes by passing <b>false</b> to this parameter.
+	</opt>
+	<common-format-params/>
+	<returns>
+		A dictionary. A-codes you provide will be mapped to dictionary keys, and
+		each value will be an object, as described in the <b>attribute</b> method.
+	</returns>
+</xml>

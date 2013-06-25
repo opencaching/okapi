@@ -148,7 +148,7 @@ class WebService
 		$vars['cache_GPX_sizes'] = self::$cache_GPX_sizes;
 
 		/* OC sites always used internal user_ids in their generated GPX files.
-		 * This might be considered an error in itself (groundspeak's XML namespace
+		 * This might be considered an error in itself (Groundspeak's XML namespace
 		 * doesn't allow that), but it very common (Garmin's OpenCaching.COM
 		 * also does that). Therefore, for backward-compatibility reasons, OKAPI
 		 * will do it the same way. See issue 174.

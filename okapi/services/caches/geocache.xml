@@ -216,12 +216,13 @@
 				the <b>images</b> list described above.</p>
 			</li>
 			<li>
-				<p><b>attrnames</b> - list of names of attributes of the cache; the language will
-				be selected based on the <b>langpref</b> argument.</p>
-				<p>Note: currently each of the OC installations has its own set of attributes. That's
-				why we don't reference them by their IDs - we only return them as text. This could change
-				*if* OC installations would begin to use UUIDs for their attributes and synchronize them
-				between all installations.</p>
+				<p><b>attr_acodes</b> - unordered list of OKAPI geocache-attribute IDs (A-codes) with
+				which the cache was tagged. Use the <b>attrs</b> module to retrieve information on
+				these attributes.</p>
+			</li>
+			<li>
+				<b>attrnames</b> - unordered list of names of the attributes with which the cache was
+				tagged; the language will be selected based on the <b>langpref</b> parameter.
 			</li>
 			<li>
 				<p><b>attribution_note</b> - the proper attribution note for the cache listing according
