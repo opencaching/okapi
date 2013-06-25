@@ -104,7 +104,7 @@
 			</li>
 			<li>
 				<p><b>is_deprecated</b> - boolean, indicates if the attribute is deprecated.
-				Or, to be more specific, <b>true</b> means that if the *this* OKAPI version
+				Or, to be more specific, <b>true</b> means that if *this* OKAPI version
 				were to be installed on all OC servers, then none of them would
 				ever include the attribute in the <b>attr_anodes</b> field of their
 				<b>geocache</b> method.</p>
