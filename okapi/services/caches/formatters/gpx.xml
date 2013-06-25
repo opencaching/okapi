@@ -90,8 +90,8 @@
 			</li>
 		</ul>
 		
-		<p>If you don't want any attributes to be included, you must pass a single
-		<b>none</b> as the <b>attrs</b> value. Passing an empty string won't work - it will
+		<p>If you don't want any attributes to be included, you must set the <b>attrs</b>
+		parameter to <b>none</b>. Using an empty string won't work this way - it will
 		trigger the default (<b>desc:text</b>) to be selected, for backward-compatibility.</p>
 	</opt>
 	<opt name='trackables' default='none'>
