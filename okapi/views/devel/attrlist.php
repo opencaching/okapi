@@ -46,7 +46,7 @@ class View
 				print strtoupper($langs['en']);
 			else
 				print ">>>> ENGLISH NAME UNSET! <<<<";
-			if ($internal2acode[$internal_id])
+			if (isset($internal2acode[$internal_id]))
 				print " - ".$internal2acode[$internal_id];
 			print "\n";
 			foreach ($langkeys as $langkey)
