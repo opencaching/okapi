@@ -103,13 +103,14 @@
 			</li>
 			<li>
 				<p><b>is_discontinued</b> - boolean, indicates if the attribute is discontinued.
-				Or, to be more specific, <b>true</b> means that, as far as *this* OKAPI version "knows",
-				*none* of the OC servers is currently using it (geocaches are no longer tagged with
-				this attribute).</p>
+				This means that it is no longer in use at OC servers which run current OKAPI
+				versions, i.e. geocaches are no longer tagged with this attribute. However,
+				it may still be in use at servers which have not been updated yet to the
+				current OKAPI version.</p>
 				
 				<p><b>Important:</b> This flag can change in time. Discontinued attributes can
 				"come back to life" later. You can never be 100% sure you will not
-				encounter them in OKAPI responses, this field is purely informative.</p>
+				encounter them in OKAPI responses, so this field is purely informative.</p>
 			</li>
 		</ul>
 	</returns>
