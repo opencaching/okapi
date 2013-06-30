@@ -74,6 +74,9 @@ It also defines attribute names and descriptions in several languages.
 				interessanti cache OC di qualità.
 			</desc>
 		</lang>
+		<lang id="nl">
+			<name>Alleen te loggen op Opencaching</name>
+		</lang>
 	</attr>
 
 	<attr acode="A2" categories="de-cache-types">
@@ -206,6 +209,9 @@ It also defines attribute names and descriptions in several languages.
 				TravelBugs etc.).
 			</desc>
 		</lang>
+		<lang id="nl">
+			<name>GeoHotel</name>
+		</lang>
 	</attr>
 
 	<attr acode="A6" categories="de-cache-types">
@@ -228,6 +234,9 @@ It also defines attribute names and descriptions in several languages.
 			<desc>
 				Der Geocache ist mit einem Mangeten angebracht.
 			</desc>
+		</lang>
+		<lang id="nl">
+			<name>Bevestigd met magneet</name>
 		</lang>
 	</attr>
 
@@ -606,6 +615,9 @@ It also defines attribute names and descriptions in several languages.
 		<lang id="de">
 			<name>rollstuhltauglich</name>
 		</lang>
+		<lang id="nl">
+			<name>Rolstoel toegankelijk</name>
+		</lang>
 	</attr>
 
 	<attr acode="A19" categories="de-accessibility">
@@ -698,6 +710,9 @@ It also defines attribute names and descriptions in several languages.
 				del genere puo essere minore. Sono raccomandati scarpe da escursione ed
 				equipaggiamento adeguato.
 			</desc>
+		</lang>
+		<lang id="nl">
+			<name>Lange wandeling</name>
 		</lang>
 	</attr>
 
@@ -923,6 +938,9 @@ It also defines attribute names and descriptions in several languages.
 				versteckt – in einem Wald oder einer Wiese, einem Sumpf etc.
 			</desc>
 		</lang>
+		<lang id="nl">
+			<name>Cache met veel natuur</name>
+		</lang>
 	</attr>
 
 	<attr acode="A29" categories="de-location">
@@ -984,6 +1002,9 @@ It also defines attribute names and descriptions in several languages.
 				castello in rovina. Questo luogo merita una visita anche senza una
 				geocache vicina.
 			</desc>
+		</lang>
+		<lang id="nl">
+			<name>Interesante plek</name>
 		</lang>
 	</attr>
 
@@ -1081,6 +1102,9 @@ It also defines attribute names and descriptions in several languages.
 				Una area di parcheggio e situata nei pressi del punto di partenza di
 				questa cache.
 			</desc>
+		</lang>
+		<lang id="nl">
+			<name>Parkeerplaats vlakbij</name>
 		</lang>
 	</attr>
 
@@ -1625,6 +1649,9 @@ It also defines attribute names and descriptions in several languages.
 				E' necessaria una bussola.
 			</desc>
 		</lang>
+		<lang id="nl">
+			<name>Kompas nodig</name>
+		</lang>
 	</attr>
 
 	<attr acode="A50" categories="de-tools">
@@ -1647,6 +1674,9 @@ It also defines attribute names and descriptions in several languages.
 			<desc>
 				Es ist kein Stift zum Loggen im Cache; bringe bitte einen eigenen mit.
 			</desc>
+		</lang>
+		<lang id="nl">
+			<name>Neem iets mee om te schrijven</name>
 		</lang>
 	</attr>
 
@@ -2141,6 +2171,9 @@ It also defines attribute names and descriptions in several languages.
 				reciproca gentilezza.
 			</desc>
 		</lang>
+		<lang id="nl">
+			<name>jachtgebied</name>
+		</lang>
 	</attr>
 
 	<attr acode="A63" categories="de-dangers">
@@ -2148,7 +2181,7 @@ It also defines attribute names and descriptions in several languages.
 		<opencaching schema="http://www.opencaching.de/" id="13" />
 		<opencaching schema="http://www.opencaching.nl/" id="13" />
 		<lang id="en">
-			<name>Thorns</name>
+			<name>Look out for thorns</name>
 			<desc>
 				There are thorns near the cache. Wear appropriate clothes.
 			</desc>
@@ -2172,6 +2205,9 @@ It also defines attribute names and descriptions in several languages.
 				Ci sono spine nei pressi della cache. Indossare indumenti appropriati.
 			</desc>
 		</lang>
+		<lang id="nl">
+			<name>Let op: doornen</name>
+		</lang>
 	</attr>
 
 	<attr acode="A64" categories="de-dangers">
@@ -2179,7 +2215,7 @@ It also defines attribute names and descriptions in several languages.
 		<opencaching schema="http://www.opencaching.de/" id="14" />
 		<opencaching schema="http://www.opencaching.nl/" id="14" />
 		<lang id="en">
-			<name>Ticks</name>
+			<name>Look out for ticks</name>
 			<desc>
 				There are seasonably many ticks in this area. It is recommended to wear
 				long trousers and to check yourself for ticks after geocaching.
@@ -2213,6 +2249,9 @@ It also defines attribute names and descriptions in several languages.
 				il geocaching. In internet ci sono mappe di rischio per <i>encefalite
 				e borelliosi da morso di zecca</i>.
 			</desc>
+		</lang>
+		<lang id="nl">
+			<name>Let op: teken</name>
 		</lang>
 	</attr>
 
@@ -2350,6 +2389,9 @@ It also defines attribute names and descriptions in several languages.
 				In der Nähe sollte auch ein Parkplatz sein.
 			</desc>
 		</lang>
+		<lang id="nl">
+			<name>Een snelle oppikker</name>
+		</lang>
 	</attr>
 
 	<attr acode="A69" categories="de-rating">
@@ -2416,6 +2458,9 @@ It also defines attribute names and descriptions in several languages.
 				Der Cache ist einfach und – nach Einschätzungs des Besitzers –
 				ohne besondere Gefahren findbar.
 			</desc>
+		</lang>
+		<lang id="nl">
+			<name>Kindvriendelijke cache</name>
 		</lang>
 	</attr>
 
