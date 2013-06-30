@@ -21,7 +21,7 @@
 	</opt>
 	<opt name='fields' default='name'>
 		<p>Pipe-separated list of field names which you are interested with.
-		See the <b>returns</b> section for the list of available fields.</p>
+		See below for the list of available fields.</p>
 	</opt>
 	<opt name='forward_compatible' default='true'>
 		By default, OKAPI will return an empty placeholder if you ask for an
