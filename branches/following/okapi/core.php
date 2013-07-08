@@ -203,8 +203,9 @@ class OkapiExceptionHandler
 			preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI'])."\n\n" : "");
 		$exception_info .= "--- OKAPI revision ---\n".Okapi::$revision."\n\n";
 
-		// This if-condition will solve SOME problems when trying to execute OKAPI code
-		// from command line; see http://code.google.com/p/opencaching-api/issues/detail?id=243.
+		# This if-condition will solve some (but not all) problems when trying to execute
+		# OKAPI code from command line;
+		# see http://code.google.com/p/opencaching-api/issues/detail?id=243.
 		if (function_exists('getallheaders'))
 		{
 			$exception_info .= "--- Request headers ---\n".implode("\n", array_map(
@@ -780,6 +781,14 @@ class OkapiLock
 			flock($this->lock, LOCK_EX);
 	}
 
+	public function try_acquire()
+	{
+		if ($this->lock !== null)
+			return flock($this->lock, LOCK_EX | LOCK_NB);
+		else
+			return true;  # $lock can be null only when debugging
+	}
+
 	public function release()
 	{
 		if ($this->lock !== null)
@@ -919,45 +928,6 @@ class Okapi
 		if ($dir != null)
 			return rtrim($dir, "/");
 		throw new Exception("You need to set a valid VAR_DIR.");
-	}
-
-	/**
-	 * Get an array of all site-specific attributes in the following format:
-	 * $arr[<id_of_the_attribute>][<language_code>] = <attribute_name>.
-	 */
-	public static function get_all_atribute_names()
-	{
-		if (Settings::get('OC_BRANCH') == 'oc.pl')
-		{
-			# OCPL branch uses cache_attrib table to store attribute names. It has
-			# different structure than the OCDE cache_attrib table. OCPL does not
-			# have translation tables.
-
-			$rs = Db::query("select id, language, text_long from cache_attrib order by id");
-		}
-		else
-		{
-			# OCDE branch uses translation tables. Let's make a select which will
-			# produce results compatible with the one above.
-
-			$rs = Db::query("
-				select
-					ca.id,
-					stt.lang as language,
-					stt.text as text_long
-				from
-					cache_attrib ca,
-					sys_trans_text stt
-				where ca.trans_id = stt.trans_id
-				order by ca.id
-			");
-		}
-
-		$dict = array();
-		while ($row = mysql_fetch_assoc($rs)) {
-			$dict[$row['id']][strtolower($row['language'])] = $row['text_long'];
-		}
-		return $dict;
 	}
 
 	/** Returns something like "Opencaching.PL" or "Opencaching.DE". */

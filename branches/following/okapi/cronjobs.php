@@ -27,7 +27,7 @@ use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\services\replicate\ReplicateCommon;
-use okapi\services\attrs\AttrHelper;
+
 
 class CronJobController
 {
@@ -51,7 +51,6 @@ class CronJobController
 				new FulldumpGeneratorJob(),
 				new TileTreeUpdater(),
 				new SearchSetsCleanerJob(),
-				// WRCLEANIT: new AttrsRefresherJob(),
 				new TableOptimizerJob(),
 			);
 			foreach ($cache as $cronjob)
@@ -691,9 +690,10 @@ class AdminStatsSender extends Cron5Job
 				okapi_consumers c
 			where a.consumer_key = c.`key`
 			group by a.consumer_key
+			having count(*) >= 5
 			order by count(*) desc;
 		");
-		print "== Current OAuth usage by Consumers ==\n\n";
+		print "== Current OAuth usage by Consumers with at least 5 users ==\n\n";
 		print "Consumer name                         Users\n";
 		print "----------------------------------- -------\n";
 		foreach ($oauth_users as $row)
@@ -775,24 +775,6 @@ class LocaleChecker extends Cron5Job
 		Okapi::mail_admins("Additional setup needed: Missing locales.", ob_get_clean());
 	}
 }
-
-/**
- * Once every hour, update the official cache attributes listing.
- *
- * WRTODO: Make it 12 hours later.
- *
- * WRCLEANIT
- *
-class AttrsRefresherJob extends Cron5Job
-{
-	public function get_period() { return 3600; }
-	public function execute()
-	{
-		require_once($GLOBALS['rootpath']."okapi/services/attrs/attr_helper.inc.php");
-		AttrHelper::refresh_if_stale();
-	}
-}
-*/
 
 /** Once per day, optimize certain MySQL tables. */
 class TableOptimizerJob extends Cron5Job

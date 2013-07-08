@@ -3,6 +3,7 @@
 namespace okapi\services\caches\geocaches;
 
 use Exception;
+use ArrayObject;
 use okapi\Okapi;
 use okapi\Db;
 use okapi\Settings;
@@ -14,6 +15,7 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiAccessToken;
 use okapi\services\caches\search\SearchAssistant;
+use okapi\services\attrs\AttrHelper;
 
 class WebService
 {
@@ -28,11 +30,11 @@ class WebService
 		'status', 'url', 'owner', 'distance', 'bearing', 'bearing2', 'bearing3', 'is_found',
 		'is_not_found', 'founds', 'notfounds', 'size', 'size2', 'oxsize', 'difficulty', 'terrain',
 		'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description',
-		'descriptions', 'hint', 'hints', 'images', 'attrnames', 'latest_logs',
+		'descriptions', 'hint', 'hints', 'images', 'attr_acodes', 'attrnames', 'latest_logs',
 		'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
 		'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
 		'is_ignored', 'willattends', 'country', 'state', 'preview_image',
-		'trip_time', 'trip_distance', 'attribution_note','gc_code');
+		'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2');
 
 	public static function call(OkapiRequest $request)
 	{
@@ -72,6 +74,7 @@ class WebService
 		if (
 			in_array('description', $fields) || in_array('descriptions', $fields)
 			|| in_array('hint', $fields) || in_array('hints', $fields)
+			|| in_array('hint2', $fields) || in_array('hints2', $fields)
 			|| in_array('attribution_note', $fields)
 		)
 		{
@@ -208,7 +211,7 @@ class WebService
 			");
 		}
 
-		$results = array();
+		$results = new ArrayObject();
 		$cacheid2wptcode = array();
 		$owner_ids = array();
 		while ($row = mysql_fetch_assoc($rs))
@@ -316,8 +319,11 @@ class WebService
 					case 'descriptions': /* handled separately */ break;
 					case 'hint': /* handled separately */ break;
 					case 'hints': /* handled separately */ break;
+					case 'hint2': /* handled separately */ break;
+					case 'hints2': /* handled separately */ break;
 					case 'images': /* handled separately */ break;
 					case 'preview_image': /* handled separately */ break;
+					case 'attr_acodes': /* handled separately */ break;
 					case 'attrnames': /* handled separately */ break;
 					case 'latest_logs': /* handled separately */ break;
 					case 'my_notes': /* handles separately */ break;
@@ -460,15 +466,18 @@ class WebService
 		# Descriptions and hints.
 
 		if (in_array('description', $fields) || in_array('descriptions', $fields)
-			|| in_array('hint', $fields) || in_array('hints', $fields))
+			|| in_array('hint', $fields) || in_array('hints', $fields)
+			|| in_array('hint2', $fields) || in_array('hints2', $fields))
 		{
 			# At first, we will fill all those 4 fields, even if user requested just one
 			# of them. We will chop off the remaining three at the end.
 
 			foreach ($results as &$result_ref)
+			{
 				$result_ref['descriptions'] = array();
-			foreach ($results as &$result_ref)
 				$result_ref['hints'] = array();
+				$result_ref['hints2'] = array();
+			}
 
 			# Get cache descriptions and hints.
 
@@ -499,17 +508,22 @@ class WebService
 					$results[$cache_code]['descriptions'][strtolower($row['language'])] = $tmp;
 				}
 				if ($row['hint'])
+				{
 					$results[$cache_code]['hints'][strtolower($row['language'])] = $row['hint'];
+					$results[$cache_code]['hints2'][strtolower($row['language'])]
+						= htmlspecialchars_decode(mb_ereg_replace("<br />", "" , $row['hint']), ENT_COMPAT);
+				}
 			}
 			foreach ($results as &$result_ref)
 			{
 				$result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langpref);
 				$result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langpref);
+				$result_ref['hint2'] = Okapi::pick_best_language($result_ref['hints2'], $langpref);
 			}
 
 			# Remove unwanted fields.
 
-			foreach (array('description', 'descriptions', 'hint', 'hints') as $field)
+			foreach (array('description', 'descriptions', 'hint', 'hints', 'hint2', 'hints2') as $field)
 				if (!in_array($field, $fields))
 					foreach ($results as &$result_ref)
 						unset($result_ref[$field]);
@@ -565,18 +579,25 @@ class WebService
 			}
 		}
 
-		# Attrnames
+		# A-codes and attrnames
 
-		if (in_array('attrnames', $fields))
+		if (in_array('attr_acodes', $fields) || in_array('attrnames', $fields))
 		{
+			# Either case, we'll need acodes. If the user didn't want them,
+			# remember to remove them later.
+
+			if (!in_array('attr_acodes', $fields))
+			{
+				$fields_to_remove_later[] = 'attr_acodes';
+			}
 			foreach ($results as &$result_ref)
-				$result_ref['attrnames'] = array();
+				$result_ref['attr_acodes'] = array();
 
-			# ALL attribute names are loaded into memory here. Assuming there are
-			# not so many of them, this will be fast enough. Possible optimalization:
-			# Let mysql do the matching.
+			# Load internal_attr_id => acode mapping.
 
-			$dict = Okapi::get_all_atribute_names();
+			require_once($GLOBALS['rootpath'].'okapi/services/attrs/attr_helper.inc.php');
+			$internal2acode = AttrHelper::get_internal_id_to_acode_mapping();
+
 			$rs = Db::query("
 				select cache_id, attrib_id
 				from caches_attributes
@@ -585,11 +606,26 @@ class WebService
 			while ($row = mysql_fetch_assoc($rs))
 			{
 				$cache_code = $cacheid2wptcode[$row['cache_id']];
-				if (isset($dict[$row['attrib_id']]))
+				$attr_internal_id = $row['attrib_id'];
+				if (!isset($internal2acode[$attr_internal_id]))
 				{
-					# The "isset" condition was added because there were some attrib_ids in caches_attributes
-					# which WERE NOT in cache_attrib. http://code.google.com/p/opencaching-api/issues/detail?id=77
-					$results[$cache_code]['attrnames'][] = Okapi::pick_best_language($dict[$row['attrib_id']], $langpref);
+					# Unknown attribute. Ignore.
+					continue;
+				}
+				$results[$cache_code]['attr_acodes'][] = $internal2acode[$attr_internal_id];
+			}
+
+			# Now, each cache object has a list of its acodes. We can get
+			# the attrnames now.
+
+			if (in_array('attrnames', $fields))
+			{
+				$acode2bestname = AttrHelper::get_acode_to_name_mapping($langpref);
+				foreach ($results as &$result_ref)
+				{
+					$result_ref['attrnames'] = array();
+					foreach ($result_ref['attr_acodes'] as $acode)
+						$result_ref['attrnames'][] = $acode2bestname[$acode];
 				}
 			}
 		}
@@ -1058,7 +1094,7 @@ class WebService
 		# See issue#97. PHP dictionaries (assoc arrays) are ordered structures,
 		# so we just have to rewrite it (sequentially).
 
-		$ordered_results = array();
+		$ordered_results = new ArrayObject();
 		foreach ($cache_codes as $cache_code)
 			$ordered_results[$cache_code] = $results[$cache_code];
 
