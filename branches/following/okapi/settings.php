@@ -153,6 +153,11 @@ final class Settings
 		 * required to accept this.
 		 */
 		'DATA_LICENSE_URL' => null,
+
+		/**
+		 * URL of the site's logo image
+		 */
+		'SITE_LOGO' => null,
 	);
 
 	/**
@@ -220,6 +225,8 @@ final class Settings
 		foreach ($slash_keys as $key)
 			if ($dict[$key][strlen($dict[$key]) - 1] != '/')
 				throw new Exception("$key must end with a slash.");
+		if ($dict['SITE_LOGO'] === null)
+			$dict['SITE_LOGO'] = $dict['SITE_URL'] . 'okapi/static/oc_logo.png';
 	}
 
 	/**
