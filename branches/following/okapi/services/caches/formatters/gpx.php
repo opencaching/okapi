@@ -14,6 +14,8 @@ use okapi\InvalidParam;
 use okapi\services\caches\search\SearchAssistant;
 use okapi\OkapiInternalConsumer;
 use okapi\Db;
+use okapi\Settings;
+use okapi\services\attrs\AttrHelper;
 
 class WebService
 {
@@ -99,8 +101,11 @@ class WebService
 		{
 			if ($elem == 'none') {
 				/* pass */
-			} elseif (in_array($elem, array('desc:text', 'ox:tags', 'gc:attrs'))) {
-				$vars['attrs'][] = $elem;
+			} elseif (in_array($elem, array('desc:text', 'ox:tags', 'gc:attrs', 'gc_ocde:attrs'))) {
+				if ($elem == 'gc_ocde:attrs' && Settings::get('OC_BRANCH') != 'oc.de')
+					$vars['attrs'][] = 'gc:attrs';
+				else
+					$vars['attrs'][] = $elem;
 			} else {
 				throw new InvalidParam('attrs', "Invalid list entry: '$elem'");
 			}
@@ -183,6 +188,14 @@ class WebService
 					)
 				)
 			);
+			$vars['gc_ocde_attrs'] = in_array('gc_ocde:attrs', $vars['attrs']);
+			if ($vars['gc_ocde_attrs'])
+			{
+				$vars['attr_dict'] = AttrHelper::get_attrdict();
+				$vars['gc_ocde_id_offset'] = 100;
+					# Groundspeak uses ID 1..65 (as of June, 2013), and OCDE makeshift
+					# IDs start at 106, so there is space for 40 new GS attributes.
+			}
 		}
 
 		/* OC sites always used internal user_ids in their generated GPX files.
