@@ -40,42 +40,14 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 					<groundspeak:owner id="<?= $vars['user_uuid_to_internal_id'][$c['owner']['uuid']] ?>"><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:owner>
 					<groundspeak:type><?= $vars['cache_GPX_types'][$c['type']] ?></groundspeak:type>
 					<groundspeak:container><?= $vars['cache_GPX_sizes'][$c['size2']] ?></groundspeak:container>
-					<? if (in_array('gc:attrs', $vars['attrs']) || $vars['gc_ocde_attrs']) { /* Does user want us to include groundspeak:attributes? */ ?>
+					<? if ($vars['gc_attrs'] || $vars['gc_ocde_attrs']) { /* Does user want us to include groundspeak:attributes? */ ?>
 						<groundspeak:attributes>
 							<?
-								$gs_equivs_included = array();
-								foreach ($c['attr_acodes'] as $acode) {
-									$has_gc_equivs = false;
-									foreach ($vars['attr_index'][$acode]['gc_equivs'] as $gc) {
-
-										# The following if condition excluded two things:
-										# - GS attribute duplicates which may occur when one GS ID
-										#   is assigned to multiple A-Codes;
-										# - contradicting GS attributes (same ID, differend 'inc')
-										#   which can result from contradicting OC attributes,
-										#   but cannot occur in a GC-generated GPX file.
-
-										if (!isset($gs_equivs_included[$gc['id']])) {
-											print "<groundspeak:attribute id=\"".$gc['id']."\" ";
-											print "inc=\"".$gc['inc']."\">";
-											print Okapi::xmlescape($gc['name']);
-											print "</groundspeak:attribute>";
-											$gs_equivs_included[$gc['id']] = true;
-											$has_gc_equivs = true;
-										}
-									}
-									if (!$has_gc_equivs &&
-									    $vars['gc_ocde_attrs'] &&
-											isset($vars['attr_dict'][$acode]['names']['en'])) {
-										# Generate a pseudo-GS-ID and -name for an only-OC attribute;
-										# see http://code.google.com/p/opencaching-api/issues/detail?id=190 and
-										# http://code.google.com/p/opencaching-api/issues/detail?id=271.
-
-										print "<groundspeak:attribute id=\"".($vars['gc_ocde_id_offset'] + $vars['attr_dict'][$acode]['internal_id'])."\" ";
-										print "inc=\"1\">";
-										print Okapi::xmlescape($vars['attr_dict'][$acode]['names']['en']);
-										print "</groundspeak:attribute>";
-									}
+								foreach ($c['gc_attrs'] as $gc_id => $gc_attr) {
+									print "<groundspeak:attribute id=\"".$gc_id."\" ";
+									print "inc=\"".$gc_attr['inc']."\">";
+									print Okapi::xmlescape($gc_attr['name']);
+									print "</groundspeak:attribute>";
 								}
 							?>
 						</groundspeak:attributes>
