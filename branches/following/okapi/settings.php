@@ -155,7 +155,8 @@ final class Settings
 		'DATA_LICENSE_URL' => null,
 
 		/**
-		 * URL of the site's logo image
+		 * URL of the site's logo image.
+		 * Minimum and recommended size is 64x64 pixels, maximum size 72x72 pixels.
 		 */
 		'SITE_LOGO' => null,
 	);
