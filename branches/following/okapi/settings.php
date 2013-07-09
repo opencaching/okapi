@@ -156,7 +156,7 @@ final class Settings
 
 		/**
 		 * URL of the site's logo image.
-		 * Minimum and recommended size is 64x64 pixels, maximum size 72x72 pixels.
+		 * Minimum size is 64x64 pixels, maximum size 72x72 pixels.
 		 */
 		'SITE_LOGO' => null,
 	);
