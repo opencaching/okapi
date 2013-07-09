@@ -94,9 +94,7 @@
 				included according to an Opencaching.DE convention, using "makeshift IDs"
 				which may change in the future.</p>
 				<p>Note that this option is supported only by some OC sites. Other sites will
-				handle <b>gc_ocde:attrs</b> in the same way as <b>gc:attrs</b>. It is
-				included for OC.DE compatibilty only, and for most applications
-				<b>ox:tags</b> will be the better choice.</p>
+				handle <b>gc_ocde:attrs</b> in the same way as <b>gc:attrs</b>.</p>
 			</li>
 		</ul>
 		
