@@ -125,7 +125,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 							&lt;/ul&gt;
 						<? } ?>
 						<? if ($vars['protection_areas'] == 'desc:text' && count($c['protection_areas'])) { ?>
-							&lt;p&gt;<?= gettext("The cache probably is located in the following &lt;strong&gt;protection areas&lt;/strong&gt;:") ?>&lt;/p&gt;
+							&lt;p&gt;<?= _("The cache probably is located in the following protection areas:") ?>&lt;/p&gt;
 							&lt;ul&gt;
 							<? foreach($c['protection_areas'] as $protection_area) { ?>
 								&lt;li&gt;<?= Okapi::xmlescape($protection_area['type'])." - ".Okapi::xmlescape($protection_area['name']) ?>&lt;/li&gt;

@@ -112,7 +112,11 @@ class WebService
 		}
 
 		$protection_areas = $request->get_parameter('protection_areas');
-		if (!$protection_areas) $protection_areas = 'none';
+		if (!$protection_areas || $protection_areas == 'desc:auto')
+		{
+			if (Settings::get('OC_BRANCH') == 'oc.de') $protection_areas = 'desc:text';
+			else $protection_areas = 'none';
+		}
 		if (!in_array($protection_areas, array('none', 'desc:text')))
 			throw new InvalidParam('protection_areas',"'$protection_areas'");
 		$vars['protection_areas'] = $protection_areas;

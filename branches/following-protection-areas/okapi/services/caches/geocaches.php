@@ -1099,12 +1099,13 @@ class WebService
 					order by npa_types.ordinal
 				");
 			}
-			else
+			else if (Settings::get('ORIGIN_URL') == 'http://opencaching.pl/' ||
+			         Settings::get('ORIGIN_URL') == 'http://www.opencaching.nl/')
 			{
 				$rs = Db::query("
 					select
 						c.wp_oc as cache_code,
-						'Parki Narodowe/Krajobrazowe' as type,
+						'"._('National Park / Landscape')."' as type,
 						parkipl.name as name
 					from
 						caches c
@@ -1116,7 +1117,7 @@ class WebService
 					union
 					select
 						c.wp_oc as cache_code,
-						'NATURA 2000' as type,
+						'Natura 2000' as type,
 						npa_areas.sitename as name
 					from
 						caches c
@@ -1127,17 +1128,27 @@ class WebService
 						and cache_npa_areas.npa_id != 0
 					");
 			}
+			else
+			{
+				# OC.US and .UK do not have a 'parkipl' table.
+				# OC.US has a 'us_parks' table instead.
+				# Natura 2000 is Europe-only.
+				$rs = null;
+			}
 
 			foreach ($results as &$result_ref)
 				$result_ref['protection_areas'] = array();
-			while ($row = mysql_fetch_assoc($rs))
+			if ($rs)
 			{
-				$results[$row['cache_code']]['protection_areas'][] = array(
-					'type' => $row['type'],
-					'name' => $row['name'],
-				);
+				while ($row = mysql_fetch_assoc($rs))
+				{
+					$results[$row['cache_code']]['protection_areas'][] = array(
+						'type' => $row['type'],
+						'name' => $row['name'],
+					);
+				}
+				mysql_free_result($rs);
 			}
-			mysql_free_result($rs);
 		}
 
 		# Check which cache codes were not found and mark them with null.
