@@ -1102,11 +1102,14 @@ class WebService
 			else if (Settings::get('ORIGIN_URL') == 'http://opencaching.pl/' ||
 			         Settings::get('ORIGIN_URL') == 'http://www.opencaching.nl/')
 			{
+				# Current OCPL table definitions use collation 'latin1' for parkipl
+				# and 'utf8' for np_areas. Union needs identical collations.
+				# To be sure, we convert both to utf8.
 				$rs = Db::query("
 					select
 						c.wp_oc as cache_code,
 						'"._('National Park / Landscape')."' as type,
-						parkipl.name as name
+						_utf8'parkipl.name' as name
 					from
 						caches c
 						inner join cache_npa_areas on cache_npa_areas.cache_id=c.cache_id
@@ -1118,7 +1121,7 @@ class WebService
 					select
 						c.wp_oc as cache_code,
 						'Natura 2000' as type,
-						npa_areas.sitename as name
+						_utf8'npa_areas.sitename' as name
 					from
 						caches c
 						inner join cache_npa_areas on cache_npa_areas.cache_id=c.cache_id
