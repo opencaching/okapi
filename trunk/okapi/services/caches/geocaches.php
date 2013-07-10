@@ -1109,7 +1109,7 @@ class WebService
 					select
 						c.wp_oc as cache_code,
 						'"._('National Park / Landscape')."' as type,
-						_utf8'parkipl.name' as name
+						CONVERT(parkipl.name USING utf8) as name
 					from
 						caches c
 						inner join cache_npa_areas on cache_npa_areas.cache_id=c.cache_id
@@ -1121,7 +1121,7 @@ class WebService
 					select
 						c.wp_oc as cache_code,
 						'Natura 2000' as type,
-						_utf8'npa_areas.sitename' as name
+						CONVERT(npa_areas.sitename USING utf8) as name
 					from
 						caches c
 						inner join cache_npa_areas on cache_npa_areas.cache_id=c.cache_id
