@@ -649,6 +649,7 @@ class OkapiHttpResponse
 	public $allow_gzip = true;
 	public $connection_close = false;
 	public $etag = null;
+	public $callback_function = false;
 
 	/** Use this only as a setter, use get_body or print_body for reading! */
 	public $body;
@@ -729,6 +730,10 @@ class OkapiHttpResponse
 				header("Content-Length: ".$length);
 			$this->print_body();
 		}
+
+		# postprocessing / cleanup
+		if ($this->callback_function)
+			call_user_func($this->callback_function);
 	}
 }
 
