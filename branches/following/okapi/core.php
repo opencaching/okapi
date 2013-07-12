@@ -671,6 +671,7 @@ class OkapiHttpResponse
 		{
 			while (!feof($this->body))
 				print fread($this->body, 1024*1024);
+			fclose($this->body);
 		}
 		else
 			print $this->body;
