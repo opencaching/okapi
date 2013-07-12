@@ -209,7 +209,7 @@ class WebService
 		#
 		# Shutdown function does not reliably work at OC.pl and not at all at OCDE sites,
 		# see https://code.google.com/p/opencaching-api/issues/detail?id=246.
-		# We use $response->callback_function instead.
+		# We use $response->cleanup_function instead.
 
 		self::$files_to_unlink[] = $filename;
 	}
