@@ -197,14 +197,20 @@ class WebService
 		$response->stream_length = filesize($tempfilename);
 		$response->body = fopen($tempfilename, "rb");
 		$response->allow_gzip = false;
+		$response->cleanup_function = array("okapi\\services\\caches\\formatters\\garmin\\WebService", "unlink_temporary_files");
 		self::add_file_to_unlink($tempfilename);
 		return $response;
 	}
 
 	private static function add_file_to_unlink($filename)
 	{
-		if (!self::$shutdown_function_registered)
-			register_shutdown_function(array("okapi\\services\\caches\\formatters\\garmin\\WebService", "unlink_temporary_files"));
+		# if (!self::$shutdown_function_registered)
+		# 	register_shutdown_function(array("okapi\\services\\caches\\formatters\\garmin\\WebService", "unlink_temporary_files"));
+		#
+		# Shutdown function does not reliably work at OC.pl and not at all at OCDE sites,
+		# see https://code.google.com/p/opencaching-api/issues/detail?id=246.
+		# We use $response->callback_function instead.
+
 		self::$files_to_unlink[] = $filename;
 	}
 
