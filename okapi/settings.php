@@ -163,7 +163,7 @@ final class Settings
 		/**
 		 * Settings for the OCDE HTML purifier which is used by services/logs/submit.
 		 */
-		'OCDE_PURIFIER' => array(),
+		'OCDE_HTML_PURIFIER_SETTINGS' => array(),
 	);
 
 	/**
