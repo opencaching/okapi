@@ -59,7 +59,7 @@ class OkapiDataStore extends OAuthDataStore
 			");
 			return null;
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			# INSERT failed. Assume this nonce was already used.
 			# Note, that old nonces are periodically deleted (see cronjobs).
