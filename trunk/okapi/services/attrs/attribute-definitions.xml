@@ -2439,7 +2439,7 @@ It also defines attribute names and descriptions in several languages.
 	<attr acode="A70" categories="de-rating">
 		<groundspeak id="6" inc="true" name="Recommended for kids" />
 		<opencaching schema="http://opencaching.pl/" id="41" />
-		<opencaching schema="http://www.opencaching.nl/" id="59" />
+		<opencaching schema="http://www.opencaching.nl/" id="41" />
 		<lang id="en">
 			<name>Take your children</name>
 			<desc>
