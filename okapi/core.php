@@ -2003,7 +2003,7 @@ class OkapiHttpRequest extends OkapiRequest
 			}
 		}
 
-		if ($this->consumer->admin)
+		if (is_object($this->consumer) && $this->consumer->admin)
 		{
 			/* Some chosen Consumers gain special permissions within OKAPI.
 			 * Currently, there's only a single "admin" flag in the okapi_consumers
