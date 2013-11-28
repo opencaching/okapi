@@ -480,14 +480,16 @@ class OkapiConsumer extends OAuthConsumer
 	public $name;
 	public $url;
 	public $email;
+	public $admin;
 
-	public function __construct($key, $secret, $name, $url, $email)
+	public function __construct($key, $secret, $name, $url, $email, $admin=false)
 	{
 		$this->key = $key;
 		$this->secret = $secret;
 		$this->name = $name;
 		$this->url = $url;
 		$this->email = $email;
+		$this->admin = $admin;
 	}
 
 	public function __toString()
@@ -1999,6 +2001,16 @@ class OkapiHttpRequest extends OkapiRequest
 					throw new BadRequest("This method requires the 'consumer_key' argument (Level 1 ".
 						"Authentication). You didn't provide one.");
 			}
+		}
+
+		if ($this->consumer->admin)
+		{
+			/* Some chosen Consumers gain special permissions within OKAPI.
+			 * Currently, there's only a single "admin" flag in the okapi_consumers
+			 * table, and there's just a single extra permission to gain, but
+			 * the this set of permissions may grow in time. */
+
+			$this->skip_limits = true;
 		}
 
 		#
