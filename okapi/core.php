@@ -1148,17 +1148,19 @@ class Okapi
 
 		# Message for the Consumer.
 		ob_start();
-		print "This is the key-pair we've generated for your application:\n\n";
+		print "This is the key-pair we have created for your application:\n\n";
 		print "Consumer Key: $consumer->key\n";
 		print "Consumer Secret: $consumer->secret\n\n";
 		print "Note: Consumer Secret is needed only when you intend to use OAuth.\n";
 		print "You don't need Consumer Secret for Level 1 Authentication.\n\n";
-		print "Now you may easily access Level 1 methods of OKAPI! For example:\n";
+		print "Now you can easily access Level 1 OKAPI methods. E.g.:\n";
 		print Settings::get('SITE_URL')."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n";
-		print "If you plan on using OKAPI for a longer time, then you should subscribe\n";
-		print "to the OKAPI News blog to stay up-to-date. Check it out here:\n";
+		print "If you plan on using OKAPI for a longer time, then you may want to\n";
+		print "subscribe to the OKAPI News blog to stay up-to-date:\n";
 		print "http://opencaching-api.blogspot.com/\n\n";
-		print "Have fun!";
+		print "Have fun!\n\n";
+		print "-- \n";
+		print "OKAPI Team\n";
 		Okapi::mail_from_okapi($email, "Your OKAPI Consumer Key", ob_get_clean());
 
 		# Message for the Admins.
