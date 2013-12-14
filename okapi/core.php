@@ -1618,6 +1618,7 @@ class Okapi
 		# Other.
 		if ($id == 4) return "Moved";
 		if ($id == 5) return "Needs maintenance";
+		if ($id == 6) return "Maintenance performed";
 		if ($id == 9) return "Archived";
 		if ($id == 10) return "Ready to search";
 		if ($id == 11) return "Temporarily unavailable";
