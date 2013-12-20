@@ -67,7 +67,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 							<? } ?>
 						&lt;/p&gt;
 						<? if (($vars['my_notes'] == 'desc:text') && ($c['my_notes'] != null)) { /* Does user want us to include personal notes? */ ?>
-							&lt;p&gt;&lt;b&gt;<?= _("Personal notes") ?>:&lt;/b&gt; <?= Okapi::xmlescape($c['my_notes']) ?>&lt;/p&gt;
+							&lt;p&gt;&lt;b&gt;<?= _("Personal notes") ?>:&lt;/b&gt;&lt;br&gt;<?= Okapi::xmlescape(nl2br($c['my_notes'])) ?>&lt;/p&gt;
 						<? } ?>
 
 						<? if (in_array('desc:text', $vars['attrs']) && count($c['attrnames']) > 0) { /* Does user want us to include attributes? */ ?>
