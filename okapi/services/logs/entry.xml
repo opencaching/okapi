@@ -84,7 +84,8 @@
 				<p><b>was_recommended</b> - <b>true</b>, if the author included his recommendation
 				in this log entry,</p>
 			</li>
-			<li><b>comment</b> - HTML string, text entered with the log entry,</li>
+			<li><b>comment</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>, text entered
+				with the log entry,</li>
 			<li>
 				<p><b>images</b> - list of dictionaries, each dictionary represents one
 				image saved along with the log; each dictionary has the following

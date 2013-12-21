@@ -48,7 +48,7 @@ Check out other OKAPI installations:</p>
 which are "national views" of Opencaching.DE. All three share one
 database, so you can access all their data through the Opencaching.DE
 OKAPI installation and select Italian or Spanish language.</p>
-	
+
 <p>And also:</p>
 <ul>
 	<li>OKAPI Project Homepage - <a href='http://code.google.com/p/opencaching-api/'>http://code.google.com/p/opencaching-api/</a></li>
@@ -132,6 +132,18 @@ and don't have to care about OAuth.</p>
 <p>Whichever you want. OKAPI will treat GET and POST requests as equal.
 You may also use the HTTP <code>Authorization</code> header for passing OAuth arguments.
 OKAPI does not allow usage of PUT and DELETE requests.</p>
+
+<h2 id='html'>About HTML fields</h2>
+
+<p>There are many HTML-formatted fields in OKAPI. However, most of them come directly
+from the underlying Opencaching database. These fields are <b>not validated by OKAPI</b>.
+They <b>may</b> be validated by some other Opencaching code
+(prior to inserting it to the database), but we cannot guarantee it. And you shouldn't
+count on it too. You must assume that HTML content may contain anything, e.g.
+invalid HTML markup, tracking images (pixels), or even
+<a href='http://en.wikipedia.org/wiki/Cross-site_scripting'>XSS vectors</a>.
+This also applies to the descriptions included in the GPX files.</p>
+
 
 <h2 id='common-formatting'>Common formatting parameters</h2>
 

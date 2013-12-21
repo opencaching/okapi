@@ -1633,6 +1633,32 @@ class Okapi
 
 		return "Comment";
 	}
+
+	/**
+	 * "Fix" user-supplied HTML fetched from the OC database.
+	 */
+	public static function fix_oc_html($html)
+	{
+		/* There are thousands of relative URLs in cache descriptions. We will
+		 * attempt to find them and fix them. In theory, the "proper" way to do this
+		 * would be to parse the description into a DOM tree, but that would simply
+		 * be very hard (and inefficient) to do, since most of the descriptions are
+		 * not even valid HTML. */
+
+		$html = preg_replace(
+			"~\b(src|href)=([\"'])(?![a-z]+://)~",
+			"$1=$2".Settings::get("SITE_URL"),
+			$html
+		);
+
+		/* Other things to do in the future:
+		 *
+		 * 1. Check for XSS vulerabilities?
+		 * 2. Transform to a valid (X)HTML?
+		 */
+
+		return $html;
+	}
 }
 
 /** A data caching layer. For slow SQL queries etc. */
