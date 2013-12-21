@@ -497,19 +497,7 @@ class WebService
 					/* Note, that the "owner" and "internal_id" fields are automatically included,
 					 * whenever the cache description is included. */
 
-					$tmp = $row['desc'];
-
-					/* There are thousands of relative URLs in cache descriptions. We will
-					 * attempt to find them and fix them. In theory, the "proper" way to do this
-					 * would be to parse the description into a DOM tree, but that would simply
-					 * be very hard (and inefficient) to do, since most of the descriptions are
-					 * not even valid HTML. */
-
-					$tmp = preg_replace(
-						"~\b(src|href)=([\"'])(?![a-z]+://)~",
-						"$1=$2".Settings::get("SITE_URL"),
-						$tmp
-					);
+					$tmp = Okapi::fix_oc_html($row['desc']);
 
 					if ($attribution_append != 'none')
 					{

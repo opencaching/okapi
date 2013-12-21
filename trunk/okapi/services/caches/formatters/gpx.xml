@@ -11,6 +11,8 @@
 		This method can produce many various types of GPX files. The simplest list of
 		waypoints takes ~50 times less space than the same list with cache descriptions
 		and log entries included.</p>
+		<p>Note, that GPX files may contain <a href='%OKAPI:docurl:html%'>unvalidated
+		HTML</a>.</p>
 	</desc>
 	<req name='cache_codes'>
 		<p>Pipe-separated list of cache codes which you are interested in.
