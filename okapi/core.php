@@ -1643,10 +1643,11 @@ class Okapi
 		 * attempt to find them and fix them. In theory, the "proper" way to do this
 		 * would be to parse the description into a DOM tree, but that would simply
 		 * be very hard (and inefficient) to do, since most of the descriptions are
-		 * not even valid HTML. */
+		 * not even valid HTML.
+		 */
 
 		$html = preg_replace(
-			"~\b(src|href)=([\"'])(?![a-z]+://)~",
+			"~\b(src|href)=([\"'])(?![a-z0-9-_]+:)~",
 			"$1=$2".Settings::get("SITE_URL"),
 			$html
 		);
