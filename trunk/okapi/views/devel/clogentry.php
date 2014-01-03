@@ -20,7 +20,7 @@ class View
 	public static function call()
 	{
 		if (!isset($_GET['id'])) {
-			throw ParamMissing("id");
+			throw new ParamMissing("id");
 		}
 		$tmp = Db::select_value("
 			select data
