@@ -22,9 +22,6 @@ class View
 		if (!isset($_GET['id'])) {
 			throw new ParamMissing("id");
 		}
-		if ($_GET['id'] == "FATAL-ERROR") {
-			throw FATAL_ERROR_TEST();
-		}
 		$tmp = Db::select_value("
 			select data
 			from okapi_clog
