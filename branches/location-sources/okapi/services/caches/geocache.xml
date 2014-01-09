@@ -396,9 +396,13 @@
 							
 							<li><b>default-coords</b> - the original location of the geocache (as
 							supplied by the owner of the cache); this waypoint is included
-							<u>only</u> when you're using the <b>location_course</b> parameter
+							<u>only</u> when you're using the <b>location_source</b> parameter
 							<u>and</u> the original location of the geocache had indeed been
-							replaced,</li>
+							replaced,
+							<p><b>BSz-TODO</b> I thing we should explicitly state, what happens when
+							user selects non-default coordinates, but does not want <b>alt_wpts</b> to be 
+							included in the response. Should we forcibly include <b>default-coords</b>
+							alternate waypoint, or let only <i>[F]</i> prefix in cache name?</p></li>
 							
 							<li>more types may be added at any moment; unknown types should be
 							treated as <b>other</b>.</li>
