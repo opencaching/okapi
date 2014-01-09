@@ -40,7 +40,7 @@
 	<opt name='user_uuid'>
 		Same as in the services/caches/geocache method.
 	</opt>
-	<opt name='location_source' default='default'>
+	<opt name='location_source' default='default-coords'>
 		Same as in the services/caches/geocache method.
 	</opt>
 	<common-format-params/>
