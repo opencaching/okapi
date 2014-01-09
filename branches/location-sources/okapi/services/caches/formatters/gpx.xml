@@ -192,6 +192,9 @@
 			will respond with HTTP 400 error.</li>
 		</ul>
 	</opt>
+	<opt name='location_source' default='default'>
+		Same as in the services/caches/geocache method.
+	</opt>
 	<returns>
 		<p>GPX file. All invalid cache codes will be skipped without any notice!</p>
 	</returns>
