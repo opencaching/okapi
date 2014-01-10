@@ -834,10 +834,14 @@ class WebService
 		# and location source, introduced in issue #298 
 		
 		$location_source = $request->get_parameter('location_source');
-		error_log ('location_source='.$location_source);
 		if (!$location_source)
 		{
 			$location_source = 'default-coords';
+		}
+		# Make sure location_source has prefix alt_wpt:
+		if ($location_source != 'default-coords' && strncmp($location_source, 'alt_wpt:', 8) != 0)
+		{
+			throw new InvalidParam('location_source', '\''.$location_source.'\'');
 		}
 		
 		# Make sure we have sufficient authorization
@@ -979,7 +983,7 @@ class WebService
 			}
 			
 			# Issue #298 - User coordinates implemented in oc.pl
-			if ($user_id != null)
+			if ($request->token != null)
 			{
 				if (Settings::get('OC_BRANCH') == 'oc.pl')
 				{
@@ -990,7 +994,7 @@ class WebService
 						from cache_mod_cords
 						where
 							cache_id in ('.$cache_codes_escaped_and_imploded.')
-							and user_id = \''.mysql_real_escape_string($user_id).'\'
+							and user_id = \''.mysql_real_escape_string($request->token->user_id).'\'
 					');
 					foreach ($cacheid2user_coords as $cache_id => $waypoints)
 					{
@@ -1002,8 +1006,8 @@ class WebService
 								'name' => $cache_code.'-USER-COORDS',
 								'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
 								'type' => 'user-coords',
-								'type_name' => _("User Location"),
-								'sym' => 'Flag, Blue', // XXX 
+								'type_name' => _("User location"),
+								'sym' => 'Block, Green',
 								'description' => _("User-supplied location of the geocache"), 
 							);
 						}
@@ -1013,32 +1017,28 @@ class WebService
 			}
 		}
 
-		error_log ('location_source='.$location_source);
 		if ($location_source != 'default-coords')
 		{
 			# lets find requested coords
 			foreach ($results as $cache_code => &$result_ref)
 			{
-				error_log ("Przetwarzam $cache_code");
 				foreach ($result_ref['alt_wpts'] as $alt_wpt){
-					error_log ('Przetwarzam '.$alt_wpt['name']);
-					if ($alt_wpt['type'] == 'alt_wpt:'.$location_source){
+					if ('alt_wpt:'.$alt_wpt['type'] == $location_source){
 						# modify default location to take the alternate (requested) one
 						$result_ref['location'] = $alt_wpt['location'];
 						# modify cache name
 						if ($result_ref['name']){
 							$result_ref['name'] = '[F]'.$result_ref['name'];
 						}
-					
 						
-						# add orininal location as alternate
+						# add original location as alternate
 						if (in_array('alt_wpts', $fields)){
 							$result_ref['alt_wpts'][] = array(
 								'name' => $cache_code.'-DEFAULT-COORDS',
 								'location' => $result_ref['original_location'],
 								'type' => 'default-coords',
 								'type_name' => _("Dafault geocache's location"),
-								'sym' => 'Flag, Blue', # XXX another flag? -> Box
+								'sym' => 'Block, Blue', 
 								'description' => _("Original (owner-supplied) location of the geocache"), 
 							);
 						}

@@ -2,39 +2,54 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-11 08:28+0100\n"
-"PO-Revision-Date: 2013-07-11 08:35+0100\n"
-"Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
+"POT-Creation-Date: 2014-01-10 19:05+0100\n"
+"PO-Revision-Date: 2014-01-10 19:05+0100\n"
+"Last-Translator: Bogusław Szczepanowski <boguslaw.szczepanowski@gmail.com>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
-"X-Poedit-Basepath: D:\\PRIV\\Projekty\\EclipseWorkspace\\opencaching-api"
-"\\okapi\n"
+"X-Poedit-Basepath: E:\\Home\\Bogus\\Pulpit\\KESZE\\opencaching-pl\\okapi\n"
 "Plural-Forms: nplurals=3; plural= n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.6.3\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: services/caches/geocaches.php:956
+#: services/caches/geocaches.php:980
 msgid "Stage"
 msgstr "Etap"
 
-#: services/caches/geocaches.php:1111
+#: services/caches/geocaches.php:1009
+msgid "User location"
+msgstr "Współrzędne użytkownika"
+
+#: services/caches/geocaches.php:1011
+msgid "User-supplied location of the geocache"
+msgstr "Współrzędne skrzynki wprowadzone przez użytkownika"
+
+#: services/caches/geocaches.php:1040
+msgid "Dafault geocache's location"
+msgstr "Oryginalne współrzędne"
+
+#: services/caches/geocaches.php:1042
+msgid "Original (owner-supplied) location of the geocache"
+msgstr "Oryginalne współrzędne skrzynki (podane przez autora)"
+
+#: services/caches/geocaches.php:1206
 msgid "National Park / Landscape"
 msgstr "Park narodowy lub krajobrazowy"
 
-#: services/caches/geocaches.php:1263
+#: services/caches/geocaches.php:1358
 #, php-format
 msgid ""
 "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</"
 "a> site."
 msgstr "Opis <a href='%s'>skrzynki</a> pochodzi z serwisu <a href='%s'>%s</a>."
 
-#: services/caches/geocaches.php:1275
+#: services/caches/geocaches.php:1370
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='http://"
@@ -45,7 +60,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>, w "
 "dniu %s. Prawa autorskie wpisów do logów należą do ich autorów."
 
-#: services/caches/geocaches.php:1286
+#: services/caches/geocaches.php:1381
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='http://"
@@ -177,11 +192,11 @@ msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
 msgid "Invalid password!"
 msgstr "Niepoprawne hasło!"
 
-#: services/logs/submit.php:282
+#: services/logs/submit.php:285
 msgid "You have already submitted a log entry with exactly the same contents."
 msgstr "Już opublikowałeś wcześniej wpis z dokładnie taką samą treścią."
 
-#: services/logs/submit.php:305
+#: services/logs/submit.php:308
 msgid ""
 "You have already submitted a \"Found it\" log entry once. Now you may submit "
 "\"Comments\" only!"
@@ -189,30 +204,30 @@ msgstr ""
 "Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz "
 "możesz dodawać jedynie \"Komentarze\"!"
 
-#: services/logs/submit.php:307
+#: services/logs/submit.php:310
 msgid "You are the owner of this cache. You may submit \"Comments\" only!"
 msgstr ""
 "Jesteś właścicielem tej skrzynki. Możesz przesyłać jedynie \"Komentarze\"."
 
-#: services/logs/submit.php:325
+#: services/logs/submit.php:328
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr "Już oceniłeś tę skrzynkę. Ocena nie może być zmieniona."
 
-#: services/logs/submit.php:342
+#: services/logs/submit.php:345
 msgid "You have already recommended this cache once."
 msgstr "Już raz zarekomendowałeś tę skrzynkę."
 
-#: services/logs/submit.php:352
+#: services/logs/submit.php:355
 msgid "You don't have any recommendations to give. Find more caches first!"
 msgstr ""
 "Aktualnie nie możesz wystawić kolejnej rekomendacji. Znajdź najpierw więcej "
 "skrzynek!"
 
-#: services/logs/submit.php:395
+#: services/logs/submit.php:398
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Skrzynki typu Wydarzenie nie mogą \"potrzebować serwisu\"."
 
-#: services/logs/submit.php:525
+#: services/logs/submit.php:528
 msgid "Your cache log entry was posted successfully."
 msgstr "Twój wpis do logbooka został opublikowany pomyślnie."
 
