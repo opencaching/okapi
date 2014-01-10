@@ -219,6 +219,9 @@ class WebService
 		{
 			$entry = array();
 			$cacheid2wptcode[$row['cache_id']] = $row['wp_oc'];
+			# save it for further reference
+			$entry['original_location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6);
+			$fields_to_remove_later[] = 'original_location';
 			foreach ($fields as $field)
 			{
 				switch ($field)
@@ -234,7 +237,7 @@ class WebService
 						break;
 					case 'name': $entry['name'] = $row['name']; break;
 					case 'names': $entry['names'] = array(Settings::get('SITELANG') => $row['name']); break; // for the future
-					case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
+					case 'location': $entry['location'] = $entry['original_location']; break;
 					case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
 					case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
 					case 'url': $entry['url'] = Settings::get('SITE_URL')."viewcache.php?wp=".$row['wp_oc']; break;
@@ -827,10 +830,26 @@ class WebService
 			}
 		}
 
-		# Alternate/Additional waypoints.
-
-		if (in_array('alt_wpts', $fields))
+		# Alternate/Additional waypoints 
+		# and location source, introduced in issue #298 
+		
+		$location_source = $request->get_parameter('location_source');
+		error_log ('location_source='.$location_source);
+		if (!$location_source)
 		{
+			$location_source = 'default-coords';
+		}
+		
+		# Make sure we have sufficient authorization
+		if ($location_source == 'alt_wpt:user-coords' && $user_id == null)
+		{
+			throw new BadRequest("Level 3 Authentication is required to access 'alt_wpt:user-coords'.");
+		}
+
+		if (in_array('alt_wpts', $fields) || $location_source != 'default-coords')
+		{
+			# We have to load alt_wpts to change location_source, event if client
+			# didn't ask for them. If they are not requested, they will be removed later on
 			$internal_wpt_type_id2names = array();
 			if (Settings::get('OC_BRANCH') == 'oc.de')
 			{
@@ -958,8 +977,83 @@ class WebService
 					);
 				}
 			}
+			
+			# Issue #298 - User coordinates implemented in oc.pl
+			if ($user_id != null)
+			{
+				if (Settings::get('OC_BRANCH') == 'oc.pl')
+				{
+					# Query DB for user provided coordinates
+					$cacheid2user_coords = Db::select_group_by('cache_id', '
+						select
+							cache_id, longitude, latitude
+						from cache_mod_cords
+						where
+							cache_id in ('.$cache_codes_escaped_and_imploded.')
+							and user_id = \''.mysql_real_escape_string($user_id).'\'
+					');
+					foreach ($cacheid2user_coords as $cache_id => $waypoints)
+					{
+						$cache_code = $cacheid2wptcode[$cache_id];
+						foreach ($waypoints as $row)
+						{
+							# there should be only one user waypoint per cache...
+							$results[$cache_code]['alt_wpts'][] = array(
+								'name' => $cache_code.'-USER-COORDS',
+								'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+								'type' => 'user-coords',
+								'type_name' => _("User Location"),
+								'sym' => 'Flag, Blue', // XXX 
+								'description' => _("User-supplied location of the geocache"), 
+							);
+						}
+					}
+					
+				}
+			}
 		}
 
+		error_log ('location_source='.$location_source);
+		if ($location_source != 'default-coords')
+		{
+			# lets find requested coords
+			foreach ($results as $cache_code => &$result_ref)
+			{
+				error_log ("Przetwarzam $cache_code");
+				foreach ($result_ref['alt_wpts'] as $alt_wpt){
+					error_log ('Przetwarzam '.$alt_wpt['name']);
+					if ($alt_wpt['type'] == 'alt_wpt:'.$location_source){
+						# modify default location to take the alternate (requested) one
+						$result_ref['location'] = $alt_wpt['location'];
+						# modify cache name
+						if ($result_ref['name']){
+							$result_ref['name'] = '[F]'.$result_ref['name'];
+						}
+					
+						
+						# add orininal location as alternate
+						if (in_array('alt_wpts', $fields)){
+							$result_ref['alt_wpts'][] = array(
+								'name' => $cache_code.'-DEFAULT-COORDS',
+								'location' => $result_ref['original_location'],
+								'type' => 'default-coords',
+								'type_name' => _("Dafault geocache's location"),
+								'sym' => 'Flag, Blue', # XXX another flag? -> Box
+								'description' => _("Original (owner-supplied) location of the geocache"), 
+							);
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if (!in_array('alt_wpts', $fields))
+		{
+			# Remove alt_wpts if they haven't been requested
+			$fields_to_remove_later[] = 'alt_wpts';
+		}
+		
 		# Country and/or state.
 
 		if (in_array('country', $fields) || in_array('state', $fields))
