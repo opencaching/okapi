@@ -22,7 +22,9 @@
 		(it can contain a floating point though).</p>
 	</opt>
 	<opt name='location_source' default='default-coords'>
-		<p>Takes the same value as in the services/caches/geocache method.</p>
+		<p>In general, this parameter should takes the same value as in the
+		services/caches/geocache method, but currently <u>only two values are
+		supported</u>: <b>default-coords</b> and <b>user-coords</b>.</p>
 		
 		<p>Allows you to search among alternate locations of the geocache,
 		instead of the default one. Particularily useful with <b>user-coords</b>
@@ -31,10 +33,6 @@
 		<p>Please note, that if you plan on using this option in conjunction
 		with <b>search_and_retrieve</b> method, then you'd probably want to use
 		the same option in your <i>retr_method</i> too (if available).</p>
-		
-		<p><b>BSz-TODO</b> Wouldn't this kill performance? Querying <b>user-coords</b>
-		is quite simple left join, but how about other types of waypoints,
-		which may apprear multiple times?</p>
 	</opt>
 	<import-params method='services/caches/search/all'/>
 	<common-format-params/>

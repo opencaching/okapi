@@ -113,11 +113,12 @@
 				<ul>
 					<li>its coordinates will be returned in the <b>location</b> field,</li>
 					
-					<li>the name of the cache will be prefixed with "[F]" (to notify the user
-					that these coordinates are pointing to non-default location),</li>
-				
 					<li>the default location will be appended to the <b>alt_wpts</b> as an
-					alternate waypoint with the <b>default-coords</b> type.</li>
+					alternate waypoint with the <b>default-coords</b> type,</li>
+
+					<li>the value of the <b>location_source</b> <u>field</u> will change (you
+					can use it's value to detect if your waypoint type have matched or not, see
+					the "returns" section).</li>
 				</ul>
 			</li>
 			
@@ -139,8 +140,24 @@
 			<li><b>names</b> - a dictionary (language code => plain-text string) of
 				names of the geocache (at this time, there will be only one language,
 				but this may change in future),</li>
-			<li><b>location</b> - location of the cache in the "lat|lon" format
-				(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
+			<li>
+				<b>location</b> - location of the cache in the "lat|lon" format
+				(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),
+			</li>
+			<li>
+				<p><b>location_source</b> - the final source type which was used for the
+				<b>location</b> field. Using this field makes sense only if you're using it
+				together with the <b>location_source</b> parameter.</p>
+				
+				<p>If you don't use the <b>location_source</b> parameter, then this field
+				will always return <b>default-coords</b>.</p>
+				
+				<p>If you do use the <b>location_source</b> parameter, then this field will
+				contain either <b>default-coords</b> (if your preferred source couldn't be
+				used) <u>or</u> the other type of the waypoint which has been used to get
+				the location (the one you provided in your <b>location_source</b>
+				parameter).</p>
+			</li>
 			<li>
 				<p><b>type</b> - cache type. This might be <b>pretty much everything</b>,
 				but there are some predefined types that you might want to treat
@@ -398,11 +415,7 @@
 							supplied by the owner of the cache); this waypoint is included
 							<u>only</u> when you're using the <b>location_source</b> parameter
 							<u>and</u> the original location of the geocache had indeed been
-							replaced,
-							<p><b>BSz-TODO</b> I thing we should explicitly state, what happens when
-							user selects non-default coordinates, but does not want <b>alt_wpts</b> to be 
-							included in the response. Should we forcibly include <b>default-coords</b>
-							alternate waypoint, or let only <i>[F]</i> prefix in cache name?</p></li>
+							replaced,</li>
 							
 							<li>more types may be added at any moment; unknown types should be
 							treated as <b>other</b>.</li>
