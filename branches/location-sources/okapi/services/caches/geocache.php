@@ -48,9 +48,6 @@ class WebService
 		$user_uuid = $request->get_parameter('user_uuid');
 		if ($user_uuid)
 			$params['user_uuid'] = $user_uuid;
-		$location_source = $request->get_parameter('location_source');
-		if ($location_source)
-			$params['location_source'] = $location_source;	
 
 		# There's no need to validate the fields/lpc parameters as the 'geocaches'
 		# method does this (it will raise a proper exception on invalid values).

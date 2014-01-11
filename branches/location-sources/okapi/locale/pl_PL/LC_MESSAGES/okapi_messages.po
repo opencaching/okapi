@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-10 19:05+0100\n"
-"PO-Revision-Date: 2014-01-10 19:05+0100\n"
+"POT-Creation-Date: 2014-01-10 19:21+0100\n"
+"PO-Revision-Date: 2014-01-10 19:22+0100\n"
 "Last-Translator: Bogusław Szczepanowski <boguslaw.szczepanowski@gmail.com>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -27,16 +27,18 @@ msgid "User location"
 msgstr "Współrzędne użytkownika"
 
 #: services/caches/geocaches.php:1011
-msgid "User-supplied location of the geocache"
-msgstr "Współrzędne skrzynki wprowadzone przez użytkownika"
+#, php-format
+msgid "User-supplied location of the %s geocache"
+msgstr "Współrzędne skrzynki %s wprowadzone przez użytkownika"
 
 #: services/caches/geocaches.php:1040
 msgid "Dafault geocache's location"
 msgstr "Oryginalne współrzędne"
 
 #: services/caches/geocaches.php:1042
-msgid "Original (owner-supplied) location of the geocache"
-msgstr "Oryginalne współrzędne skrzynki (podane przez autora)"
+#, php-format
+msgid "Original (owner-supplied) location of the %s geocache"
+msgstr "Oryginalne współrzędne skrzynki %s (podane przez autora)"
 
 #: services/caches/geocaches.php:1206
 msgid "National Park / Landscape"

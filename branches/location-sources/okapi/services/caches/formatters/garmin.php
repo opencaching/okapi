@@ -44,6 +44,8 @@ class WebService
 		if (!$images) $images = "all";
 		if (!in_array($images, array("none", "all", "spoilers", "nonspoilers")))
 			throw new InvalidParam('images');
+		$location_source = $request->get_parameter('location_source');
+		$location_change_prefix = $request->get_parameter('location_change_prefix');
 
 		# Start creating ZIP archive.
 
@@ -77,7 +79,9 @@ class WebService
 				'recommendations' => 'desc:count',
 				'latest_logs' => 'true',
 				'lpc' => 'all',
-				'my_notes' => ($request->token != null) ? "desc:text" : "none"
+				'my_notes' => ($request->token != null) ? "desc:text" : "none",
+				'location_source' => $location_source,
+				'location_change_prefix' => $location_change_prefix
 			)))->get_body());
 
 		# Then, include all the images.

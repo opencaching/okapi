@@ -154,6 +154,7 @@ class WebService
 		if ($lpc === null) $lpc = 10; # will be checked in services/caches/geocaches call
 
 		$user_uuid = $request->get_parameter('user_uuid');
+		$location_source = $request->get_parameter('location_source');
 
 		# Which fields of the services/caches/geocaches method do we need?
 
@@ -187,7 +188,8 @@ class WebService
 					'fields' => $fields,
 					'lpc' => $lpc,
 					'user_uuid' => $user_uuid,
-					'log_fields' => 'uuid|date|user|type|comment|internal_id|was_recommended'
+					'log_fields' => 'uuid|date|user|type|comment|internal_id|was_recommended',
+					'location_source' => $location_source
 				)
 			)
 		);
@@ -302,6 +304,62 @@ class WebService
 		$vars['user_uuid_to_internal_id'] = &$dict;
 		unset($dict);
 
+		# Alternate/Additional waypoints 
+		# and location source, introduced in issue #298 
+		
+		$location_source = $request->get_parameter('location_source');
+		if (!$location_source)
+		{
+			$location_source = 'default-coords';
+		}
+		# Make sure location_source has prefix alt_wpt:
+		if ($location_source != 'default-coords' && strncmp($location_source, 'alt_wpt:', 8) != 0)
+		{
+			throw new InvalidParam('location_source', '\''.$location_source.'\'');
+		}
+		
+		# Make sure we have sufficient authorization
+		if ($location_source == 'alt_wpt:user-coords' && $request->token == null)
+		{
+			throw new BadRequest("Level 3 Authentication is required to access 'alt_wpt:user-coords'.");
+		}
+
+		if ($location_source != 'default-coords')
+		{
+			$location_change_prefix = $request->get_parameter('location_change_prefix');
+			# lets find requested coords
+			foreach ($vars['caches'] as &$cache)
+			{
+				foreach ($cache['alt_wpts'] as $alt_wpt)
+				{
+					if ('alt_wpt:'.$alt_wpt['type'] == $location_source)
+					{
+						# modify default location to take the alternate (requested) one
+						$original_location = $cache['location'];
+						$cache['location'] = $alt_wpt['location'];
+						# modify cache name
+						if ($location_change_prefix){
+							$cache['name_2'] = $location_change_prefix.$cache['name'];
+						}
+						
+						# add original location as alternate
+						if ($vars['alt_wpts'])
+						{
+							$cache['alt_wpts'][] = array(
+								'name' => $cache['code'].'-DEFAULT-COORDS',
+								'location' => $original_location,
+								'type' => 'default-coords',
+								'type_name' => _("Dafault geocache's location"),
+								'sym' => 'Block, Blue', 
+								'description' => sprintf(_("Original (owner-supplied) location of the %s geocache"), $cache['code']),
+							);
+						}
+						break;
+					}
+				}
+			}
+		}
+		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "application/gpx; charset=utf-8";
 		$response->content_disposition = 'attachment; filename="results.gpx"';
