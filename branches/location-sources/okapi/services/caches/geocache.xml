@@ -79,57 +79,6 @@
 			will respond with HTTP 400 error.</li>
 		</ul>
 	</opt>
-	<opt name="location_source" default='default-coords'>
-		<p>This option was added especially for the sake of the GPX formatter method,
-		but you can use it directly in the geocache/geocaches methods too if you need
-		to.</p>
-		
-		<p>If you supply a value, then it should match one of alternate waypoint types
-		documented in the <b>alt_wpts</b> field below (if it doesn't match, it will be
-		ignored).</p>
-		
-		<p>By default, the <b>location</b> field will return the default coordinates
-		of the cache, as supplied by the owner of the cache. This option allows you to
-		replace these coordinates with other set of coordinates, loaded from the
-		<b>alt_wpts</b> field.</p>
-		
-		<p>This may have some advantages in some scenarios. For example, if your user
-		is driving a car, he might be more interested in the coordinates of the
-		nearest suitable parking spot than in the coordinates of the geocache itself.
-		If you set <b>location_source</b> to <b>alt_wpt:parking</b> then you'll be
-		pre-fetching parking locations (if provided) without the need of loading all
-		other <b>alt_wpts</b> in your requests.</p>
-		
-		<p>Other use case: setting this to <b>alt_wpt:user-coords</b> allows
-		personalized results in some OC installations.</p>
-		
-		<ul>
-			<li>If the type provided doesn't match any alternate waypoints, the default
-			coordinates of the geocache will be used.</li>
-			
-			<li>
-				<p>If the type matches exactly one alternate waypoint, then:</p>
-			
-				<ul>
-					<li>its coordinates will be returned in the <b>location</b> field,</li>
-					
-					<li>the default location will be appended to the <b>alt_wpts</b> as an
-					alternate waypoint with the <b>default-coords</b> type,</li>
-
-					<li>the value of the <b>location_source</b> <u>field</u> will change (you
-					can use it's value to detect if your waypoint type have matched or not, see
-					the "returns" section).</li>
-				</ul>
-			</li>
-			
-			<li>If the type provided matches multiple alternate waypoints, then
-			the first one will be chosen.</li>
-		</ul>
-		
-		<p>Please note, that if you plan on using this option in conjunction with
-		<b>search_and_retrieve</b> method, then you'd probably want to use the same
-		option in your <i>search_method</i> too (if available).</p>
-	</opt>
 	<common-format-params/>
 	<returns>
 		<p>A dictionary of fields you have selected. Currently available fields:</p>
@@ -143,20 +92,6 @@
 			<li>
 				<b>location</b> - location of the cache in the "lat|lon" format
 				(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),
-			</li>
-			<li>
-				<p><b>location_source</b> - the final source type which was used for the
-				<b>location</b> field. Using this field makes sense only if you're using it
-				together with the <b>location_source</b> parameter.</p>
-				
-				<p>If you don't use the <b>location_source</b> parameter, then this field
-				will always return <b>default-coords</b>.</p>
-				
-				<p>If you do use the <b>location_source</b> parameter, then this field will
-				contain either <b>default-coords</b> (if your preferred source couldn't be
-				used) <u>or</u> the other type of the waypoint which has been used to get
-				the location (the one you provided in your <b>location_source</b>
-				parameter).</p>
 			</li>
 			<li>
 				<p><b>type</b> - cache type. This might be <b>pretty much everything</b>,
@@ -388,7 +323,7 @@
 						cannot automatically determine this address.</li>
 				</ul>
 			</li>
-			<li>
+			<li id="ret_alt_wpts">
 				<p><b>alt_wpts</b> - list of alternate/additional waypoints associated
 				with this geocache. Each item is a dictionary of the following structure:</p>
 				<ul>
@@ -410,12 +345,6 @@
 							pointing to the final location of the cache (e.g. a quiz cache);
 							this type of waypoint is avaiable only in some installations and only
 							if you're using Level 3 Authentication,</li>
-							
-							<li><b>default-coords</b> - the original location of the geocache (as
-							supplied by the owner of the cache); this waypoint is included
-							<u>only</u> when you're using the <b>location_source</b> parameter
-							<u>and</u> the original location of the geocache had indeed been
-							replaced,</li>
 							
 							<li>more types may be added at any moment; unknown types should be
 							treated as <b>other</b>.</li>
