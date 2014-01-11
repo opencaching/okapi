@@ -1008,7 +1008,7 @@ class WebService
 								'type' => 'user-coords',
 								'type_name' => _("User location"),
 								'sym' => 'Block, Green',
-								'description' => _("User-supplied location of the geocache"), 
+								'description' => sprintf(_("User-supplied location of the %s geocache"), $cache_code),
 							);
 						}
 					}
@@ -1039,7 +1039,7 @@ class WebService
 								'type' => 'default-coords',
 								'type_name' => _("Dafault geocache's location"),
 								'sym' => 'Block, Blue', 
-								'description' => _("Original (owner-supplied) location of the geocache"), 
+								'description' => sprintf(_("Original (owner-supplied) location of the %s geocache"), $cache_code),
 							);
 						}
 						break;
