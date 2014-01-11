@@ -195,7 +195,7 @@
 	<opt name="location_source" default='default-coords'>
 		<p>If you supply a value, then it must be prefixed with <i>alt_wpt:</i>,
 		and should match one of alternate waypoint types documented in the 
-		<a href="%OKAPI:methodretref:services/caches/geocache#alt_wpts%"><b>alt_wpts</b></a> 
+		<a href="%OKAPI:methodretref:services/caches/geocache#alt_wpts%">alt_wpts</a> 
 		field returned by <a href="%OKAPI:methodref:services/caches/geocache%">services/caches/geocache</a> 
 		method. If the type doesn't match, it will be ignored.</p>
 		
