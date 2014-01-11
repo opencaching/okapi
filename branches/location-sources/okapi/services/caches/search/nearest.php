@@ -52,7 +52,11 @@ class WebService
 		# formula and combine it with the LIMIT clause to get the best results.
 		#
 
-		$distance_formula = Okapi::get_distance_sql($center_lat, $center_lon, "caches.latitude", "caches.longitude");
+		$search_assistant = new SearchAssistant($request);
+		$distance_formula = Okapi::get_distance_sql(
+			$center_lat, $center_lon, 
+			$search_assistant->get_latitude_expr(), $search_assistant->get_longitude_expr()
+		);
 
 		# 'radius' parameter is optional. If not given, we'll have to calculate the
 		# distance for every cache in the database.
@@ -71,6 +75,10 @@ class WebService
 		}
 
 		$search_params = SearchAssistant::get_common_search_params($request);
+		if ($search_assistant->get_location_extra_sql() !== FALSE)
+		{
+			$search_params = array_merge_recursive($search_params, $search_assistant->get_location_extra_sql());
+		}
 		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
 		$search_params['order_by'][] = $distance_formula; # not replaced; added to the end!
 

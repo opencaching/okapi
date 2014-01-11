@@ -15,6 +15,20 @@ use Exception;
 class SearchAssistant
 {
 	/**
+	 * Current request issued by the client
+	 */
+	private $request; /* @var OkapiRequest */
+
+	public  function __construct(OkapiRequest $request)
+	{
+		$this->request = $request;
+		$this->longitude_expr = NULL;
+		$this->latitude_expr = NULL;
+		$this->location_extra_sql = NULL;
+	}
+
+	
+	/**
 	 * Load, parse and check common geocache search parameters from the
 	 * given OKAPI request. Most cache search methods share a common set
 	 * of filtering parameters recognized by this method. It returns
@@ -609,14 +623,15 @@ class SearchAssistant
 		# We need to pull limit+1 items, in order to properly determine the
 		# value of "more" variable.
 
-		$cache_codes = Db::select_column("
+		$sql = "
 			select caches.wp_oc
 			from ".implode(", ", $tables)." ".
 			implode(" ", $options['extra_joins'])."
 			where ".implode(" and ", $where_conds)."
 			".((count($options['order_by']) > 0) ? "order by ".implode(", ", $options['order_by']) : "")."
 			limit ".($options['offset']).", ".($options['limit'] + 1).";
-		");
+		";
+		$cache_codes = Db::select_column($sql);
 
 		if (count($cache_codes) > $options['limit'])
 		{
@@ -633,6 +648,94 @@ class SearchAssistant
 		return $result;
 	}
 
+	# Issue #298 - user coordinates implemented in oc.pl
+	private $longitude_expr;
+	private $latitude_expr;
+	private $location_extra_sql;
+	
+	private function init_location_expr()
+	{
+		$location_source = $this->request->get_parameter('location_source');
+		if (!$location_source)
+			$location_source = 'default-coords';
+		
+		# Make sure location_source has prefix alt_wpt:
+		if ($location_source != 'default-coords' && strncmp($location_source, 'alt_wpt:', 8) != 0)
+		{
+			throw new InvalidParam('location_source', '\''.$location_source.'\'');
+		}
+		
+		# Make sure we have sufficient authorization
+		if ($location_source == 'alt_wpt:user-coords' && $this->request->token == null)
+		{
+			throw new BadRequest("Level 3 Authentication is required to access 'alt_wpt:user-coords'.");
+		}
+		
+		# user-coords are implemented only in oc.pl
+		# and only one alternate location is currenlty supported
+		if (Settings::get('OC_BRANCH') == 'oc.pl' && $location_source == 'alt_wpt:user-coords')
+		{
+			/* pass */
+		} else {
+			# either other installation or unsupported waypoint type - use default geocache coordinates
+			$location_source = 'default-coords';
+		}
+		
+		if ($location_source == 'default-coords')
+		{
+			$this->longitude_expr = 'caches.longitude';
+			$this->latitude_expr = 'caches.latitude';
+			$this->location_extra_sql = FALSE;
+		} else {
+			$this->longitude_expr = 'ifnull(cache_mod_cords.longitude, caches.longitude)';
+			$this->latitude_expr = 'ifnull(cache_mod_cords.latitude, caches.latitude)';
+			$extra_joins = array('left join cache_mod_cords on ' .
+					'cache_mod_cords.cache_id = caches.cache_id ' .
+						'and cache_mod_cords.user_id = \''.mysql_real_escape_string($this->request->token->user_id).'\'');
+			$this->location_extra_sql = array(
+				'extra_joins' => $extra_joins
+			);
+		}
+	}
+	
+	/**
+	 * Returns the expression used as cache's longitude source
+	 */
+	public function get_longitude_expr()
+	{
+		if ($this->longitude_expr === NULL)
+		{
+			$this->init_location_expr();
+		}
+		return $this->longitude_expr;
+	}
+	
+	/**
+	 * Returns the expression used as cache's latitude source
+	 */
+	public function get_latitude_expr()
+	{
+		if ($this->latitude_expr === NULL)
+		{
+			$this->init_location_expr();
+		}
+		return $this->latitude_expr;
+	}
+	
+	/**
+	 * Returns the array of extra sql commands to be included 
+	 * (compatible with that one returned by get_common_search_params), 
+	 * or FALSE if there is no such need
+	 */
+	public function get_location_extra_sql()
+	{
+		if ($this->location_extra_sql === NULL)
+		{
+			$this->init_location_expr();
+		}
+		return $this->location_extra_sql;
+	}
+	
 	/**
 	 * Get the list of cache IDs which were found by given user.
 	 * Parameter needs to be *internal* user id, not uuid.
