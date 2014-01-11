@@ -47,7 +47,7 @@ class WebService
 
 		/* Find and replace %okapi:plugins%. */
 
-		$s = preg_replace_callback("~%OKAPI:([a-z:]+)%~", array("self", "plugin_callback"), $s);
+		$s = preg_replace_callback('~%OKAPI:([a-z:/_#]+)%~', array("self", "plugin_callback"), $s);
 
 		return $s;
 	}
@@ -62,6 +62,29 @@ class WebService
 			case 'docurl':
 				$fragment = $arr[1];
 				return Settings::get('SITE_URL')."okapi/introduction.html#".$fragment;
+			case 'methodref':
+			case 'methodargref':
+			case 'methodretref':
+				$elements = explode('#', $arr[1]);
+				$result = '';
+				if ($elements[0] != '')
+				{
+					$result .= Settings::get('SITE_URL')."okapi/".$elements[0].'.html';
+				}
+				if (count($elements) > 1)
+				{ 
+					$result .= '#';
+					switch ($plugin_name) {
+						case 'methodargref':
+							$result .= 'arg_';
+							break;
+						case 'methodretref':
+							$result .= 'ret_';
+							break;
+					}
+					$result .= $elements[1];
+				}
+				return $result;
 			default:
 				throw new Exception("Unknown plugin: ".$input);
 		}
