@@ -19,20 +19,26 @@ class SearchAssistant
 	 */
 	private $request; /* @var OkapiRequest */
 
+	/**
+	 * Initializes an object with a content of the client request. 
+	 */
 	public  function __construct(OkapiRequest $request)
 	{
 		$this->request = $request;
 		$this->longitude_expr = NULL;
 		$this->latitude_expr = NULL;
 		$this->location_extra_sql = NULL;
+		$this->search_params = NULL;
 	}
 
+	/**
+	 * This member holds a dictionary, which is used to build SQL query. For details,
+	 * see documentation of get_search_params() and prepare_common_search_params()
+	 */
+	private $search_params;
 	
 	/**
-	 * Load, parse and check common geocache search parameters from the
-	 * given OKAPI request. Most cache search methods share a common set
-	 * of filtering parameters recognized by this method. It returns
-	 * a dictionary of the following structure:
+	 * This function returns a dictionary of the following structure:
 	 *
 	 *  - "where_conds" - list of additional WHERE conditions to be ANDed
 	 *    to the rest of your SQL query,
@@ -43,12 +49,46 @@ class SearchAssistant
 	 *  - "extra_tables" - extra tables to be included in the FROM clause.
 	 *  - "extra_joins" - extra join statements to be included
 	 *
+	 * The dictionary is initalized by the call to prepare_common_search_params(),
+	 * and may be further altered before an actual SQL execution, performed usually 
+	 * by get_common_search_result().
+	 *
+	 * If you alter the results, make sure to save them back to this class by calling
+	 * set_search_params().
+	 *
+	 * Important: YOU HAVE TO make sure that all options are properly sanitized
+	 * for SQL queries! I.e. they cannot contain unescaped user-supplied data.
+	 */
+	public function get_search_params()
+	{
+		return $this->search_params;
+	}
+	
+	/**
+	 * Sets search params, a dictionary of the structure described in get_search_params().
+	 *
+	 * Important: YOU HAVE TO make sure that all options are properly sanitized
+	 * for SQL queries! I.e. they cannot contain unescaped user-supplied data.
+	 */
+	public function set_search_params($search_params)
+	{
+		$this->search_params = $search_params;
+	}
+
+	/**
+	 * Load, parse and check common geocache search parameters (those ones
+	 * described in services/caches/search/all method) from the
+	 * given OKAPI request. Most cache search methods share a common set
+	 * of filtering parameters recognized by this method. It initalizes 
+	 * search params, which can be further altered by calls to other methods
+	 * of this class, or outside of this class by a call to get_search_params();
+	 *
 	 * Important: YOU HAVE TO make sure that all data returned by this function
 	 * are properly sanitized for SQL queries! I.e. they cannot contain unescaped
 	 * user-supplied data. All user-suppied data which is returned by this function
 	 * MUST be escaped!
 	 */
-	public static function get_common_search_params(OkapiRequest $request)
+	public function prepare_common_search_params()
 	{
 		$where_conds = array('true');
 		$extra_tables = array();
@@ -93,7 +133,7 @@ class SearchAssistant
 		# type
 		#
 
-		if ($tmp = $request->get_parameter('type'))
+		if ($tmp = $this->request->get_parameter('type'))
 		{
 			$operator = "in";
 			if ($tmp[0] == '-')
@@ -124,7 +164,7 @@ class SearchAssistant
 		# size2
 		#
 
-		if ($tmp = $request->get_parameter('size2'))
+		if ($tmp = $this->request->get_parameter('size2'))
 		{
 			$operator = "in";
 			if ($tmp[0] == '-')
@@ -152,7 +192,7 @@ class SearchAssistant
 		# status - filter by status codes
 		#
 
-		$tmp = $request->get_parameter('status');
+		$tmp = $this->request->get_parameter('status');
 		if ($tmp == null) $tmp = "Available";
 		$codes = array();
 		foreach (explode("|", $tmp) as $name)
@@ -172,7 +212,7 @@ class SearchAssistant
 		# owner_uuid
 		#
 
-		if ($tmp = $request->get_parameter('owner_uuid'))
+		if ($tmp = $this->request->get_parameter('owner_uuid'))
 		{
 			$operator = "in";
 			if ($tmp[0] == '-')
@@ -183,7 +223,7 @@ class SearchAssistant
 			try
 			{
 				$users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
-					$request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
+					$this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
 			}
 			catch (InvalidParam $e) # invalid uuid
 			{
@@ -201,7 +241,7 @@ class SearchAssistant
 
 		foreach (array('terrain', 'difficulty', 'size', 'rating') as $param_name)
 		{
-			if ($tmp = $request->get_parameter($param_name))
+			if ($tmp = $this->request->get_parameter($param_name))
 			{
 				if (!preg_match("/^[1-5]-[1-5](\|X)?$/", $tmp))
 					throw new InvalidParam($param_name, "'$tmp'");
@@ -275,7 +315,7 @@ class SearchAssistant
 		# min_rcmds
 		#
 
-		if ($tmp = $request->get_parameter('min_rcmds'))
+		if ($tmp = $this->request->get_parameter('min_rcmds'))
 		{
 			if ($tmp[strlen($tmp) - 1] == '%')
 			{
@@ -298,7 +338,7 @@ class SearchAssistant
 		# min_founds
 		#
 
-		if ($tmp = $request->get_parameter('min_founds'))
+		if ($tmp = $this->request->get_parameter('min_founds'))
 		{
 			if (!is_numeric($tmp))
 				throw new InvalidParam('min_founds', "'$tmp'");
@@ -310,7 +350,7 @@ class SearchAssistant
 		# may be '0' for FTF hunts
 		#
 
-		if (!is_null($tmp = $request->get_parameter('max_founds')))
+		if (!is_null($tmp = $this->request->get_parameter('max_founds')))
 		{
 			if (!is_numeric($tmp))
 				throw new InvalidParam('max_founds', "'$tmp'");
@@ -321,7 +361,7 @@ class SearchAssistant
 		# modified_since
 		#
 
-		if ($tmp = $request->get_parameter('modified_since'))
+		if ($tmp = $this->request->get_parameter('modified_since'))
 		{
 			$timestamp = strtotime($tmp);
 			if ($timestamp)
@@ -334,15 +374,15 @@ class SearchAssistant
 		# found_status
 		#
 
-		if ($tmp = $request->get_parameter('found_status'))
+		if ($tmp = $this->request->get_parameter('found_status'))
 		{
-			if ($request->token == null)
+			if ($this->request->token == null)
 				throw new InvalidParam('found_status', "Might be used only for requests signed with an Access Token.");
 			if (!in_array($tmp, array('found_only', 'notfound_only', 'either')))
 				throw new InvalidParam('found_status', "'$tmp'");
 			if ($tmp != 'either')
 			{
-				$found_cache_ids = self::get_found_cache_ids($request->token->user_id);
+				$found_cache_ids = self::get_found_cache_ids($this->request->token->user_id);
 				$operator = ($tmp == 'found_only') ? "in" : "not in";
 				$where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('mysql_real_escape_string', $found_cache_ids))."')";
 			}
@@ -352,11 +392,11 @@ class SearchAssistant
 		# found_by
 		#
 
-		if ($tmp = $request->get_parameter('found_by'))
+		if ($tmp = $this->request->get_parameter('found_by'))
 		{
 			try {
 				$user = OkapiServiceRunner::call("services/users/user", new OkapiInternalRequest(
-					$request->consumer, null, array('user_uuid' => $tmp, 'fields' => 'internal_id')));
+					$this->request->consumer, null, array('user_uuid' => $tmp, 'fields' => 'internal_id')));
 			} catch (InvalidParam $e) { # invalid uuid
 				throw new InvalidParam('found_by', $e->whats_wrong_about_it);
 			}
@@ -368,11 +408,11 @@ class SearchAssistant
 		# not_found_by
 		#
 
-		if ($tmp = $request->get_parameter('not_found_by'))
+		if ($tmp = $this->request->get_parameter('not_found_by'))
 		{
 			try {
 				$user = OkapiServiceRunner::call("services/users/user", new OkapiInternalRequest(
-					$request->consumer, null, array('user_uuid' => $tmp, 'fields' => 'internal_id')));
+					$this->request->consumer, null, array('user_uuid' => $tmp, 'fields' => 'internal_id')));
 			} catch (InvalidParam $e) { # invalid uuid
 				throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
 			}
@@ -384,9 +424,9 @@ class SearchAssistant
 		# watched_only
 		#
 
-		if ($tmp = $request->get_parameter('watched_only'))
+		if ($tmp = $this->request->get_parameter('watched_only'))
 		{
-			if ($request->token == null)
+			if ($this->request->token == null)
 				throw new InvalidParam('watched_only', "Might be used only for requests signed with an Access Token.");
 			if (!in_array($tmp, array('true', 'false')))
 				throw new InvalidParam('watched_only', "'$tmp'");
@@ -395,7 +435,7 @@ class SearchAssistant
 				$watched_cache_ids = Db::select_column("
 					select cache_id
 					from cache_watches
-					where user_id = '".mysql_real_escape_string($request->token->user_id)."'
+					where user_id = '".mysql_real_escape_string($this->request->token->user_id)."'
 				");
 				$where_conds[] = "caches.cache_id in ('".implode("','", array_map('mysql_real_escape_string', $watched_cache_ids))."')";
 			}
@@ -405,9 +445,9 @@ class SearchAssistant
 		# exclude_ignored
 		#
 
-		if ($tmp = $request->get_parameter('exclude_ignored'))
+		if ($tmp = $this->request->get_parameter('exclude_ignored'))
 		{
-			if ($request->token == null)
+			if ($this->request->token == null)
 				throw new InvalidParam('exclude_ignored', "Might be used only for requests signed with an Access Token.");
 			if (!in_array($tmp, array('true', 'false')))
 				throw new InvalidParam('exclude_ignored', "'$tmp'");
@@ -415,7 +455,7 @@ class SearchAssistant
 				$ignored_cache_ids = Db::select_column("
 					select cache_id
 					from cache_ignore
-					where user_id = '".mysql_real_escape_string($request->token->user_id)."'
+					where user_id = '".mysql_real_escape_string($this->request->token->user_id)."'
 				");
 				$where_conds[] = "caches.cache_id not in ('".implode("','", array_map('mysql_real_escape_string', $ignored_cache_ids))."')";
 			}
@@ -425,21 +465,21 @@ class SearchAssistant
 		# exclude_my_own
 		#
 
-		if ($tmp = $request->get_parameter('exclude_my_own'))
+		if ($tmp = $this->request->get_parameter('exclude_my_own'))
 		{
-			if ($request->token == null)
+			if ($this->request->token == null)
 				throw new InvalidParam('exclude_my_own', "Might be used only for requests signed with an Access Token.");
 			if (!in_array($tmp, array('true', 'false')))
 				throw new InvalidParam('exclude_my_own', "'$tmp'");
 			if ($tmp == 'true')
-				$where_conds[] = "caches.user_id != '".mysql_real_escape_string($request->token->user_id)."'";
+				$where_conds[] = "caches.user_id != '".mysql_real_escape_string($this->request->token->user_id)."'";
 		}
 
 		#
 		# name
 		#
 
-		if ($tmp = $request->get_parameter('name'))
+		if ($tmp = $this->request->get_parameter('name'))
 		{
 			# WRTODO: Make this more user-friendly. See:
 			# http://code.google.com/p/opencaching-api/issues/detail?id=121
@@ -454,7 +494,7 @@ class SearchAssistant
 		# with_trackables_only
 		#
 
-		if ($tmp = $request->get_parameter('with_trackables_only'))
+		if ($tmp = $this->request->get_parameter('with_trackables_only'))
 		{
 			if (!in_array($tmp, array('true', 'false'), 1))
 				throw new InvalidParam('with_trackables_only', "'$tmp'");
@@ -473,7 +513,7 @@ class SearchAssistant
 		# ftf_hunter
 		#
 
-		if ($tmp = $request->get_parameter('ftf_hunter'))
+		if ($tmp = $this->request->get_parameter('ftf_hunter'))
 		{
 			if (!in_array($tmp, array('true', 'false'), 1))
 				throw new InvalidParam('not_yet_found_only', "'$tmp'");
@@ -487,7 +527,7 @@ class SearchAssistant
 		# set_and
 		#
 
-		if ($tmp = $request->get_parameter('set_and'))
+		if ($tmp = $this->request->get_parameter('set_and'))
 		{
 			# Check if the set exists.
 
@@ -507,14 +547,14 @@ class SearchAssistant
 		# limit
 		#
 
-		$limit = $request->get_parameter('limit');
+		$limit = $this->request->get_parameter('limit');
 		if ($limit == null) $limit = "100";
 		if (!is_numeric($limit))
 			throw new InvalidParam('limit', "'$limit'");
-		if ($limit < 1 || (($limit > 500) && (!$request->skip_limits)))
+		if ($limit < 1 || (($limit > 500) && (!$this->request->skip_limits)))
 			throw new InvalidParam(
 				'limit',
-				$request->skip_limits
+				$this->request->skip_limits
 					? "Cannot be lower than 1."
 					: "Has to be between 1 and 500."
 			);
@@ -523,16 +563,16 @@ class SearchAssistant
 		# offset
 		#
 
-		$offset = $request->get_parameter('offset');
+		$offset = $this->request->get_parameter('offset');
 		if ($offset == null) $offset = "0";
 		if (!is_numeric($offset))
 			throw new InvalidParam('offset', "'$offset'");
-		if (($offset + $limit > 500) && (!$request->skip_limits))
+		if (($offset + $limit > 500) && (!$this->request->skip_limits))
 			throw new BadRequest("The sum of offset and limit may not exceed 500.");
-		if ($offset < 0 || (($offset > 499) && (!$request->skip_limits)))
+		if ($offset < 0 || (($offset > 499) && (!$this->request->skip_limits)))
 			throw new InvalidParam(
 				'offset',
-				$request->skip_limits
+				$this->request->skip_limits
 					? "Cannot be lower than 0."
 					: "Has to be between 0 and 499."
 			);
@@ -542,7 +582,7 @@ class SearchAssistant
 		#
 
 		$order_clauses = array();
-		$order_by = $request->get_parameter('order_by');
+		$order_by = $this->request->get_parameter('order_by');
 		if ($order_by != null)
 		{
 			$order_by = explode('|', $order_by);
@@ -589,35 +629,33 @@ class SearchAssistant
 			'extra_joins' => $extra_joins,
 		);
 
-		return $ret_array;
+		if ($this->search_params === NULL)
+		{
+			$this->search_params = $ret_array;
+		} else {
+			$this->search_params = array_merge_recursive($this->search_params, $ret_array);
+		}
 	}
 
 	/**
-	 * Search for caches using given conditions and options. Return
-	 * an array in a "standard" format of array('results' => list of
+	 * Search for caches using conditions and options stored in the instance 
+	 * of this class. There conditions are usually initialized by the call 
+	 * to prepare_common_search_params(), and may be further altered by the 
+	 * client of this call by calling get_search_params() and set_search_params(). 
+	 *
+	 * Returns an array in a "standard" format of array('results' => list of
 	 * cache codes, 'more' => boolean). This method takes care of the
 	 * 'more' variable in an appropriate way.
-	 *
-	 * The $options parameter include:
-	 *  - where_conds - list of additional WHERE conditions to be ANDed
-	 *    to the rest of your SQL query,
-	 *  - extra_tables - list of additional tables to be joined within
-	 *    the query,
-	 *  - order_by - list or SQL clauses to be used with ORDER BY,
-	 *  - limit - maximum number of cache codes to be returned.
-	 *
-	 * Important: YOU HAVE TO make sure that all options are properly sanitized
-	 * for SQL queries! I.e. they cannot contain unescaped user-supplied data.
 	 */
-	public static function get_common_search_result($options)
+	public function get_common_search_result()
 	{
 		$tables = array_merge(
 			array('caches'),
-			$options['extra_tables']
+			$this->search_params['extra_tables']
 		);
 		$where_conds = array_merge(
 			array('caches.wp_oc is not null'),
-			$options['where_conds']
+			$this->search_params['where_conds']
 		);
 
 		# We need to pull limit+1 items, in order to properly determine the
@@ -626,14 +664,14 @@ class SearchAssistant
 		$sql = "
 			select caches.wp_oc
 			from ".implode(", ", $tables)." ".
-			implode(" ", $options['extra_joins'])."
+			implode(" ", $this->search_params['extra_joins'])."
 			where ".implode(" and ", $where_conds)."
-			".((count($options['order_by']) > 0) ? "order by ".implode(", ", $options['order_by']) : "")."
-			limit ".($options['offset']).", ".($options['limit'] + 1).";
+			".((count($this->search_params['order_by']) > 0) ? "order by ".implode(", ", $this->search_params['order_by']) : "")."
+			limit ".($this->search_params['offset']).", ".($this->search_params['limit'] + 1).";
 		";
 		$cache_codes = Db::select_column($sql);
 
-		if (count($cache_codes) > $options['limit'])
+		if (count($cache_codes) > $this->search_params['limit'])
 		{
 			$more = true;
 			array_pop($cache_codes); # get rid of the one above the limit
@@ -651,9 +689,15 @@ class SearchAssistant
 	# Issue #298 - user coordinates implemented in oc.pl
 	private $longitude_expr;
 	private $latitude_expr;
-	private $location_extra_sql;
 	
-	private function init_location_expr()
+	/**
+	 * This method extends search params in case you would like to seach
+	 * using the geocache location, i.e. search for the geocaches nearest
+	 * to the given location. When you search for such geocaches, you must
+	 * use expressions returned by get_longitude_expr() and get_latitude_expr()
+	 * to query for the actual location of geocaches.
+	 */
+	public function prepare_location_search_params()
 	{
 		$location_source = $this->request->get_parameter('location_source');
 		if (!$location_source)
@@ -685,55 +729,40 @@ class SearchAssistant
 		{
 			$this->longitude_expr = 'caches.longitude';
 			$this->latitude_expr = 'caches.latitude';
-			$this->location_extra_sql = FALSE;
 		} else {
 			$this->longitude_expr = 'ifnull(cache_mod_cords.longitude, caches.longitude)';
 			$this->latitude_expr = 'ifnull(cache_mod_cords.latitude, caches.latitude)';
 			$extra_joins = array('left join cache_mod_cords on ' .
 					'cache_mod_cords.cache_id = caches.cache_id ' .
 						'and cache_mod_cords.user_id = \''.mysql_real_escape_string($this->request->token->user_id).'\'');
-			$this->location_extra_sql = array(
+			$location_extra_sql = array(
 				'extra_joins' => $extra_joins
 			);
+			if ($this->search_params === NULL)
+			{
+				$this->search_params = $location_extra_sql;
+			} else {
+				$this->search_params = array_merge_recursive($this->search_params, $location_extra_sql);
+			}
 		}
 	}
 	
 	/**
-	 * Returns the expression used as cache's longitude source
+	 * Returns the expression used as cache's longitude source. You may use this
+	 * method only after prepare_search_params_for_location() invocation.
 	 */
 	public function get_longitude_expr()
 	{
-		if ($this->longitude_expr === NULL)
-		{
-			$this->init_location_expr();
-		}
 		return $this->longitude_expr;
 	}
 	
 	/**
-	 * Returns the expression used as cache's latitude source
+	 * Returns the expression used as cache's latitude source. You may use this
+	 * method only after prepare_search_params_for_location() invocation.
 	 */
 	public function get_latitude_expr()
 	{
-		if ($this->latitude_expr === NULL)
-		{
-			$this->init_location_expr();
-		}
 		return $this->latitude_expr;
-	}
-	
-	/**
-	 * Returns the array of extra sql commands to be included 
-	 * (compatible with that one returned by get_common_search_params), 
-	 * or FALSE if there is no such need
-	 */
-	public function get_location_extra_sql()
-	{
-		if ($this->location_extra_sql === NULL)
-		{
-			$this->init_location_expr();
-		}
-		return $this->location_extra_sql;
 	}
 	
 	/**

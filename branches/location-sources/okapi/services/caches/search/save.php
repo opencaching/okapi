@@ -63,7 +63,9 @@ class WebService
 
 		# Search params.
 
-		$search_params = SearchAssistant::get_common_search_params($request);
+		$search_assistant = new SearchAssistant($request);
+		$search_assistant->prepare_common_search_params();
+		$search_params = $search_assistant->get_search_params();
 		$tables = array_merge(
 			array('caches'),
 			$search_params['extra_tables']

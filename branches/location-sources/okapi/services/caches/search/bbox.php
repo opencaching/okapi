@@ -53,6 +53,8 @@ class WebService
 		# Construct SQL conditions for the specified bounding box.
 
 		$search_assistant = new SearchAssistant($request);
+		$search_assistant->prepare_common_search_params();
+		$search_assistant->prepare_location_search_params();
 		
 		$where_conds = array();
 		$where_conds[] = $search_assistant->get_latitude_expr()." between '".mysql_real_escape_string($bbsouth)."' and '".mysql_real_escape_string($bbnorth)."'";
@@ -78,17 +80,14 @@ class WebService
 		$center_lat = ($bbsouth + $bbnorth) / 2.0;
 		$center_lon = ($bbwest + $bbeast) / 2.0;
 
-		$search_params = SearchAssistant::get_common_search_params($request);
-		if ($search_assistant->get_location_extra_sql() !== FALSE)
-		{
-			$search_params = array_merge_recursive($search_params, $search_assistant->get_location_extra_sql());
-		}
+		$search_params = $search_assistant->get_search_params();
 		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
 		$search_params['order_by'][] = Okapi::get_distance_sql($center_lat, $center_lon,
 			$search_assistant->get_latitude_expr(), 
 			$search_assistant->get_longitude_expr()); # not replaced; added to the end!
+		$search_assistant->set_search_params($search_params);
 
-		$result = SearchAssistant::get_common_search_result($search_params);
+		$result = $search_assistant->get_common_search_result();
 
 		return Okapi::formatted_response($request, $result);
 	}
