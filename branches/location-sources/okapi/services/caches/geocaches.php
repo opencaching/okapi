@@ -832,8 +832,6 @@ class WebService
 		
 		if (in_array('alt_wpts', $fields))
 		{
-			# We have to load alt_wpts to change location_source, event if client
-			# didn't ask for them. If they are not requested, they will be removed later on
 			$internal_wpt_type_id2names = array();
 			if (Settings::get('OC_BRANCH') == 'oc.de')
 			{
