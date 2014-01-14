@@ -325,10 +325,18 @@ class WebService
 		if ($location_source != 'default-coords')
 		{
 			$location_change_prefix = $request->get_parameter('location_change_prefix');
+			if (!$location_change_prefix){
+				$location_change_prefix = '#';
+			}
 			# lets find requested coords
 			foreach ($vars['caches'] as &$cache)
 			{
-				foreach ($cache['alt_wpts'] as $alt_wpt)
+				if (!isset($cache['alt_wpts']))
+				{
+					# it happens in case of wrong cache code passed
+					continue;
+				}
+				foreach ($cache['alt_wpts'] as $alt_wpt_key => $alt_wpt)
 				{
 					if ('alt_wpt:'.$alt_wpt['type'] == $location_source)
 					{
@@ -336,10 +344,16 @@ class WebService
 						$original_location = $cache['location'];
 						$cache['location'] = $alt_wpt['location'];
 						# modify cache name
-						if ($location_change_prefix){
-							$cache['name_2'] = $location_change_prefix.$cache['name'];
+						$cache['name_2'] = $location_change_prefix.$cache['name'];
+						# modify cache description
+						if ($location_source == 'alt_wpt:user-coords')
+						{
+							$cache['user_coords_description_prefix'] = true;
+						} else {
+							$cache['alt_wpt_description_prefix'] = $alt_wpt['description'];
 						}
-						
+						# remove current alt waypoint
+						unset($cache['alt_wpts'][$alt_wpt_key]);
 						# add original location as alternate
 						if ($vars['alt_wpts'])
 						{
