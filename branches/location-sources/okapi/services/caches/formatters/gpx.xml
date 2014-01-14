@@ -224,11 +224,17 @@
 				<ul>
 					<li>its coordinates will be returned in the <b>location</b> attributes,</li>
 					
-					<li>the default location will be appended as the alternate waypoint,</li>
+					<li>it will be removed from the alternate waypoins list,</li>
+					
+					<li>the default location will be appended as an alternate waypoint,</li>
 
 					<li>the geocache name will be prefixed with value suppiled as 
 					<b><a href="%OKAPI:methodargref:#location_change_prefix%">location_change_prefix</a></b> 
-					parameter.</li>
+					parameter,</li>
+					
+					<li>the geocache description will be prepended with a textual message containig
+					mentioned waypoint description.</li>
+
 				</ul>
 			</li>
 			
@@ -237,7 +243,7 @@
 		</ul>
 		
 	</opt>
-	<opt name="location_change_prefix">
+	<opt name="location_change_prefix" default="#">
 		<p>Prefix to be added to the geocache name, in case its location has been changed due to
 		the <b><a href="%OKAPI:methodargref:#location_source%">location_source</a></b> parameter 
 		matching any of the alternate waypoint.</p>

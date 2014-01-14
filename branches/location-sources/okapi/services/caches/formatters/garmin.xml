@@ -44,7 +44,7 @@
 		Same as in the <a href="%OKAPI:methodargref:services/caches/formatters/gpx#location_source%">
 		services/caches/formatters/gpx</a> method. 
 	</opt>
-	<opt name="location_change_prefix">
+	<opt name="location_change_prefix" default="#">
 		Same as in the <a href="%OKAPI:methodargref:services/caches/formatters/gpx#location_change_prefix%">
 		services/caches/formatters/gpx</a> method. 
 	</opt>
