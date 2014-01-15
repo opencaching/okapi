@@ -219,7 +219,6 @@ class WebService
 		{
 			$entry = array();
 			$cacheid2wptcode[$row['cache_id']] = $row['wp_oc'];
-			# save it for further reference
 			foreach ($fields as $field)
 			{
 				switch ($field)
@@ -990,7 +989,6 @@ class WebService
 							);
 						}
 					}
-					
 				}
 			}
 		}

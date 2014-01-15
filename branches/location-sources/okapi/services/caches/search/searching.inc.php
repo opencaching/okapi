@@ -15,12 +15,13 @@ use Exception;
 class SearchAssistant
 {
 	/**
-	 * Current request issued by the client
+	 * Current request issued by the client.
 	 */
 	private $request; /* @var OkapiRequest */
 
 	/**
-	 * Initializes an object with a content of the client request. 
+	 * Initializes an object with a content of the client request.
+	 * (The request should contain common geocache search parameters.)
 	 */
 	public  function __construct(OkapiRequest $request)
 	{
@@ -65,7 +66,7 @@ class SearchAssistant
 	}
 	
 	/**
-	 * Sets search params, a dictionary of the structure described in get_search_params().
+	 * Set search params, a dictionary of the structure described in get_search_params().
 	 *
 	 * Important: YOU HAVE TO make sure that all options are properly sanitized
 	 * for SQL queries! I.e. they cannot contain unescaped user-supplied data.
@@ -76,17 +77,14 @@ class SearchAssistant
 	}
 
 	/**
-	 * Load, parse and check common geocache search parameters (those ones
-	 * described in services/caches/search/all method) from the
-	 * given OKAPI request. Most cache search methods share a common set
+	 * Load, parse and check common geocache search parameters (the ones
+	 * described in services/caches/search/all method) from $this->request.
+	 * Most cache search methods share a common set
 	 * of filtering parameters recognized by this method. It initalizes 
 	 * search params, which can be further altered by calls to other methods
 	 * of this class, or outside of this class by a call to get_search_params();
 	 *
-	 * Important: YOU HAVE TO make sure that all data returned by this function
-	 * are properly sanitized for SQL queries! I.e. they cannot contain unescaped
-	 * user-supplied data. All user-suppied data which is returned by this function
-	 * MUST be escaped!
+	 * This method doesn't return anything. See get_search_params method.
 	 */
 	public function prepare_common_search_params()
 	{
@@ -639,7 +637,7 @@ class SearchAssistant
 
 	/**
 	 * Search for caches using conditions and options stored in the instance 
-	 * of this class. There conditions are usually initialized by the call 
+	 * of this class. These conditions are usually initialized by the call 
 	 * to prepare_common_search_params(), and may be further altered by the 
 	 * client of this call by calling get_search_params() and set_search_params(). 
 	 *
@@ -661,15 +659,14 @@ class SearchAssistant
 		# We need to pull limit+1 items, in order to properly determine the
 		# value of "more" variable.
 
-		$sql = "
+		$cache_codes = Db::select_column("
 			select caches.wp_oc
 			from ".implode(", ", $tables)." ".
 			implode(" ", $this->search_params['extra_joins'])."
 			where ".implode(" and ", $where_conds)."
 			".((count($this->search_params['order_by']) > 0) ? "order by ".implode(", ", $this->search_params['order_by']) : "")."
 			limit ".($this->search_params['offset']).", ".($this->search_params['limit'] + 1).";
-		";
-		$cache_codes = Db::select_column($sql);
+		");
 
 		if (count($cache_codes) > $this->search_params['limit'])
 		{
@@ -691,7 +688,7 @@ class SearchAssistant
 	private $latitude_expr;
 	
 	/**
-	 * This method extends search params in case you would like to seach
+	 * This method extends search params in case you would like to search
 	 * using the geocache location, i.e. search for the geocaches nearest
 	 * to the given location. When you search for such geocaches, you must
 	 * use expressions returned by get_longitude_expr() and get_latitude_expr()
@@ -732,9 +729,11 @@ class SearchAssistant
 		} else {
 			$this->longitude_expr = 'ifnull(cache_mod_cords.longitude, caches.longitude)';
 			$this->latitude_expr = 'ifnull(cache_mod_cords.latitude, caches.latitude)';
-			$extra_joins = array('left join cache_mod_cords on ' .
-					'cache_mod_cords.cache_id = caches.cache_id ' .
-						'and cache_mod_cords.user_id = \''.mysql_real_escape_string($this->request->token->user_id).'\'');
+			$extra_joins = array("
+				left join cache_mod_cords
+					on cache_mod_cords.cache_id = caches.cache_id
+					and cache_mod_cords.user_id = '".mysql_real_escape_string($this->request->token->user_id)."'
+			");
 			$location_extra_sql = array(
 				'extra_joins' => $extra_joins
 			);
