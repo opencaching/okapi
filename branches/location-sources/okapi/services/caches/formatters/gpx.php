@@ -155,6 +155,34 @@ class WebService
 
 		$user_uuid = $request->get_parameter('user_uuid');
 
+		# Alternate/Additional waypoints 
+		# and location source, introduced in issue #298 
+		
+		$location_source = $request->get_parameter('location_source');
+		if (!$location_source)
+		{
+			$location_source = 'default-coords';
+		}
+		# Make sure location_source has prefix alt_wpt:
+		if ($location_source != 'default-coords' && strncmp($location_source, 'alt_wpt:', 8) != 0)
+		{
+			throw new InvalidParam('location_source', '\''.$location_source.'\'');
+		}
+		
+		# Make sure we have sufficient authorization
+		if ($location_source == 'alt_wpt:user-coords' && $request->token == null)
+		{
+			throw new BadRequest("Level 3 Authentication is required to access 'alt_wpt:user-coords'.");
+		}
+		
+		if ($location_source != 'default-coords' && $vars['alt_wpts'] != true)
+		{
+			$vars['alt_wpts'] = true;
+			# mark alt_wpts as temporary variable, which has not been requested by the client,
+			# but is necessary for processing
+			$vars['alt_wpts_temp'] = true;
+		}
+
 		# Which fields of the services/caches/geocaches method do we need?
 
 		$fields = 'code|name|location|date_created|url|type|status|size|size2|oxsize'.
@@ -304,23 +332,6 @@ class WebService
 
 		# Alternate/Additional waypoints 
 		# and location source, introduced in issue #298 
-		
-		$location_source = $request->get_parameter('location_source');
-		if (!$location_source)
-		{
-			$location_source = 'default-coords';
-		}
-		# Make sure location_source has prefix alt_wpt:
-		if ($location_source != 'default-coords' && strncmp($location_source, 'alt_wpt:', 8) != 0)
-		{
-			throw new InvalidParam('location_source', '\''.$location_source.'\'');
-		}
-		
-		# Make sure we have sufficient authorization
-		if ($location_source == 'alt_wpt:user-coords' && $request->token == null)
-		{
-			throw new BadRequest("Level 3 Authentication is required to access 'alt_wpt:user-coords'.");
-		}
 
 		if ($location_source != 'default-coords')
 		{
@@ -371,6 +382,11 @@ class WebService
 				}
 			}
 		}
+		if (isset($vars['alt_wpts_temp']) && $vars['alt_wpts_temp'])
+		{
+			$vars['alt_wpts'] = false;
+		}
+		unset($vars['alt_wpts_temp']);
 		
 		$response = new OkapiHttpResponse();
 		$response->content_type = "application/gpx; charset=utf-8";
