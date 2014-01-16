@@ -26,6 +26,10 @@
 		western hemispheres accordingly). These are full degrees with a dot
 		as a decimal point (ex. "48.7|15.8|54|24.9").</p>
 	</req>
+	<opt name='location_source' default='default-coords'>
+		Same as in the <a href="%OKAPI:methodargref:services/caches/search/nearest#location_source%">
+		services/caches/search/nearest</a> method. 
+	</opt>
 	<import-params method='services/caches/search/all'/>
 	<common-format-params/>
 	<returns>

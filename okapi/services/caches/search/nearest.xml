@@ -21,6 +21,20 @@
 		distance is given <b>in kilometers</b> instead of meters
 		(it can contain a floating point though).</p>
 	</opt>
+	<opt name='location_source' default='default-coords'>
+		<p>In general, this parameter should take the same value as in the
+		<a href="%OKAPI:methodargref:services/caches/formatters/gpx#location_source%">
+		services/caches/formatters/gpx</a> method, but currently <u>only two values are
+		supported</u>: <b>default-coords</b> and <b>alt_wpt:user-coords</b>.</p>
+		
+		<p>Allows you to search among alternate locations of the geocache,
+		instead of the default one. Particularily useful with <b>alt_wpt:user-coords</b>
+		alternate waypoint.</p>
+		
+		<p>Please note, that if you plan on using this option in conjunction
+		with <b>search_and_retrieve</b> method, then you'd probably want to use
+		the same option in your <i>retr_method</i> too (if available).</p>
+	</opt>
 	<import-params method='services/caches/search/all'/>
 	<common-format-params/>
 	<returns>

@@ -958,8 +958,41 @@ class WebService
 					);
 				}
 			}
+			
+			# Issue #298 - User coordinates implemented in oc.pl
+			if ($request->token != null)
+			{
+				if (Settings::get('OC_BRANCH') == 'oc.pl')
+				{
+					# Query DB for user provided coordinates
+					$cacheid2user_coords = Db::select_group_by('cache_id', '
+						select
+							cache_id, longitude, latitude
+						from cache_mod_cords
+						where
+							cache_id in ('.$cache_codes_escaped_and_imploded.')
+							and user_id = \''.mysql_real_escape_string($request->token->user_id).'\'
+					');
+					foreach ($cacheid2user_coords as $cache_id => $waypoints)
+					{
+						$cache_code = $cacheid2wptcode[$cache_id];
+						foreach ($waypoints as $row)
+						{
+							# there should be only one user waypoint per cache...
+							$results[$cache_code]['alt_wpts'][] = array(
+								'name' => $cache_code.'-USER-COORDS',
+								'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+								'type' => 'user-coords',
+								'type_name' => _("User location"),
+								'sym' => 'Block, Green',
+								'description' => sprintf(_("User-supplied location of the %s geocache"), $cache_code),
+							);
+						}
+					}
+				}
+			}
 		}
-
+		
 		# Country and/or state.
 
 		if (in_array('country', $fields) || in_array('state', $fields))

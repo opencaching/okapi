@@ -192,6 +192,62 @@
 			will respond with HTTP 400 error.</li>
 		</ul>
 	</opt>
+	<opt name="location_source" default='default-coords'>
+		<p>If you supply a value, then it must be prefixed with <i>alt_wpt:</i>,
+		and should match one of alternate waypoint types documented in the 
+		<a href="%OKAPI:methodretref:services/caches/geocache#alt_wpts%">alt_wpts</a> 
+		field returned by <a href="%OKAPI:methodref:services/caches/geocache%">services/caches/geocache</a> 
+		method. If the type doesn't match, it will be ignored.</p>
+		
+		<p>By default, the <b>location</b> attributes (<i>&lt;wpt lat="..." lon="..."&gt;</i>) 
+		will return the default coordinates of the cache, as supplied by the owner of the cache. 
+		This option allows you to replace these coordinates with other set of coordinates, loaded 
+		from the <b>alt_wpts</b> field mentioned above.</p>
+		
+		<p>This may have some advantages in some scenarios. For example, if your user
+		is driving a car, he might be more interested in the coordinates of the
+		nearest suitable parking spot than in the coordinates of the geocache itself.
+		If you set <b>location_source</b> to <b>alt_wpt:parking</b> then you'll be
+		pre-fetching parking locations (if provided) without the need of loading all
+		other <b>alternate waypoints</b> in your requests.</p>
+		
+		<p>Other use case: setting this to <b>alt_wpt:user-coords</b> allows
+		personalized results in some OC installations.</p>
+		
+		<ul>
+			<li>If the type provided doesn't match any alternate waypoints, the default
+			coordinates of the geocache will be used.</li>
+			
+			<li>
+				<p>If the type matches exactly one alternate waypoint, then:</p>
+			
+				<ul>
+					<li>its coordinates will be returned in the <b>location</b> attributes,</li>
+					
+					<li>it will be removed from the alternate waypoins list,</li>
+					
+					<li>the default location will be appended as an alternate waypoint,</li>
+
+					<li>the geocache name will be prefixed with value suppiled as 
+					<b><a href="%OKAPI:methodargref:#location_change_prefix%">location_change_prefix</a></b> 
+					parameter,</li>
+					
+					<li>the geocache description will be prepended with a textual message containig
+					mentioned waypoint description.</li>
+
+				</ul>
+			</li>
+			
+			<li>If the type provided matches multiple alternate waypoints, then
+			the first one will be chosen.</li>
+		</ul>
+		
+	</opt>
+	<opt name="location_change_prefix" default="#">
+		<p>Prefix to be added to the geocache name, in case its location has been changed due to
+		the <b><a href="%OKAPI:methodargref:#location_source%">location_source</a></b> parameter 
+		matching any of the alternate waypoint.</p>
+	</opt>
 	<returns>
 		<p>GPX file. All invalid cache codes will be skipped without any notice!</p>
 	</returns>
