@@ -52,18 +52,23 @@ class WebService
 
 		# Construct SQL conditions for the specified bounding box.
 
+		$search_assistant = new SearchAssistant($request);
+		$search_assistant->prepare_common_search_params();
+		$search_assistant->prepare_location_search_params();
+		
 		$where_conds = array();
-		$where_conds[] = "caches.latitude between '".mysql_real_escape_string($bbsouth)."' and '".mysql_real_escape_string($bbnorth)."'";
+		$where_conds[] = $search_assistant->get_latitude_expr()." between '".mysql_real_escape_string($bbsouth)."' and '".mysql_real_escape_string($bbnorth)."'";
 		if ($bbeast > $bbwest)
 		{
 			# Easy one.
-			$where_conds[] = "caches.longitude between '".mysql_real_escape_string($bbwest)."' and '".mysql_real_escape_string($bbeast)."'";
+			$where_conds[] = $search_assistant->get_longitude_expr()." between '".mysql_real_escape_string($bbwest)."' and '".mysql_real_escape_string($bbeast)."'";
 		}
 		else
 		{
 			# We'll have to assume that this box goes through the 180-degree meridian.
 			# For example, $bbwest = 179 and $bbeast = -179.
-			$where_conds[] = "(caches.longitude > '".mysql_real_escape_string($bbwest)."' or caches.longitude < '".mysql_real_escape_string($bbeast)."')";
+			$where_conds[] = "(".$search_assistant->get_longitude_expr()." > '".mysql_real_escape_string($bbwest)
+				."' or ".$search_assistant->get_longitude_expr()." < '".mysql_real_escape_string($bbeast)."')";
 		}
 
 		#
@@ -75,12 +80,14 @@ class WebService
 		$center_lat = ($bbsouth + $bbnorth) / 2.0;
 		$center_lon = ($bbwest + $bbeast) / 2.0;
 
-		$search_params = SearchAssistant::get_common_search_params($request);
+		$search_params = $search_assistant->get_search_params();
 		$search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
 		$search_params['order_by'][] = Okapi::get_distance_sql($center_lat, $center_lon,
-			"caches.latitude", "caches.longitude"); # not replaced; added to the end!
+			$search_assistant->get_latitude_expr(), 
+			$search_assistant->get_longitude_expr()); # not replaced; added to the end!
+		$search_assistant->set_search_params($search_params);
 
-		$result = SearchAssistant::get_common_search_result($search_params);
+		$result = $search_assistant->get_common_search_result();
 
 		return Okapi::formatted_response($request, $result);
 	}

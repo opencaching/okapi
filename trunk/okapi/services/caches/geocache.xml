@@ -89,8 +89,10 @@
 			<li><b>names</b> - a dictionary (language code => plain-text string) of
 				names of the geocache (at this time, there will be only one language,
 				but this may change in future),</li>
-			<li><b>location</b> - location of the cache in the "lat|lon" format
-				(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
+			<li>
+				<b>location</b> - location of the cache in the "lat|lon" format
+				(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),
+			</li>
 			<li>
 				<p><b>type</b> - cache type. This might be <b>pretty much everything</b>,
 				but there are some predefined types that you might want to treat
@@ -321,26 +323,47 @@
 						cannot automatically determine this address.</li>
 				</ul>
 			</li>
-			<li>
+			<li id="ret_alt_wpts">
 				<p><b>alt_wpts</b> - list of alternate/additional waypoints associated
 				with this geocache. Each item is a dictionary of the following structure:</p>
 				<ul>
 					<li><b>name</b> - plain-text, short, unique "codename" for the waypoint,</li>
 					<li><b>location</b> - location of the waypoint in the "lat|lon" format
 						(<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
-					<li><b>type</b> - string, unique identifier for the type of waypoint; one
-						of the following: <b>parking</b>, <b>path</b>, <b>stage</b>,
-						<b>physical-stage</b>, <b>virtual-stage</b>, <b>final</b>, <b>poi</b>, <b>other</b>;
-						more types may be added; unknown types should be treated as <b>other</b>,
+					<li>
+						<p><b>type</b> - string, unique identifier for the type of waypoint;
+						one of the following:</p>
+						
+						<ul>
+							<li><b>parking</b>, <b>path</b>, <b>stage</b>, <b>physical-stage</b>,
+							<b>virtual-stage</b>, <b>final</b>, <b>poi</b>, <b>other</b> - used by
+							OC itself, for detailed descriptions of these you'll have to refer to
+							external Opencaching documenation,</li>
+							
+							<li><b>user-coords</b> - extra coordinates supplied <i>by the user who
+							had found the cache</i> (NOT the owner of the cache), most probably
+							pointing to the final location of the cache (e.g. a quiz cache);
+							this type of waypoint is avaiable only in some installations and only
+							if you're using Level 3 Authentication,</li>
+							
+							<li>more types may be added at any moment; unknown types should be
+							treated as <b>other</b>.</li>
+						</ul>
 					</li>
-					<li><b>type_name</b> - string, the human-readable name of the waypoint type,
+					<li>
+						<b>type_name</b> - string, the human-readable name of the waypoint type,
 						e.g. "Parking area" or "Final location"; the language will be selected
 						based on the langpref argument,
 					</li>
 					<li>
-						<b>sym</b> - string, one of commonly recognized waypoint symbol
+						<p><b>sym</b> - string, one of commonly recognized waypoint symbol
 						names, originally introduced by Garmin in their devices and GPX
-						files (e.g. "Flag, Green" or "Parking Area"),
+						files (e.g. "Flag, Green" or "Parking Area").</p>
+						
+						<p>These symbol codes are only suggestions. They are understood by
+						Garmin-related software and devices. If you don't know how to display such
+						symbols, you are welcome to use any symbol you'd like in your
+						application.</p>
 					</li>
 					<li><b>description</b> - plain-text longer description of the waypoint.</li>
 				</ul>

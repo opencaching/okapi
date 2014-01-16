@@ -2,39 +2,56 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-11 08:28+0100\n"
-"PO-Revision-Date: 2013-07-11 08:35+0100\n"
-"Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
+"POT-Creation-Date: 2014-01-14 16:22+0100\n"
+"PO-Revision-Date: 2014-01-14 16:38+0100\n"
+"Last-Translator: Bogusław Szczepanowski <boguslaw.szczepanowski@gmail.com>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
-"X-Poedit-Basepath: D:\\PRIV\\Projekty\\EclipseWorkspace\\opencaching-api"
-"\\okapi\n"
+"X-Poedit-Basepath: E:\\Home\\Bogus\\Pulpit\\KESZE\\opencaching-pl\\okapi\n"
 "Plural-Forms: nplurals=3; plural= n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.6.3\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: services/caches/geocaches.php:956
+#: services/caches/geocaches.php:958
 msgid "Stage"
 msgstr "Etap"
 
-#: services/caches/geocaches.php:1111
+#: services/caches/geocaches.php:987
+msgid "User location"
+msgstr "Współrzędne użytkownika"
+
+#: services/caches/geocaches.php:989
+#, php-format
+msgid "User-supplied location of the %s geocache"
+msgstr "Współrzędne skrzynki %s wprowadzone przez użytkownika"
+
+#: services/caches/formatters/gpx.php:364
+msgid "Dafault geocache's location"
+msgstr "Oryginalne współrzędne"
+
+#: services/caches/formatters/gpx.php:366
+#, php-format
+msgid "Original (owner-supplied) location of the %s geocache"
+msgstr "Oryginalne współrzędne skrzynki %s (podane przez autora)"
+
+#: services/caches/geocaches.php:1147
 msgid "National Park / Landscape"
 msgstr "Park narodowy lub krajobrazowy"
 
-#: services/caches/geocaches.php:1263
+#: services/caches/geocaches.php:1299
 #, php-format
 msgid ""
 "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</"
 "a> site."
 msgstr "Opis <a href='%s'>skrzynki</a> pochodzi z serwisu <a href='%s'>%s</a>."
 
-#: services/caches/geocaches.php:1275
+#: services/caches/geocaches.php:1311
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='http://"
@@ -45,7 +62,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>, w "
 "dniu %s. Prawa autorskie wpisów do logów należą do ich autorów."
 
-#: services/caches/geocaches.php:1286
+#: services/caches/geocaches.php:1322
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='http://"
@@ -57,11 +74,28 @@ msgstr ""
 "autorskie wpisów do logów należą do ich autorów."
 
 #: services/caches/formatters/gpxfile.tpl.php:31
-#: services/caches/formatters/gpxfile.tpl.php:60
+#: services/caches/formatters/gpxfile.tpl.php:70
 msgid "hidden by"
 msgstr "ukryta przez"
 
-#: services/caches/formatters/gpxfile.tpl.php:62
+#: services/caches/formatters/gpxfile.tpl.php:60
+#, php-format
+msgid ""
+"<b>Geocache's coordinates has been changed</b>, and now they point to the "
+"alternate waypoint described originally as: %s"
+msgstr ""
+"<b>Współrzędne skrzynki zostały zmienione</b>, i wskazują na punkt "
+"oryginalnie opisany jako: %s"
+
+#: services/caches/formatters/gpxfile.tpl.php:65
+msgid ""
+"<b>Geocache's coordinates has been changed</b> to point to the user supplied "
+"value."
+msgstr ""
+"<b>Współrzędne skrzynki zostały zmienione</b> na własną wartość wprowadzoną "
+"przez użytkownika."
+
+#: services/caches/formatters/gpxfile.tpl.php:72
 #, php-format
 msgid "%d recommendation"
 msgid_plural "%d recommendations"
@@ -69,7 +103,7 @@ msgstr[0] "%d rekomendacja"
 msgstr[1] "%d rekomendacje"
 msgstr[2] "%d rekomendacji"
 
-#: services/caches/formatters/gpxfile.tpl.php:63
+#: services/caches/formatters/gpxfile.tpl.php:73
 #, php-format
 msgid "found %d time"
 msgid_plural "found %d times"
@@ -77,7 +111,7 @@ msgstr[0] "znaleziona %d raz"
 msgstr[1] "znaleziona %d razy"
 msgstr[2] "znaleziona %d razy"
 
-#: services/caches/formatters/gpxfile.tpl.php:66
+#: services/caches/formatters/gpxfile.tpl.php:76
 #, php-format
 msgid "%d trackable"
 msgid_plural "%d trackables"
@@ -85,32 +119,32 @@ msgstr[0] "%d GeoKret (lub TravelBug)"
 msgstr[1] "%d GeoKrety (lub TravelBugi)"
 msgstr[2] "%d GeoKretów (lub TravelBugów)"
 
-#: services/caches/formatters/gpxfile.tpl.php:70
+#: services/caches/formatters/gpxfile.tpl.php:80
 msgid "Personal notes"
 msgstr "Osobiste notatki"
 
-#: services/caches/formatters/gpxfile.tpl.php:74
+#: services/caches/formatters/gpxfile.tpl.php:84
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: services/caches/formatters/gpxfile.tpl.php:78
+#: services/caches/formatters/gpxfile.tpl.php:88
 msgid "Trackables"
 msgstr "Geokrety, Travelbugi itp."
 
-#: services/caches/formatters/gpxfile.tpl.php:88
-#: services/caches/formatters/gpxfile.tpl.php:104
+#: services/caches/formatters/gpxfile.tpl.php:98
+#: services/caches/formatters/gpxfile.tpl.php:114
 msgid "Images"
 msgstr "Obrazki"
 
-#: services/caches/formatters/gpxfile.tpl.php:111
+#: services/caches/formatters/gpxfile.tpl.php:121
 msgid "Spoilers"
 msgstr "Spoilery"
 
-#: services/caches/formatters/gpxfile.tpl.php:120
+#: services/caches/formatters/gpxfile.tpl.php:130
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 
-#: services/caches/formatters/gpxfile.tpl.php:128
+#: services/caches/formatters/gpxfile.tpl.php:138
 msgid "The cache probably is located in the following protection areas:"
 msgstr "Prawdopodobnie skrzynka znajduje się na terenie obszarów chronionych:"
 
@@ -177,11 +211,11 @@ msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
 msgid "Invalid password!"
 msgstr "Niepoprawne hasło!"
 
-#: services/logs/submit.php:282
+#: services/logs/submit.php:285
 msgid "You have already submitted a log entry with exactly the same contents."
 msgstr "Już opublikowałeś wcześniej wpis z dokładnie taką samą treścią."
 
-#: services/logs/submit.php:305
+#: services/logs/submit.php:308
 msgid ""
 "You have already submitted a \"Found it\" log entry once. Now you may submit "
 "\"Comments\" only!"
@@ -189,30 +223,30 @@ msgstr ""
 "Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz "
 "możesz dodawać jedynie \"Komentarze\"!"
 
-#: services/logs/submit.php:307
+#: services/logs/submit.php:310
 msgid "You are the owner of this cache. You may submit \"Comments\" only!"
 msgstr ""
 "Jesteś właścicielem tej skrzynki. Możesz przesyłać jedynie \"Komentarze\"."
 
-#: services/logs/submit.php:325
+#: services/logs/submit.php:328
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr "Już oceniłeś tę skrzynkę. Ocena nie może być zmieniona."
 
-#: services/logs/submit.php:342
+#: services/logs/submit.php:345
 msgid "You have already recommended this cache once."
 msgstr "Już raz zarekomendowałeś tę skrzynkę."
 
-#: services/logs/submit.php:352
+#: services/logs/submit.php:355
 msgid "You don't have any recommendations to give. Find more caches first!"
 msgstr ""
 "Aktualnie nie możesz wystawić kolejnej rekomendacji. Znajdź najpierw więcej "
 "skrzynek!"
 
-#: services/logs/submit.php:395
+#: services/logs/submit.php:398
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Skrzynki typu Wydarzenie nie mogą \"potrzebować serwisu\"."
 
-#: services/logs/submit.php:525
+#: services/logs/submit.php:528
 msgid "Your cache log entry was posted successfully."
 msgstr "Twój wpis do logbooka został opublikowany pomyślnie."
 

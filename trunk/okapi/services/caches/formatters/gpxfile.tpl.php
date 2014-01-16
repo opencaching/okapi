@@ -28,14 +28,14 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 		<wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
 			<time><?= $c['date_created'] ?></time>
 			<name><?= $c['code'] ?></name>
-			<desc><?= Okapi::xmlescape($c['name']) ?> <?= _("hidden by") ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= $c['difficulty'] ?>/<?= $c['terrain'] ?><? if ($c['size'] !== null) { echo "/".$c['size']; } else { echo "/X"; } ?>/<?= $c['rating'] ?>)</desc>
+			<desc><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?> <?= _("hidden by") ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= $c['difficulty'] ?>/<?= $c['terrain'] ?><? if ($c['size'] !== null) { echo "/".$c['size']; } else { echo "/X"; } ?>/<?= $c['rating'] ?>)</desc>
 			<url><?= $c['url'] ?></url>
 			<urlname><?= Okapi::xmlescape($c['name']) ?></urlname>
 			<sym><?= ($vars['mark_found'] && $c['is_found']) ? "Geocache Found" : "Geocache" ?></sym>
 			<type>Geocache|<?= $vars['cache_GPX_types'][$c['type']] ?></type>
 			<? if ($vars['ns_ground']) { /* Does user want us to include Groundspeak's <cache> element? */ ?>
 				<groundspeak:cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="<?= $c['internal_id'] ?>" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1">
-					<groundspeak:name><?= Okapi::xmlescape($c['name']) ?></groundspeak:name>
+					<groundspeak:name><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?></groundspeak:name>
 					<groundspeak:placed_by><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:placed_by>
 					<groundspeak:owner id="<?= $vars['user_uuid_to_internal_id'][$c['owner']['uuid']] ?>"><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:owner>
 					<groundspeak:type><?= $vars['cache_GPX_types'][$c['type']] ?></groundspeak:type>
@@ -55,6 +55,16 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 					<groundspeak:difficulty><?= $c['difficulty'] ?></groundspeak:difficulty>
 					<groundspeak:terrain><?= $c['terrain'] ?></groundspeak:terrain>
 					<groundspeak:long_description html="True">
+						<? if (isset($c['alt_wpt_description_prefix'])) { ?>
+							&lt;p&gt;<?= Okapi::xmlescape(
+								sprintf(_("<b>Geocache's coordinates has been changed</b>, and now they point to the alternate waypoint described originally as: %s"), $c['alt_wpt_description_prefix'])
+							) ?>&lt;/p&gt;
+						<? } ?>
+						<? if (isset($c['user_coords_description_prefix'])) { ?>
+							&lt;p&gt;<?= Okapi::xmlescape(
+								_("<b>Geocache's coordinates has been changed</b> to point to the user supplied value.")
+							) ?>&lt;/p&gt;
+						<? } ?>
 						&lt;p&gt;
 							&lt;a href="<?= $c['url'] ?>"&gt;<?= Okapi::xmlescape($c['name']) ?>&lt;/a&gt;
 							<?= _("hidden by") ?> &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= Okapi::xmlescape($c['owner']['username']) ?>&lt;/a&gt;&lt;br/&gt;
