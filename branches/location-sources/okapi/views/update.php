@@ -94,6 +94,20 @@ class View
 		{
 			self::out("Current OKAPI settings are:\n\n".Settings::describe_settings()."\n\n".
 				"Make sure they are correct, then append '?install=true' to your query.");
+			try
+			{
+				Db::select_value("select 1 from caches limit 1");
+			}
+			catch (Exception $e)
+			{
+				self::out(
+					"\n\n".
+					"IMPORTANT: If you're trying to install OKAPI on an empty database then\n".
+					"you will fail. OKAPI is not a standalone application, it is a plugin\n".
+					"for Opencaching sites. Please read this:\n\n".
+					"https://code.google.com/p/opencaching-api/issues/detail?id=299"
+				);
+			}
 			return;
 		}
 		elseif ($max_ver == $current_ver)
