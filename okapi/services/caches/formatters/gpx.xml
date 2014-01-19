@@ -199,7 +199,7 @@
 		field returned by <a href="%OKAPI:methodref:services/caches/geocache%">services/caches/geocache</a> 
 		method. If the type doesn't match, it will be ignored.</p>
 		
-		<p>By default, the <b>location</b> attributes (<i>&lt;wpt lat="..." lon="..."&gt;</i>) 
+		<p>By default, the <b>lat</b> and <b>lon</b> attributes of the <b>&lt;wpt&gt;</b> element 
 		will return the default coordinates of the cache, as supplied by the owner of the cache. 
 		This option allows you to replace these coordinates with other set of coordinates, loaded 
 		from the <b>alt_wpts</b> field mentioned above.</p>
@@ -222,19 +222,22 @@
 				<p>If the type matches exactly one alternate waypoint, then:</p>
 			
 				<ul>
-					<li>its coordinates will be returned in the <b>location</b> attributes,</li>
+					<li>The <b>lat</b> and <b>lon</b> attributes of the "primary"
+					<b>&lt;wpt&gt;</b> element will be replaced with the location of
+					the matched alternate waypoint,</li>
 					
-					<li>it will be removed from the alternate waypoins list,</li>
-					
-					<li>the default location will be appended as an alternate waypoint,</li>
-
-					<li>the geocache name will be prefixed with value suppiled as 
+					<li>The name of the geocache will be prefixed with the value suppiled in 
 					<b><a href="%OKAPI:methodargref:#location_change_prefix%">location_change_prefix</a></b> 
 					parameter,</li>
-					
-					<li>the geocache description will be prepended with a textual message containig
-					mentioned waypoint description.</li>
 
+					<li>The desription of the waypoint will be included in the
+					header of the cache description,</li>
+
+					<li>The matched alternate waypoint will be removed from the list
+					of alternate waypoins (in order to avoid duplicate locations),</li>
+					
+					<li>Extra alternate waypoint will be created, with the original
+					location of the geocache.</li>
 				</ul>
 			</li>
 			

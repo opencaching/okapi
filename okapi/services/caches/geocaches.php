@@ -958,7 +958,7 @@ class WebService
 					);
 				}
 			}
-			
+
 			# Issue #298 - User coordinates implemented in oc.pl
 			if ($request->token != null)
 			{
@@ -985,14 +985,17 @@ class WebService
 								'type' => 'user-coords',
 								'type_name' => _("User location"),
 								'sym' => 'Block, Green',
-								'description' => sprintf(_("User-supplied location of the %s geocache"), $cache_code),
+								'description' => sprintf(
+									_("Your own custom coordinates for the %s geocache"),
+									$cache_code,
+								),
 							);
 						}
 					}
 				}
 			}
 		}
-		
+
 		# Country and/or state.
 
 		if (in_array('country', $fields) || in_array('state', $fields))
