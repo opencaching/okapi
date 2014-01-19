@@ -167,7 +167,7 @@ class WebService
 		{
 			throw new InvalidParam('location_source', '\''.$location_source.'\'');
 		}
-		
+
 		# Make sure we have sufficient authorization
 		if ($location_source == 'alt_wpt:user-coords' && $request->token == null)
 		{
@@ -210,6 +210,17 @@ class WebService
 				)
 			)
 		);
+
+		# Get rid of invalid cache references.
+
+		$valid = array();
+		foreach ($vars['caches'] as $key => &$ref) {
+			if ($ref !== null) {
+				$valid[$key] = &$ref;
+			}
+		}
+		$vars['caches'] = &$valid;
+		unset($valid);
 
 		# Get all the other data need.
 
@@ -257,10 +268,10 @@ class WebService
 					$attr_dict = AttrHelper::get_attrdict();
 				}
 
-				foreach ($vars['caches'] as &$cache)
+				foreach ($vars['caches'] as &$cache_ref)
 				{
-					$cache['gc_attrs'] = array();
-					foreach ($cache['attr_acodes'] as $acode)
+					$cache_ref['gc_attrs'] = array();
+					foreach ($cache_ref['attr_acodes'] as $acode)
 					{
 						$has_gc_equivs = false;
 						foreach ($vars['attr_index'][$acode]['gc_equivs'] as $gc)
@@ -270,7 +281,7 @@ class WebService
 							# - assigning the same GC ID to multiple A-Codes,
 							# - contradicting attributes in one OC listing, e.g. 24/4 + not 24/7.
 
-							$cache['gc_attrs'][$gc['id']] = $gc;
+							$cache_ref['gc_attrs'][$gc['id']] = $gc;
 							$has_gc_equivs = true;
 						}
 						if (!$has_gc_equivs && $vars['gc_ocde_attrs'])
@@ -283,7 +294,7 @@ class WebService
 							# IDs start at 106, so there is space for 40 new GS attributes.
 
 							$internal_id = $attr_dict[$acode]['internal_id'];
-							$cache['gc_attrs'][100 + $internal_id] = array(
+							$cache_ref['gc_attrs'][100 + $internal_id] = array(
 								'inc' => 1,
 								'name' => $ocde_attrnames[$internal_id][0]['name'],
 							);
@@ -332,11 +343,6 @@ class WebService
 			# lets find requested coords
 			foreach ($vars['caches'] as &$cache_ref)
 			{
-				if ($cache_ref === null)
-				{
-					# it happens in case of wrong cache code passed
-					continue;
-				}
 				foreach ($cache_ref['alt_wpts'] as $alt_wpt_key => $alt_wpt)
 				{
 					if ('alt_wpt:'.$alt_wpt['type'] == $location_source)
