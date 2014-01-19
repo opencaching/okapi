@@ -55,15 +55,8 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 					<groundspeak:difficulty><?= $c['difficulty'] ?></groundspeak:difficulty>
 					<groundspeak:terrain><?= $c['terrain'] ?></groundspeak:terrain>
 					<groundspeak:long_description html="True">
-						<? if (isset($c['alt_wpt_description_prefix'])) { ?>
-							&lt;p&gt;<?= Okapi::xmlescape(
-								sprintf(_("<b>Geocache's coordinates has been changed</b>, and now they point to the alternate waypoint described originally as: %s"), $c['alt_wpt_description_prefix'])
-							) ?>&lt;/p&gt;
-						<? } ?>
-						<? if (isset($c['user_coords_description_prefix'])) { ?>
-							&lt;p&gt;<?= Okapi::xmlescape(
-								_("<b>Geocache's coordinates has been changed</b> to point to the user supplied value.")
-							) ?>&lt;/p&gt;
+						<? if (isset($c['warning_prefix'])) { ?>
+							&lt;p style='font-size: 120%'&gt;<?= Okapi::xmlescape($c['warning_prefix']) ?>&lt;/p&gt;
 						<? } ?>
 						&lt;p&gt;
 							&lt;a href="<?= $c['url'] ?>"&gt;<?= Okapi::xmlescape($c['name']) ?>&lt;/a&gt;
