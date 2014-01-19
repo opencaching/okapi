@@ -378,7 +378,7 @@ class WebService
 								'type' => 'default-coords',
 								'type_name' => _("Original geocache location"),
 								'sym' => 'Block, Blue',
-								'description' => sprintf(_("Original (owner-supplied) location of the %s geocache"), $cache['code']),
+								'description' => sprintf(_("Original (owner-supplied) location of the %s geocache"), $cache_ref['code']),
 							);
 						}
 						break;
