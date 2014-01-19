@@ -23,7 +23,6 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
 	<urlname><?= $vars['installation']['site_name'] ?></urlname>
 	<time><?= date('c') ?></time>
 	<? foreach ($vars['caches'] as $c) { ?>
-		<? if ($c == null) continue; /* This happens when there is an invalid code in cache_codes */ ?>
 		<? list($lat, $lon) = explode("|", $c['location']); ?>
 		<wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
 			<time><?= $c['date_created'] ?></time>

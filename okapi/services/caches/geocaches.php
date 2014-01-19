@@ -987,7 +987,7 @@ class WebService
 								'sym' => 'Block, Green',
 								'description' => sprintf(
 									_("Your own custom coordinates for the %s geocache"),
-									$cache_code,
+									$cache_code
 								),
 							);
 						}
