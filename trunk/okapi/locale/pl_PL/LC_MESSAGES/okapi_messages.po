@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-19 12:07+0100\n"
-"PO-Revision-Date: 2014-01-19 12:07+0100\n"
+"POT-Creation-Date: 2014-01-23 15:48+0100\n"
+"PO-Revision-Date: 2014-01-23 15:49+0100\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -65,7 +65,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>. Prawa "
 "autorskie wpisów do logów należą do ich autorów."
 
-#: services/caches/formatters/gpx.php:349
+#: services/caches/formatters/gpx.php:360
 msgid ""
 "<b>Geocache coordinates have been changed.</b> They have been replaced with "
 "your own custom coordinates which you have provided for this geocache."
@@ -73,7 +73,7 @@ msgstr ""
 "<b>Współrzędne skrzynki zostały zmienione.</b> Zostały zastąpione Twoimi "
 "osobistymi współrzędnymi, które wprowadziłeś na stronie tej skrzynki."
 
-#: services/caches/formatters/gpx.php:354
+#: services/caches/formatters/gpx.php:366
 msgid ""
 "<b>Geocache coordinates have been changed.</b> Currently they point to one "
 "of the alternate waypoints originally described as:"
@@ -81,21 +81,21 @@ msgstr ""
 "<b>Współrzędne skrzynki zostały zmienione.</b> Aktualnie wskazują one na "
 "jeden z dodatkowych waypointów, oryginalnie opisanego jako:"
 
-#: services/caches/formatters/gpx.php:367
+#: services/caches/formatters/gpx.php:379
 msgid "Original geocache location"
 msgstr "Oryginalne współrzędne skrzynki"
 
-#: services/caches/formatters/gpx.php:369
+#: services/caches/formatters/gpx.php:381
 #, php-format
 msgid "Original (owner-supplied) location of the %s geocache"
 msgstr "Oryginalne współrzędne skrzynki %s (podane przez autora)"
 
-#: services/caches/formatters/gpxfile.tpl.php:31
-#: services/caches/formatters/gpxfile.tpl.php:63
+#: services/caches/formatters/gpxfile.tpl.php:30
+#: services/caches/formatters/gpxfile.tpl.php:62
 msgid "hidden by"
 msgstr "ukryta przez"
 
-#: services/caches/formatters/gpxfile.tpl.php:65
+#: services/caches/formatters/gpxfile.tpl.php:64
 #, php-format
 msgid "%d recommendation"
 msgid_plural "%d recommendations"
@@ -103,7 +103,7 @@ msgstr[0] "%d rekomendacja"
 msgstr[1] "%d rekomendacje"
 msgstr[2] "%d rekomendacji"
 
-#: services/caches/formatters/gpxfile.tpl.php:66
+#: services/caches/formatters/gpxfile.tpl.php:65
 #, php-format
 msgid "found %d time"
 msgid_plural "found %d times"
@@ -111,7 +111,7 @@ msgstr[0] "znaleziona %d raz"
 msgstr[1] "znaleziona %d razy"
 msgstr[2] "znaleziona %d razy"
 
-#: services/caches/formatters/gpxfile.tpl.php:69
+#: services/caches/formatters/gpxfile.tpl.php:68
 #, php-format
 msgid "%d trackable"
 msgid_plural "%d trackables"
@@ -119,32 +119,32 @@ msgstr[0] "%d GeoKret (lub TravelBug)"
 msgstr[1] "%d GeoKrety (lub TravelBugi)"
 msgstr[2] "%d GeoKretów (lub TravelBugów)"
 
-#: services/caches/formatters/gpxfile.tpl.php:73
+#: services/caches/formatters/gpxfile.tpl.php:72
 msgid "Personal notes"
 msgstr "Osobiste notatki"
 
-#: services/caches/formatters/gpxfile.tpl.php:77
+#: services/caches/formatters/gpxfile.tpl.php:76
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: services/caches/formatters/gpxfile.tpl.php:81
+#: services/caches/formatters/gpxfile.tpl.php:80
 msgid "Trackables"
 msgstr "Geokrety, Travelbugi itp."
 
-#: services/caches/formatters/gpxfile.tpl.php:91
-#: services/caches/formatters/gpxfile.tpl.php:107
+#: services/caches/formatters/gpxfile.tpl.php:90
+#: services/caches/formatters/gpxfile.tpl.php:106
 msgid "Images"
 msgstr "Obrazki"
 
-#: services/caches/formatters/gpxfile.tpl.php:114
+#: services/caches/formatters/gpxfile.tpl.php:113
 msgid "Spoilers"
 msgstr "Spoilery"
 
-#: services/caches/formatters/gpxfile.tpl.php:123
+#: services/caches/formatters/gpxfile.tpl.php:122
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 
-#: services/caches/formatters/gpxfile.tpl.php:131
+#: services/caches/formatters/gpxfile.tpl.php:130
 msgid "The cache probably is located in the following protection areas:"
 msgstr "Prawdopodobnie skrzynka znajduje się na terenie obszarów chronionych:"
 
@@ -287,16 +287,17 @@ msgstr "Odmawiam"
 #, php-format
 msgid ""
 "\n"
-"\t\t\t\t\t<p>Once permission is granted it is valid until its withdrawal on\n"
-"\t\t\t\t\tthe <a href='%s'>applications management</a> page.</p>\n"
-"\t\t\t\t\t<p>The application will access your acount via <a href='%s'>the "
-"OKAPI Framework</a>.\n"
-"\t\t\t\t\tIf you allow this request application will be able to access all "
-"methods delivered\n"
-"\t\t\t\t\tby the OKAPI Framework, i.e. post log entries on geocaches in your "
-"name.\n"
-"\t\t\t\t\tYou can revoke this permission at any moment.</p>\n"
-"\t\t\t\t"
+"                    <p>Once permission is granted it is valid until its "
+"withdrawal on\n"
+"                    the <a href='%s'>applications management</a> page.</p>\n"
+"                    <p>The application will access your acount via <a "
+"href='%s'>the OKAPI Framework</a>.\n"
+"                    If you allow this request application will be able to "
+"access all methods delivered\n"
+"                    by the OKAPI Framework, i.e. post log entries on "
+"geocaches in your name.\n"
+"                    You can revoke this permission at any moment.</p>\n"
+"                "
 msgstr ""
 "\n"
 "<p>Raz udzielona zgoda jest ważna aż do momentu jej wycofania na stronie <a "
@@ -319,11 +320,11 @@ msgstr "Pomyślnie dałeś dostęp"
 #, php-format
 msgid ""
 "\n"
-"\t\t\t\t<p><b>You've just granted %s application access to your %s account.</"
-"b>\n"
-"\t\t\t\tTo complete the operation, go back to %s and enter the following PIN "
-"code:</p>\n"
-"\t\t\t"
+"                <p><b>You've just granted %s application access to your %s "
+"account.</b>\n"
+"                To complete the operation, go back to %s and enter the "
+"following PIN code:</p>\n"
+"            "
 msgstr ""
 "\n"
 "<p><b>Właśnie dałeś dostęp aplikacji %s do Twojego konta %s.</b>\n"
@@ -342,14 +343,14 @@ msgstr "Twoje zewnętrzne aplikacje"
 #, php-format
 msgid ""
 "\n"
-"\t\t\t\t\t<p>This is the list of applications which you granted access to "
-"your <b>%s</b> account.\n"
-"\t\t\t\t\tThis page gives you the abbility to revoke all previously granted "
-"privileges.\n"
-"\t\t\t\t\tOnce you click \"remove\" the application will no longer be able "
-"to perform any\n"
-"\t\t\t\t\tactions on your behalf.</p>\n"
-"\t\t\t\t"
+"                    <p>This is the list of applications which you granted "
+"access to your <b>%s</b> account.\n"
+"                    This page gives you the abbility to revoke all "
+"previously granted privileges.\n"
+"                    Once you click \"remove\" the application will no longer "
+"be able to perform any\n"
+"                    actions on your behalf.</p>\n"
+"                "
 msgstr ""
 "\n"
 "<p>Następującym aplikacjom zezwoliłeś na dostęp do swojego konta <b>%s</b>.\n"
@@ -366,13 +367,13 @@ msgstr "usuń"
 #, php-format
 msgid ""
 "\n"
-"\t\t\t\t\t<p>Thanks to the <a href='%s'>OKAPI Framework</a> you can grant "
-"external applications\n"
-"\t\t\t\t\taccess to your <b>%s</b> account. Currently no applications are "
-"authorized to act\n"
-"\t\t\t\t\ton your behalf. Once you start using external Opencaching "
-"applications, they will appear here.</p>\n"
-"\t\t\t\t"
+"                    <p>Thanks to the <a href='%s'>OKAPI Framework</a> you "
+"can grant external applications\n"
+"                    access to your <b>%s</b> account. Currently no "
+"applications are authorized to act\n"
+"                    on your behalf. Once you start using external "
+"Opencaching applications, they will appear here.</p>\n"
+"                "
 msgstr ""
 "\n"
 "<p>Dzięki platformie <a href='%s'>OKAPI</a> możesz dawać zewnętrznym "
