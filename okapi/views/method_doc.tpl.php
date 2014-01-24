@@ -70,8 +70,7 @@ $m = $vars['method'];
                                         standard OAuth Consumer signing arguments:
                                         <i>oauth_consumer_key, oauth_nonce, oauth_timestamp, oauth_signature,
                                         oauth_signature_method, oauth_version</i>.
-                                        <b>Plus <?= $m['auth_options']['oauth_token'] ?></b> <i>oauth_token</i>
-                                        for Token authorization.
+                                        <b>Plus required</b> <i>oauth_token</i> for Token authorization.
                                     <? } ?>
                                 </td>
                             </tr>
