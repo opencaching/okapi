@@ -962,6 +962,11 @@ class WebService
             # Issue #298 - User coordinates implemented in oc.pl
             if ($request->token != null)
             {
+                // TODO: oc.de uses `coordinates` table where `type` = 2 to store
+                // user coordinates.
+                // Implement the change for oc.de, IF they decide to upgrade
+                // OKAPI version (otherwise it's useless)
+                
                 if (Settings::get('OC_BRANCH') == 'oc.pl')
                 {
                     # Query DB for user provided coordinates
