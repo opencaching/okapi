@@ -962,11 +962,6 @@ class WebService
             # Issue #298 - User coordinates implemented in oc.pl
             if ($request->token != null)
             {
-                // TODO: oc.de uses `coordinates` table where `type` = 2 to store
-                // user coordinates. See
-                // https://github.com/OpencachingDeutschland/oc-server3/tree/master/htdocs/libse/CacheNote
-                // http://www.opencaching.de/okapi/devel/dbstruct
-                
                 if (Settings::get('OC_BRANCH') == 'oc.pl')
                 {
                     # Query DB for user provided coordinates
