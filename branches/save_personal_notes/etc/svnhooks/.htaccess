@@ -1,2 +1,0 @@
-Options +ExecCGI -Indexes
-AddHandler cgi-script .py
