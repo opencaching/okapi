@@ -38,6 +38,7 @@ class OkapiServiceRunner
         'services/caches/geocache',
         'services/caches/geocaches',
         'services/caches/mark',
+        'services/caches/save_personal_notes',
         'services/caches/formatters/gpx',
         'services/caches/formatters/garmin',
         'services/caches/map/tile',
