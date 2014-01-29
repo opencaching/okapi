@@ -450,6 +450,16 @@ class Db
         }
         return $rs;
     }
+    
+    /**
+     * Return number of rows actually updated, inserted or deleted by the last 
+     * statement executed with execute(). It DOES NOT return number of rows
+     * returned by the last select statement.
+     */
+    public static function get_affected_row_count()
+    {
+        return mysql_affected_rows();
+    }
 
     public static function field_exists($table, $field)
     {

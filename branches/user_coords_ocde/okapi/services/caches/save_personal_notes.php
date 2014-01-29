@@ -192,13 +192,28 @@ class WebService
     private static function remove_notes($cache_id, $user_id)
     {
         if (Settings::get('OC_BRANCH') == 'oc.de') {
+            # we can delete row if and only if there are no coords in it
             Db::execute("
                 delete from coordinates
                 where
                     type = 2  -- personal note
                     and cache_id = '".mysql_real_escape_string($cache_id)."'
                     and user_id = '".mysql_real_escape_string($user_id)."'
+                    and longitude = 0
+                    and latitude = 0
             ");
+            if (Db::get_affected_row_count() <= 0){
+                # no rows deleted - record either doesn't exist, or has coords
+                # remove only description
+                Db::execute("
+                    update coordinates
+                    set description = null
+                    where
+                        type = 2
+                        and cache_id = '".mysql_real_escape_string($cache_id)."'
+                        and user_id = '".mysql_real_escape_string($user_id)."'
+                ");
+            }
         } else {  # oc.pl branch
             Db::execute("
                 delete from cache_notes
