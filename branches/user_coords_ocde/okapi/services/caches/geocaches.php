@@ -966,25 +966,27 @@ class WebService
                 # Query DB for user provided coordinates
                 if (Settings::get('OC_BRANCH') == 'oc.pl')
                 {
-                    $cacheid2user_coords = Db::select_group_by('cache_id", "
+                    $cacheid2user_coords = Db::select_group_by('cache_id', "
                         select
                             cache_id, longitude, latitude
                         from cache_mod_cords
                         where
-                            cache_id in ('$cache_codes_escaped_and_imploded')
+                            cache_id in ($cache_codes_escaped_and_imploded)
                             and user_id = '".mysql_real_escape_string($request->token->user_id)."'
                     ");
                 } else {
                     # oc.de
-                    $cacheid2user_coords = Db::select_group_by("cache_id", "
+                    $cacheid2user_coords = Db::select_group_by('cache_id', "
                         select
                             cache_id, longitude, latitude
                         from coordinates
                         where
-                            cache_id in ('.$cache_codes_escaped_and_imploded.')
-                            and user_id = \''.mysql_real_escape_string($request->token->user_id).'\'
+                            cache_id in ($cache_codes_escaped_and_imploded)
+                            and user_id = '".mysql_real_escape_string($request->token->user_id)."'
                             and type = 2
-                    ');
+                            and longitude != 0
+                            and latitude != 0
+                    ");
                 }
                 foreach ($cacheid2user_coords as $cache_id => $waypoints)
                 {

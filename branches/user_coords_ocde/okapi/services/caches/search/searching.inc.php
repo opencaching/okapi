@@ -741,6 +741,8 @@ class SearchAssistant
                         on coordinates.cache_id = caches.cache_id
                         and coordinates.user_id = '".mysql_real_escape_string($this->request->token->user_id)."'
                         and coordinates.type = 2
+                        and coordinates.longitude != 0
+                        and coordinates.latitude != 0
                 ");
             }
             $location_extra_sql = array(
