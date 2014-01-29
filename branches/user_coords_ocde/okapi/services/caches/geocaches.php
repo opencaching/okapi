@@ -960,7 +960,7 @@ class WebService
             }
 
             # Issue #298 - User coordinates implemented in oc.pl
-            # Issue #305 - User coordinates implemented in de.pl
+            # Issue #305 - User coordinates implemented in oc.de
             if ($request->token != null)
             {
                 # Query DB for user provided coordinates
