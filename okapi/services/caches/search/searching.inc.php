@@ -712,13 +712,8 @@ class SearchAssistant
             throw new BadRequest("Level 3 Authentication is required to access 'alt_wpt:user-coords'.");
         }
 
-        # user-coords are implemented only in oc.pl
-        # and only one alternate location is currenlty supported
-        if (Settings::get('OC_BRANCH') == 'oc.pl' && $location_source == 'alt_wpt:user-coords')
-        {
-            /* pass */
-        } else {
-            # either other installation or unsupported waypoint type - use default geocache coordinates
+        if ($location_source != 'alt_wpt:user-coords') {
+            # unsupported waypoint type - use default geocache coordinates
             $location_source = 'default-coords';
         }
 
@@ -727,13 +722,29 @@ class SearchAssistant
             $this->longitude_expr = 'caches.longitude';
             $this->latitude_expr = 'caches.latitude';
         } else {
-            $this->longitude_expr = 'ifnull(cache_mod_cords.longitude, caches.longitude)';
-            $this->latitude_expr = 'ifnull(cache_mod_cords.latitude, caches.latitude)';
-            $extra_joins = array("
-                left join cache_mod_cords
-                    on cache_mod_cords.cache_id = caches.cache_id
-                    and cache_mod_cords.user_id = '".mysql_real_escape_string($this->request->token->user_id)."'
-            ");
+            $extra_joins = null;
+            if (Settings::get('OC_BRANCH') == 'oc.pl')
+            {
+                $this->longitude_expr = 'ifnull(cache_mod_cords.longitude, caches.longitude)';
+                $this->latitude_expr = 'ifnull(cache_mod_cords.latitude, caches.latitude)';
+                $extra_joins = array("
+                    left join cache_mod_cords
+                        on cache_mod_cords.cache_id = caches.cache_id
+                        and cache_mod_cords.user_id = '".mysql_real_escape_string($this->request->token->user_id)."'
+                ");
+            } else {
+                # oc.de
+                $this->longitude_expr = 'ifnull(coordinates.longitude, caches.longitude)';
+                $this->latitude_expr = 'ifnull(coordinates.latitude, caches.latitude)';
+                $extra_joins = array("
+                    left join coordinates
+                        on coordinates.cache_id = caches.cache_id
+                        and coordinates.user_id = '".mysql_real_escape_string($this->request->token->user_id)."'
+                        and coordinates.type = 2
+                        and coordinates.longitude != 0
+                        and coordinates.latitude != 0
+                ");
+            }
             $location_extra_sql = array(
                 'extra_joins' => $extra_joins
             );
