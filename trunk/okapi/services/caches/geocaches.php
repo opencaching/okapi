@@ -960,37 +960,51 @@ class WebService
             }
 
             # Issue #298 - User coordinates implemented in oc.pl
+            # Issue #305 - User coordinates implemented in oc.de
             if ($request->token != null)
             {
+                # Query DB for user provided coordinates
                 if (Settings::get('OC_BRANCH') == 'oc.pl')
                 {
-                    # Query DB for user provided coordinates
-                    $cacheid2user_coords = Db::select_group_by('cache_id', '
+                    $cacheid2user_coords = Db::select_group_by('cache_id', "
                         select
                             cache_id, longitude, latitude
                         from cache_mod_cords
                         where
-                            cache_id in ('.$cache_codes_escaped_and_imploded.')
-                            and user_id = \''.mysql_real_escape_string($request->token->user_id).'\'
-                    ');
-                    foreach ($cacheid2user_coords as $cache_id => $waypoints)
+                            cache_id in ($cache_codes_escaped_and_imploded)
+                            and user_id = '".mysql_real_escape_string($request->token->user_id)."'
+                    ");
+                } else {
+                    # oc.de
+                    $cacheid2user_coords = Db::select_group_by('cache_id', "
+                        select
+                            cache_id, longitude, latitude
+                        from coordinates
+                        where
+                            cache_id in ($cache_codes_escaped_and_imploded)
+                            and user_id = '".mysql_real_escape_string($request->token->user_id)."'
+                            and type = 2
+                            and longitude != 0
+                            and latitude != 0
+                    ");
+                }
+                foreach ($cacheid2user_coords as $cache_id => $waypoints)
+                {
+                    $cache_code = $cacheid2wptcode[$cache_id];
+                    foreach ($waypoints as $row)
                     {
-                        $cache_code = $cacheid2wptcode[$cache_id];
-                        foreach ($waypoints as $row)
-                        {
-                            # there should be only one user waypoint per cache...
-                            $results[$cache_code]['alt_wpts'][] = array(
-                                'name' => $cache_code.'-USER-COORDS',
-                                'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
-                                'type' => 'user-coords',
-                                'type_name' => _("User location"),
-                                'sym' => 'Block, Green',
-                                'description' => sprintf(
-                                    _("Your own custom coordinates for the %s geocache"),
-                                    $cache_code
-                                ),
-                            );
-                        }
+                        # there should be only one user waypoint per cache...
+                        $results[$cache_code]['alt_wpts'][] = array(
+                            'name' => $cache_code.'-USER-COORDS',
+                            'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+                            'type' => 'user-coords',
+                            'type_name' => _("User location"),
+                            'sym' => 'Block, Green',
+                            'description' => sprintf(
+                                _("Your own custom coordinates for the %s geocache"),
+                                $cache_code
+                            ),
+                        );
                     }
                 }
             }
