@@ -343,7 +343,7 @@
                             <li><b>user-coords</b> - extra coordinates supplied <i>by the user who
                             had found the cache</i> (NOT the owner of the cache), most probably
                             pointing to the final location of the cache (e.g. a quiz cache);
-                            this type of waypoint is avaiable only in some installations and only
+                            this type of waypoint is available only in some installations and only
                             if you're using Level 3 Authentication,</li>
 
                             <li>more types may be added at any moment; unknown types should be
