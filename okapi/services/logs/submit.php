@@ -564,7 +564,7 @@ class WebService
                     update caches
                     set
                         founds = founds + 1,
-                        last_found = greatest(last_found, from_unixtime('".mysql_real_escape_string($when)."'))
+                        last_found = greatest(ifnull(last_found, 0), from_unixtime('".mysql_real_escape_string($when)."'))
                     where cache_id = '".mysql_real_escape_string($cache_internal_id)."'
                 ");
             }
