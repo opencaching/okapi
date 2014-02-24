@@ -66,7 +66,8 @@ class ReplicateListener
             return;
         }
 
-        $theirs = TileTree::generate_short_row($cache);
+        # Fetch our copy of the cache.
+
         $ours = mysql_fetch_row(Db::query("
             select cache_id, z21x, z21y, status, type, rating, flags
             from okapi_tile_caches
@@ -74,6 +75,21 @@ class ReplicateListener
                 z=0
                 and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
         "));
+
+        # Caches near the poles caused our computations to break here. We will
+        # ignore such caches!
+
+        list($lat, $lon) = explode("|", $cache['location']);
+        if ((floatval($lat) >= 89.99) || (floatval($lat) <= -89.99)) {
+            if ($ours) {
+                self::remove_geocache_from_cached_tiles($ours[0]);
+            }
+            return;
+        }
+
+        # Compute the new row for okapi_tile_caches. Compare with the old one.
+
+        $theirs = TileTree::generate_short_row($cache);
         if (!$ours)
         {
             # Aaah, a new geocache! How nice... ;)
