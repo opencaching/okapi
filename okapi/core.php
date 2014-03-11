@@ -197,6 +197,7 @@ class OkapiExceptionHandler
         else
         {
             $exception_info .= "--- Stack trace ---\n".$e->getTraceAsString()."\n\n";
+            $exception_info = str_replace($exception_info, Settings::get('DB_PASSWORD'), "***");
         }
 
         $exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
@@ -450,9 +451,9 @@ class Db
         }
         return $rs;
     }
-    
+
     /**
-     * Return number of rows actually updated, inserted or deleted by the last 
+     * Return number of rows actually updated, inserted or deleted by the last
      * statement executed with execute(). It DOES NOT return number of rows
      * returned by the last select statement.
      */
