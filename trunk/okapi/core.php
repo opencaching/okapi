@@ -183,9 +183,21 @@ class OkapiExceptionHandler
         }
     }
 
+    private static function removeSensitiveDataFromEmail($message){
+        $hashStr1 = "'******'";
+        $hashStr2 = "******";
+        $search = array("'".Settings::get('DB_PASSWORD')."'", "'".Settings::get('DB_USERNAME')."'", 
+                    Settings::get('DB_SERVER'), "'".Settings::get('DB_NAME')."'");
+        $replace = array($hashStr1, $hashStr1, $hashStr2, $hashStr1);
+        $message = str_replace($search, $replace, $message);
+        return $message;
+    }
+
     public static function get_exception_info($e)
     {
-        $exception_info = "===== ERROR MESSAGE =====\n".trim($e->getMessage())."\n=========================\n\n";
+        $exception_info = "===== ERROR MESSAGE =====\n"
+            .trim(OkapiExceptionHandler::removeSensitiveDataFromEmail($e->getMessage()))
+            ."\n=========================\n\n";
         if ($e instanceof FatalError)
         {
             # This one doesn't have a stack trace. It is fed directly to OkapiExceptionHandler::handle
@@ -196,8 +208,8 @@ class OkapiExceptionHandler
         }
         else
         {
-            $exception_info .= "--- Stack trace ---\n".$e->getTraceAsString()."\n\n";
-            $exception_info = str_replace($exception_info, Settings::get('DB_PASSWORD'), "***");
+            $exception_info .= "--- Stack trace ---\n".
+                OkapiExceptionHandler::removeSensitiveDataFromEmail($e->getTraceAsString())."\n\n";
         }
 
         $exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
@@ -949,14 +961,14 @@ class Okapi
         throw new Exception("You need to set a valid VAR_DIR.");
     }
 
-    /** Returns something like "Opencaching.PL" or "Opencaching.DE". */
+    /** Returns something like "opencaching.pl" or "opencaching.de". */
     public static function get_normalized_site_name($site_url = null)
     {
         if ($site_url == null)
             $site_url = Settings::get('SITE_URL');
         $matches = null;
         if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $site_url, $matches)) {
-            return "Opencaching.".strtoupper($matches[2]);
+            return "opencaching.".$matches[2];
         } else {
             return "DEVELSITE";
         }
