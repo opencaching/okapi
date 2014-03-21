@@ -103,7 +103,7 @@ def deploy(revision):
         print "Uploading to the Downloads page..."
         sys.stdout.flush()
         status, reason, url = googlecode_upload.upload(
-            file_path = deployment_name + ".tar.gz",
+            file = deployment_name + ".tar.gz",
             project_name = "opencaching-api",
             summary = "OKAPI revision " + str(revision) + " (automatic deployment)",
             user_name=okapi_username,
