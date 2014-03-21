@@ -29,7 +29,7 @@ import datetime
 import subprocess
 from cStringIO import StringIO
 
-from googlecode_upload import upload_find_auth
+import googlecode_upload
 
 try:
     from auth import okapi_auth_key, okapi_username, okapi_password, ocpl_username, ocpl_password
@@ -102,9 +102,17 @@ def deploy(revision):
         my_call(["rm", "-rf", deployment_name])
         print "Uploading to the Downloads page..."
         sys.stdout.flush()
-        upload_find_auth(deployment_name + ".tar.gz", "opencaching-api",
-            "OKAPI revision " + str(revision) + " (automatic deployment)",
-            user_name=okapi_username, password=okapi_password)
+        status, reason, url = googlecode_upload.upload(
+            file_path = deployment_name + ".tar.gz",
+            project_name = "opencaching-api",
+            summary = "OKAPI revision " + str(revision) + " (automatic deployment)",
+            user_name=okapi_username,
+            password=okapi_password
+        )
+        if status in [httplib.FORBIDDEN, httplib.UNAUTHORIZED]:
+            msg = "Error uploading! IGNORING\n" + str(status) + "\n" + str(reason) + "\n"
+            print msg
+            sys.stderr.write(msg)
         print "Checking out opencaching-pl/trunk/okapi..."
         sys.stdout.flush()
         my_call(["svn", "co", "https://opencaching-pl.googlecode.com/svn/trunk/okapi",
