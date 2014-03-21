@@ -168,22 +168,14 @@ def upload_find_auth(file_path, project_name, summary, labels=None,
     tries: How many attempts to make.
   """
 
-  atty = os.isatty(sys.stdout.fileno())
-
   while tries > 0:
     if user_name is None:
-      if not atty:
-        sys.stderr.write("Aborted: no username.\n")
-        sys.exit(1)
       # Read username if not specified or loaded from svn config, or on
       # subsequent tries.
       sys.stdout.write('Please enter your googlecode.com username: ')
       sys.stdout.flush()
       user_name = sys.stdin.readline().rstrip()
     if password is None:
-      if not atty:
-        sys.stderr.write("Aborted: no password.\n")
-        sys.exit(1)
       # Read password if not loaded from svn config, or on subsequent tries.
       print 'Please enter your googlecode.com password.'
       print '** Note that this is NOT your Gmail account password! **'
@@ -196,13 +188,9 @@ def upload_find_auth(file_path, project_name, summary, labels=None,
     # Returns 403 Forbidden instead of 401 Unauthorized for bad
     # credentials as of 2007-07-17.
     if status in [httplib.FORBIDDEN, httplib.UNAUTHORIZED]:
-      sys.stderr.write("Error: " + str(status) + "\n")
-      sys.stderr.write("Reason: " + str(reason) + "\n")
       # Rest for another try.
+      user_name = password = None
       tries = tries - 1
-      print "Tries left: " + str(tries)
-      if atty:
-        user_name = password = None
     else:
       # We're done.
       break
