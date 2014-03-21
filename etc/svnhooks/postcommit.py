@@ -27,6 +27,7 @@ import hmac
 import json
 import datetime
 import subprocess
+import httplib
 from cStringIO import StringIO
 
 import googlecode_upload
