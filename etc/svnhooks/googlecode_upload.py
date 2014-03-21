@@ -95,7 +95,7 @@ def upload(file, project_name, user_name, password, summary, labels=None):
     'Content-Type': content_type,
     }
 
-  server = httplib.HTTPSConnection(upload_host)
+  server = httplib.HTTPConnection(upload_host)
   server.request('POST', upload_uri, body, headers)
   resp = server.getresponse()
   server.close()
