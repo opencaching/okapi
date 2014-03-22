@@ -186,7 +186,7 @@ class OkapiExceptionHandler
     private static function removeSensitiveDataFromEmail($message){
         $hashStr1 = "'******'";
         $hashStr2 = "******";
-        $search = array("'".Settings::get('DB_PASSWORD')."'", "'".Settings::get('DB_USERNAME')."'", 
+        $search = array("'".Settings::get('DB_PASSWORD')."'", "'".Settings::get('DB_USERNAME')."'",
                     Settings::get('DB_SERVER'), "'".Settings::get('DB_NAME')."'");
         $replace = array($hashStr1, $hashStr1, $hashStr2, $hashStr1);
         $message = str_replace($search, $replace, $message);
@@ -239,10 +239,8 @@ class OkapiErrorHandler
     /** Handle error encountered while executing OKAPI request. */
     public static function handle($severity, $message, $filename, $lineno)
     {
-        if ($severity == E_STRICT) return false;
-        if (($severity == E_NOTICE || $severity == E_DEPRECATED) &&
-            !self::$treat_notices_as_errors)
-        {
+        if ($severity == E_STRICT || $severity == E_DEPRECATED) return false;
+        if (($severity == E_NOTICE) && !self::$treat_notices_as_errors) {
             return false;
         }
         throw new ErrorException($message, 0, $severity, $filename, $lineno);
