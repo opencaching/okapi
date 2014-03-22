@@ -37,6 +37,7 @@ class WebService
         'Moving' => 'Unknown Cache',
         'Math/Physics' => 'Unknown Cache',
         'Drive-In' => 'Traditional Cache',
+        'Podcast' => 'Unknown Cache',
         'Own' => 'Unknown Cache',
         'Other' => 'Unknown Cache'
     );
