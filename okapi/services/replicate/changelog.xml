@@ -88,7 +88,7 @@
                         </ul>
                     </li>
                     <li>
-                        <p><b>fields</b> - a dictionary of fields associated with the object (present only
+                        <p><b>data</b> - a dictionary of fields associated with the object (present only
                         if <b>change_type</b> equals <b>replace</b>).</p>
                         <ul>
                             <li>For <b>geocache</b> objects, this might be any subset of fields described

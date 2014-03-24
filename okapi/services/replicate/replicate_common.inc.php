@@ -19,7 +19,7 @@ use okapi\Settings;
 class ReplicateCommon
 {
     private static $chunk_size = 50;
-    private static $logged_cache_fields = 'code|names|location|type|status|url|owner|founds|notfounds|size|size2|oxsize|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|descriptions|hints|images|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden';
+    private static $logged_cache_fields = 'code|names|location|type|status|url|owner|founds|notfounds|size|size2|oxsize|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|descriptions|hints|images|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden|attr_acodes|willattends|country|state|preview_image|trip_time|trip_distance|gc_code|hints2|protection_areas';
     private static $logged_log_entry_fields = 'uuid|cache_code|date|user|type|was_recommended|comment';
 
     /** Return current (greatest) changelog revision number. */
@@ -153,7 +153,9 @@ class ReplicateCommon
      *
      * Currently, only caches are checked (log entries are not).
      */
-    public static function verify_clog_consistency()
+    public static function verify_clog_consistency(
+        $force_all=false, $geocache_ignored_fields = null
+    )
     {
         set_time_limit(0);
         ignore_user_abort(true);
@@ -162,11 +164,14 @@ class ReplicateCommon
         # Such entries might have not been seen by the update_clog_table() yet
         # (e.g. other long-running cronjob is preventing update_clog_table from
         # running).
+        #
+        # If $force_all is true, then all caches will be verified. This is
+        # quite important when used in conjunction with ignored_fields.
 
         $cache_codes = Db::select_column("
             select wp_oc
             from caches
-            where okapi_syncbase < date_add(now(), interval -1 day);
+            ".($force_all ? "" : "where okapi_syncbase < date_add(now(), interval -1 day)")."
         ");
         $cache_code_groups = Okapi::make_groups($cache_codes, 50);
         unset($cache_codes);
@@ -187,6 +192,24 @@ class ReplicateCommon
                 if ($entry['object_type'] != 'geocache')
                     continue;
                 $cache_code = $entry['object_key']['code'];
+
+                if (($entry['change_type'] == 'replace') && ($geocache_ignored_fields != null)) {
+
+                    # We were called with a non-null ignored fields. Probably
+                    # this call originated from the database update script
+                    # and new fields have been added to the replicate module.
+                    # We will ignore such new fields - this way no unnecessary
+                    # clog entries will be created.
+
+                    foreach ($geocache_ignored_fields as $field) {
+                        unset($entry['data'][$field]);
+                    }
+                    if (count($entry['data']) == 0) {
+                        # Skip this geocache. Nothing was changed here, only
+                        # new fields have been added.
+                        continue;
+                    }
+                }
 
                 # We will story the first and the last entry in the $two_examples
                 # vars which is to be emailed to OKAPI developers.
