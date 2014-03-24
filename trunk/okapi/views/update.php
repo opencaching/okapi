@@ -17,6 +17,7 @@ use okapi\OkapiInternalRequest;
 use okapi\Settings;
 use okapi\OkapiLock;
 use okapi\cronjobs\CronJobController;
+use okapi\services\replicate\ReplicateCommon;
 
 require_once($GLOBALS['rootpath']."okapi/cronjobs.php");
 
@@ -691,4 +692,17 @@ class View
     private static function ver86() { Db::execute("alter table okapi_nonces change column `key` nonce_hash varchar(32) character set utf8 collate utf8_bin not null;"); }
     private static function ver87() { Db::execute("alter table okapi_nonces add primary key (consumer_key, nonce_hash);"); }
     private static function ver88() { Db::execute("alter table okapi_consumers add column admin tinyint not null default 0;"); }
+
+    private static function ver89()
+    {
+        # Ignore newly added replicate fields. This way we will avoid generating
+        # changelog entries for these fields.
+
+        require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
+        $new_geocache_fields = array(
+            'attr_acodes', 'willattends', 'country', 'state', 'preview_image',
+            'trip_time', 'trip_distance', 'gc_code',  'hints2', 'protection_areas'
+        );
+        ReplicateCommon::verify_clog_consistency(true, $new_geocache_fields);
+    }
 }
