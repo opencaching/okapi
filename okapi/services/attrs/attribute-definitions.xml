@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 
 This is the list of all geocache attributes supported by OKAPI. It should
 include any attribute used by at least one of the Opencaching installations.
@@ -1342,10 +1342,17 @@ It also defines attribute names and descriptions in several languages.
     <attr acode="A39" categories="de-time-and-seasons">
         <groundspeak id="13" inc="true" name="Available at all times" />
         <opencaching schema="http://www.opencaching.de/" id="38" />
+        <opencaching schema="http://www.opencaching.nl/" id="38" />
         <lang id="en">
             <name>Available 24/7</name>
             <desc>
                 This cache can be found at any time of day or week.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>24/7 beschikbaar</name>
+            <desc>
+                Deze cache kan 24/7 gedaan worden, zowel overdag als in de nacht.
             </desc>
         </lang>
         <lang id="de">
@@ -1371,6 +1378,7 @@ It also defines attribute names and descriptions in several languages.
     <attr acode="A40" categories="de-time-and-seasons">
         <groundspeak id="13" inc="false" name="Available at all times" />
         <opencaching schema="http://www.opencaching.de/" id="39" />
+        <opencaching schema="http://www.opencaching.nl/" id="39" />
         <lang id="en">
             <name>Not 24/7</name>
             <desc>
@@ -1385,6 +1393,13 @@ It also defines attribute names and descriptions in several languages.
                 Dostępna w określonych dniach, godzinach, często wstęp płatny.
                 Często będzie to muzeum lub skansen. Szczegółowe informacje o
                 dostępności powinny znajdować się w opisie skrzynki.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Niet 24/7 beschikbaar</name>
+            <desc>
+                Deze cache is niet alle tijden te doen. Zie de cachebeschrijving voor de details.
+                Dit kan bijvoorbeeld zijn in een gebied waar men alleen tussen zonsopgang of zonsondergang mag komen.
             </desc>
         </lang>
         <lang id="de">
