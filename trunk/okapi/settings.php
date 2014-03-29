@@ -273,6 +273,6 @@ final class Settings
 
     public static function describe_settings()
     {
-        return print_r(self::$SETTINGS, true);
+        return Okapi::removeSensitiveData(print_r(self::$SETTINGS, true));
     }
 }
