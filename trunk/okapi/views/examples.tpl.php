@@ -42,21 +42,11 @@ a basic OAuth Console for OKAPI methods. It is an open-source project. You can
 
 <h2 id='libraries'>Are there any client libraries?</h2>
 
-<p>OKAPI <b>does not</b> require you to use any special libraries, usually you will want to
-use OKAPI "as is", via basic HTTP requests and responses.</p>
-<p>However, some third-party libraries exist and you can use them if you want. With proper
-libraries, OKAPI might be easier to use. We give you the list of all libraries we know of.
-It's your choice to decide which are "proper".</p>
-<ul>
-    <li>If you're developing with .NET, you may want to check out
-    <a target='_blank' href='http://code.google.com/p/okapi-dotnet-client/'>.NET
-    client library</a> by Oliver Dietz.</li>
-    <li>(if you've developed your own library and would like to include it here,
-    post the details in a comment thread below)</li>
-</ul>
-<p>You should check with the author of the library before you use it, to make sure it is
-up-to-date. If you believe it is not, then keep in mind that learning to use our REST
-protocol might be the safest choice.</p>
+<p>OKAPI <b>does not</b> require you to use any special libraries. You should use
+OKAPI "as is", via basic HTTP requests and responses.</p>
+
+<p>However, if you know of any useful third-party libraries, then let us know.
+We may choose to post a link somewhere here.</p>
 
 <div class='issue-comments' issue_id='96'></div>
 
