@@ -34,6 +34,7 @@ use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiFacadeConsumer;
 use okapi\OkapiFacadeAccessToken;
+use okapi\Cache;
 
 require_once($GLOBALS['rootpath']."okapi/core.php");
 OkapiErrorHandler::$treat_notices_as_errors = true;
@@ -172,6 +173,77 @@ class Facade
     {
         OkapiErrorHandler::reenable();
     }
+
+    /**
+     * Store the object $value in OKAPI's cache, under the name of $key. The
+     * object will be stored for $timeout seconds.
+     *
+     * $key must be a string of max 57 characters in length (you can use
+     * md5(...) to shorten your keys). $value can be any serializable PHP
+     * object. $timeout can be also set to null, but you should avoid this,
+     * because such objects may clutter the cache unnecessarilly.
+     *
+     * Please note, that this cache is not guaranteed to be persistent.
+     * Usually it is, but it can be emptied in case of emergency (low disk
+     * space), or if we decide to switch the underlying cache engine in the
+     * future (e.g. to memcached). Most of your values should be safe though.
+     */
+    public static function cache_set($key, $value, $timeout)
+    {
+        Cache::set("facade#".$key, $value, $timeout);
+    }
+
+    /** Same as `cache_set`, but works on many key->value pair at once. */
+    public static function cache_set_many($dict, $timeout)
+    {
+        $prefixed_dict = array();
+        foreach ($dict as $key => &$value_ref) {
+            $prefixed_dict["facade#".$key] = &$value_ref;
+        }
+        Cache::set_many($prefixed_dict, $timeout);
+    }
+
+    /**
+     * Retrieve object stored in cache under the name of $key. If object does
+     * not exist or its timeout has expired, return null.
+     */
+    public static function cache_get($key)
+    {
+        return Cache::get("facade#".$key);
+    }
+
+    /** Same as `cache_get`, but it works on multiple keys at once. */
+    public static function get_many($keys)
+    {
+        $prefixed_keys = array();
+        foreach ($keys as $key) {
+            $prefixed_keys[] = "facade#".$key;
+        }
+        $prefixed_result = Cache::get_many($prefixed_keys);
+        $result = array();
+        foreach ($prefixed_result as $prefixed_key => &$value_ref) {
+            $result[substr($prefixed_key, 7)] = &$value_ref;
+        }
+        return $result;
+    }
+
+    /**
+     * Delete the entry named $key from the cache.
+     */
+    public static function cache_delete($key)
+    {
+        Cache::delete("facade#".$key);
+    }
+
+    /** Same as `cache_delete`, but works on many keys at once. */
+    public static function cache_delete_many($keys)
+    {
+        $prefixed_keys = array();
+        foreach ($keys as $key) {
+            $prefixed_keys[] = "facade#".$key;
+        }
+        Cache::delete_many($prefixed_keys);
+    }
 }
 
-# This comment is added simply to debug OKAPI deployment.......
+# (This comment is added here simply to debug OKAPI deployment.)
