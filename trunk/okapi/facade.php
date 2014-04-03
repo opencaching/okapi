@@ -175,13 +175,23 @@ class Facade
     }
 
     /**
-     * Store the object $value in OKAPI's cache, under the name of $key. The
-     * object will be stored for $timeout seconds.
+     * Store the object $value in OKAPI's cache, under the name of $key.
      *
-     * $key must be a string of max 57 characters in length (you can use
-     * md5(...) to shorten your keys). $value can be any serializable PHP
-     * object. $timeout can be also set to null, but you should avoid this,
-     * because such objects may clutter the cache unnecessarilly.
+     * Parameters:
+     *
+     * $key -- must be a string of max 57 characters in length (you can use
+     *     md5(...) to shorten your keys). Use the same $key to retrieve your
+     *     value later.
+     *
+     * $value -- can be any serializable PHP object. Currently there's no
+     *     strict size limit, but try to keep it below 1 MB (for future
+     *     compatibility with memcached).
+     *
+     * $timeout -- *maximum* time allowed to store the value, given in seconds
+     *     (however, the value *can* be removed sooner than that, see the note
+     *     below). Timeout can be also set to null, but you should avoid this,
+     *     because such objects may clutter the cache unnecessarilly. (You must
+     *     remember to remove them yourself!)
      *
      * Please note, that this cache is not guaranteed to be persistent.
      * Usually it is, but it can be emptied in case of emergency (low disk
