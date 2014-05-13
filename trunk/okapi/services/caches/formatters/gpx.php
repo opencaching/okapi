@@ -179,7 +179,7 @@ class WebService
 
         $fields = 'code|name|location|date_created|url|type|status|size|size2|oxsize'.
             '|difficulty|terrain|description|hint2|rating|owner|url|internal_id'.
-            '|protection_areas';
+            '|protection_areas|short_description';
         if ($vars['images'] != 'none')
             $fields .= "|images";
         if (count($vars['attrs']) > 0)

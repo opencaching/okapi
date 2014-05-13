@@ -243,6 +243,10 @@
             <li><b>recommendations</b> - number of recommendations for this cache,</li>
             <li><b>req_passwd</b> - boolean; states if this cache requires a password
                 in order to submit a "Found it" log entry,</li>
+            <li><b>short_description</b> - a plaintext string with a single line (very short)
+                description of the cache (kind of a "tagline text"),</li>
+            <li><b>short_descriptions</b> - a dictionary (language code =&gt;
+                plaintext string) of short cache descriptions,</li>
             <li><b>description</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>,
                 description of the cache,</li>
             <li><b>descriptions</b> - a dictionary (language code =&gt;

@@ -53,6 +53,9 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
                     <? } ?>
                     <groundspeak:difficulty><?= $c['difficulty'] ?></groundspeak:difficulty>
                     <groundspeak:terrain><?= $c['terrain'] ?></groundspeak:terrain>
+                    <? if ($c['short_description']) { ?>
+                        <groundspeak:short_description html="False"><?= Okapi::xmlescape($c['short_description']) ?></groundspeak:short_description>
+                    <? } ?>
                     <groundspeak:long_description html="True">
                         <? if (isset($c['warning_prefix'])) { ?>
                             &lt;p style='font-size: 120%'&gt;<?= Okapi::xmlescape($c['warning_prefix']) ?>&lt;/p&gt;
