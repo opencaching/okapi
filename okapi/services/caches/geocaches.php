@@ -35,7 +35,7 @@ class WebService
         'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
         'is_ignored', 'willattends', 'country', 'state', 'preview_image',
         'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
-        'protection_areas');
+        'protection_areas', 'short_description', 'short_descriptions');
 
     public static function call(OkapiRequest $request)
     {
@@ -74,6 +74,7 @@ class WebService
         $fields_to_remove_later = array();
         if (
             in_array('description', $fields) || in_array('descriptions', $fields)
+            || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
             || in_array('hint', $fields) || in_array('hints', $fields)
             || in_array('hint2', $fields) || in_array('hints2', $fields)
             || in_array('attribution_note', $fields)
@@ -316,6 +317,8 @@ class WebService
                     case 'rating_votes': $entry['rating_votes'] = $row['votes'] + 0; break;
                     case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
                     case 'req_passwd': $entry['req_passwd'] = $row['logpw'] ? true : false; break;
+                    case 'short_description': /* handled separately */ break;
+                    case 'short_descriptions': /* handled separately */ break;
                     case 'description': /* handled separately */ break;
                     case 'descriptions': /* handled separately */ break;
                     case 'hint': /* handled separately */ break;
@@ -468,14 +471,16 @@ class WebService
         # Descriptions and hints.
 
         if (in_array('description', $fields) || in_array('descriptions', $fields)
+            || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
             || in_array('hint', $fields) || in_array('hints', $fields)
             || in_array('hint2', $fields) || in_array('hints2', $fields))
         {
-            # At first, we will fill all those 4 fields, even if user requested just one
-            # of them. We will chop off the remaining three at the end.
+            # At first, we will fill all those fields, even if user requested just one
+            # of them. We will chop off the unwanted ones at the end.
 
             foreach ($results as &$result_ref)
             {
+                $result_ref['short_descriptions'] = array();
                 $result_ref['descriptions'] = array();
                 $result_ref['hints'] = array();
                 $result_ref['hints2'] = array();
@@ -484,7 +489,7 @@ class WebService
             # Get cache descriptions and hints.
 
             $rs = Db::query("
-                select cache_id, language, `desc`, hint
+                select cache_id, language, `desc`, short_desc, hint
                 from cache_desc
                 where cache_id in ('".implode("','", array_map('mysql_real_escape_string', array_keys($cacheid2wptcode)))."')
             ");
@@ -510,6 +515,10 @@ class WebService
                     }
                     $results[$cache_code]['descriptions'][strtolower($row['language'])] = $tmp;
                 }
+                if ($row['short_desc'])
+                {
+                    $results[$cache_code]['short_descriptions'][strtolower($row['language'])] = $row['short_desc'];
+                }
                 if ($row['hint'])
                 {
                     $results[$cache_code]['hints'][strtolower($row['language'])] = $row['hint'];
@@ -519,6 +528,7 @@ class WebService
             }
             foreach ($results as &$result_ref)
             {
+                $result_ref['short_description'] = Okapi::pick_best_language($result_ref['short_descriptions'], $langpref);
                 $result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langpref);
                 $result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langpref);
                 $result_ref['hint2'] = Okapi::pick_best_language($result_ref['hints2'], $langpref);
@@ -526,7 +536,10 @@ class WebService
 
             # Remove unwanted fields.
 
-            foreach (array('description', 'descriptions', 'hint', 'hints', 'hint2', 'hints2') as $field)
+            foreach (array(
+                'short_description', 'short_descriptions', 'description', 'descriptions',
+                'hint', 'hints', 'hint2', 'hints2'
+            ) as $field)
                 if (!in_array($field, $fields))
                     foreach ($results as &$result_ref)
                         unset($result_ref[$field]);
