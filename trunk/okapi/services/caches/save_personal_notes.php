@@ -47,13 +47,13 @@ class WebService
         # old_value
 
         $old_value = $request->get_parameter('old_value');
-        if ($old_value == null)
+        if ($old_value === null)
             $old_value = '';
 
         # new_value (force "no HTML" policy).
 
         $new_value = $request->get_parameter('new_value');
-        if ($new_value == null)
+        if ($new_value === null)
             throw new ParamMissing('new_value');
 
         # Force "no HTML" policy.
