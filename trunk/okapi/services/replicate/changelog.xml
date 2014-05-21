@@ -2,8 +2,8 @@
     <brief>Get the list of changes for your database</brief>
     <issue-id>109</issue-id>
     <desc>
-        <p><b>Beta status.</b> Get the list of changes to be replayed on your own copy
-        of Opencaching database. Use this method periodically (ex. once per hour) to
+        <p>Get the list of changes to be <u>replayed on your own copy
+        of Opencaching database</u>. Use this method periodically (e.g. every 5 minutes) to
         keep your database in sync with ours.</p>
 
         <p>For some applications it might be desireable to have a quick access to the entire
@@ -15,10 +15,11 @@
         <p>A couple of things for you to remember:</p>
         <ul>
             <li>You <b>must</b> update your database frequently for this method to work.
-            We don't keep the changelog indefinitelly. You must update at least once every week.</li>
-            <li>You <b>should not</b> update your database more frequently than once every
-            5 minutes. This won't do you any good, since we update the changelog only once
-            every 5 minutes anyway.</li>
+            We don't keep the changelog indefinitelly. You must update at least once a week!</li>
+
+            <li>You <b>should not</b> update your database more frequently than once per
+            5 minutes. This could kill our servers, and it wouldn't do you any good, since
+            we update the changelog only once every 5 minutes anyway.</li>
         </ul>
 
         <p>Let's assume that you already have a copy of OKAPI database, but it's
@@ -31,21 +32,27 @@
         this, your database is up-to-date.</p>
 
         <p>We use <b>revision</b> numbers to keep track of all the versions of the
-        database. Every time you update a database, you receive the <b>revision</b>
-        number along with it. You must keep this number carefully, because you need
+        database. Every time we update a database, the <b>revision</b> is increased.
+        You will also receive this number every time you fetch a changelog or a fulldump
+        of our database. You must keep this number carefully, because you need
         it in order for us to generate a proper changelog for you next time you ask
-        for it.</p>
+        for it!</p>
 
-        <p>Example. This is a valid list of requests you should issue and their
+        <p><b>Example.</b> This is a valid list of requests you should issue and their
         responses:</p>
+
         <ul>
             <li><b>fulldump</b> - you receive a fulldump of our database with the
-            revision number 238004. <b>You will call this method only once, never again.</b></li>
+            revision number 238004. <b>You will call this method only once</b> (to
+            initiate your copy of the database).</li>
+
             <li><b>changelog</b>?since=238004 - OKAPI checks if there were any changes
             recorded since revision 238004. It responds with the list of changes and the
             new revision number 238017. You replay the changes on your database.</li>
+
             <li>You wait for some time between requesting the changelog again.</li>
-            <li><b>changelog</b>?since=238017 - etc.</li>
+
+            <li>Upon your next update, you'll ask for <b>changelog</b>?since=238017, etc.</li>
         </ul>
     </desc>
     <req name='since'>
