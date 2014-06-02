@@ -166,9 +166,11 @@ final class Settings
         'OCDE_HTML_PURIFIER_SETTINGS' => array(),
         
         /**
-         * Should we log details of requests for caches data?
+         * Should we log requests for caches data?
+         * This requires the table from the following script to be present in the database
+         * http://opencaching-pl.googlecode.com/svn/trunk/sqlAlters/2014-06-02_detailed_geocache_access_logging.sql
          */
-        'LOG_CACHE_ACCESS' => false,
+        'OCPL_ENABLE_GEOCACHE_ACCESS_LOGS' => false,
     );
 
     /**

@@ -1741,58 +1741,98 @@ class Okapi
     }
     
     /**
-     * Log detailed cache data access
+     * Log detailed geocache data access
+     * @param OkapiRequest $request
+     * @param mixed $cache_ids An index based array of geocache ids, or a single geocache id.
+     *                 The parameter MUST contain only valid, non duplicated geocache ids.
      */
-    public static function log_cache_access($request, $cache_ids)
+    public static function log_geocache_access(OkapiRequest $request, $cache_ids)
     {
-        if (Settings::get('LOG_CACHE_ACCESS') !== true)
+        if (Settings::get('OCPL_ENABLE_GEOCACHE_ACCESS_LOGS') !== true)
             return ;
 
-        // TODO: can we use the _SERVER global here? or should we make them abstract, and
-        // pass along with request object?
-        $remote_addr_escaped = "'" . mysql_real_escape_string($_SERVER['REMOTE_ADDR']) . "'";
-        $user_agent_escaped = isset($_SERVER['HTTP_USER_AGENT']) ? 
-            "'" . mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']) . "'" : "null";
-        $forwarded_for_escaped = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? 
-            "'" . mysql_real_escape_string($_SERVER['HTTP_X_FORWARDED_FOR']) . "'" : "null";
-        
-        $consumer_key_escaped = "'" . mysql_real_escape_string($request->consumer->key) . "'";
-        $original_caller_escaped = "'" . mysql_real_escape_string(Okapi::get_original_caller()) . "'";
-       
-        $user_id = null;
-        if ($request->token != null)
-            $user_id = $request->token->user_id;
-        $user_id_escaped = $user_id === null ? "null" : "'" . mysql_real_escape_string($user_id) . "'";
-        if (is_array($cache_ids)){
-            $cache_ids_escaped = "'" . implode("','", array_map('mysql_real_escape_string', $cache_ids)) . "'";
-        } else {
-            $cache_ids_escaped = "'" . mysql_real_escape_string($cache_ids) . "'";
-        }
-        
-        Db::execute("
-            insert into CACHE_ACCESS_LOGS (event_date, cache_id, user_id, source, event, ip_addr, 
-                user_agent, forwarded_for, okapi_consumer_key)
-            select 
-                now(), cache_id, $user_id_escaped, 'O', 
-                $original_caller_escaped, $remote_addr_escaped, $user_agent_escaped, $forwarded_for_escaped,
-                $consumer_key_escaped
-            from caches
-            where    
-                cache_id in ($cache_ids_escaped)
-                and cache_id not in (
-                    select cache_id 
-                    from CACHE_ACCESS_LOGS cal 
-                    where 
-                        cache_id in ($cache_ids_escaped)" . 
-                        ($user_id === null ? " and cal.user_id is null" : " and cal.user_id = $user_id_escaped") . "
-                        and cal.source = 'O' 
-                        and cal.event = $original_caller_escaped 
-                        and cal.ip_addr = $remote_addr_escaped " .
-                        (!isset($_SERVER['HTTP_USER_AGENT']) ? " and cal.user_agent is null" : " and cal.user_agent = $user_agent_escaped") . "
-                        and cal.okapi_consumer_key = $consumer_key_escaped
-                        and date_sub(now(), interval 1 hour) < cal.event_date
-                )
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+        {
+            // TODO: can we use the _SERVER global here? or should we make them abstract, and
+            // pass along with request object?
+            $remote_addr_escaped = "'" . mysql_real_escape_string($_SERVER['REMOTE_ADDR']) . "'";
+            $user_agent_escaped = isset($_SERVER['HTTP_USER_AGENT']) ? 
+                "'" . mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']) . "'" : "null";
+            $forwarded_for_escaped = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? 
+                "'" . mysql_real_escape_string($_SERVER['HTTP_X_FORWARDED_FOR']) . "'" : "null";
+            
+            $consumer_key_escaped = "'" . mysql_real_escape_string($request->consumer->key) . "'";
+            $original_caller_escaped = "'" . mysql_real_escape_string(Okapi::get_original_caller()) . "'";
+           
+            $user_id = null;
+            if ($request->token != null)
+                $user_id = $request->token->user_id;
+            $user_id_escaped = $user_id === null ? "null" : "'" . mysql_real_escape_string($user_id) . "'";
+            if (is_array($cache_ids)){
+                if (count($cache_ids) == 1)
+                    $cache_ids_where = "= '" . mysql_real_escape_string($cache_ids[0]) . "'";
+                else
+                    $cache_ids_where = "in ('" . implode("','", array_map('mysql_real_escape_string', $cache_ids)) . "')";
+            } else {
+                $cache_ids_where = "= '" . mysql_real_escape_string($cache_ids) . "'";
+            }
+            
+            $already_logged_cache_ids = Db::select_column("
+                select cache_id 
+                from CACHE_ACCESS_LOGS cal 
+                where 
+                    cache_id $cache_ids_where" . 
+                    ($user_id === null ? " and cal.user_id is null" : " and cal.user_id = $user_id_escaped") . "
+                    and cal.source = 'O' 
+                    and cal.event = $original_caller_escaped 
+                    and cal.ip_addr = $remote_addr_escaped " .
+                    (!isset($_SERVER['HTTP_USER_AGENT']) ? " and cal.user_agent is null" : " and cal.user_agent = $user_agent_escaped") . "
+                    and cal.okapi_consumer_key = $consumer_key_escaped
+                    and date_sub(now(), interval 1 hour) < cal.event_date
             ");
+            unset($cache_ids_where);
+            
+            // check, if all the geocaches has already been logged
+            if (is_array($cache_ids) && count($already_logged_cache_ids) == count($cache_ids)
+                || !is_array($cache_ids) && count($already_logged_cache_ids) == 1)
+            {
+                return ;
+            }
+                        
+            if (is_array($cache_ids)){
+                $tmp = array();
+                foreach ($cache_ids as $cache_id)
+                    $tmp[$cache_id] = true;
+                foreach ($already_logged_cache_ids as $cache_id)
+                    unset($tmp[$cache_id]);
+                if (count($tmp) <= 0)
+                    return ;
+                $cache_ids_filterd = array_keys($tmp);
+                unset($tmp);
+            } else {
+                $cache_ids_filterd = $cache_ids;
+            }
+
+            if (is_array($cache_ids_filterd)){
+                if (count($cache_ids_filterd) == 1)
+                    $cache_ids_where = "= '" . mysql_real_escape_string($cache_ids_filterd[0]) . "'";
+                else
+                    $cache_ids_where = "in ('" . implode("','", array_map('mysql_real_escape_string', $cache_ids_filterd)) . "')";
+            } else {
+                $cache_ids_where = "= '" . mysql_real_escape_string($cache_ids_filterd) . "'";
+            }
+            
+            Db::execute("
+                insert into CACHE_ACCESS_LOGS (event_date, cache_id, user_id, source, event, ip_addr, 
+                    user_agent, forwarded_for, okapi_consumer_key)
+                select 
+                    now(), cache_id, $user_id_escaped, 'O', 
+                    $original_caller_escaped, $remote_addr_escaped, $user_agent_escaped, $forwarded_for_escaped,
+                    $consumer_key_escaped
+                from caches
+                where cache_id $cache_ids_where
+            ");
+        }
     }
 }
 
