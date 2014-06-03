@@ -164,6 +164,13 @@ final class Settings
          * Settings for the OCDE HTML purifier which is used by services/logs/submit.
          */
         'OCDE_HTML_PURIFIER_SETTINGS' => array(),
+        
+        /**
+         * Should we log requests for caches data?
+         * This requires the table from the following script to be present in the database
+         * http://opencaching-pl.googlecode.com/svn/trunk/sqlAlters/2014-06-02_detailed_geocache_access_logging.sql
+         */
+        'OCPL_ENABLE_GEOCACHE_ACCESS_LOGS' => false,
     );
 
     /**

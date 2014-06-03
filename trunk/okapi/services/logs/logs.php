@@ -67,6 +67,9 @@ class WebService
         foreach ($log_uuids as $log_uuid)
             $results[] = $logs[$log_uuid];
 
+        if (count($log_uuids) > 0)
+            Okapi::log_geocache_access($request, $cache['internal_id']);
+
         return Okapi::formatted_response($request, $results);
     }
 }
