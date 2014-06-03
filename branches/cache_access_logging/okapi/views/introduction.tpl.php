@@ -340,7 +340,11 @@ contain additional keys. Possible values of the <b>reason_stack</b> include:</p>
                 ask your user to fix the clock or use the provided extra keys to adjust
                 it yourself. Extra keys:</p>
                 <ul>
-                    <li><b>yours</b> - timestamp you have supplied,</li>
+                    <li>
+                        <b>yours</b> - timestamp you have supplied (this used to be a
+                        string, but now it is being casted to an integer, see
+                        <a href='https://code.google.com/p/opencaching-api/issues/detail?id=314'>here</a>),
+                    </li>
                     <li><b>ours</b> - timestamp on our server,</li>
                     <li><b>difference</b> - the difference (to be added to your clock),</li>
                     <li><b>threshold</b> - the maximum allowed difference.</li>
