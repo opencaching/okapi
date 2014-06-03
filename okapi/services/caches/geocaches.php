@@ -1243,9 +1243,21 @@ class WebService
         foreach ($cache_codes as $cache_code)
             $ordered_results[$cache_code] = $results[$cache_code];
 
+        self::log_geocache_access($request, $fields, array_keys($cacheid2wptcode));
+
         return Okapi::formatted_response($request, $ordered_results);
     }
 
+    private static function log_geocache_access(OkapiRequest $request, $fields, $cache_ids)
+    {
+        // log only if we return geocache coordinates, and some important information
+        // about geocache itself (any filed of the following)
+        $requested_fields = array('hint', 'hints', 'hint2', 'hints2', 'description', 'descriptions');
+        
+        if (in_array('location', $fields) && count(array_intersect($requested_fields, $fields)) > 0)
+            Okapi::log_geocache_access($request, $cache_ids);
+    }
+    
     /**
      * Create unique caption, safe to be used as a file name for images
      * uploaded into Garmin's GPS devices. Use reset_unique_captions to reset
