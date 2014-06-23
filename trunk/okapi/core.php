@@ -2044,9 +2044,17 @@ class OkapiHttpRequest extends OkapiRequest
 
         if ($this->get_parameter('oauth_signature'))
         {
-            # User is using OAuth. There is a cronjob scheduled to run every 5 minutes and
-            # delete old Request Tokens and Nonces. We may assume that cleanup was executed
-            # not more than 5 minutes ago.
+            # User is using OAuth.
+
+            # Check for duplicate keys in the parameters. (Datastore doesn't
+            # do that on its own, it caused vague server errors - issue #307.)
+
+            $this->get_parameter('oauth_consumer');
+            $this->get_parameter('oauth_version');
+            $this->get_parameter('oauth_token');
+            $this->get_parameter('oauth_nonce');
+
+            # Verify OAuth request.
 
             list($this->consumer, $this->token) = Okapi::$server->
                 verify_request2($this->request, $this->opt_token_type, $this->opt_min_auth_level == 3);
