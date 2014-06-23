@@ -1261,7 +1261,7 @@ class WebService
                 ), $fields)) > 0)
             ) {
                 require_once 'lib/ocpl_access_logs.php';
-                OCPLAccessLogs::log_geocache_access($request, $cache_ids);
+                \okapi\OCPLAccessLogs::log_geocache_access($request, $cache_ids);
             }
         }
 
