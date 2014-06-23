@@ -480,10 +480,10 @@ class WebService
 
             foreach ($results as &$result_ref)
             {
-                $result_ref['short_descriptions'] = array();
-                $result_ref['descriptions'] = array();
-                $result_ref['hints'] = array();
-                $result_ref['hints2'] = array();
+                $result_ref['short_descriptions'] = new ArrayObject();
+                $result_ref['descriptions'] = new ArrayObject();
+                $result_ref['hints'] = new ArrayObject();
+                $result_ref['hints2'] = new ArrayObject();
             }
 
             # Get cache descriptions and hints.
@@ -826,7 +826,7 @@ class WebService
                     where wp in ('".implode("','", array_map('mysql_real_escape_string', $cache_codes))."')
                     group by wp
                 ");
-                $tr_counts = array();
+                $tr_counts = new ArrayObject();
                 while ($row = mysql_fetch_assoc($rs))
                     $tr_counts[$row['cache_code']] = $row['count'];
                 foreach ($results as $cache_code => &$result_ref)
