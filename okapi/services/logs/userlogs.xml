@@ -18,7 +18,9 @@
     </opt>
     <common-format-params/>
     <returns>
-        <p>Log entries. A dictionary of the following format:</p>
+        <p>A list of log entries, ordered by descending date. Each entry is a
+        dictionary of the following format:</p>
+
         <ul>
             <li><b>uuid</b> - ID of the log entry,</li>
             <li>
@@ -34,8 +36,10 @@
                 everything</b>, but there are some primary types (see logs/entry
                 method for more info).</p>
             </li>
-            <li><b>comment</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>, text entered
-                with the log entry.</li>
+            <li>
+                <b>comment</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>, text entered
+                with the log entry.
+            </li>
         </ul>
     </returns>
 </xml>
