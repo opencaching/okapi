@@ -67,8 +67,16 @@ class WebService
         foreach ($log_uuids as $log_uuid)
             $results[] = $logs[$log_uuid];
 
-        if (count($log_uuids) > 0)
-            Okapi::log_geocache_access($request, $cache['internal_id']);
+        /* Handle OCPL's "access logs" feature. */
+
+        if (
+            (Settings::get('OC_BRANCH') == 'oc.pl')
+            && Settings::get('OCPL_ENABLE_GEOCACHE_ACCESS_LOGS')
+            && (count($log_uuids) > 0)
+        ) {
+            require_once 'lib/ocpl_access_logs.php';
+            OCPLAccessLogs::log_geocache_access($request, $cache['internal_id']);
+        }
 
         return Okapi::formatted_response($request, $results);
     }
