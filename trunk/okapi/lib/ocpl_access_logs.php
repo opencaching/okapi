@@ -64,7 +64,7 @@ class OCPLAccessLogs
                 "'" . mysql_real_escape_string($_SERVER['HTTP_X_FORWARDED_FOR']) . "'" : "null";
 
             $consumer_key_escaped = "'" . mysql_real_escape_string($request->consumer->key) . "'";
-            $original_caller_escaped = "'" . mysql_real_escape_string(Okapi::get_original_caller()) . "'";
+            $original_caller_escaped = "'" . mysql_real_escape_string(self::get_original_caller()) . "'";
 
             $user_id = null;
             if ($request->token != null)
