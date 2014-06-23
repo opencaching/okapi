@@ -75,7 +75,7 @@ class WebService
             && (count($log_uuids) > 0)
         ) {
             require_once 'lib/ocpl_access_logs.php';
-            OCPLAccessLogs::log_geocache_access($request, $cache['internal_id']);
+            \okapi\OCPLAccessLogs::log_geocache_access($request, $cache['internal_id']);
         }
 
         return Okapi::formatted_response($request, $results);
