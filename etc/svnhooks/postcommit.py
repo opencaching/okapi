@@ -30,8 +30,6 @@ import subprocess
 import httplib
 from cStringIO import StringIO
 
-import googlecode_upload
-
 try:
     from auth import okapi_auth_key, okapi_username, okapi_password, \
         ocpl_username, ocpl_password, deployment_target
