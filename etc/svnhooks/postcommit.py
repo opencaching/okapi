@@ -33,15 +33,28 @@ from cStringIO import StringIO
 import googlecode_upload
 
 try:
-    from auth import okapi_auth_key, okapi_username, okapi_password, ocpl_username, ocpl_password
+    from auth import okapi_auth_key, okapi_username, okapi_password, \
+        ocpl_username, ocpl_password, deployment_target
 except ImportError:
-    print "A file called auth.py is required to run this script. The contents are:"
+    print (
+        "A file called auth.py is required to run this script. "
+        "The contents are:"
+    )
     print
-    print 'okapi_auth_key = "Post-Commit Authentication Key for opencaching-api project"'
-    print 'okapi_username = "Username with RW rights to opencaching-api project"'
+    print (
+        'okapi_auth_key = "Post-Commit Authentication Key for opencaching-api '
+        'project"'
+    )
+    print (
+        'okapi_username = "Username with RW rights to opencaching-api project"'
+    )
     print 'okapi_password = "User\'s commit-password"'
     print 'ocpl_username = "Username with RW rights to opencaching-pl project"'
     print 'ocpl_password = "User\'s commit-password"'
+    print (
+        'deployment_target = "Target path for the deployed file (should end '
+        'with .tar.gz)"'
+    )
     sys.exit(1)
 
 
@@ -60,7 +73,10 @@ def capture_and_save():
         print out[0]
         # Also, save it to a log file.
         now = datetime.datetime.now()
-        name = 'request-' + '%s%02d%02d-%02d%02d%02d-%06d' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
+        name = 'request-' + '%s%02d%02d-%02d%02d%02d-%06d' % (
+            now.year, now.month, now.day, now.hour, now.minute, now.second,
+            now.microsecond
+        )
         with open(name + '.out', 'w') as f:
             f.write(out[0])
         # Also, save the errors to an error log file.
@@ -70,7 +86,10 @@ def capture_and_save():
 
 
 def my_call(what, *args, **kwargs):
-    # subprocess.call(what) was not enough, because stdout and stderr are StringIOs now.
+    #
+    # subprocess.call(what) was not enough, because stdout and stderr are
+    # StringIOs now.
+    #
     kwargs['stderr'] = subprocess.STDOUT
     print subprocess.check_output(what, *args, **kwargs)
 
@@ -78,13 +97,19 @@ def my_call(what, *args, **kwargs):
 def deploy(revision):
     deployment_name = "okapi-r" + str(revision)
     try:
+        #
         print "Exporting revision " + str(revision) + "..."
         sys.stdout.flush()
-        my_call(["svn", "export", "http://opencaching-api.googlecode.com/svn/trunk/",
-            deployment_name, "-r" + str(revision)])
+        my_call([
+            "svn", "export",
+            "http://opencaching-api.googlecode.com/svn/trunk/",
+            deployment_name, "-r" + str(revision)
+        ])
         sys.stdout.flush()
+        #
         print "Removing files not intended for deployment..."
         my_call(["rm", "-rf", deployment_name + "/etc"])
+        #
         print "Adding version information..."
         fp = open(deployment_name + '/okapi/core.php', 'r')
         core_contents = fp.read()
@@ -95,39 +120,49 @@ def deploy(revision):
         fp = open(deployment_name + '/okapi/core.php', 'w')
         fp.write(core_contents)
         fp.close()
+        #
         print "Creating archive..."
         sys.stdout.flush()
         my_call(["tar", "-czf", deployment_name + ".tar.gz", deployment_name])
         my_call(["chmod", "666", deployment_name + ".tar.gz"])
-        my_call(["setfacl", "-m", "u:rygielski:r", deployment_name + ".tar.gz"])
+        my_call([
+            "setfacl", "-m", "u:rygielski:r", deployment_name + ".tar.gz"
+        ])
         my_call(["rm", "-rf", deployment_name])
-        print "Uploading to the Downloads page..."
+        #
+        print "Copying archive to public_html..."
+        my_call(["cp", deployment_name + ".tar.gz", deployment_target])
         sys.stdout.flush()
-        status, reason, url = googlecode_upload.upload(
-            file = deployment_name + ".tar.gz",
-            project_name = "opencaching-api",
-            summary = "OKAPI revision " + str(revision) + " (automatic deployment)",
-            user_name=okapi_username,
-            password=okapi_password
-        )
-        if status in [httplib.FORBIDDEN, httplib.UNAUTHORIZED]:
-            msg = "Error uploading! IGNORING\n" + str(status) + "\n" + str(reason) + "\n"
-            print msg
-            sys.stderr.write(msg)
+        #
         print "Checking out opencaching-pl/trunk/okapi..."
         sys.stdout.flush()
-        my_call(["svn", "co", "https://opencaching-pl.googlecode.com/svn/trunk/okapi",
-            deployment_name + "/okapi"])
+        my_call([
+            "svn", "co",
+            "https://opencaching-pl.googlecode.com/svn/trunk/okapi",
+            deployment_name + "/okapi"
+        ])
         sys.stdout.flush()
-        print "Replacing opencaching.pl's okapi contents with the latest version..."
-        ## This will work only with svn >=1.7! For lower versions of svn see revision
-        ## history of THIS file.
+        #
+        print (
+            "Replacing opencaching.pl's okapi contents with the latest "
+            "version..."
+        )
+        ## This will work only with svn >=1.7! For lower versions of svn see
+        ## revision history of THIS file.
         my_call(["rm -rf " + deployment_name + "/okapi/*"], shell=True)
         my_call(["tar", "--overwrite", "-xf", deployment_name + ".tar.gz"])
-        my_call(["svn", "add", "--force", "."], cwd = deployment_name + "/okapi")
-        my_call(["svn", "commit", deployment_name + "/okapi", "--non-interactive", "--username",
-            ocpl_username, "--password", ocpl_password, "--no-auth-cache", "-m",
-            "Automatic OKAPI Project update (r" + str(revision) + ")"])
+        my_call([
+            "svn", "add", "--force", "."
+        ], cwd = deployment_name + "/okapi")
+        my_call([
+            "svn", "commit", deployment_name + "/okapi",
+            "--non-interactive",
+            "--username", ocpl_username,
+            "--password", ocpl_password,
+            "--no-auth-cache", "-m",
+            "Automatic OKAPI Project update (r" + str(revision) + ")"
+        ])
+        #
         print "Cleanup..."
         subprocess.call(["rm", "-rf", deployment_name])
     except subprocess.CalledProcessError, e:
@@ -157,7 +192,11 @@ if __name__ == '__main__':
 
         body = sys.stdin.read()
         # e.g. body = '{"repository_path":"http://opencaching-api.googlecode.com/svn/","project_name":"opencaching-api","revisions":[{"added":["/trunk/test.txt"],"author":"rygielski@gmail.com","url":"http://opencaching-api.googlecode.com/svn-history/r23/","timestamp":1313750735,"message":"Testing SVN hooks.","path_count":1,"removed":[],"modified":[],"revision":23}],"revision_count":1}'
-        signature = os.environ['HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC'] if os.environ.has_key('HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC') else "none"
+        signature = (
+            os.environ['HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC']
+            if os.environ.has_key('HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC')
+            else "none"
+        )
         # e.g. signature = '18daa1cd537cb6d5f7eda2935f81b0fb'
 
         print "Your request body is:"
@@ -190,8 +229,13 @@ if __name__ == '__main__':
         print "Files affected:\n" + "\n".join(filenames)
         print
 
-        important_filenames = filter(lambda filename: filename.startswith("/trunk/"), filenames)
-        important_filenames = filter(lambda filename: not filename.startswith("/trunk/etc/"), important_filenames)
+        important_filenames = filter(
+            lambda filename: filename.startswith("/trunk/"), filenames
+        )
+        important_filenames = filter(
+            lambda filename: not filename.startswith("/trunk/etc/"),
+            important_filenames
+        )
         if len(important_filenames) == 0:
             print "Deployment package was unaffected by this commit. Aborting."
             sys.exit(0)
