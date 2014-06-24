@@ -2,18 +2,18 @@
     <brief>Update personal user notes of a geocache</brief>
     <issue-id>302</issue-id>
     <desc>
-        <p>This method allows your users to to change the content of the user's 
+        <p>This method allows your users to to change the content of the user's
         personal note from one value to the other value.</p>
-        
-        <p>We <b>want</b> you to know the pervious value of the personal note, 
+
+        <p>We <b>want</b> you to know the pervious value of the personal note,
         because we feel that your user needs to know what it is exactly that is
         going to be replaced.</p>
-        
+
         <p>Please note, that we <b>do not require</b> you to know - the
         <b>old_value</b> parameter is optional. However, if you don't provide
         it (or provide an obsolete value), then your <b>new_value</b> will be
         appended to the current personal note instead of replacing it.</p>
-        
+
         <p>Current personal user notes for the geocache can be retrieved
         using the <b>my_notes</b> field in the
         <a href="%OKAPI:methodargref:services/caches/geocache#fields%">services/caches/geocache</a>
