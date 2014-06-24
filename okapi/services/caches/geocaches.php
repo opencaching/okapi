@@ -1260,7 +1260,7 @@ class WebService
                     'description', 'descriptions'
                 ), $fields)) > 0)
             ) {
-                require_once 'lib/ocpl_access_logs.php';
+                require_once($GLOBALS['rootpath'].'okapi/lib/ocpl_access_logs.php');
                 \okapi\OCPLAccessLogs::log_geocache_access($request, $cache_ids);
             }
         }
