@@ -12,7 +12,7 @@ PHP:
 - When using parenetheses and the content doesn't fit in one line, start
   a new line just after "(" and indent 4 spaces (e.g.
   http://i.imgur.com/FZmyD7B.png).
-  
+
 - Try to keep <=79 characters in line (not a strict rule, but always <=99).
 
 - Comments:
