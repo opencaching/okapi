@@ -96,7 +96,7 @@ class Facade
      */
     public static function import_search_set($temp_table, $min_store, $max_ref_age)
     {
-        require_once 'services/caches/search/save.php';
+        require_once($GLOBALS['rootpath'].'okapi/services/caches/search/save.php');
         $tables = array('caches', $temp_table);
         $where_conds = array(
             $temp_table.".cache_id = caches.cache_id",
