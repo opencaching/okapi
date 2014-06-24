@@ -154,6 +154,10 @@ class TileTree
             foreach ($caches as $cache)
             {
                 $row = self::generate_short_row($cache);
+                if (!$row) {
+                    /* Some caches cannot be included, e.g. the ones near the poles. */
+                    continue;
+                }
                 Db::execute("
                     replace into okapi_tile_caches (
                         z, x, y, cache_id, z21x, z21y, status, type, rating, flags
@@ -272,7 +276,12 @@ class TileTree
     public static function generate_short_row($cache)
     {
         list($lat, $lon) = explode("|", $cache['location']);
-        list($z21x, $z21y) = self::latlon_to_z21xy($lat, $lon);
+        try {
+            list($z21x, $z21y) = self::latlon_to_z21xy($lat, $lon);
+        } catch (Exception $e) {
+            /* E.g. division by zero, if the cache is placed at the north pole. */
+            return false;
+        }
         $flags = 0;
         if (($cache['founds'] > 6) && (($cache['recommendations'] / $cache['founds']) > 0.3))
             $flags |= self::$FLAG_STAR;
