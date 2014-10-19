@@ -569,7 +569,7 @@ class WebService
                     and object_type = 2
                     and unknown_format = 0
                 order by object_id, date_created
-            ");
+            "); // TODO: order by user-entered index -> Issue #321
             $prev_cache_code = null;
             while ($row = mysql_fetch_assoc($rs))
             {
