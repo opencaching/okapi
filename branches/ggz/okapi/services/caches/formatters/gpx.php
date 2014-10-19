@@ -392,55 +392,55 @@ class WebService
         foreach ($vars['caches'] as &$cache_ref)
         {
             if (!isset($cache_ref['ggz_index'])) {
-        	    $cache_ref['ggz_index'] = array();
+                $cache_ref['ggz_index'] = array();
             }
-        	$index_ref = &$cache_ref['ggz_index'];
-        	$index_ref['code'] = $cache_ref['code'];
-        	$index_ref['name'] = isset($cache_ref['name_2']) ? $cache_ref['name_2'] : $cache_ref['name'];
-        	$index_ref['type'] = $vars['cache_GPX_types'][$cache_ref['type']];
-        	list($lat, $lon) = explode("|", $cache_ref['location']);
-        	$index_ref['lat'] = $lat;
-        	$index_ref['lon'] = $lon;
-        	
-        	$index_ref['ratings'] = array();
-        	$ratings_ref = &$index_ref['ratings'];
-        	if (isset($cache_ref['rating'])){
-    	       $ratings_ref['awesomeness'] = $cache_ref['rating'];
-        	}
-        	$ratings_ref['difficulty'] = $cache_ref['difficulty'];
-        	if (!isset($cache_ref['size'])) {
-        	    $ratings_ref['size'] = 0; // Virtual, Event
-        	} else if ($cache_ref['oxsize'] !== null) { // is this ox size one-to-one?
-        	    $ratings_ref['size'] = $cache_ref['oxsize'];
-        	}
-        	$ratings_ref['terrain'] = $cache_ref['terrain'];
-        	
-        	if ($vars['mark_found'] && $cache_ref['is_found']) {
-        	    $index_ref['found'] = true;
-        	}
-        	
-        	$ggz_index[] = &$index_ref;
-        	
-        	# Process additional waypoints - should we do this
-        	if (isset($cache_ref['alt_wpts'])){
-            	$idx = 1;
-            	foreach ($cache_ref['alt_wpts'] as &$alt_wpt_ref) {
-            	    if (!isset($alt_wpt_ref['ggz_index'])) {
-            	    	$alt_wpt_ref['ggz_index'] = array();
-            	    }
-            	    $index_ref = &$alt_wpt_ref['ggz_index'];
-            	    $index_ref['code'] = $cache_ref['code'] . '-' . $idx;
-            	    $index_ref['name'] = $alt_wpt_ref['type_name'];
-            	    $index_ref['type'] = $alt_wpt_ref['sym'];
-            	    list($lat, $lon) = explode("|", $alt_wpt_ref['location']);
-            	    $index_ref['lat'] = $lat;
-            	    $index_ref['lon'] = $lon;
-            	    
-            	    $ggz_index[] = &$index_ref;
-            	    
-            	    $idx++;
-            	}
-        	}
+            $index_ref = &$cache_ref['ggz_index'];
+            $index_ref['code'] = $cache_ref['code'];
+            $index_ref['name'] = isset($cache_ref['name_2']) ? $cache_ref['name_2'] : $cache_ref['name'];
+            $index_ref['type'] = $vars['cache_GPX_types'][$cache_ref['type']];
+            list($lat, $lon) = explode("|", $cache_ref['location']);
+            $index_ref['lat'] = $lat;
+            $index_ref['lon'] = $lon;
+            
+            $index_ref['ratings'] = array();
+            $ratings_ref = &$index_ref['ratings'];
+            if (isset($cache_ref['rating'])){
+               $ratings_ref['awesomeness'] = $cache_ref['rating'];
+            }
+            $ratings_ref['difficulty'] = $cache_ref['difficulty'];
+            if (!isset($cache_ref['size'])) {
+                $ratings_ref['size'] = 0; // Virtual, Event
+            } else if ($cache_ref['oxsize'] !== null) { // is this ox size one-to-one?
+                $ratings_ref['size'] = $cache_ref['oxsize'];
+            }
+            $ratings_ref['terrain'] = $cache_ref['terrain'];
+            
+            if ($vars['mark_found'] && $cache_ref['is_found']) {
+                $index_ref['found'] = true;
+            }
+            
+            $ggz_index[] = &$index_ref;
+            
+            # Process additional waypoints - should we do this
+            if (isset($cache_ref['alt_wpts'])){
+                $idx = 1;
+                foreach ($cache_ref['alt_wpts'] as &$alt_wpt_ref) {
+                    if (!isset($alt_wpt_ref['ggz_index'])) {
+                        $alt_wpt_ref['ggz_index'] = array();
+                    }
+                    $index_ref = &$alt_wpt_ref['ggz_index'];
+                    $index_ref['code'] = $cache_ref['code'] . '-' . $idx;
+                    $index_ref['name'] = $alt_wpt_ref['type_name'];
+                    $index_ref['type'] = $alt_wpt_ref['sym'];
+                    list($lat, $lon) = explode("|", $alt_wpt_ref['location']);
+                    $index_ref['lat'] = $lat;
+                    $index_ref['lon'] = $lon;
+                    
+                    $ggz_index[] = &$index_ref;
+                    
+                    $idx++;
+                }
+            }
         }
         
         $response = new OkapiHttpResponse();

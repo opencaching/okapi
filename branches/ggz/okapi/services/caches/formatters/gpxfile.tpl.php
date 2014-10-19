@@ -199,7 +199,7 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
                 <? 
                     $start_pos = ob_get_length();
                     if (!isset($wpt_ref['ggz_index']))
-                    	$wpt_ref['ggz_index'] = array();
+                        $wpt_ref['ggz_index'] = array();
                     $wpt_ref['ggz_index']['file_pos'] = $start_pos;
                     
                     $wpt = $wpt_ref;
