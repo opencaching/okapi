@@ -79,7 +79,7 @@ class OCPLAccessLogs
                 $cache_ids_where = "= '" . mysql_real_escape_string($cache_ids) . "'";
             }
 
-            $already_logged_cache_ids = Db::select_column("
+            $sql = "
                 select cache_id
                 from CACHE_ACCESS_LOGS cal
                 where
@@ -87,12 +87,15 @@ class OCPLAccessLogs
                     ($user_id === null ? " and cal.user_id is null" : " and cal.user_id = $user_id_escaped") . "
                     and cal.source = 'O'
                     and cal.event = $original_caller_escaped
-                    and cal.ip_addr = $remote_addr_escaped " .
-                    (!isset($_SERVER['HTTP_USER_AGENT']) ? " and cal.user_agent is null" : " and cal.user_agent = $user_agent_escaped") . "
                     and cal.okapi_consumer_key = $consumer_key_escaped
-                    and date_sub(now(), interval 1 hour) < cal.event_date
-            ");
+                    and date_sub(now(), interval 1 hour) < cal.event_date ";
+            if ($user_id === null){
+                $sql .= " and cal.ip_addr = $remote_addr_escaped ";
+                $sql .= isset($_SERVER['HTTP_USER_AGENT'] ? " and cal.user_agent = $user_agent_escaped " : " and cal.user_agent is null ";
+            }
+            $already_logged_cache_ids = Db::select_column($sql);
             unset($cache_ids_where);
+            unset($sql);
 
             // check, if all the geocaches has already been logged
             if (is_array($cache_ids) && count($already_logged_cache_ids) == count($cache_ids)
