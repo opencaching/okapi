@@ -152,33 +152,40 @@ class OkapiExceptionHandler
                 }
                 catch (Exception $e)
                 {
-                    # Unable to use full-featured mail_admins version. We'll use a backup.
-                    # We need to make sure we're not spamming.
+                    try
+                    {
+                        # Unable to use full-featured mail_admins version. We'll use a backup.
+                        # We need to make sure we're not spamming.
 
-                    $lock_file = "/tmp/okapi-fatal-error-mode";
-                    $last_email = false;
-                    if (file_exists($lock_file))
-                        $last_email = filemtime($lock_file);
-                    if ($last_email === false) {
-                        # Assume this is the first email.
-                        $last_email = 0;
-                    }
-                    if (time() - $last_email < 60) {
-                        # Send no more than one per minute.
-                        return;
-                    }
-                    @touch($lock_file);
+                        $lock_file = "/tmp/okapi-fatal-error-mode";
+                        $last_email = false;
+                        if (file_exists($lock_file))
+                            $last_email = filemtime($lock_file);
+                        if ($last_email === false) {
+                            # Assume this is the first email.
+                            $last_email = 0;
+                        }
+                        if (time() - $last_email < 60) {
+                            # Send no more than one per minute.
+                            return;
+                        }
+                        @touch($lock_file);
 
-                    $admin_email = implode(", ", get_admin_emails());
-                    $sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
-                    $subject = "Fatal error mode: ".$subject;
-                    $message = "Fatal error mode: OKAPI will send at most ONE message per minute.\n\n".$message;
-                    $headers = (
-                        "Content-Type: text/plain; charset=utf-8\n".
-                        "From: OKAPI <$sender_email>\n".
-                        "Reply-To: $sender_email\n"
-                    );
-                    mail($admin_email, $subject, $message, $headers);
+                        $admin_email = implode(", ", get_admin_emails());
+                        $sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
+                        $subject = "Fatal error mode: ".$subject;
+                        $message = "Fatal error mode: OKAPI will send at most ONE message per minute.\n\n".$message;
+                        $headers = (
+                            "Content-Type: text/plain; charset=utf-8\n".
+                            "From: OKAPI <$sender_email>\n".
+                            "Reply-To: $sender_email\n"
+                        );
+                        mail($admin_email, $subject, $message, $headers);
+                    }
+                    catch (Exception $e2)
+                    {
+                        ## Can't send e-mail, give up
+                    }
                 }
             }
         }
@@ -682,6 +689,7 @@ class OkapiHttpResponse
     public $allow_gzip = true;
     public $connection_close = false;
     public $etag = null;
+    public $ggz_index = null;
 
     /** Use this only as a setter, use get_body or print_body for reading! */
     public $body;

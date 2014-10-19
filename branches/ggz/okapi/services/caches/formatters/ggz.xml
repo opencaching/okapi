@@ -1,0 +1,35 @@
+<xml>
+    <brief>Retrieve GGZ file for newer Garmin devices</brief>
+    <issue-id>XXX</issue-id>
+    <desc>
+        <p>Produce a GGZ file (which is actually a zip file) with content compatible with newer
+        Geocaching-enabled Garmin GPS devices.</p>
+        <p><b>Important note:</b> This method is in <b>beta version</b>. It's interface may change
+        in a backward-incompatible manner, or it may even be removed.</p>
+        <p><b>Important note:</b> We might be increasing required authentication level for
+        this method to level 2 or 3. You should be prepared for that. Use the highest authentication
+        level you've got. Also, if you want the GPX file to include <b>personal data (like user's notes)</b>,
+        you have to use Level 3 Authentication anyway.</p>
+    </desc>
+    <req name='cache_codes'>
+        <p>Pipe-separated list of cache codes which you are interested in.
+        No more than 50 codes are allowed. (This limit is smaller than usual, because
+        we're afraid about the sizes of ZIP files produced.)
+        This CAN be an empty string (it will still result in a valid ZIP file).</p>
+    </req>
+    <opt name='langpref' default='en'>
+        <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+        order of preference in which language will be chosen for GPX entities.</p>
+    </opt>
+    <opt name="location_source" default='default-coords'>
+        Same as in the <a href="%OKAPI:methodargref:services/caches/formatters/gpx#location_source%">
+        services/caches/formatters/gpx</a> method.
+    </opt>
+    <opt name="location_change_prefix" default="#">
+        Same as in the <a href="%OKAPI:methodargref:services/caches/formatters/gpx#location_change_prefix%">
+        services/caches/formatters/gpx</a> method.
+    </opt>
+    <returns>
+        <p>A GGZ file. You should copy the file to Garmin's internal memory storage.</p>
+    </returns>
+</xml>

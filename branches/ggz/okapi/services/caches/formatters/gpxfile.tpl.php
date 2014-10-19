@@ -22,9 +22,16 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
     <url><?= $vars['installation']['site_url'] ?></url>
     <urlname><?= $vars['installation']['site_name'] ?></urlname>
     <time><?= date('c') ?></time>
-    <? foreach ($vars['caches'] as $c) { ?>
-        <? list($lat, $lon) = explode("|", $c['location']); ?>
-        <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
+    <? foreach ($vars['caches'] as &$cache_ref) { ?>
+        <? 
+            $start_pos = ob_get_length();
+            if (!isset($cache_ref['ggz_index']))
+                $cache_ref['ggz_index'] = array();
+            $cache_ref['ggz_index']['file_pos'] = $start_pos;
+            
+            $c = $cache_ref;
+            list($lat, $lon) = explode("|", $c['location']);
+      ?><wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
             <time><?= $c['date_created'] ?></time>
             <name><?= $c['code'] ?></name>
             <desc><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?> <?= _("hidden by") ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= $c['difficulty'] ?>/<?= $c['terrain'] ?><? if ($c['size'] !== null) { echo "/".$c['size']; } else { echo "/X"; } ?>/<?= $c['rating'] ?>)</desc>
@@ -183,10 +190,22 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
                 </ox:opencaching>
             <? } ?>
         </wpt>
+        <?
+            $end_pos = ob_get_length();
+            $cache_ref['ggz_index']['file_len'] = $end_pos - $start_pos;
+        ?>
         <? if ($vars['alt_wpts']) { ?>
-            <? foreach ($c['alt_wpts'] as $wpt) { ?>
-                <? list($lat, $lon) = explode("|", $wpt['location']); ?>
-                <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
+            <? foreach ($cache_ref['alt_wpts'] as &$wpt_ref) { ?>
+                <? 
+                    $start_pos = ob_get_length();
+                    if (!isset($wpt_ref['ggz_index']))
+                    	$wpt_ref['ggz_index'] = array();
+                    $wpt_ref['ggz_index']['file_pos'] = $start_pos;
+                    
+                    $wpt = $wpt_ref;
+                    list($lat, $lon) = explode("|", $wpt['location']); 
+                    
+              ?><wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
                     <time><?= $c['date_created'] ?></time>
                     <name><?= Okapi::xmlescape($wpt['name']) ?></name>
                     <cmt><?= Okapi::xmlescape($wpt['description']) ?></cmt>
@@ -201,7 +220,10 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
                         </gsak:wptExtension>
                     <? } ?>
                 </wpt>
-            <? } ?>
+                <? 
+                    $end_pos = ob_get_length();
+                    $wpt_ref['ggz_index']['file_len'] = $end_pos - $start_pos;
+                } ?>
         <? } ?>
     <? } ?>
 </gpx>
