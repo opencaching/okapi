@@ -54,7 +54,33 @@ class WebService
         'other' => 'Other',
     );
 
+    /**
+     * Flag for create_gpx() method, which enables GGZ index geneation. The index
+     * is returned under 'ggz_index' key. 
+     * @var int
+     */
+    const FLAG_CREATE_GGZ_IDX = 1;
+    
     public static function call(OkapiRequest $request)
+    {
+        $response = new OkapiHttpResponse();
+        $response->content_type = "application/gpx; charset=utf-8";
+        $response->content_disposition = 'attachment; filename="results.gpx"';
+        
+        $result_ref = self::create_gpx($request);
+        $response->body = &$result_ref['gpx'];
+        
+        return $response;
+    }
+    
+    /**
+     * Generates GPX file 
+     * @param OkapiRequest $request
+     * @param integer $flags
+     * @throws BadRequest
+     * @return An array with GPX file content under 'gpx' key
+     */
+    public static function create_gpx(OkapiRequest $request, $flags = null)
     {
         $vars = array();
 
@@ -387,15 +413,74 @@ class WebService
                 }
             }
         }
+        # Store index data for GGZ format
+        $ggz_index = array();
+        if ($flags & self::FLAG_CREATE_GGZ_IDX){
+            foreach ($vars['caches'] as &$cache_ref)
+            {
+                if (!isset($cache_ref['ggz_index'])) {
+                    $cache_ref['ggz_index'] = array();
+                }
+                $index_ref = &$cache_ref['ggz_index'];
+                $index_ref['code'] = $cache_ref['code'];
+                $index_ref['name'] = isset($cache_ref['name_2']) ? $cache_ref['name_2'] : $cache_ref['name'];
+                $index_ref['type'] = $vars['cache_GPX_types'][$cache_ref['type']];
+                list($lat, $lon) = explode("|", $cache_ref['location']);
+                $index_ref['lat'] = $lat;
+                $index_ref['lon'] = $lon;
+                
+                $index_ref['ratings'] = array();
+                $ratings_ref = &$index_ref['ratings'];
+                if (isset($cache_ref['rating'])){
+                   $ratings_ref['awesomeness'] = $cache_ref['rating'];
+                }
+                $ratings_ref['difficulty'] = $cache_ref['difficulty'];
+                if (!isset($cache_ref['size'])) {
+                    $ratings_ref['size'] = 0; // Virtual, Event
+                } else if ($cache_ref['oxsize'] !== null) { // is this ox size one-to-one?
+                    $ratings_ref['size'] = $cache_ref['oxsize'];
+                }
+                $ratings_ref['terrain'] = $cache_ref['terrain'];
+                
+                if ($vars['mark_found'] && $cache_ref['is_found']) {
+                    $index_ref['found'] = true;
+                }
+                
+                $ggz_index[] = &$index_ref;
+                
+                # Process additional waypoints - should we do this
+                if (isset($cache_ref['alt_wpts'])){
+                    $idx = 1;
+                    foreach ($cache_ref['alt_wpts'] as &$alt_wpt_ref) {
+                        if (!isset($alt_wpt_ref['ggz_index'])) {
+                            $alt_wpt_ref['ggz_index'] = array();
+                        }
+                        $index_ref = &$alt_wpt_ref['ggz_index'];
+                        $index_ref['code'] = $cache_ref['code'] . '-' . $idx;
+                        $index_ref['name'] = $alt_wpt_ref['type_name'];
+                        $index_ref['type'] = $alt_wpt_ref['sym'];
+                        list($lat, $lon) = explode("|", $alt_wpt_ref['location']);
+                        $index_ref['lat'] = $lat;
+                        $index_ref['lon'] = $lon;
+                        
+                        $ggz_index[] = &$index_ref;
+                        
+                        $idx++;
+                    }
+                }
+            }
+        }
 
-        $response = new OkapiHttpResponse();
-        $response->content_type = "application/gpx; charset=utf-8";
-        $response->content_disposition = 'attachment; filename="results.gpx"';
         ob_start();
         Okapi::gettext_domain_init(explode("|", $langpref)); # Consumer gets properly localized GPX file.
         include 'gpxfile.tpl.php';
         Okapi::gettext_domain_restore();
-        $response->body = ob_get_clean();
-        return $response;
+        
+        $result = array('gpx' => ob_get_clean());
+        if ($flags & self::FLAG_CREATE_GGZ_IDX){
+            $result['ggz_index'] = $ggz_index;
+        }
+        
+        return $result;
     }
 }
