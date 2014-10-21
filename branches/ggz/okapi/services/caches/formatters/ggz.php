@@ -18,6 +18,8 @@ use okapi\services\caches\search\SearchAssistant;
 use \ZipArchive;
 use \Exception;
 
+require_once($GLOBALS['rootpath']."okapi/services/caches/formatters/gpx.php");
+
 class WebService
 {
     private static $shutdown_function_registered = false;
@@ -32,65 +34,26 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        $cache_codes = $request->get_parameter('cache_codes');
-        if ($cache_codes === null) throw new ParamMissing('cache_codes');
-
-        # Issue 106 requires us to allow empty list of cache codes to be passed into this method.
-        # All of the queries below have to be ready for $cache_codes to be empty!
-
-        $langpref = $request->get_parameter('langpref');
-        if (!$langpref) $langpref = "en";
-        $location_source = $request->get_parameter('location_source');
-        $location_change_prefix = $request->get_parameter('location_change_prefix');
-
-        # Start creating ZIP archive.
+        $gpx_result = \okapi\services\caches\formatters\gpx\WebService::create_gpx(
+                $request,
+                \okapi\services\caches\formatters\gpx\WebService::FLAG_CREATE_GGZ_IDX
+        );
 
         $tempfilename = Okapi::get_var_dir()."/garmin".time().rand(100000,999999).".zip";
         $zip = new ZipArchive();
         if ($zip->open($tempfilename, ZIPARCHIVE::CREATE) !== true)
             throw new Exception("ZipArchive class could not create temp file $tempfilename. Check permissions!");
 
-        # Create basic structure
-        $zip->addEmptyDir("data");
-        $zip->addEmptyDir("index");
-        $zip->addEmptyDir("index/com");
-        $zip->addEmptyDir("index/com/garmin");
-        $zip->addEmptyDir("index/com/garmin/geocaches");
-        $zip->addEmptyDir("index/com/garmin/geocaches/v0");
-
         # Include a GPX file compatible with Garmin devices. It should include all
         # Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It will
         # also include personal data (if the method was invoked using Level 3 Authentication).
 
-        $gpx_response = OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
-            $request->consumer, $request->token, array(
-                'cache_codes' => $cache_codes,
-                'langpref' => $langpref,
-                'ns_ground' => 'true',
-                'ns_ox' => 'true',
-                'images' => 'none',
-                'attrs' => 'ox:tags',
-                'trackables' => 'desc:count',
-                'alt_wpts' => 'true',
-                'recommendations' => 'desc:count',
-                'latest_logs' => 'true',
-                'lpc' => 'all',
-                'my_notes' => ($request->token != null) ? "desc:text" : "none",
-                'location_source' => $location_source,
-                'location_change_prefix' => $location_change_prefix
-            ))); 
-
-        $file_data = $gpx_response->get_body();
         $file_item_name = "data_".time()."_".rand(100000,999999).".gpx";
         $ggz_file = array(
-        		'name' => $file_item_name,
-        		'crc32' => sprintf('%08X', crc32($file_data)),
-                'caches' => $gpx_response->ggz_index
+                'name' => $file_item_name,
+                'crc32' => sprintf('%08X', crc32($gpx_result['gpx'])),
+                'caches' => $gpx_result['ggz_index']
         );
-        
-        $zip->addFromString("data/".$file_item_name, $file_data);
-        unset($file_data);
-        unset($gpx_response);
         
         $vars = array();
         $vars['files'] = array($ggz_file);
@@ -99,7 +62,15 @@ class WebService
         include 'ggzindex.tpl.php';
         $index_content = ob_get_clean();
         
+        //$zip->addEmptyDir("index");
+        //$zip->addEmptyDir("index/com");
+        //$zip->addEmptyDir("index/com/garmin");
+        //$zip->addEmptyDir("index/com/garmin/geocaches");
+        //$zip->addEmptyDir("index/com/garmin/geocaches/v0");
         $zip->addFromString("index/com/garmin/geocaches/v0/index.xml", $index_content);
+
+        //$zip->addEmptyDir("data");
+        $zip->addFromString("data/".$file_item_name, $gpx_result['gpx']);
         
         $zip->close();
 
@@ -111,7 +82,7 @@ class WebService
 
         set_time_limit(600);
         $response = new OkapiHttpResponse();
-        $response->content_type = "application/zip";
+        $response->content_type = "application/x-ggz; charset=utf-8";
         $response->content_disposition = 'attachment; filename="geocaches.ggz"';
         $response->stream_length = filesize($tempfilename);
         $response->body = fopen($tempfilename, "rb");

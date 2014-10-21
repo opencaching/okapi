@@ -24,11 +24,9 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
     <time><?= date('c') ?></time>
     <? foreach ($vars['caches'] as &$cache_ref) { ?>
         <? 
-            $start_pos = ob_get_length();
-            if (!isset($cache_ref['ggz_index']))
-                $cache_ref['ggz_index'] = array();
-            $cache_ref['ggz_index']['file_pos'] = $start_pos;
-            
+            if (isset($cache_ref['ggz_index'])){
+                $cache_ref['ggz_index']['file_pos'] = ob_get_length();
+            }
             $c = $cache_ref;
             list($lat, $lon) = explode("|", $c['location']);
       ?><wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
@@ -191,17 +189,16 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
             <? } ?>
         </wpt>
         <?
-            $end_pos = ob_get_length();
-            $cache_ref['ggz_index']['file_len'] = $end_pos - $start_pos;
+            if (isset($cache_ref['ggz_index'])){
+                $cache_ref['ggz_index']['file_len'] = ob_get_length() - $cache_ref['ggz_index']['file_pos'];
+            }
         ?>
         <? if ($vars['alt_wpts']) { ?>
             <? foreach ($cache_ref['alt_wpts'] as &$wpt_ref) { ?>
                 <? 
-                    $start_pos = ob_get_length();
-                    if (!isset($wpt_ref['ggz_index']))
-                        $wpt_ref['ggz_index'] = array();
-                    $wpt_ref['ggz_index']['file_pos'] = $start_pos;
-                    
+                    if (isset($wpt_ref['ggz_index'])){
+                        $wpt_ref['ggz_index']['file_pos'] = ob_get_length();
+                    }                    
                     $wpt = $wpt_ref;
                     list($lat, $lon) = explode("|", $wpt['location']); 
                     
@@ -221,8 +218,9 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
                     <? } ?>
                 </wpt>
                 <? 
-                    $end_pos = ob_get_length();
-                    $wpt_ref['ggz_index']['file_len'] = $end_pos - $start_pos;
+                    if (isset($wpt_ref['ggz_index'])){
+                        $wpt_ref['ggz_index']['file_len'] = ob_get_length() - $wpt_ref['ggz_index']['file_pos'];
+                    }
                 } ?>
         <? } ?>
     <? } ?>
