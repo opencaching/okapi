@@ -1,0 +1,18 @@
+<xml>
+    <brief>Retrieve GGZ file for newer Garmin devices</brief>
+    <issue-id>323</issue-id>
+    <desc>
+        <p><b>Important note:</b> This method is in <b>beta version</b>. It's interface may change
+        in a backward-incompatible manner, or it may even be removed.</p>
+        <p>Produce a GGZ file (which is actually a zip file) with content compatible with newer
+        Geocaching-enabled Garmin GPS devices.</p>
+        <p>The method bahaves exactly as 
+        <a href="%OKAPI:methodref:services/caches/formatters/gpx%">services/caches/formatters/gpx</a> 
+        method, and takes the same parameters. Only output format is different.
+        </p>
+    </desc>
+    <import-params method='services/caches/formatters/gpx'/>
+    <returns>
+        <p>A GGZ file. You should copy the file to Garmin's internal memory storage.</p>
+    </returns>
+</xml>
