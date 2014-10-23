@@ -926,11 +926,12 @@ class clsTbsZip {
 		} else {
 			$path = $Data;
 			$Data = false;
-			if (file_exists($path)) {
-				$fz = filesize($path);
+			$fi = stat($path);
+			if ($fi !== false) {
+				$fz = $fi['size'];
 				if ($len_u===false) $len_u = $fz;
 				$len_c = ($Compress) ? false : $fz;
-				$file_time = filemtime($path);
+				$file_time = $fi['mtime'];
 			} else {
 				return $this->RaiseError("Cannot add the file '".$path."' because it is not found.");
 			}
