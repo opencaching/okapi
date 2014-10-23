@@ -2,6 +2,8 @@
 
 namespace okapi\services\caches\formatters\garmin;
 
+require_once ($GLOBALS['rootpath'].'okapi/lib/tbszip.php');
+
 use okapi\Okapi;
 use okapi\Cache;
 use okapi\Settings;
@@ -15,14 +17,43 @@ use okapi\InvalidParam;
 use okapi\OkapiAccessToken;
 use okapi\services\caches\search\SearchAssistant;
 
-use \ZipArchive;
 use \Exception;
+use \clsTbsZip;
+
+class OkapiZIPHttpResponse extends OkapiHttpResponse 
+{
+    public $zip; 
+    
+    public function __construct() 
+    { 
+        $this->zip = new clsTbsZip(); 
+        $this->zip->CreateNew();
+    }
+    
+    public function print_body()
+    {
+        $this->zip->Flush(TBSZIP_DOWNLOAD|TBSZIP_NOHEADER);
+    }
+    
+    public function get_body()
+    {
+        throw new Exception('For the performance reasons, this function can not be called. Use display() instead');
+    } 
+    
+    public function get_length()
+    {
+        return $this->zip->_EstimateNewArchSize();
+    }
+    
+    public function display()
+    {
+        $this->allow_gzip = false;
+        parent::display();
+    }
+}
 
 class WebService
 {
-    private static $shutdown_function_registered = false;
-    private static $files_to_unlink = array();
-
     public static function options()
     {
         return array(
@@ -48,24 +79,14 @@ class WebService
         $location_change_prefix = $request->get_parameter('location_change_prefix');
 
         # Start creating ZIP archive.
-
-        $tempfilename = Okapi::get_var_dir()."/garmin".time().rand(100000,999999).".zip";
-        $zip = new ZipArchive();
-        if ($zip->open($tempfilename, ZIPARCHIVE::CREATE) !== true)
-            throw new Exception("ZipArchive class could not create temp file $tempfilename. Check permissions!");
-
-        # Create basic structure
-
-        $zip->addEmptyDir("Garmin");
-        $zip->addEmptyDir("Garmin/GPX");
-        $zip->addEmptyDir("Garmin/GeocachePhotos");
+        $response = new OkapiZIPHttpResponse();
 
         # Include a GPX file compatible with Garmin devices. It should include all
         # Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It will
         # also include image references (actual images will be added as separate files later)
         # and personal data (if the method was invoked using Level 3 Authentication).
 
-        $zip->addFromString("Garmin/GPX/opencaching".time().rand(100000,999999).".gpx",
+        $response->zip->FileAdd("Garmin/GPX/opencaching".time().rand(100000,999999).".gpx",
             OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
             $request->consumer, $request->token, array(
                 'cache_codes' => $cache_codes,
@@ -100,11 +121,8 @@ class WebService
                 if (count($imgs) == 0)
                     continue;
                 $dir = "Garmin/GeocachePhotos/".$cache_code[strlen($cache_code) - 1];
-                $zip->addEmptyDir($dir); # fails silently if it already exists
                 $dir .= "/".$cache_code[strlen($cache_code) - 2];
-                $zip->addEmptyDir($dir);
                 $dir .= "/".$cache_code;
-                $zip->addEmptyDir($dir);
                 foreach ($imgs as $no => $img)
                 {
                     if ($images == 'spoilers' && (!$img['is_spoiler']))
@@ -124,7 +142,6 @@ class WebService
                         continue;  # unsupported file extension
 
                     if ($img['is_spoiler']) {
-                        $zip->addEmptyDir($dir."/Spoilers");
                         $zippath = $dir."/Spoilers/".$img['unique_caption'].".jpg";
                     } else {
                         $zippath = $dir."/".$img['unique_caption'].".jpg";
@@ -140,9 +157,7 @@ class WebService
                     $syspath = Settings::get('IMAGES_DIR')."/".$img['uuid'].".jpg";
                     if (file_exists($syspath))
                     {
-                        $file = file_get_contents($syspath);
-                        if ($file)
-                            $zip->addFromString($zippath, $file);
+                        $response->zip->FileAdd($zippath, $syspath, TBSZIP_FILE, false);
                     }
                     else
                     {
@@ -180,13 +195,11 @@ class WebService
                             }
                         }
                         if ($jpeg_contents)  # This can be "null" *or* "false"!
-                            $zip->addFromString($zippath, $jpeg_contents);
+                            $response->zip->FileAdd($zippath, $jpeg_contents, TBSZIP_STRING, false);
                     }
                 }
             }
         }
-
-        $zip->close();
 
         # The result could be big. Bigger than our memory limit. We will
         # return an open file stream instead of a string. We also should
@@ -195,27 +208,8 @@ class WebService
         # what is the PHP's default way of handling such scenario).
 
         set_time_limit(600);
-        $response = new OkapiHttpResponse();
         $response->content_type = "application/zip";
         $response->content_disposition = 'attachment; filename="results.zip"';
-        $response->stream_length = filesize($tempfilename);
-        $response->body = fopen($tempfilename, "rb");
-        $response->allow_gzip = false;
-        self::add_file_to_unlink($tempfilename);
         return $response;
-    }
-
-    private static function add_file_to_unlink($filename)
-    {
-        if (!self::$shutdown_function_registered)
-            register_shutdown_function(array("okapi\\services\\caches\\formatters\\garmin\\WebService", "unlink_temporary_files"));
-        self::$files_to_unlink[] = $filename;
-    }
-
-    public static function unlink_temporary_files()
-    {
-        foreach (self::$files_to_unlink as $filename)
-            @unlink($filename);
-        self::$files_to_unlink = array();
     }
 }
