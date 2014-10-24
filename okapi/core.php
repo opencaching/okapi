@@ -748,6 +748,10 @@ class OkapiHttpResponse
         # We will gzip the data ourselves, while disabling gziping by Apache. This way, we can
         # set the Content-Length correctly which is handy in some scenarios.
 
+        if (function_exists('apache_setenv')) {
+            @apache_setenv('no-gzip', 1);
+        }
+        
         if ($try_gzip && is_string($this->body))
         {
             header("Content-Encoding: gzip");
