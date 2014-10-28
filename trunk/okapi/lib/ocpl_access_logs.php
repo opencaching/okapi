@@ -89,9 +89,9 @@ class OCPLAccessLogs
                     and cal.event = $original_caller_escaped
                     and cal.okapi_consumer_key = $consumer_key_escaped
                     and date_sub(now(), interval 1 hour) < cal.event_date ";
-            if ($user_id === null){
+            if ($user_id === null) {
                 $sql .= " and cal.ip_addr = $remote_addr_escaped ";
-                $sql .= isset($_SERVER['HTTP_USER_AGENT'] ? " and cal.user_agent = $user_agent_escaped " : " and cal.user_agent is null ";
+                $sql .= isset($_SERVER['HTTP_USER_AGENT']) ? " and cal.user_agent = $user_agent_escaped " : " and cal.user_agent is null ";
             }
             $already_logged_cache_ids = Db::select_column($sql);
             unset($cache_ids_where);

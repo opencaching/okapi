@@ -50,18 +50,18 @@ class WebService
 
         $file_item_name = "data_".time()."_".rand(100000,999999).".gpx";
         $ggz_file = array(
-                'name' => $file_item_name,
-                'crc32' => sprintf('%08X', crc32($gpx_result['gpx'])),
-                'caches' => $gpx_result['ggz_index']
+            'name' => $file_item_name,
+            'crc32' => sprintf('%08X', crc32($gpx_result['gpx'])),
+            'caches' => $gpx_result['ggz_entries']
         );
-        
+
         $vars = array();
         $vars['files'] = array($ggz_file);
-        
+
         ob_start();
         include 'ggzindex.tpl.php';
         $index_content = ob_get_clean();
-        
+
         //$zip->addEmptyDir("index");
         //$zip->addEmptyDir("index/com");
         //$zip->addEmptyDir("index/com/garmin");
@@ -71,7 +71,7 @@ class WebService
 
         //$zip->addEmptyDir("data");
         $zip->addFromString("data/".$file_item_name, $gpx_result['gpx']);
-        
+
         $zip->close();
 
         # The result could be big. Bigger than our memory limit. We will
