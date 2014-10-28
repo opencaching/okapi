@@ -23,13 +23,16 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
     <urlname><?= $vars['installation']['site_name'] ?></urlname>
     <time><?= date('c') ?></time>
     <? foreach ($vars['caches'] as &$cache_ref) { ?>
-        <? 
-            if (isset($cache_ref['ggz_index'])){
-                $cache_ref['ggz_index']['file_pos'] = ob_get_length();
+        <?
+            if (isset($cache_ref['ggz_entry'])) {
+                /* The base parts of the GGZ index are the offset and length of the entry
+                 * in the GPX file. This needs to be calculated here. */
+                $cache_ref['ggz_entry']['file_pos'] = ob_get_length();
             }
             $c = $cache_ref;
             list($lat, $lon) = explode("|", $c['location']);
-      ?><wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
+        ?>
+        <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
             <time><?= $c['date_created'] ?></time>
             <name><?= $c['code'] ?></name>
             <desc><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?> <?= _("hidden by") ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= $c['difficulty'] ?>/<?= $c['terrain'] ?><? if ($c['size'] !== null) { echo "/".$c['size']; } else { echo "/X"; } ?>/<?= $c['rating'] ?>)</desc>
@@ -159,7 +162,6 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
                             <? } ?>
                         </groundspeak:logs>
                     <? } ?>
-                    <? /* groundspeak:travelbugs - does it actually DO anything? WRTODO */ ?>
                 </groundspeak:cache>
             <? } ?>
             <? if ($vars['ns_ox']) { /* Does user want us to include Garmin's <opencaching> element? */ ?>
@@ -189,20 +191,20 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
             <? } ?>
         </wpt>
         <?
-            if (isset($cache_ref['ggz_index'])){
-                $cache_ref['ggz_index']['file_len'] = ob_get_length() - $cache_ref['ggz_index']['file_pos'];
+            if (isset($cache_ref['ggz_entry'])) {
+                $cache_ref['ggz_entry']['file_len'] = ob_get_length() - $cache_ref['ggz_entry']['file_pos'];
             }
         ?>
         <? if ($vars['alt_wpts']) { ?>
             <? foreach ($cache_ref['alt_wpts'] as &$wpt_ref) { ?>
-                <? 
-                    if (isset($wpt_ref['ggz_index'])){
-                        $wpt_ref['ggz_index']['file_pos'] = ob_get_length();
-                    }                    
+                <?
+                    if (isset($wpt_ref['ggz_entry'])) {
+                        $wpt_ref['ggz_entry']['file_pos'] = ob_get_length();
+                    }
                     $wpt = $wpt_ref;
-                    list($lat, $lon) = explode("|", $wpt['location']); 
-                    
-              ?><wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
+                    list($lat, $lon) = explode("|", $wpt['location']);
+                ?>
+                <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
                     <time><?= $c['date_created'] ?></time>
                     <name><?= Okapi::xmlescape($wpt['name']) ?></name>
                     <cmt><?= Okapi::xmlescape($wpt['description']) ?></cmt>
@@ -217,11 +219,12 @@ http://www.gsak.net/xmlv1/5 http://www.gsak.net/xmlv1/5/gsak.xsd
                         </gsak:wptExtension>
                     <? } ?>
                 </wpt>
-                <? 
-                    if (isset($wpt_ref['ggz_index'])){
-                        $wpt_ref['ggz_index']['file_len'] = ob_get_length() - $wpt_ref['ggz_index']['file_pos'];
+                <?
+                    if (isset($wpt_ref['ggz_entry'])){
+                        $wpt_ref['ggz_entry']['file_len'] = ob_get_length() - $wpt_ref['ggz_entry']['file_pos'];
                     }
-                } ?>
+                ?>
+            <? } ?>
         <? } ?>
     <? } ?>
 </gpx>
