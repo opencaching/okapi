@@ -20,31 +20,31 @@ use okapi\services\caches\search\SearchAssistant;
 use \Exception;
 use \clsTbsZip;
 
-class OkapiZIPHttpResponse extends OkapiHttpResponse 
+class OkapiZIPHttpResponse extends OkapiHttpResponse
 {
-    public $zip; 
-    
-    public function __construct() 
-    { 
-        $this->zip = new clsTbsZip(); 
+    public $zip;
+
+    public function __construct()
+    {
+        $this->zip = new clsTbsZip();
         $this->zip->CreateNew();
     }
-    
+
     public function print_body()
     {
         $this->zip->Flush(TBSZIP_DOWNLOAD|TBSZIP_NOHEADER);
     }
-    
+
     public function get_body()
     {
         throw new Exception('For the performance reasons, this function can not be called. Use display() instead');
-    } 
-    
+    }
+
     public function get_length()
     {
         return $this->zip->_EstimateNewArchSize();
     }
-    
+
     public function display()
     {
         $this->allow_gzip = false;
