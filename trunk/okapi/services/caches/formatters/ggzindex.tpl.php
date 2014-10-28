@@ -14,8 +14,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
             <name><?= $f['name'] ?></name>
             <crc><?= $f['crc32'] ?></crc>
             <time><?= date('c') ?></time>
-            <? 
-                foreach ($f['caches'] as $c) { 
+            <?
+                foreach ($f['caches'] as $c) {
             ?><gch>
                 <code><?= $c['code'] ?></code>
                 <name><?= Okapi::xmlescape($c['name']) ?></name>
@@ -24,12 +24,12 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                 <lon><?= $c['lon'] ?></lon>
                 <file_pos><?= $c['file_pos'] ?></file_pos>
                 <file_len><?= $c['file_len'] ?></file_len>
-                <? if (isset($c['ratings'])) { 
+                <? if (isset($c['ratings'])) {
                 ?><ratings>
-                    <? 
+                    <?
                         foreach ($c['ratings'] as $rating_key => $rating_val){
                             echo "<$rating_key>$rating_val</$rating_key>\n";
-                        } 
+                        }
                     ?>
                 </ratings><?
                 }

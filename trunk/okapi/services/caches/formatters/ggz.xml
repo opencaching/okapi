@@ -11,7 +11,7 @@
         much faster.</p>
 
         <p>Currently, this method takes the same parameters as the
-        <a href="%OKAPI:methodref:services/caches/formatters/gpx%">services/caches/formatters/gpx</a> 
+        <a href="%OKAPI:methodref:services/caches/formatters/gpx%">services/caches/formatters/gpx</a>
         method. Only the output format is different.</p>
     </desc>
     <import-params method='services/caches/formatters/gpx'/>

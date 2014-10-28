@@ -751,7 +751,7 @@ class OkapiHttpResponse
         if (function_exists('apache_setenv')) {
             @apache_setenv('no-gzip', 1);
         }
-        
+
         if ($try_gzip && is_string($this->body))
         {
             header("Content-Encoding: gzip");
