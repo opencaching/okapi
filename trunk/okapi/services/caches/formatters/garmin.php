@@ -2,7 +2,6 @@
 
 namespace okapi\services\caches\formatters\garmin;
 
-require_once ($GLOBALS['rootpath'].'okapi/lib/tbszip.php');
 
 use okapi\Okapi;
 use okapi\Cache;
@@ -11,6 +10,7 @@ use okapi\OkapiRequest;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\OkapiZIPHttpResponse;
 use okapi\BadRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -19,38 +19,6 @@ use okapi\services\caches\search\SearchAssistant;
 
 use \Exception;
 use \clsTbsZip;
-
-class OkapiZIPHttpResponse extends OkapiHttpResponse
-{
-    public $zip;
-
-    public function __construct()
-    {
-        $this->zip = new clsTbsZip();
-        $this->zip->CreateNew();
-    }
-
-    public function print_body()
-    {
-        $this->zip->Flush(TBSZIP_DOWNLOAD|TBSZIP_NOHEADER);
-    }
-
-    public function get_body()
-    {
-        throw new Exception('For the performance reasons, this function can not be called. Use display() instead');
-    }
-
-    public function get_length()
-    {
-        return $this->zip->_EstimateNewArchSize();
-    }
-
-    public function display()
-    {
-        $this->allow_gzip = false;
-        parent::display();
-    }
-}
 
 class WebService
 {
@@ -75,19 +43,37 @@ class WebService
         if (!$images) $images = "all";
         if (!in_array($images, array("none", "all", "spoilers", "nonspoilers")))
             throw new InvalidParam('images');
+        $format = $request->get_parameter('format');
+        if (!$format) $format = "gpx";
+        if (!in_array($format, array("gpx", "ggz")))
+            throw new InvalidParam('format');
+        
         $location_source = $request->get_parameter('location_source');
         $location_change_prefix = $request->get_parameter('location_change_prefix');
 
         # Start creating ZIP archive.
         $response = new OkapiZIPHttpResponse();
 
-        # Include a GPX file compatible with Garmin devices. It should include all
+        # Include a GPX/GGZ file compatible with Garmin devices. It should include all
         # Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It will
         # also include image references (actual images will be added as separate files later)
         # and personal data (if the method was invoked using Level 3 Authentication).
 
-        $response->zip->FileAdd("Garmin/GPX/opencaching".time().rand(100000,999999).".gpx",
-            OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
+        switch($format) {
+            case 'gpx' : 
+                $data_filename = "Garmin/GPX/opencaching".time().rand(100000,999999).".gpx";
+                $data_method = 'services/caches/formatters/gpx';
+                $data_use_compression = true;
+                break;
+            case 'ggz' : 
+                $data_filename = "Garmin/GGZ/opencaching".time().rand(100000,999999).".ggz";
+                $data_method = 'services/caches/formatters/ggz';
+                $data_use_compression = false;
+                break;
+        }
+        
+        $response->zip->FileAdd($data_filename,
+            OkapiServiceRunner::call($data_method, new OkapiInternalRequest(
             $request->consumer, $request->token, array(
                 'cache_codes' => $cache_codes,
                 'langpref' => $langpref,
@@ -103,7 +89,7 @@ class WebService
                 'my_notes' => ($request->token != null) ? "desc:text" : "none",
                 'location_source' => $location_source,
                 'location_change_prefix' => $location_change_prefix
-            )))->get_body());
+            )))->get_body(), TBSZIP_STRING, $data_use_compression);
 
         # Then, include all the images.
 
@@ -201,10 +187,10 @@ class WebService
             }
         }
 
-        # The result could be big. Bigger than our memory limit. We will
-        # return an open file stream instead of a string. We also should
-        # set a higher time limit, because downloading this response may
-        # take some time over slow network connections (and I'm not sure
+        # The result could be big, but it's created and streamed right 
+        # to the browser, so it shouldn't hit our memory limit. We also 
+        # should set a higher time limit, because downloading this response 
+        # may take some time over slow network connections (and I'm not sure
         # what is the PHP's default way of handling such scenario).
 
         set_time_limit(600);
