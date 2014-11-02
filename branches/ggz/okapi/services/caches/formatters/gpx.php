@@ -55,26 +55,27 @@ class WebService
     );
 
     /**
-     * Flag for create_gpx() method, which enables GGZ index geneation. The index
-     * is returned under 'ggz_index' key. 
-     * @var int
+     * When used in create_gpx() method, enables GGZ index generation.
+     * The index is then returned along the method's response, in the
+     * 'ggz_entries' key. See formatters/ggz method.
      */
     const FLAG_CREATE_GGZ_IDX = 1;
-    
+
     public static function call(OkapiRequest $request)
     {
         $response = new OkapiHttpResponse();
         $response->content_type = "application/gpx; charset=utf-8";
         $response->content_disposition = 'attachment; filename="results.gpx"';
-        
+
         $result_ref = self::create_gpx($request);
         $response->body = &$result_ref['gpx'];
-        
+
         return $response;
     }
-    
+
     /**
-     * Generates GPX file 
+     * Generate a GPX file.
+     *
      * @param OkapiRequest $request
      * @param integer $flags
      * @throws BadRequest
@@ -413,24 +414,36 @@ class WebService
                 }
             }
         }
-        # Store index data for GGZ format
-        $ggz_index = array();
-        if ($flags & self::FLAG_CREATE_GGZ_IDX){
+
+        # Do we need a GGZ index?
+
+        if ($flags & self::FLAG_CREATE_GGZ_IDX) {
+
+            # GGZ index consist of entries - one per each waypoint in the GPX file.
+            # We will keep a list of all such entries here.
+
+            $ggz_entries = array();
+
             foreach ($vars['caches'] as &$cache_ref)
             {
-                if (!isset($cache_ref['ggz_index'])) {
-                    $cache_ref['ggz_index'] = array();
+                # Every $cache_ref will also be holding a reference to its entry.
+                # Note, that more attributes are added while processing gpsfile.tpl.php!
+
+                if (!isset($cache_ref['ggz_entry'])) {
+                    $cache_ref['ggz_entry'] = array();
                 }
-                $index_ref = &$cache_ref['ggz_index'];
-                $index_ref['code'] = $cache_ref['code'];
-                $index_ref['name'] = isset($cache_ref['name_2']) ? $cache_ref['name_2'] : $cache_ref['name'];
-                $index_ref['type'] = $vars['cache_GPX_types'][$cache_ref['type']];
+                $ggz_entry = &$cache_ref['ggz_entry'];
+                $ggz_entries[] = &$ggz_entry;
+
+                $ggz_entry['code'] = $cache_ref['code'];
+                $ggz_entry['name'] = isset($cache_ref['name_2']) ? $cache_ref['name_2'] : $cache_ref['name'];
+                $ggz_entry['type'] = $vars['cache_GPX_types'][$cache_ref['type']];
                 list($lat, $lon) = explode("|", $cache_ref['location']);
-                $index_ref['lat'] = $lat;
-                $index_ref['lon'] = $lon;
-                
-                $index_ref['ratings'] = array();
-                $ratings_ref = &$index_ref['ratings'];
+                $ggz_entry['lat'] = $lat;
+                $ggz_entry['lon'] = $lon;
+
+                $ggz_entry['ratings'] = array();
+                $ratings_ref = &$ggz_entry['ratings'];
                 if (isset($cache_ref['rating'])){
                    $ratings_ref['awesomeness'] = $cache_ref['rating'];
                 }
@@ -441,30 +454,30 @@ class WebService
                     $ratings_ref['size'] = $cache_ref['oxsize'];
                 }
                 $ratings_ref['terrain'] = $cache_ref['terrain'];
-                
+
                 if ($vars['mark_found'] && $cache_ref['is_found']) {
-                    $index_ref['found'] = true;
+                    $ggz_entry['found'] = true;
                 }
-                
-                $ggz_index[] = &$index_ref;
-                
-                # Process additional waypoints - should we do this
-                if (isset($cache_ref['alt_wpts'])){
+
+                # Additional waypoints. Currently, we're not 100% sure if their entries should
+                # be included in the GGZ file (the format is undocumented).
+
+                if (isset($cache_ref['alt_wpts'])) {
                     $idx = 1;
                     foreach ($cache_ref['alt_wpts'] as &$alt_wpt_ref) {
-                        if (!isset($alt_wpt_ref['ggz_index'])) {
-                            $alt_wpt_ref['ggz_index'] = array();
+                        if (!isset($alt_wpt_ref['ggz_entry'])) {
+                            $alt_wpt_ref['ggz_entry'] = array();
                         }
-                        $index_ref = &$alt_wpt_ref['ggz_index'];
-                        $index_ref['code'] = $cache_ref['code'] . '-' . $idx;
-                        $index_ref['name'] = $alt_wpt_ref['type_name'];
-                        $index_ref['type'] = $alt_wpt_ref['sym'];
+                        $ggz_entry = &$alt_wpt_ref['ggz_entry'];
+                        $ggz_entries[] = &$ggz_entry;
+
+                        $ggz_entry['code'] = $cache_ref['code'] . '-' . $idx;
+                        $ggz_entry['name'] = $alt_wpt_ref['type_name'];
+                        $ggz_entry['type'] = $alt_wpt_ref['sym'];
                         list($lat, $lon) = explode("|", $alt_wpt_ref['location']);
-                        $index_ref['lat'] = $lat;
-                        $index_ref['lon'] = $lon;
-                        
-                        $ggz_index[] = &$index_ref;
-                        
+                        $ggz_entry['lat'] = $lat;
+                        $ggz_entry['lon'] = $lon;
+
                         $idx++;
                     }
                 }
@@ -475,12 +488,12 @@ class WebService
         Okapi::gettext_domain_init(explode("|", $langpref)); # Consumer gets properly localized GPX file.
         include 'gpxfile.tpl.php';
         Okapi::gettext_domain_restore();
-        
+
         $result = array('gpx' => ob_get_clean());
-        if ($flags & self::FLAG_CREATE_GGZ_IDX){
-            $result['ggz_index'] = $ggz_index;
+        if ($flags & self::FLAG_CREATE_GGZ_IDX) {
+            $result['ggz_entries'] = $ggz_entries;
         }
-        
+
         return $result;
     }
 }
