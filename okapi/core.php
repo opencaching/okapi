@@ -784,6 +784,41 @@ class OkapiRedirectResponse extends OkapiHttpResponse
     }
 }
 
+class OkapiZIPHttpResponse extends OkapiHttpResponse
+{
+    public $zip;
+
+    public function __construct()
+    {
+        require_once ($GLOBALS['rootpath'].'okapi/lib/tbszip.php');
+        
+        $this->zip = new \clsTbsZip();
+        $this->zip->CreateNew();
+    }
+
+    public function print_body()
+    {
+        $this->zip->Flush(TBSZIP_DOWNLOAD|TBSZIP_NOHEADER);
+    }
+
+    public function get_body()
+    {
+        $this->zip->Flush(TBSZIP_STRING);
+        return $this->zip->OutputSrc; 
+    }
+
+    public function get_length()
+    {
+        return $this->zip->_EstimateNewArchSize();
+    }
+
+    public function display()
+    {
+        $this->allow_gzip = false;
+        parent::display();
+    }
+}
+
 class OkapiLock
 {
     private $lockfile;
