@@ -2,7 +2,6 @@
 
 namespace okapi\services\caches\formatters\garmin;
 
-require_once ($GLOBALS['rootpath'].'okapi/lib/tbszip.php');
 
 use okapi\Okapi;
 use okapi\Cache;
@@ -11,6 +10,7 @@ use okapi\OkapiRequest;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\OkapiZIPHttpResponse;
 use okapi\BadRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -19,38 +19,6 @@ use okapi\services\caches\search\SearchAssistant;
 
 use \Exception;
 use \clsTbsZip;
-
-class OkapiZIPHttpResponse extends OkapiHttpResponse
-{
-    public $zip;
-
-    public function __construct()
-    {
-        $this->zip = new clsTbsZip();
-        $this->zip->CreateNew();
-    }
-
-    public function print_body()
-    {
-        $this->zip->Flush(TBSZIP_DOWNLOAD|TBSZIP_NOHEADER);
-    }
-
-    public function get_body()
-    {
-        throw new Exception('For the performance reasons, this function can not be called. Use display() instead');
-    }
-
-    public function get_length()
-    {
-        return $this->zip->_EstimateNewArchSize();
-    }
-
-    public function display()
-    {
-        $this->allow_gzip = false;
-        parent::display();
-    }
-}
 
 class WebService
 {
@@ -201,10 +169,10 @@ class WebService
             }
         }
 
-        # The result could be big. Bigger than our memory limit. We will
-        # return an open file stream instead of a string. We also should
-        # set a higher time limit, because downloading this response may
-        # take some time over slow network connections (and I'm not sure
+        # The result could be big, but it's created and streamed right 
+        # to the browser, so it shouldn't hit our memory limit. We also 
+        # should set a higher time limit, because downloading this response 
+        # may take some time over slow network connections (and I'm not sure
         # what is the PHP's default way of handling such scenario).
 
         set_time_limit(600);
