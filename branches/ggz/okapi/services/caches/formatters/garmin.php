@@ -43,19 +43,37 @@ class WebService
         if (!$images) $images = "all";
         if (!in_array($images, array("none", "all", "spoilers", "nonspoilers")))
             throw new InvalidParam('images');
+        $format = $request->get_parameter('format');
+        if (!$format) $format = "gpx";
+        if (!in_array($format, array("gpx", "ggz")))
+            throw new InvalidParam('format');
+        
         $location_source = $request->get_parameter('location_source');
         $location_change_prefix = $request->get_parameter('location_change_prefix');
 
         # Start creating ZIP archive.
         $response = new OkapiZIPHttpResponse();
 
-        # Include a GPX file compatible with Garmin devices. It should include all
+        # Include a GPX/GGZ file compatible with Garmin devices. It should include all
         # Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It will
         # also include image references (actual images will be added as separate files later)
         # and personal data (if the method was invoked using Level 3 Authentication).
 
-        $response->zip->FileAdd("Garmin/GPX/opencaching".time().rand(100000,999999).".gpx",
-            OkapiServiceRunner::call('services/caches/formatters/gpx', new OkapiInternalRequest(
+        switch($format) {
+            case 'gpx' : 
+                $data_filename = "Garmin/GPX/opencaching".time().rand(100000,999999).".gpx";
+                $data_method = 'services/caches/formatters/gpx';
+                $data_use_compression = true;
+                break;
+            case 'ggz' : 
+                $data_filename = "Garmin/GGZ/opencaching".time().rand(100000,999999).".ggz";
+                $data_method = 'services/caches/formatters/ggz';
+                $data_use_compression = false;
+                break;
+        }
+        
+        $response->zip->FileAdd($data_filename,
+            OkapiServiceRunner::call($data_method, new OkapiInternalRequest(
             $request->consumer, $request->token, array(
                 'cache_codes' => $cache_codes,
                 'langpref' => $langpref,
@@ -71,7 +89,7 @@ class WebService
                 'my_notes' => ($request->token != null) ? "desc:text" : "none",
                 'location_source' => $location_source,
                 'location_change_prefix' => $location_change_prefix
-            )))->get_body());
+            )))->get_body(), TBSZIP_STRING, $data_use_compression);
 
         # Then, include all the images.
 
