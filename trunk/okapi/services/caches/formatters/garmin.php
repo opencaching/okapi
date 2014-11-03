@@ -43,11 +43,11 @@ class WebService
         if (!$images) $images = "all";
         if (!in_array($images, array("none", "all", "spoilers", "nonspoilers")))
             throw new InvalidParam('images');
-        $format = $request->get_parameter('format');
+        $format = $request->get_parameter('caches_format');
         if (!$format) $format = "gpx";
         if (!in_array($format, array("gpx", "ggz")))
             throw new InvalidParam('format');
-        
+
         $location_source = $request->get_parameter('location_source');
         $location_change_prefix = $request->get_parameter('location_change_prefix');
 
@@ -60,18 +60,18 @@ class WebService
         # and personal data (if the method was invoked using Level 3 Authentication).
 
         switch($format) {
-            case 'gpx' : 
+            case 'gpx' :
                 $data_filename = "Garmin/GPX/opencaching".time().rand(100000,999999).".gpx";
                 $data_method = 'services/caches/formatters/gpx';
                 $data_use_compression = true;
                 break;
-            case 'ggz' : 
+            case 'ggz' :
                 $data_filename = "Garmin/GGZ/opencaching".time().rand(100000,999999).".ggz";
                 $data_method = 'services/caches/formatters/ggz';
                 $data_use_compression = false;
                 break;
         }
-        
+
         $response->zip->FileAdd($data_filename,
             OkapiServiceRunner::call($data_method, new OkapiInternalRequest(
             $request->consumer, $request->token, array(
@@ -187,9 +187,9 @@ class WebService
             }
         }
 
-        # The result could be big, but it's created and streamed right 
-        # to the browser, so it shouldn't hit our memory limit. We also 
-        # should set a higher time limit, because downloading this response 
+        # The result could be big, but it's created and streamed right
+        # to the browser, so it shouldn't hit our memory limit. We also
+        # should set a higher time limit, because downloading this response
         # may take some time over slow network connections (and I'm not sure
         # what is the PHP's default way of handling such scenario).
 
