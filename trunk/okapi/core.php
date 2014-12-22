@@ -784,31 +784,35 @@ class OkapiRedirectResponse extends OkapiHttpResponse
     }
 }
 
+require_once ($GLOBALS['rootpath'].'okapi/lib/tbszip.php');
+use \clsTbsZip;
+
 class OkapiZIPHttpResponse extends OkapiHttpResponse
 {
     public $zip;
 
     public function __construct()
     {
-        require_once ($GLOBALS['rootpath'].'okapi/lib/tbszip.php');
-        
-        $this->zip = new \clsTbsZip();
+        $this->zip = new clsTbsZip();
         $this->zip->CreateNew();
     }
 
     public function print_body()
     {
-        $this->zip->Flush(TBSZIP_DOWNLOAD|TBSZIP_NOHEADER);
+        $this->zip->Flush(clsTbsZip::TBSZIP_DOWNLOAD|clsTbsZip::TBSZIP_NOHEADER);
     }
 
     public function get_body()
     {
-        $this->zip->Flush(TBSZIP_STRING);
+        $this->zip->Flush(clsTbsZip::TBSZIP_STRING);
         return $this->zip->OutputSrc; 
     }
 
     public function get_length()
     {
+        # The _EstimateNewArchSize() method returns *false* if archive 
+        # size can not be calculated *exactly*, which causes display()
+        # method to skip Content-Length header, and triggers chunking
         return $this->zip->_EstimateNewArchSize();
     }
 
