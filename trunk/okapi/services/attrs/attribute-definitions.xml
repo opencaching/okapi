@@ -1008,6 +1008,7 @@ It also defines attribute names and descriptions in several languages.
 
     <attr acode="A29" categories="de-location">
         <opencaching schema="http://opencaching.pl/" id="61" />
+        <opencaching schema="http://www.opencaching.nl/" id="61" />
         <lang id="en">
             <name>Historic site</name>
             <desc>
@@ -1029,11 +1030,17 @@ It also defines attribute names and descriptions in several languages.
                 einer Burg, einem Friedhof, einer ehemaligem Militäranlage etc.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Lost Place</name>
+            <desc>
+                Deze cache bevind zich op of rond een verlaten plek. Zoals een,
+                verlaten kasteel, oude bunker, industrie, etc.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A30" categories="de-location">
         <opencaching schema="http://www.opencaching.de/" id="30" />
-        <opencaching schema="http://www.opencaching.nl/" id="30" />
         <lang id="en">
             <name>Point of interest</name>
             <desc>
