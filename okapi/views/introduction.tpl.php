@@ -14,7 +14,7 @@
     <body class='api'>
         <div class='okd_mid'>
             <div class='okd_top'>
-                <? include 'installations_box.tpl.php'; ?>
+                <?php include 'installations_box.tpl.php'; ?>
                 <table cellspacing='0' cellpadding='0'><tr>
                     <td class='apimenu'>
                         <?= $vars['menu'] ?>
@@ -39,9 +39,9 @@ This OKAPI installation provides API for the
 Check out other OKAPI installations:</p>
 
 <ul>
-    <? foreach ($vars['installations'] as $inst) { ?>
+    <?php foreach ($vars['installations'] as $inst) { ?>
         <li><?= $inst['site_name'] ?> - <a href='<?= $inst['okapi_base_url'] ?>'><?= $inst['okapi_base_url'] ?></a></li>
-    <? } ?>
+    <?php } ?>
 </ul>
 
 <p>Opencaching.DE includes the sites Opencaching.IT and OpencachingSpain.ES,
@@ -388,9 +388,9 @@ if you want.</p>
 <p>OKAPI web services (methods) currently available on this server:</p>
 
 <ul>
-    <? foreach ($vars['method_index'] as $method_info) { ?>
+    <?php foreach ($vars['method_index'] as $method_info) { ?>
         <li><a href='<?= $vars['site_url']."okapi/".$method_info['name'].".html" ?>'><?= $method_info['name'] ?></a> - <?= $method_info['brief_description'] ?></li>
-    <? } ?>
+    <?php } ?>
 </ul>
 
 
