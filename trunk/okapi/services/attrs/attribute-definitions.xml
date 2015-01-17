@@ -2659,4 +2659,22 @@ It also defines attribute names and descriptions in several languages.
             </desc>
         </lang>
     </attr>
+
+    <attr acode="A74" categories="de-dangers">
+        <groundspeak id="40" inc="true" name="Stealth required" />
+        <opencaching schema="http://www.opencaching.nl/" id="45" />
+        <lang id="en">
+            <name>Stealth required</name>
+            <desc>
+                This cache need to be logged in stealth modus.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Stealth vereist</name>
+            <desc>
+                Deze cache dient ongezien gelogd te worden.
+            </desc>
+        </lang>
+    </attr>
+
 </xml>
