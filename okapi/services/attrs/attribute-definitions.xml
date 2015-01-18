@@ -2666,7 +2666,8 @@ It also defines attribute names and descriptions in several languages.
         <lang id="en">
             <name>Stealth required</name>
             <desc>
-                This cache need to be logged in stealth modus.
+                The cache is hidden in an area where other non-geocaching people might
+                see it. You should be extra careful to avoid this unwanted attention.
             </desc>
         </lang>
         <lang id="nl">
