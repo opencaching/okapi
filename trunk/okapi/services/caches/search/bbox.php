@@ -61,7 +61,7 @@ class WebService
         $lon = $search_assistant->get_longitude_expr();
         $where_conds[] = "(
             $lat >= '".mysql_real_escape_string($bbsouth)."'
-            and $lon < '".mysql_real_escape_string($bbnorth)."'
+            and $lat < '".mysql_real_escape_string($bbnorth)."'
         )";
         if ($bbeast > $bbwest)
         {
