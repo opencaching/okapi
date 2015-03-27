@@ -16,7 +16,7 @@ class clsTbsZip {
     const TBSZIP_NOHEADER = 4;   // option to use with DOWNLOAD: no header is sent
     const TBSZIP_FILE     = 8;   // output to file  , or add from file
     const TBSZIP_STRING   = 32;  // output to string, or add from string
-    
+
     function __construct() {
         $this->Meth8Ok = extension_loaded('zlib'); // check if Zlib extension is available. This is need for compress and uncompress with method 8.
         $this->DisplayError = true;
@@ -956,7 +956,7 @@ class clsTbsZip {
             }
         }
     }
-    /** 
+    /**
      * Return the size of the new archive, or false if it cannot be calculated (because of external file that must be compressed before to be insered)
      */
     function _EstimateNewArchSize($Optim=true) {
