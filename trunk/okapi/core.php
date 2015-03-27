@@ -805,12 +805,12 @@ class OkapiZIPHttpResponse extends OkapiHttpResponse
     public function get_body()
     {
         $this->zip->Flush(clsTbsZip::TBSZIP_STRING);
-        return $this->zip->OutputSrc; 
+        return $this->zip->OutputSrc;
     }
 
     public function get_length()
     {
-        # The _EstimateNewArchSize() method returns *false* if archive 
+        # The _EstimateNewArchSize() method returns *false* if archive
         # size can not be calculated *exactly*, which causes display()
         # method to skip Content-Length header, and triggers chunking
         return $this->zip->_EstimateNewArchSize();
