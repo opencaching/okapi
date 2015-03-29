@@ -1,13 +1,20 @@
 <installations>
     <!--
-   This is the list of all official OKAPI installations. This file is periodically
+    This is the list of all official OKAPI installations. This file is periodically
     read by every OKAPI installation, *directly from repository*. See the code for
- services/apisrv/installations method for explanation.
-  -->
+    services/apisrv/installations method for explanation.
+    -->
     <installation site_url="http://opencaching.pl/"/>
-  <installation site_url="http://www.opencaching.de/"/>
-  <installation site_url="http://www.opencaching.us/"/>
-  <installation site_url="http://www.opencaching.nl/"/>
-  <installation site_url="http://www.opencaching.ro/"/>
-  <installation site_url="http://www.opencaching.org.uk/"/>
+    <installation site_url="http://www.opencaching.de/"/>
+    <installation site_url="http://www.opencaching.us/"/>
+    <installation site_url="http://www.opencaching.nl/"/>
+    <installation site_url="http://www.opencaching.ro/"/>
+    <!--
+        For a couple of years now, I was unable to contact the admin of this
+        node (no response). It is running a very old version of OKAPI and OCPL
+        branch. Therefore, I am removing it from the list of official OKAPI
+        installations.
+
+        <installation site_url="http://www.opencaching.org.uk/"/>
+    -->
 </installations>
