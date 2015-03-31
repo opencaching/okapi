@@ -532,6 +532,10 @@ class SearchAssistant
             {
                 if (Settings::get('OC_BRANCH') == 'oc.pl') {
                     $extra_joins[] = 'inner join powerTrail_caches on powerTrail_caches.cacheId = caches.cache_id';
+                    
+                    #...and filter out caches from non-active powerTrails as well
+                    $extra_joins[] = 'inner join PowerTrail on PowerTrail.id = powerTrail_caches.powerTrailId';
+                    $where_conds[] = 'PowerTrail.status = 1';
                 } else {
                     $where_conds[] = "0=1";
                 }
