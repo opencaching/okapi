@@ -165,7 +165,8 @@
         Power Trail will be included. Power Trails are sets of geocaches. Not all
         Opencaching nodes implement the feature. If this node does not implement
         Power Trails and you will set this parameter to <b>true</b>, then you
-        will <b>always</b> receive an empty result.
+        will <b>always</b> receive an empty result. Caches belonging to non-active
+        (not in "public" status) Power Trails will also be excluded from result.
     </opt>
     <opt name='set_and'>
         <p>ID of a set previously created with the <b>search/save</b> method.
