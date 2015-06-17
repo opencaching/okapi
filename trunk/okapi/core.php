@@ -2005,9 +2005,13 @@ class OkapiInternalRequest extends OkapiRequest
         $this->consumer = $consumer;
         $this->token = $token;
         $this->parameters = array();
-        foreach ($parameters as $key => $value)
+        foreach ($parameters as $key => $value){
             if ($value !== null)
                 $this->parameters[$key] = $value;
+            if ($key == "i_want_okapi_response" && $value == 'true'){
+                $this->i_want_okapi_response = true;
+            }
+        }
     }
 
     public function get_parameter($name)
