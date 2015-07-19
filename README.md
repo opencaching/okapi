@@ -5,10 +5,10 @@ Quick download link: http://rygielski.net/r/okapi-latest
 
 ## Why are you here? ##
 
-  * If you are an external developer and you want to **USE** the API (not
-    implement it), you should rather [be reading this](http://opencaching.pl/okapi/).
-  * The description below is primarily for OC administrators _AND_ people who
-    want to help implement OKAPI backend.
+If you are an external developer and you want to **USE** the API (not implement
+it), you should rather [be reading this](http://opencaching.pl/okapi/).
+The description below is primarily for OC administrators _AND_ people who want
+to help implement OKAPI backend.
 
 
 ## What is OKAPI? ##
@@ -22,7 +22,7 @@ _Opencaching Network_ nodes).
     authorization.
   * Sends **email notifications** to site admins in case something goes wrong.
 
-See a working version here: http://opencaching.pl/okapi/
+See a live installation here: http://opencaching.pl/okapi/
 
 Do not confuse Opencaching national sites with opencaching.com, which is a
 completely different project.
@@ -39,8 +39,9 @@ following Opencaching sites:
   * http://www.opencaching.us/okapi/
   * http://www.opencaching.nl/okapi/
 
-The project is aiming to become a standard API for all National Opencaching.XX
-sites.
+The API itself is also being used by numerous geocaching clients (e.g. c:geo).
+The OKAPI project is aiming to become a standard API for all National
+Opencaching.XX sites.
 
 
 ### Who CAN use OKAPI? ###
@@ -49,13 +50,10 @@ We believe this plugin is capable of working with most of the following
 National Opencaching sites:
 
   * http://www.opencaching.pl/ (DEPLOYED)
-  * http://www.opencaching.se/
   * http://www.opencaching.us/ (DEPLOYED)
   * http://www.opencaching.org.uk/ (DEPLOYED)
   * http://www.opencaching.de/ (DEPLOYED)
   * http://www.opencaching.cz/
-  * http://www.opencaching.no/
-  * http://www.opencaching.lv/
   * http://www.opencaching.it/ (DEPLOYED)
   * http://www.opencachingspain.es/ (DEPLOYED)
   * http://www.opencaching.nl/ (DEPLOYED)
@@ -127,16 +125,15 @@ way, that the same change will also work on all other OC nodes:
 
   1. Fetch the latest deployment package here:
      http://rygielski.net/r/okapi-latest
-  1. Make sure you have a working Opencaching installation. OKAPI is not a
-     standalone application, it is a plugin. More information:
-     https://code.google.com/p/opencaching-api/issues/detail?id=299 (WRTODO)
-  1. Patch your installation with OKAPI code. To put it plainly, **just copy
+  2. Make sure you have a working Opencaching installation. OKAPI is not a
+     standalone application, it is a plugin.
+  3. Patch your installation with OKAPI code. To put it plainly, **just copy
      and replace the files**. If you're using SVN/GIT, then you will probably
      also want to view and commit the changes to your local repository.
-  1. Create `<rootpath>/okapi_settings.php` file.
-     [See an example here](http://code.google.com/p/opencaching-pl/source/browse/trunk/okapi_settings.php) (WRTODO)
+  4. Create `<rootpath>/okapi_settings.php` file.
+     [See an example here](http://code.google.com/p/opencaching-pl/source/browse/trunk/okapi_settings.php)
      (from OCPL). See `okapi/settings.php` for the full list of available settings.
-  1. Make sure Apache allows OKAPI's `.htaccess` to override stuff. On some
+  5. Make sure Apache allows OKAPI's `.htaccess` to override stuff. On some
      servers you don't need to do anything. On others, you need to add
      something like this to your Apache config:
 
@@ -148,9 +145,9 @@ way, that the same change will also work on all other OC nodes:
 </Directory>
 ```
 
-  1. Update OKAPI database (visit http://yoursite/okapi/update),
-  1. Check your email. OKAPI should send you email messages with further
-    installation steps.
+  6. Update OKAPI database (visit http://yoursite/okapi/update),
+  7. Check your email. OKAPI should send you email messages with further
+     installation steps.
 
 **Important:** Some OC installations use automatic updates via a post-commit
 script. This means that every change commited to OKAPI will be immediatelly
