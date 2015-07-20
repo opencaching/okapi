@@ -1,4 +1,4 @@
-svn up
+# git pull origin
 chmod 700 .
 chmod 700 postcommit.py
 chmod 700 update.sh
