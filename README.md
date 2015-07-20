@@ -57,6 +57,7 @@ National Opencaching sites:
   * http://www.opencaching.it/ (DEPLOYED)
   * http://www.opencachingspain.es/ (DEPLOYED)
   * http://www.opencaching.nl/ (DEPLOYED)
+  * http://www.opencaching.ro/
 
 
 ### Who is developing OKAPI? ###
