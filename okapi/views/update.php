@@ -456,14 +456,14 @@ class View
 
     private static function ver51()
     {
-        # Before revision 417, OKAPI used to make the following change:
+        # Before SVN revision 417, OKAPI used to make the following change:
         # - Db::execute("alter table cache_logs modify column last_modified timestamp not null;");
         # It doesn't do that anymore. Instead, it adds a separate column for itself (okapi_syncbase).
     }
 
     private static function ver52()
     {
-        # Before revision 417, OKAPI used to make the following change (on OCDE branch):
+        # Before SVN revision 417, OKAPI used to make the following change (on OCDE branch):
         # - Db::execute("alter table cache_logs_archived modify column last_modified timestamp not null;");
         # It doesn't do that anymore. Instead, it adds a separate column for itself (okapi_syncbase).
     }
@@ -507,7 +507,7 @@ class View
     private static function ver58()
     {
         #
-        # Starting with revision 417, OKAPI hides all caches with statuses > 3.
+        # Starting with SVN revision 417, OKAPI hides all caches with statuses > 3.
         # Hence, we need such caches to be removed from external databases replicated
         # via the "replicate" module. By reseting the "okapi_syncbase" timestamp,
         # we force changelog generator cronjob to issue proper "delete" statements

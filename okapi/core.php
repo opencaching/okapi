@@ -224,7 +224,8 @@ class OkapiExceptionHandler
 
         $exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
             preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI'])."\n\n" : "");
-        $exception_info .= "--- OKAPI revision ---\n".Okapi::$revision."\n\n";
+        $exception_info .= "--- OKAPI version ---\n".Okapi::$version_number.
+            " (".Okapi::$git_revision.")\n\n";
 
         # This if-condition will solve some (but not all) problems when trying to execute
         # OKAPI code from command line;
@@ -895,20 +896,9 @@ class Okapi
     public static $data_store;
     public static $server;
 
-    /**
-     * Integer. OKAPI "build number". It is named "revision" for backward
-     * compatibility - before OKAPI repository has been moved to GitHub, SVN
-     * revisions were integers, now they are calculated during the build
-     * process and we call them "build numbers".
-     */
-    public static $revision = null; # This gets replaced in automatically deployed packages
-
-    /**
-     * This is the *actual* Git revision number from which this package has
-     * been built.
-     */
-    public static $git_revision = null; # This gets replaced in automatically deployed packages
-
+    /* These two get replaced in automatically deployed packages. */
+    public static $version_number = null;
+    public static $git_revision = null;
 
     private static $okapi_vars = null;
 

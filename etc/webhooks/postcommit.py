@@ -11,7 +11,7 @@
 #     master branch (only this locations matters to us),
 #   - exports the code to a temporary location,
 #   - strips unwanted files (etc/, README.md...),
-#   - replaces Okapi::$revision* fields in okapi/core.php,
+#   - replaces Okapi::$version_number and $git_revision fields in okapi/core.php,
 #   - builds a new package (hosted on http://rygielski.net/r/okapi-latest),
 #   - checks out okapi directory of the opencaching-pl project,
 #   - replaces the okapi directory with the new version,
@@ -89,7 +89,6 @@ def my_call(what, *args, **kwargs):
 
 def deploy(git_revision):
     git_rev = git_revision[:7]
-    build_number = 999999999  # WRTODO
     okapi_working_dir = "okapi-work-dir"
     ocpl_working_dir = "ocpl-work-dir"
     try:
@@ -113,17 +112,17 @@ def deploy(git_revision):
             ["git", "rev-list", git_revision, "--count"],
             cwd=okapi_working_dir
         )
-        build_number = int(result) + (1079 - 761)
-        print "The official build number is: " + str(build_number)
-        deployment_name = "okapi-b" + str(build_number) + "-r" + git_rev
+        version_number = int(result) + (1079 - 761)
+        print "The official version number is: " + str(version_number)
+        deployment_name = "okapi-v" + str(version_number) + "-r" + git_rev
         #
         print "Adding version information..."
         fp = open(okapi_working_dir + '/okapi/core.php', 'r')
         core_contents = fp.read()
         fp.close()
         core_contents = core_contents.replace(
-            "public static $revision = null;",
-            "public static $revision = " + str(build_number) + ";")
+            "public static $version_number = null;",
+            "public static $version_number = " + str(version_number) + ";")
         core_contents = core_contents.replace(
             "public static $git_revision = null;",
             "public static $git_revision = '" + git_revision + "';")
@@ -173,7 +172,7 @@ def deploy(git_revision):
             "svn", "add", "--force", "."
         ], cwd=ocpl_working_dir)
         message = (
-            "Automatic OKAPI Project update - build " + str(build_number) +
+            "Automatic OKAPI Project update - ver. " + str(version_number) +
             " (rev. " + git_rev + ")"
         )
         print message
