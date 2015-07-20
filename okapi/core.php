@@ -894,7 +894,22 @@ class Okapi
 {
     public static $data_store;
     public static $server;
+
+    /**
+     * Integer. OKAPI "build number". It is named "revision" for backward
+     * compatibility - before OKAPI repository has been moved to GitHub, SVN
+     * revisions were integers, now they are calculated during the build
+     * process and we call them "build numbers".
+     */
     public static $revision = null; # This gets replaced in automatically deployed packages
+
+    /**
+     * This is the *actual* Git revision number from which this package has
+     * been built.
+     */
+    public static $git_revision = null; # This gets replaced in automatically deployed packages
+
+
     private static $okapi_vars = null;
 
     /** Get a variable stored in okapi_vars. If variable not found, return $default. */
