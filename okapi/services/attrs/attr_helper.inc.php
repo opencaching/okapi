@@ -80,7 +80,7 @@ class AttrHelper
 
     /**
      * Refresh all attributes from the given XML. Usually, this file is
-     * downloaded from Google Code (using refresh_now).
+     * downloaded from GitHub (using refresh_now).
      */
     public static function refresh_from_string($xml)
     {

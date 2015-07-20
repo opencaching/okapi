@@ -38,7 +38,7 @@ class WebService
             'id' => $issue_id + 0,
             'last_updated' => null,
             'title' => null,
-            'url' => "https://code.google.com/p/opencaching-api/issues/detail?id=".$issue_id,
+            'url' => "https://github.com/opencaching/okapi/issues/".$issue_id,
             'comment_count' => null
         );
         return Okapi::formatted_response($request, $result);

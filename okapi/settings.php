@@ -6,7 +6,7 @@ use Exception;
 use okapi\Locales;
 
 # DO NOT MODIFY THIS FILE. This file should always look like the original here:
-# http://code.google.com/p/opencaching-api/source/browse/trunk/okapi/settings.php
+# https://github.com/opencaching/okapi/blob/master/okapi/settings.php
 #
 # HOW TO MODIFY OKAPI SETTINGS: If you want a setting X to have a value of Y,
 # create/edit the "<rootpath>/okapi_settings.php" file. See example here:
@@ -52,7 +52,7 @@ final class Settings
         /**
          * If set, it will be passed to date_default_timezone_set. OKAPI may
          * refuse to start if this value is unset (more information here:
-         * http://code.google.com/p/opencaching-api/issues/detail?id=177)
+         * https://github.com/opencaching/okapi/issues/177)
          * You should set it to the timezone used in your country (the one you'd
          * use for your database inserts etc.). Choose one of the values listed
          * here: http://www.php.net/manual/en/timezones.php

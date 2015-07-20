@@ -106,7 +106,7 @@ class View
                     "IMPORTANT: If you're trying to install OKAPI on an empty database then\n".
                     "you will fail. OKAPI is not a standalone application, it is a plugin\n".
                     "for Opencaching sites. Please read this:\n\n".
-                    "https://code.google.com/p/opencaching-api/issues/detail?id=299"
+                    "https://github.com/opencaching/okapi/issues/299"
                 );
             }
             return;
@@ -257,7 +257,7 @@ class View
         # In fact, this should be "alter cache_logs add column okapi_consumer_key...", but
         # I don't want for OKAPI to mess with the rest of DB. Keeping it separete for now.
         # One day, this table could come in handy. See:
-        # http://code.google.com/p/opencaching-api/issues/detail?id=64
+        # https://github.com/opencaching/okapi/issues/64
         Db::execute("
             CREATE TABLE okapi_cache_logs (
                 log_id int(11) NOT NULL,
