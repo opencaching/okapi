@@ -172,6 +172,13 @@ final class Settings
          * suspicious activity of some certain users.
          */
         'OCPL_ENABLE_GEOCACHE_ACCESS_LOGS' => false,
+
+        /**
+         * GitHub access token. If given, it will allow OKAPI to make more
+         * frequent queries to the GitHub API (e.g. in the services/apiref/issue
+         * method). Providing this is not required, but it is highly recommended.
+         */
+        'GITHUB_ACCESS_TOKEN' => null,
     );
 
     /**

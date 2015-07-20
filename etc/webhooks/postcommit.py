@@ -220,7 +220,7 @@ if __name__ == '__main__':
             else "none"
         )
         assert signature[:5] == "sha1="
-        
+
         print "Your request body is:"
         print
         print body
@@ -254,7 +254,7 @@ if __name__ == '__main__':
         if data['ref'] != "refs/heads/master":
             print "These commits did not change the 'master' branch. Aborting."
             sys.exit(0)
-        
+
         new_revision = data['after']
         filenames = []
         for commit_data in data['commits']:

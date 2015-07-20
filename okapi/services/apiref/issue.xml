@@ -2,14 +2,11 @@
     <brief>Retrieve information on given issue</brief>
     <issue-id>11</issue-id>
     <desc>
-        <p><b>Important:</b> This method stopped working properly in October 2013.
-        Now, it returns a simple placeholder.
-        <a href='https://github.com/opencaching/okapi/issues/288'>Read more</a>.</p>
-
         <p>OKAPI is trying to be as <b>integrated</b> with its
         <a href='https://github.com/opencaching/okapi/'>Main Project Page</a> as it can.
         This method retrieves basic information on a given issue from our project
-        <a href='https://github.com/opencaching/okapi/issues/'>Issue Tracker</a>.
+        <a href='https://github.com/opencaching/okapi/issues/'>Issue Tracker</a>
+        (currently GitHub).
         In future, it <b>might</b> also return some of the latest comments (we're not yet
         sure if we want them displayed on our documentation pages).</p>
     </desc>
