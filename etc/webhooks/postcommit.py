@@ -8,14 +8,19 @@
 # What it does:
 #   - verifies that the request came from GitHub (HMAC signature),
 #   - checks if the commit changed anything within the okapi directory of the
-#     master branch (only this locations matters to us),
-#   - exports the code to a temporary location,
-#   - strips unwanted files (etc/, README.md...),
+#     master branch (only this location matters to us),
+#   - exports the current code to a temporary location,
 #   - replaces Okapi::$version_number and $git_revision fields in okapi/core.php,
 #   - builds a new package (hosted on http://rygielski.net/r/okapi-latest),
 #   - checks out okapi directory of the opencaching-pl project,
 #   - replaces the okapi directory with the new version,
 #   - commits the changes to opencaching-pl project.
+
+# BEFORE YOU START USING IT:
+# 
+# You need to check out OCPL repository in "ocpl_work_dir" (for writing).
+# git clone git@github.com:opencaching/opencaching-pl.git ocpl-work-dir
+
 
 import contextlib
 import sys
@@ -95,7 +100,6 @@ def deploy(git_revision):
         #
         print "Cleaning up after previous builds..."
         subprocess.call(["rm", "-rf", okapi_working_dir])
-        subprocess.call(["rm", "-rf", ocpl_working_dir])
         #
         print "Checking out revision " + git_rev + "..."
         sys.stdout.flush()
@@ -143,51 +147,41 @@ def deploy(git_revision):
         my_call([
             "setfacl", "-m", "u:rygielski:rw", deployment_name + ".tar.gz"
         ])
-        ##my_call(["rm", "-rf", okapi_working_dir])
         #
         print "Copying archive to public_html..."
         my_call(["cp", deployment_name + ".tar.gz", deployment_target])
         sys.stdout.flush()
         #
-        print "Checking out opencaching-pl/trunk/okapi..."
+        print "Checking out opencaching-pl..."
         sys.stdout.flush()
-        my_call([
-            "svn", "co",
-            "https://opencaching-pl.googlecode.com/svn/trunk/okapi",
-            ocpl_working_dir
-        ])
+        # ocpl_working_dir should be previously cloned - we're only refreshing
+        # it.
+        my_call(["git", "reset", "--hard", "origin/master"], cwd=ocpl_working_dir)
+        my_call(["git", "pull", "--rebase"], cwd=ocpl_working_dir)
         sys.stdout.flush()
         #
         print (
             "Replacing opencaching.pl's okapi contents with the latest "
             "version..."
         )
-        ## This will work only with svn >=1.7!
-        my_call(["rm -rf " + ocpl_working_dir + "/*"], shell=True)
+        my_call(["rm -rf " + ocpl_working_dir + "/okapi"], shell=True)
         my_call(
-            ["mv " + okapi_working_dir + "/okapi/* " + ocpl_working_dir],
+            ["mv " + okapi_working_dir + "/okapi " + ocpl_working_dir],
             shell=True
         )
-        my_call([
-            "svn", "add", "--force", "."
-        ], cwd=ocpl_working_dir)
+        #
+        print "Commiting and pushing to OCPL repo..."
+        my_call(["git", "add", "."], cwd=ocpl_working_dir)
         message = (
             "Automatic OKAPI Project update - ver. " + str(version_number) +
             " (rev. " + git_rev + ")"
         )
         print message
-        my_call([
-            "svn", "commit", ocpl_working_dir,
-            "--non-interactive",
-            "--username", ocpl_username,
-            "--password", ocpl_password,
-            "--no-auth-cache", "-m",
-            message
-        ])
+        my_call(["git", "commit", "-m", message], cwd=ocpl_working_dir)
+        my_call(["git", "push", "origin", "master"], cwd=ocpl_working_dir)
         #
         print "Cleanup..."
         subprocess.call(["rm", "-rf", okapi_working_dir])
-        subprocess.call(["rm", "-rf", ocpl_working_dir])
     except subprocess.CalledProcessError, e:
         print "Error :("
         print e.output
