@@ -14,15 +14,18 @@
   - When commenting within a longer block of code, put a blank line before
     and after the comment.
 - Strings:
-  - use `'...'` for single word contants lower-case contants (i.e. parameter
-    names, field names), e.g. `'cache_code'`, `$cache['type']`, etc.
-  - use `"..."` for all other strings (especially multiline strings).
+  - use `'...'` for constants, keywords, parameter names, e.g.
+    `'cache_code'`, `$cache['type']`, etc.
+  - use `"..."` for all other strings (e.g. error messages, multiline strings).
 - SQL:
   - use multiline strings in SQL queries (the `"..."` strings),
   - use `'...'` for strings within the query (e.g.
     `...where type in ('1', '2')...`),
+  - *always* use `mysql_real_escape_string` when introducing variables (even
+    when you know you don't need to),
   - lower-case keywords (`select`, not `SELECT`),
-  - avoid the backtick character (\`) - use only when necessary,
+  - avoid the backtick character (\`) - use only when necessary (e.g. for the
+    columns named `key`),
   - always indent with 4 spaces (same way as in the rest of code),
   - indent "select", "from", "where", "group by" and "order by" sections,
     but only when they contain more than one entry within.
