@@ -933,6 +933,28 @@ class Okapi
 
     private static $okapi_vars = null;
 
+    /** Return a new, random UUID. */
+    public static function create_uuid()
+    {
+        /* If we're on Linux, then we'll use a system function for that. */
+
+        if (file_exists("/proc/sys/kernel/random/uuid")) {
+            return trim(file_get_contents("/proc/sys/kernel/random/uuid"));
+        }
+
+        /* On other systems (as well as on some other Linux distributions)
+         * fall back to the original implementation (which is NOT safe - we had
+         * one duplicate during 3 years of its running). */
+
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
+    }
+
     /** Get a variable stored in okapi_vars. If variable not found, return $default. */
     public static function get_var($varname, $default = null)
     {
