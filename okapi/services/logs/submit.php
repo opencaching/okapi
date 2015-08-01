@@ -64,7 +64,7 @@ class WebService
         if ($tmp)
         {
             $when = strtotime($tmp);
-            if (!$when)
+            if ($when < 1)
                 throw new InvalidParam('when', "'$tmp' is not in a valid format or is not a valid date.");
             if ($when > time() + 5*60)
                 throw new CannotPublishException(_("You are trying to publish a log entry with a date in future. ".
