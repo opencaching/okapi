@@ -468,7 +468,45 @@ class Db
         $rs = mysql_query($query);
         if (!$rs)
         {
-            throw new DbException("SQL Error ".mysql_errno().": ".mysql_error()."\n\nThe query was:\n".$query."\n");
+            $errno = mysql_errno();
+            $msg = mysql_error();
+
+            /* Detect issue #340 and try to repair... */
+
+            if (in_array($errno, array(144, 130)) && strstr($msg, "okapi_cache")) {
+
+                /* MySQL claims that is tries to repair it automatically. We'll
+                 * try outselves. */
+
+                try {
+                    self::execute("repair table okapi_cache");
+                    Okapi::mail_admins(
+                        "okapi_cache - Automatic repair",
+                        "Hi.\n\nOkapi detected that okapi_cache table needed ".
+                        "repairs and it has performed such\nrepairs automatically. ".
+                        "However, this should not happen regularly!"
+                    );
+                } catch (Exception $e) {
+
+                    /* Last resort. */
+
+                    try {
+                        self::execute("truncate okapi_cache");
+                        Okapi::mail_admins(
+                            "okapi_cache was truncated",
+                            "Hi.\n\nOkapi detected that okapi_cache table needed ".
+                            "repairs, but it failed to repair\nthe table automatically. ".
+                            "In order to counteract more severe errors, \nwe have ".
+                            "truncated the okapi_cache table to make it alive.\n".
+                            "However, this should not happen regularly!"
+                        );
+                    } catch (Exception $e) {
+                        # pass
+                    }
+                }
+            }
+
+            throw new DbException("SQL Error $errno: $msg\n\nThe query was:\n".$query."\n");
         }
         return $rs;
     }
@@ -1017,8 +1055,13 @@ class Okapi
         try {
             $counter = Cache::get($cache_key);
         } catch (DbException $e) {
-            # Why catching exceptions here? See bug#156.
-            $counter = null;
+            # This exception can occur during OKAPI update (#156), or when
+            # the cache table is broken (#340). I am not sure which option is
+            # better: 1. notify the admins about the error and risk spamming
+            # them, 2. don't notify and don't risk spamming them. Currently,
+            # I choose option 2.
+
+            return;
         }
         if ($counter === null)
             $counter = 0;
@@ -1026,7 +1069,8 @@ class Okapi
         try {
             Cache::set($cache_key, $counter, 3600);
         } catch (DbException $e) {
-            # Why catching exceptions here? See bug#156.
+            # If `get` suceeded and `set` did not, then probably we're having
+            # issue #156 scenario. We can ignore it here.
         }
         if ($counter <= 5)
         {
