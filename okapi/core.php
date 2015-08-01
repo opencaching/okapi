@@ -1395,7 +1395,7 @@ class Okapi
      */
     public static function formatted_response(OkapiRequest $request, &$object)
     {
-        if ($request instanceof OkapiInternalRequest && ($request->i_want_okapi_response == false))
+        if ($request instanceof OkapiInternalRequest && (!$request->i_want_OkapiResponse))
         {
             # If you call a method internally, then you probably expect to get
             # the actual object instead of it's formatted representation.
@@ -2027,10 +2027,12 @@ class OkapiInternalRequest extends OkapiRequest
     public $perceive_as_http_request = false;
 
     /**
-     * Set this to true, if you want to receive OkapiResponse instead of
-     * the actual object.
+     * By default, OkapiInsernalRequests work differently than OkapiRequests -
+     * they TRY to return PHP objects (like arrays), instead of OkapiResponse
+     * objects. Set this to true, if you want this request to work as a regular
+     * one - and receive OkapiResponse instead of the PHP object.
      */
-    public $i_want_okapi_response = false;
+    public $i_want_OkapiResponse = false;
 
     /**
      * You may use "null" values in parameters if you want them skipped
