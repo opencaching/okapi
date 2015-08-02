@@ -27,6 +27,18 @@
             <li><b>username</b> - username (login) of the user,</li>
             <li><b>profile_url</b> - URL of the user's Opencaching profile page,</li>
             <li>
+                <p><b>photo_urls</b> - a dictionary containing URLs of the user's
+                profile picture. Currently, it contains only one key named
+                <b>100x100</b>. The value of this key will be the URL of an
+                image (100px x 100px).</p>
+
+                <p>Please note, that for the most Opencaching sites, it will
+                simply contain a <a href='http://www.gravatar.com/'>Gravatar</a>
+                picture, which will usually be empty. Some sites <b>may</b>
+                allow their users to upload their pictures in some other
+                manner.</p>
+            </li>
+            <li>
                 <p><b>is_admin</b> - boolean; true is user has admin privileges.</p>
                 <p>This value can be accessed only with <b>Level 3</b> Authentication
                 and only for the user of your Access Token. For all other reads, is_admin

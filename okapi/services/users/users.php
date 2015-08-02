@@ -21,7 +21,7 @@ class WebService
     }
 
     private static $valid_field_names = array('uuid', 'username', 'profile_url', 'internal_id', 'is_admin',
-        'caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given');
+        'caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given', 'photo_urls');
 
     public static function call(OkapiRequest $request)
     {
@@ -39,7 +39,7 @@ class WebService
             if (!in_array($field, self::$valid_field_names))
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
         $rs = Db::query("
-            select user_id, uuid, username, admin
+            select user_id, uuid, username, admin, email
             from user
             where uuid in ('".implode("','", array_map('mysql_real_escape_string', $user_uuids))."')
         ");
@@ -72,6 +72,12 @@ class WebService
                     case 'caches_notfound': /* handled separately */ break;
                     case 'caches_hidden': /* handled separately */ break;
                     case 'rcmds_given': /* handled separately */ break;
+                    case 'photo_urls':
+                        $hash = md5(strtolower(trim($row['email'])));
+                        $entry['photo_urls'] = array(
+                            '100x100' => "http://www.gravatar.com/avatar/$hash?s=100&d=identicon"
+                        );
+                        break;
                     default: throw new Exception("Missing field case: ".$field);
                 }
             }
@@ -79,7 +85,7 @@ class WebService
         }
         mysql_free_result($rs);
 
-        # caches_found, caches_notfound, caches_hidden
+        # caches_found, caches_notfound, caches_hidden, rcmds_given
 
         if (in_array('caches_found', $fields) || in_array('caches_notfound', $fields) || in_array('caches_hidden', $fields)
             || in_array('rcmds_given', $fields))
