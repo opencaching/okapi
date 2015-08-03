@@ -976,7 +976,7 @@ class Okapi
     {
         /* If we're on Linux, then we'll use a system function for that. */
 
-        if (file_exists("/proc/sys/kernel/random/uuid")) {
+        if (@file_exists("/proc/sys/kernel/random/uuid")) {
             return trim(file_get_contents("/proc/sys/kernel/random/uuid"));
         }
 
