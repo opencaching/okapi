@@ -96,9 +96,13 @@ class OkapiExceptionHandler
             # Consumer (aka external developer) had something wrong with his
             # request and we want him to know that.
 
-            header("HTTP/1.0 400 Bad Request");
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=utf-8");
+            # headers may have been sent e.g. by views/update
+            if (!headers_sent())
+            {
+                header("HTTP/1.0 400 Bad Request");
+                header("Access-Control-Allow-Origin: *");
+                header("Content-Type: application/json; charset=utf-8");
+            }
 
             print $e->getOkapiJSON();
         }
