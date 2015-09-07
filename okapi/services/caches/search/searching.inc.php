@@ -555,18 +555,22 @@ class SearchAssistant
         #
         # powertrail_ids
         #
+        
         if (!is_null($tmp = $this->request->get_parameter('powertrail_ids')))
         {
             if (!preg_match("/^(\d+(\|\d+)*)?$/", $tmp))
                 throw new InvalidParam('powertrail_ids', "'$tmp'");
             else {
                 if (Settings::get('OC_BRANCH') == 'oc.pl') {
+                    
                     $extra_joins[] = 'inner join powerTrail_caches on powerTrail_caches.cacheId = caches.cache_id';
                     #
                     # Filter out caches from inactive powerTrails as well
                     #
                     $extra_joins[] = 'inner join PowerTrail on PowerTrail.id = powerTrail_caches.powerTrailId';
                     $where_conds[] = 'PowerTrail.status = 1';
+                    
+                    $tmp = str_replace('|', ',', $tmp );
                     $where_conds[] = "powerTrail_caches.powerTrailId in ( $tmp )";
                 } else {
                     $where_conds[] = "0=1";
