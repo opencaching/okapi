@@ -17,7 +17,7 @@
 #   - commits the changes to opencaching-pl project.
 
 # BEFORE YOU START USING IT:
-# 
+#
 # You need to check out OCPL repository in "ocpl_work_dir" (for writing).
 # git clone git@github.com:opencaching/opencaching-pl.git ocpl-work-dir
 
