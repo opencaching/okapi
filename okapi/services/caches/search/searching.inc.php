@@ -553,12 +553,12 @@ class SearchAssistant
         }
         
         #
-        # powertrail_id
+        # powertrail_ids
         #
-        if (!is_null($tmp = $this->request->get_parameter('powertrail_id')))
+        if (!is_null($tmp = $this->request->get_parameter('powertrail_ids')))
         {
             if (!preg_match("/^(\d+(\|\d+)*)?$/", $tmp))
-                throw new InvalidParam('powertrail_id', "'$tmp'");
+                throw new InvalidParam('powertrail_ids', "'$tmp'");
             else {
                 if (Settings::get('OC_BRANCH') == 'oc.pl') {
                     $extra_joins[] = 'inner join powerTrail_caches on powerTrail_caches.cacheId = caches.cache_id';
