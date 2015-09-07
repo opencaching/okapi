@@ -565,7 +565,7 @@ class SearchAssistant
                 $where_conds[] = "0=1";
             }
         }
-        unset($powertrail_ids);
+        unset($powertrail_ids, $join_powertrails);
 
         #
         # set_and
