@@ -571,7 +571,7 @@ class SearchAssistant
                     $where_conds[] = 'PowerTrail.status = 1';
                     
                     $tmp = str_replace('|', ',', $tmp );
-                    $where_conds[] = "powerTrail_caches.powerTrailId in ( $tmp )";
+                    $where_conds[] = "powerTrail_caches.powerTrailId in ( ".mysql_real_escape_string($tmp)." )";
                 } else {
                     $where_conds[] = "0=1";
                 }
