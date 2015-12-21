@@ -129,6 +129,9 @@ class WebService
         # Filter the fields.
 
         foreach ($results as &$attr_ref) {
+            if ($attr_ref === null) {
+                continue;
+            }
             $clean_row = array();
             foreach ($fields as $field)
                 $clean_row[$field] = $attr_ref[$field];
