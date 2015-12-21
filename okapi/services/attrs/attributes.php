@@ -113,6 +113,9 @@ class WebService
             }
             $prefix = Settings::get('SITE_URL');
             foreach ($results as &$attr_ref) {
+                if ($attr_ref === null) {
+                    continue;
+                }
                 $internal_id = $attr_ref['internal_id'];
                 if (isset($map[$internal_id])) {
                     $row = $map[$internal_id];
