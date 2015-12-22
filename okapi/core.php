@@ -364,7 +364,7 @@ class Db
         if (mysql_connect(Settings::get('DB_SERVER'), Settings::get('DB_USERNAME'), Settings::get('DB_PASSWORD')))
         {
             mysql_select_db(Settings::get('DB_NAME'));
-            mysql_query("set names 'utf8'");
+            mysql_query("set names '" . Settings::get('DB_CHARSET') . "'");
             self::$connected = true;
         }
         else
