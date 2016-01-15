@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns="http://www.opencaching.com/xmlschemas/opencaching/1/0" 
+	targetNamespace="http://www.opencaching.com/xmlschemas/opencaching/1/0" 
+	elementFormDefault="qualified">
+
+	<xsd:annotation>
+		<xsd:documentation>
+			OpenCaching.com schema version 1.0
+		</xsd:documentation>	
+	</xsd:annotation>
+	
+	<xsd:element name="opencaching"	type="opencachingType">
+		<xsd:annotation>
+			<xsd:documentation>
+				OpenCaching is the root element in the XML file.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="opencaching_meta" type="opencaching_metaType">
+		<xsd:annotation>
+			<xsd:documentation>
+				OpenCaching is the root for OpenCaching meta data that applies to the whole file.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:complexType name="opencaching_metaType">
+		<xsd:sequence>
+				<xsd:element name="download_images"  type="xsd:string" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Which types of images were downloaded (and should be downloaded again when syncing)? Currently supported values: all, spoiler, required, none.
+						</xsd:documentation>
+					</xsd:annotation>	
+				</xsd:element>
+		</xsd:sequence>	
+	</xsd:complexType>
+	
+	<xsd:complexType name="opencachingType">
+		<xsd:annotation>
+			<xsd:documentation>
+				OpenCaching documents contain ratings, tags, series and verification.  You can add your own elements
+				to the extensions section of the OpenCaching document.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ratings" type="ratingsType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						Each cache gets rated on its size, ruggedness of terrain, difficulty to find and overall awesomeness.
+					</xsd:documentation>
+				</xsd:annotation>	
+			</xsd:element>
+			<xsd:element name="tags" type="tagsType" minOccurs="0"> 
+				<xsd:annotation>
+					<xsd:documentation>
+						Tag your cache with words which will help other cachers quickly identify key attributes of your cache.
+					</xsd:documentation>
+				</xsd:annotation>	
+			</xsd:element>
+			<xsd:element name="series" type="seriesType" minOccurs="0"> 
+				<xsd:annotation>
+					<xsd:documentation>
+						Series defines a collection of related geocaches.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="verification" type="verificationType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						Verification defines what type of verified visits are available for logging the geocache.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="images" type="imagesType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						Images that are related to the geocache.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="extensions" type="extensionsType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						You can extend Opencaching by adding your own elements to the schema here.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>          
+	</xsd:complexType>
+	
+	<xsd:complexType name="ratingsType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Each cache gets rated on its size, ruggedness of terrain, difficulty to find and overall awesomeness.
+				Ratings can be extended to include your own ratings with the extensions type. 
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="awesomeness" type="ratingType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						How awesome is the experience of finding the cache.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="difficulty" type="ratingType" minOccurs="0">	
+				<xsd:annotation>
+					<xsd:documentation>
+						How difficult is is to find the cache once you are at the location.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="size" type="ratingType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						How big is the cache container.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="terrain" type="ratingType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						How hard is it to get to the cache location.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="extensions" type="extensionsType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						You can extend Opencaching by adding your own elements to the schema here.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="tagsType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Tag your cache with words which will help other cachers quickly identify key attributes of your cache.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="tag" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						String that is the name of the tag.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="seriesType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Series defines a collection of related geocaches. 
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence> 
+			<xsd:element name="name" type="xsd:string" minOccurs="0" maxOccurs="1"> 
+				<xsd:annotation>
+					<xsd:documentation>
+						String that is the name of the series.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="extensions" type="extensionsType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						You can extend Opencaching by adding your own elements to the schema here.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:integer" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					Integer that is the id for the series.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:complexType name="verificationType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Verification defines what type of verified visits are available for logging the geocache.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="chirp" type="xsd:string" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Determines if the cache is chirp enabled.  The value idetifies what chrip should be used
+						to verify logs for the cache.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="QR" type="xsd:boolean" minOccurs="0" maxOccurs="1"> 
+				<xsd:annotation>
+					<xsd:documentation>
+						Can logs for the cache be verified by QR Code.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="number" type="xsd:boolean" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Can logs for the cache be verified by a secret number.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="phrase" type="xsd:string" minOccurs="0" maxOccurs="1"> 
+				<xsd:annotation>
+					<xsd:documentation>
+						Code Phrase for verifiying logs for Virtual Caches.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="extensions" type="extensionsType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						You can extend Opencaching by adding your own elements to the schema here.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="imagesType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Defines the collection images that are related to the geocache.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="image" type="imageType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						A single image defined as imageType
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="imageType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Defines an image that is part of the imagesType 
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						The name of the image.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="size" type="xsd:integer" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						The image file size in bytes.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="required" type="xsd:boolean" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Determines if the image is required to find the geocache.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="spoiler" type="xsd:boolean" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Determines if the image is a spoiler.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="extensionsType">
+		<xsd:annotation>
+			<xsd:documentation>
+				The extensionsType can be used to add your own elements to the schema.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						You can extend Opencaching by adding your own elements to the schema here.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:any>
+		</xsd:sequence>
+	</xsd:complexType> 
+	
+	<xsd:simpleType name="ratingType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Ratings can be a decimal value from 1.0 to 5.0.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:decimal">
+			<xsd:minInclusive value="1.0"/>
+			<xsd:maxInclusive value="5.0"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+</xsd:schema>
