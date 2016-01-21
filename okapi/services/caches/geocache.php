@@ -66,7 +66,7 @@ class WebService
                 select 1
                 from caches
                 where wp_oc='".mysql_real_escape_string($cache_code)."'
-            ")
+            ");
             if ($exists) {
                 throw new InvalidParam('cache_code', "This cache is not accessible via OKAPI.");
             } else {

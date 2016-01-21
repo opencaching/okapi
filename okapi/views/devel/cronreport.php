@@ -53,7 +53,7 @@ class View
             if (!isset($schedule[$name]))
                 print "NOT YET SCHEDULED\n";
             elseif ($schedule[$name] <= time())
-                print "PAST: should be run ".(time() - $schedule[$name])." seconds ago\n";
+                print "DELAYED: should be run ".(time() - $schedule[$name])." seconds ago\n";
             else
                 print "scheduled to run in ".str_pad($schedule[$name] - time(), 6, " ", STR_PAD_LEFT)." seconds\n";
         }
