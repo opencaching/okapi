@@ -1392,8 +1392,10 @@ class Okapi
     {
         $x1 = (90-$lat1) * 3.14159 / 180;
         $x2 = (90-$lat2) * 3.14159 / 180;
-        # min(1, ...) prevents values > 1 due to floating point precision limits;
-        # see issue #351.
+        #
+        # min(1, ...) was added below to prevent getting values greater than 1 due
+        # to floating point precision limits. See issue #351 for details.
+        #
         $d = acos(min(1, cos($x1) * cos($x2) + sin($x1) * sin($x2) * cos(($lon1-$lon2) * 3.14159 / 180))) * 6371000;
         if ($d < 0) $d = 0;
         return $d;
@@ -1407,6 +1409,10 @@ class Okapi
     {
         $x1 = "(90-$lat1) * 3.14159 / 180";
         $x2 = "(90-$lat2) * 3.14159 / 180";
+        #
+        # least(1, ...) was added below to prevent getting values greater than 1 due
+        # to floating point precision limits. See issue #351 for details.
+        #
         $d = "acos(least(1, cos($x1) * cos($x2) + sin($x1) * sin($x2) * cos(($lon1-$lon2) * 3.14159 / 180))) * 6371000";
         return $d;
     }
