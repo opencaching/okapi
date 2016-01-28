@@ -5,6 +5,7 @@ namespace okapi\services\caches\search\nearest;
 require_once('searching.inc.php');
 
 use okapi\Okapi;
+use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -69,10 +70,33 @@ class WebService
         {
             if (!preg_match("/^-?[0-9]+(\.?[0-9]*)$/", $tmp))
                 throw new InvalidParam('radius', "'$tmp' is not a valid float number.");
-            $radius = floatval($tmp);
+            $radius = floatval($tmp);  # is given in kilometers
             if ($radius <= 0)
                 throw new InvalidParam('radius', "Has to be a positive number.");
-            $radius *= 1000; # this one is given in kilemeters, converting to meters!
+
+            # Apply a latitude-range prefilter if it looks promising.
+            # See https://github.com/opencaching/okapi/issues/363 for more info.
+
+            $optimization_radius = 30;  # in kilometers
+            $km2degrees_upper_estimate_factor = 0.01;
+
+            if ($radius <= $optimization_radius &&
+                abs($center_lat) <= 89.99 - $optimization_radius * $km2degrees_upper_estimate_factor)
+            {
+                $radius_degrees = $radius * $km2degrees_upper_estimate_factor;
+                $caches_in_latrange = Db::select_column("
+                    select cache_id
+                    from caches
+                    where latitude >= ".mysql_real_escape_string($center_lat - $radius_degrees)."
+                    and latitude <= ".mysql_real_escape_string($center_lat + $radius_degrees)."
+                ");
+                if ($caches_in_latrange)
+                    $where_conds[] = "caches.cache_id in (".implode(",", $caches_in_latrange).")";
+                else
+                    $where_conds[] = "false";
+            }
+
+            $radius *= 1000;  # convert from kilometers to meters
             $where_conds[] = "$distance_formula <= '".mysql_real_escape_string($radius)."'";
         }
 
