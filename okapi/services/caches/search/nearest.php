@@ -5,7 +5,7 @@ namespace okapi\services\caches\search\nearest;
 require_once('searching.inc.php');
 
 use okapi\Okapi;
-use okapi\Db;
+use okapi\Settings;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
@@ -77,23 +77,16 @@ class WebService
             # Apply a latitude-range prefilter if it looks promising.
             # See https://github.com/opencaching/okapi/issues/363 for more info.
 
-            $optimization_radius = 30;  # in kilometers
+            $optimization_radius = Settings::get('SEARCH_RADIUS_OPTIMIZATION_LIMIT');
             $km2degrees_upper_estimate_factor = 0.01;
 
-            if ($radius <= $optimization_radius &&
-                abs($center_lat) <= 89.99 - $optimization_radius * $km2degrees_upper_estimate_factor)
+            if ($radius <= $optimization_radius)
             {
                 $radius_degrees = $radius * $km2degrees_upper_estimate_factor;
-                $caches_in_latrange = Db::select_column("
-                    select cache_id
-                    from caches
-                    where latitude >= ".mysql_real_escape_string($center_lat - $radius_degrees)."
-                    and latitude <= ".mysql_real_escape_string($center_lat + $radius_degrees)."
-                ");
-                if ($caches_in_latrange)
-                    $where_conds[] = "caches.cache_id in (".implode(",", $caches_in_latrange).")";
-                else
-                    $where_conds[] = "false";
+                $where_conds[] = "
+                    latitude >= '".mysql_real_escape_string($center_lat - $radius_degrees)."'
+                    and latitude <= '".mysql_real_escape_string($center_lat + $radius_degrees)."'
+                    ";
             }
 
             $radius *= 1000;  # convert from kilometers to meters
@@ -102,6 +95,7 @@ class WebService
 
         $search_params = $search_assistant->get_search_params();
         $search_params['where_conds'] = array_merge($where_conds, $search_params['where_conds']);
+        $search_params['caches_indexhint'] = "use index (latitude)";
         $search_params['order_by'][] = $distance_formula; # not replaced; added to the end!
         $search_assistant->set_search_params($search_params);
 

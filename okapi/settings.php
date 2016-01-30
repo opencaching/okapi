@@ -184,6 +184,15 @@ final class Settings
          * method). Providing this is not required, but it is highly recommended.
          */
         'GITHUB_ACCESS_TOKEN' => null,
+
+        /**
+         * The maximum radius (in kilometers) for which the search_nearest method
+         * is optimized by a latitude prefilter. The optimum radius depends on
+         * the node's cache density. It can be figured out by doing search_nearest
+         * performance tests in a rather high cache density region with different
+         * radiuses.
+         */
+        'SEARCH_RADIUS_OPTIMIZATION_LIMIT' => 100,
     );
 
     /**
