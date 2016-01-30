@@ -187,6 +187,15 @@ final class Settings
          * https://help.github.com/articles/creating-an-access-token-for-command-line-use/
          */
         'GITHUB_ACCESS_TOKEN' => null,
+
+        /**
+         * The maximum radius (in kilometers) for which the search_nearest method
+         * is optimized by a latitude prefilter. The optimum radius depends on
+         * the node's cache density. It can be figured out by doing search_nearest
+         * performance tests in a rather high cache density region with different
+         * radiuses.
+         */
+        'SEARCH_RADIUS_OPTIMIZATION_LIMIT' => 100,
     );
 
     /**
