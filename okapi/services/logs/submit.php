@@ -319,6 +319,23 @@ class WebService
         }
         unset($comment);
 
+        # Prevent bug #367. Start the transaction and lock all the rows of this
+        # (user, cache) pair. We might have locked an even smaller number of
+        # locks here (user, cache, type=1), but this wouldn't work, because
+        # there's no index for this.
+        #
+        # http://stackoverflow.com/questions/17068686/
+
+        Db::execute("start transaction");
+        Db::select_column("
+            select 1
+            from cache_logs
+            where
+                user_id = '".mysql_real_escape_string($request->token->user_id)."'
+                and cache_id = '".mysql_real_escape_string($cache['internal_id'])."'
+            for update
+        ");
+
         # Duplicate detection.
 
         if ($on_duplicate != 'continue')
@@ -605,6 +622,10 @@ class WebService
                 ");
             }
         }
+
+        # Finalize the transaction.
+
+        Db::execute("commit");
 
         # We need to delete the copy of stats-picture for this user. Otherwise,
         # the legacy OC code won't detect that the picture needs to be refreshed.
