@@ -320,9 +320,9 @@ class WebService
         unset($comment);
 
         # Prevent bug #367. Start the transaction and lock all the rows of this
-        # (user, cache) pair. We might have locked an even smaller number of
-        # locks here (user, cache, type=1), but this wouldn't work, because
-        # there's no index for this.
+        # (user, cache) pair. In theory, we want to lock even smaller number of
+        # rows here (user, cache, type=1), but this wouldn't work, because there's
+        # no index for this.
         #
         # http://stackoverflow.com/questions/17068686/
 
