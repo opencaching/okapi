@@ -3,8 +3,8 @@
 - Indent with 4 spaces, no tabs.
 - Classes: CamelCase, `{` in new line.
 - Methods: lowercase_with_underlines, `{` in new line.
-- Small codeblocks within methods: `{` in *the same* line (with a space before
-  it). Very large blocks: `{` in a new line.
+- Tiny codeblocks within methods: `{` in *the same* line (with a space before
+  it). Larger blocks: `{` in a new line.
 - When using parenetheses and the content doesn't fit in one line, start
   a new line just after `"("` and indent 4 spaces (e.g.
   http://i.imgur.com/FZmyD7B.png).
