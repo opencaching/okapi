@@ -363,7 +363,7 @@ class StatsWriterCronJob extends PrerequestCronJob
     {
         if (Okapi::get_var('db_version', 0) + 0 < 32)
             return;
-        Db::query("lock tables okapi_stats_hourly write, okapi_stats_temp write;");
+        Db::execute("lock tables okapi_stats_hourly write, okapi_stats_temp write;");
         $rs = Db::query("
             select
                 consumer_key,
