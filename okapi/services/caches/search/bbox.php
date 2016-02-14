@@ -4,6 +4,7 @@ namespace okapi\services\caches\search\bbox;
 
 require_once('searching.inc.php');
 
+use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
