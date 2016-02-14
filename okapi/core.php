@@ -10,6 +10,7 @@ namespace okapi;
 use Exception;
 use ErrorException;
 use ArrayObject;
+use Pdo;
 use OAuthServerException;
 use OAuthServer400Exception;
 use OAuthServer401Exception;
@@ -355,23 +356,63 @@ class DbException extends Exception {}
 #
 
 /**
- * Database access abstraction layer class. Use this instead of "raw" mysql_*,
- * mysqli_* and PDO functions.
+ * Database access abstraction layer class. Use this instead of "raw" mysql,
+ * mysqli or PDO functions.
+ *
+ * Currently, this class wraps the PDO class in a way which is backwards
+ * compatible with the previously used mysql_* functions (see issue #297 for
+ * details). This is perfectly safe if it is used correctly - and OKAPI was
+ * thoroughly reviewed in this matter, so we're quite confident there are no
+ * SQL injections anyware to be found.
+ *
+ * On the other hand, this is obviously not the way PDO was supposed to be
+ * used. We may choose to deprecate parts of this class in the future, and
+ * expose a PDO-compatible object instead. Until we do that, please use the Db
+ * class and Db::escape_string method, as you'd do in the old mysql-family
+ * functions.
  */
 class Db
 {
     private static $connected = false;
+    private static $dbh = null;
 
     public static function connect()
     {
-        if (mysql_connect(Settings::get('DB_SERVER'), Settings::get('DB_USERNAME'), Settings::get('DB_PASSWORD')))
-        {
-            mysql_select_db(Settings::get('DB_NAME'));
-            mysql_query("set names '" . Settings::get('DB_CHARSET') . "'");
-            self::$connected = true;
+        $dsnarr = array(
+            'host' => Settings::get('DB_SERVER'),
+            'dbname' => Settings::get('DB_NAME'),
+            'charset' => Settings::get('DB_CHARSET')
+        );
+
+        $options = array(
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        );
+
+        /* Older PHP versions do not support the 'charset' DSN option. */
+
+        if ($dsnarr['charset'] and version_compare(PHP_VERSION, '5.3.6', '<')) {
+            $options[PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES ' . $dsnarr['charset'];
         }
-        else
-            throw new Exception("Could not connect to MySQL: ".mysql_error());
+
+        $dsnpairs = array();
+        foreach ($dsnarr as $k => $v) {
+            if ($v === null) {
+                continue;
+            }
+            $dsnpairs[] = $k . "=" . $v;
+        }
+
+        $dsn = 'mysql:' . implode(';', $dsnpairs);
+        try {
+            self::$dbh = new PDO(
+                $dsn, Settings::get('DB_USERNAME'), Settings::get('DB_PASSWORD'), $options
+            );
+        } catch (PDOException $e) {
+            throw new DbException($e->getMessage());
+        }
+        self::$connected = true;
     }
 
     /** Fetch [{row}], return {row}. */
@@ -457,51 +498,61 @@ class Db
 
     public static function last_insert_id()
     {
-        return mysql_insert_id();
+        return self::$dbh->lastInsertId();
     }
 
     public static function fetch_assoc($rs)
     {
-        return mysql_fetch_assoc($rs);
+        return $rs->fetch(PDO::FETCH_ASSOC);
     }
 
     public static function fetch_row($rs)
     {
-        return mysql_fetch_row($rs);
-    }
-
-    public static function fetch_array($rs)
-    {
-        return mysql_fetch_array($rs);
+        return $rs->fetch(PDO::FETCH_NUM);
     }
 
     public static function free_result($rs)
     {
-        return mysql_free_result($rs);
+        return $rs->closeCursor();
     }
 
     public static function escape_string($value)
     {
-        return mysql_real_escape_string($value);
+        if (!self::$connected)
+            self::connect();
+        return substr(self::$dbh->quote($value), 1, -1);  // soo ugly!
     }
 
+    /**
+     * Execute a given SQL statement. Return nothing (you should not use this
+     * for SELECT statements).
+     */
     public static function execute($query)
     {
-        $rs = self::query($query);
-        if ($rs !== true)
-            throw new DbException("Db::execute returned a result set for your query. ".
-                "You should use Db::select_* or Db::query for SELECT queries!");
+        if (!self::$connected)
+            self::connect();
+        try {
+            self::$dbh->exec($query);
+        } catch (PDOException $e) {
+            list($sqlstate, $errno, $msg) = $e->errorInfo;
+            throw new DbException("SQL Error $errno: $msg\n\nThe query was:\n".$query."\n");
+        }
     }
 
+    /**
+     * Execute a given SQL statement. Return a PDOStatement object.
+     */
     public static function query($query)
     {
         if (!self::$connected)
             self::connect();
-        $rs = mysql_query($query);
-        if (!$rs)
+        try
         {
-            $errno = mysql_errno();
-            $msg = mysql_error();
+            $rs = self::$dbh->query($query);
+        }
+        catch (PDOException $e)
+        {
+            list($sqlstate, $errno, $msg) = $e->errorInfo;
 
             /* Detect issue #340 and try to repair... */
 
