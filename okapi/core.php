@@ -351,10 +351,13 @@ class InvalidParam extends BadRequest
 class DbException extends Exception {}
 
 #
-# Database access layer.
+# Database access abstraction layer.
 #
 
-/** Database access class. Use this instead of mysql_query, sql or sqlValue. */
+/**
+ * Database access abstraction layer class. Use this instead of "raw" mysql_*,
+ * mysqli_* and PDO functions.
+ */
 class Db
 {
     private static $connected = false;
@@ -398,7 +401,7 @@ class Db
         $rs = self::query($query);
         while (true)
         {
-            $row = mysql_fetch_assoc($rs);
+            $row = Db::fetch_assoc($rs);
             if ($row === false)
                 break;
             if ($keyField == null)
@@ -406,7 +409,7 @@ class Db
             else
                 $arr[$row[$keyField]] = $row;
         }
-        mysql_free_result($rs);
+        Db::free_result($rs);
     }
 
     /** Fetch all [(A,A), (A,B), (B,A)], return {A: [{row}, {row}], B: [{row}]}. */
@@ -416,12 +419,12 @@ class Db
         $rs = self::query($query);
         while (true)
         {
-            $row = mysql_fetch_assoc($rs);
+            $row = Db::fetch_assoc($rs);
             if ($row === false)
                 break;
             $groups[$row[$keyField]][] = $row;
         }
-        mysql_free_result($rs);
+        Db::free_result($rs);
         return $groups;
     }
 
@@ -443,18 +446,43 @@ class Db
         $rs = self::query($query);
         while (true)
         {
-            $values = mysql_fetch_array($rs);
+            $values = Db::fetch_array($rs);
             if ($values === false)
                 break;
             array_push($column, $values[0]);
         }
-        mysql_free_result($rs);
+        Db::free_result($rs);
         return $column;
     }
 
     public static function last_insert_id()
     {
         return mysql_insert_id();
+    }
+
+    public static function fetch_assoc($rs)
+    {
+        return mysql_fetch_assoc($rs);
+    }
+
+    public static function fetch_row($rs)
+    {
+        return mysql_fetch_row($rs);
+    }
+
+    public static function fetch_array($rs)
+    {
+        return mysql_fetch_array($rs);
+    }
+
+    public static function free_result($rs)
+    {
+        return mysql_free_result($rs);
+    }
+
+    public static function escape_string($value)
+    {
+        return mysql_real_escape_string($value);
     }
 
     public static function execute($query)
@@ -1007,7 +1035,7 @@ class Okapi
                 from okapi_vars
             ");
             self::$okapi_vars = array();
-            while ($row = mysql_fetch_assoc($rs))
+            while ($row = Db::fetch_assoc($rs))
                 self::$okapi_vars[$row['var']] = $row['value'];
         }
         if (isset(self::$okapi_vars[$varname]))
@@ -1026,8 +1054,8 @@ class Okapi
         Db::execute("
             replace into okapi_vars (var, value)
             values (
-                '".mysql_real_escape_string($varname)."',
-                '".mysql_real_escape_string($value)."');
+                '".Db::escape_string($varname)."',
+                '".Db::escape_string($value)."');
         ");
         self::$okapi_vars[$varname] = $value;
     }
@@ -1377,11 +1405,11 @@ class Okapi
         Db::execute("
             insert into okapi_consumers (`key`, name, secret, url, email, date_created)
             values (
-                '".mysql_real_escape_string($consumer->key)."',
-                '".mysql_real_escape_string($consumer->name)."',
-                '".mysql_real_escape_string($consumer->secret)."',
-                '".mysql_real_escape_string($consumer->url)."',
-                '".mysql_real_escape_string($consumer->email)."',
+                '".Db::escape_string($consumer->key)."',
+                '".Db::escape_string($consumer->name)."',
+                '".Db::escape_string($consumer->secret)."',
+                '".Db::escape_string($consumer->url)."',
+                '".Db::escape_string($consumer->email)."',
                 now()
             );
         ");
@@ -1894,9 +1922,9 @@ class Cache
         Db::execute("
             replace into okapi_cache (`key`, value, expires)
             values (
-                '".mysql_real_escape_string($key)."',
-                '".mysql_real_escape_string(gzdeflate(serialize($value)))."',
-                date_add(now(), interval '".mysql_real_escape_string($timeout)."' second)
+                '".Db::escape_string($key)."',
+                '".Db::escape_string(gzdeflate(serialize($value)))."',
+                date_add(now(), interval '".Db::escape_string($timeout)."' second)
             );
         ");
     }
@@ -1910,8 +1938,8 @@ class Cache
         Db::execute("
             replace into okapi_cache (`key`, value, expires, score)
             values (
-                '".mysql_real_escape_string($key)."',
-                '".mysql_real_escape_string(gzdeflate(serialize($value)))."',
+                '".Db::escape_string($key)."',
+                '".Db::escape_string(gzdeflate(serialize($value)))."',
                 date_add(now(), interval 120 day),
                 1.0
             );
@@ -1933,9 +1961,9 @@ class Cache
         foreach ($dict as $key => $value)
         {
             $entries_escaped[] = "(
-                '".mysql_real_escape_string($key)."',
-                '".mysql_real_escape_string(gzdeflate(serialize($value)))."',
-                date_add(now(), interval '".mysql_real_escape_string($timeout)."' second)
+                '".Db::escape_string($key)."',
+                '".Db::escape_string(gzdeflate(serialize($value)))."',
+                date_add(now(), interval '".Db::escape_string($timeout)."' second)
             )";
         }
         Db::execute("
@@ -1954,17 +1982,17 @@ class Cache
             select value, score
             from okapi_cache
             where
-                `key` = '".mysql_real_escape_string($key)."'
+                `key` = '".Db::escape_string($key)."'
                 and expires > now()
         ");
-        list($blob, $score) = mysql_fetch_array($rs);
+        list($blob, $score) = Db::fetch_array($rs);
         if (!$blob)
             return null;
         if ($score != null)  # Only non-null entries are scored.
         {
             Db::execute("
                 insert into okapi_cache_reads (`cache_key`)
-                values ('".mysql_real_escape_string($key)."')
+                values ('".Db::escape_string($key)."')
             ");
         }
         return unserialize(gzinflate($blob));
@@ -1978,10 +2006,10 @@ class Cache
             select `key`, value
             from okapi_cache
             where
-                `key` in ('".implode("','", array_map('mysql_real_escape_string', $keys))."')
+                `key` in ('".implode("','", array_map('\okapi\Db::escape_string', $keys))."')
                 and expires > now()
         ");
-        while ($row = mysql_fetch_assoc($rs))
+        while ($row = Db::fetch_assoc($rs))
         {
             try
             {
@@ -2019,7 +2047,7 @@ class Cache
             return;
         Db::execute("
             delete from okapi_cache
-            where `key` in ('".implode("','", array_map('mysql_real_escape_string', $keys))."')
+            where `key` in ('".implode("','", array_map('\okapi\Db::escape_string', $keys))."')
         ");
     }
 }
@@ -2274,7 +2302,7 @@ class OkapiHttpRequest extends OkapiRequest
             # developer might have issued.
 
             $debug_user_id = Db::select_value("select user_id from user where username='".
-                mysql_real_escape_string($options['DEBUG_AS_USERNAME'])."'");
+                Db::escape_string($options['DEBUG_AS_USERNAME'])."'");
             if ($debug_user_id == null)
                 throw new Exception("Invalid user name in DEBUG_AS_USERNAME: '".$options['DEBUG_AS_USERNAME']."'");
             $this->consumer = new OkapiDebugConsumer();

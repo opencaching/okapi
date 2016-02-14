@@ -21,7 +21,7 @@
   - use multiline strings in SQL queries (the `"..."` strings),
   - use `'...'` for strings within the query (e.g.
     `...where type in ('1', '2')...`),
-  - *always* use `mysql_real_escape_string` when introducing variables (even
+  - *always* use `Db::escape_string` when introducing variables (even
     when you know you don't need to),
   - lower-case keywords (`select`, not `SELECT`),
   - avoid the backtick character (\`) - use only when necessary (e.g. for the
