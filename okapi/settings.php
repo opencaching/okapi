@@ -104,10 +104,16 @@ final class Settings
 
         /**
          * Set to true, if your installation supports "Needs maintenance" log type (with
-         * log type id == 5). If your users are not allowed to submit "Needs maintenance"
-         * log entries, leave it at false.
+         * log type id == 5) or log flag. If your users are not allowed to submit
+         * "Needs maintenance" log entries, leave it at false.
          */
         'SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE' => false,
+
+        /**
+         * Set to true, if your installation supports the "Does not need maintenance"
+         * log option. If your users are not allowed to submit this flag, leave it at false.
+         */
+        'SUPPORTS_DOESNT_NEED_MAINTENANCE_LOGS' => false,
 
         /**
          * Set to true, to prevent OKAPI from sending email messages. ALLOWED ONLY ON

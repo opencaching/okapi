@@ -81,8 +81,20 @@
                 because this flag can be missing for (mostly old) admin logs.</p>
             </li>
             <li>
-                <p><b>was_recommended</b> - <b>true</b>, if the author included his recommendation
+                <p><b>was_recommended</b> - <b>true</b> if the author included his recommendation
                 in this log entry,</p>
+            </li>
+            <li>
+                <p><b>needs_maintenance</b> - indicates if the author submitted information
+                about the maintenance state of the geocache, e.g. through OKAPIs
+                <em>needs_maintenance</em> logs/submit option; one of the following:</p>
+                <ul>
+                    <li>"true" - as to the author's opinion, the geocache is in poor
+                    condition and needs maintenance;</li>
+                    <li>"clear" - as to the author's opinion, the geocache is in good
+                    or acceptable condition and does not need maintenance;</li>
+                    <li>"false" - the author did not indicate the maintenance state.</li>
+                </ul>
             </li>
             <li><b>comment</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>, text entered
                 with the log entry,</li>

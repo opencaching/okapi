@@ -98,15 +98,16 @@
         end with user error (HTTP 200, success=false).</p>
     </opt>
     <opt name='needs_maintenance' default='false'>
-        <p>Set to <b>true</b> if the user thinks that the cache needs some special attension
-        of its owner. Users should describe the reason for maintenance in their comments.</p>
+        <p>Set to <b>true</b> if the user thinks that the cache needs some special attention
+        of its owner. Users should describe the reason for maintenance in their comments.
+        Set to <b>clear</b> if the user thinks that the cache's condition now is fine;
+        so the "needs maintenance state" of the cache is cleared (discarded).</p>
         <p>Note: Depending on OC installation and user's log entry type, OKAPI may actually
-        publish two separate log entries when you check this flag (one of them with empty
+        publish two separate log entries when you set this option to <b>true</b> (one of them with empty
         comment). Even then, you will still receive only one UUID reference (pointing to
-        only one of those entries). Moreover, on some OC servers this flag might be
-        <b>completely ignored</b> (not all OC servers support this feature).</p>
-        <p>Note: Currently, this is not allowed for Event Caches (you will get a HTTP 200
-        "user friendly" response).</p>
+        only one of those entries).</p>
+        <p>Also, the <b>clear</b> option is not evaluated by all OC nodes. Some will just
+        ignore it.</p>
     </opt>
     <common-format-params/>
     <returns>
