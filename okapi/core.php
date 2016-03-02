@@ -524,15 +524,15 @@ class Db
     }
 
     /**
-     * Execute a given *non-SELECT* SQL statement. Return number of affected
-     * rows (that is, rows updated, inserted or deleted by the statement).
+     * Execute a given SQL statement. Return nothing (you should not use this
+     * for SELECT statements).
      */
     public static function execute($query)
     {
         if (!self::$connected)
             self::connect();
         try {
-            return self::$dbh->exec($query);
+            self::$dbh->exec($query);
         } catch (PDOException $e) {
             list($sqlstate, $errno, $msg) = $e->errorInfo;
             throw new DbException("SQL Error $errno: $msg\n\nThe query was:\n".$query."\n");
@@ -592,6 +592,16 @@ class Db
             throw new DbException("SQL Error $errno: $msg\n\nThe query was:\n".$query."\n");
         }
         return $rs;
+    }
+
+    /**
+     * Return number of rows actually updated, inserted or deleted by the last
+     * statement executed with execute(). It DOES NOT return number of rows
+     * returned by the last select statement.
+     */
+    public static function get_affected_row_count()
+    {
+        return mysql_affected_rows();
     }
 
     public static function field_exists($table, $field)
