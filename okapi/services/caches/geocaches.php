@@ -531,10 +531,14 @@ class WebService
 
                     if (in_array($cache_code, $outdated_listings))
                     {
-                        $tmp = "<p style='color:#c00000'><strong>" .
-                               _('Parts of this geocache listing may be outdated.') . "</strong> " .
-                               _('See the log entries for more information.') . "</p>\n" .
-                               $tmp;
+                        $tmp = (
+                            "<p style='color:#c00000'><strong>".
+                            _('Parts of this geocache listing may be outdated.').
+                            "</strong> ".
+                            _('See the log entries for more information.').
+                            "</p>\n".
+                            $tmp
+                        );
                     }
 
                     if ($attribution_append != 'none')
