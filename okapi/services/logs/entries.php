@@ -24,7 +24,7 @@ class WebService
 
     private static $valid_field_names = array(
         'uuid', 'cache_code', 'date', 'user', 'type', 'was_recommended', 'comment',
-        'images', 'internal_id', 'oc_team_entry', 'needs_maintenance',
+        'images', 'internal_id', 'oc_team_entry', 'needs_maintenance_flag_was',
     );
 
     public static function call(OkapiRequest $request)
@@ -54,19 +54,19 @@ class WebService
         {
             $teamentry_field = 'cl.oc_team_comment';
             $ratingdate_condition = 'and cr.rating_date=cl.date';
-            $needs_maintenance = 'cl.needs_maintenance';
+            $needs_maintenance_SQL = 'cl.needs_maintenance';
         }
         else
         {
             $teamentry_field = '(cl.type=12)';
             $ratingdate_condition = '';
-            $needs_maintenance = 'IF(cl.type=5, 2, IF(cl.type=6, 1, 0))';
+            $needs_maintenance_SQL = 'IF(cl.type=5, 2, IF(cl.type=6, 1, 0))';
         }
         $rs = Db::query("
             select
                 cl.id, c.wp_oc as cache_code, cl.uuid, cl.type,
                 ".$teamentry_field." as oc_team_entry,
-                ".$needs_maintenance." as needs_maintenance,
+                ".$needs_maintenance_SQL." as needs_maintenance,
                 unix_timestamp(cl.date) as date, cl.text,
                 u.uuid as user_uuid, u.username, u.user_id,
                 if(cr.user_id is null, 0, 1) as was_recommended
@@ -91,7 +91,7 @@ class WebService
         ");
         $results = array();
         $log_id2uuid = array(); /* Maps logs' internal_ids to uuids */
-        $nm_options = array('false', 'clear', 'true');
+        $nm_options = array('unchanged', 'set', 'unset');
         while ($row = Db::fetch_assoc($rs))
         {
             $results[$row['uuid']] = array(

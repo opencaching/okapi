@@ -123,8 +123,10 @@
             <li>
                 <p><b>needs_maintenance</b> - boolean, <b>true</b> if the geocache is
                 known to be in poor condition, e.g. damaged. Usually there will be further
-                explanations in the log entries. Please note that not all OC sites
-                expose this information; other sites will always return <b>false</b>.</p>
+                explanations in the log entries.</p>
+
+                <p>Please note that only some OC sites provide this information. Other sites
+                will always return <b>false</b> here.</p>
             </li>
             <li><b>url</b> - URL of the cache's web page,</li>
             <li>

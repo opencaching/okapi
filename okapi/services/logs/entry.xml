@@ -85,15 +85,27 @@
                 in this log entry,</p>
             </li>
             <li>
-                <p><b>needs_maintenance</b> - indicates if the author submitted information
-                about the maintenance state of the geocache, e.g. through OKAPIs
-                <em>needs_maintenance</em> logs/submit option; one of the following:</p>
+                <p><b>needs_maintenance_flag_was</b> - log entry authors may include an
+                additional report on the current condition of the geocache (indicate if the
+                cache needs maintenance).</p>
+
+                <p>Possible values:</p>
+
                 <ul>
-                    <li>"true" - as to the author's opinion, the geocache is in poor
-                    condition and needs maintenance;</li>
-                    <li>"clear" - as to the author's opinion, the geocache is in good
-                    or acceptable condition and does not need maintenance;</li>
-                    <li>"false" - the author did not indicate the maintenance state.</li>
+                    <li>
+                        <b>set</b> - if the author has set the <b>needs_maintenance</b> flag for this
+                        geocache (in the author's opinion, the geocache is in poor condition and it
+                        needs maintenance),
+                    </li>
+                    <li>
+                        <b>unset</b> - if the author has removed the <b>needs_maintenance</b>
+                        previously set on this geocache (in the author's opinion, the geocache is in
+                        good or acceptable condition and does not need maintenance anymore),
+                    </li>
+                    <li>
+                        <b>unchanged</b> - if the author did not include any report on the current
+                        condition of the geocache (the <b>needs_maintenance</b> is unchanged).
+                    </li>
                 </ul>
             </li>
             <li><b>comment</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>, text entered
