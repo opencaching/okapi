@@ -141,15 +141,20 @@ class WebService
         }
 
         $needs_maintenance = $request->get_parameter('needs_maintenance');
-        if (!$needs_maintenance) { $needs_maintenance = 'null'; }
-        if ($needs_maintenance == 'false') { $needs_maintenance = 'null'; }
-        if ($needs_maintenance == 'true') { $needs_maintenance = 'yes'; }
-        $needs_maintenance2 = $request->get_parameter('needs_maintenance2');
-        if ($needs_maintenance2) { $needs_maintenance = $needs_maintenance2; }
-
-        if (!in_array($needs_maintenance, array('null', 'yes', 'no'))) {
+        if (!$needs_maintenance) { $needs_maintenance = 'false'; }
+        if (!in_array($needs_maintenance, array('true', 'false'))) {
             throw new InvalidParam(
                 'needs_maintenance', "Unknown option: '$needs_maintenance'."
+            );
+        }
+        if ($needs_maintenance == 'false') { $needs_maintenance = 'null'; }
+        if ($needs_maintenance == 'true') { $needs_maintenance = 'yes'; }
+
+        $needs_maintenance2 = $request->get_parameter('needs_maintenance2');
+        if ($needs_maintenance2) { $needs_maintenance = $needs_maintenance2; }
+        if (!in_array($needs_maintenance, array('null', 'yes', 'no'))) {
+            throw new InvalidParam(
+                'needs_maintenance2', "Unknown option: '$needs_maintenance'."
             );
         }
 
