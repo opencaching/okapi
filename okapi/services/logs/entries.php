@@ -24,7 +24,7 @@ class WebService
 
     private static $valid_field_names = array(
         'uuid', 'cache_code', 'date', 'user', 'type', 'was_recommended', 'comment',
-        'images', 'internal_id', 'oc_team_entry', 'needs_maintenance_flag_was',
+        'images', 'internal_id', 'oc_team_entry', 'needed_maintenance',
     );
 
     public static function call(OkapiRequest $request)
@@ -91,7 +91,7 @@ class WebService
         ");
         $results = array();
         $log_id2uuid = array(); /* Maps logs' internal_ids to uuids */
-        $nm_options = array('unchanged', 'set', 'unset');
+        $nm_options = array('null', 'no', 'yes');
         while ($row = Db::fetch_assoc($rs))
         {
             $results[$row['uuid']] = array(
@@ -105,7 +105,7 @@ class WebService
                 ),
                 'type' => Okapi::logtypeid2name($row['type']),
                 'was_recommended' => $row['was_recommended'] ? true : false,
-                'needs_maintenance' => $nm_options[$row['needs_maintenance']],
+                'needed_maintenance' => $nm_options[$row['needs_maintenance']],
                 'comment' => Okapi::fix_oc_html($row['text']),
                 'images' => array(),
                 'internal_id' => $row['id'],

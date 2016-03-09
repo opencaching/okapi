@@ -97,34 +97,40 @@
         set on him by the OC site. If criteria are not met, the request will
         end with user error (HTTP 200, success=false).</p>
     </opt>
-    <opt name='needs_maintenance' default='unchanged'>
+    <opt name='needs_maintenance' default='false' class='deprecated'>
+        <p>Deprecated.</p>
+        <p>Set to <b>true</b> if the user thinks that the cache needs some special attension
+        of its owner. Users should describe the reason for maintenance in their comments.</p>
+        <p>Note: Depending on OC installation and user's log entry type, OKAPI may actually
+        publish two separate log entries when you check this flag (one of them with empty
+        comment). Even then, you will still receive only one UUID reference (pointing to
+        only one of those entries).</p>
+        <p>Note: Currently, this is not allowed for Event Caches (you will get a HTTP 200
+        "user friendly" response).</p>
+    </opt>
+    <opt name='needs_maintenance2' default='null'>
         <p>Valid options include:</p>
 
         <ul>
             <li>
-                <p><b>unchanged</b> (or <b>false</b>, for backward compatibility) - the default
-                option. Indicates that the user doesn't want to include any report on the
-                current condition of the geocache. The current value of the
-                <b>needs_maintenance</b> flag for this geocache will not be affected by this
-                log entry.</p>
+                <p><b>null</b> - indicates that the user doesn't want to include any report
+                on the current condition of the geocache.</p>
             </li>
             <li>
-                <p><b>set</b> (or <b>true</b>, for backward compatibility) - use this to
-                indicate that your user thinks that the cache needs some special attention of
-                its owner. Such users should also describe why it needs maintenance (in their
-                comments).</p>
+                <p><b>yes</b> - use this to indicate that your user thinks that the cache
+                needs some special attention of its owner. Such users should also describe
+                why it needs maintenance (in their comments).</p>
 
                 <p>Note: Depending on OC installation and user's log entry type, OKAPI may
                 actually publish two separate log entries when you set this option to
-                <b>true</b> (one of them with empty comment). Even then, you will still receive
+                <b>yes</b> (one of them with empty comment). Even then, you will still receive
                 only one UUID reference (pointing to only one of those entries).</p>
             </li>
             <li>
-                <p><b>unset</b> - use this to indicate that your user thinks that the cache's
-                condition is now fine and the previously set <b>needs_maintenance</b> flag can
-                be removed.</p>
+                <p><b>no</b> - use this to indicate that your user thinks that the cache's
+                condition is fine.</p>
 
-                <p>Note: The <b>unset</b> option is not evaluated by all OC nodes. Some will
+                <p>Note: The <b>no</b> option is not evaluated by all OC nodes. Some will
                 just ignore it.</p>
             </li>
         </ul>

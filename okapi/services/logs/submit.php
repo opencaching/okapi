@@ -141,17 +141,20 @@ class WebService
         }
 
         $needs_maintenance = $request->get_parameter('needs_maintenance');
-        if (!$needs_maintenance) { $needs_maintenance = 'unchanged'; }
-        if ($needs_maintenance == 'false') { $needs_maintenance = 'unchanged'; }
-        if ($needs_maintenance == 'true') { $needs_maintenance = 'set'; }
-        if (!in_array($needs_maintenance, array('unchanged', 'set', 'unset'))) {
+        if (!$needs_maintenance) { $needs_maintenance = 'null'; }
+        if ($needs_maintenance == 'false') { $needs_maintenance = 'null'; }
+        if ($needs_maintenance == 'true') { $needs_maintenance = 'yes'; }
+        $needs_maintenance2 = $request->get_parameter('needs_maintenance2');
+        if ($needs_maintenance2) { $needs_maintenance = $needs_maintenance2; }
+
+        if (!in_array($needs_maintenance, array('null', 'yes', 'no'))) {
             throw new InvalidParam(
                 'needs_maintenance', "Unknown option: '$needs_maintenance'."
             );
         }
 
         if (
-            $needs_maintenance == 'set'
+            $needs_maintenance == 'yes'
             && (!Settings::get('SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE'))
         ) {
             # If not supported, just ignore it.
@@ -160,11 +163,11 @@ class WebService
                 "However, your \"needs maintenance\" flag was ignored, because ".
                 "%s does not support this feature."
             ), Okapi::get_normalized_site_name());
-            $needs_maintenance = 'unchanged';
+            $needs_maintenance = 'null';
         }
 
         if (
-            $needs_maintenance == 'unset'
+            $needs_maintenance == 'no'
             && (!Settings::get('SUPPORTS_DOESNT_NEED_MAINTENANCE_LOGS'))
         ) {
             # If not supported, just ignore it.
@@ -173,7 +176,7 @@ class WebService
                 "However, your \"does not need maintenance\" flag was ignored, because ".
                 "%s does not support this feature."
             ), Okapi::get_normalized_site_name());
-            $needs_maintenance = 'unchanged';
+            $needs_maintenance = 'null';
         }
 
         # Check if cache exists and retrieve cache internal ID (this will throw
@@ -485,7 +488,7 @@ class WebService
         # If user checked the "needs_maintenance" flag for OCPL, we will shuffle things
         # a little...
 
-        if (Settings::get('OC_BRANCH') == 'oc.pl' && $needs_maintenance == 'true')
+        if (Settings::get('OC_BRANCH') == 'oc.pl' && $needs_maintenance == 'yes')
         {
             # If we're here, then we also know that the "Needs maintenance" log
             # type is supported by this OC site. However, it's a separate log
@@ -779,11 +782,11 @@ class WebService
     {
         if (Settings::get('OC_BRANCH') == 'oc.de') {
             $needs_maintenance_field_SQL = ', needs_maintenance';
-            if ($needs_maintenance == 'set') {
+            if ($needs_maintenance == 'yes') {
                 $needs_maintenance_SQL = ',2';
-            } else if ($needs_maintenance == 'unset') {
+            } else if ($needs_maintenance == 'no') {
                 $needs_maintenance_SQL = ',1';
-            } else {  // unchanged
+            } else {  // 'null'
                 $needs_maintenance_SQL = ',0';
             }
         } else {
