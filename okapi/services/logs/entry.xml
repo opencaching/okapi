@@ -60,7 +60,7 @@
                     <li>
                         "Ready to search" - log of this type indicates that the status of this
                         cache was changed back to "Available", or it was confirmed as "Available".
-                        After some period of not being availabe the cache became ready to be found
+                        After some period of not being available the cache became ready to be found
                         again.
                     </li>
                     <li>

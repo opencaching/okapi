@@ -91,7 +91,7 @@ class WebService
         ");
         $results = array();
         $log_id2uuid = array(); /* Maps logs' internal_ids to uuids */
-        $nm_options = array('null', 'true', 'false');
+        $nm_options = array('null', 'false', 'true');
         while ($row = Db::fetch_assoc($rs))
         {
             $results[$row['uuid']] = array(
