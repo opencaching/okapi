@@ -52,10 +52,10 @@
                 <ul>
                     <li>
                         "Temporarily unavailable" - log of this type indicates that the status
-                        of the cache was changed to "Temporarily unavailable" at that time. Most
-                        probably the cache was not available to be found at that time, but it was
-                        expected to be repaired soon (and then, "Ready to search" log type would be
-                        submitted).
+                        of the cache was changed to "Temporarily unavailable" at that time, or it
+                        was confirmed as "Temporarily unavailable". Most probably the cache was
+                        not available to be found at that time, but it was expected to be
+                        repaired soon (and then, "Ready to search" log type would be submitted).
                     </li>
                     <li>
                         "Ready to search" - log of this type indicates that the status of this
