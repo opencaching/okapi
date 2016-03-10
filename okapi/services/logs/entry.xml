@@ -47,15 +47,33 @@
                 </ul>
 
                 <p>Types which indicate a change of state of the geocache or confirm the
-                state at the given date (used only by some Opencaching installations):</p>
+                state at the given time (used only by some Opencaching installations):</p>
 
                 <ul>
-                    <li>"Temporarily unavailable" - probably the cache could not be found,
-                        but was expected to be repaired (then, "Ready to search" is submitted).</li>
-                    <li>"Ready to search" - the cache could be found again.</li>
-                    <li>"Archived" - the cache could not be found and was not expected to
-                        be repaired.</li>
-                    <li>"Locked" - the cache was archived and could no longer be logged.</li>
+                    <li>
+                        "Temporarily unavailable" - log of this type indicates that the status
+                        of the cache was changed to "Temporarily unavailable" at that time. Most
+                        probably the cache was not available to be found at that time, but it was
+                        expected to be repaired soon (and then, "Ready to search" log type would be
+                        submitted).
+                    </li>
+                    <li>
+                        "Ready to search" - log of this type indicates that the status of this
+                        cache was changed back to "Available", or it was confirmed as "Available".
+                        After some period of not being availabe the cache became ready to be found
+                        again.
+                    </li>
+                    <li>
+                        "Archived" - log of this type indicates that the status of this cache was
+                        changed to "Archived" at this point in time. This usually means that the
+                        cache could not be found anymore at this time, and it was not expected to
+                        be repaired any time soon.
+                    </li>
+                    <li>
+                        "Locked" - the status of this cache was changed to "Locked" (similar to
+                        "Archived", but no more "Found it" log entries are allowed on "Locked"
+                        caches).
+                    </li>
                 </ul>
 
                 <p>Other types (used only by some Opencaching installations):</p>
