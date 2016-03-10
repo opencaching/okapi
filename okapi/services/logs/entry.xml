@@ -103,19 +103,22 @@
                 in this log entry,</p>
             </li>
             <li>
-                <p><b>needed_maintenance</b> - log entry authors may include an
+                <p><b>needs_maintenance2</b> - log entry authors may include an
                 additional report on the condition of the geocache at the given date
                 (indicate if the cache needed maintenance).</p>
 
-                <p>Possible values:</p>
+                <p>You could say that the values of this field reflect the values of the
+                <b>needs_maintenance2</b> parameter used to submit the log entry (however,
+                the log itself might have been submitted through other means). Possible
+                values are:</p>
 
                 <ul>
                     <li>
-                        <b>yes</b> - in the author's opinion, the geocache was in poor
+                        <b>true</b> - in the author's opinion, the geocache was in poor
                         condition and needed maintenance,
                     </li>
                     <li>
-                        <b>no</b> - in the author's opinion, the geocache was in good
+                        <b>false</b> - in the author's opinion, the geocache was in good
                         or acceptable condition and did not need maintenance (anymore),
                     </li>
                     <li>

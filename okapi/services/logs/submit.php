@@ -140,26 +140,40 @@ class WebService
             }
         }
 
+        # We'll parse both 'needs_maintenance' and 'needs_maintenance2' here, but
+        # we'll use only the $needs_maintenance2 variable afterwards.
+
         $needs_maintenance = $request->get_parameter('needs_maintenance');
-        if (!$needs_maintenance) { $needs_maintenance = 'false'; }
-        if (!in_array($needs_maintenance, array('true', 'false'))) {
+        $needs_maintenance2 = $request->get_parameter('needs_maintenance2');
+        if ($needs_maintenance && $needs_maintenance2) {
+            throw new BadRequest(
+                "You cannot use both of these parameters at the same time: ".
+                "needs_maintenance and needs_maintenance2."
+            )
+        }
+
+        # Parse $needs_maintenance and get rid of it.
+
+        if ($needs_maintenance && (!in_array($needs_maintenance, array('true', 'false'))) {
             throw new InvalidParam(
                 'needs_maintenance', "Unknown option: '$needs_maintenance'."
             );
         }
-        if ($needs_maintenance == 'false') { $needs_maintenance = 'null'; }
-        if ($needs_maintenance == 'true') { $needs_maintenance = 'yes'; }
+        if ($needs_maintenance == 'false') { $needs_maintenance2 = 'null'; }
+        if ($needs_maintenance == 'true') { $needs_maintenance2 = 'true'; }
+        unset($needs_maintenance);
 
-        $needs_maintenance2 = $request->get_parameter('needs_maintenance2');
-        if ($needs_maintenance2) { $needs_maintenance = $needs_maintenance2; }
-        if (!in_array($needs_maintenance, array('null', 'yes', 'no'))) {
+        # At this point, $needs_maintenance2 is set exactly as the user intended
+        # it to be set.
+
+        if (!in_array($needs_maintenance2, array('null', 'true', 'false'))) {
             throw new InvalidParam(
-                'needs_maintenance2', "Unknown option: '$needs_maintenance'."
+                'needs_maintenance2', "Unknown option: '$needs_maintenance2'."
             );
         }
 
         if (
-            $needs_maintenance == 'yes'
+            $needs_maintenance2 == 'true'
             && (!Settings::get('SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE'))
         ) {
             # If not supported, just ignore it.
@@ -168,11 +182,11 @@ class WebService
                 "However, your \"needs maintenance\" flag was ignored, because ".
                 "%s does not support this feature."
             ), Okapi::get_normalized_site_name());
-            $needs_maintenance = 'null';
+            $needs_maintenance2 = 'null';
         }
 
         if (
-            $needs_maintenance == 'no'
+            $needs_maintenance2 == 'false'
             && (!Settings::get('SUPPORTS_DOESNT_NEED_MAINTENANCE_LOGS'))
         ) {
             # If not supported, just ignore it.
@@ -181,7 +195,7 @@ class WebService
                 "However, your \"does not need maintenance\" flag was ignored, because ".
                 "%s does not support this feature."
             ), Okapi::get_normalized_site_name());
-            $needs_maintenance = 'null';
+            $needs_maintenance2 = 'null';
         }
 
         # Check if cache exists and retrieve cache internal ID (this will throw
@@ -493,7 +507,7 @@ class WebService
         # If user checked the "needs_maintenance" flag for OCPL, we will shuffle things
         # a little...
 
-        if (Settings::get('OC_BRANCH') == 'oc.pl' && $needs_maintenance == 'yes')
+        if (Settings::get('OC_BRANCH') == 'oc.pl' && $needs_maintenance2 == 'true')
         {
             # If we're here, then we also know that the "Needs maintenance" log
             # type is supported by this OC site. However, it's a separate log
@@ -787,9 +801,9 @@ class WebService
     {
         if (Settings::get('OC_BRANCH') == 'oc.de') {
             $needs_maintenance_field_SQL = ', needs_maintenance';
-            if ($needs_maintenance == 'yes') {
+            if ($needs_maintenance2 == 'true') {
                 $needs_maintenance_SQL = ',2';
-            } else if ($needs_maintenance == 'no') {
+            } else if ($needs_maintenance2 == 'false') {
                 $needs_maintenance_SQL = ',1';
             } else {  // 'null'
                 $needs_maintenance_SQL = ',0';
