@@ -567,7 +567,7 @@ class WebService
         self::increment_user_stats($user['internal_id'], $logtype);
         if ($second_logtype != null)
         {
-            # Reminder: This will only be called fo OCPL branch.
+            # Reminder: This will only be called for OCPL branch.
 
             self::insert_log_row(
                 $request->consumer->key, $cache['internal_id'], $user['internal_id'],
