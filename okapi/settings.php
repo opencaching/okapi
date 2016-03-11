@@ -103,19 +103,6 @@ final class Settings
         'OC_COOKIE_NAME' => null,
 
         /**
-         * Set to true, if your installation supports "Needs maintenance" log type (with
-         * log type id == 5) or log flag. If your users are not allowed to submit
-         * "Needs maintenance" log entries, leave it at false.
-         */
-        'SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE' => false,
-
-        /**
-         * Set to true, if your installation supports the "Does not need maintenance"
-         * log option. If your users are not allowed to submit this flag, leave it at false.
-         */
-        'SUPPORTS_DOESNT_NEED_MAINTENANCE_LOGS' => false,
-
-        /**
          * Set to true, to prevent OKAPI from sending email messages. ALLOWED ONLY ON
          * DEVELOPMENT ENVIRONMENT! Sending emails is vital for OKAPI administration and
          * usage! (I.e. users need this to receive their tokens upon registration.)
@@ -233,7 +220,7 @@ final class Settings
     {
         if (!in_array($dict['OC_BRANCH'], array('oc.pl', 'oc.de')))
             throw new Exception("Currently, OC_BRANCH has to be either 'oc.pl' or 'oc.de'. Hint: Whom did you get your code from?");
-        $boolean_keys = array('SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE', 'DEBUG', 'DEBUG_PREVENT_EMAILS', 'DEBUG_PREVENT_SEMAPHORES');
+        $boolean_keys = array('DEBUG', 'DEBUG_PREVENT_EMAILS', 'DEBUG_PREVENT_SEMAPHORES');
         foreach ($boolean_keys as $key)
             if (!in_array($dict[$key], array(true, false)))
                 throw new Exception("Invalid value for $key.");

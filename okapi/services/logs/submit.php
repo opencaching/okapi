@@ -176,27 +176,14 @@ class WebService
         }
 
         if (
-            $needs_maintenance2 == 'true'
-            && (!Settings::get('SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE'))
-        ) {
-            # If not supported, just ignore it.
-
-            self::$success_message .= " ".sprintf(_(
-                "However, your \"needs maintenance\" flag was ignored, because ".
-                "%s does not support this feature."
-            ), Okapi::get_normalized_site_name());
-            $needs_maintenance2 = 'null';
-        }
-
-        if (
             $needs_maintenance2 == 'false'
-            && (!Settings::get('SUPPORTS_DOESNT_NEED_MAINTENANCE_LOGS'))
+            && Settings::get('OC_BRANCH') == 'oc.pl'
         ) {
             # If not supported, just ignore it.
 
             self::$success_message .= " ".sprintf(_(
                 "However, your \"does not need maintenance\" flag was ignored, because ".
-                "%s does not support this feature."
+                "%s does not yet support this feature."
             ), Okapi::get_normalized_site_name());
             $needs_maintenance2 = 'null';
         }
@@ -580,17 +567,17 @@ class WebService
         self::increment_user_stats($user['internal_id'], $logtype);
         if ($second_logtype != null)
         {
-            # Reminder: This will never be called while SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE
-            # is off.
+            # Reminder: This will only be called fo OCPL branch.
 
             self::insert_log_row(
                 $request->consumer->key, $cache['internal_id'], $user['internal_id'],
                 $second_logtype, $when + 1, $second_formatted_comment,
                 $value_for_text_html_field, 'null'
 
-                # Yes, the second log is the "needs maintenance" one. But this applies
-                # only to OCPL, while the last parameter of insert_log_row() is only
-                # evaulated for OCDE! The 'null' is a dummy here.
+                # Yes, the second log is the "needs maintenance" one. But this code
+                # is only called for OCPL, while the last parameter of insert_log_row()
+                # is only evaulated for OCDE! The 'null' is a dummy here, and the
+                # "needs maintenance" information is in $second_logtype.
             );
             self::increment_cache_stats($cache['internal_id'], $when + 1, $second_logtype);
             self::increment_user_stats($user['internal_id'], $second_logtype);
