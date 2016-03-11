@@ -149,18 +149,21 @@ class WebService
             throw new BadRequest(
                 "You cannot use both of these parameters at the same time: ".
                 "needs_maintenance and needs_maintenance2."
-            )
+            );
         }
+        if (!$needs_maintenance2) { $needs_maintenance2 = 'null'; }
 
         # Parse $needs_maintenance and get rid of it.
 
-        if ($needs_maintenance && (!in_array($needs_maintenance, array('true', 'false'))) {
-            throw new InvalidParam(
-                'needs_maintenance', "Unknown option: '$needs_maintenance'."
-            );
+        if ($needs_maintenance) {
+            if (!in_array($needs_maintenance, array('true', 'false'))) {
+                throw new InvalidParam(
+                    'needs_maintenance', "Unknown option: '$needs_maintenance'."
+                );
+            }
+            if ($needs_maintenance == 'true') { $needs_maintenance2 = 'true'; }
+            else { $needs_maintenance2 = 'null'; }
         }
-        if ($needs_maintenance == 'false') { $needs_maintenance2 = 'null'; }
-        if ($needs_maintenance == 'true') { $needs_maintenance2 = 'true'; }
         unset($needs_maintenance);
 
         # At this point, $needs_maintenance2 is set exactly as the user intended
@@ -504,7 +507,7 @@ class WebService
             }
         }
 
-        # If user checked the "needs_maintenance" flag for OCPL, we will shuffle things
+        # If user checked the "needs_maintenance(2)" flag for OCPL, we will shuffle things
         # a little...
 
         if (Settings::get('OC_BRANCH') == 'oc.pl' && $needs_maintenance2 == 'true')
@@ -571,7 +574,7 @@ class WebService
         $log_uuid = self::insert_log_row(
             $request->consumer->key, $cache['internal_id'], $user['internal_id'],
             $logtype, $when, $formatted_comment, $value_for_text_html_field,
-            $needs_maintenance
+            $needs_maintenance2
         );
         self::increment_cache_stats($cache['internal_id'], $when, $logtype);
         self::increment_user_stats($user['internal_id'], $logtype);
@@ -583,11 +586,11 @@ class WebService
             self::insert_log_row(
                 $request->consumer->key, $cache['internal_id'], $user['internal_id'],
                 $second_logtype, $when + 1, $second_formatted_comment,
-                $value_for_text_html_field, 'unchanged'
+                $value_for_text_html_field, 'null'
 
                 # Yes, the second log is the "needs maintenance" one. But this applies
                 # only to OCPL, while the last parameter of insert_log_row() is only
-                # evaulated for OCDE!
+                # evaulated for OCDE! The 'null' is a dummy here.
             );
             self::increment_cache_stats($cache['internal_id'], $when + 1, $second_logtype);
             self::increment_user_stats($user['internal_id'], $second_logtype);
@@ -796,7 +799,7 @@ class WebService
 
     private static function insert_log_row(
         $consumer_key, $cache_internal_id, $user_internal_id, $logtype, $when,
-        $formatted_comment, $text_html, $needs_maintenance
+        $formatted_comment, $text_html, $needs_maintenance2
     )
     {
         if (Settings::get('OC_BRANCH') == 'oc.de') {
