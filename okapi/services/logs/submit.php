@@ -157,7 +157,7 @@ class WebService
 
         if ($needs_maintenance == 'true') { $needs_maintenance2 = 'true'; }
         else if ($needs_maintenance == 'false') { $needs_maintenance2 = 'null'; }
-        else {
+        else if ($needs_maintenance) {
             throw new InvalidParam(
                 'needs_maintenance', "Unknown option: '$needs_maintenance'."
             );
