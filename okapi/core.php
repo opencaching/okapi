@@ -1835,8 +1835,7 @@ class Okapi
         if ($name == 'Comment') return 3;
         if ($name == 'Attended') return 7;
         if ($name == 'Will attend') return 8;
-        if (($name == 'Needs maintenance') && (Settings::get('SUPPORTS_LOGTYPE_NEEDS_MAINTENANCE')))
-            return 5;
+        if (($name == 'Needs maintenance') && (Settings::get('OC_BRANCH') == 'oc.pl')) return 5;
         throw new Exception("logtype2id called with invalid log type argument: $name");
     }
 
