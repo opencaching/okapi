@@ -531,6 +531,7 @@ class WebService
 
                     if (in_array($cache_code, $outdated_listings))
                     {
+                        Okapi::gettext_domain_init(array_merge(array($row['language']), $langpref));
                         $tmp = (
                             "<p style='color:#c00000'><strong>".
                             _('Parts of this geocache listing may be outdated.').
