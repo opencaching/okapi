@@ -540,6 +540,7 @@ class WebService
                             "</p>\n".
                             $tmp
                         );
+                        Okapi::gettext_domain_restore();
                     }
 
                     if ($attribution_append != 'none')
