@@ -155,14 +155,12 @@ class WebService
 
         # Parse $needs_maintenance and get rid of it.
 
-        if ($needs_maintenance) {
-            if (!in_array($needs_maintenance, array('true', 'false'))) {
-                throw new InvalidParam(
-                    'needs_maintenance', "Unknown option: '$needs_maintenance'."
-                );
-            }
-            if ($needs_maintenance == 'true') { $needs_maintenance2 = 'true'; }
-            else { $needs_maintenance2 = 'null'; }
+        if ($needs_maintenance == 'true') { $needs_maintenance2 = 'true'; }
+        else if ($needs_maintenance == 'false') { $needs_maintenance2 = 'null'; }
+        else {
+            throw new InvalidParam(
+                'needs_maintenance', "Unknown option: '$needs_maintenance'."
+            );
         }
         unset($needs_maintenance);
 
