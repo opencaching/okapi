@@ -70,7 +70,7 @@ class WebService
                         }
                         break;
                     case 'internal_id': $entry['internal_id'] = $row['user_id']; break;
-                    case 'date_registered': $entry['date_registered'] = date('c', strtotime($row['date_created']));
+                    case 'date_registered': $entry['date_registered'] = date("Y-m-d", strtotime($row['date_created']));
                     case 'caches_found': /* handled separately */ break;
                     case 'caches_notfound': /* handled separately */ break;
                     case 'caches_hidden': /* handled separately */ break;
