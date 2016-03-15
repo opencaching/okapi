@@ -131,8 +131,8 @@
                 <p><b>listing_is_outdated</b> - log entry authors may include an
                 additional report on the state of the geocache listing at the given
                 date (indicate if needs to be updated). This information currently
-                cannot be <em>submitted</em> through OKAPI but only directly on
-                some OC sites. Possible values are:</p>
+                cannot be <em>submitted</em> through OKAPI but only retrieved.
+                Possible values are:</p>
 
                 <ul>
                     <li>
