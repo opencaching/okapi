@@ -24,9 +24,6 @@ _Opencaching Network_ nodes).
 
 See a live installation here: http://opencaching.pl/okapi/
 
-Do not confuse Opencaching national sites with opencaching.com, which is a
-completely different project.
-
 
 ### Who's using OKAPI? ###
 
@@ -34,7 +31,7 @@ OKAPI Project started in August 2011. Currently it is being used by the
 following Opencaching sites:
 
   * http://www.opencaching.pl/okapi/
-  * http://www.opencaching.de/okapi/ (+.it +.es)
+  * http://www.opencaching.de/okapi/ (+.it +.fr)
   * http://www.opencaching.org.uk/okapi/ (NOT UPDATED)
   * http://www.opencaching.us/okapi/
   * http://www.opencaching.nl/okapi/
@@ -56,10 +53,10 @@ National Opencaching sites:
   * http://www.opencaching.de/ (DEPLOYED)
   * http://www.opencaching.cz/
   * http://www.opencaching.it/ (DEPLOYED)
-  * http://www.opencachingspain.es/ (DEPLOYED)
   * http://www.opencaching.nl/ (DEPLOYED)
   * http://www.opencaching.ro/ (DEPLOYED)
-
+  * http://www.opencaching.fr/ (DEPLOYED)
+  
 
 ### Who is developing OKAPI? ###
 
@@ -142,7 +139,6 @@ way, that the same change will also work on all other OC nodes:
 ```apache
 <Directory /path/to/okapi>
   AllowOverride All
-  php_value short_open_tag 1
   php_admin_value safe_mode "off"
 </Directory>
 ```
