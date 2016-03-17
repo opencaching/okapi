@@ -118,8 +118,7 @@ class TileTree
         $time_started = microtime(true);
 
         # Note, that multiple threads may try to compute tiles simulatanously.
-        # For low-level tiles, this can be expensive. WRTODO: Think of some
-        # appropriate locks.
+        # For low-level tiles, this can be expensive.
 
         $status = self::get_tile_status($zoom, $x, $y);
         if ($status !== null)
@@ -158,6 +157,7 @@ class TileTree
                     /* Some caches cannot be included, e.g. the ones near the poles. */
                     continue;
                 }
+                Db::execute("lock tables okapi_tile_caches write;");
                 Db::execute("
                     replace into okapi_tile_caches (
                         z, x, y, cache_id, z21x, z21y, status, type, rating, flags, name_crc
@@ -173,6 +173,7 @@ class TileTree
                         '".Db::escape_string($row[7])."'
                     );
                 ");
+                Db::execute("unlock tables;");
             }
             $status = 2;
         }
