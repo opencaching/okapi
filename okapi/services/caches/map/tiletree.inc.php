@@ -157,6 +157,7 @@ class TileTree
                     /* Some caches cannot be included, e.g. the ones near the poles. */
                     continue;
                 }
+                # Avoid deadlocks, see https://github.com/opencaching/okapi/issues/388
                 Db::execute("lock tables okapi_tile_caches write;");
                 Db::execute("
                     replace into okapi_tile_caches (
