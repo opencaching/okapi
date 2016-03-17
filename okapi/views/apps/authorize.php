@@ -86,11 +86,22 @@ class View
                 # OC uses REAL MAGIC for session handling. I don't get ANY of it.
                 # The logout.php DOES NOT support the "target" parameter, so we
                 # can't just call it. The only thing that comes to mind is...
-                # Destroy EVERYTHING.
+                # Try to destroy EVERYTHING. (This still won't necessarilly work,
+                # because OC may store cookies in separate paths, but hopefully
+                # they won't).
 
-                $past = time() - 86400;
-                foreach ($_COOKIE as $key => $value)
-                    setcookie($key, $value, $past, '/');
+                if (isset($_SERVER['HTTP_COOKIE'])) {
+                    $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+                    foreach($cookies as $cookie) {
+                        $parts = explode('=', $cookie);
+                        $name = trim($parts[0]);
+                        setcookie($name, '', time()-1000);
+                        setcookie($name, '', time()-1000, '/');
+                        foreach (self::getPossibleCookieDomains() as $domain) {
+                            setcookie($name, '', time()-1000, '/', $domain);
+                        }
+                    }
+                }
             }
 
             # We should be logged out now. Let's login again.
@@ -188,5 +199,22 @@ class View
             return new OkapiRedirectResponse(Settings::get('SITE_URL')."okapi/apps/authorized?oauth_token=".$token_key
                 ."&oauth_verifier=".$token['verifier']."&langpref=".$langpref);
         }
+    }
+
+    /**
+     * Return a list of all plausible cookie domains which OC developers might
+     * have used to store user session data.
+     */
+    private static function getPossibleCookieDomains()
+    {
+        $site_url = Settings::get('SITE_URL');
+        $domain = parse_url($site_url, PHP_URL_HOST);
+        $segments = explode(".", $domain);
+        $results = array();
+        for ($to_skip = 0; $to_skip <= count($segments) - 2; $to_skip++) {
+            $results[] = ".".implode(".", array_slice($segments, $to_skip));
+            $results[] = implode(".", array_slice($segments, $to_skip));
+        }
+        return $results;
     }
 }
