@@ -233,7 +233,7 @@ class TileTree
                         '".Db::escape_string($y)."',
                         cache_id, z21x, z21y, status, type, rating,
                         flags, name_crc
-                    from okapi_tile_caches
+                    from okapi_tile_caches tc2
                     where
                         z = '".Db::escape_string($parent_zoom)."'
                         and x = '".Db::escape_string($parent_x)."'
