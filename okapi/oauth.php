@@ -778,6 +778,7 @@ class OAuthServer {
     if (!$consumer) {
       throw new OAuthInvalidConsumerException("Invalid consumer");
     }
+    Okapi::failIfKeyRevoked($consumer);
 
     return $consumer;
   }
