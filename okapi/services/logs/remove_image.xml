@@ -1,0 +1,22 @@
+<xml>
+    <brief>Remove a log entry image</brief>
+    <issue-id></issue-id>
+    <desc>
+        <p>Removes an image from a log entry.</p>
+    </desc>
+    <req name='image_uuid'>
+        <p>ID of the log entry image to be removed. The user who uploaded the
+        image must be the same as the user of your Access Token.</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li><b>success</b> - true, if all went well.</li>
+        </ul>
+        <p>Please note, that this will <em>always</em> be true! Nothing can go
+        wrong as long as you pass your parameters in a right way (and if you
+        don't, you will get an HTTP 400 response). If you have received an HTTP
+        200 response, then you may assume that all went well.</p>
+    </returns>
+</xml>

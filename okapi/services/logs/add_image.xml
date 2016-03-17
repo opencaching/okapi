@@ -1,0 +1,38 @@
+<xml>
+    <brief>Add an image to an existing log entry</brief>
+    <issue-id></issue-id>
+    <desc>
+        <p>Appends an image to an existing log entry.</p>
+    </desc>
+    <req name='log_uuid'>
+        <p>ID of the log entry to which the image will be appended. The author
+        of the log entry must be the same as the user of your Access Token.</p>
+    </req>
+    <req name='caption'>
+        <p>Plain-text string, caption of the image. The caption usually will
+        be displayed along with the image.</p>
+    </req>
+    <req name='image_data'>
+        <p>Binary data of the image; must be in JPEG, PNG or GIF format.
+        There are limits on the file size and dimensions of uploaded
+        images; you can query them by
+        <a href="../apisrv/installation.html">service/apiserv/installation</a>.</p>
+    </req>
+    <opt name='is_spoiler' default='false'>
+        <p>Set this to <b>true</b> to indicate that the submitted image contains
+        hints on how to find the geocache, i.e. it shows the stash. Spoiler images
+        usually will not be shown to users by default, but replaced by a clickable
+        placeholder or image title that leads to the image.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li><b>success</b> - <b>true</b>, if the image was submitted successfully,</li>
+            <li><b>message</b> - plain-text string, a message for the user, which acknowledges success
+                or describes an error (usually you want to display this only when success is false),</li>
+            <li><b>image_uuid</b> - ID of the newly created image, <b>or null</b>
+                in case of an error.</li>
+        </ul>
+    </returns>
+</xml>

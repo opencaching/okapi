@@ -1,0 +1,45 @@
+<xml>
+    <brief>Edit a log entry image</brief>
+    <issue-id></issue-id>
+    <desc>
+        <p>Changes the caption or spoiler flag of a log entry image.
+        If you need to change the image's binary data, remove and
+        re-add it instead.</p>
+    </desc>
+    <req name='image_uuid'>
+        <p>ID of the log entry image which is to be edited. The user who
+        uploaded the image must be the same as the user of your Access
+        Token.</p>
+    </req>
+    <opt name='new_caption'>
+        <p>Default value: <b>(empty string)</b></p>
+        <p>Plain-text string, new caption of the image. The caption will not
+        be changed if an empty string is supplied.</p>
+    </opt>
+    <opt name='old_caption'>
+        <p>Default value: <b>(empty string)</b></p>
+        <p>Plain-text string, the previous caption of the image. (The content
+        that you <em>think</em> that you are about to change.) This parameter
+        <em>must</em> be supplied if you intend to change the caption.</p>
+    </opt>
+    <opt name='is_spoiler' default='null'>
+        <p>One of the following:</p>
+        <ul>
+            <li><b>true</b> - sets the spoiler flag of the image, which
+            indicates that the image contains hints on how to find
+            the geocache, i.e. it shows the stash.</li>
+            <li><b>false</b> - resets the spoiler flag of the image.</li>
+            <li><b>null</b> - does not change the spoiler flag.</li>
+         </ul>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li><b>success</b> - true, if all went well.</li>
+        </ul>
+        <p>Please note, that currently this will <em>always</em> be true! Nothing can go
+        wrong as long as you pass your parameters in a right way (and if you don't,
+        you will get an HTTP 400 response).</p>
+    </returns>
+</xml>
