@@ -2287,9 +2287,12 @@ class OkapiHttpRequest extends OkapiRequest
         }
 
         if (is_object($this->consumer) && $this->consumer->hasFlag(OkapiConsumer::FLAG_KEY_REVOKED)) {
-            throw new BadRequest("Your application was denied access to the " .
+            throw new InvalidParam(
+                'consumer_key',
+                "Your application was denied access to the " .
                 Okapi::get_normalized_site_name() . " site " .
-                "(OKAPI consumer key was revoked).");
+                "(this consumer key has been revoked)."
+            );
         }
 
         if (is_object($this->consumer) && $this->consumer->hasFlag(OkapiConsumer::FLAG_SKIP_LIMITS)) {
