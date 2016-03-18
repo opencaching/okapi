@@ -14,21 +14,21 @@
     </req>
     <req name='image'>
         <p>Base64-encoded image file; must be in JPEG, PNG or GIF format. There
-        are some <b>dynamic</b> limits on the file size and dimensions of
+        are some <em>dynamic</em> limits on the file size and dimensions of
         uploaded images; you should query them via the
         <a href="../apisrv/installation.html">service/apiserv/installation</a>
         method before uploading.</p>
     </req>
     <opt name='is_spoiler' default='false'>
         <p>Set this to <b>true</b> to indicate that the submitted image contains
-        hints for finding the geocache, i.e. it shows the cache. Spoiler images
+        hints for finding the geocache, i.e. it shows the stash. Spoiler images
         usually will not be shown to users by default, but replaced by a clickable
         placeholder or caption that leads to the image.</p>
     </opt>
     <opt name='position'>
-        <p>Indicates the wanted position of this image on the list of geocache
-        images. By default, new images will be appended to the end of this
-        list.</p>
+        <p>Indicates the wanted position of this image on the log entry's list
+        of geocache images. By default, new images will be appended to the end
+        of this list.</p>
         
         <p>The value is 0-based (so, if you want this image to be displayed as
         the first one, you should use the 0 value). The position of the image
@@ -36,6 +36,9 @@
         never replace any image using this method). If you provide an invalid
         value (e.g. greater than the number of images), then OKAPI will try to
         use the its best guess (e.g. append the image to the end).</p>
+
+        <p>Note: Some installations will ignore this option and always append
+        new images to the end of the list.</p>
     </opt>
     <common-format-params/>
     <returns>

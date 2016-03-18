@@ -4,37 +4,16 @@
     <desc>
         <p>This method allows you to change properties of an existing log entry
         image. If you need to change the image itself, then you'll need to
-        delete it and re-add it again.</p>
+        delete it and re-add it.</p>
     </desc>
     <req name='image_uuid'>
         <p>ID of the log entry image to be edited. The user of your Access
         Token must be the author of the associated log entry.</p>
     </req>
-    <opt name='new_caption'>
-        <p>Plain-text string, a new caption for the image. This also can be an
-        empty string - in this case you indicate that you want the caption to
-        be removed (but you'll still need to provide the proper
-        <b>old_caption</b> to succeed).</p>
-    </opt>
-    <opt name='old_caption'>
-        <p>Plain-text string, the previous caption of the image. (The content
-        that you <em>think</em> that you are about to change.)</p>
-        
-        <p>We <b>want</b> you to know the previous value of this property,
-        because we feel that your user needs to know what it is exactly that is
-        going to be replaced.</p>
-
-        <p>Please note, that we <b>do not require</b> you to know - the
-        <b>old_caption</b> parameter is optional. However, if you don't provide
-        it (or provide an obsolete value), then your <b>new_caption</b> may -
-        for example - be appended to the current caption instead of replacing
-        it. You can use the <b>saved_caption</b> return value to determine what
-        has happened exactly.</p>
-
-        <p>Current captions for each log entry image can be retrieved via the
-        <b>images</b> field of the
-        <a href="%OKAPI:methodargref:services/logs/entry#fields%">services/logs/entry</a>
-        method.</p>
+    <opt name='caption'>
+        <p>Default value: <b>(empty string)</b></p>
+        <p>Plain-text string, a new caption for the image. If the string is
+        empty, the caption of the image will not be changed.</p>
     </opt>
     <opt name='is_spoiler' default='null'>
         <p>One of the following:</p>
