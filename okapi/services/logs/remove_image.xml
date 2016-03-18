@@ -5,14 +5,14 @@
         <p>Removes an image from a log entry.</p>
     </desc>
     <req name='image_uuid'>
-        <p>ID of the log entry image to be removed. The user who uploaded the
-        image must be the same as the user of your Access Token.</p>
+        <p>ID of the log entry image to be removed. The user of your
+        Access Token must be the author of the log entry.</p>
     </req>
     <common-format-params/>
     <returns>
         <p>A dictionary of the following structure:</p>
         <ul>
-            <li><b>success</b> - true, if all went well.</li>
+            <li><b>success</b> - <b>true</b>, if all went well.</li>
         </ul>
         <p>Please note, that this will <em>always</em> be true! Nothing can go
         wrong as long as you pass your parameters in a right way (and if you

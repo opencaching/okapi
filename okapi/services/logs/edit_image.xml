@@ -7,9 +7,8 @@
         re-add it instead.</p>
     </desc>
     <req name='image_uuid'>
-        <p>ID of the log entry image which is to be edited. The user who
-        uploaded the image must be the same as the user of your Access
-        Token.</p>
+        <p>ID of the log entry image which is to be edited. The user
+        of your Access Token must be the author of the log entry.</p>
     </req>
     <opt name='new_caption'>
         <p>Default value: <b>(empty string)</b></p>
@@ -26,8 +25,8 @@
         <p>One of the following:</p>
         <ul>
             <li><b>true</b> - sets the spoiler flag of the image, which
-            indicates that the image contains hints on how to find
-            the geocache, i.e. it shows the stash.</li>
+            indicates that the image contains hints for finding the
+            geocache, i.e. it shows the stash.</li>
             <li><b>false</b> - resets the spoiler flag of the image.</li>
             <li><b>null</b> - does not change the spoiler flag.</li>
          </ul>
@@ -36,7 +35,7 @@
     <returns>
         <p>A dictionary of the following structure:</p>
         <ul>
-            <li><b>success</b> - true, if all went well.</li>
+            <li><b>success</b> - <b>true</b>, if all went well.</li>
         </ul>
         <p>Please note, that currently this will <em>always</em> be true! Nothing can go
         wrong as long as you pass your parameters in a right way (and if you don't,
