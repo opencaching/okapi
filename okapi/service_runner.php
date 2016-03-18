@@ -50,7 +50,7 @@ class OkapiServiceRunner
         'services/logs/submit',
         'services/logs/images/add',
         'services/logs/images/edit',
-        'services/logs/images/remove',
+        'services/logs/images/delete',
         'services/users/user',
         'services/users/users',
         'services/users/by_usernames',

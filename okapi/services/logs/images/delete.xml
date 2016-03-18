@@ -1,11 +1,11 @@
 <xml>
-    <brief>Remove a log entry image</brief>
+    <brief>Delete a log entry image</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
-        <p>Removes an image from a log entry.</p>
+        <p>Delete a log entry image.</p>
     </desc>
     <req name='image_uuid'>
-        <p>ID of the log entry image to be removed. The user of your
+        <p>ID of the log entry image to be deleted. The user of your
         Access Token must be the author of the log entry.</p>
     </req>
     <common-format-params/>
