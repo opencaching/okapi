@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\logs\edit_image;
+namespace okapi\services\logs\images\add;
 
 use Exception;
 use okapi\Okapi;

@@ -64,20 +64,24 @@
             </li>
             <li>
                 <p><b>image_max_upload_size</b> - the maximum size of images
-                that can be uploaded to this Opencaching site, in KB. Larger
-                images will be rejected.</p>
-                <p>Note: Do not rely on images <em>retrieved</em> from the OC site
-                to be no larger than this! Larger images may have been uploaded
-                in the past or by other means than OKAPI.</p>
+                which can be uploaded via this OKAPI installation, in bytes.
+                Larger images will be <b>rejected</b>. This value may change in
+                time.</p>
+
+                <p>Note: Do not rely on images <em>retrieved</em> from this OC
+                site to fit this restriction. Larger images may have been
+                uploaded in the past, or by other means than OKAPI.</p>
             </li>
             <li>
-                <p><b>image_rcmd_max_dimension</b> - the recommended maximum
-                dimension (width or height) of images that are uploaded to this
-                Opencaching site, in pixels. Larger images can be submitted,
-                but they will be shrunk before saving.</p>
-                <p>Note: Do not rely on images <em>retrieved</em> from the OC site
-                to be no larger than this! Larger images may have been uploaded
-                in the past or by other means than OKAPI.</p>
+                <p><b>image_rcmd_max_long_side</b> - the maximum length (in
+                pixels) of the <i>longer side</i> of the image (either width or
+                height, whichever is greater) which will be accepted without
+                triggering server-side shrinking. (You MAY submit larger images,
+                but they will be downscaled.)</p>
+
+                <p>Note: Do not rely on images <em>retrieved</em> from this OC
+                site to fit this restriction. Larger images may have been
+                uploaded in the past, or by other means than OKAPI.</p>
             </li>
         </ul>
     </returns>

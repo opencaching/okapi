@@ -1,6 +1,6 @@
 <xml>
     <brief>Remove a log entry image</brief>
-    <issue-id></issue-id>
+    <issue-id>WRTODO</issue-id>
     <desc>
         <p>Removes an image from a log entry.</p>
     </desc>

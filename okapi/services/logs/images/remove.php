@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\logs\remove_image;
+namespace okapi\services\logs\images\remove;
 
 use Exception;
 use okapi\Okapi;
