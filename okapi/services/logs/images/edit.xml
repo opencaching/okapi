@@ -13,9 +13,10 @@
     <opt name='caption'>
         <p>Plain-text string, a new caption for the image.</p>
 
-        <p><b>Warning:</b> Submitting an empty value here indicates that your
-        user would like the caption removed, and this may not be allowed by the
-        OC installation.</p>
+        <p>If you don't want to to change the caption, then don't use this
+        parameter in your request. Please note, that providing an empty value
+        still counts as "using it" (and it indicates that your user would like
+        the caption removed, which will often not be allowed).</p>
     </opt>
     <opt name='is_spoiler' default='null'>
         <p>One of the following:</p>

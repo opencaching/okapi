@@ -19,13 +19,9 @@
         <p>Plain-text string, a caption of the image. Captions are usually
         displayed along with the images.</p>
 
-        <p>Note, that despite the fact that this field is optional, some
-        Opencaching installations may require the caption to present, or even
-        meet some additional criteria. You MUST allow your user to submit the
-        caption. If the caption submitted is not allowed by this OC
-        installation, then you'll receive <b>false</b> in the <b>success</b>
-        field, and the <b>message</b> field will contain an appropriate
-        message.</p>
+        <p>You MAY allow your user attempt to submit anything here (including
+        an empty caption), but you should always be prepared to receive
+        <b>false</b> in the <b>success</b> field.</p>
     </opt>
     <opt name='is_spoiler' default='false'>
         <p>Set this to <b>true</b> to indicate that the submitted image contains
