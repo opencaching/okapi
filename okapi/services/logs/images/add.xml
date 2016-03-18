@@ -8,10 +8,6 @@
         <p>ID of the log entry to which the image will be attached. The user
         of your Access Token must be the author of this log entry.</p>
     </req>
-    <req name='caption'>
-        <p>Plain-text string, a caption of the image. Captions are usually
-        displayed along with the images.</p>
-    </req>
     <req name='image'>
         <p>Base64-encoded image file; must be in JPEG, PNG or GIF format. There
         are some <em>dynamic</em> limits on the file size and dimensions of
@@ -19,9 +15,21 @@
         <a href="../apisrv/installation.html">service/apiserv/installation</a>
         method before uploading.</p>
     </req>
+    <opt name='caption'>
+        <p>Plain-text string, a caption of the image. Captions are usually
+        displayed along with the images.</p>
+
+        <p>Note, that despite the fact that this field is optional, some
+        Opencaching installations may require the caption to present, or even
+        meet some additional criteria. You MUST allow your user to submit the
+        caption. If the caption submitted is not allowed by this OC
+        installation, then you'll receive <b>false</b> in the <b>success</b>
+        field, and the <b>message</b> field will contain an appropriate
+        message.</p>
+    </opt>
     <opt name='is_spoiler' default='false'>
         <p>Set this to <b>true</b> to indicate that the submitted image contains
-        hints for finding the geocache, i.e. it shows the stash. Spoiler images
+        hints for finding the geocache, i.e. it shows the hiding place. Spoiler images
         usually will not be shown to users by default, but replaced by a clickable
         placeholder or caption that leads to the image.</p>
     </opt>
@@ -29,7 +37,7 @@
         <p>Indicates the wanted position of this image on the log entry's list
         of geocache images. By default, new images will be appended to the end
         of this list.</p>
-        
+
         <p>The value is 0-based (so, if you want this image to be displayed as
         the first one, you should use the 0 value). The position of the image
         which currently takes the given spot will be shifted downwards (you can

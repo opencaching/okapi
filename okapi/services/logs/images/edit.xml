@@ -11,9 +11,11 @@
         Token must be the author of the associated log entry.</p>
     </req>
     <opt name='caption'>
-        <p>Default value: <b>(empty string)</b></p>
-        <p>Plain-text string, a new caption for the image. If the string is
-        empty, the caption of the image will not be changed.</p>
+        <p>Plain-text string, a new caption for the image.</p>
+
+        <p><b>Warning:</b> Submitting an empty value here indicates that your
+        user would like the caption removed, and this may not be allowed by the
+        OC installation.</p>
     </opt>
     <opt name='is_spoiler' default='null'>
         <p>One of the following:</p>
@@ -36,15 +38,12 @@
     <returns>
         <p>A dictionary of the following structure:</p>
         <ul>
+            <li><b>success</b> - <b>true</b>, if the image was edited successfully,</li>
             <li>
-                <p><b>saved_caption</b> - the actual value of the caption that
-                was saved. Please note, that this may differ from the
-                <b>new_caption</b> you have provided. This field will be
-                present only when you were attempting to change the
-                caption.</p>
+                <b>message</b> - plain-text string, a message for the user,
+                which acknowledges success or describes an error (usually you
+                want to display this only when <b>success</b> is <b>false</b>).
             </li>
         </ul>
-        <p>Please note, that you can receive an empty JSON object too (when
-        you're changing <b>is_spoiler</b> flag only).</p>
     </returns>
 </xml>
