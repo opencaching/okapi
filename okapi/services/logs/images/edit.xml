@@ -21,11 +21,11 @@
         <p>One of the following:</p>
         <ul>
             <li>
-                <b>true</b> - set the image's spoiler flag, which indicates
-                that the image contains hints for finding the geocache.
+                <b>true</b> - marks the image as spoiler, which means that
+                it contains hints for finding the geocache.
             </li>
             <li>
-                <b>false</b> - resets the image's spoiler flag.
+                <b>false</b> - marks the image as non-spoiler.
             </li>
          </ul>
     </opt>
