@@ -9,11 +9,12 @@
         of your Access Token must be the author of this log entry.</p>
     </req>
     <req name='image'>
-        <p>Base64-encoded image file; must be in JPEG, PNG or GIF format. There
-        are some <em>dynamic</em> limits on the file size and dimensions of
-        uploaded images; you should query them via the
+        <p>Base64-encoded image file; must be in JPEG, PNG or GIF format.</p>
+        <p>There are some <em>dynamic</em> limits on the file size and dimensions
+        of uploaded images; you should query them via the
         <a href="../apisrv/installation.html">service/apiserv/installation</a>
-        method before uploading.</p>
+        method before uploading. The image may be shrunk, rotated, EXIF-stripped
+        or otherwise be processed before it is stored.</p>
     </req>
     <opt name='caption'>
         <p>Plain-text string, a caption of the image. Captions are usually

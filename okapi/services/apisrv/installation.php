@@ -31,6 +31,8 @@ class WebService
         $result['okapi_git_revision'] = Okapi::$git_revision;
         $result['registration_url'] = $result['site_url']."register.php";
         $result['mobile_registration_url'] = null;
+        $result['image_max_upload_size'] = Settings::get('IMAGE_MAX_UPLOAD_SIZE');
+        $result['image_rcmd_max_dimensions'] = Settings::get('IMAGE_MAX_STORABLE_DIMENSIONS');
         return Okapi::formatted_response($request, $result);
     }
 }
