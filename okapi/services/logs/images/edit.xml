@@ -13,24 +13,19 @@
     <opt name='caption'>
         <p>Plain-text string, a new caption for the image.</p>
 
-        <p>If you don't want to to change the caption, then don't use this
-        parameter in your request. Please note, that providing an empty value
-        still counts as "using it" (and it indicates that your user would like
-        the caption removed, which will often not be allowed).</p>
+        <p>Please note that providing an empty value indicates that your user
+        would like to remove the caption, which will often not be allowed
+        (then <b>success</b> will be <b>false</b>).</p>
     </opt>
-    <opt name='is_spoiler' default='null'>
+    <opt name='is_spoiler'>
         <p>One of the following:</p>
         <ul>
             <li>
-                <b>true</b> - add the spoiler flag to the image, which
-                indicates that the image contains hints for finding the
-                geocache.
+                <b>true</b> - set the image's spoiler flag, which indicates
+                that the image contains hints for finding the geocache.
             </li>
             <li>
-                <b>false</b> - remove the spoiler flag of the image.
-            </li>
-            <li>
-                <b>null</b> - do not change the spoiler flag.
+                <b>false</b> - resets the image's spoiler flag.
             </li>
          </ul>
     </opt>
@@ -44,6 +39,10 @@
                 <b>message</b> - plain-text string, a message for the user,
                 which acknowledges success or describes an error (usually you
                 want to display this only when <b>success</b> is <b>false</b>).
+            </li>
+            <li>
+                <b>position</b> - 0-based position of the image on the
+                log entry's list of images (changed or unchanged).
             </li>
         </ul>
     </returns>

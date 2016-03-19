@@ -19,9 +19,10 @@
         <p>Plain-text string, a caption of the image. Captions are usually
         displayed along with the images.</p>
 
-        <p>You MAY allow your user attempt to submit anything here (including
+        <p>You MAY allow your user to attempt submitting anything here (including
         an empty caption), but you should always be prepared to receive
-        <b>false</b> in the <b>success</b> field.</p>
+        <b>false</b> in the <b>success</b> field due to restrictions on what
+        captions are accepted.</p>
     </opt>
     <opt name='is_spoiler' default='false'>
         <p>Set this to <b>true</b> to indicate that the submitted image contains
@@ -31,8 +32,8 @@
     </opt>
     <opt name='position'>
         <p>Indicates the wanted position of this image on the log entry's list
-        of geocache images. By default, new images will be appended to the end
-        of this list.</p>
+        of images. By default, new images will be appended to the end of this
+        list.</p>
 
         <p>The value is 0-based (so, if you want this image to be displayed as
         the first one, you should use the 0 value). The position of the image
@@ -48,15 +49,22 @@
     <returns>
         <p>A dictionary of the following structure:</p>
         <ul>
-            <li><b>success</b> - <b>true</b>, if the image was submitted successfully,</li>
+            <li>
+                <b>success</b> - <b>true</b>, if the image was submitted successfully,
+            </li>
             <li>
                 <b>message</b> - plain-text string, a message for the user,
                 which acknowledges success or describes an error (usually you
                 want to display this only when <b>success</b> is <b>false</b>),
             </li>
             <li>
-                <b>image_uuid</b> - ID of the newly created image, or
-                <b>null</b> in case of an error.
+                <b>image_uuid</b> - ID of the appended image, or <b>null</b> in
+                case of an error.
+            </li>
+            <li>
+                <b>position</b> - 0-based position of the appended image
+                on the log entry's list of images; <b>null</b> in case of
+                an error.
             </li>
         </ul>
     </returns>
