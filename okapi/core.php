@@ -1332,6 +1332,8 @@ class Okapi
         if ($init_made)
             return;
         ini_set('memory_limit', '256M');
+        # The memory limit is - among other - crucial for the maximum size
+        # of processable images; see services/logs/images/add.php: max_pixels()
         Db::connect();
         if (Settings::get('TIMEZONE') !== null)
             date_default_timezone_set(Settings::get('TIMEZONE'));

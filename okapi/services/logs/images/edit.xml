@@ -38,7 +38,7 @@
             <li>
                 <b>message</b> - plain-text string, a message for the user,
                 which acknowledges success or describes an error (usually you
-                want to display this only when <b>success</b> is <b>false</b>).
+                want to display this only when <b>success</b> is <b>false</b>),
             </li>
             <li>
                 <b>position</b> - 0-based position of the image on the

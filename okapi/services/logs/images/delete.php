@@ -21,7 +21,13 @@ class WebService
         );
     }
 
-    private static function _call(OkapiRequest $request)
+    private static function call(OkapiRequest $request)
     {
+        # When uploading images, OCPL stores the user_id of the uploader
+        # in the 'pictures' table. This is redundant to cache_logs.user_id,
+        # because only the log entry author may append images. We will stick
+        # to log_entries.user_id here, which is the original value and works
+        # for all OC branches.
+
     }
 }
