@@ -1904,6 +1904,15 @@ class Okapi
 
         return $html;
     }
+
+    function php_ini_get_bytes($setting)
+    {
+        $setting = ini_get($setting);
+        $setting = str_replace('K', '*1024', $setting);
+        $setting = str_replace('M', '*1024*1024', $setting);
+        $setting = eval('return '.$setting.';');
+        return $setting;
+    }
 }
 
 /** A data caching layer. For slow SQL queries etc. */
