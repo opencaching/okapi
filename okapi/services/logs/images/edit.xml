@@ -5,6 +5,8 @@
         <p>This method allows you to change properties of an existing log entry
         image. If you need to change the image itself, then you'll need to
         delete it and re-add it.</p>
+        <p>At least one of the three parameters <b>caption</b>,
+        <b>is_spoiler</b> and <b>position</b> must be supplied.</p>
     </desc>
     <req name='image_uuid'>
         <p>ID of the log entry image to be edited. The user of your Access
@@ -42,7 +44,9 @@
             </li>
             <li>
                 <b>position</b> - 0-based position of the image on the
-                log entry's list of images (changed or unchanged).
+                log entry's list of images (changed or unchanged), if the
+                <b>position</b> option was supplied. <b>null</b>, if the
+                <b>position</b> option was omitted or in case of an error.
             </li>
         </ul>
     </returns>

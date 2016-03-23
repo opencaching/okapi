@@ -10,6 +10,8 @@ use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\Settings;
 use okapi\BadRequest;
+use okapi\services\logs\images\LogImagesCommon;
+
 
 /**
  * This exception is thrown by WebService::_call method, when error is detected in
@@ -30,12 +32,14 @@ class WebService
 
 
     /**
-     * Append a new image to a log entry and return the image uuid. Throws
-     * CannotPublishException or BadRequest on errors.
+     * Append a new image to a log entry and return the image uuid and position.
+     * Throws CannotPublishException or BadRequest on errors.
      */
 
     private static function _call(OkapiRequest $request)
     {
+        require_once('log_images_common.inc.php');
+
         # Developers! Please notice the fundamental difference between throwing
         # CannotPublishException and the "standard" BadRequest/InvalidParam
         # exceptions. You're reading the "_call" method now (see below for
@@ -52,7 +56,7 @@ class WebService
         $row = Db::fetch_assoc($rs);
         Db::free_result($rs);
         if (!$row)
-            throw new InvalidParam('log_uuid', "A log entry '".$log_uuid."' does not exist.");
+            throw new InvalidParam('log_uuid', "There is no log entry with uuid '".$log_uuid."'.");
         else if ($row['user_id'] != $request->token->user_id) {
             throw new InvalidParam(
                 'log_uuid',
@@ -264,77 +268,35 @@ class WebService
         $log_internal_id, $image_uuid, $position, $caption,
         $is_spoiler, $file_ext, $user_id)
     {
-        # OCDE supports arbitrary ordering of log images. The pictures table
-        # contains sequence numbers, which are always > 0 and need not to be
-        # consecutive (may have gaps). There is a unique index which prevents
-        # inserting duplicate seq numbers for the same log.
-        #
-        # OCPL sequence numbers currently are always = 1.
-
-        if (Settings::get('OC_BRANCH') == 'oc.de' && $position !== null)
-        {
-            # Prevent race conditions when creating sequence numbers if a
-            # user tries to upload multiple images simultaneously. With a
-            # few picture uploads per hour - most of them probably witout
-            # a 'position' parameter - the lock is neglectable.
-
-            Db::execute('lock tables pictures write');
-        }
-
-        Db::execute('start transaction');
+        require_once('log_images_common.inc.php');
+        list($position, $seq, $log_images_count) = LogImagesCommon::prepare_position(
+            $log_internal_id,
+            $position,
+            +1  # if appended at the end of list, use the last image's pos./seq + 1
+        );
+        # For OCDE the pictures table is write locked now.
 
         # Transactions do not work on OCDE MyISAM tables. However, the worst
         # thing that can happen on OCDE is creating a sequence number gap,
         # which is allowed.
         #
-        # For OCPL InnoDB tables, the transactions DO and MUST work,
-        # because we write to two tables.
+        # For OCPL InnoDB tables, the transactions DO and MUST work, because
+        # we write to two dependent tables.
 
-        $log_images_count =  Db::select_value("
-            select count(*)
-            from pictures
-            where object_type = 1 and object_id = '".Db::escape_string($log_internal_id)."'
-        ");
+        Db::execute('start transaction');
 
-        if (Settings::get('OC_BRANCH') == 'oc.pl')
-        {
-            # ignore the position parameter, always insert at end
-            $position = $log_images_count;
+        # shift positions of existing images to make space for the new one
+        if ($position < $log_images_count && Settings::get('OC_BRANCH') == 'oc.de') {
+            Db::execute("
+                update pictures
+                set seq = seq + 1
+                where
+                    object_type = 1
+                    and object_id = '".Db::escape_string($log_internal_id)."'
+                    and seq >= '".Db::escape_string($seq)."'
+                order by seq desc
+            ");
         }
-        else
-        {
-            if ($position === null || $position >= $log_images_count) {
-                $position = $log_images_count;
-                $seq = 0;  # append at end; triggers will insert a proper seq number
-            } else if ($position <= 0) {
-                $position = 0;
-                $seq = 1;
-            } else {
-                $seq = Db::select_value("
-                    select seq
-                    from pictures
-                    where object_type = 1 and object_id = '".Db::escape_string($log_internal_id)."'
-                    order by seq
-                    limit ".($position+0).", 1
-                ");
-            }
-
-            # shift positions of existing images to make space for the new one
-
-            if ($position < $log_images_count) {
-                Db::execute("
-                    update pictures
-                    set seq = seq + 1
-                    where
-                        object_type = 1
-                        and object_id = '".Db::escape_string($log_internal_id)."'
-                        and seq >= '".Db::escape_string($seq)."'
-                    order by seq desc
-                ");
-            }
-        }
-
-        # FINALLY, we can insert the image into the database
 
         if (Settings::get('OC_BRANCH') == 'oc.de') {
             $local_fields_SQL = "seq";
@@ -388,7 +350,7 @@ class WebService
         Db::execute('commit');
         Db::execute('unlock tables');
 
-        return $position + 0;   # may have become a string, as returned by database queries
+        return $position;
     }
 
 
