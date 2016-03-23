@@ -81,10 +81,7 @@ class WebService
         if (!in_array($is_spoiler, array('true', 'false')))
             throw new InvalidParam('is_spoiler');
 
-        $position = $request->get_parameter('position');
-        if ($position !== null && !preg_match("/^-?[0-9]+$/", $position)) {
-            throw new InvalidParam('position', "'".$position."' is not an integer number.");
-        }
+        $position = LogImagesCommon::validate_position($request);
 
         # validate the 'image' parameter
 
@@ -335,7 +332,9 @@ class WebService
         # update OCPL log entry properties; OCDE does everything necessary by triggers
 
         if (Settings::get('OC_BRANCH') == 'oc.pl') {
-            # This will also trigger an update of okapi_syncbase:
+            # This will also trigger an update of okapi_syncbase, so that replication
+            # can output the updated log entry with one additional image.
+
             Db::execute("
                 update cache_logs
                 set picturescount = picturescount + 1
@@ -345,6 +344,7 @@ class WebService
             # It may make sense to update cache_logs.date_modified, too, but OCPL
             # code currently does NOT do that; see
             # https://github.com/opencaching/opencaching-pl/issues/341.
+            # See also this note in delete.php.
         }
 
         Db::execute('commit');

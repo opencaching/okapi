@@ -17,6 +17,62 @@ use okapi\BadRequest;
 
 class LogImagesCommon
 {
+    function validate_image_uuid($request)
+    {
+        $image_uuid = $request->get_parameter('image_uuid');
+        if (!$image_uuid)
+            throw new ParamMissing('image_uuid');
+
+        # When uploading images, OCPL stores the user_id of the uploader
+        # in the 'pictures' table. This is redundant to cache_logs.user_id,
+        # because only the log entry author may append images. We will stick
+        # to log_entries.user_id here, which is the original value and works
+        # for all OC branches, and ignore pictures.user_id.
+
+        $rs = Db::query("
+            select
+                cache_logs.id log_internal_id,
+                cache_logs.user_id,
+                pictures.node
+            from cache_logs
+            join pictures on pictures.object_id = cache_logs.id
+            where pictures.object_type = 1 and pictures.uuid = '".Db::escape_string($image_uuid)."'
+        ");
+        $row = Db::fetch_assoc($rs);
+        Db::free_result($rs);
+        if (!$row) {
+            throw new InvalidParam(
+                'image_uuid',
+                "There is no log entry image with uuid '".$image_uuid."'."
+            );
+        }
+        if ($row['node'] != Settings::get('OC_NODE_ID')) {
+            throw new Exception(
+                "This site's database contains the image '$image_uuid' which has been"
+                . " imported from another OC node. OKAPI is not prepared for that."
+            );
+        }
+        if ($row['user_id'] != $request->token->user_id) {
+            throw new InvalidParam(
+                'image_uuid',
+                "The user of your access token is not the author of the associated log entry."
+            );
+        }
+
+        return array($image_uuid, $row['log_internal_id']);
+    }
+
+
+    function validate_position($request)
+    {
+        $position = $request->get_parameter('position');
+        if ($position !== null && !preg_match("/^-?[0-9]+$/", $position)) {
+            throw new InvalidParam('position', "'".$position."' is not an integer number.");
+        }
+        return $position;
+    }
+
+
     /**
      * OCDE supports arbitrary ordering of log images. The pictures table
      * contains sequence numbers, which are always > 0 and need not to be

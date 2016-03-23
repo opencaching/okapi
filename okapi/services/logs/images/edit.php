@@ -46,41 +46,7 @@ class WebService
 
         # validate the 'image_uuid' parameter
 
-        $image_uuid = $request->get_parameter('image_uuid');
-        if (!$image_uuid)
-            throw new ParamMissing('image_uuid');
-
-        # When uploading images, OCPL stores the user_id of the uploader
-        # in the 'pictures' table. This is redundant to cache_logs.user_id,
-        # because only the log entry author may append images. We will stick
-        # to log_entries.user_id here, which is the original value and works
-        # for all OC branches, and ignore pictures.user_id.
-
-        $rs = Db::query("
-            select
-                cache_logs.id,
-                cache_logs.user_id
-            from cache_logs
-            join pictures on pictures.object_id = cache_logs.id
-            where pictures.object_type = 1 and pictures.uuid = '".Db::escape_string($image_uuid)."'
-        ");
-        $row = Db::fetch_assoc($rs);
-        Db::free_result($rs);
-        if (!$row) {
-            throw new InvalidParam(
-                'image_uuid',
-                "There is no log entry image with uuid '".$image_uuid."'."
-            );
-        }
-        $log_internal_id = $row['id'];
-        $log_user_internal_id = $row['user_id'];
-        if ($log_user_internal_id != $request->token->user_id) {
-            throw new InvalidParam(
-                'image_uuid',
-                "The user of your access token is not the author of the associated log entry."
-            );
-        }
-        unset($row);
+        list($image_uuid, $log_internal_id) = LogImagesCommon::validate_image_uuid($request);
 
         # validate the 'caption', 'is_spoiler' and 'position' parameters
 
@@ -98,10 +64,7 @@ class WebService
                 throw new InvalidParam('is_spoiler');
         }
 
-        $position = $request->get_parameter('position');
-        if ($position !== null && !preg_match("/^-?[0-9]+$/", $position)) {
-            throw new InvalidParam('position', "'".$position."' is not an integer number.");
-        }
+        $position = LogImagesCommon::validate_position($request);
 
         if ($caption === null && $is_spoiler === null && $position === null) {
             # If no-params were allowed, what would be the success message?
