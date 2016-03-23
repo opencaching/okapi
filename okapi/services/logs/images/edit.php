@@ -75,6 +75,7 @@ class WebService
         }
 
         $image_uuid_escaped = Db::escape_string($image_uuid);
+        $log_entry_modified = false;
 
         # update caption
         if ($caption !== null) {
@@ -83,6 +84,7 @@ class WebService
                 set title = '".Db::escape_string($caption)."'
                 where uuid = '".$image_uuid_escaped."'
             ");
+            $log_entry_modified = true;
         }
 
         # update spoiler flag
@@ -92,6 +94,7 @@ class WebService
                 set spoiler = ".($is_spoiler == 'true' ? 1 : 0)."
                 where uuid = '".$image_uuid_escaped."'
             ");
+            $log_entry_modified = true;
         }
 
         # update position
@@ -174,7 +177,23 @@ class WebService
                 }
 
                 Db::execute('unlock tables');
+                $log_entry_modified = true;
             }
+        }
+
+        if (Settings::get('OC_BRANCH') == 'oc.pl' && $log_entry_modified) {
+            # OCDE touches the log entry via trigger, OCPL needs an explicit update.
+
+            Db::query("
+                update cache_logs
+                set okapi_syncbase = NOW()
+                where id = '".Db::escape_string($log_internal_id)."'
+            ");
+
+            # It may make sense to update cache_logs.date_modified instead,
+            # but OCPL code currently does NOT do that; see
+            # https://github.com/opencaching/opencaching-pl/issues/341.
+            # See also the corrresponding note in add.php and delete.php.
         }
 
         return $position;

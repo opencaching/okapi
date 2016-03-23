@@ -28,11 +28,11 @@ class WebService
 
         Db::execute('start transaction');
 
-        $image_url = Db::select_value("
-            select url from pictures where uuid='".$image_uuid_escaped."'
+        $local_image_url = Db::select_value("
+            select url from pictures where uuid = '".$image_uuid_escaped."' and local
         ");
         Db::execute("
-            delete from pictures where uuid='".$image_uuid_escaped."'"
+            delete from pictures where uuid = '".$image_uuid_escaped."'"
         );
 
         # Remember that OCPL picture sequence numbers are always 1, and
@@ -41,24 +41,27 @@ class WebService
 
         if (Settings::get('OC_BRANCH') == 'oc.pl') {
             # This will also update cache_logs.okapi_syncbase, so that replication
-            # can output the updated log entry with one image less.
+            # can output the updated log entry with one image less. For OCDE
+            # that's done by DB trigges.
 
             Db::execute("
                 update cache_logs
                 set picturescount = greatest(0, picturescount - 1)
-                where id='".Db::escape_string($log_internal_id)."'
+                where id = '".Db::escape_string($log_internal_id)."'
             ");
 
             # It may make sense to update cache_logs.date_modified, too, but OCPL
             # code currently does NOT do that; see
             # https://github.com/opencaching/opencaching-pl/issues/341.
-            # See also this note in add.php.
+            # See also the corrresponding note in add.php and delete.php.
         }
 
         Db::execute('commit');
 
-        $filename = basename($image_url);
-        unlink(Settings::get('IMAGES_DIR').'/'.$filename);
+        if ($local_image_url) {
+            $filename = basename($local_image_url);
+            unlink(Settings::get('IMAGES_DIR').'/'.$filename);
+        }
 
         $result = array(
             'success' => true,

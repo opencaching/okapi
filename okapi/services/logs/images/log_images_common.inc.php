@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Common code of add.php and edit.php.
+ * Common code of add.php and edit.php
  */
 
 namespace okapi\services\logs\images;
@@ -138,7 +138,7 @@ class LogImagesCommon
             }
         }
 
-        # $position may have become a string, as returned by database queries
+        # $position may have become a string, as returned by database queries.
         return array($position + 0, $seq, $log_images_count);
     }
 }

@@ -51,13 +51,21 @@ class WebService
         if (!$log_uuid)
             throw new ParamMissing('log_uuid');
         $rs = Db::query("
-            select id, user_id from cache_logs where uuid = '".Db::escape_string($log_uuid)."'"
+            select id, node, user_id
+            from cache_logs
+            where uuid = '".Db::escape_string($log_uuid)."'"
         );
         $row = Db::fetch_assoc($rs);
         Db::free_result($rs);
         if (!$row)
             throw new InvalidParam('log_uuid', "There is no log entry with uuid '".$log_uuid."'.");
-        else if ($row['user_id'] != $request->token->user_id) {
+        if ($row['node'] != Settings::get('OC_NODE_ID')) {
+            throw new Exception(
+                "This site's database contains the log entry '$log_uuid' which has been"
+                . " imported from another OC node. OKAPI is not prepared for that."
+            );
+        }
+        if ($row['user_id'] != $request->token->user_id) {
             throw new InvalidParam(
                 'log_uuid',
                 "The user of your access token is not the log entry's author."
@@ -332,19 +340,20 @@ class WebService
         # update OCPL log entry properties; OCDE does everything necessary by triggers
 
         if (Settings::get('OC_BRANCH') == 'oc.pl') {
-            # This will also trigger an update of okapi_syncbase, so that replication
-            # can output the updated log entry with one additional image.
+            # This will also update cache_logs.okapi_syncbase, so that replication
+            # can output the updated log entry with one image less. For OCDE
+            # that's done by DB triggers.
 
             Db::execute("
                 update cache_logs
                 set picturescount = picturescount + 1
-                where id='".Db::escape_string($log_internal_id)."'
+                where id = '".Db::escape_string($log_internal_id)."'
             ");
 
             # It may make sense to update cache_logs.date_modified, too, but OCPL
             # code currently does NOT do that; see
             # https://github.com/opencaching/opencaching-pl/issues/341.
-            # See also this note in delete.php.
+            # See also the corrresponding note in add.php and delete.php.
         }
 
         Db::execute('commit');
