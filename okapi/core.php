@@ -1913,6 +1913,17 @@ class Okapi
         $setting = eval('return '.$setting.';');
         return $setting;
     }
+
+    # object types in table okapi_submitted_objects
+    const OBJECT_TYPE_CACHE = 1;
+    const OBJECT_TYPE_CACHE_DESCRIPTION = 2;
+    const OBJECT_TYPE_CACHE_IMAGE = 3;
+    const OBJECT_TYPE_CACHE_MP3 = 4;
+    const OBJECT_TYPE_CACHE_LOG = 5;           # implemented
+    const OBJECT_TYPE_CACHE_LOG_IMAGE = 6;     # implemented
+    const OBJECT_TYPE_CACHELIST = 7;
+    const OBJECT_TYPE_EMAIL = 8;
+    const OBJECT_TYPE_CACHE_REPORT = 9;
 }
 
 /** A data caching layer. For slow SQL queries etc. */

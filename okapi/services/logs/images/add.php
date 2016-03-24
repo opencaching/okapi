@@ -336,7 +336,7 @@ class WebService
                 ".$local_values_SQL."
             )
         ");
-        $picture_id = Db::last_insert_id();
+        $image_internal_id = Db::last_insert_id();
 
         # update OCPL log entry properties; OCDE does everything necessary by triggers
 
@@ -361,9 +361,10 @@ class WebService
         # (Maybe we'll want to display this somewhen later.)
 
         Db::execute("
-            insert into okapi_images (picture_id, consumer_key)
+            insert into okapi_submitted_objects (object_type, object_id, consumer_key)
             values (
-                '".Db::escape_string($picture_id)."',
+                '".Okapi::OBJECT_TYPE_CACHE_LOG_IMAGE."',
+                '".Db::escape_string($image_internal_id)."',
                 '".Db::escape_string($consumer_key)."'
             );
         ");
