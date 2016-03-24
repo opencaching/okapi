@@ -727,4 +727,17 @@ class View
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
         ");
     }
+
+    private static function ver95()
+    {
+        # See comments on ver7.
+        Db::execute("
+            CREATE TABLE okapi_images (
+                picture_id int(11) NOT NULL,
+                consumer_key varchar(20) charset ascii collate ascii_bin NOT NULL,
+                PRIMARY KEY  (picture_id),
+                KEY by_consumer (consumer_key)
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+        ");
+    }
 }

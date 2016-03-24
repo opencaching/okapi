@@ -183,8 +183,8 @@ class WebService
         try
         {
             $position = self::db_insert_image(
-                $log_internal_id, $image_uuid, $position, $caption,
-                $is_spoiler, $file_ext, $request->token->user_id
+                $request->consumer->key, $request->token->user_id,
+                $log_internal_id, $image_uuid, $position, $caption, $is_spoiler, $file_ext
             );
         }
         catch (Exception $e)
@@ -270,8 +270,8 @@ class WebService
 
 
     private static function db_insert_image(
-        $log_internal_id, $image_uuid, $position, $caption,
-        $is_spoiler, $file_ext, $user_id)
+        $consumer_key, $user_id,
+        $log_internal_id, $image_uuid, $position, $caption, $is_spoiler, $file_ext)
     {
         require_once('log_images_common.inc.php');
         list($position, $seq, $log_images_count) = LogImagesCommon::prepare_position(
@@ -336,6 +336,7 @@ class WebService
                 ".$local_values_SQL."
             )
         ");
+        $picture_id = Db::last_insert_id();
 
         # update OCPL log entry properties; OCDE does everything necessary by triggers
 
@@ -355,6 +356,17 @@ class WebService
             # https://github.com/opencaching/opencaching-pl/issues/341.
             # See also the corrresponding note in add.php and delete.php.
         }
+
+        # Store information on the consumer_key which uploaded this image.
+        # (Maybe we'll want to display this somewhen later.)
+
+        Db::execute("
+            insert into okapi_images (picture_id, consumer_key)
+            values (
+                '".Db::escape_string($picture_id)."',
+                '".Db::escape_string($consumer_key)."'
+            );
+        ");
 
         Db::execute('commit');
         Db::execute('unlock tables');
