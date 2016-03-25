@@ -46,14 +46,11 @@ class WebService
 
             Db::execute("
                 update cache_logs
-                set picturescount = greatest(0, picturescount - 1)
+                set
+                    picturescount = greatest(0, picturescount - 1),
+                    last_modified = NOW()
                 where id = '".Db::escape_string($log_internal_id)."'
             ");
-
-            # It may make sense to update cache_logs.date_modified, too, but OCPL
-            # code currently does NOT do that; see
-            # https://github.com/opencaching/opencaching-pl/issues/341.
-            # See also the corrresponding note in add.php and delete.php.
         }
 
         Db::execute('commit');

@@ -183,17 +183,17 @@ class WebService
 
         if (Settings::get('OC_BRANCH') == 'oc.pl' && $log_entry_modified) {
             # OCDE touches the log entry via trigger, OCPL needs an explicit update.
+            # This will also update okapi_syncbase.
 
             Db::query("
                 update cache_logs
-                set okapi_syncbase = NOW()
+                set last_modified = NOW()
                 where id = '".Db::escape_string($log_internal_id)."'
             ");
 
-            # It may make sense to update cache_logs.date_modified instead,
-            # but OCPL code currently does NOT do that; see
+            # OCPL code currently does not update pictures.last_modified when
+            # editing, but that is a bug, see
             # https://github.com/opencaching/opencaching-pl/issues/341.
-            # See also the corrresponding note in add.php and delete.php.
         }
 
         return $position;
