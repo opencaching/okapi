@@ -1905,13 +1905,15 @@ class Okapi
         return $html;
     }
 
-    function php_ini_get_bytes($setting)
+    function php_ini_get_bytes($variable)
     {
-        $setting = ini_get($setting);
-        $setting = str_replace('K', '*1024', $setting);
-        $setting = str_replace('M', '*1024*1024', $setting);
-        $setting = eval('return '.$setting.';');
-        return $setting;
+        $value = trim(ini_get($variable));
+        if (!preg_match("/^[0-9]+[KM]?$/", $value))
+            throw new Exception("Unexpected PHP setting: ".$variable. " = ".$value); 
+        $value = str_replace('K', '*1024', $value);
+        $value = str_replace('M', '*1024*1024', $value);
+        $value = eval('return '.$value.';');
+        return $value;
     }
 
     # object types in table okapi_submitted_objects
