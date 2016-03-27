@@ -96,6 +96,21 @@ class WebService
         $base64_image = $request->get_parameter('image');
         if (!$base64_image)
             throw new ParamMissing('image');
+
+        $estimated_decoded_size = strlen($base64_image) / 4 * 3 - 2;
+        if ($estimated_decoded_size > Settings::get('IMAGE_MAX_UPLOAD_SIZE'))
+        {
+            $estimated_decoded_size_MB = round($estimated_decoded_size / 1024 / 1024, 1);
+            $max_upload_size_MB = round(Settings::get('IMAGE_MAX_UPLOAD_SIZE') / 1024 / 1024, 1);
+
+            throw new CannotPublishException(sprintf(
+                _("Your image file is too large (%s.%s MB); %s accepts a maximum image size of %s.%s MB."),
+                floor($estimated_decoded_size_MB), ($estimated_decoded_size_MB * 10) % 10,
+                Okapi::get_normalized_site_name(),
+                floor($max_upload_size_MB), ($max_upload_size_MB * 10) % 10
+            ));
+        }
+
         $image = base64_decode($base64_image);
         if (!$image)
             throw new InvalidParam('image', "bad base64 encoding");

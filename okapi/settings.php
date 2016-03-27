@@ -187,6 +187,11 @@ final class Settings
         'GITHUB_ACCESS_TOKEN' => null,
 
         /**
+         * Maximum size of uploaded images in bytes
+         */
+        'IMAGE_MAX_UPLOAD_SIZE' => 4194304,  # 4 MB
+
+        /**
          * Maximum 'resolution' of saved images in pixels
          */
         'IMAGE_MAX_PIXEL_COUNT' => 524288,  # 0.5 MP
