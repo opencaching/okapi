@@ -320,14 +320,14 @@ class WebService
 
         if (Settings::get('OC_BRANCH') == 'oc.de') {
             $local_fields_SQL = "seq";
-            $local_values_SQL = "'".Db::escape_string($seq)."'";
+            $local_values_escaped_SQL = "'".Db::escape_string($seq)."'";
             # All other fields are set by trigger or defaults for OCDE.
         } else {
             # These are the additional fields that OCPL newpic.php supplies
             # (seq is set from default):
             $local_fields_SQL =
                 "date_created, last_modified, description, desc_html, last_url_check, user_id";
-            $local_values_SQL =
+            $local_values_escaped_SQL =
                 "NOW(), NOW(), '', 0, NOW(), '".Db::escape_string($user_id)."'";
         }
 
@@ -348,7 +348,7 @@ class WebService
                 '".Db::escape_string($log_internal_id)."',
                 0,
                 1,
-                ".$local_values_SQL."
+                ".$local_values_escaped_SQL."
             )
         ");
         $image_internal_id = Db::last_insert_id();
