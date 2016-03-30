@@ -1909,7 +1909,7 @@ class Okapi
     {
         $value = trim(ini_get($variable));
         if (!preg_match("/^[0-9]+[KM]?$/", $value))
-            throw new Exception("Unexpected PHP setting: ".$variable. " = ".$value); 
+            throw new Exception("Unexpected PHP setting: ".$variable. " = ".$value);
         $value = str_replace('K', '*1024', $value);
         $value = str_replace('M', '*1024*1024', $value);
         $value = eval('return '.$value.';');
