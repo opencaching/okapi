@@ -10,6 +10,7 @@
     </req>
     <req name='image'>
         <p>Base64-encoded image file; must be in JPEG, PNG or GIF format.</p>
+
         <p>There are some <em>dynamic</em> limits on the file size and dimensions
         of uploaded images; you should query them via the
         <a href="../apisrv/installation.html">service/apiserv/installation</a>
