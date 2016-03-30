@@ -63,12 +63,12 @@
                 mobile-optimized page exists.
             </li>
             <li>
-                 <p><b>image_max_upload_size</b> - the maximum size (in bytes)
-                 of images which can be uploaded via this OKAPI installation.
-                 Larger images will be <em>rejected</em>. This value may change
-                 in time.</p>
-             </li>
-             <li>
+                <p><b>image_max_upload_size</b> - the maximum size (in bytes)
+                of images which can be uploaded via this OKAPI installation.
+                Larger images will be <em>rejected</em>. This value may change
+                in time.</p>
+            </li>
+            <li>
                 <p><b>image_rcmd_max_pixels</b> - the maximum pixel count
                 (width * height) of uploaded images, which will be accepted
                 without triggering server-side shrinking. (You MAY submit
