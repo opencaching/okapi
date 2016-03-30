@@ -1,6 +1,6 @@
 <xml>
     <brief>Add an image to a log entry</brief>
-    <issue-id>WRTODO</issue-id>
+    <issue-id>395</issue-id>
     <desc>
         <p>Attach a new image to an existing log entry.</p>
     </desc>

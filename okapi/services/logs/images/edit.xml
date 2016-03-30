@@ -1,6 +1,6 @@
 <xml>
     <brief>Edit an existing log entry image</brief>
-    <issue-id>WRTODO</issue-id>
+    <issue-id>396</issue-id>
     <desc>
         <p>This method allows you to change properties of an existing log entry
         image. If you need to change the image itself, then you'll need to
