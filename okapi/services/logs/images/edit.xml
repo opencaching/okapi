@@ -54,7 +54,7 @@
                 want to display this only when <b>success</b> is <b>false</b>),
             </li>
             <li>
-                <p><b>position</b></p>:
+                <p><b>position</b>:</p>
 
                 <ul>
                     <li>If you have supplied the <b>position</b> parameter, then this field
