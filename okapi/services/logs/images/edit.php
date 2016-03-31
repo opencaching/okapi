@@ -53,7 +53,7 @@ class WebService
         $caption = $request->get_parameter('caption');
         if ($caption !== null && $caption == '') {
             throw new CannotPublishException(sprintf(
-                _("%s requires a non-empty image caption."),
+                _("Please enter an image caption."),
                 Okapi::get_normalized_site_name()
             ));
         }
@@ -212,7 +212,7 @@ class WebService
             $position = self::_call($request);
             $result = array(
                 'success' => true,
-                'message' => _("Your log entry image has been updated."),
+                'message' => _("Your log image has been updated."),
                 'position' => $position
             );
             Okapi::gettext_domain_restore();

@@ -79,7 +79,7 @@ class WebService
         $caption = $request->get_parameter('caption');
         if (!$caption) {
             throw new CannotPublishException(sprintf(
-                _("%s requires a non-empty image caption."),
+                _("Please enter an image caption."),
                 Okapi::get_normalized_site_name()
             ));
         }
@@ -131,7 +131,7 @@ class WebService
             # though they can be displayed by web browsers.
 
             throw new CannotPublishException(sprintf(
-                _("The uploaded image file is broken, or the image type is not accepted by %s."),
+                _("The uploaded image file is broken, or the image type is not accepted by %s. Allowed types are JPEG, PNG and GIF."),
                 Okapi::get_normalized_site_name()
             ));
         }
@@ -401,7 +401,7 @@ class WebService
             list($image_uuid, $position) = self::_call($request);
             $result = array(
                 'success' => true,
-                'message' => _("Your image has been appended to the log entry."),
+                'message' => _("Your log image has been saved."),
                 'image_uuid' => $image_uuid,
                 'position' => $position
             );
