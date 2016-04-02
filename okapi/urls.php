@@ -15,6 +15,7 @@ class OkapiUrls
         '^introduction\.html$' => 'introduction',
         '^signup\.html$' => 'signup',
         '^examples\.html$' => 'examples',
+        '^changelog\.html$' => 'changelog',
         '^$' => 'index',
         '^apps/$' => 'apps/index',
         '^apps/authorize$' => 'apps/authorize',
