@@ -29,6 +29,10 @@
 
                         <h1>Changes to the OKAPI interface or administration</h1>
 
+                        <?php if (!$vars['changes']['available']) { ?>
+                        <p><em>The Changelog is currently not available.</em></p>
+                        <?php } else { ?>
+
                         <p>Changes to the interface are always backward compatible.
                         You need not to update your applications after any change.
                         But there may be new <b>recommendations</b> (indicated by
@@ -71,9 +75,11 @@
                         <p>OKAPI was started in August 2011 at the OCPL code branch,
                         and it was deployed to the OCDE branch in April 2013.</p>
 
+                        <?php } ?>
+
                         <h2 id='comments'>Comments</h2>
 
-                        <div class='issue-comments' issue_id='TODO'></div>
+                        <div class='issue-comments' issue_id='407'></div>
 
                     </td>
                 </tr></table>
