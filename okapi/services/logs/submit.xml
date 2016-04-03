@@ -22,6 +22,12 @@
     </req>
     <opt name='comment'>
         <p>Text to be submitted with the log entry.</p>
+
+        <p>Note: Some OC sites support only 16-bit Unicode. If you submit 32-bit
+        Unicode captions to these sites (e.g. containing smiley symbols), the
+        comment text will be crippled. The <b>submit_charset</b> field of
+        <a href='../../services/apisrv/installation.html'>services/apisrv/installation</a>
+        tells you which character set is supported by an OC site.</p>
     </opt>
     <opt name='comment_format' default='auto'>
         <p>Indicates the format of your <b>comment</b>. Three values allowed:
