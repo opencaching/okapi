@@ -70,7 +70,7 @@ foreach ($changes as &$line)
                 echo $commit . ' date = ' . $date . "\n";
             }
 
-            $line = '    <change commit="'.$commit.'" version="'.$version.'" date="'.$date.'"'.$rest.">\n";
+            $line = '        <change commit="'.$commit.'" version="'.$version.'" date="'.$date.'"'.$rest.">\n";
         }
         else
         {

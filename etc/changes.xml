@@ -1,67 +1,73 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<xml>
+    <!--
 
-This is an incomplete list of changes in the OKAPI interface.
-Please add only changes which are relevant for client developers
-or site admins.
+    This is an incomplete list of changes in the OKAPI interface.
+    Please add only changes which are relevant for client developers
+    or site admins.
 
-New entries are inserted at the top with EMPTY version number
-and date. Run update_changes.php to insert the version numbers
-and dates.
-
--->
-<changes>
-    <change commit="93cfc2d9" version="1237" date="2016-03-31" type="enhancement">
-        New methods for &lt;a href="services/logs/images/add.html"&gt;adding&lt;/a&gt;,
-        &lt;a href="services/logs/images/edit.html"&gt;editing&lt;/a&gt; and
-        &lt;a href="services/logs/images/delete.html"&gt;deleting&lt;/a&gt; log images.
-    </change>
-    <change commit="cf97cb2f" version="1200" date="2016-03-17" type="enhancement">
-        Consumer keys may be revoked by OC site admins.
-    </change>
-    <change commit="31061755" version="1194" date="2016-03-17" type="bugfix">
-        &lt;a href="services/oauth/authorize.html"&gt;services/oauth/authorize&lt;/a&gt;
-        will no longer delete Opencaching.DE cookies when called with parameter
-        &lt;i&gt;interactivity=confirm_user&lt;/i&gt;.
-    </change>
-    <change commit="3dbe4760" version="1184" date="2016-03-14" type="enhancement">
-        OCDE geocache log entries with and without time are more reasonably
-        ordered. Developers are recommended to keep the order as returned by
-        OKAPI instead of ordering by the log date.
-    </change>
-    <change commit="a711d95c" version="1183" date="2016-03-13" type="enhancement">
-        Registration date of users can be retrieved.
-    </change>
-    <change commit="28f4cefd" version="1177" date="2016-03-12" type="enhancement">
-        Added the 'needs maintenance' flag to log entries and geocaches.
-    </change>
-    <change commit="58474a4d" version="1169" date="2016-03-11" type="enhancement">
-        Added Romanian translation.
-    </change>
-    <change commit="f24c7ac2" version="1154" date="2016-03-04" type="enhancement">
-        For caches with the mark 'listing is outdated' (available only on some
-        OC sites), a corresponding message is prepended to the description
-        field. DO NOT rely on this message being there or having a certain
-        content. It may be changed in the future.
-    </change>
-    <change commit="a9a2a042" version="1145" date="2016-02-10" type="enhancement">
-        The home location of users can be queried, if given in the user's
-        profile (OAuth level 3).
-    </change>
-    <change commit="54ad2cf8" version="1133" date="2016-01-16" type="enhancement">
-        The URL of the OC site's registration page can be retrieved via
-        &lt;a href="services/apisrv/installation.html"&gt;apisrv/installation&lt;/a&gt;.
-    </change>
-    <change commit="834fdd9b" version="1132" date="2016-01-15" type="bugfix">
-        Restored the Opencaching.com namespace definition for GPX.
-    </change>
-    <change commit="24a12af0" version="1131" date="2016-01-15" type="docs">
-        Clarified the documentation on
-        &lt;a href="services/logs/submit.html"&gt;submitting log entries&lt;/a&gt;
-        without time.
-    </change>
-    <change commit="08ee9b59" version="1127" date="2016-01-14" type="enhancement">
-        Allowed to search for &lt;em&gt;multiple&lt;/em&gt; users that (not)
-        found a geocache.
-    </change>
-</changes>
+    New entries are inserted at the top with EMPTY version number and date.
+    Run update_changes.php to insert the version numbers and dates.
+   
+    -->
+    <changes>
+        <change commit="93cfc2d9" version="1237" date="2016-03-31" type="enhancement">
+            New methods for <a href="services/logs/images/add.html">adding</a>,
+            <a href="services/logs/images/edit.html">editing</a> and
+            <a href="services/logs/images/delete.html">deleting</a> log images.
+        </change>
+        <change commit="cf97cb2f" version="1200" date="2016-03-17" type="enhancement">
+            Consumer keys may be revoked by OC site admins.
+        </change>
+        <change commit="31061755" version="1194" date="2016-03-17" type="bugfix">
+            <a href="services/oauth/authorize.html">services/oauth/authorize</a>
+            will no longer delete Opencaching.DE cookies when called with parameter
+            <i>interactivity=confirm_user</i>.
+        </change>
+        <change commit="3dbe4760" version="1184" date="2016-03-14" type="enhancement">
+            OCDE geocache log entries with and without time are more reasonably
+            ordered. Developers are recommended to keep the order as returned by
+            OKAPI instead of ordering by the log date.
+        </change>
+        <change commit="a711d95c" version="1183" date="2016-03-13" type="enhancement">
+            The registration date of users can be retrieved.
+        </change>
+        <change commit="28f4cefd" version="1177" date="2016-03-12" type="enhancement">
+            Added the 'needs maintenance' flag to log entries and geocaches.
+        </change>
+        <change commit="58474a4d" version="1169" date="2016-03-11" type="enhancement">
+            Added Romanian translation.
+        </change>
+        <change commit="f24c7ac2" version="1154" date="2016-03-04" type="enhancement">
+            For caches with the mark 'listing is outdated' (available only on some
+            OC sites), a corresponding message is prepended to the description
+            field. DO NOT rely on this message being there or having a certain
+            content. It may be changed in the future.
+        </change>
+        <change commit="a9a2a042" version="1145" date="2016-02-10" type="enhancement">
+            The home location of users can be queried, if given in the user's
+            profile (requires OAuth level 3).
+        </change>
+        <change commit="54ad2cf8" version="1133" date="2016-01-16" type="enhancement">
+            The URL of the OC site's registration page can be retrieved via
+            <a href="services/apisrv/installation.html">apisrv/installation</a>.
+        </change>
+        <change commit="834fdd9b" version="1132" date="2016-01-15" type="bugfix">
+            Restored the OpenCaching.com namespace definition for GPX.
+        </change>
+        <change commit="24a12af0" version="1131" date="2016-01-15" type="docs">
+            Clarified the documentation on
+            <a href="services/logs/submit.html">submitting log entries</a>
+            without time.
+        </change>
+        <change commit="08ee9b59" version="1127" date="2016-01-14" type="enhancement">
+            Allowed to search for <em>multiple</em> users that (not) found
+            a geocache.
+        </change>
+        <change commit="cb7d222b" version="" date="" type="bugfix">
+            Improved posting plaintext logs on OCPL sites.
+        </change>
+        <change commit="28825396" version="" date="" type="bugfix">
+            Enabled full 32-bit Unicode for submitting logs on some OC sites. 
+        </change>
+    </changes>
+</xml>
