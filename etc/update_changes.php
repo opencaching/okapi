@@ -40,10 +40,10 @@ $OKAPI_GIT_VERSION_BASE = 318;
 
 # test for well-formed XML
 # TODO: verify XML scheme
-simplexml_load_file('changes.xml');
+simplexml_load_file(__DIR__ . '/changes.xml');
 
 # SimpleXML iterators are read-only, so we process the plain text file.
-$changes = file('changes.xml');
+$changes = file(__DIR__ . '/changes.xml');
 
 foreach ($changes as &$line)
 {
@@ -61,11 +61,14 @@ foreach ($changes as &$line)
             if (!isset($commits[$commit]))
                 die("error: didn't find commit ID $commit in OKAPI git repo\n");
 
-            if ($version == '') {
-                $version = $OKAPI_GIT_VERSION_BASE + count($commits) - $commits[$commit]['position'];
+            $repo_version = $OKAPI_GIT_VERSION_BASE + count($commits) - $commits[$commit]['position'];
+            $wrong_version = ($version != '' && $version != $repo_version);
+
+            if ($version == '' || $wrong_version) {
+                $version = $repo_version;
                 echo $commit . ' version = ' . $version . "\n";
             }
-            if ($date == '') {
+            if ($date == '' || $wrong_version) {
                 $date = date('Y-m-d', $commits[$commit]['time']);
                 echo $commit . ' date = ' . $date . "\n";
             }
@@ -79,4 +82,4 @@ foreach ($changes as &$line)
     }
 }
 
-file_put_contents('changes.xml', $changes);
+file_put_contents(__DIR__ . '/changes.xml', $changes);

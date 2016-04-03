@@ -27,7 +27,12 @@
                     </td>
                     <td class='article'>
 
-                        <h1>Changes of the OKAPI interface or administration</h1>
+                        <h1>Changes to the OKAPI interface or administration</h1>
+
+                        <p>Changes to the interface are always backward compatible.
+                        You need not to update your applications after any change (but
+                        there may be new <em>recommendations</em> on how to use OKAPI
+                        methods).</p>
 
                         <?php
                         $br = '';
@@ -50,12 +55,21 @@
                                     <tr>
                                         <td><a href="https://github.com/opencaching/okapi/tree/<?= $change['commit'] ?>"><?= $change['version'] ?></a></td>
                                         <td><?= $change['date'] ?></td>
-                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed:' : '') . (string)$change ?></td>
+                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed:' : '') . $change['comment'] ?></td>
                                     </tr>
                                 <?php } ?>
                                 </table>
                             <?php } ?>
                         <?php } ?>
+
+                        <br />
+                        <p>This list shows only changes that are considered to be
+                        relevant for developers and site admins. Please consult the
+                        <a href="https://github.com/opencaching/okapi/commits/master">Git log</a>
+                        for a complete history, including older changes.</p>
+
+                        <p>OKAPI was started in August 2011 at the OCPL code branch,
+                        and it was deployed to the OCDE branch in April 2013.</p>
 
                         <h2 id='comments'>Comments</h2>
 

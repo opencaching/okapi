@@ -17,16 +17,27 @@ class View
 
         # TODO: load and cache from OKAPI repo
         # TODO: verify XML scheme
-        $changes = simplexml_load_file('https://raw.githubusercontent.com/following5/okapi/feature/changelog/etc/changes.xml');
+        $changelog = simplexml_load_file('https://raw.githubusercontent.com/following5/okapi/feature/changelog/etc/changes.xml');
 
         $unavailable_changes = array();
         $available_changes = array();
 
-        foreach ($changes->change as $change) {
-            if ($change['version'] > Okapi::$version_number)
-                $unavailable_changes[] = $change;
-            else
-                $available_changes[] = $change;
+        foreach ($changelog->changes->change as $change) {
+            if ($change['version'] == '' || $change['date'] == '') {
+                throw new Exception("Someone forgot to run update_changes.php.");
+            } else {
+                $change = array(
+                    'commit' => $change['commit'],
+                    'version' => $change['version'],
+                    'date' => $change['date'],
+                    'type' => $change['type'],
+                    'comment' => self::get_inner_xml($change),
+                );
+                if ($change['version'] > Okapi::$version_number)
+                    $unavailable_changes[] = $change;
+                else
+                    $available_changes[] = $change;
+            }
         }
 
         $vars = array(
@@ -48,5 +59,16 @@ class View
         include 'changelog.tpl.php';
         $response->body = ob_get_clean();
         return $response;
+    }
+
+    private static function get_inner_xml($node)
+    {
+        /* Fetch as <some-node>content</some-node>, extract content. */
+
+        $s = $node->asXML();
+        $start = strpos($s, ">") + 1;
+        $length = strlen($s) - $start - (3 + strlen($node->getName()));
+        $s = substr($s, $start, $length);
+        return $s;
     }
 }
