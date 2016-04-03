@@ -19,14 +19,14 @@ class View
         # TODO: verify XML scheme
         $changes = simplexml_load_file('https://raw.githubusercontent.com/following5/okapi/feature/changelog/etc/changes.xml');
 
-        $installed_changes = array();
-        $uninstalled_changes = array();
+        $unavailable_changes = array();
+        $available_changes = array();
 
         foreach ($changes->change as $change) {
             if ($change['version'] > Okapi::$version_number)
-                $uninstalled_changes[] = $change;
+                $unavailable_changes[] = $change;
             else
-                $installed_changes[] = $change;
+                $available_changes[] = $change;
         }
 
         $vars = array(
@@ -37,8 +37,8 @@ class View
             'okapi_rev' => Okapi::$version_number,
             'site_name' => Okapi::get_normalized_site_name(),
             'changes' => array(
-                'uninstalled' => $uninstalled_changes,
-                'installed' => $installed_changes
+                'unavailable' => $unavailable_changes,
+                'available' => $available_changes
             ),
         );
 

@@ -27,14 +27,14 @@
                     </td>
                     <td class='article'>
 
-                        <h1>Changes of the OKAPI interface or adminstration</h1>
+                        <h1>Changes of the OKAPI interface or administration</h1>
 
                         <?php
                         $br = '';
                         foreach ($vars['changes'] as $type => $changes) {
                             if (count($changes)) {
-                                if ($type == 'uninstalled') {
-                                    echo "<p>The following changes are not availble yet at " . $vars['site_name'] . ":</p>";
+                                if ($type == 'unavailable') {
+                                    echo "<p>The following changes are not available yet at " . $vars['site_name'] . ":</p>";
                                     $br = '<br />';
                                 } else {
                                     echo "<p>".$br."The following changes are available at " . $vars['site_name'] . ":</p>";
