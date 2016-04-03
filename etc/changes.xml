@@ -25,7 +25,7 @@
         </change>
         <change commit="3dbe4760" version="1184" date="2016-03-14" type="enhancement">
             OCDE geocache log entries with and without time are more reasonably
-            ordered. Developers are recommended to keep the order as returned by
+            ordered. Developers are <b>recommended</b> to keep the order as returned by
             OKAPI instead of ordering by the log date.
         </change>
         <change commit="a711d95c" version="1183" date="2016-03-13" type="enhancement">
@@ -35,7 +35,7 @@
             Added the 'needs maintenance' flag to log entries and geocaches.
             The <em>needs_maintenance</em> option of
             <a href="services/logs/submit.html">services/logs/submit</a> has
-            been deprecated; use <em>needs_maintenance2</em> instead.
+            been <b>deprecated</b>; use <em>needs_maintenance2</em> instead.
         </change>
         <change commit="58474a4d" version="1169" date="2016-03-11" type="enhancement">
             Added Romanian translation.
@@ -58,8 +58,8 @@
             Restored the OpenCaching.com namespace definition for GPX.
         </change>
         <change commit="24a12af0" version="1131" date="2016-01-15" type="docs">
-            Clarified the documentation on
-            <a href="services/logs/submit.html">submitting log entries</a>
+            Added an <b>advice</b> to the documentation on how to
+            <a href="services/logs/submit.html">submit log entries</a>
             without time.
         </change>
         <change commit="08ee9b59" version="1127" date="2016-01-14" type="enhancement">
@@ -81,7 +81,7 @@
         <change commit="11003f0e" version="1117" date="2015-09-24" type="enhancement">
             Added the new <em>ignored_status</em> search option which allows
             to search for caches ignored by the user. This replaces the
-            <em>exclude_ignored</em> option, which has been deprecated.
+            <em>exclude_ignored</em> option, which has been <b>deprecated</b>.
         </change>
         <change commit="ad4f2b13" version="1115" date="2015-09-20" type="docs">
             There is a new Opencaching.FR website, which is a local view of
@@ -129,7 +129,8 @@
             feature, i.e. it may be changed or removed.
         </change>
         <change commit="f31952a3" version="1065" date="2015-03-08" type="docs">
-            Updated the <a href="introduction.html">Introduction page</a>.
+            Updated the <a href="introduction.html">Introduction page</a>,
+            with additional <b>advices</b> on backward compatibility.
         </change>
         <change commit="a78a2f2a" version="1062" date="2015-03-08" type="enhancement">
             Interprete intervals of

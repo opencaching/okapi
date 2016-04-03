@@ -30,9 +30,9 @@
                         <h1>Changes to the OKAPI interface or administration</h1>
 
                         <p>Changes to the interface are always backward compatible.
-                        You need not to update your applications after any change (but
-                        there may be new <em>recommendations</em> on how to use OKAPI
-                        methods).</p>
+                        You need not to update your applications after any change.
+                        But there may be new <b>recommendations</b> (indicated by
+                        bold text) on how to use OKAPI methods.</p>
 
                         <?php
                         $br = '';
