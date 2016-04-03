@@ -1,0 +1,75 @@
+<xml>
+    <brief>Send an email to a user</brief>
+    <issue-id>TODO</issue-id>
+    <desc>
+        <p>Sends an email to a user, i.e. to the email address that is stored
+        in the user's profile.</p>
+        <p>The following information will be logged for each email, to prevent
+        abuse: The sender and recepient's user ID and email address and your
+        user's IP address. Depending on the site's policy, this may be a
+        permanent or temporary log. There may also be a restriction on the
+        number of emails that each user may send per day.</p>
+    </desc>
+    <req name='user_uuid'>
+        <p>The user ID of the recipient.</p>
+    </req>
+    <opt name='subject' default='(empty string)'>
+        <p>plain text string - the subject of the email.</p>
+    </opt>
+    <opt name='cache_code' default='null'>
+        <p>The code of an existing geocache at the OC site. When supplied, the
+        subject will be generated from this geocache; it may look like
+        <em>Your geocache "Cachename" (OP1234)</em> and will be localized, if
+        possible.</p>
+    </opt>
+    <req name='body'>
+        <p>The text contents of the email.</p>
+    </req>
+    <req name='body_format'>
+        <p>The format of the email <b>body</b>, either <b>plaintext</b> or
+        <b>html</b>.</p>
+    </req>
+    <opt name='disclose_address' default='default'>
+        <p>Determines the sender address (From:) of the email, when reporting
+        to the owner. One of the following:</p>
+        <ul>
+            <li>
+                <b>true</b> - the sender address is your user's email address,
+                as stored in the OC user profile,
+            </li>
+            <li>
+                <b>false</b> - the sender address is some dummy like
+                "noreply@opencaching.xx",
+            </li>
+            <li>
+                <b>default</b> - use the OC site default, as returned in the
+                field <b>disclose_email_sender_address</b> of
+                <a href='../users/user.html'>services/users/user</a>.
+            </li>
+        </ul>
+        <p>Setting this to <b>true</b> makes it simpler for the recipient
+        to answer the email, which makes it more likely to get an answer
+        at all.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>
+                <p><b>success</b> - true, if the email was queued for sending.
+                This does not mean that it has been delivered. There is no way
+                to detect that. But you may query the <b>email_problems</b>
+                field of <a href='user.html'>services/users/user</a> to find
+                out if there have been email delivery problems for the
+                recipient, and indicate this to your user in the email form.</p>
+            </li>
+            <li>
+                <b>message</b> - plain-text string; a message for the user,
+                which acknowledges success or describes an error.
+            </li>
+        </ul>
+
+        <p>If the given user does not exist, the method will respond with an
+        HTTP 400 error.</p>
+    </returns>
+</xml>

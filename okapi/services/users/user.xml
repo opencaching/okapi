@@ -20,18 +20,13 @@
     </opt>
     <common-format-params/>
     <returns>
-        <p>A dictionary of fields you have selected. Currently available fields:</p>
+        <p>A dictionary of fields you have selected. Currently available fields
+        which can be accessed with <b>level 1</b> authentication:</p>
 
         <ul>
             <li><b>uuid</b> - ID of the user,</li>
             <li><b>username</b> - username (login) of the user,</li>
             <li><b>profile_url</b> - URL of the user's Opencaching profile page,</li>
-            <li>
-                <p><b>is_admin</b> - boolean; true is user has admin privileges.</p>
-                <p>This value can be accessed only with <b>Level 3</b> Authentication
-                and only for the user of your Access Token. For all other reads, is_admin
-                will equal <b>null</b>.</p>
-            </li>
             <li>
                 <b>internal_id</b> - internal ID of the user (<b>DO NOT</b> use this!
                 use the <b>uuid</b> as the user identifier),
@@ -44,13 +39,44 @@
             <li><b>caches_notfound</b> - number of "Didn't find it" log entries,</li>
             <li><b>caches_hidden</b> - number of caches owned,</li>
             <li><b>rcmds_given</b> - number of recommendations given.</li>
+         </ul>
+
+         <p>Additional fields that can be accessed only with <b>level 3</b>
+         authentication; for all other reads, the returned value will equal
+         <b>null</b>:</p>
+
+         <ul>
+            <li>
+                <p><b>email_problems</b> - <b>true</b> if there recently have
+                been problems with delivering emails to this user; <b>false</b>
+                if not.</p>
+
+                <p>This flag is only supported by some OC sites; other sites
+                will always return <b>false</b>.</p>
+            </li>
+         </ul>
+
+         <p>Additional fields that can be accessed only with <b>level 3</b>
+         authentication and only for the user of your access token; for all
+         other reads, the returned value will equal <b>null</b>:</p>
+
+         <ul>
+            <li>
+                <p><b>is_admin</b> - boolean; true is user has admin privileges.</p>
+            </li>
             <li>
                 <p><b>home_location</b> - home location of the user in the "lat|lon" format
                 (lat and lon are in full degrees with a dot as a decimal point);
                 <b>null</b> if no home location is given in the user's Opencaching profile.</p>
-                <p>This value can be accessed only with <b>Level 3</b> Authentication
-                and only for the user of your Access Token. For all other reads,
-                home_location will equal <b>null</b>.</p>
+            </li>
+            <li>
+                <p><b>disclose_email_sender_address</b> - <b>true</b> if the
+                email address of the user is used as the sender (From:) of
+                emails to other users by default.</p>
+
+                <p>Depending on the OC site, this may always be <b>true</b>,
+                always be <b>false</b> or depend on the settings in the user's
+                profile.</p>
             </li>
         </ul>
 

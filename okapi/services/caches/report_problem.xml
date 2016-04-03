@@ -1,0 +1,80 @@
+<xml>
+    <brief>Report a problem with a geocache</brief>
+    <issue-id>TODO</issue-id>
+    <desc>
+        <p>This method allows your users to report a problem with a geocache to
+        the cache owner or the Opencaching site's team.</p>
+        <!-- TODO: link the terms of use here. -->
+    </desc>
+    <req name='cache_code'>
+        <p>Code of the geocache.</p>
+    </req>
+    <req name='recipient'>
+        <p>The recipient of the report; one of the following:</p>
+        <ul>
+            <li>
+                <p><b>Owner</b> - sends the report per Email to the cache
+                owner. This should be the default option in your
+                application: The owner should be contacted first on any
+                problem with the cache, except if the <b>email_problems</b>
+                field of <a href="../users/user.html">services/users/user</a>
+                indicates that the user may not be reachable.</p>
+
+                <p>The <b>disclose_address</b> option determines the sender
+                address (From:) of the email.</p>
+            </li>
+            <li>
+                <b>OC Team</b> - stores the report at the OC site. It will
+                be processed by an OC team member. Only geocaches that do not
+                (or no longer) comply to the site's terms of use should be
+                reported to the team.
+                <!-- TODO: link the terms of user here -->
+            </li>
+        </ul>
+    </req>
+    <req name='reason'>
+        <p>String - the reason of the report. Why does the geocache violate
+        the site's terms of use? One of the following:</p>
+        <ul>
+            <li><b>Private property</b> - the geocache is hidden on private
+            property which cannot be freely accessed by the public.</li>
+            <li><b>Copyright violation</b> - (parts of) the geocache
+            description are not properly licensed.</li>
+            <li><b>Other</b> - Other reason.</li>
+        </ul>
+        <p>More reasons may be added in the future.</p>
+    </req>
+    <req name='comment'>
+        <p>Plain text comment to be submitted with the report, which explains
+        the problem of the geocache. Must not be empty.</p>
+    </req>
+    <import-params method='services/users/send_email' params="disclose_address"/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>
+                <p><b>success</b> - true, if the report was submitted
+                successfully.</p>
+                <p>When submitting to the owner, this just means
+                that the email has been accepted by the mailing system,
+                NOT that it has been or will be delivered. There is no
+                way to detect that.</p>
+            </li>
+            <li>
+                <b>message</b> - plain-text string; a message for the user,
+                which acknowledges success or describes an error.
+            </li>
+            <li>
+                <b>queue_position</b>:
+                <ul>
+                    <li><b>null</b> when submitting to the owner,</li>
+                    <li>after successfully submitting to the team, the 1-based
+                    number of the new report in the list of unprocessed reports;
+                    e.g. 5 means that there are four reports waiting which
+                    probably will be processed first,</li>
+                    <li><b>null</b> in case of an error.</li>
+                </ul>
+            </li>
+        </ul>
+    </returns>
+</xml>
