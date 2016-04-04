@@ -26,6 +26,9 @@
                         <?= $vars['menu'] ?>
                     </td>
                     <td class='article'>
+                        <div class="floaticonlink">
+                            <a href="changelog_feed"><img src="static/rss-feed.svg" width="32px" /></a>
+                        </div>
 
                         <h1>Changes to the OKAPI interface or administration</h1>
 
@@ -58,7 +61,7 @@
                                 <?php foreach($changes as $change) { ?>
                                     <tr>
                                         <td><a href="https://github.com/opencaching/okapi/tree/<?= $change['commit'] ?>"><?= $change['version'] ?></a></td>
-                                        <td><?= $change['date'] ?></td>
+                                        <td><?= substr($change['date'], 0, 10) ?></td>
                                         <td><?= ($change['type'] == 'bugfix' ? 'Fixed:' : '') . $change['comment'] ?></td>
                                     </tr>
                                 <?php } ?>

@@ -69,7 +69,7 @@ foreach ($changes as &$line)
                 echo $commit . ' version = ' . $version . "\n";
             }
             if ($date == '' || $wrong_version) {
-                $date = date('Y-m-d', $commits[$commit]['time']);
+                $date = date('Y-m-d H:m', $commits[$commit]['time']);
                 echo $commit . ' date = ' . $date . "\n";
             }
 
