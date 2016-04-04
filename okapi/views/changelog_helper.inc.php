@@ -75,7 +75,7 @@ class Changelog
             $commits = array();
 
             foreach ($changelog->changes->change as $change) {
-                if ($change['version'] == '' || $change['date'] == '') {
+                if ($change['version'] == '' || $change['time'] == '') {
                     throw new Exception("Someone forgot to run update_changes.php.");
                 } elseif (isset($commits[(string)$change['commit']])) {
                     throw new Exception("Duplicate commit " . $change['commit'] . " in changelog.");
@@ -83,7 +83,7 @@ class Changelog
                     $change = array(
                         'commit' => (string)$change['commit'],
                         'version' => (string)$change['version'],
-                        'date' => (string)$change['date'],
+                        'time' => (string)$change['time'],
                         'type' => (string)$change['type'],
                         'comment' => trim(self::get_inner_xml($change)),
                     );

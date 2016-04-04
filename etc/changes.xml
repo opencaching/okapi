@@ -11,144 +11,144 @@
    
     -->
     <changes>
-        <change commit="93cfc2d9" version="1237" date="2016-03-31 13:03" type="enhancement">
+        <change commit="93cfc2d9" version="1237" time="2016-03-31T13:03:56+0200" type="enhancement">
             New methods for <a href="services/logs/images/add.html">adding</a>,
             <a href="services/logs/images/edit.html">editing</a> and
             <a href="services/logs/images/delete.html">deleting</a> log images.
         </change>
-        <change commit="cf97cb2f" version="1200" date="2016-03-17 18:03" type="enhancement">
+        <change commit="cf97cb2f" version="1200" time="2016-03-17T18:03:29+0100" type="enhancement">
             Consumer keys may be revoked by OC site admins.
         </change>
-        <change commit="31061755" version="1194" date="2016-03-17 15:03" type="bugfix">
+        <change commit="31061755" version="1194" time="2016-03-17T15:03:51+0100" type="bugfix">
             <a href="services/oauth/authorize.html">services/oauth/authorize</a>
             will no longer delete Opencaching.DE cookies when called with parameter
             <i>interactivity=confirm_user</i>.
         </change>
-        <change commit="3dbe4760" version="1184" date="2016-03-14 23:03" type="enhancement">
+        <change commit="3dbe4760" version="1184" time="2016-03-14T23:03:29+0100" type="enhancement">
             OCDE geocache log entries with and without time are more reasonably
             ordered. Developers are <b>recommended</b> to keep the order as returned by
             OKAPI instead of ordering by the log date.
         </change>
-        <change commit="a711d95c" version="1183" date="2016-03-13 22:03" type="enhancement">
+        <change commit="a711d95c" version="1183" time="2016-03-13T22:03:52+0100" type="enhancement">
             The registration date of users can be retrieved.
         </change>
-        <change commit="28f4cefd" version="1177" date="2016-03-12 17:03" type="enhancement">
+        <change commit="28f4cefd" version="1177" time="2016-03-12T17:03:42+0100" type="enhancement">
             Added the 'needs maintenance' flag to log entries and geocaches.
             The <em>needs_maintenance</em> option of
             <a href="services/logs/submit.html">services/logs/submit</a> has
             been <b>deprecated</b>; use <em>needs_maintenance2</em> instead.
         </change>
-        <change commit="58474a4d" version="1169" date="2016-03-11 21:03" type="enhancement">
+        <change commit="58474a4d" version="1169" time="2016-03-11T21:03:35+0100" type="enhancement">
             Added Romanian translation.
         </change>
-        <change commit="f24c7ac2" version="1154" date="2016-03-04 20:03" type="enhancement">
+        <change commit="f24c7ac2" version="1154" time="2016-03-04T20:03:23+0100" type="enhancement">
             For caches with the mark 'listing is outdated' (available only on some
             OC sites), a corresponding message is prepended to the description
             field. DO NOT rely on this message being there or having a certain
             content. It may change in the future.
         </change>
-        <change commit="a9a2a042" version="1145" date="2016-02-10 19:02" type="enhancement">
+        <change commit="a9a2a042" version="1145" time="2016-02-10T19:02:58+0100" type="enhancement">
             The home location of users can be queried, if given in the user's
             profile (requires OAuth level 3).
         </change>
-        <change commit="54ad2cf8" version="1133" date="2016-01-16 14:01" type="enhancement">
+        <change commit="54ad2cf8" version="1133" time="2016-01-16T14:01:05+0100" type="enhancement">
             The URL of the OC site's registration page can be retrieved via
             <a href="services/apisrv/installation.html">apisrv/installation</a>.
         </change>
-        <change commit="834fdd9b" version="1132" date="2016-01-15 22:01" type="bugfix">
+        <change commit="834fdd9b" version="1132" time="2016-01-15T22:01:00+0100" type="bugfix">
             Restored the OpenCaching.com namespace definition for GPX.
         </change>
-        <change commit="24a12af0" version="1131" date="2016-01-15 21:01" type="docs">
+        <change commit="24a12af0" version="1131" time="2016-01-15T21:01:17+0100" type="docs">
             Added an <b>advice</b> to the documentation on how to
             <a href="services/logs/submit.html">submit log entries</a>
             without time.
         </change>
-        <change commit="08ee9b59" version="1127" date="2016-01-14 16:01" type="enhancement">
+        <change commit="08ee9b59" version="1127" time="2016-01-14T16:01:11+0100" type="enhancement">
             Allowed to search for <em>multiple</em> users that (not) found
             a geocache.
         </change>
-        <change commit="cb7d222b" version="1126" date="2016-01-07 23:01" type="enhancement">
+        <change commit="cb7d222b" version="1126" time="2016-01-07T23:01:51+0100" type="enhancement">
             Improved posting plaintext logs on OCPL sites.
         </change>
-        <change commit="28825396" version="1125" date="2015-12-22 19:12" type="enhancement">
+        <change commit="28825396" version="1125" time="2015-12-22T19:12:16+0100" type="enhancement">
             Enabled full 32-bit Unicode for submitting logs on some OC sites.
             Use <a href="services/apisrv/installation.html">services/apisrv/installation</a>
             to find out the <em>submit_charset</em> of an OC site.
         </change>
-        <change commit="b2d31a34" version="1119" date="2015-11-26 14:11" type="bugfix">
+        <change commit="b2d31a34" version="1119" time="2015-11-26T14:11:51+0100" type="bugfix">
             Solved rare problem when searching by distance or bbox
             (OKAPI crashed).
         </change>
-        <change commit="11003f0e" version="1117" date="2015-09-24 14:09" type="enhancement">
+        <change commit="11003f0e" version="1117" time="2015-09-24T14:09:19+0200" type="enhancement">
             Added the new <em>ignored_status</em> search option which allows
             to search for caches ignored by the user. This replaces the
             <em>exclude_ignored</em> option, which has been <b>deprecated</b>.
         </change>
-        <change commit="ad4f2b13" version="1115" date="2015-09-20 13:09" type="docs">
+        <change commit="ad4f2b13" version="1115" time="2015-09-20T13:09:25+0200" type="docs">
             There is a new Opencaching.FR website, which is a local view of
             Opencaching.DE.
             Use <a href="http://www.opencaching.de/okapi">www.opencaching.de/okapi</a>
             to access it.
         </change>
-        <change commit="7622a486" version="1112" date="2015-09-09 20:09" type="enhancement">
+        <change commit="7622a486" version="1112" time="2015-09-09T20:09:38+0200" type="enhancement">
             Quicker refreshing of map tiles after geocache name changes.
         </change>
-        <change commit="3cd62446" version="1101" date="2015-08-01 10:08" type="bugfix">
+        <change commit="3cd62446" version="1101" time="2015-08-01T10:08:54+0200" type="bugfix">
             Return an HTTP 400 when "negative" dates are passed to
             <a href="services/logs/submit.html">services/logs/submit</a>.
         </change>
-        <change commit="aef3c045" version="1100" date="2015-08-01 10:08" type="bugfix">
+        <change commit="aef3c045" version="1100" time="2015-08-01T10:08:43+0200" type="bugfix">
             Improved uuid creation for submitted logs.
         </change>
-        <change commit="4b08db67" version="1097" date="2015-08-01 01:08" type="enhancement">
+        <change commit="4b08db67" version="1097" time="2015-08-01T01:08:26+0200" type="enhancement">
             <a href='services/caches/map/tile.html'>services/caches/map/tile</a>
             now is available to chosen consumers (closed BETA).
         </change>
-        <change commit="edd77fc5" version="1095" date="2015-07-31 22:07" type="bugfix">
+        <change commit="edd77fc5" version="1095" time="2015-07-31T22:07:11+0200" type="bugfix">
             Pipe chars (|) in user names are treated as errors.
         </change>
-        <change commit="0dcf3384" version="1092" date="2015-07-28 15:07" type="enhancement">
+        <change commit="0dcf3384" version="1092" time="2015-07-28T15:07:16+0200" type="enhancement">
             The user's last-login date on the OC site is updated when running
             OAuth level 3 methods.
         </change>
-        <change commit="2148472b" version="1089" date="2015-07-20 17:07" type="other">
+        <change commit="2148472b" version="1089" time="2015-07-20T17:07:21+0200" type="other">
             The OKAPI code repository has moved from Google Code to Github.
         </change>
-        <change commit="1280822d" version="1074" date="2015-06-29 09:06" type="enhancement">
+        <change commit="1280822d" version="1074" time="2015-06-29T09:06:21+0000" type="enhancement">
             When quering the <em>is_watched</em> state of a geocache or searching
             for watched caches, indirect watches via geocache lists are included.
             (Geocache lists so far are available only at OCDE and cannot be
             directly accessed via OKAPI.)
         </change>
-        <change commit="9f2c769f" version="1070" date="2015-03-29 10:03" type="other">
+        <change commit="9f2c769f" version="1070" time="2015-03-29T10:03:23+0000" type="other">
             Opencaching.org.UK has been removed from the list of OKAPI
             installations, because it is too outdated.
         </change>
-        <change commit="6c87331f" version="1069" date="2015-03-27 21:03" type="enhancement">
+        <change commit="6c87331f" version="1069" time="2015-03-27T21:03:23+0000" type="enhancement">
             The new <em>powertrail_only</em> option allows to search for caches
             that are part of a powertrail (on some OC nodes). This is a BETA
             feature, i.e. it may be changed or removed.
         </change>
-        <change commit="f31952a3" version="1065" date="2015-03-08 21:03" type="docs">
+        <change commit="f31952a3" version="1065" time="2015-03-08T21:03:05+0000" type="docs">
             Updated the <a href="introduction.html">Introduction page</a>,
             with additional <b>advices</b> on backward compatibility.
         </change>
-        <change commit="a78a2f2a" version="1062" date="2015-03-08 20:03" type="enhancement">
+        <change commit="a78a2f2a" version="1062" time="2015-03-08T20:03:23+0000" type="enhancement">
             Interprete intervals of
             <a href="services/caches/search/bbox.html">services/caches/search/bbox</a>
             as greater-side-open instead of closed.
         </change>
-        <change commit="f63ccbc0" version="1061" date="2015-03-02 13:03" type="bugfix">
+        <change commit="f63ccbc0" version="1061" time="2015-03-02T13:03:05+0000" type="bugfix">
             Added missing oauth_token parameter to error redirect.
         </change>
-        <change commit="859167c5" version="1059" date="2015-01-18 00:01" type="enhancement">
+        <change commit="859167c5" version="1059" time="2015-01-18T00:01:30+0000" type="enhancement">
             Added "stealth required" attribute (A74).
         </change>
-        <change commit="36e404d1" version="1056" date="2015-01-09 15:01" type="bugfix">
+        <change commit="36e404d1" version="1056" time="2015-01-09T15:01:29+0000" type="bugfix">
             Corrected the attribute assignments of OC.NL 'lost place' (A30 -> A29)
             and geodetic point (A2).
         </change>
-        <change commit="95c3dde2" version="1053" date="2014-11-30 02:11" type="docs">
+        <change commit="95c3dde2" version="1053" time="2014-11-30T02:11:12+0000" type="docs">
             OKAPI has been deployed to <a href="http://opencaching.ro/okapi">Opencaching.RO</a>.
         </change>
     </changes>

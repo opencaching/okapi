@@ -12,7 +12,7 @@
         <item>
             <title>Version <?= $change['version'] ?></title>
             <link>https://github.com/opencaching/okapi/tree/<?= $change['commit'] ?></link>
-            <pubDate><?= date('r', strtotime($change['date'])) ?></pubDate>
+            <pubDate><?= date('r', strtotime($change['time'])) ?></pubDate>
             <category><?= $change['type'] ?></category>
             <description><![CDATA[<?= $change['comment'] ?>]]></description>
         </item>

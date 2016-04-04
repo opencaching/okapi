@@ -61,8 +61,8 @@
                                 <?php foreach($changes as $change) { ?>
                                     <tr>
                                         <td><a href="https://github.com/opencaching/okapi/tree/<?= $change['commit'] ?>"><?= $change['version'] ?></a></td>
-                                        <td><?= substr($change['date'], 0, 10) ?></td>
-                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed:' : '') . $change['comment'] ?></td>
+                                        <td><?= substr($change['time'], 0, 10) ?></td>
+                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed: ' : '') . $change['comment'] ?></td>
                                     </tr>
                                 <?php } ?>
                                 </table>
