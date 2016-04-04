@@ -3,10 +3,11 @@
 
     This is an incomplete list of changes in the OKAPI interface.
     Please add only changes which are relevant for client developers
-    or site admins.
+    or site admins. If you are not sure if a change is stable, consider
+    to wait some time before you add it here.
 
     New entries are inserted at the top with EMPTY version number and date.
-    Run update_changes.php to insert the version numbers and dates.
+    Then run update_changes.php to insert the version numbers and dates.
    
     -->
     <changes>
@@ -123,7 +124,7 @@
             Opencaching.org.UK has been removed from the list of OKAPI
             installations, because it is too outdated.
         </change>
-        <change commit="6c87331f" version="1069" date="2015-03-27" type="other">
+        <change commit="6c87331f" version="1069" date="2015-03-27" type="enhancement">
             The new <em>powertrail_only</em> option allows to search for caches
             that are part of a powertrail (on some OC nodes). This is a BETA
             feature, i.e. it may be changed or removed.
