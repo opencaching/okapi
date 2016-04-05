@@ -25,7 +25,7 @@
     </opt>
     <opt name='comment_format' default='auto'>
         <p>Indicates the format of your <b>comment</b>. Three values allowed:
-        <b>auto</b>, <b>html</b> or <b>plaintext</b>. You should <b>not</b>
+        <b>auto</b>, <b>html</b> or <b>plaintext</b>. You should NOT
         use the <b>auto</b> option, because its exact behavior is unspecified
         (<a href='https://github.com/opencaching/okapi/issues/124'>more info</a>).
         It is only included for backward compatibility.</p>
