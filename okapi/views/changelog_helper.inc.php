@@ -73,26 +73,36 @@ class Changelog
         else
         {
             $commits = array();
+            $versions = array();
 
             foreach ($changelog->changes->change as $change) {
-                if ($change['version'] == '' || $change['time'] == '') {
-                    throw new Exception("Someone forgot to run update_changes.php.");
-                } elseif (isset($commits[(string)$change['commit']])) {
-                    throw new Exception("Duplicate commit " . $change['commit'] . " in changelog.");
-                } else {
-                    $change = array(
-                        'commit' => (string)$change['commit'],
-                        'version' => (string)$change['version'],
-                        'time' => (string)$change['time'],
-                        'type' => (string)$change['type'],
-                        'comment' => trim(self::get_inner_xml($change)),
+                $change = array(
+                    'commit' => (string)$change['commit'],
+                    'version' => (string)$change['version'],
+                    'time' => (string)$change['time'],
+                    'type' => (string)$change['type'],
+                    'comment' => trim(self::get_inner_xml($change)),
+                );
+                if (strlen($change['commit']) != 8
+                    || $change['version'] == 0
+                    || $change['time'] == ''
+                    || isset($commits[$change['commit']])
+                    || isset($versions[$change['version']])
+                ) {
+                    # All of these problems would have been detected or prevented
+                    # by update_changes.
+
+                    throw new Exception(
+                        "Someone forgot to run update_changes.php (or ignored error messages)."
                     );
+                } else {
                     if ($change['version'] > Okapi::$version_number) {
                         $this->unavailable_changes[] = $change;
                     } else {
                         $this->available_changes[] = $change;
                     }
                     $commits[$change['commit']] = true;
+                    $versions[$change['version']] = true;
                 }
             }
         }

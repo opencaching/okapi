@@ -8,6 +8,11 @@
 
     New entries are inserted at the top with EMPTY version number and date.
     Then run update_changes.php to insert the version numbers and dates.
+
+    Only one entry per commit. If multiple things were changed with one
+    commit, put them into one entry. This helps to detect copy-and-paste
+    errors, and allows commmit IDs or version numbers to be used as unique
+    identifiers for changelog entries.
    
     -->
     <changes>
@@ -71,9 +76,7 @@
             Improved posting plaintext logs on OCPL sites.
         </change>
         <change commit="28825396" version="1125" time="2015-12-22T19:12:16+0100" type="enhancement">
-            Enabled full 32-bit Unicode for submitting logs on some OC sites.
-            Use <a href="services/apisrv/installation.html">services/apisrv/installation</a>
-            to find out the <em>submit_charset</em> of an OC site.
+            Enabled full 21-bit Unicode for submitting logs on some OC sites.
         </change>
         <change commit="b2d31a34" version="1119" time="2015-11-26T14:11:51+0100" type="bugfix">
             Solved rare problem when searching by distance or bbox

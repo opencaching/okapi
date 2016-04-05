@@ -8,7 +8,7 @@ if (!$gitlog)
 
 # parse the git log; build an array of all commits
 
-$commits = array();
+$repo_commits = array();
 $time = false;
 
 foreach ($gitlog as $line)
@@ -27,10 +27,10 @@ foreach ($gitlog as $line)
 
         case '':
             if ($time) {
-                $commits[$commit] = array(
+                $repo_commits[$commit] = array(
                     'time' => $time,
                     'timezone' => $timezone,
-                    'position' => count($commits)
+                    'position' => count($repo_commits)
                 );
                 $time = false;
             }
@@ -46,6 +46,7 @@ simplexml_load_file(__DIR__ . '/changes.xml');
 
 # SimpleXML iterators are read-only, so we process the plain text file.
 $changes = file(__DIR__ . '/changes.xml');
+$changelog_commits = array();
 
 foreach ($changes as &$line)
 {
@@ -60,13 +61,15 @@ foreach ($changes as &$line)
 
             if (strlen($commit) != 8)
                 die("error: commit ID $commit is not 8 chars long\n");
-            if (!isset($commits[$commit]))
+            if (isset($changelog_commits[$commit]))
+                die("error: duplicate commit ID $commit\n");
+            if (!isset($repo_commits[$commit]))
                 die("error: didn't find commit ID $commit in OKAPI git repo\n");
             if (!in_array($type, array('enhancement', 'bugfix', 'docs', 'other')))
                 die("error: unknown type '$type' for commit $commit\n");
 
-            $repo_version = $OKAPI_GIT_VERSION_BASE + count($commits) - $commits[$commit]['position'];
-            $repo_time = date('Y-m-d\TH:m:s', $commits[$commit]['time']) . $commits[$commit]['timezone'];
+            $repo_version = $OKAPI_GIT_VERSION_BASE + count($repo_commits) - $repo_commits[$commit]['position'];
+            $repo_time = date('Y-m-d\TH:m:s', $repo_commits[$commit]['time']) . $repo_commits[$commit]['timezone'];
 
             if ($version != $repo_version) {
                 $version = $repo_version;
@@ -78,6 +81,8 @@ foreach ($changes as &$line)
             }
 
             $line = '        <change commit="'.$commit.'" version="'.$version.'" time="'.$time.'" type="'.$type."\">\n";
+
+            $changelog_commits[$commit] = true;
         }
         else
         {
