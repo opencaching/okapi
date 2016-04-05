@@ -20,7 +20,7 @@
         would like to remove the caption, which will often not be allowed
         (then <b>success</b> will be <b>false</b>).</p>
 
-        <p>Note: Some OC sites support only 16-bit Unicode. If you submit 32-bit
+        <p>Note: Some OC sites support only 16-bit Unicode. If you submit 21-bit
         Unicode captions to these sites (e.g. containing smiley symbols), the
         text will be crippled. The <b>submit_charset</b> field of
         <a href='../../../services/apisrv/installation.html'>services/apisrv/installation</a>

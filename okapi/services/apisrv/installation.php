@@ -21,7 +21,7 @@ class WebService
         switch (Settings::get('DB_CHARSET'))
         {
             case 'utf8':
-                $submit_charset = 'utf8mb2';
+                $submit_charset = 'utf8mb3';
                 break;
 
             case 'utf8mb4':

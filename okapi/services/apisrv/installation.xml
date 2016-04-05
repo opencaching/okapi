@@ -65,8 +65,8 @@
             <li>
                 <p><b>submit_charset</b> - the character set for submitting
                 text (e.g. log entry comments) to the OC site, either
-                <b>utf8mb2</b> (16-bit Unicode) or <b>utf8mb4</b> (full 32-bit
-                Unicode). When submitting 32-bit Unicode like smiley symbols
+                <b>utf8mb3</b> (16-bit Unicode) or <b>utf8mb4</b> (full 21-bit
+                Unicode). When submitting 21-bit Unicode like smiley symbols
                 to a site which does not support <b>utf8mb4</b>, the text will
                 be crippled somehow. E.g. it may be truncated to the position
                 of the first non-16-bit character.</p>
