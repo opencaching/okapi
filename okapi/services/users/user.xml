@@ -75,7 +75,7 @@
                 emails to other users by default.</p>
 
                 <p>Depending on the OC site, this may always be <b>true</b>,
-                always be <b>false</b> or depend on the settings in the user's
+                always be <b>false</b> or reflect a setting in the user's
                 profile.</p>
             </li>
         </ul>

@@ -2,7 +2,7 @@
     <brief>Report a problem with a geocache</brief>
     <issue-id>TODO</issue-id>
     <desc>
-        <p>This method allows your users to report a problem with a geocache to
+        <p>This method allows your user to report a problem with a geocache to
         the cache owner or the Opencaching site's team.</p>
         <!-- TODO: link the terms of use here. -->
     </desc>
@@ -55,10 +55,9 @@
             <li>
                 <p><b>success</b> - true, if the report was submitted
                 successfully.</p>
-                <p>When submitting to the owner, this just means
-                that the email has been accepted by the mailing system,
-                NOT that it has been or will be delivered. There is no
-                way to detect that.</p>
+                <p>When submitting to the owner, this means that the email has
+                been queued for sending,  NOT that it has been or will be
+                delivered successfully. There is no way to detect that.</p>
             </li>
             <li>
                 <b>message</b> - plain-text string; a message for the user,
@@ -68,9 +67,9 @@
                 <b>queue_position</b>:
                 <ul>
                     <li><b>null</b> when submitting to the owner,</li>
-                    <li>after successfully submitting to the team, the 1-based
-                    number of the new report in the list of unprocessed reports;
-                    e.g. 5 means that there are four reports waiting which
+                    <li>the 1-based number of the new report in the list of
+                    unprocessed reports, after successfully submitting to the OC
+                    team; e.g. 5 means that there are four reports waiting which
                     probably will be processed first,</li>
                     <li><b>null</b> in case of an error.</li>
                 </ul>

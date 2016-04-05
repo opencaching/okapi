@@ -3,12 +3,12 @@
     <issue-id>TODO</issue-id>
     <desc>
         <p>Sends an email to a user, i.e. to the email address that is stored
-        in the user's profile.</p>
+        in the user's profile at the OC site.</p>
         <p>The following information will be logged for each email, to prevent
-        abuse: The sender and recepient's user ID and email address and your
-        user's IP address. Depending on the site's policy, this may be a
-        permanent or temporary log. There may also be a restriction on the
-        number of emails that each user may send per day.</p>
+        abuse: Your user's ID, email address and IP address, and the
+        recepient's user ID and email address. Depending on the site's policy,
+        this may be a permanent or temporary log. There may also be a
+        restriction on the number of emails that each user may send per day.</p>
     </desc>
     <req name='user_uuid'>
         <p>The user ID of the recipient.</p>
@@ -26,7 +26,7 @@
         <p>The text contents of the email.</p>
     </req>
     <req name='body_format'>
-        <p>The format of the email <b>body</b>, either <b>plaintext</b> or
+        <p>The format of the <b>body</b> text, either <b>plaintext</b> or
         <b>html</b>.</p>
     </req>
     <opt name='disclose_address' default='default'>
@@ -59,9 +59,10 @@
                 <p><b>success</b> - true, if the email was queued for sending.
                 This does not mean that it has been delivered. There is no way
                 to detect that. But you may query the <b>email_problems</b>
-                field of <a href='user.html'>services/users/user</a> to find
-                out if there have been email delivery problems for the
-                recipient, and indicate this to your user in the email form.</p>
+                field of <a href='user.html'>services/users/user</a>
+                <em>before</em> to find out if there have been email delivery
+                problems for the recipient, and indicate this to your user
+                <em>before</em> the email is written.</p>
             </li>
             <li>
                 <b>message</b> - plain-text string; a message for the user,
