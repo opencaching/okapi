@@ -29,6 +29,8 @@ class View
                 'unavailable' => $changelog->unavailable_changes,
                 'available' => $changelog->available_changes
             ),
+            # see https://github.com/opencaching/okapi/issues/377#issuecomment-207819697
+            'feed' => Settings::get('OC_BRANCH') == 'oc.de',
         );
 
         $response = new OkapiHttpResponse();
