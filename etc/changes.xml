@@ -16,6 +16,18 @@
    
     -->
     <changes>
+        <change commit="3cd7fbcd" version="1260" time="2016-04-09T14:04:36+0200" type="enhancement">
+            Added the Changelog page.
+        </change>
+        <change commit="7e2e3796" version="1256" time="2016-04-05T17:04:19+0200" type="enhancement">
+            The <em>is_admin</em> flag for <a href="services/users/user.html">users</a> has
+            been <b>deprecated</b>.
+        </change>
+        <change commit="40e39687" version="1255" time="2016-04-05T17:04:47+0200" type="enhancement">
+            Improved submitting HTML log entries. The <em>comment_format</em> parameter
+            of <a href="services/logs/submit.html">services/logs/submit</a> now
+            works consistent and deterministic on all OC sites.
+        </change>
         <change commit="93cfc2d9" version="1237" time="2016-03-31T13:03:56+0200" type="enhancement">
             New methods for <a href="services/logs/images/add.html">adding</a>,
             <a href="services/logs/images/edit.html">editing</a> and
