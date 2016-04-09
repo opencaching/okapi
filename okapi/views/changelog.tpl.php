@@ -26,11 +26,9 @@
                         <?= $vars['menu'] ?>
                     </td>
                     <td class='article'>
-                        <?php if ($vars['feed']) { ?>
                         <div class="floaticonlink">
                             <a href="changelog_feed"><img src="static/rss-feed.svg" width="32px" /></a>
                         </div>
-                        <?php } ?>
 
                         <h1>Changes to the OKAPI interface or administration</h1>
 
