@@ -10,15 +10,15 @@ namespace okapi;
 use Exception;
 use ErrorException;
 use ArrayObject;
-use OAuthServerException;
-use OAuthServer400Exception;
-use OAuthServer401Exception;
-use OAuthMissingParameterException;
-use OAuthConsumer;
-use OAuthToken;
-use OAuthServer;
-use OAuthSignatureMethod_HMAC_SHA1;
-use OAuthRequest;
+use okapi\oauth\OAuthServerException;
+use okapi\oauth\OAuthServer400Exception;
+use okapi\oauth\OAuthServer401Exception;
+use okapi\oauth\OAuthMissingParameterException;
+use okapi\oauth\OAuthConsumer;
+use okapi\oauth\OAuthToken;
+use okapi\oauth\OAuthServer;
+use okapi\oauth\OAuthSignatureMethod_HMAC_SHA1;
+use okapi\oauth\OAuthRequest;
 use okapi\cronjobs\CronJobController;
 
 /** Return an array of email addresses which always get notified on OKAPI errors. */
