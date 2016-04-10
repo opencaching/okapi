@@ -19,7 +19,7 @@
         <change commit="3cd7fbcd" version="1260" time="2016-04-09T14:04:36+0200" type="enhancement">
             Added the Changelog page.
         </change>
-        <change commit="7e2e3796" version="1256" time="2016-04-05T17:04:19+0200" type="enhancement">
+        <change commit="7e2e3796" version="1256" time="2016-04-05T17:04:19+0200" type="docs">
             The <em>is_admin</em> flag for <a href="services/users/user.html">users</a> has
             been <b>deprecated</b>.
         </change>
