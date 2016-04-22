@@ -1181,6 +1181,31 @@ class Okapi
     }
 
     /**
+     * OC "node codes" were introduced in issue #417. These are equivalent to
+     * OC_NODE_IDs, but are easier to remember. They are used internally only,
+     * they SHOULD NOT be exposed to external developers.
+     */
+    public static function get_node_code()
+    {
+        $mapping = array(
+            1 => "OCDE",  // OC
+            2 => "OCPL",  // OP
+            6 => "OCORGUK",  // OK
+            10 => "OCUS",  // OU
+            14 => "OCNL",  // OB? OC?
+            16 => "OCRO",  // OR
+        );
+        $oc_node_id = Settings::get("OC_NODE_ID");
+        if (!isset($mapping[$oc_node_id])) {
+            throw new Exception(
+                "OKAPI's OC_NODE_ID settings has an invalid value. Please ".
+                "contact OKAPI developers if you need help with this."
+            );
+        }
+        return $mapping[$oc_node_id];
+    }
+
+    /**
      * Pick text from $langdict based on language preference $langpref.
      *
      * Example:

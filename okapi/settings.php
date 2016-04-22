@@ -137,17 +137,21 @@ final class Settings
         'SITE_URL' => null,
 
         /**
-         * URL of the official OC site. For production sites, it should equal
-         * SITE_URL (this is also the default). For development installations,
-         * it should point to the official OC site from which you got your
-         * database dump (e.g. "http://opencaching.pl/").
+         * Deprecated. OC_NODE_ID will be used instead. See here:
+         * https://github.com/opencaching/okapi/issues/417
          */
         'ORIGIN_URL' => null,
 
         /**
-         * OKAPI needs this when inserting new data to cache_logs table. Node
-         * IDs serve a similar purpose for OC sites that ORIGIN_URL does for
-         * OKAPI.
+         * Opencaching node ID number.
+         *
+         * If this is a development installation, you SHOULD NOT use 4. This ID
+         * should match the ID of your database dump source. The list of
+         * currently recognized IDs can be found in `core.php` file, in
+         * `get_node_code` method.
+         *
+         * You can also read this:
+         * https://github.com/opencaching/okapi/issues/417
          */
         'OC_NODE_ID' => null,
 
@@ -274,9 +278,7 @@ final class Settings
         foreach ($notnull as $k)
             if ($dict[$k] === null)
                 throw new Exception("$k cannot be null.");
-        if ($dict['ORIGIN_URL'] === null)
-            $dict['ORIGIN_URL'] = $dict['SITE_URL'];
-        $slash_keys = array('SITE_URL', 'ORIGIN_URL', 'IMAGES_URL');
+        $slash_keys = array('SITE_URL', 'IMAGES_URL');
         foreach ($slash_keys as $key)
             if ($dict[$key][strlen($dict[$key]) - 1] != '/')
                 throw new Exception("$key must end with a slash.");
