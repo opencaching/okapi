@@ -143,10 +143,10 @@ final class Settings
         'ORIGIN_URL' => null,
 
         /**
-         * Opencaching node ID number.
+         * Opencaching node ID number which has been reserved for your site.
          *
-         * If this is a development installation, you SHOULD NOT use 4. This ID
-         * should match the ID of your database dump source. The list of
+         * If this is a development installation, then avoid using 4. This ID
+         * should rather match the ID of your database dump source. The list of
          * currently recognized IDs can be found in `core.php` file, in
          * `get_node_code` method.
          *

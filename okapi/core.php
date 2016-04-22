@@ -1196,13 +1196,11 @@ class Okapi
             16 => "OCRO",  // OR
         );
         $oc_node_id = Settings::get("OC_NODE_ID");
-        if (!isset($mapping[$oc_node_id])) {
-            throw new Exception(
-                "OKAPI's OC_NODE_ID settings has an invalid value. Please ".
-                "contact OKAPI developers if you need help with this."
-            );
+        if (isset($mapping[$oc_node_id])) {
+            return $mapping[$oc_node_id];
+        } else {
+            return "OTHER";
         }
-        return $mapping[$oc_node_id];
     }
 
     /**
