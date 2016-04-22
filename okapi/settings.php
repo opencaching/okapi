@@ -130,9 +130,12 @@ final class Settings
         'DB_CHARSET' => 'utf8',
 
         /**
-         * URL of this site (with slash, and without "/okapi"). If this is a
-         * development installation, it should point to the local URL (e.g.
-         * "http://localhost/".
+         * Canonical URL of this Opencaching site (with a trailing slash). If
+         * you prefer your site to be accessed via HTTPS, then this should be
+         * a "https://" URL.
+         *
+         * If this is a development installation, it should point to the local
+         * URL (e.g. "http://localhost/").
          */
         'SITE_URL' => null,
 
