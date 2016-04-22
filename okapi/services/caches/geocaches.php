@@ -1223,8 +1223,7 @@ class WebService
                     order by npa_types.ordinal
                 ");
             }
-            else if (Settings::get('ORIGIN_URL') == 'http://opencaching.pl/' ||
-                     Settings::get('ORIGIN_URL') == 'http://www.opencaching.nl/')
+            else if (in_array(Okapi::get_node_code(), array("OCPL", "OCNL")))
             {
                 # Current OCPL table definitions use collation 'latin1' for parkipl
                 # and 'utf8' for np_areas. Union needs identical collations.
@@ -1255,7 +1254,7 @@ class WebService
                     where
                         c.cache_id in (".$cache_ids_escaped_and_imploded.")
                         and cache_npa_areas.npa_id != 0
-                    ");
+                ");
             }
             else
             {

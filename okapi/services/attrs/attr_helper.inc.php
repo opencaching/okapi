@@ -89,7 +89,7 @@ class AttrHelper
          * installation uses internal IDs of its own. Which "attribute schema"
          * is being used in THIS installation? */
 
-        $my_schema = Settings::get('ORIGIN_URL');
+        $my_schema = Okapi::get_node_code();
 
         $doc = simplexml_load_string($xml);
         $cachedvalue = array(
