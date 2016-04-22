@@ -1192,12 +1192,15 @@ class Okapi
             2 => "OCPL",  // OP
             6 => "OCORGUK",  // OK
             10 => "OCUS",  // OU
-            14 => "OCNL",  // OB? OC?
+            14 => "OCNL",  // OB
             16 => "OCRO",  // OR
         );
         $oc_node_id = Settings::get("OC_NODE_ID");
         if (isset($mapping[$oc_node_id])) {
             return $mapping[$oc_node_id];
+        } elseif (Settings::get('OC_BRANCH') == 'oc.de') {
+            // https://github.com/opencaching/okapi/commit/c38f041dc3fd7bd2ad938e77398265ed43957f96#commitcomment-17219802
+            return "OCDE";
         } else {
             return "OTHER";
         }
