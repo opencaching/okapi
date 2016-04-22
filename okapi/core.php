@@ -1272,7 +1272,8 @@ class Okapi
                 );
                 break;
             default:
-                throw new Exception("Missing case");
+                /* Unknown site. No extra allowed URLs. */
+                $urls = array();
         }
 
         if (!in_array(self::get_recommended_base_url(), $urls)) {
