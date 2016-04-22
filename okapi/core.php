@@ -1245,9 +1245,6 @@ class Okapi
                 $urls = array(
                     "http://www.opencaching.de/okapi/",
                     "https://www.opencaching.de/okapi/",
-                    "http://www.opencaching.it/okapi/",
-                    "http://www.opencaching.fr/okapi/",
-                    "http://www.opencachingspain.es/okapi/",
                 );
                 break;
             case 'OCNL':
