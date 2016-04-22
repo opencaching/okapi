@@ -1398,6 +1398,11 @@ class WebService
         $cache_id, $lang, array $langpref, $owner, $type
     ) {
         $site_url = Settings::get('SITE_URL');
+
+        # Note that $site_url will either start with http:// or https://,
+        # depending on the current request. This applies also to the cronjob
+        # which replicates geocaches!
+
         $site_name = Okapi::get_normalized_site_name();
         $cache_url = $site_url."viewcache.php?cacheid=$cache_id";
 
