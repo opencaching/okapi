@@ -16,6 +16,12 @@
    
     -->
     <changes>
+        <change commit="e25e5385" version="1282" time="2016-04-23T20:04:46+0200" type="enhancement">
+            Some OKAPI installation can be accessed through multiple URLs. The new
+            <a href='services/apisrv/installation.html'>services/apisrv/installation</a>
+            field <em>okapi_base_urls</em> tells you which URLs are available
+            for this installation.
+        </change>
         <change commit="3cd7fbcd" version="1260" time="2016-04-09T14:04:36+0200" type="enhancement">
             Added the Changelog page.
         </change>
