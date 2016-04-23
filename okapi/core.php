@@ -1256,10 +1256,17 @@ class Okapi
                 );
                 break;
             case 'OCDE':
-                $urls = array(
-                    "http://www.opencaching.de/okapi/",
-                    "https://www.opencaching.de/okapi/",
-                );
+                if (in_array(Settings::get('OC_NODE_ID'), array(4,5))) {
+                    $urls = array(
+                        preg_replace("/^https:/", "http:", Settings::get('SITE_URL')) . 'okapi/',
+                        preg_replace("/^http:/", "https:", Settings::get('SITE_URL')) . 'okapi/',
+                    );
+                } else {
+                    $urls = array(
+                        "http://www.opencaching.de/okapi/",
+                        "https://www.opencaching.de/okapi/",
+                    );
+                }
                 break;
             case 'OCNL':
                 $urls = array(
