@@ -13,8 +13,7 @@ to help implement OKAPI backend.
 
 ## What is OKAPI? ##
 
-**OKAPI** is a plugin for National **Opencaching.XX** sites (also known as
-_Opencaching Network_ nodes).
+**OKAPI** is a plugin for National **Opencaching.XX** sites.
 
   * It provides your site with a set of useful RESTful API methods,
   * Allows external developers to easily access **public** Opencaching data,
@@ -97,7 +96,7 @@ new public package will be automatically generated for other OC servers to
 download.
 
 In other words, if you want to change something, you have to do this in such
-way, that the same change will also work on all other OC nodes:
+way, that the same change will also work on all other OC sites:
 
   * Every OKAPI developer will TRY to develop new methods in such a way, that
     they will instantly work on all other OC sites.

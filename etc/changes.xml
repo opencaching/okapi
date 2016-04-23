@@ -141,7 +141,7 @@
         </change>
         <change commit="6c87331f" version="1069" time="2015-03-27T21:03:23+0000" type="enhancement">
             The new <em>powertrail_only</em> option allows to search for caches
-            that are part of a powertrail (on some OC nodes). This is a BETA
+            that are part of a powertrail (on some OC sites). This is a BETA
             feature, i.e. it may be changed or removed.
         </change>
         <change commit="f31952a3" version="1065" time="2015-03-08T21:03:05+0000" type="docs">

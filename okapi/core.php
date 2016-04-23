@@ -1181,26 +1181,39 @@ class Okapi
     }
 
     /**
-     * OC "node codes" were introduced in issue #417. These are equivalent to
-     * OC_NODE_IDs, but are easier to remember. They are used internally only,
-     * they SHOULD NOT be exposed to external developers.
+     * Return a "schema code" of this OC site.
+     *
+     * While there are only two primary OC_BRANCHes (OCPL and OCDE), each
+     * OCPL-based site has a separate schema of attributes, cache types, log
+     * types, etc. Some of these OCPL-based sites even have slightly different
+     * database structures. This method returns a unique internal code which
+     * helps to differentiate between all these sites.
+     *
+     * These values are used internally only, they SHOULD NOT be exposed to
+     * external developers!
      */
-    public static function get_node_code()
+    public static function get_oc_schema_code()
     {
+        /* All OCDE-based sites use exactly the same schema. */
+
+        if (Settings::get('OC_BRANCH') == 'oc.de') {
+            return "OCDE";  // OC
+        }
+
+        /* All OCPL-based sites use separate schemas. (Hopefully, this will
+         * change in time.) */
+
         $mapping = array(
-            1 => "OCDE",  // OC
             2 => "OCPL",  // OP
             6 => "OCORGUK",  // OK
             10 => "OCUS",  // OU
             14 => "OCNL",  // OB
             16 => "OCRO",  // OR
+            // should be expanded when new OCPL-based sites are added
         );
         $oc_node_id = Settings::get("OC_NODE_ID");
         if (isset($mapping[$oc_node_id])) {
             return $mapping[$oc_node_id];
-        } elseif (Settings::get('OC_BRANCH') == 'oc.de') {
-            // https://github.com/opencaching/okapi/commit/c38f041dc3fd7bd2ad938e77398265ed43957f96#commitcomment-17219802
-            return "OCDE";
         } else {
             return "OTHER";
         }
@@ -1875,7 +1888,7 @@ class Okapi
     /** E.g. 1 => 'Found it'. For unknown ids returns 'Comment'. */
     public static function logtypeid2name($id)
     {
-        # Various OC nodes use different English names, even for primary
+        # Various OC sites use different English names, even for primary
         # log types. OKAPI needs to have them the same across *all* OKAPI
         # installations. That's why all known types are hardcoded here.
         # These names are officially documented and may never change!

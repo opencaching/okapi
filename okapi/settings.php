@@ -137,21 +137,14 @@ final class Settings
         'SITE_URL' => null,
 
         /**
-         * Deprecated. OC_NODE_ID will be used instead. See here:
+         * Deprecated. For details, see here:
          * https://github.com/opencaching/okapi/issues/417
          */
         'ORIGIN_URL' => null,
 
         /**
-         * Opencaching node ID number which has been reserved for your site.
-         *
-         * If this is a development installation, then avoid using 4. This ID
-         * should rather match the ID of your database dump source. The list of
-         * currently recognized IDs can be found in `core.php` file, in
-         * `get_node_code` method.
-         *
-         * You can also read this:
-         * https://github.com/opencaching/okapi/issues/417
+         * Node ID. This is the value OKAPI should put into `node_id` columns
+         * in OC tables when it inserts new rows into tables with this column.
          */
         'OC_NODE_ID' => null,
 

@@ -22,8 +22,8 @@ allows them to be merged with other attributes from other OC installations.
 
 This file defines the mapping between:
 
-- Internal attribute IDs of various Opencaching nodes - the "schema" attribute
-  must match the node's code (which is defined by node's ID in turn).
+- Internal attribute IDs of various Opencaching sites - the "schema" attribute
+  must match the site's schema code.
 - Groundspeak's attribute IDs (used by geocaching.com).
 - OKAPI's attribute IDs (used in all OKAPI installations globally).
 
