@@ -1183,11 +1183,12 @@ class Okapi
     /**
      * Return a "schema code" of this OC site.
      *
-     * While there are only two primary OC_BRANCHes (OCPL and OCDE), each
-     * OCPL-based site has a separate schema of attributes, cache types, log
-     * types, etc. Some of these OCPL-based sites even have slightly different
-     * database structures. This method returns a unique internal code which
-     * helps to differentiate between all these sites.
+     * While there are only two primary OC_BRANCHes (OCPL and OCDE), sites
+     * based on the same branch may have a different schema of attributes,
+     * cache types, log types, or even database structures. This method returns
+     * a unique internal code which identifies a set of sites that share the
+     * same schema. As all OCPL-based sites currently have different attribute
+     * sets, there is a separate schema for each OCPL site.
      *
      * These values are used internally only, they SHOULD NOT be exposed to
      * external developers!
@@ -1246,7 +1247,11 @@ class Okapi
         /* Currently, there are no config settings which would let us allow
          * to determine the proper values for this list. So, we need to have it
          * hardcoded. (Perhaps we should move this to etc/installations.xml?
-         * But this wouldn't be efficient...) */
+         * But this wouldn't be efficient...)
+         *
+         * TODO: Replace "self::get_oc_schema_code()" by something better.
+         *       Base URls depend on installations, not on schemas.
+         */
 
         switch (self::get_oc_schema_code()) {
             case 'OCPL':
