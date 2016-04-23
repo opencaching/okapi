@@ -1220,6 +1220,81 @@ class Okapi
     }
 
     /**
+     * Return the recommended okapi_base_url.
+     *
+     * This is the URL which we want all *new* client applications to use.
+     * OKAPI will suggest URLs with this prefix in various context, e.g. in all
+     * the dynamically generated docs.
+     *
+     * Also see `get_allowed_base_urls` method.
+     */
+    public static function get_recommended_base_url()
+    {
+        return Settings::get('SITE_URL')."okapi/";
+    }
+
+    /**
+     * Return a list of okapi_base_urls allowed to be used when calling OKAPI
+     * methods in this installation.
+     *
+     * Since issue #416, the "recommended" okapi_base_url is *not* the only one
+     * allowed (actually, there were more allowed before issue #416, but they
+     * weren't allowed "officially").
+     */
+    public static function get_allowed_base_urls()
+    {
+        /* Currently, there are no config settings which would let us allow
+         * to determine the proper values for this list. So, we need to have it
+         * hardcoded. (Perhaps we should move this to etc/installations.xml?
+         * But this wouldn't be efficient...) */
+
+        switch (self::get_oc_schema_code()) {
+            case 'OCPL':
+                $urls = array(
+                    "http://opencaching.pl/okapi/",
+                    "http://www.opencaching.pl/okapi/",
+                );
+                break;
+            case 'OCDE':
+                $urls = array(
+                    "http://www.opencaching.de/okapi/",
+                    "https://www.opencaching.de/okapi/",
+                );
+                break;
+            case 'OCNL':
+                $urls = array(
+                    "http://www.opencaching.nl/okapi/",
+                );
+                break;
+            case 'OCRO':
+                $urls = array(
+                    "http://www.opencaching.ro/okapi/",
+                );
+                break;
+            case 'OCORGUK':
+                $urls = array(
+                    "http://www.opencaching.org.uk/okapi/",
+                );
+                break;
+            case 'OCUS':
+                $urls = array(
+                    "http://www.opencaching.us/okapi/",
+                    "http://opencaching.us/okapi/",
+                );
+                break;
+            default:
+                /* Unknown site. No extra allowed URLs. */
+                $urls = array();
+        }
+
+        if (!in_array(self::get_recommended_base_url(), $urls)) {
+            $urls[] = self::get_recommended_base_url();
+        }
+
+        return $urls;
+    }
+
+    /**
      * Pick text from $langdict based on language preference $langpref.
      *
      * Example:
@@ -2407,10 +2482,32 @@ class OkapiHttpRequest extends OkapiRequest
     private function init_request()
     {
         $this->request = OAuthRequest::from_request();
-        if (!in_array($this->request->get_normalized_http_method(),
-            array('GET', 'POST')))
-        {
+
+        /* Verify if the request was issued with proper HTTP method. */
+
+        if (!in_array(
+            $this->request->get_normalized_http_method(),
+            array('GET', 'POST')
+        )) {
             throw new BadRequest("Use GET and POST methods only.");
+        }
+
+        /* Verify if the request was issued with proper okapi_base_url. */
+
+        $url = $this->request->get_normalized_http_url();
+        $allowed = false;
+        foreach (Okapi::get_allowed_base_urls() as $allowed_prefix) {
+            if (strpos($url, $allowed_prefix) === 0) {
+                $allowed = true;
+                break;
+            }
+        }
+        if (!$allowed) {
+            throw new BadRequest(
+                "Unrecognized base URL prefix! See `okapi_base_urls` field ".
+                "in the `services/apisrv/installation` method. (Recommended ".
+                "base URL to use is '".Okapi::get_recommended_base_url()."'.)"
+            );
         }
     }
 
