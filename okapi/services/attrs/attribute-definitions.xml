@@ -632,6 +632,7 @@ It also defines attribute names and descriptions in several languages.
     <attr acode="A15" categories="de-preconditions">
         <groundspeak id="47" inc="true" name="Field puzzle" />
         <opencaching schema="OCDE" id="55" />
+        <opencaching schema="OCRO" id="155" />
         <lang id="en">
             <name>Puzzle / Mystery</name>
             <desc>
@@ -655,6 +656,12 @@ It also defines attribute names and descriptions in several languages.
             <desc>
                 Puzzle o Mystery devono essere risolti prima o durante la ricerca di
                 questa cache.
+            </desc>
+        </lang>
+        <lang id="ro">
+            <name>Rezolvare pe teren</name>
+            <desc>
+                Rezolvarea se poate găsi numai vizitând locul.
             </desc>
         </lang>
     </attr>
