@@ -866,7 +866,7 @@ It also defines attribute names and descriptions in several languages.
             <desc>
             </desc>
         </lang>
-        <lang id="en">
+        <lang id="ro">
             <name>Excursie</name>
             <desc>
                 Pentru a ajunge la geocutie este necesar să mergi pe jos o distanţă lungă, 
@@ -2011,7 +2011,7 @@ It also defines attribute names and descriptions in several languages.
                 dimenticate le batterie di riserva!
             </desc>
         </lang>
-        <lang id="en">
+        <lang id="ro">
             <name>Lanternă</name>
             <desc>
                 Ai nevoie de o lanternă.
@@ -2248,7 +2248,7 @@ It also defines attribute names and descriptions in several languages.
                 descrizione della cache per maggiori dettagli.
             </desc>
         </lang>
-        <lang id="en">
+        <lang id="ro">
             <name>Barcă</name>
             <desc>
                 Ai nevoie de o barcă sau alt mijloc de transport pe apă. 
@@ -2805,7 +2805,7 @@ It also defines attribute names and descriptions in several languages.
                 kunnen ook aan deze cache deelnemen.
             </desc>
         </lang>
-        <lang id="en">
+        <lang id="ro">
             <name>Recomandat pentru copii</name>
             <desc>
                 Cutia e uşor de găsit şi nu prezintă pericole. Poţi să mergi la căutat cu 
@@ -2937,7 +2937,7 @@ It also defines attribute names and descriptions in several languages.
                 Deze cache dient ongezien gelogd te worden.
             </desc>
         </lang>
-        <lang id="en">
+        <lang id="ro">
             <name>Discreţie</name>
             <desc>
                 Fii discret în timp ce cauţi. Încearcă să eviţi să atragi atenţia asupra ta.
