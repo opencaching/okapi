@@ -222,26 +222,29 @@ class TileTree
 
                 # Avoid deadlocks, see https://github.com/opencaching/okapi/issues/388
                 Db::execute("lock tables okapi_tile_caches write, okapi_tile_caches tc2 read");
-                Db::execute("
-                    replace into okapi_tile_caches (
-                        z, x, y, cache_id, z21x, z21y, status, type, rating,
-                        flags, name_crc
-                    )
-                    select
-                        '".Db::escape_string($zoom)."',
-                        '".Db::escape_string($x)."',
-                        '".Db::escape_string($y)."',
-                        cache_id, z21x, z21y, status, type, rating,
-                        flags, name_crc
-                    from okapi_tile_caches tc2
-                    where
-                        z = '".Db::escape_string($parent_zoom)."'
-                        and x = '".Db::escape_string($parent_x)."'
-                        and y = '".Db::escape_string($parent_y)."'
-                        and z21x between $left_z21x and $right_z21x
-                        and z21y between $top_z21y and $bottom_z21y
-                ");
-                Db::execute("unlock tables");
+                try {
+                    Db::execute("
+                        replace into okapi_tile_caches (
+                            z, x, y, cache_id, z21x, z21y, status, type, rating,
+                            flags, name_crc
+                        )
+                        select
+                            '".Db::escape_string($zoom)."',
+                            '".Db::escape_string($x)."',
+                            '".Db::escape_string($y)."',
+                            cache_id, z21x, z21y, status, type, rating,
+                            flags, name_crc
+                        from okapi_tile_caches tc2
+                        where
+                            z = '".Db::escape_string($parent_zoom)."'
+                            and x = '".Db::escape_string($parent_x)."'
+                            and y = '".Db::escape_string($parent_y)."'
+                            and z21x between $left_z21x and $right_z21x
+                            and z21y between $top_z21y and $bottom_z21y
+                    ");
+                } finally {
+                    Db::execute("unlock tables");
+                }
                 $test = Db::select_value("
                     select 1
                     from okapi_tile_caches
