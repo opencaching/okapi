@@ -2,12 +2,8 @@
 
 namespace okapi\views\apps\revoke_access;
 
-use Exception;
-use okapi\Okapi;
 use okapi\Settings;
 use okapi\Db;
-use okapi\OkapiHttpResponse;
-use okapi\OkapiHttpRequest;
 use okapi\OkapiRedirectResponse;
 use okapi\OCSession;
 

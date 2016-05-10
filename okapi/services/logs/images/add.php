@@ -9,9 +9,7 @@ use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\Settings;
-use okapi\BadRequest;
 use okapi\services\logs\images\LogImagesCommon;
-
 
 /**
  * This exception is thrown by WebService::_call method, when error is detected in

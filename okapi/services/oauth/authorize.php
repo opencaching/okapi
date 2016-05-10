@@ -2,7 +2,6 @@
 
 namespace okapi\services\oauth\authorize;
 
-use okapi\Okapi;
 use okapi\Settings;
 use okapi\OkapiRedirectResponse;
 use okapi\OkapiRequest;

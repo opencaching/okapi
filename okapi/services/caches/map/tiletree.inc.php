@@ -4,20 +4,10 @@ namespace okapi\services\caches\map;
 
 use Exception;
 use okapi\Okapi;
-use okapi\Settings;
-use okapi\Cache;
 use okapi\Db;
-use okapi\OkapiRequest;
-use okapi\OkapiHttpResponse;
-use okapi\ParamMissing;
-use okapi\InvalidParam;
-use okapi\BadRequest;
-use okapi\DoesNotExist;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;
-use okapi\OkapiLock;
-
 
 class TileTree
 {

@@ -4,11 +4,9 @@ namespace okapi\services\caches\map;
 
 use Exception;
 use okapi\Okapi;
-use okapi\Settings;
 use okapi\Cache;
 use okapi\Db;
 use okapi\FileCache; // WRTODO
-
 
 class TileRenderer
 {

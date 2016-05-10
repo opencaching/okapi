@@ -2,14 +2,10 @@
 
 namespace okapi\services\replicate\fulldump;
 
-use Exception;
-use okapi\Okapi;
 use okapi\Db;
 use okapi\Cache;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiRequest;
-use okapi\ParamMissing;
-use okapi\InvalidParam;
 use okapi\BadRequest;
 
 class WebService

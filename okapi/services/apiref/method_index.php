@@ -2,11 +2,8 @@
 
 namespace okapi\services\apiref\method_index;
 
-use Exception;
 use okapi\Okapi;
 use okapi\OkapiRequest;
-use okapi\ParamMissing;
-use okapi\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\Cache;
 use okapi\OkapiInternalConsumer;

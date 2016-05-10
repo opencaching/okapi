@@ -9,7 +9,6 @@ use okapi\Db;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
-use okapi\services\caches\search\SearchAssistant;
 
 class WebService
 {

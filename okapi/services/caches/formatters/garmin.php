@@ -2,20 +2,14 @@
 
 namespace okapi\services\caches\formatters\garmin;
 
-
-use okapi\Okapi;
 use okapi\Cache;
 use okapi\Settings;
 use okapi\OkapiRequest;
-use okapi\OkapiHttpResponse;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiZIPHttpResponse;
-use okapi\BadRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
-use okapi\OkapiAccessToken;
-use okapi\services\caches\search\SearchAssistant;
 
 use \Exception;
 use \clsTbsZip;

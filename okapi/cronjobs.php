@@ -28,7 +28,6 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\services\replicate\ReplicateCommon;
 
-
 class CronJobController
 {
     /** Return the list of all currently enabled cronjobs. */

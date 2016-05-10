@@ -13,8 +13,6 @@ use okapi\InvalidParam;
 use okapi\BadRequest;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
-use okapi\OkapiAccessToken;
-use okapi\services\caches\search\SearchAssistant;
 use okapi\services\attrs\AttrHelper;
 
 class WebService

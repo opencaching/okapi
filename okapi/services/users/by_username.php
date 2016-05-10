@@ -2,8 +2,6 @@
 
 namespace okapi\services\users\by_username;
 
-use okapi\BadRequest;
-
 use okapi\OkapiInternalRequest;
 
 use okapi\OkapiServiceRunner;
@@ -12,7 +10,6 @@ use okapi\Okapi;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
-use okapi\services\caches\search\SearchAssistant;
 
 class WebService
 {
