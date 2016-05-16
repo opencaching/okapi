@@ -168,7 +168,7 @@ class OkapiExceptionHandler
                         $last_email = 0;
                     }
                     if (time() - $last_email < 3600) {
-                        # Send no more than one per hour.
+                        # Send no more than one mail per hour.
                         return;
                     }
                     @touch($lock_file);
