@@ -509,6 +509,9 @@ class WebService
         include 'gpxfile.tpl.php';
         Okapi::gettext_domain_restore();
 
+        # workaround for https://github.com/opencaching/okapi/issues/435
+        ini_set('memory_limit', '512M');
+
         $result = array('gpx' => ob_get_clean());
         if ($flags & self::FLAG_CREATE_GGZ_IDX) {
             $result['ggz_entries'] = $ggz_entries;
