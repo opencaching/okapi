@@ -13,11 +13,11 @@
     commit, put them into one entry. This helps to detect copy-and-paste
     errors, and allows commmit IDs or version numbers to be used as unique
     identifiers for changelog entries.
-   
+
     -->
     <changes>
         <change commit="ee55400d" version="1287" time="2016-04-24T20:04:42+0200" type="enhancement">
-            Added the <em>log_uuids</em> return field to 
+            Added the <em>log_uuids</em> return field to
             <a href="services/logs/submit.html">services/logs/submit</a>.
         </change>
         <change commit="e25e5385" version="1282" time="2016-04-23T20:04:46+0200" type="enhancement">

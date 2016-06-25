@@ -71,7 +71,7 @@ It also defines attribute names and descriptions in several languages.
         <lang id="ro">
             <name>Exclusiv Opencaching</name>
             <desc>
-                Această geocutie este publicată exclusiv pe Opencaching. Nu este publicată pe nici un 
+                Această geocutie este publicată exclusiv pe Opencaching. Nu este publicată pe nici un
                 alt site de geocaching.
             </desc>
         </lang>
@@ -214,7 +214,7 @@ It also defines attribute names and descriptions in several languages.
         <lang id="ro">
             <name>Geocutie poştală</name>
             <desc>
-                În cutie vei găsi o ştampilă cu care să faci o însemnare în propriul tău 
+                În cutie vei găsi o ştampilă cu care să faci o însemnare în propriul tău
                 carneţel, iar jurnalul din cutie să-l semnezi cu propria ta ştampilă.
                 Atenţie să nu amesteci ştampilele!
             </desc>
@@ -478,7 +478,7 @@ It also defines attribute names and descriptions in several languages.
             <name>Dead Drop USB</name>
             <desc>
                 Geocutia este o memorie USB fixată undeva. Aceasta conţine un fişiser
-                README.txt cu descrierea si un fisier LOGBOOK.txt în care poţi să scrii 
+                README.txt cu descrierea si un fisier LOGBOOK.txt în care poţi să scrii
                 despre vizita ta.
             </desc>
         </lang>
@@ -876,7 +876,7 @@ It also defines attribute names and descriptions in several languages.
         <lang id="ro">
             <name>Excursie</name>
             <desc>
-                Pentru a ajunge la geocutie este necesar să mergi pe jos o distanţă lungă, 
+                Pentru a ajunge la geocutie este necesar să mergi pe jos o distanţă lungă,
                 de regulă peste 5km dus-întors. În zonele montane distanţa poate fi mai scurtă,
                 dar şi traseul mai dificil. Se recomandă încălţăminte şi echipament adecvat, după caz.
             </desc>
@@ -1397,7 +1397,7 @@ It also defines attribute names and descriptions in several languages.
         <lang id="ro">
             <name>Apă potabilă</name>
             <desc>
-                Pe traseu sau în apropierea geocutiei există o sursă de apă potabilă, 
+                Pe traseu sau în apropierea geocutiei există o sursă de apă potabilă,
                 de ex. un izvor.
             </desc>
         </lang>
@@ -1659,8 +1659,8 @@ It also defines attribute names and descriptions in several languages.
         <lang id="ro">
             <name>Recomandată noaptea</name>
             <desc>
-                Se recomandă să cauţi această cutie noaptea. De obicei ai nevoie de 
-                o lanternă pentru a indentifica indicii reflectorizante care nu sunt 
+                Se recomandă să cauţi această cutie noaptea. De obicei ai nevoie de
+                o lanternă pentru a indentifica indicii reflectorizante care nu sunt
                 vizibile distinct ziua.
             </desc>
         </lang>
@@ -2258,7 +2258,7 @@ It also defines attribute names and descriptions in several languages.
         <lang id="ro">
             <name>Barcă</name>
             <desc>
-                Ai nevoie de o barcă sau alt mijloc de transport pe apă. 
+                Ai nevoie de o barcă sau alt mijloc de transport pe apă.
                 Nu se recomandă înotul sau nu este fezabil.
             </desc>
         </lang>
@@ -2485,7 +2485,7 @@ It also defines attribute names and descriptions in several languages.
             <name>Teren de vânătoare</name>
             <desc>
                 Atenţie, teren de vânătoare! Geocutia este amplasată pe sau în apropierea
-                acestuia. Ai grijă să porţi haine reflectorizante şi să ai lanternă 
+                acestuia. Ai grijă să porţi haine reflectorizante şi să ai lanternă
                 dacă se face seară. Respectă vânătorii.
             </desc>
         </lang>
@@ -2815,7 +2815,7 @@ It also defines attribute names and descriptions in several languages.
         <lang id="ro">
             <name>Recomandat pentru copii</name>
             <desc>
-                Cutia e uşor de găsit şi nu prezintă pericole. Poţi să mergi la căutat cu 
+                Cutia e uşor de găsit şi nu prezintă pericole. Poţi să mergi la căutat cu
                 copiii.
             </desc>
         </lang>
@@ -2920,7 +2920,7 @@ It also defines attribute names and descriptions in several languages.
         <lang id="ro">
             <name>Anumite ore/Cu taxă</name>
             <desc>
-                Geocutia se află într-un loc accesibil doar între anumite ore. Este posibil 
+                Geocutia se află într-un loc accesibil doar între anumite ore. Este posibil
                 să fie necesară plata unei taxe de intrare. De exemplu în incinta unui muzeu.
                 Mai multe informaţii în descriere.
             </desc>
