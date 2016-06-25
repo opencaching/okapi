@@ -1134,10 +1134,7 @@ class Okapi
         try {
             $counter = Cache::get($cache_key);
         } catch (Exception $e) {
-            # See https://github.com/opencaching/okapi/issues/434 on why
-            # we catch any exceptions here, not just DbException.
-
-            # Exceptions can occur during OKAPI update (#156), or when
+            # Exception can occur during OKAPI update (#156, #434), or when
             # the cache table is broken (#340). I am not sure which option is
             # better: 1. notify the admins about the error and risk spamming
             # them, 2. don't notify and don't risk spamming them. Currently,
@@ -1502,7 +1499,7 @@ class Okapi
         static $init_made = false;
         if ($init_made)
             return;
-        ini_set('memory_limit', '256M');
+        self::increase_memory_limit('512M');
         # The memory limit is - among other - crucial for the maximum size
         # of processable images; see services/logs/images/add.php: max_pixels()
         Db::connect();
@@ -1515,6 +1512,19 @@ class Okapi
         if ($allow_cronjobs)
             self::execute_prerequest_cronjobs();
         $init_made = true;
+    }
+
+    /**
+     * Increase memory limit (only if $value is larger than the current memory
+     * limit).
+     */
+    public static function increase_memory_limit($value)
+    {
+        $current = self::from_human_to_bytes(ini_get('memory_limit'));
+        $new = self::from_human_to_bytes($value);
+        if ($current < $new) {
+            ini_set('memory_limit', $value);
+        }
     }
 
     /**
@@ -2089,16 +2099,27 @@ class Okapi
         return $html;
     }
 
-    function php_ini_get_bytes($variable)
-    {
-        $value = trim(ini_get($variable));
-        if (!preg_match("/^[0-9]+[KM]?$/", $value))
-            throw new Exception("Unexpected PHP setting: ".$variable. " = ".$value);
-        $value = str_replace('K', '*1024', $value);
-        $value = str_replace('M', '*1024*1024', $value);
-        $value = eval('return '.$value.';');
-        return $value;
-}
+    /**
+     * Convert strings such as "2M" or "50k" to bytes.
+     */
+    public static function from_human_to_bytes($val) {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+        switch($last) {
+            case 'g':
+                return $val * 1024 * 1024 * 1024;
+            case 'm':
+                return $val * 1024 * 1024;
+            case 'k':
+                return $val * 1024;
+            default:
+                if (($last < '0') || ($last > '9')) {
+                    throw new Exception("Unknown suffix");
+                } else {
+                    return $val;
+                }
+        }
+    }
 
     # object types in table okapi_submitted_objects
     const OBJECT_TYPE_CACHE = 1;
