@@ -115,7 +115,7 @@ way, that the same change will also work on all other OC sites:
 
 ## Requirements ##
 
-  * PHP 5.3
+  * PHP 5.6
   * A working opencaching site.
 
 
