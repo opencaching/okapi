@@ -86,6 +86,10 @@ class View
         ignore_user_abort(true);
         set_time_limit(0);
 
+        if (function_exists('apache_setenv')) {
+            @apache_setenv('no-gzip', 1);
+        }
+        @ini_set('zlib.output_compression', 0);
         header("Content-Type: text/plain; charset=utf-8");
 
         $current_ver = self::get_current_version();
@@ -752,4 +756,21 @@ class View
             DROP TABLE okapi_cache_logs
         ");
     }
+
+    private static function ver96() { Db::execute("alter table okapi_authorizations engine=InnoDB"); }
+    private static function ver97() { Db::execute("alter table okapi_cache engine=InnoDB"); }
+    private static function ver98() { Db::execute("alter table okapi_submitted_objects engine=InnoDB"); }
+    private static function ver99() { Db::execute("alter table okapi_cache_reads engine=InnoDB"); }
+    private static function ver100() { Db::execute("alter table okapi_clog engine=InnoDB"); }
+    private static function ver101() { Db::execute("alter table okapi_consumers engine=InnoDB"); }
+    private static function ver102() { Db::execute("alter table okapi_search_results engine=InnoDB"); }
+    private static function ver103() { Db::execute("alter table okapi_search_sets engine=InnoDB"); }
+    private static function ver104() { Db::execute("alter table okapi_search_sets drop key by_hash"); }
+    private static function ver105() { Db::execute("alter table okapi_search_sets add key by_hash (params_hash)"); }
+    private static function ver106() { Db::execute("alter table okapi_stats_hourly engine=InnoDB"); }
+    private static function ver107() { Db::execute("alter table okapi_tokens engine=InnoDB"); }
+    private static function ver108() { Db::execute("alter table okapi_vars engine=InnoDB"); }
+    private static function ver109() { Db::execute("alter table okapi_stats_monthly engine=InnoDB"); }
+    private static function ver110() { Db::execute("alter table okapi_submitted_objects drop index by_consumer"); }
+    private static function ver111() { Db::execute("alter table okapi_submitted_objects add index by_consumer (consumer_key)"); }
 }
