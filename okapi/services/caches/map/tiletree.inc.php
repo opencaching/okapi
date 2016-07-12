@@ -242,10 +242,8 @@ class TileTree
                             and z21x between $left_z21x and $right_z21x
                             and z21y between $top_z21y and $bottom_z21y
                     ");
-                    Db::execute("unlock tables;");
-                } catch (Exception $e) {
-                    Db::execute("unlock tables");  // No "finally" in PHP 5.3
-                    throw $e;
+                } finally {
+                    Db::execute("unlock tables");
                 }
                 $test = Db::select_value("
                     select 1

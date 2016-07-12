@@ -67,17 +67,10 @@ class View
         $lock = OkapiLock::get('db-update');
         $lock->acquire();
 
-        try
-        {
+        try {
             self::_call();
+        } finally {
             $lock->release();
-        }
-        catch (Exception $e)
-        {
-            # Error occured. Make sure the lock is released and rethrow.
-
-            $lock->release();
-            throw $e;
         }
     }
 

@@ -302,7 +302,7 @@ class CacheCleanupCronJob extends Cron5Job
         $multiplier = 0.9;  # Every hour, all scores are multiplied by this.
         $limit = 0.01;  # When a score reaches this limit, the entry is deleted.
 
-        # Every time the entry is read, its score is incread by 1. If an entry
+        # Every time the entry is read, its score is increased by 1. If an entry
         # is saved, but never read, it will be deleted after log(L,M) hours
         # (log(0.01, 0.9) = 43h). If an entry is read 1000000 times and then
         # never read anymore, it will be deleted after log(1000000/L, 1/M)
@@ -403,10 +403,8 @@ class StatsWriterCronJob extends PrerequestCronJob
                 ");
             }
             Db::execute("delete from okapi_stats_temp;");
+        } finally {
             Db::execute("unlock tables;");
-        } catch (Exception $e) {
-            Db::execute("unlock tables;");  // No "finally" in PHP 5.3
-            throw $e;
         }
     }
 }
@@ -475,11 +473,8 @@ class StatsCompressorCronJob extends Cron5Job
                     where substr(period_start, 1, 7) = '".Db::escape_string($month)."'
                 ");
             }
-
+        } finally {
             Db::execute("unlock tables;");
-        } catch (Exception $e) {
-            Db::execute("unlock tables;");  // No "finally" in PHP 5.3
-            throw $e;
         }
     }
 }

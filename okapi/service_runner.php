@@ -144,10 +144,8 @@ class OkapiServiceRunner
                     where user_id='".Db::escape_string($request->token->user_id)."'
                 ");
             }
+        } finally {
             Okapi::gettext_domain_restore();
-        } catch (Exception $e) {
-            Okapi::gettext_domain_restore();
-            throw $e;
         }
         $runtime = microtime(true) - $time_started;
 
