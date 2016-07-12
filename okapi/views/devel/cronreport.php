@@ -85,11 +85,17 @@ class View
         else
             print "NEVER";
         print " (crontab_check_counter: ".Cache::get('crontab_check_counter').").\n";
-        print "clog_revisions_daily: ";
+        print "Debug clog_revisions_daily: ";
         if (Cache::get('clog_revisions_daily'))
         {
-            foreach (Cache::get('clog_revisions_daily') as $time => $rev)
+            $prev = null;
+            foreach (Cache::get('clog_revisions_daily') as $time => $rev) {
+                if ($prev != null) {
+                    print "(+".($rev-$prev).") ";
+                }
                 print "$rev ";
+                $prev = $rev;
+            }
             print "\n";
         } else {
             print "NULL\n";
