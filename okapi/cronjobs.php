@@ -195,9 +195,11 @@ abstract class CronJob
     public abstract function get_type();
 
     /**
-     * Get the next scheduled run (unix timestamp). You may assume this function
-     * will be called ONLY directly after the job was run. You may use this to say,
-     * for example, "run the job before first request made after midnight".
+     * Get the next scheduled run (unix timestamp). This method will be called
+     * ONLY ONCE per cronjob execution, directly AFTER the job was run.
+     * (Scheduling the *first* run of `execute` method is out of this method's
+     * control, but you can prevent the actual job from being executed by using
+     * custom conditions in your `execute` method.)
      */
     public abstract function get_next_scheduled_run($previously_scheduled_run);
 }
@@ -251,6 +253,41 @@ abstract class Cron5Job extends CronJob
     }
 }
 
+/**
+ * A bit similar to Cron5Job with get_period=24h, but this one is trying to be
+ * executed exactly at the given hour. Useful for long-running jobs which
+ * should always be executed at night.
+ *
+ * Note, that the first execution will occur just after if has been registered.
+ * You can control the time of all further executions, but not the first one.
+ */
+abstract class Cron24Job extends CronJob
+{
+    /**
+     * Always returns 'cron-5'.
+     */
+    public final function get_type() { return 'cron-5'; }
+
+    /**
+     * Return "hh:mm" (must be exactly 5 chars!) - the (local) time of day at
+     * which the cronjob should be executed.
+     */
+    public abstract function get_scheduled_time();
+
+    public function get_next_scheduled_run($previously_scheduled_run)
+    {
+        $datestr = date('c'); // e.g. "2004-02-12T15:19:21+02:00"
+        $datestr = (
+            substr($datestr, 0, 11) . $this->get_scheduled_time() . ":00" .
+            substr($datestr, 19)
+        );
+        $t = strtotime($datestr);
+        if ($t <= time()) {
+            $t += 86400;
+        }
+        return $t;
+    }
+}
 
 /**
  * Deletes old Request Tokens and Nonces every 5 minutes. This is required for
@@ -413,9 +450,9 @@ class StatsWriterCronJob extends PrerequestCronJob
  * Reads old hourly stats and reformats them into monthly stats.
  * See issue #361.
  */
-class StatsCompressorCronJob extends Cron5Job
+class StatsCompressorCronJob extends Cron24Job
 {
-    public function get_period() { return 3600; }  # 1 hour
+    public function get_scheduled_time() { return "04:51"; }
     public function execute()
     {
         if (Okapi::get_var('db_version', 0) + 0 < 94)
@@ -559,14 +596,14 @@ class ChangeLogWriterJob extends Cron5Job
 }
 
 /**
- * Once per day, compares alle caches to the cached versions
+ * Once per day, compares all geocaches to the cached versions
  * kept by the 'replicate' module. If it finds any inconsistencies, it
  * emails the developers (such inconsistencies shouldn't happen) and it changes
  * the okapi_syncbase column accordingly. See issue 157.
  */
-class ChangeLogCheckerJob extends Cron5Job
+class ChangeLogCheckerJob extends Cron24Job
 {
-    public function get_period() { return 86400; }
+    public function get_scheduled_time() { return "04:18"; }
     public function execute()
     {
         require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");

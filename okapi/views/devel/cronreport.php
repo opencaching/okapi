@@ -50,12 +50,33 @@ class View
             $type = $cronjob->get_type();
             $name = $cronjob->get_name();
             print str_pad($type, 11)."  ".str_pad($name, 40)."  ";
-            if (!isset($schedule[$name]))
-                print "NOT YET SCHEDULED\n";
-            elseif ($schedule[$name] <= time())
-                print "DELAYED: should be run ".(time() - $schedule[$name])." seconds ago\n";
-            else
-                print "scheduled to run in ".str_pad($schedule[$name] - time(), 6, " ", STR_PAD_LEFT)." seconds\n";
+            if (!isset($schedule[$name])) {
+                print "NOT YET SCHEDULED";
+            } elseif ($schedule[$name] <= time()) {
+                print "DELAYED: should be run ".(time() - $schedule[$name])." seconds ago";
+            } else {
+                print "scheduled to run in ".str_pad($schedule[$name] - time(), 6, " ", STR_PAD_LEFT)." seconds";
+            }
+            if (isset($schedule[$name])) {
+                $delta = abs(time() - $schedule[$name]);
+                if ($delta > 10 * 60) {
+                    print " (";
+                    print substr(date('c', $schedule[$name]), 11, 8);
+                    print ", ";
+                    $datestr = substr(date('c', $schedule[$name]), 0, 10);
+                    $today = substr(date('c', time()), 0, 10);
+                    $tomorrow = substr(date('c', time() + 86400), 0, 10);
+                    if ($datestr == $today) {
+                        print "today";
+                    } elseif ($datestr == $tomorrow) {
+                        print "tomorrow";
+                    } else {
+                        print $datestr;
+                    }
+                    print ")";
+                }
+            }
+            print "\n";
         }
         print "\n";
         print "Crontab last ping: ";
