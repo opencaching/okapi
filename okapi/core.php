@@ -211,6 +211,7 @@ class OkapiExceptionHandler
     public static function get_exception_info($e)
     {
         $exception_info = "===== ERROR MESSAGE =====\n"
+            .get_class($e).":\n"
             .trim(self::removeSensitiveData($e->getMessage()))
             ."\n=========================\n\n";
         if ($e instanceof FatalError)
