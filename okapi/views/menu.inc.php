@@ -2,7 +2,6 @@
 
 namespace okapi\views\menu;
 
-use Exception;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;

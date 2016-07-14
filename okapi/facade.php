@@ -28,14 +28,6 @@ namespace okapi;
 # \okapi\Facade::schedule_user_entries_check(...);
 # \okapi\Facade::disable_error_handling();
 
-
-use Exception;
-use okapi\OkapiServiceRunner;
-use okapi\OkapiInternalRequest;
-use okapi\OkapiFacadeConsumer;
-use okapi\OkapiFacadeAccessToken;
-use okapi\Cache;
-
 require_once($GLOBALS['rootpath']."okapi/core.php");
 OkapiErrorHandler::$treat_notices_as_errors = true;
 require_once($GLOBALS['rootpath']."okapi/service_runner.php");

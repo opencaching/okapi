@@ -2,7 +2,6 @@
 
 namespace okapi\views\http404;
 
-use Exception;
 use okapi\Okapi;
 use okapi\Settings;
 use okapi\OkapiHttpResponse;

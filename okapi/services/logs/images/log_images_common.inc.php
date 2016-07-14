@@ -7,13 +7,9 @@
 namespace okapi\services\logs\images;
 
 use Exception;
-use okapi\Okapi;
 use okapi\Db;
-use okapi\OkapiRequest;
 use okapi\InvalidParam;
 use okapi\Settings;
-use okapi\BadRequest;
-
 
 class LogImagesCommon
 {

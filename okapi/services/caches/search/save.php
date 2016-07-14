@@ -6,7 +6,6 @@ require_once('searching.inc.php');
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
-use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\Db;
 use okapi\OkapiLock;

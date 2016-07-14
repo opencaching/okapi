@@ -6,7 +6,6 @@ use Exception;
 use okapi\Okapi;
 use okapi\Cache;
 
-
 class Changelog
 {
     public $unavailable_changes = array();

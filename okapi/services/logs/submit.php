@@ -13,7 +13,6 @@ use okapi\OkapiServiceRunner;
 use okapi\Settings;
 use okapi\BadRequest;
 
-
 /**
  * This exception is thrown by WebService::_call method, when error is detected in
  * user-supplied data. It is not a BadRequest exception - it does not imply that

@@ -13,7 +13,6 @@ use ArrayObject;
 use Pdo;
 use okapi\oauth\OAuthServerException;
 use okapi\oauth\OAuthServer400Exception;
-use okapi\oauth\OAuthServer401Exception;
 use okapi\oauth\OAuthMissingParameterException;
 use okapi\oauth\OAuthConsumer;
 use okapi\oauth\OAuthToken;
