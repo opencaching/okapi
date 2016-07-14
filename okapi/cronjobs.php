@@ -321,10 +321,10 @@ class SearchSetsCleanerJob extends Cron5Job
     }
 }
 
-/** Clean up the cache, once per hour. */
-class CacheCleanupCronJob extends Cron5Job
+/** Clean up the cache, once per day. */
+class CacheCleanupCronJob extends Cron24Job
 {
-    public function get_period() { return 3600; }
+    public function get_scheduled_time() { return "04:20"; }
     public function execute()
     {
         # Delete all expired elements.
@@ -336,14 +336,14 @@ class CacheCleanupCronJob extends Cron5Job
 
         # Update the "score" stats.
 
-        $multiplier = 0.9;  # Every hour, all scores are multiplied by this.
+        $multiplier = 0.08;  # Every day, all scores are multiplied by this.
         $limit = 0.01;  # When a score reaches this limit, the entry is deleted.
 
         # Every time the entry is read, its score is increased by 1. If an entry
-        # is saved, but never read, it will be deleted after log(L,M) hours
-        # (log(0.01, 0.9) = 43h). If an entry is read 1000000 times and then
+        # is saved, but never read, it will be deleted after log(L,M) days
+        # (log(0.01, 0.08) = ~2days). If an entry is read 1000000 times and then
         # never read anymore, it will be deleted after log(1000000/L, 1/M)
-        # hours (log(1000000/0.01, 1/0.9) = 174h = 7 days).
+        # hours (log(1000000/0.01, 1/0.08) = ~7 days).
 
         Db::execute("
             update okapi_cache
@@ -366,7 +366,7 @@ class CacheCleanupCronJob extends Cron5Job
         Db::execute("truncate okapi_cache_reads");
 
         # Delete elements with the lowest score. Entries which have been set
-        # but never read will be removed after 36 hours (0.9^36 < 0.02 < 0.9^35).
+        # but never read will be removed after 2 days (0.08^2 < 0.01 < 0.08^1).
 
         Db::execute("
             delete from okapi_cache
@@ -374,7 +374,7 @@ class CacheCleanupCronJob extends Cron5Job
                 score is not null
                 and score < '".Db::escape_string($limit)."'
         ");
-        // WRCLEANIT: Possibly harmful for performance in InnoDB. Db::query("optimize table okapi_cache");
+        Db::query("optimize table okapi_cache");
 
         # FileCache does not have an expiry date. We will delete all files older
         # than 24 hours.
@@ -452,7 +452,7 @@ class StatsWriterCronJob extends PrerequestCronJob
  */
 class StatsCompressorCronJob extends Cron24Job
 {
-    public function get_scheduled_time() { return "04:51"; }
+    public function get_scheduled_time() { return "04:20"; }
     public function execute()
     {
         if (Okapi::get_var('db_version', 0) + 0 < 94)
@@ -603,7 +603,7 @@ class ChangeLogWriterJob extends Cron5Job
  */
 class ChangeLogCheckerJob extends Cron24Job
 {
-    public function get_scheduled_time() { return "04:18"; }
+    public function get_scheduled_time() { return "04:20"; }
     public function execute()
     {
         require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
@@ -671,9 +671,9 @@ class TileTreeUpdater extends Cron5Job
 }
 
 /** Once per day, removes all revisions older than 10 days from okapi_clog table. */
-class ChangeLogCleanerJob extends Cron5Job
+class ChangeLogCleanerJob extends Cron24Job
 {
-    public function get_period() { return 86400; }
+    public function get_scheduled_time() { return "04:20"; }
     public function execute()
     {
         require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
@@ -697,7 +697,7 @@ class ChangeLogCleanerJob extends Cron5Job
             where id < '".Db::escape_string($new_min_revision)."'
         ");
         Cache::set($cache_key, $new_data, 10*86400);
-        // WRCLEANIT: Possibly harmful for performance in InnoDB. Db::query("optimize table okapi_clog");
+        Db::query("optimize table okapi_clog");
     }
 }
 
@@ -888,13 +888,13 @@ class LocaleChecker extends Cron5Job
 }
 
 /** Once per day, optimize certain MySQL tables. */
-class TableOptimizerJob extends Cron5Job
+class TableOptimizerJob extends Cron24Job
 {
-    public function get_period() { return 86400; }
+    public function get_scheduled_time() { return "04:20"; }
     public function execute()
     {
-        // WRCLEANIT: Possibly harmful for performance in InnoDB. Db::query("optimize table okapi_tile_caches");
-        // WRCLEANIT: Possibly harmful for performance in InnoDB. Db::query("optimize table okapi_tile_status");
+        Db::query("optimize table okapi_tile_caches");
+        Db::query("optimize table okapi_tile_status");
     }
 }
 
