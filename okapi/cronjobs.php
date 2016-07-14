@@ -29,6 +29,12 @@ use okapi\OkapiInternalConsumer;
 use okapi\services\replicate\ReplicateCommon;
 
 
+/**
+ * Thrown in CronJobController::run_jobs when other thread is already
+ * handling the jobs.
+ */
+class JobsAlreadyInProgress extends Exception {}
+
 class CronJobController
 {
     /** Return the list of all currently enabled cronjobs. */
@@ -65,14 +71,23 @@ class CronJobController
     /**
      * Execute all scheduled cronjobs of given type, reschedule, and return
      * UNIX timestamp of the nearest scheduled event.
+     *
+     * If $wait is false, then it may throw JobsAlreadyInProgress if another
+     * thread is currently executing these type of jobs.
      */
-    public static function run_jobs($type)
+    public static function run_jobs($type, $wait=false)
     {
         require_once($GLOBALS['rootpath'].'okapi/service_runner.php');
 
         # We don't want other cronjobs of the same time to run simultanously.
         $lock = OkapiLock::get('cronjobs-'.$type);
-        $lock->acquire();
+        if (!$lock->try_acquire()) {
+            if ($wait) {
+                $lock->acquire();
+            } else {
+                throw new JobsAlreadyInProgress();
+            }
+        }
 
         $schedule = Cache::get("cron_schedule");
         if ($schedule == null)
