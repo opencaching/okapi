@@ -766,4 +766,5 @@ class View
     private static function ver109() { Db::execute("alter table okapi_stats_monthly engine=InnoDB"); }
     private static function ver110() { Db::execute("alter table okapi_submitted_objects drop index by_consumer"); }
     private static function ver111() { Db::execute("alter table okapi_submitted_objects add index by_consumer (consumer_key)"); }
+    private static function ver112() { Db::execute("alter table okapi_cache add index by_expiry_date (expires)"); }
 }

@@ -374,7 +374,7 @@ class CacheCleanupCronJob extends Cron5Job
                 score is not null
                 and score < '".Db::escape_string($limit)."'
         ");
-        Db::query("optimize table okapi_cache");
+        // WRCLEANIT: Possibly harmful for performance in InnoDB. Db::query("optimize table okapi_cache");
 
         # FileCache does not have an expiry date. We will delete all files older
         # than 24 hours.
@@ -697,7 +697,7 @@ class ChangeLogCleanerJob extends Cron5Job
             where id < '".Db::escape_string($new_min_revision)."'
         ");
         Cache::set($cache_key, $new_data, 10*86400);
-        Db::query("optimize table okapi_clog");
+        // WRCLEANIT: Possibly harmful for performance in InnoDB. Db::query("optimize table okapi_clog");
     }
 }
 
@@ -893,8 +893,8 @@ class TableOptimizerJob extends Cron5Job
     public function get_period() { return 86400; }
     public function execute()
     {
-        Db::query("optimize table okapi_tile_caches");
-        Db::query("optimize table okapi_tile_status");
+        // WRCLEANIT: Possibly harmful for performance in InnoDB. Db::query("optimize table okapi_tile_caches");
+        // WRCLEANIT: Possibly harmful for performance in InnoDB. Db::query("optimize table okapi_tile_status");
     }
 }
 
