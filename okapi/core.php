@@ -11,6 +11,7 @@ use Exception;
 use ErrorException;
 use ArrayObject;
 use Pdo;
+use PDOException;
 use okapi\oauth\OAuthServerException;
 use okapi\oauth\OAuthServer400Exception;
 use okapi\oauth\OAuthServer401Exception;
