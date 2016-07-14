@@ -350,8 +350,17 @@ class InvalidParam extends BadRequest
     }
 }
 
-/** Thrown on invalid SQL queries. */
+/** Generic "catch all" class of all database-related errors. */
 class DbException extends Exception {}
+
+/** Problem while connecting to the database. */
+class DbInitException extends DbException {}
+
+/** "Lock timeout exceeded; try restarting transaction" error. */
+class DbLockWaitTimeoutException extends DbException {}
+
+/** Thrown when select_value or select_row get too many rows. */
+class DbTooManyRowsException extends DbException {}
 
 #
 # Database access abstraction layer.
@@ -413,7 +422,7 @@ class Db
                 $dsn, Settings::get('DB_USERNAME'), Settings::get('DB_PASSWORD'), $options
             );
         } catch (PDOException $e) {
-            throw new DbException($e->getMessage());
+            throw new DbInitException($e->getMessage());
         }
         self::$connected = true;
     }
@@ -427,7 +436,7 @@ class Db
             case 0: return null;
             case 1: return $rows[0];
             default:
-                throw new DbException("Invalid query. Db::select_row returned more than one row for:\n\n".$query."\n");
+                throw new DbTooManyRowsException("Invalid query. Db::select_row returned more than one row for:\n\n".$query."\n");
         }
     }
 
@@ -480,7 +489,7 @@ class Db
             return null;
         if (count($column) == 1)
             return $column[0];
-        throw new DbException("Invalid query. Db::select_value returned more than one row for:\n\n".$query."\n");
+        throw new DbTooManyRowsException("Invalid query. Db::select_value returned more than one row for:\n\n".$query."\n");
     }
 
     /** Fetch all [(A), (B), (C)], return [A, B, C]. */
@@ -537,8 +546,23 @@ class Db
         try {
             return self::$dbh->exec($query);
         } catch (PDOException $e) {
-            list($sqlstate, $errno, $msg) = $e->errorInfo;
-            throw new DbException("SQL Error $errno: $msg\n\nThe query was:\n".$query."\n");
+            self::throwProperDbException($e);
+        }
+    }
+
+    /**
+     * Given a PDOException, check its properties and throw one of the DbException subclasses
+     * based on these properties.
+     *
+     * This allows developers to catch specific subclasses of exceptions in the code.
+     */
+    private static function throwProperDbException($e)
+    {
+        list($sqlstate, $errno, $msg) = $e->errorInfo;
+        $msg = "SQL Error $errno: $msg\n\nThe query was:\n".$query."\n";
+        switch ($errno) {
+            case 1205: throw new DbLockWaitTimeoutException($msg);
+            default: throw new DbException($msg);
         }
     }
 
@@ -592,7 +616,7 @@ class Db
                 }
             }
 
-            throw new DbException("SQL Error $errno: $msg\n\nThe query was:\n".$query."\n");
+            self::throwProperDbException($e);
         }
         return $rs;
     }
