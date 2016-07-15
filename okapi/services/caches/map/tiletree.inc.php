@@ -221,6 +221,7 @@ class TileTree
                 # Cache the result.
 
                 # Avoid deadlocks, see https://github.com/opencaching/okapi/issues/388
+                # Possible alternative: https://github.com/opencaching/okapi/issues/388#issuecomment-197673621
                 Db::execute("lock tables okapi_tile_caches write, okapi_tile_caches tc2 read");
                 try {
                     Db::execute("

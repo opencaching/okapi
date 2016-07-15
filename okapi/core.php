@@ -227,6 +227,19 @@ class OkapiExceptionHandler
         {
             $exception_info .= "--- Stack trace ---\n".
                 self::removeSensitiveData($e->getTraceAsString())."\n\n";
+
+            if ($e instanceof DbLockWaitTimeoutException) {
+                $exception_info .= "--- InnoDB status ---\n";
+                try {
+                    $exception_info .= Db::select_row("show engine innodb status")['Status'];
+                } catch (Exception $e2) {
+                    $exception_info .= (
+                        "Could not retrieve. Missing 'GRANT PROCESS'? Error was:\n".
+                        $e2->getMessage()
+                    );
+                }
+                $exception_info .= "\n\n";
+            }
         }
 
         $exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
@@ -546,7 +559,7 @@ class Db
         try {
             return self::$dbh->exec($query);
         } catch (PDOException $e) {
-            self::throwProperDbException($e);
+            self::throwProperDbException($e, $query);
         }
     }
 
@@ -556,7 +569,7 @@ class Db
      *
      * This allows developers to catch specific subclasses of exceptions in the code.
      */
-    private static function throwProperDbException($e)
+    private static function throwProperDbException($e, $query)
     {
         list($sqlstate, $errno, $msg) = $e->errorInfo;
         $msg = "SQL Error $errno: $msg\n\nThe query was:\n".$query."\n";
@@ -616,7 +629,7 @@ class Db
                 }
             }
 
-            self::throwProperDbException($e);
+            self::throwProperDbException($e, $query);
         }
         return $rs;
     }
