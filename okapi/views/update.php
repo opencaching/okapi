@@ -767,4 +767,9 @@ class View
     private static function ver110() { Db::execute("alter table okapi_submitted_objects drop index by_consumer"); }
     private static function ver111() { Db::execute("alter table okapi_submitted_objects add index by_consumer (consumer_key)"); }
     private static function ver112() { Db::execute("alter table okapi_cache add index by_expiry_date (expires)"); }
+    private static function ver113() { Db::execute("alter table okapi_cache drop index by_expiry_date"); }
+    private static function ver114() { Db::execute("alter table okapi_stats_hourly engine=MyISAM"); }
+    private static function ver115() { Db::execute("alter table okapi_stats_monthly engine=MyISAM"); }
+    private static function ver116() { Db::execute("alter table okapi_cache_reads engine=MyISAM"); }
+    private static function ver117() { Db::execute("alter table okapi_cache engine=MyISAM"); }
 }
