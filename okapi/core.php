@@ -2170,6 +2170,22 @@ class Okapi
         }
     }
 
+    /**
+     * Some pages should be visible only to OKAPI developers (e.g. frequent
+     * stats generation may reduce OKAPI responsiveness). This method verifies
+     * that the requester is a developer. If he isn't, it die()s.
+     */
+    public static function require_developer_cookie() {
+        if (
+            (!isset($_COOKIE['okapi_devel_key']))
+            || (md5($_COOKIE['okapi_devel_key']) != '5753f318c1495c01637f7f6b7fc9c5db')
+        ) {
+            header("Content-Type: text/plain; charset=utf-8");
+            print "I need a cookie!";
+            die();
+        }
+    }
+
     # object types in table okapi_submitted_objects
     const OBJECT_TYPE_CACHE = 1;
     const OBJECT_TYPE_CACHE_DESCRIPTION = 2;

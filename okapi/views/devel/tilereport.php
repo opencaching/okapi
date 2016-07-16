@@ -19,7 +19,7 @@ class View
 {
     public static function call()
     {
-        # Flush the stats, so the page is fresh upon every request.
+        Okapi::require_developer_cookie();
 
         require_once($GLOBALS['rootpath']."okapi/cronjobs.php");
         CronJobController::force_run("StatsWriterCronJob");
