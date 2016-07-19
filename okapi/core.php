@@ -1163,8 +1163,8 @@ class Okapi
     {
         # Make sure we're not sending HUGE emails.
 
-        if (strlen($message) > 10000) {
-            $message = substr($message, 0, 10000)."\n\n...(message clipped at 10k chars)\n";
+        if (strlen($message) > 100000) {
+            $message = substr($message, 0, 100000)."\n\n...(message clipped at 100k chars)\n";
         }
 
         # Make sure we're not spamming.
