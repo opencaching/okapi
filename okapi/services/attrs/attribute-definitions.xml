@@ -1188,7 +1188,7 @@ It also defines attribute names and descriptions in several languages.
             <name>interessanter Ort</name>
             <desc>
                 Der Geocache ist in unmittelbarer Nähe zu einer Sehenswürdigkeit
-                versteckt. Das kann ein z.B. schöner Aussichtspunkt oder eine größere
+                versteckt. Das kann z.B. ein schöner Aussichtspunkt oder eine größere
                 Burgruine sein. Ein Besuch würde sich auch ohne besonderen Anlass
                 (den Geocache) lohnen.
             </desc>
@@ -2041,7 +2041,7 @@ It also defines attribute names and descriptions in several languages.
             <name>Kletterzeug</name>
             <desc>
                 Um diesen Cache absolvieren zu können, benötigt ihr neben der normalen
-                Ausrüstung auch noch Kletterausrüstung, und entsprechendes Wissen um
+                Ausrüstung auch noch Kletterausrüstung und entsprechendes Wissen um
                 deren Handhabung und ums Klettern. Laien sollten sich auf jeden Fall
                 von einem erfahrenen Kletterer oder Bergsteiger unterstützen lassen.
             </desc>
@@ -2083,7 +2083,7 @@ It also defines attribute names and descriptions in several languages.
                 Ausrüstung mitbringen. Vorsicht: Bereits kleinste Höhlensysteme können
                 bei unvorhergesehenen Problemen, z.B. Gewittern (Wasser!) oder einem
                 verstauchten Knöchel, sehr gefährlich werden! Ihr solltet euch vorab
-                gründlich bei erfahreren Höhlengehern informieren. Beachtet auch den
+                gründlich bei erfahrenen Höhlengehern informieren. Beachtet auch den
                 Naturschutz – Fledermausquartiere dürfen nicht gestört werden!
             </desc>
         </lang>
@@ -2838,7 +2838,7 @@ It also defines attribute names and descriptions in several languages.
             <desc>
                 Der Geocache ist kindgerecht aufgebaut: Alle Aufgaben sind von Kindern
                 im Alter von 10 bis 12 Jahren selbstständig lösbar und das Gelände ist
-                nicht gefährlich (keine Haupstraßen, Klippen o.ä.). Am Ende des
+                nicht gefährlich (keine Hauptstraßen, Klippen o.ä.). Am Ende des
                 Geocaches sollte sich eine Box mit Tauschgegenständen befinden, und
                 die Aufgaben sollten interessant aufgebaut sein.
             </desc>
