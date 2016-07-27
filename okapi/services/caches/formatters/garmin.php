@@ -89,6 +89,9 @@ class WebService
             'location_source' => $location_source,
             'location_change_prefix' => $location_change_prefix
         );
+        if ($request->token !== null) {
+            $data_method_params['mark_found'] = 'true';
+        }
         $data_contents = OkapiServiceRunner::call($data_method, new OkapiInternalRequest(
             $request->consumer, $request->token, $data_method_params
         ))->get_body();
