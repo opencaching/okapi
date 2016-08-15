@@ -105,7 +105,7 @@ class OkapiServiceRunner
      * Execute the method and return the result.
      *
      * OKAPI methods return OkapiHttpResponses, but some MAY also return
-     * PHP objects (see OkapiRequest::construct_inside_request for details).
+     * PHP objects.
      *
      * If $request must be consistent with given method's options (must
      * include Consumer and Token, if they are required).

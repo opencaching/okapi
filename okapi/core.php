@@ -108,7 +108,29 @@ class OkapiExceptionHandler
 
             print $e->getOkapiJSON();
         }
-        else # (ErrorException, MySQL exception etc.)
+        elseif ($e instanceof DbLockWaitTimeoutException)
+        {
+            # As long as it happens occasionally only, it is safe to silently cast
+            # this error into a HTTP 503 response. (In the future, we might want to
+            # measure the frequency of such errors too.)
+
+            if (!headers_sent())
+            {
+                header("HTTP/1.0 503 Service Unavailable");
+                header("Access-Control-Allow-Origin: *");
+                header("Content-Type: application/json; charset=utf-8");
+            }
+
+            print json_encode(array("error" => array(
+                'developer_message' => (
+                    "OKAPI is experiencing an increased server load and cannot handle your ".
+                    "request just now. Please repeat your request in a minute. If this ".
+                    "problem persists, then please contact us at: ".
+                    implode(", ", get_admin_emails())
+                )
+            )));
+        }
+        else # (ErrorException, SQL syntax exception etc.)
         {
             # This one is thrown on PHP notices and warnings - usually this
             # indicates an error in OKAPI method. If thrown, then something
