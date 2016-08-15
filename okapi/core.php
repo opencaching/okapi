@@ -2186,6 +2186,21 @@ class Okapi
         }
     }
 
+    /**
+     * Update the "last activity" field of the user. As explained in #337, it is stored
+     * in `last_login` column and is needed for some reports. As explained in #439, it
+     * shouldn't be updated automatically on each Level 3 request (because some of these
+     * requests are not necessarilly initiated by the user).
+     */
+    public static function update_user_activity($request) {
+        if ($request && $request->token && $request->token->token_type == "access") {
+            Db::execute("
+                update user set last_login=now()
+                where user_id='".Db::escape_string($request->token->user_id)."'
+            ");
+        }
+    }
+
     # object types in table okapi_submitted_objects
     const OBJECT_TYPE_CACHE = 1;
     const OBJECT_TYPE_CACHE_DESCRIPTION = 2;

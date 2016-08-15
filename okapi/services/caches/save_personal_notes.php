@@ -89,6 +89,7 @@ class WebService
             self::update_notes($cache_id, $request->token->user_id, $ret_saved_value);
         }
 
+        Okapi::update_user_activity($request);
         $result = array(
             'saved_value' => $ret_saved_value,
             'replaced' => $ret_replaced
