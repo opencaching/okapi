@@ -144,13 +144,6 @@ class WebService
                             ".implode(" ", $joins)."
                         where (".implode(") and (", $where_conds).")
                     ");
-
-                    # Lock barrier, to make sure the data is visible by other
-                    # sessions. See http://bugs.mysql.com/bug.php?id=36618
-
-                    Db::execute("lock table okapi_search_results write");
-                    Db::execute("unlock tables");
-
                     Db::execute("
                         update okapi_search_sets
                         set params_hash = '".Db::escape_string($params_hash)."'
