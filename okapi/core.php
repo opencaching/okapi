@@ -1278,6 +1278,8 @@ class Okapi
         $matches = null;
         if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $site_url, $matches)) {
             return "Opencaching.".strtoupper($matches[2]);
+        } elseif (preg_match("#^https?://(www.)?opencache.([a-z.]+)/$#", $site_url, $matches)) {
+            return "Opencache.".strtoupper($matches[2]);
         } else {
             return "DEVELSITE";
         }
@@ -1309,7 +1311,7 @@ class Okapi
 
         $mapping = array(
             2 => "OCPL",  // OP
-            6 => "OCORGUK",  // OK
+            6 => "OCUK",  // OK
             10 => "OCUS",  // OU
             14 => "OCNL",  // OB
             16 => "OCRO",  // OR
@@ -1386,9 +1388,9 @@ class Okapi
                     "http://www.opencaching.ro/okapi/",
                 );
                 break;
-            case 'OCORGUK':
+            case 'OCUK':
                 $urls = array(
-                    "http://www.opencaching.org.uk/okapi/",
+                    "http://www.opencache.uk/okapi/",
                 );
                 break;
             case 'OCUS':

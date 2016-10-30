@@ -31,10 +31,10 @@ following Opencaching sites:
 
   * http://www.opencaching.pl/okapi/
   * http://www.opencaching.de/okapi/ (+.it +.fr)
-  * http://www.opencaching.org.uk/okapi/ (NOT UPDATED)
   * http://www.opencaching.us/okapi/
   * http://www.opencaching.nl/okapi/
   * http://www.opencaching.ro/okapi/
+  * http://www.opencache.uk/okapi/
 
 The API itself is also being used by numerous geocaching clients (e.g. c:geo).
 The OKAPI project is aiming to become a standard API for all National
@@ -48,13 +48,13 @@ National Opencaching sites:
 
   * http://www.opencaching.pl/ (DEPLOYED)
   * http://www.opencaching.us/ (DEPLOYED)
-  * http://www.opencaching.org.uk/ (DEPLOYED)
   * http://www.opencaching.de/ (DEPLOYED)
   * http://www.opencaching.cz/
   * http://www.opencaching.it/ (DEPLOYED)
   * http://www.opencaching.nl/ (DEPLOYED)
   * http://www.opencaching.ro/ (DEPLOYED)
   * http://www.opencaching.fr/ (DEPLOYED)
+  * http://www.opencache.uk/ (DEPLOYED)
 
 
 ### Who is developing OKAPI? ###
