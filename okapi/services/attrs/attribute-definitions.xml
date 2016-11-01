@@ -173,10 +173,10 @@ It also defines attribute names and descriptions in several languages.
 
     <attr acode="A4" categories="de-cache-types">
         <opencaching schema="OCDE" id="8" />
-        <opencaching schema="OCPL" id="56" />
-        <opencaching schema="OCNL" id="56" />
-        <opencaching schema="OCRO" id="56"/>
-        <opencaching schema="OCUK" id="56"/>
+        <opencaching schema="OCPL" id="8" />
+        <opencaching schema="OCNL" id="8" />
+        <opencaching schema="OCRO" id="8" />
+        <opencaching schema="OCUK" id="8" />
         <lang id="en">
             <name>Letterbox Cache</name>
             <desc>
@@ -2199,10 +2199,10 @@ It also defines attribute names and descriptions in several languages.
     <attr acode="A56" categories="de-tools">
         <groundspeak id="51" inc="true" name="Special tool required" />
         <opencaching schema="OCDE" id="46" />
-        <opencaching schema="OCPL" id="83" />
-        <opencaching schema="OCNL" id="83" />
-        <opencaching schema="OCRO" id="83"/>
-        <opencaching schema="OCUK" id="83"/>
+        <opencaching schema="OCPL" id="46" />
+        <opencaching schema="OCNL" id="46" />
+        <opencaching schema="OCRO" id="46" />
+        <opencaching schema="OCUK" id="46" />
         <lang id="en">
             <name>Special tool required</name>
             <desc>
@@ -2343,10 +2343,10 @@ It also defines attribute names and descriptions in several languages.
     <attr acode="A59" categories="de-dangers">
         <groundspeak id="23" inc="true" name="Dangerous area" />
         <opencaching schema="OCDE" id="9" />
-        <opencaching schema="OCPL" id="90" />
-        <opencaching schema="OCNL" id="90" />
-        <opencaching schema="OCRO" id="90"/>
-        <opencaching schema="OCUK" id="90"/>
+        <opencaching schema="OCPL" id="9" />
+        <opencaching schema="OCNL" id="9" />
+        <opencaching schema="OCRO" id="9"/>
+        <opencaching schema="OCUK" id="9"/>
         <lang id="en">
             <name>Dangerous area</name>
             <desc>
