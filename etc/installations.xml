@@ -10,12 +10,4 @@
     <installation site_url="http://www.opencaching.nl/"/>
     <installation site_url="http://www.opencaching.ro/"/>
     <installation site_url="http://opencache.uk/"/>
-    <!--
-        For a couple of years now, I was unable to contact the admin of this
-        site (no response). It is running a very old version of OKAPI and OCPL
-        branch. Therefore, I am removing it from the list of official OKAPI
-        installations.
-
-        <installation site_url="http://www.opencaching.org.uk/"/>
-    -->
 </installations>
