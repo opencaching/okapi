@@ -1749,7 +1749,7 @@ class Okapi
     {
         static $pattern = '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u';
         $string = preg_replace($pattern, '', $string);
-        return strtr($string, array("<" => "&lt;", ">" => "&gt;", "\"" => "&quot;", "'" => "&apos;", "&" => "&amp;"));
+        return strtr($string, array( "&oacute;" => "ó", "<" => "&lt;", ">" => "&gt;", "\"" => "&quot;", "'" => "&apos;", "&" => "&amp;"));
     }
 
     /**
