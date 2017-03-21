@@ -1391,6 +1391,7 @@ class Okapi
             case 'OCUK':
                 $urls = array(
                     "http://opencache.uk/okapi/",
+                    "https://opencache.uk/okapi/",
                 );
                 break;
             case 'OCUS':
