@@ -93,7 +93,7 @@ class WebService
                     'site_name' => $site_name,
                     'okapi_base_url' => $okapi_base_url,
                 );
-                if ($site_url == Settings::get('SITE_URL'))
+                if (in_array($okapi_base_url, Okapi::get_allowed_base_urls()))
                     $i_was_included = true;
             }
 
