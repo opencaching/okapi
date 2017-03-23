@@ -30,7 +30,7 @@ $(function() {
         var current_base_url = $('#switcher option[current]').attr('value').replace(/^https?:/, "");
         var new_base_url = $('#switcher option:selected').attr('value').replace(/^https?:/, "");
         if (current_base_url != new_base_url)
-            window.location.href = window.location.href.replace(current_base_url, new_base_url);
+            window.location.href = window.location.href.replace(current_base_url, new_base_url).replace("https://", "http://");
     });
     $('#switcher option[current]').attr('selected', true);
 });
