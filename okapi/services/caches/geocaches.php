@@ -246,7 +246,7 @@ class WebService
                     case 'url':
                         // str_replace is temporary - https://forum.opencaching.pl/viewtopic.php?f=6&t=7089&p=136968#p136968
                         $entry['url'] = (
-                            str_replace(Settings::get('SITE_URL'), "https://", "http://").
+                            str_replace("https://", "http://", Settings::get('SITE_URL')).
                             "viewcache.php?wp=".$row['wp_oc']
                         );
                         break;
