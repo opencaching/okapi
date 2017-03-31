@@ -13,7 +13,6 @@ use okapi\OkapiHttpResponse;
 use okapi\ParamMissing;
 use okapi\InvalidParam;
 use okapi\BadRequest;
-use okapi\DoesNotExist;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiInternalConsumer;
 use okapi\OkapiServiceRunner;

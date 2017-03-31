@@ -15,7 +15,7 @@ $(function() {
                 if (issue.comment_count === null) {
                     link = $("<a>Comments</a>");
                 } else {
-                    comments = (issue.comment_count == 1) ? "comment" : "comments";
+                    comments = (issue.comment_count === 1) ? "comment" : "comments";
                     link = $("<a>" + issue.comment_count + " " + comments + "</a>");
                 }
                 link.attr('href', issue.url);
@@ -29,7 +29,7 @@ $(function() {
         // We are purposefully removing schemes from these URLs.
         var current_base_url = $('#switcher option[current]').attr('value').replace(/^https?:/, "");
         var new_base_url = $('#switcher option:selected').attr('value').replace(/^https?:/, "");
-        if (current_base_url != new_base_url)
+        if (current_base_url !== new_base_url)
             window.location.href = window.location.href.replace(current_base_url, new_base_url).replace("https://", "http://");
     });
     $('#switcher option[current]').attr('selected', true);

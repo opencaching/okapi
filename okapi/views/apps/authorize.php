@@ -139,7 +139,7 @@ class View
             where
                 user_id = '".Db::escape_string($OC_user_id)."'
                 and consumer_key = '".Db::escape_string($token['consumer_key'])."'
-        ", 0);
+        ");
 
         if (!$authorized)
         {

@@ -716,8 +716,7 @@ class OkapiConsumer extends OAuthConsumer
 
     public function __construct($key, $secret, $name, $url, $email, $bflags=0)
     {
-        $this->key = $key;
-        $this->secret = $secret;
+        parent::__construct($key, $secret, null);
         $this->name = $name;
         $this->url = $url;
         $this->email = $email;
@@ -1871,7 +1870,7 @@ class Okapi
         else
         {
             # That's a bug.
-            throw new Exception("Cannot encode as xmlmap: " + print_r($obj, true));
+            throw new Exception("Cannot encode as xmlmap: " . print_r($obj, true));
         }
     }
 

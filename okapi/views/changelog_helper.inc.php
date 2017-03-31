@@ -2,6 +2,7 @@
 
 namespace okapi\views\changelog;
 
+use ErrorException;
 use Exception;
 use okapi\Okapi;
 use okapi\Cache;
