@@ -2,20 +2,18 @@
 
 namespace okapi\services\caches\geocaches;
 
-use Exception;
 use ArrayObject;
-use okapi\Okapi;
-use okapi\Db;
-use okapi\Settings;
-use okapi\OkapiRequest;
-use okapi\ParamMissing;
-use okapi\InvalidParam;
+use Exception;
 use okapi\BadRequest;
+use okapi\Db;
+use okapi\InvalidParam;
+use okapi\Okapi;
 use okapi\OkapiInternalRequest;
+use okapi\OkapiRequest;
 use okapi\OkapiServiceRunner;
-use okapi\OkapiAccessToken;
-use okapi\services\caches\search\SearchAssistant;
+use okapi\ParamMissing;
 use okapi\services\attrs\AttrHelper;
+use okapi\Settings;
 
 class WebService
 {

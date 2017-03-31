@@ -2,12 +2,11 @@
 
 namespace okapi\services\logs\images\delete;
 
-use Exception;
-use okapi\Okapi;
 use okapi\Db;
+use okapi\Okapi;
 use okapi\OkapiRequest;
-use okapi\Settings;
 use okapi\services\logs\images\LogImagesCommon;
+use okapi\Settings;
 
 
 class WebService

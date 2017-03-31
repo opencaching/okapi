@@ -4,12 +4,11 @@ namespace okapi\services\caches\search\save;
 
 require_once('searching.inc.php');
 
-use okapi\Okapi;
-use okapi\OkapiRequest;
-use okapi\ParamMissing;
-use okapi\InvalidParam;
 use okapi\Db;
+use okapi\InvalidParam;
+use okapi\Okapi;
 use okapi\OkapiLock;
+use okapi\OkapiRequest;
 use okapi\services\caches\search\SearchAssistant;
 
 class WebService

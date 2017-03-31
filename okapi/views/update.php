@@ -3,21 +3,13 @@
 namespace okapi\views\update;
 
 use Exception;
-
-use okapi\Okapi;
 use okapi\Cache;
-use okapi\Db;
-use okapi\OkapiRequest;
-use okapi\OkapiRedirectResponse;
-use okapi\OkapiHttpResponse;
-use okapi\ParamMissing;
-use okapi\InvalidParam;
-use okapi\OkapiServiceRunner;
-use okapi\OkapiInternalRequest;
-use okapi\Settings;
-use okapi\OkapiLock;
 use okapi\cronjobs\CronJobController;
+use okapi\Db;
+use okapi\Okapi;
+use okapi\OkapiLock;
 use okapi\services\replicate\ReplicateCommon;
+use okapi\Settings;
 
 require_once($GLOBALS['rootpath']."okapi/cronjobs.php");
 

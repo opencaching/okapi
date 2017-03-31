@@ -3,13 +3,12 @@
 namespace okapi\services\users\users;
 
 use Exception;
-use okapi\Okapi;
-use okapi\Settings;
 use okapi\Db;
+use okapi\InvalidParam;
+use okapi\Okapi;
 use okapi\OkapiRequest;
 use okapi\ParamMissing;
-use okapi\InvalidParam;
-use okapi\services\caches\search\SearchAssistant;
+use okapi\Settings;
 
 class WebService
 {

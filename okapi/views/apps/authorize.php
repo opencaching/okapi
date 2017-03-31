@@ -2,15 +2,13 @@
 
 namespace okapi\views\apps\authorize;
 
-use Exception;
-use okapi\Okapi;
 use okapi\Db;
-use okapi\OkapiHttpResponse;
-use okapi\OkapiHttpRequest;
-use okapi\OkapiRedirectResponse;
-use okapi\Settings;
 use okapi\Locales;
 use okapi\OCSession;
+use okapi\Okapi;
+use okapi\OkapiHttpResponse;
+use okapi\OkapiRedirectResponse;
+use okapi\Settings;
 
 class View
 {
