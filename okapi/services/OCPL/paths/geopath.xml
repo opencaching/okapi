@@ -1,0 +1,159 @@
+<xml>
+    <brief>Retrieve information on a single geopath</brief>
+    <issue-id>WRTODO</issue-id>
+    <desc>
+        <p>WRTODO</p>
+    </desc>
+    <req name='path_uuid'>Unique identifier of this geopath</req>
+    <opt name='langpref' default='en'>
+        <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+        order of preference in which language will be chosen for fields like
+        <b>name</b> and <b>description</b>.</p>
+
+        <p>Please note, that you may also access paths' descriptions in all
+        available languages. If you want to do this, you should use fields
+        <b>names</b>, <b>descriptions</b> (etc.) instead of <b>name</b> and
+        <b>description</b> (etc.).</p>
+    </opt>
+    <opt name='fields' default='uuid|name|location|type|status'>
+        <p>Pipe-separated list of field names which you are interested with.
+        Selected fields will be included in the response. See below for the
+        list of available fields.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of fields you have selected. Currently available fields:</p>
+
+        <ul>
+            <li><b>uuid</b> - unique ID of the geopath.</li>
+            <li><b>name</b> - name of the geopath.</li>
+            <li>
+                <b>names</b> - a dictionary (language code => plain-text string) of
+                geopath names (at this time, there will be only one language,
+                but this may change in future).
+            </li>
+            <li>
+                <p><b>location</b> - location of the geopath in the "lat|lon" format
+                (<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point).</p>
+
+                <p>Geopaths consist of many geocaches, so it's usually not possible to
+                assign a single, good location to a path. The location returned here
+                is the same one we use to display geopaths on the map. It will <i>usually</i>
+                point to the center of the area in which the path's geocaches are
+                located, but this <b>may</b> change in the future.</p>
+            </li>
+            <li>
+                <p><b>type</b> - path type. This might be <b>pretty much everything</b>,
+                but there are some predefined types that you might want to treat
+                in a special way (separate icons etc.). Primary types include:</p>
+                <ul>
+                    <li><b>WRTODO</b>,</li>
+                    <li><b>WRTODO</b>,</li>
+                    <li><b>WRTODO</b>,</li>
+                    <li><i>(any other value is valid too)</i></li>
+                </ul>
+            </li>
+            <li>
+                <p><b>status</b> - path status. Valid geopath status codes currently include:</p>
+                <ul>
+                    <li><b>Available</b> - geopath is available and ready to be WRTODOed,</li>
+                    <li><b>Temporarily unavailable</b> - geopath is currently unavailable
+                    (it cannot be WRTODOed) but it will probably be restored soon,</li>
+                    <li><b>Archived</b> - geopath permanently unavailable (moved to the
+                    archives).</li>
+                </ul>
+            </li>
+            <li>
+                <p><b>mentor</b> - dictionary of:</p>
+                <ul>
+                    <li><b>uuid</b> - geopath mentor's user ID,</li>
+                    <li><b>username</b> - name of the user,</li>
+                    <li><b>profile_url</b> - URL of the user profile page.</li>
+                </ul>
+            </li>
+            <li>
+                <b>authors</b> - a list of authors. Each element of this list has the same
+                structure as the <b>mentor</b> element described above.
+            </li>
+            <li><b>url</b> - URL of the path's web page.</li>
+            <li>
+                <b>image_url</b> - an URL of the "main" image of this geopath (e.g. a logo
+                or a photo related to the path's topic), <b>or null</b> if no such photo has
+                been assigned.
+            </li>
+            <li>
+                <b>description</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>,
+                description of the geopath.
+            </li>
+            <li>
+                <b>descriptions</b> - a dictionary (language code =&gt;
+                <a href='%OKAPI:docurl:html%'>HTML string</a>) of geopath descriptions.
+            </li>
+            <li>
+                <b>geocaches_total</b> - number of geocaches currently present on this
+                geopath.
+            </li>
+            <li>
+                <p><b>geocaches_found</b> - number of geocaches already found by the
+                user.</p>
+
+                <p>You will need Level 3 Authentication to access this field.</p>
+            </li>
+            <li>
+                <p><b>geocaches_found_ratio</b> - float, ratio of geocaches already found by
+                the user, e.g. <code>0.333333</code> means that the user has found one third
+                of the geocaches on this geopath.</p>
+
+                <p>If <b>geocaches_total</b> is zero, then this ratio will also be zero.</p>
+            </li>
+            <li>
+                <b>min_founds_to_complete</b> - minimum number of geocaches which a
+                user needs to find in order to be eligible to claim this geopath as
+                "completed".
+            </li>
+            <li>
+                <b>min_ratio_to_complete</b> - minimum ratio of found/total geocaches
+                which a user needs to have in order to be eligible to claim this geopath as
+                "completed".
+            </li>
+            <li>
+                <p><b>my_completed_status</b> - indicates the status of this geopath from
+                the user's perspective. It has one of the following values:</p>
+                <ul>
+                    <li><b>not_eligable</b> - if the user has not completed this path,
+                    and he didn't find a proper number of its geocaches to be eligable to
+                    claim this geopath as completed,</li>
+                    <li><b>eligable</b> - if the user has already found a proper minimum
+                    number of geocaches, but he didn't claim the "completed" status yet,</li>
+                    <li><b>completed</b> - if the user has (once) found a proper minimum
+                    number of geocaches and claimed the "completed" status.</li>
+                </ul>
+
+                <p>You will need Level 3 Authentication to access this field.</p>
+
+                <p>Note, that due to possible changes in the number of geocaches and
+                the requirements in the minimum number of found caches, the user may end
+                up with both the "completed" status, and <b>geocaches_found_ratio</b>
+                less than <code>1.0</code>.</p>
+            </li>
+            <li>
+                <b>completed_count</b> - number of times the path has been successfully
+                completed (by all users).
+            </li>
+            <li>
+                <b>last_completed</b> - date and time (ISO 8601) when the
+                geopath has been last completed, <b>or null</b> if it hasn't been yet
+                completed by anyone.
+            </li>
+            <li>
+                <b>date_created</b> - date and time (ISO 8601) when the geopath
+                was first published at the Opencaching site.
+            </li>
+            <li>
+                <b>gplog_uuids</b> - list of UUIDs of all log entries of this geopath.
+                The logs are ordered chronologically - latest logs will be on the <i>end</i>
+                of this list.
+            </li>
+        </ul>
+    </returns>
+</xml>

@@ -1,0 +1,65 @@
+<xml>
+    <brief>Search for geopaths</brief>
+    <issue-id>WRTODO</issue-id>
+    <desc>
+        <p>Search for geopaths using some simple filters. All of them are
+        optional, but most often you will want to use at least some of them.</p>
+    </desc>
+    <opt name='type'>
+        <p>Pipe-separated list of geopath type codes. If given, the results will be limited
+        to the given cache types. For a list of geopath type codes, see services/OCPL/paths/geopath
+        method.</p>
+
+        <p><b>Notice:</b> If you want to include all geopath types <b>except</b>
+        the given ones, prepend your list with the "-" sign.</p>
+    </opt>
+    <opt name='status' default='Available'>
+        <p>Pipe-separated list of status codes. Only geopath matching any of the given
+        statuses will included in the response. For a list of geopath status codes, see
+        services/OCPL/paths/geopath method.</p>
+    </opt>
+    <opt name='my_completed_status'>
+        <p><b>Notice:</b> This parameter may be used only for requests signed
+        with an Access Token (you will need to use <b>Level 3</b>
+        Authentication).</p>
+
+        <p>A pipe-separated list of valid "my_completed_status" codes, as defined in the
+        services/OCPL/paths/geopath method (see the "my_completed_status" field there).
+        If given, then only those geopaths will be returned, for which their
+        <b>my_completed_status</b> matches one of the statuses provided here.</p>
+    </opt>
+    <opt name='limit' default='100'>
+        <p>Integer in range 1..500. Maximum number of geopath codes returned.</p>
+    </opt>
+    <opt name='offset' default='0'>
+        <p>An offset, the amount of items to skip at the beginning of the result. Combined with limit
+        allows pagination of the result set. Please note, that the sum of offset and limit still cannot
+        exceed 500.</p>
+    </opt>
+    <opt name='order_by'>
+        <p>Pipe separated list of fields to order the results by. Prefix the field name with
+        a '-' sign to indicate a descending order.</p>
+
+        <p>Currently, fields which you can order by include: <b>name</b>,
+        <b>date_created</b>, <b>completed_count</b> (tell us if you want more).</p>
+
+        <p><b>Examples:</b></p>
+        <ul>
+            <li>to order by geopath name use "order_by=name" or "order_by=+name",</li>
+            <li>to have the most often completed geopaths in front, use "order_by=-completed_count",</li>
+            <li>multicolumn sorting is also allowed, ex. "order_by=-completed_count|name"</li>
+        </ul>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li><b>results</b> - a list of cache codes,</li>
+            <li>
+                <b>more</b> - boolean, <b>true</b> means that there were more
+                results for your query, but they were not returned because of the
+                <b>limit</b> parameter.
+            </li>
+        </ul>
+    </returns>
+</xml>

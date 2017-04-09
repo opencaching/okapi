@@ -1,0 +1,28 @@
+<xml>
+    <brief>Retrieve information on a multiple geopaths</brief>
+    <issue-id>WRTODO</issue-id>
+    <desc>
+        <p>WRTODO</p>
+    </desc>
+    <req name='path_uuids'>
+        <p>Pipe-separated list of geopath UUIDs. These represent the
+        paths you are interested in. No more than 500 UUIDs are allowed.
+        Unlike in the "geopath" method, this CAN be an empty string (it will
+        result in an empty, but valid, response).</p>
+    </req>
+    <opt name='langpref' default='en'>
+        WRTODO (the same)
+    </opt>
+    <opt name='fields' default='uuid|name|location|type|status'>
+        WRTODO (the same)
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary. Path UUIDs you provide will be mapped to dictionary keys,
+        and each value will be a dictionary of fields you have selected.</p>
+
+        <p>Value of <b>null</b> means that no geopath by this UUID has been found.
+        (This behavior is different than in the services/OCPL/paths/geopath method, which
+        responds with a HTTP 400 error in such case.)</p>
+    </returns>
+</xml>
