@@ -34,7 +34,7 @@ REFERENCE for Groundspeak's attribute IDs
 =========================================
 
 Use this as reference to map OKAPI attribute ACODES to Groundspeak's equivalent
-attribute in order to help third party applications (eg. c:geo) handle 
+attribute in order to help third party applications (eg. c:geo) handle
 common attributes and also evolve OC implementations and GPX exports.
 
 Legend and field usage:
@@ -42,7 +42,7 @@ Legend and field usage:
 
 - ID        numeric ID
             (use <groundspeak id="ID" .../>)
-- YES       attribute is present 
+- YES       attribute is present
             (use <groundspeak ... inc="true" .../>)
 - NO        attribute's inverse meaning is present (ie. NOT attribute)
             (use <groundspeak ... inc="false" .../>)
@@ -50,9 +50,9 @@ Legend and field usage:
 - NAME      Attribute name.
             (use <groundspeak ... name="NAME" .../>)
 
-Note: in Opencaching implementations all attributes are either ON or OFF. 
+Note: in Opencaching implementations all attributes are either ON or OFF.
 Inverse meaning is handled by a different attribute.
-            
+
 ID  YES NO  IMAGE               NAME
 ===========================================================================
 1   YES NO  dogs                Dogs
@@ -746,7 +746,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
         <lang id="en">
             <name>Field Puzzle / Mystery</name>
             <desc>
-                This puzzle or mystery has to be solved (at least in part) in the field, 
+                This puzzle or mystery has to be solved (at least in part) in the field,
                 by visiting the starting coordinates or the places mentioned in the description.
             </desc>
         </lang>
@@ -783,7 +783,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
         <lang id="en">
             <name>Mathematical problem</name>
             <desc>
-                Before or while searching for this cache you will have to solve 
+                Before or while searching for this cache you will have to solve
                 some mathematical problem that goes beyond basic arithmetic calculus.
             </desc>
         </lang>
@@ -1924,10 +1924,10 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
         <lang id="en">
             <name>Nature preserve / Breeding season</name>
             <desc>
-                May be located inside a nature preserve area, so pay attention 
+                May be located inside a nature preserve area, so pay attention
                 to the local terms and signs regarding nature protection.
                 Don’t seek this cache during animal breeding season! See the cache
-                description on which time of year must be avoided. 
+                description on which time of year must be avoided.
             </desc>
         </lang>
         <lang id="de">
@@ -3142,7 +3142,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
             <name>Flugzeug erforderlich</name>
             <desc>
                 Dieser Cache kann hauptsächlich durch die Verwendung eines Flugzeugs erreicht werden.
-                Andere Mittel, um den Cache zu erreichen, können existieren, 
+                Andere Mittel, um den Cache zu erreichen, können existieren,
                 könnten aber am schwierigsten sein.
             </desc>
         </lang>
@@ -3157,9 +3157,9 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
             <name>Avion</name>
             <desc>
                 Acestă cutie poate fi căutată cu ajutorul unui avion.
-                Pot exista si alte mijloace de a ajunge în apropierea cutiei, însă acestea 
+                Pot exista si alte mijloace de a ajunge în apropierea cutiei, însă acestea
                 s-ar putea să fie extraordinar de dificile, prin comparaţie.
-            </desc>    
+            </desc>
         </lang>
     </attr>
 
@@ -3168,8 +3168,8 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
         <lang id="en">
             <name>Rated on Handicaching.com</name>
             <desc>
-                Rated on Handycaching.com - This does NOT mean that the cache 
-                is wheelchair accessible. See the rating on Handycaching.com for details. 
+                Rated on Handycaching.com - This does NOT mean that the cache
+                is wheelchair accessible. See the rating on Handycaching.com for details.
             </desc>
         </lang>
         <lang id="pl">
@@ -3196,7 +3196,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
         <lang id="ro">
             <name>Evaluată pe Handicaching.com</name>
             <desc>
-                Evaluată pe Handycaching.com - Aceasta nu înseamnă că geocutia este 
+                Evaluată pe Handycaching.com - Aceasta nu înseamnă că geocutia este
                 accesibilă persoanelor în scaun cu rotile. Verificaţi evaluarea de pe Handycaching.com pentru detalii.
             </desc>
         </lang>
