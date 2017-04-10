@@ -927,14 +927,31 @@ class WebService
             else
             {
                 $rs = Db::query("
-                    select id, pl, en
+                    select *
                     from waypoint_type
                     where id > 0
                 ");
                 while ($row = Db::fetch_assoc($rs))
                 {
-                    $internal_wpt_type_id2names[$row['id']]['pl'] = $row['pl'];
-                    $internal_wpt_type_id2names[$row['id']]['en'] = $row['en'];
+                    $wpt_type_id = $row['id'];
+                    /*
+                     * OCPL-based databases MAY contain explicitly undefined language
+                     * columns. This is a bit weird, but we can work with that. We need to
+                     * dynamically scan for all the languages supported by this particular
+                     * database.
+                     *
+                     * https://github.com/opencaching/okapi/issues/458
+                     */
+                    foreach ($row as $lang => $content) {
+                        $lang = strtolower($lang);
+                        if (strlen($lang) != 2) {
+                            continue;
+                        }
+                        if ($lang == 'id') {
+                            continue;
+                        }
+                        $internal_wpt_type_id2names[$wpt_type_id][$lang] = $content;
+                    }
                 }
             }
 
