@@ -95,8 +95,14 @@ class WebService
                     case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
                     case 'type': $entry['type'] = GeopathStatics::geopath_type_id2name($row['type']); break;
                     case 'status': $entry['status'] = GeopathStatics::geopath_status_id2name($row['status']); break;
-                    case 'mentor': /* handled separately */ break;
-                    case 'authors': /* handled separately */ break;
+                    case 'mentor':
+                        $entry['mentor'] = null;
+                        /* continued later */
+                        break;
+                    case 'authors':
+                        $entry['authors'] = array();
+                        /* continued later */
+                        break;
                     case 'url':
                         // str_replace is temporary - https://forum.opencaching.pl/viewtopic.php?f=6&t=7089&p=136968#p136968
                         $entry['url'] = (
@@ -124,10 +130,51 @@ class WebService
         }
         Db::free_result($rs);
 
+        # mentor & authors
 
-        ### TODO: rest of the fields...
+        $process_authors = in_array('authors', $fields);
+        $process_mentor = in_array('mentor', $fields);
+
+        if ( ( $process_authors || $process_mentor ) && count($results) > 0)
+        {
+            $privileges = array();
+            if( $process_authors ) $privileges[] = 1;
+            if( $process_mentor ) $privileges[] = 2;
 
 
+            $rs = Db::query("
+                select user_id, uuid, username, pto.PowerTrailId as path_uuid, pto.privileages as privileges
+                from
+                    PowerTrail_owners as pto
+                    join user as u on u.user_id = pto.userId
+                where
+                    pto.PowerTrailId in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
+                    and privileages in ('".implode("','", array_map('\okapi\Db::escape_string', array_values($privileges)))."')
+            ");
+
+            while ($row = Db::fetch_assoc($rs))
+            {
+                if( $process_authors )
+                {
+                    /* every mentor is also an author */
+                    $results[$row['path_uuid']]['authors'][] = array(
+                        'uuid' => $row['uuid'],
+                        'username' => $row['username'],
+                        'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
+                    );
+                }
+
+                if( $process_mentor && $row['privileges'] == 2 )
+                {
+                    $results[$row['path_uuid']]['mentor'] = array(
+                        'uuid' => $row['uuid'],
+                        'username' => $row['username'],
+                        'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
+                    );
+                }
+            }
+            Db::free_result($rs);
+        }
 
         # Check which cache codes were not found and mark them with null.
         foreach ($path_uuids as $path_uuid)

@@ -17,6 +17,8 @@ use okapi\Settings;
 use okapi\OkapiServiceRunner;
 use okapi\OkapiInternalRequest;
 use okapi\ParamMissing;
+use okapi\Db;
+use okapi\InvalidParam;
 
 class WebService
 {
