@@ -73,7 +73,7 @@ class WebService
                 pt.id as uuid, pt.name, pt.centerLatitude as latitude,
                 pt.centerLongitude as longitude,
                 pt.type, pt.status, pt.dateCreated as date_created, pt.cacheCount as geocaches_total,
-                pt.description, pt.image as image_url, pt.perccentRequired,
+                pt.description, pt.image as image_url, pt.perccentRequired as min_ratio_to_complete,
                 pt.conquestedCount as completed_count
             from
                 PowerTrail pt
@@ -112,17 +112,29 @@ class WebService
                         break;
                     case 'image_url': $entry['image_url'] = $row['image_url']; break;
                     case 'description': $entry['description'] = $row['description']; break;
-                    case 'descriptions': $entry['descriptions'] = array(Settings::get('SITELANG') => $row['description']); break; // for the future
+                    case 'descriptions':
+                        $entry['descriptions'] =
+                            array(Settings::get('SITELANG') => $row['description']);
+                        break; // for the future
                     case 'geocaches_total': $entry['image_url'] = $row['image_url']; break;
                     case 'geocaches_found': /* handled separately */ break;
                     case 'geocaches_found_ratio': /* handled separately */ break;
                     case 'min_founds_to_complete': /* handled separately */ break;
-                    case 'min_ratio_to_complete': /* handled separately */ break;
+                    case 'min_ratio_to_complete':
+                        $entry['min_ratio_to_complete'] = $row['min_ratio_to_complete'];
+                        break;
                     case 'my_completed_status': /* handled separately */ break;
-                    case 'completed_count': $entry['completed_count'] = $row['completed_count']; break;
+                    case 'completed_count':
+                        $entry['completed_count'] = $row['completed_count'];
+                        break;
                     case 'last_completed': /* handled separately */ break;
-                    case 'date_created': $entry['date_created'] = $row['date_created']; break;
-                    case 'gplog_uuids': /* handled separately */ break;
+                    case 'date_created':
+                        $entry['date_created'] = $row['date_created'];
+                        break;
+                    case 'gplog_uuids':
+                        $entry['gplog_uuids'] = array();
+                        /* continued later */
+                        break;
                     default: throw new Exception("Missing field case: ".$field);
                 }
             }
@@ -172,6 +184,26 @@ class WebService
                         'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
                     );
                 }
+            }
+            Db::free_result($rs);
+        }
+
+
+        # gplog_uuids
+
+        if ( in_array('gplog_uuids', $fields) && count($results) > 0)
+        {
+            $rs = Db::query("
+                select id, PowerTrailId as path_uuid
+                from PowerTrail_comments
+                where PowerTrailId in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
+            ");
+
+            while ($row = Db::fetch_assoc($rs))
+            {
+                if( $process_authors )
+                    $results[$row['path_uuid']]['gplog_uuids'][] = $row['id'];
+
             }
             Db::free_result($rs);
         }
