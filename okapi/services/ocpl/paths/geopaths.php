@@ -1,14 +1,5 @@
 <?php
 
-# TODO:...
-# This method is the simplest of all. It just returns all cashes, in any order.
-# Results might be limited only with the "standard filtering arguments",
-# implemented in the OkapiSearchAssistant::get_common_search_params.
-#
-# Its existance is intentional - though a bit inpractical, it serves as a
-# reference base for every other search method which might use "standard
-# filters" (those defined in OkapiSearchAssistant::get_common_search_params).
-
 namespace okapi\services\OCPL\paths\geopaths;
 
 use okapi\Okapi;
@@ -214,7 +205,7 @@ class WebService
                 $results[$path_uuid] = null;
 
 
-        # Order the results in the same order as the input codes were given.
+        # Order the results in the same order as the input uuids were given.
         # This might come in handy for languages which support ordered dictionaries
         # (especially with conjunction with the search_and_retrieve method).
         # See issue#97. PHP dictionaries (assoc arrays) are ordered structures,
