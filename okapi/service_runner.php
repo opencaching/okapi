@@ -65,6 +65,7 @@ class OkapiServiceRunner
         'services/ocpl/paths/geopaths',
         'services/ocpl/paths/gplog_entries',
         'services/ocpl/paths/gplog_entry',
+        'services/ocpl/paths/geopath_logs',
     );
 
     /** Check if method exists. */

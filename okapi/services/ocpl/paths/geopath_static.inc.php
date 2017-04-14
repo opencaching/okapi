@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\OCPL\paths;
+namespace okapi\services\ocpl\paths;
 
 use okapi\Settings;
 use Exception;

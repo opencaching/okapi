@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\OCPL\paths\gplog_entry;
+namespace okapi\services\ocpl\paths\gplog_entry;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;

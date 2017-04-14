@@ -1,7 +1,6 @@
 <?php
 
-
-namespace okapi\services\OCPL\paths\gplog_entries;
+namespace okapi\services\ocpl\paths\gplog_entries;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
@@ -10,7 +9,7 @@ use okapi\ParamMissing;
 use okapi\Db;
 use ArrayObject;
 use Exception;
-use okapi\services\OCPL\paths\GpLogStatics;
+use okapi\services\ocpl\paths\GpLogStatics;
 
 
 require_once('geopath_static.inc.php');

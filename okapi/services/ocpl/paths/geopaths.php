@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\OCPL\paths\geopaths;
+namespace okapi\services\ocpl\paths\geopaths;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;

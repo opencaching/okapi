@@ -1,11 +1,11 @@
 <?php
 
 
-namespace okapi\services\OCPL\paths\search\all;
+namespace okapi\services\ocpl\paths\search\all;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
-use okapi\services\OCPL\paths\search\GPSearchAssistant;
+use okapi\services\ocpl\paths\search\GPSearchAssistant;
 
 require_once('gp_searching.inc.php');
 

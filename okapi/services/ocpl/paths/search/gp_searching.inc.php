@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\OCPL\paths\search;
+namespace okapi\services\ocpl\paths\search;
 
 use Exception;
 use okapi\BadRequest;
