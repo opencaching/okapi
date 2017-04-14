@@ -1,21 +1,14 @@
 <?php
 
-# TODO:...
-# This method is the simplest of all. It just returns all cashes, in any order.
-# Results might be limited only with the "standard filtering arguments",
-# implemented in the OkapiSearchAssistant::get_common_search_params.
-#
-# Its existance is intentional - though a bit inpractical, it serves as a
-# reference base for every other search method which might use "standard
-# filters" (those defined in OkapiSearchAssistant::get_common_search_params).
-
 namespace okapi\services\OCPL\paths\gplog_entry;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
-use okapi\services\caches\search\SearchAssistant;
-
-//require_once('searching.inc.php');
+use okapi\OkapiServiceRunner;
+use okapi\OkapiInternalRequest;
+use okapi\ParamMissing;
+use okapi\Db;
+use okapi\InvalidParam;
 
 class WebService
 {
@@ -28,9 +21,35 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        $search_assistant = new SearchAssistant($request);
-        $search_assistant->prepare_common_search_params();
-        $result = $search_assistant->get_common_search_result();
+        $gplog_uuid = $request->get_parameter('gplog_uuid');
+        if (!$gplog_uuid) throw new ParamMissing('gplog_uuid');
+        if (strpos($gplog_uuid, "|") !== false) throw new InvalidParam('gplog_uuid');
+
+        $fields = $request->get_parameter('fields');
+        if (!$fields) $fields = "date|user|type|comment";
+
+        $params = array(
+            'gplog_uuids' => $gplog_uuid,
+            'fields' => $fields
+        );
+
+        $results = OkapiServiceRunner::call('services/ocpl/paths/gplog_entries', new OkapiInternalRequest(
+            $request->consumer, $request->token, $params));
+        $result = $results[$gplog_uuid];
+        if ($result === null)
+        {
+            $exists = Db::select_value("
+                select 1
+                from PowerTrail_comments
+                where id=".Db::escape_string($gplog_uuid)."
+            ");
+            if ($exists) {
+                throw new InvalidParam('gplog_uuid', "This geopath log is not accessible via OKAPI.");
+            } else {
+                throw new InvalidParam('gplog_uuid', "This geopath log does not exist.");
+            }
+        }
+
         return Okapi::formatted_response($request, $result);
     }
 }

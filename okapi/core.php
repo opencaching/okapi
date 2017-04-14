@@ -2235,6 +2235,8 @@ class Okapi
     const OBJECT_TYPE_CACHELIST = 7;
     const OBJECT_TYPE_EMAIL = 8;
     const OBJECT_TYPE_CACHE_REPORT = 9;
+    const OBJECT_TYPE_GEOPATH = 10;
+    const OBJECT_TYPE_GEOPATH_LOG = 11;
 }
 
 /** A data caching layer. For slow SQL queries etc. */

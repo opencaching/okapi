@@ -1,8 +1,9 @@
 <?php
 
-namespace okapi\services\OCPL\paths\geopaths;
+namespace okapi\services\OCPL\paths;
 
 use okapi\Settings;
+use Exception;
 
 class GeopathStatics
 {
@@ -77,4 +78,46 @@ class GeopathStatics
     }
 }
 
+class GpLogStatics
+{
+    private static $geocache_types = array(
+        #
+        # OKAPI does not expose type IDs. Instead, it uses the following
+        # "code words".
+        # Changing this may introduce nasty bugs (e.g. in the replicate module).
+        # CONTACT ME BEFORE YOU MODIFY THIS!
+        #
+        'oc.pl' => array(
+            'Comment' => 1, 'Completed' => 2
+        )
+    );
+
+    /** E.g. 'Traditional' => 2. For unknown names throw an Exception. */
+    public static function gplog_type_name2id($name)
+    {
+        $ref = &self::$geocache_types[Settings::get('OC_BRANCH')];
+        if (isset($ref[$name]))
+            return $ref[$name];
+
+            throw new Exception("Method gplog_type_name2id called with unsupported geopath log ".
+                "type name '$name'.");
+    }
+
+    /** E.g. 2 => 'Traditional'. For unknown names return type 'Other'. */
+    public static function gplog_type_id2name($id)
+    {
+        static $reversed = null;
+        if ($reversed == null)
+        {
+            $reversed = array();
+            foreach (self::$geocache_types[Settings::get('OC_BRANCH')] as $key => $value)
+                $reversed[$value] = $key;
+        }
+        if (isset($reversed[$id]))
+            return $reversed[$id];
+
+        return 'Other';
+    }
+
+}
 

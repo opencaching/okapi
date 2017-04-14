@@ -102,10 +102,10 @@ class WebService
                             ); //TODO: will be changed soon
                         break;
                     case 'image_url': $entry['image_url'] = $row['image_url']; break;
-                    case 'description': $entry['description'] = $row['description']; break;
+                    case 'description': $entry['description'] = Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_GEOPATH); break;
                     case 'descriptions':
                         $entry['descriptions'] =
-                            array(Settings::get('SITELANG') => $row['description']);
+                            array(Settings::get('SITELANG') => Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_GEOPATH));
                         break; // for the future
                     case 'geocaches_total': $entry['image_url'] = $row['image_url']; break;
                     case 'geocaches_found': /* handled separately */ break;
@@ -120,7 +120,7 @@ class WebService
                         break;
                     case 'last_completed': /* handled separately */ break;
                     case 'date_created':
-                        $entry['date_created'] = $row['date_created'];
+                        $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
                         break;
                     case 'gplog_uuids':
                         $entry['gplog_uuids'] = array();
@@ -179,6 +179,13 @@ class WebService
             Db::free_result($rs);
         }
 
+        # geocaches_found
+        # geocaches_found_ratio
+        # min_founds_to_complete
+        # my_completed_status
+        # last_completed
+
+            #TODO:...
 
         # gplog_uuids
 
@@ -199,7 +206,7 @@ class WebService
             Db::free_result($rs);
         }
 
-        # Check which cache codes were not found and mark them with null.
+        # Check which geopaths were not found and mark them with null.
         foreach ($path_uuids as $path_uuid)
             if (!isset($results[$path_uuid]))
                 $results[$path_uuid] = null;
