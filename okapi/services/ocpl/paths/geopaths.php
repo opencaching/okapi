@@ -73,6 +73,7 @@ class WebService
                 and pt.status in (1,2,3)
         "); //TODO: status
 
+        $results = array();
         while ($row = Db::fetch_assoc($rs))
         {
             $entry = array();

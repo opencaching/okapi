@@ -66,6 +66,7 @@ class WebService
         "); //TODO: status
 
         $user_ids = array();
+        $results = array();
         while ($row = Db::fetch_assoc($rs))
         {
             $entry = array();

@@ -57,13 +57,13 @@ class WebService
         ");
 
         # Getting the logs themselves. Formatting as an ordered list.
-
         $internal_request = new OkapiInternalRequest(
             $request->consumer, $request->token, array('gplog_uuids' => implode("|", $log_uuids),
                 'fields' => $fields));
 
         $internal_request->skip_limits = true;
         $logs = OkapiServiceRunner::call('services/ocpl/paths/gplog_entries', $internal_request);
+
         $results = array();
         foreach ($log_uuids as $log_uuid)
             $results[] = $logs[$log_uuid];
