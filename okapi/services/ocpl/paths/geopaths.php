@@ -4,6 +4,7 @@ namespace okapi\services\ocpl\paths\geopaths;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
+use okapi\BadRequest;
 use okapi\Settings;
 use okapi\ParamMissing;
 use okapi\Db;
@@ -27,14 +28,12 @@ class WebService
         'my_completed_status','completed_count','last_completed','date_created',
         'gplog_uuids');
 
-
     public static function call(OkapiRequest $request)
     {
         $path_uuids = $request->get_parameter('path_uuids');
         if ($path_uuids === null) throw new ParamMissing('path_uuids');
         if ($path_uuids === "")
         {
-            # Issue 106 requires us to allow empty list of cache codes to be passed into this method.
             # All of the queries below have to be ready for $path_uuid to be empty!
             $path_uuids = array();
         }
@@ -74,6 +73,9 @@ class WebService
         "); //TODO: status
 
         $results = array();
+        $complete_ratio_in_paths = array();
+        $total_caches_in_paths = array();
+
         while ($row = Db::fetch_assoc($rs))
         {
             $entry = array();
@@ -108,18 +110,30 @@ class WebService
                         $entry['descriptions'] =
                             array(Settings::get('SITELANG') => Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_GEOPATH));
                         break; // for the future
-                    case 'geocaches_total': $entry['image_url'] = $row['image_url']; break;
-                    case 'geocaches_found': /* handled separately */ break;
-                    case 'geocaches_found_ratio': /* handled separately */ break;
-                    case 'min_founds_to_complete': /* handled separately */ break;
+                    case 'geocaches_total': $entry['geocaches_total'] = $row['geocaches_total']; break;
+                    case 'geocaches_found':
+                        /* handled separately */ break;
+
+                    case 'min_founds_to_complete':
+                    case 'my_completed_status':
+                        $complete_ratio_in_paths[$row['uuid']] = $row['min_ratio_to_complete'];
+                        /* DON'T BREAK - continue below! */
+
+                    case 'geocaches_found_ratio':
+                        $total_caches_in_paths[$row['uuid']] = $row['geocaches_total'];
+                        /* continued later */ break;
+
                     case 'min_ratio_to_complete':
                         $entry['min_ratio_to_complete'] = $row['min_ratio_to_complete'];
                         break;
-                    case 'my_completed_status': /* handled separately */ break;
+
                     case 'completed_count':
                         $entry['completed_count'] = $row['completed_count'];
                         break;
-                    case 'last_completed': /* handled separately */ break;
+
+                    case 'last_completed':
+                        $entry['last_completed'] = null;
+                        /* continued later */ break;
                     case 'date_created':
                         $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
                         break;
@@ -184,9 +198,120 @@ class WebService
         # geocaches_found_ratio
         # min_founds_to_complete
         # my_completed_status
+
+        if ( count($results) > 0 &&
+                (in_array('geocaches_found', $fields) ||
+                 in_array('geocaches_found_ratio', $fields) ||
+                 in_array('min_founds_to_complete', $fields) ||
+                 in_array('my_completed_status', $fields))
+           )
+        {
+            if ($request->token == null)
+                throw new BadRequest(
+                    "Level 3 Authentication is required to access my_notes data."
+                );
+
+            $user_id = $request-> token->user_id;
+
+            $rs = Db::query("
+                select count(*) as founds, powerTrail_caches.PowerTrailId as path_uuid
+                from cache_logs join powerTrail_caches on cache_logs.cache_id = powerTrail_caches.cacheId
+                where cache_logs.user_id = ".Db::escape_string($user_id)." and cache_logs.type = 1
+                    and cache_logs.deleted = 0
+                    and powerTrail_caches.PowerTrailId in (".
+                        implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
+                group by powerTrail_caches.PowerTrailId
+            ");
+
+            $founds_in_paths = array();
+            foreach(array_keys($results) as $path_uuid)
+            {
+                $founds_in_paths[$path_uuid] = 0;
+            }
+
+            while ($row = Db::fetch_assoc($rs))
+            {
+                $founds_in_paths[$row['path_uuid']] = $row['founds'];
+            }
+            Db::free_result($rs);
+
+            $completed_paths = array();
+            if(in_array('my_completed_status', $fields))
+            {
+                # find completetd paths
+                $completed_paths = Db::select_column("
+                    select PowerTrailId as path_uuid
+                    from PowerTrail_comments
+                    where
+                        userId = ".Db::escape_string($user_id)." and commentType = 2
+                        and deleted = 0 and PowerTrailId in (".
+                        implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
+                ");
+            }
+
+
+            foreach($results as $path_uuid => &$ref_path)
+            {
+                $founds = $founds_in_paths[$path_uuid];
+
+
+                if(in_array('geocaches_found', $fields))
+                    $ref_path['geocaches_found'] = $founds;
+
+                if(in_array('geocaches_found_ratio', $fields))
+                {
+                    if($founds == 0)
+                        $ref_path['geocaches_found_ratio'] = 0;
+                    else
+                        $ref_path['geocaches_found_ratio'] =
+                            $founds / $total_caches_in_paths[$path_uuid];
+                }
+
+                if(in_array('min_founds_to_complete', $fields))
+                {
+                    $caches_to_complete = ceil( $complete_ratio_in_paths[$path_uuid] *
+                        $total_caches_in_paths[$path_uuid]) - $founds;
+
+                    $ref_path['min_founds_to_complete'] =
+                        ($caches_to_complete < 0) ? 0 : $caches_to_complete;
+                }
+
+                if(in_array('my_completed_status', $fields))
+                {
+                    if(in_array($path_uuid, $completed_paths)){
+                        # path completed
+                        $ref_path['my_completed_status'] = 'completed';
+                    }
+                    else
+                    {
+                        $ref_path['my_completed_status'] =
+                        ( $founds >= ceil( $complete_ratio_in_paths[$path_uuid] *
+                            $total_caches_in_paths[$path_uuid])) ? 'eligable':'not_eligable';
+                    }
+                }
+            }
+        }
+
         # last_completed
 
-            #TODO:...
+        if ( count($results) > 0 && in_array('last_completed', $fields) )
+        {
+            $rs = Db::query("
+                select PowerTrailId as path_uuid, MAX(logDateTime) as last_completed
+                from PowerTrail_comments
+                where
+                    commentType = 2 and deleted = 0 and PowerTrailId in (".
+                    implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
+                group by PowerTrailId
+            ");
+
+            while ($row = Db::fetch_assoc($rs))
+            {
+                $results[$row['path_uuid']]['last_completed'] =
+                    date('c', strtotime($row['last_completed']));
+            }
+            Db::free_result($rs);
+        }
 
         # gplog_uuids
 
