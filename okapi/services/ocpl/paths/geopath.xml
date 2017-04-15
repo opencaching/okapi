@@ -47,9 +47,10 @@
                 but there are some predefined types that you might want to treat
                 in a special way (separate icons etc.). Primary types include:</p>
                 <ul>
-                    <li><b>WRTODO</b>,</li>
-                    <li><b>WRTODO</b>,</li>
-                    <li><b>WRTODO</b>,</li>
+                    <li><b>Geodraw</b>,</li>
+                    <li><b>Touring</b>,</li>
+                    <li><b>Nature</b>,</li>
+                    <li><b>Thematic</b>,</li>                    
                     <li><i>(any other value is valid too)</i></li>
                 </ul>
             </li>

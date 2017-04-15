@@ -7,7 +7,7 @@
     </desc>
     <opt name='type'>
         <p>Pipe-separated list of geopath type codes. If given, the results will be limited
-        to the given cache types. For a list of geopath type codes, see services/OCPL/paths/geopath
+        to the given cache types. For a list of geopath type codes, see services/ocpl/paths/geopath
         method.</p>
 
         <p><b>Notice:</b> If you want to include all geopath types <b>except</b>
@@ -16,7 +16,7 @@
     <opt name='status' default='Available'>
         <p>Pipe-separated list of status codes. Only geopath matching any of the given
         statuses will included in the response. For a list of geopath status codes, see
-        services/OCPL/paths/geopath method.</p>
+        services/ocpl/paths/geopath method.</p>
     </opt>
     <opt name='my_completed_status'>
         <p><b>Notice:</b> This parameter may be used only for requests signed
@@ -24,7 +24,7 @@
         Authentication).</p>
 
         <p>A pipe-separated list of valid "my_completed_status" codes, as defined in the
-        services/OCPL/paths/geopath method (see the "my_completed_status" field there).
+        services/ocpl/paths/geopath method (see the "my_completed_status" field there).
         If given, then only those geopaths will be returned, for which their
         <b>my_completed_status</b> matches one of the statuses provided here.</p>
     </opt>
@@ -40,8 +40,8 @@
         <p>Pipe separated list of fields to order the results by. Prefix the field name with
         a '-' sign to indicate a descending order.</p>
 
-        <p>Currently, fields which you can order by include: <b>name</b>,
-        <b>date_created</b>, <b>completed_count</b> (tell us if you want more).</p>
+        <p>Currently, fields which you can order by include: <b>uuid</b>,<b>name</b>,
+        <b>date_created</b>, <b>cache_count</b>, <b>completed_count</b> (tell us if you want more).</p>
 
         <p><b>Examples:</b></p>
         <ul>
