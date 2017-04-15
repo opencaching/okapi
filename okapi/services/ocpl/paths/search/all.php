@@ -1,6 +1,5 @@
 <?php
 
-
 namespace okapi\services\ocpl\paths\search\all;
 
 use okapi\Okapi;
