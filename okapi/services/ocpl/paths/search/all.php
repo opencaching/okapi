@@ -24,5 +24,4 @@ class WebService
         $result = $search_assistant->get_common_search_result();
         return Okapi::formatted_response($request, $result);
     }
-
 }

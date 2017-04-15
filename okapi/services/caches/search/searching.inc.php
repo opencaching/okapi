@@ -554,41 +554,43 @@ class SearchAssistant
         }
 
         #
-        # powertrail_only, powertrail_ids
+        # geopath_only, powertrail_only, geopath_uuids, powertrail_ids
         #
 
         $join_powertrails = false;
-        if ($tmp = $this->request->get_parameter('powertrail_only'))
+        $geopath_allowed_statuses = "1"; # status 'Available'
+
+        $geopath_uuids = $this->request->get_parameter('geopath_uuids');
+        if(!$geopath_uuids)
+            $geopath_uuids = $this->request->get_parameter('powertrail_ids');
+
+        if ($geopath_uuids)
         {
-            if ($tmp === 'true') {
-                $join_powertrails = true;
-            } elseif ($tmp === 'false') {
-                $join_powertrails = false;
-            } else {
-                throw new InvalidParam('powertrail_only', "Boolean expected, '$tmp' found.");
-            }
-        }
-        $powertrail_ids = $this->request->get_parameter('powertrail_ids');
-        if ($powertrail_ids) {
             $join_powertrails = true;
+
+            # statuses: 'Available'|'Temp. unavailable'|'Archived'
+            $geopath_allowed_statuses = "1,3,4";
         }
+
         if ($join_powertrails) {
             if (Settings::get('OC_BRANCH') == 'oc.pl') {
                 $extra_tables[] = "powerTrail_caches";
                 $extra_tables[] = "PowerTrail";
                 $where_conds[] = "powerTrail_caches.cacheId = caches.cache_id";
                 $where_conds[] = "PowerTrail.id = powerTrail_caches.powerTrailId";
-                $where_conds[] = 'PowerTrail.status = 1';
-                if ($powertrail_ids) {
+                $where_conds[] = "PowerTrail.status in ( ".
+                    Db::escape_string($geopath_allowed_statuses).")";
+
+                if ($geopath_uuids) {
                     $where_conds[] = "PowerTrail.id in ('".implode(
-                        "','", array_map('\okapi\Db::escape_string', explode("|", $powertrail_ids))
+                        "','", array_map('\okapi\Db::escape_string', explode("|", $geopath_uuids))
                     )."')";
                 }
             } else {
                 $where_conds[] = "0=1";
             }
         }
-        unset($powertrail_ids, $join_powertrails);
+        unset($powertrail_ids, $join_powertrails, $geopath_allowed_statuses);
 
         #
         # set_and
