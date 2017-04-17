@@ -9,6 +9,7 @@ use okapi\Settings;
 use okapi\ParamMissing;
 use okapi\Db;
 use ArrayObject;
+use okapi\services\ocpl\paths\GeopathStatics;
 
 require_once('geopath_static.inc.php');
 
@@ -124,7 +125,7 @@ class WebService
                         /* continued later */ break;
 
                     case 'min_ratio_to_complete':
-                        $entry['min_ratio_to_complete'] = $row['min_ratio_to_complete'];
+                        $entry['min_ratio_to_complete'] = $row['min_ratio_to_complete']/100;
                         break;
 
                     case 'completed_count':
@@ -269,8 +270,9 @@ class WebService
 
                 if(in_array('min_founds_to_complete', $fields))
                 {
+
                     $caches_to_complete = ceil( $complete_ratio_in_paths[$path_uuid] *
-                        $total_caches_in_paths[$path_uuid]) - $founds;
+                        $total_caches_in_paths[$path_uuid] / 100) - $founds;
 
                     $ref_path['min_founds_to_complete'] =
                         ($caches_to_complete < 0) ? 0 : $caches_to_complete;
@@ -286,7 +288,7 @@ class WebService
                     {
                         $ref_path['my_completed_status'] =
                         ( $founds >= ceil( $complete_ratio_in_paths[$path_uuid] *
-                            $total_caches_in_paths[$path_uuid])) ? 'eligable':'not_eligable';
+                            $total_caches_in_paths[$path_uuid] / 100 )) ? 'eligable':'not_eligable';
                     }
                 }
             }
