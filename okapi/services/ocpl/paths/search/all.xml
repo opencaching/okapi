@@ -28,7 +28,7 @@
         If given, then only those geopaths will be returned, for which their
         <b>my_completed_status</b> matches one of the statuses provided here.</p>
     </opt>
-    <opt name='limit' default='100'>
+    <opt name='limit' default='500'>
         <p>Integer in range 1..500. Maximum number of geopath codes returned.</p>
     </opt>
     <opt name='offset' default='0'>

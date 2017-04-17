@@ -102,11 +102,32 @@ class GPSearchAssistant
         $where_conds[] = "gp.status in ('".implode("','", array_map('\okapi\Db::escape_string', $codes))."')";
 
         #
-        # my_completetd_status - filter by status
+        # my_completetd_status - filter by completetd status for defined user
         # TODO:
         #
 
 
+        $tmp = $this->request->get_parameter('my_completed_status');
+        if ($tmp != null)
+        {
+            if ($request->token == null)
+                throw new BadRequest(
+                    "Level 3 Authentication is required to access my_notes data."
+                );
+
+
+
+            $user_id = $request-> token->user_id;
+
+                //not_eligable
+                //eligable
+                //completed
+
+            # ...i tu nie bardzo wiem jak to zrobić - tzn.
+            # trzeba by to przedyskutować...
+
+
+        }
 
 
         #
@@ -114,7 +135,7 @@ class GPSearchAssistant
         #
 
         $limit = $this->request->get_parameter('limit');
-        if ($limit == null) $limit = "100";
+        if ($limit == null) $limit = "500";
         if (!is_numeric($limit))
             throw new InvalidParam('limit', "'$limit'");
 

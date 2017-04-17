@@ -39,9 +39,9 @@ class WebService
         else
             $gplog_uuids = explode("|", $gplog_uuids);
 
-        if ((count($gplog_uuids) > 100) && (!$request->skip_limits))
+        if ((count($gplog_uuids) > 500) && (!$request->skip_limits))
             throw new InvalidParam('gplog_uuids', "Maximum allowed number of referenced ".
-                "geopath logs is 100. You provided ".count($gplog_uuids)." cache codes.");
+                "geopath logs is 500. You provided ".count($gplog_uuids)." cache codes.");
         if (count($gplog_uuids) != count(array_unique($gplog_uuids)))
             throw new InvalidParam('gplog_uuids', "Duplicate geopath logs uuid detected ".
                 "(make sure each geopath log uuid is referenced only once).");
@@ -63,7 +63,7 @@ class WebService
             where
                 id in ('".implode("','", array_map('\okapi\Db::escape_string', $gplog_uuids))."')
                 and deleted <> 1
-        "); //TODO: status
+        ");
 
         $user_ids = array();
         $results = array();

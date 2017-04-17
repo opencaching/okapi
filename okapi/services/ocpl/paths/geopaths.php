@@ -40,9 +40,9 @@ class WebService
         else
             $path_uuids = explode("|", $path_uuids);
 
-        if ((count($path_uuids) > 100) && (!$request->skip_limits))
+        if ((count($path_uuids) > 500) && (!$request->skip_limits))
             throw new InvalidParam('path_uuids', "Maximum allowed number of referenced ".
-                "caches is 100. You provided ".count($path_uuids)." geopaths uuids.");
+                "caches is 500. You provided ".count($path_uuids)." geopaths uuids.");
         if (count($path_uuids) != count(array_unique($path_uuids)))
             throw new InvalidParam('path_uuid', "Duplicate uuids detected (make sure each geopath is referenced only once).");
 
@@ -69,8 +69,8 @@ class WebService
                 PowerTrail pt
             where
                 id in ('".implode("','", array_map('\okapi\Db::escape_string', $path_uuids))."')
-                and pt.status in (1,2,3)
-        "); //TODO: status
+                and pt.status in (1,3,4)
+        ");
 
         $results = array();
         $complete_ratio_in_paths = array();
