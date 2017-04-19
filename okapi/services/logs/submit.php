@@ -34,6 +34,14 @@ class WebService
     /**
      * Publish a new log entry and return log entry uuid. Throws
      * CannotPublishException or BadRequest on errors.
+     *
+     * @param OkapiRequest $request
+     * @return array
+     * @throws BadRequest
+     * @throws CannotPublishException
+     * @throws Exception
+     * @throws InvalidParam
+     * @throws ParamMissing
      */
     private static function _call(OkapiRequest $request)
     {

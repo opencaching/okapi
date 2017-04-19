@@ -15,7 +15,7 @@ use okapi\Settings;
 
 class LogImagesCommon
 {
-    function validate_image_uuid($request)
+    public function validate_image_uuid($request)
     {
         $image_uuid = $request->get_parameter('image_uuid');
         if (!$image_uuid)
@@ -61,7 +61,7 @@ class LogImagesCommon
     }
 
 
-    function validate_position($request)
+    public function validate_position($request)
     {
         $position = $request->get_parameter('position');
         if ($position !== null && !preg_match("/^-?[0-9]+$/", $position)) {
@@ -76,17 +76,18 @@ class LogImagesCommon
      * contains sequence numbers, which are always > 0 and need not to be
      * consecutive (may have gaps). There is a unique index which prevents
      * inserting duplicate seq numbers for the same log.
-     *
      * OCPL sequence numbers currently are always = 1.
-     *
      * The purpose of this function is to bring the supplied 'position'
      * parameter into bounds, and to calculate an appropriate sequence number
      * from it.
-     *
      * This function is always called when adding images. When editing images,
      * it is called only for OCDE and if the position parameter was supplied.
+     *
+     * @param $log_internal_id
+     * @param $position
+     * @param $end_offset
+     * @return array
      */
-
     static function prepare_position($log_internal_id, $position, $end_offset)
     {
         if (Settings::get('OC_BRANCH') == 'oc.de' && $position !== null)

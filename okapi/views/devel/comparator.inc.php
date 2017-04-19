@@ -60,12 +60,12 @@ class dbStructUpdater
     * Constructor
     * @access public
     */
-    function __construct()
+    public function __construct()
     {
         $this->init();
     }
 
-    function init()
+    public function init()
     {
         //table operations: create, drop; field operations: add, remove, modify
         $this->config['updateTypes'] = 'create, drop, add, remove, modify';
@@ -83,9 +83,9 @@ class dbStructUpdater
 
     /**
     * merges current updater config with the given one
-    * @param assoc_array $config new configuration values
+    * @param array $config new configuration values
     */
-    function setConfig($config=array())
+    public function setConfig($config = array())
     {
         if (is_array($config))
         {
@@ -101,7 +101,7 @@ class dbStructUpdater
     * @param bool $asString if true - result will be a string, otherwise - array
     * @return array|string update sql statements - in array or string (separated with ';')
     */
-    function getUpdates($source, $dest, $asString=false)
+    public function getUpdates($source, $dest, $asString=false)
     {
         $result = $asString?'':array();
         $compRes = $this->compare($source, $dest);
@@ -123,9 +123,12 @@ class dbStructUpdater
     }
 
     /**
-    * Filters comparison result and lefts only sync actions allowed by 'updateTypes' option
-    */
-    function filterDiffs($compRes)
+     * Filters comparison result and lefts only sync actions allowed by 'updateTypes' option
+     *
+     * @param $compRes
+     * @return array
+     */
+    public function filterDiffs($compRes)
     {
         $result = array();
         if (is_array($this->config['updateTypes']))
@@ -183,10 +186,13 @@ class dbStructUpdater
     }
 
     /**
-    * Gets structured general info about the databases diff :
-    * array(sourceOrphans=>array(...), destOrphans=>array(...), different=>array(...))
-    */
-    function getDiffInfo($compRes)
+     * Gets structured general info about the databases diff :
+     * array(sourceOrphans=>array(...), destOrphans=>array(...), different=>array(...))
+     *
+     * @param $compRes
+     * @return array|bool
+     */
+    public function getDiffInfo($compRes)
     {
         if (!is_array($compRes))
         {
@@ -215,6 +221,7 @@ class dbStructUpdater
     * Makes comparison of the given database structures, support some options
     * @access private
     * @param string $source and $dest are strings - database tables structures
+    * @param string $dest
     * @return array
     * - table (array)
     *       - destOrphan (boolean)
@@ -225,7 +232,7 @@ class dbStructUpdater
     *               - dest (string) structure definition line in the reference table
     *           - [1](array) ...
     */
-    function compare($source, $dest)
+    public function compare($source, $dest)
     {
         $this->sourceStruct = $source;
         $this->destStruct = $dest;
@@ -272,11 +279,13 @@ class dbStructUpdater
     }
 
     /**
-    * Retrieves list of table names from the database structure dump
-    * @access private
-    * @param string $struct database structure listing
-    */
-    function getTableList($struct)
+     * Retrieves list of table names from the database structure dump
+     *
+     * @access private
+     * @param string $struct database structure listing
+     * @return array
+     */
+    public function getTableList($struct)
     {
         $result = array();
         if (preg_match_all('/CREATE(?:\s*TEMPORARY)?\s*TABLE\s*(?:IF NOT EXISTS\s*)?(?:`?(\w+)`?\.)?`?(\w+)`?/i', $struct, $m))
@@ -297,7 +306,7 @@ class dbStructUpdater
     * @param bool $removeDatabase - either to remove database name in "CREATE TABLE database.tab"-like declarations
     * @return string table structure definition
     */
-    function getTabSql($struct, $tab, $removeDatabase=true)
+    public function getTabSql($struct, $tab, $removeDatabase=true)
     {
         $result = '';
         /* create table should be single line in this case*/
@@ -327,10 +336,12 @@ class dbStructUpdater
     }
 
     /**
-    * Splits table sql into indexed array
-    *
-    */
-    function splitTabSql($sql)
+     * Splits table sql into indexed array
+     *
+     * @param $sql
+     * @return array|bool
+     */
+    public function splitTabSql($sql)
     {
         $result = array();
         //find opening bracket, get the prefix along with it
@@ -385,7 +396,7 @@ class dbStructUpdater
     *       - dest (string) reference table field definition
     *   - [1]...
     */
-    function compareSql($sourceSql, $destSql)//$sourceSql, $destSql
+    public function compareSql($sourceSql, $destSql)//$sourceSql, $destSql
     {
         $result = array();
         //split with comma delimiter, not line breaks
@@ -456,7 +467,7 @@ class dbStructUpdater
     * @return array array with single key=>value pair as described in the description
     * implements some options
     */
-    function processLine($line)
+    public function processLine($line)
     {
         $options = $this->config;
         $result = array('key'=>'', 'line'=>'');
@@ -504,7 +515,7 @@ class dbStructUpdater
     * @return array list of sql statements
     * supports query generation options
     */
-    function getDiffSql($diff)//maybe add option to ommit or force 'IF NOT EXISTS', skip autoincrement
+    public function getDiffSql($diff)//maybe add option to ommit or force 'IF NOT EXISTS', skip autoincrement
     {
         $options = $this->config;
         $sqls = array();
@@ -573,7 +584,7 @@ class dbStructUpdater
     * @param string $sql definition of the element to change
     * @return string update sql
     */
-    function getActionSql($action, $tab, $sql)
+    public function getActionSql($action, $tab, $sql)
     {
         $result = 'ALTER TABLE `'.$tab.'` ';
         $action = strtolower($action);
@@ -645,13 +656,18 @@ class dbStructUpdater
     }
 
     /**
-    * Searches for the position of the next delimiter which is not inside string literal like 'this ; ' or
-    * like "this ; ".
-    *
-    * Handles escaped \" and \'. Also handles sql comments.
-    * Actualy it is regex-based Finit State Machine (FSN)
-    */
-    function getDelimPos($string, $offset=0, $delim=';', $skipInBrackets=false)
+     * Searches for the position of the next delimiter which is not inside string literal like 'this ; ' or
+     * like "this ; ".
+     * Handles escaped \" and \'. Also handles sql comments.
+     * Actualy it is regex-based Finit State Machine (FSN)
+     *
+     * @param $string
+     * @param int $offset
+     * @param string $delim
+     * @param bool $skipInBrackets
+     * @return bool
+     */
+    public function getDelimPos($string, $offset=0, $delim=';', $skipInBrackets=false)
     {
         $stack = array();
         $rbs = '\\\\';  //reg - escaped backslash
@@ -732,10 +748,16 @@ class dbStructUpdater
     }
 
     /**
-    * works the same as getDelimPos except returns position of the first occurence of the delimiter starting from
-    * the end of the string
-    */
-    function getDelimRpos($string, $offset=0, $delim=';', $skipInBrackets=false)
+     * works the same as getDelimPos except returns position of the first occurence of the delimiter starting from
+     * the end of the string
+     *
+     * @param $string
+     * @param int $offset
+     * @param string $delim
+     * @param bool $skipInBrackets
+     * @return bool
+     */
+    public function getDelimRpos($string, $offset=0, $delim=';', $skipInBrackets=false)
     {
         $pos = $this->getDelimPos($string, $offset, $delim, $skipInBrackets);
         if ($pos===false)
@@ -757,9 +779,11 @@ class dbStructUpdater
     /**
      * Converts string to lowercase and replaces repeated spaces with the single one -
      * to be used for the comparison purposes only
+     *
      * @param string $str string to normaize
+     * @return mixed|string
      */
-    function normalizeString($str)
+    public function normalizeString($str)
     {
         $str = strtolower($str);
         $str = preg_replace('/\s+/', ' ', $str);

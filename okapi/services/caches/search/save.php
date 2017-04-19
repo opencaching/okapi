@@ -23,6 +23,10 @@ class WebService
     /**
      * Get [set_id, date_created, expires] for the given params_hash
      * (or [null, null, null] if not found).
+     *
+     * @param $params_hash
+     * @param $ref_max_age
+     * @return array
      */
     private static function find_param_set($params_hash, $ref_max_age)
     {
@@ -91,6 +95,13 @@ class WebService
     /**
      * Important: YOU HAVE TO make sure $tables and $where_conds don't contain
      * unescaped user-supplied data!
+     *
+     * @param $tables
+     * @param $joins
+     * @param $where_conds
+     * @param $min_store
+     * @param $ref_max_age
+     * @return array
      */
     public static function get_set($tables, $joins, $where_conds, $min_store, $ref_max_age)
     {

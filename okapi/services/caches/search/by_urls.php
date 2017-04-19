@@ -23,6 +23,9 @@ class WebService
     /**
      * Returns one of: array('cache_code', 'OPXXXX'), array('internal_id', '12345'),
      * array('uuid', 'A408C3...') or null.
+     *
+     * @param $url
+     * @return array|null
      */
     private static function get_cache_key($url)
     {

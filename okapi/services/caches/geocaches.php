@@ -1414,6 +1414,13 @@ class WebService
      * The $type is either "full" or "static". Full attributions may contain
      * dates and are not suitable for the replicate module. Static attributions
      * don't change that frequently.
+     *
+     * @param $cache_id
+     * @param $lang
+     * @param array $langpref
+     * @param $owner
+     * @param $type
+     * @return string
      */
     public static function get_cache_attribution_note(
         $cache_id, $lang, array $langpref, $owner, $type

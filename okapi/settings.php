@@ -292,6 +292,10 @@ final class Settings
 
     /**
      * Get the value for the $key setting.
+     *
+     * @param $key
+     * @return mixed
+     * @throws Exception
      */
     public static function get($key)
     {
@@ -314,6 +318,9 @@ final class Settings
      * Polish OKAPI server to return GPX file in German.) If you insist on using
      * your own translation tables, you should still fallback to the default
      * OKAPI translations table in case of other languages!
+     *
+     * @param $langprefs
+     * @return null
      */
     public static function default_gettext_init($langprefs)
     {

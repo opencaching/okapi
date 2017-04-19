@@ -73,6 +73,9 @@ class AttrHelper
     /**
      * Refresh all attributes from the given XML. Usually, this file is
      * downloaded from GitHub (using refresh_now).
+     *
+     * @param $xml
+     * @throws Exception
      */
     public static function refresh_from_string($xml)
     {
@@ -157,6 +160,9 @@ class AttrHelper
 
     /**
      * Object to be used for forward-compatibility (see the attributes method).
+     *
+     * @param $acode
+     * @return array
      */
     public static function get_unknown_placeholder($acode)
     {
@@ -183,8 +189,10 @@ class AttrHelper
      * Initialize all the internal attributes (if not yet initialized). This
      * loads attribute values from the cache. If they are not present in the
      * cache, it will read and parse them from attribute-definitions.xml file.
+     *
+     * @param bool $allow_refreshing
      */
-    private static function init_from_cache($allow_refreshing=true)
+    private static function init_from_cache($allow_refreshing = true)
     {
         if (self::$attr_dict !== null)
         {
@@ -223,7 +231,11 @@ class AttrHelper
         return self::$attr_dict;
     }
 
-    /** "\n\t\tBla   blabla\n\t\t<b>bla</b>bla.\n\t" => "Bla blabla <b>bla</b>bla." */
+    /**
+     * "\n\t\tBla   blabla\n\t\t<b>bla</b>bla.\n\t" => "Bla blabla <b>bla</b>bla."
+     * @param $s
+     * @return mixed
+     */
     private static function cleanup_string($s)
     {
         return preg_replace('/(^\s+)|(\s+$)/us', "", preg_replace('/\s+/us', " ", $s));
@@ -255,6 +267,9 @@ class AttrHelper
     /**
      * Get the mapping: A-codes => attribute name. The language for the name
      * is selected based on the $langpref parameter. The result is cached!
+     *
+     * @param $langpref
+     * @return array|mixed|null
      */
     public static function get_acode_to_name_mapping($langpref)
     {

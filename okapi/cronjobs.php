@@ -71,9 +71,13 @@ class CronJobController
     /**
      * Execute all scheduled cronjobs of given type, reschedule, and return
      * UNIX timestamp of the nearest scheduled event.
-     *
      * If $wait is false, then it may throw JobsAlreadyInProgress if another
      * thread is currently executing these type of jobs.
+     *
+     * @param $type
+     * @param bool $wait
+     * @return int|mixed
+     * @throws JobsAlreadyInProgress
      */
     public static function run_jobs($type, $wait=false)
     {
@@ -143,6 +147,9 @@ class CronJobController
     /**
      * Force a specified cronjob to run. Throw an exception if cronjob not found.
      * $job_name mast equal one of the names returned by ->get_name() method.
+     *
+     * @param $job_name
+     * @throws Exception
      */
     public static function force_run($job_name)
     {
@@ -162,6 +169,9 @@ class CronJobController
     /**
      * Reset the schedule of a specified cronjob. This will force the job to
      * run on nearest occasion (but not NOW).
+     *
+     * @param $job_name
+     * @throws Exception
      */
     public static function reset_job_schedule($job_name)
     {
@@ -215,6 +225,9 @@ abstract class CronJob
      * (Scheduling the *first* run of `execute` method is out of this method's
      * control, but you can prevent the actual job from being executed by using
      * custom conditions in your `execute` method.)
+     *
+     * @param $previously_scheduled_run
+     * @return
      */
     public abstract function get_next_scheduled_run($previously_scheduled_run);
 }

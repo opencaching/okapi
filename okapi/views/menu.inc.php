@@ -18,7 +18,11 @@ class OkapiMenu
             ? " class='selected'" : "").">$link_name</a><br>";
     }
 
-    /** Get HTML-formatted side menu representation. */
+    /** Get HTML-formatted side menu representation.
+     *
+     * @param null $current_path
+     * @return string
+     */
     public static function get_menu_html($current_path = null)
     {
         $chunks = array();

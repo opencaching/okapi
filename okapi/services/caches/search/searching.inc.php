@@ -22,8 +22,10 @@ class SearchAssistant
     /**
      * Initializes an object with a content of the client request.
      * (The request should contain common geocache search parameters.)
+     *
+     * @param OkapiRequest $request
      */
-    public  function __construct(OkapiRequest $request)
+    public function __construct(OkapiRequest $request)
     {
         $this->request = $request;
         $this->longitude_expr = NULL;
@@ -67,9 +69,10 @@ class SearchAssistant
 
     /**
      * Set search params, a dictionary of the structure described in get_search_params().
-     *
      * Important: YOU HAVE TO make sure that all options are properly sanitized
      * for SQL queries! I.e. they cannot contain unescaped user-supplied data.
+     *
+     * @param $search_params
      */
     public function set_search_params($search_params)
     {
@@ -848,6 +851,9 @@ class SearchAssistant
     /**
      * Get the list of cache IDs which were found by given user.
      * Parameter needs to be *internal* user id, not uuid.
+     *
+     * @param $internal_user_ids
+     * @return array
      */
     private static function get_found_cache_ids($internal_user_ids)
     {
