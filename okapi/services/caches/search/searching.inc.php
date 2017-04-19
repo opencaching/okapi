@@ -25,7 +25,7 @@ class SearchAssistant
      *
      * @param OkapiRequest $request
      */
-    public  function __construct(OkapiRequest $request)
+    public function __construct(OkapiRequest $request)
     {
         $this->request = $request;
         $this->longitude_expr = NULL;

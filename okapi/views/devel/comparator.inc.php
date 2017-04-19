@@ -60,12 +60,12 @@ class dbStructUpdater
     * Constructor
     * @access public
     */
-    function __construct()
+    public function __construct()
     {
         $this->init();
     }
 
-    function init()
+    public function init()
     {
         //table operations: create, drop; field operations: add, remove, modify
         $this->config['updateTypes'] = 'create, drop, add, remove, modify';
@@ -85,7 +85,7 @@ class dbStructUpdater
     * merges current updater config with the given one
     * @param array $config new configuration values
     */
-    function setConfig($config = array())
+    public function setConfig($config = array())
     {
         if (is_array($config))
         {
@@ -101,7 +101,7 @@ class dbStructUpdater
     * @param bool $asString if true - result will be a string, otherwise - array
     * @return array|string update sql statements - in array or string (separated with ';')
     */
-    function getUpdates($source, $dest, $asString=false)
+    public function getUpdates($source, $dest, $asString=false)
     {
         $result = $asString?'':array();
         $compRes = $this->compare($source, $dest);
@@ -128,7 +128,7 @@ class dbStructUpdater
      * @param $compRes
      * @return array
      */
-    function filterDiffs($compRes)
+    public function filterDiffs($compRes)
     {
         $result = array();
         if (is_array($this->config['updateTypes']))
@@ -192,7 +192,7 @@ class dbStructUpdater
      * @param $compRes
      * @return array|bool
      */
-    function getDiffInfo($compRes)
+    public function getDiffInfo($compRes)
     {
         if (!is_array($compRes))
         {
@@ -232,7 +232,7 @@ class dbStructUpdater
     *               - dest (string) structure definition line in the reference table
     *           - [1](array) ...
     */
-    function compare($source, $dest)
+    public function compare($source, $dest)
     {
         $this->sourceStruct = $source;
         $this->destStruct = $dest;
@@ -285,7 +285,7 @@ class dbStructUpdater
      * @param string $struct database structure listing
      * @return array
      */
-    function getTableList($struct)
+    public function getTableList($struct)
     {
         $result = array();
         if (preg_match_all('/CREATE(?:\s*TEMPORARY)?\s*TABLE\s*(?:IF NOT EXISTS\s*)?(?:`?(\w+)`?\.)?`?(\w+)`?/i', $struct, $m))
@@ -306,7 +306,7 @@ class dbStructUpdater
     * @param bool $removeDatabase - either to remove database name in "CREATE TABLE database.tab"-like declarations
     * @return string table structure definition
     */
-    function getTabSql($struct, $tab, $removeDatabase=true)
+    public function getTabSql($struct, $tab, $removeDatabase=true)
     {
         $result = '';
         /* create table should be single line in this case*/
@@ -341,7 +341,7 @@ class dbStructUpdater
      * @param $sql
      * @return array|bool
      */
-    function splitTabSql($sql)
+    public function splitTabSql($sql)
     {
         $result = array();
         //find opening bracket, get the prefix along with it
@@ -396,7 +396,7 @@ class dbStructUpdater
     *       - dest (string) reference table field definition
     *   - [1]...
     */
-    function compareSql($sourceSql, $destSql)//$sourceSql, $destSql
+    public function compareSql($sourceSql, $destSql)//$sourceSql, $destSql
     {
         $result = array();
         //split with comma delimiter, not line breaks
@@ -467,7 +467,7 @@ class dbStructUpdater
     * @return array array with single key=>value pair as described in the description
     * implements some options
     */
-    function processLine($line)
+    public function processLine($line)
     {
         $options = $this->config;
         $result = array('key'=>'', 'line'=>'');
@@ -515,7 +515,7 @@ class dbStructUpdater
     * @return array list of sql statements
     * supports query generation options
     */
-    function getDiffSql($diff)//maybe add option to ommit or force 'IF NOT EXISTS', skip autoincrement
+    public function getDiffSql($diff)//maybe add option to ommit or force 'IF NOT EXISTS', skip autoincrement
     {
         $options = $this->config;
         $sqls = array();
@@ -584,7 +584,7 @@ class dbStructUpdater
     * @param string $sql definition of the element to change
     * @return string update sql
     */
-    function getActionSql($action, $tab, $sql)
+    public function getActionSql($action, $tab, $sql)
     {
         $result = 'ALTER TABLE `'.$tab.'` ';
         $action = strtolower($action);
@@ -667,7 +667,7 @@ class dbStructUpdater
      * @param bool $skipInBrackets
      * @return bool
      */
-    function getDelimPos($string, $offset=0, $delim=';', $skipInBrackets=false)
+    public function getDelimPos($string, $offset=0, $delim=';', $skipInBrackets=false)
     {
         $stack = array();
         $rbs = '\\\\';  //reg - escaped backslash
@@ -757,7 +757,7 @@ class dbStructUpdater
      * @param bool $skipInBrackets
      * @return bool
      */
-    function getDelimRpos($string, $offset=0, $delim=';', $skipInBrackets=false)
+    public function getDelimRpos($string, $offset=0, $delim=';', $skipInBrackets=false)
     {
         $pos = $this->getDelimPos($string, $offset, $delim, $skipInBrackets);
         if ($pos===false)
@@ -783,7 +783,7 @@ class dbStructUpdater
      * @param string $str string to normaize
      * @return mixed|string
      */
-    function normalizeString($str)
+    public function normalizeString($str)
     {
         $str = strtolower($str);
         $str = preg_replace('/\s+/', ' ', $str);

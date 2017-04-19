@@ -312,6 +312,7 @@ final class Settings
      * Bind "okapi_messages" with our local i18n database. Set proper locale
      * based on the language codes passed and return the locale code.
      * $langprefs is a list of language codes in order of preference.
+     *
      * Please note, that OKAPI consumers may ask OKAPI to return contents
      * in a specified language. (For example, consumers from Germany may ask
      * Polish OKAPI server to return GPX file in German.) If you insist on using
