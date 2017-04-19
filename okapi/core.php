@@ -678,7 +678,7 @@ class Db
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.
 #
 
-require_once __DIR__ . '/../okapi/oauth.php';
+require_once __DIR__ . '/oauth.php';
 
 class OkapiConsumer extends OAuthConsumer
 {
