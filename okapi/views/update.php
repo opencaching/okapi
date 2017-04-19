@@ -139,6 +139,10 @@ class View
      * Return the list of email addresses of developers who used any of the given
      * method names at least once. If $days is not null, then only consumers which
      * used the method in last X $days will be returned.
+     *
+     * @param $service_names
+     * @param null $days
+     * @return array
      */
     public static function get_consumers_of($service_names, $days = null)
     {

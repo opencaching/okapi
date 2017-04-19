@@ -126,6 +126,9 @@ class View
 
     /**
      * Check if the URL can be safely retrieved. See issue #252.
+     *
+     * @param $url
+     * @throws BadRequest
      */
     private static function requireSafe($url)
     {

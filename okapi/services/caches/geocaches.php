@@ -1394,26 +1394,28 @@ class WebService
 
     /**
      * Return attribution note for the given geocache.
-     *
      * The $lang parameter identifies the language of the cache description
      * to which the attribution note will be appended to (one cache may
      * have descriptions in multiple languages!).
-     *
      * The $langpref parameter is *an array* of language preferences
      * extracted from the langpref parameter passed to the method by the
      * OKAPI Consumer.
-     *
      * Both values ($lang and $langpref) will be taken into account when
      * generating the attribution note, but $lang will have a higher
      * priority than $langpref (we don't want to mix the languages in the
      * descriptions if we don't have to).
-     *
      * $owner is in object describing the user, it has the same format as
      * defined in "geocache" method specs (see the "owner" field).
-     *
      * The $type is either "full" or "static". Full attributions may contain
      * dates and are not suitable for the replicate module. Static attributions
      * don't change that frequently.
+     *
+     * @param $cache_id
+     * @param $lang
+     * @param array $langpref
+     * @param $owner
+     * @param $type
+     * @return string
      */
     public static function get_cache_attribution_note(
         $cache_id, $lang, array $langpref, $owner, $type

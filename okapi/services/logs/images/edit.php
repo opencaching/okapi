@@ -32,8 +32,13 @@ class WebService
     /**
      * Edit an log entry image and return its (new) position.
      * Throws CannotPublishException or BadRequest on errors.
+     *
+     * @param OkapiRequest $request
+     * @return mixed
+     * @throws BadRequest
+     * @throws CannotPublishException
+     * @throws InvalidParam
      */
-
     private static function _call(OkapiRequest $request)
     {
         # Developers! Please notice the fundamental difference between throwing

@@ -62,13 +62,22 @@ class OkapiServiceRunner
         'services/replicate/info',
     );
 
-    /** Check if method exists. */
+    /** Check if method exists.
+     *
+     * @param $service_name
+     * @return bool
+     */
     public static function exists($service_name)
     {
         return in_array($service_name, self::$all_names);
     }
 
-    /** Get method options (is consumer required etc.). */
+    /** Get method options (is consumer required etc.).
+     *
+     * @param $service_name
+     * @return mixed
+     * @throws Exception
+     */
     public static function options($service_name)
     {
         if (!self::exists($service_name))
@@ -89,6 +98,10 @@ class OkapiServiceRunner
     /**
      * Get method documentation file contents (stuff within the XML file).
      * If you're looking for a parsed representation, use services/apiref/method.
+     *
+     * @param $service_name
+     * @return bool|string
+     * @throws Exception
      */
     public static function docs($service_name)
     {
@@ -103,12 +116,15 @@ class OkapiServiceRunner
 
     /**
      * Execute the method and return the result.
-     *
      * OKAPI methods return OkapiHttpResponses, but some MAY also return
      * PHP objects.
-     *
      * If $request must be consistent with given method's options (must
      * include Consumer and Token, if they are required).
+     *
+     * @param $service_name
+     * @param OkapiRequest $request
+     * @return mixed
+     * @throws Exception
      */
     public static function call($service_name, OkapiRequest $request)
     {
@@ -154,6 +170,10 @@ class OkapiServiceRunner
      * runtime-stats data, i.e. not only regarding services. This is a special
      * version of save_stats which saves runtime stats under the name of $extra_name.
      * Note, that $request can be null.
+     *
+     * @param $extra_name
+     * @param $request
+     * @param $runtime
      */
     public static function save_stats_extra($extra_name, $request, $runtime)
     {

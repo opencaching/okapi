@@ -54,38 +54,32 @@ class WebService
 
     /**
      * You can use the following syntax:
-     *
      * <a href="%OKAPI:docurl:fragment%">any text</a> - to reference fragment of introducing
      * documentation
-     *
      * <a href="%OKAPI:methodref:methodname%">any text</a> - to reference any other method
-     *
      * <a href="%OKAPI:methodref:methodname#html_anchor%">any text</a> - to reference
      * any HTML anchor in other method
-     *
      * <a href="%OKAPI:methodref:#html_anchor%">any text</a> - to reference any HTML
      * anchor within current document
-     *
      * <a href="%OKAPI:methodargref:methodname#argument_name%">any text</a> - to
      * reference argument of another method
-     *
      * <a href="%OKAPI:methodargref:#argument_name%">any text</a> - to reference
      * argument within current method
-     *
      * <a href="%OKAPI:methodretref:methodname#returned_key%">any text</a> - to
      * reference returned value of another method
-     *
      * <a href="%OKAPI:methodretref:#returned_key%">any text</a> - to reference
      * returned value within current method
-     *
      * NOTE!
-     *
      * Since returned JSON dictionaries are not standardized (they are simply plain
      * HTML in the docs), to reference returned values you must manually create an
      * anchor prefixed with ret_, i.e. (HTML snippet): <li
      * id="ret_alt_wpts"><p><b>alt_wpts</b> - list of alternate/additional
      * waypoints</...>  and access it with (HTML snippet): <a
      * href="%OKAPI:methodretref:#alt_wpts%">any text</a>.
+     *
+     * @param $matches
+     * @return string
+     * @throws Exception
      */
     public static function plugin_callback($matches)
     {

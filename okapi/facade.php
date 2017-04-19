@@ -44,6 +44,11 @@ class Facade
      * (this will be PHP object or OkapiHttpResponse, depending on the method). Use this method
      * whenever you need to access OKAPI services from within OC code. If you want to simulate
      * Level 3 Authentication, you should supply user's internal ID (the second parameter).
+     *
+     * @param $service_name
+     * @param $user_id_or_null
+     * @param $parameters
+     * @return mixed
      */
     public static function service_call($service_name, $user_id_or_null, $parameters)
     {
@@ -61,6 +66,10 @@ class Facade
      * current HTTP request headers to OKAPI (which can make use of them in
      * terms of caching), 2. It outputs the service response directly, instead
      * of returning it.
+     *
+     * @param $service_name
+     * @param $user_id_or_null
+     * @param $parameters
      */
     public static function service_display($service_name, $user_id_or_null, $parameters)
     {
@@ -83,10 +92,14 @@ class Facade
      * include its own result instead of using OKAPI's search options. The
      * $temp_table should be a valid name of a temporary table with the
      * following (or similar) structure:
-     *
      *   create temporary table temp_12345 (
      *     cache_id integer primary key
      *   ) engine=memory;
+     *
+     * @param $temp_table
+     * @param $min_store
+     * @param $max_ref_age
+     * @return array
      */
     public static function import_search_set($temp_table, $min_store, $max_ref_age)
     {
@@ -106,8 +119,9 @@ class Facade
      * will scan for changes within these caches on the next changelog update.
      * This is useful in some cases, when OKAPI cannot detect the modification
      * for itself (grep OCPL code for examples). See issue #179.
-     *
      * $cache_codes - a single cache code OR an array of cache codes.
+     *
+     * @param $cache_codes
      */
     public static function schedule_geocache_check($cache_codes)
     {
@@ -123,9 +137,11 @@ class Facade
     /**
      * Find all log entries of the specified user for the specified cache and
      * mark them as *possibly* modified. See issue #265.
-     *
      * $cache_id - internal ID of the geocache,
      * $user_id - internal ID of the user.
+     *
+     * @param $cache_id
+     * @param $user_id
      */
     public static function schedule_user_entries_check($cache_id, $user_id)
     {
@@ -142,10 +158,11 @@ class Facade
      * Remove all OAuth Access Tokens bound to a certain user. This method
      * should be called (once) e.g. after a user is banned. It will disable his
      * ability to submit cache logs, etc.
-     *
      * Note, that OKAPI will *automatically* remove Access Tokens of banned
      * users, but it will perform this action with a slight delay. This method
      * can be used to do this immediatelly. See #432 for details.
+     *
+     * @param $user_id
      */
     public static function remove_user_tokens($user_id)
     {
@@ -187,34 +204,37 @@ class Facade
 
     /**
      * Store the object $value in OKAPI's cache, under the name of $key.
-     *
      * Parameters:
-     *
      * $key -- must be a string of max 57 characters in length (you can use
      *     md5(...) to shorten your keys). Use the same $key to retrieve your
      *     value later.
-     *
      * $value -- can be any serializable PHP object. Currently there's no
      *     strict size limit, but try to keep it below 1 MB (for future
      *     compatibility with memcached).
-     *
      * $timeout -- *maximum* time allowed to store the value, given in seconds
      *     (however, the value *can* be removed sooner than that, see the note
      *     below). Timeout can be also set to null, but you should avoid this,
      *     because such objects may clutter the cache unnecessarilly. (You must
      *     remember to remove them yourself!)
-     *
      * Please note, that this cache is not guaranteed to be persistent.
      * Usually it is, but it can be emptied in case of emergency (low disk
      * space), or if we decide to switch the underlying cache engine in the
      * future (e.g. to memcached). Most of your values should be safe though.
+     *
+     * @param $key
+     * @param $value
+     * @param $timeout
      */
     public static function cache_set($key, $value, $timeout)
     {
         Cache::set("facade#".$key, $value, $timeout);
     }
 
-    /** Same as `cache_set`, but works on many key->value pair at once. */
+    /** Same as `cache_set`, but works on many key->value pair at once.
+     *
+     * @param $dict
+     * @param $timeout
+     */
     public static function cache_set_many($dict, $timeout)
     {
         $prefixed_dict = array();
@@ -227,13 +247,20 @@ class Facade
     /**
      * Retrieve object stored in cache under the name of $key. If object does
      * not exist or its timeout has expired, return null.
+     *
+     * @param $key
+     * @return mixed|null
      */
     public static function cache_get($key)
     {
         return Cache::get("facade#".$key);
     }
 
-    /** Same as `cache_get`, but it works on multiple keys at once. */
+    /** Same as `cache_get`, but it works on multiple keys at once.
+     *
+     * @param $keys
+     * @return array
+     */
     public static function get_many($keys)
     {
         $prefixed_keys = array();
@@ -250,13 +277,18 @@ class Facade
 
     /**
      * Delete the entry named $key from the cache.
+     *
+     * @param $key
      */
     public static function cache_delete($key)
     {
         Cache::delete("facade#".$key);
     }
 
-    /** Same as `cache_delete`, but works on many keys at once. */
+    /** Same as `cache_delete`, but works on many keys at once.
+     *
+     * @param $keys
+     */
     public static function cache_delete_many($keys)
     {
         $prefixed_keys = array();

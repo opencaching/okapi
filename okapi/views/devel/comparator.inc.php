@@ -83,9 +83,9 @@ class dbStructUpdater
 
     /**
     * merges current updater config with the given one
-    * @param assoc_array $config new configuration values
+    * @param array $config new configuration values
     */
-    function setConfig($config=array())
+    function setConfig($config = array())
     {
         if (is_array($config))
         {
@@ -123,8 +123,11 @@ class dbStructUpdater
     }
 
     /**
-    * Filters comparison result and lefts only sync actions allowed by 'updateTypes' option
-    */
+     * Filters comparison result and lefts only sync actions allowed by 'updateTypes' option
+     *
+     * @param $compRes
+     * @return array
+     */
     function filterDiffs($compRes)
     {
         $result = array();
@@ -183,9 +186,12 @@ class dbStructUpdater
     }
 
     /**
-    * Gets structured general info about the databases diff :
-    * array(sourceOrphans=>array(...), destOrphans=>array(...), different=>array(...))
-    */
+     * Gets structured general info about the databases diff :
+     * array(sourceOrphans=>array(...), destOrphans=>array(...), different=>array(...))
+     *
+     * @param $compRes
+     * @return array|bool
+     */
     function getDiffInfo($compRes)
     {
         if (!is_array($compRes))
@@ -215,6 +221,7 @@ class dbStructUpdater
     * Makes comparison of the given database structures, support some options
     * @access private
     * @param string $source and $dest are strings - database tables structures
+    * @param string $dest
     * @return array
     * - table (array)
     *       - destOrphan (boolean)
@@ -272,10 +279,12 @@ class dbStructUpdater
     }
 
     /**
-    * Retrieves list of table names from the database structure dump
-    * @access private
-    * @param string $struct database structure listing
-    */
+     * Retrieves list of table names from the database structure dump
+     *
+     * @access private
+     * @param string $struct database structure listing
+     * @return array
+     */
     function getTableList($struct)
     {
         $result = array();
@@ -327,9 +336,11 @@ class dbStructUpdater
     }
 
     /**
-    * Splits table sql into indexed array
-    *
-    */
+     * Splits table sql into indexed array
+     *
+     * @param $sql
+     * @return array|bool
+     */
     function splitTabSql($sql)
     {
         $result = array();
@@ -645,12 +656,17 @@ class dbStructUpdater
     }
 
     /**
-    * Searches for the position of the next delimiter which is not inside string literal like 'this ; ' or
-    * like "this ; ".
-    *
-    * Handles escaped \" and \'. Also handles sql comments.
-    * Actualy it is regex-based Finit State Machine (FSN)
-    */
+     * Searches for the position of the next delimiter which is not inside string literal like 'this ; ' or
+     * like "this ; ".
+     * Handles escaped \" and \'. Also handles sql comments.
+     * Actualy it is regex-based Finit State Machine (FSN)
+     *
+     * @param $string
+     * @param int $offset
+     * @param string $delim
+     * @param bool $skipInBrackets
+     * @return bool
+     */
     function getDelimPos($string, $offset=0, $delim=';', $skipInBrackets=false)
     {
         $stack = array();
@@ -732,9 +748,15 @@ class dbStructUpdater
     }
 
     /**
-    * works the same as getDelimPos except returns position of the first occurence of the delimiter starting from
-    * the end of the string
-    */
+     * works the same as getDelimPos except returns position of the first occurence of the delimiter starting from
+     * the end of the string
+     *
+     * @param $string
+     * @param int $offset
+     * @param string $delim
+     * @param bool $skipInBrackets
+     * @return bool
+     */
     function getDelimRpos($string, $offset=0, $delim=';', $skipInBrackets=false)
     {
         $pos = $this->getDelimPos($string, $offset, $delim, $skipInBrackets);
@@ -757,7 +779,9 @@ class dbStructUpdater
     /**
      * Converts string to lowercase and replaces repeated spaces with the single one -
      * to be used for the comparison purposes only
+     *
      * @param string $str string to normaize
+     * @return mixed|string
      */
     function normalizeString($str)
     {

@@ -33,8 +33,14 @@ class WebService
     /**
      * Append a new image to a log entry and return the image uuid and position.
      * Throws CannotPublishException or BadRequest on errors.
+     *
+     * @param OkapiRequest $request
+     * @return array
+     * @throws CannotPublishException
+     * @throws Exception
+     * @throws InvalidParam
+     * @throws ParamMissing
      */
-
     private static function _call(OkapiRequest $request)
     {
         require_once('log_images_common.inc.php');
@@ -219,8 +225,10 @@ class WebService
      * Estimate an upper limit of the processable image dimensions.
      * This will be in the scale of ~40 MP for 256 MB memory_limit and
      * ~16 MP for 128 MB. See Okapi::init_internals() for current memory_limit.
+     *
+     * @param $base64_image
+     * @return float
      */
-
     private static function max_pixels($base64_image)
     {
         $bytes_per_pixel = 5;   # GD needs 5 bytes per pixel for "true color"

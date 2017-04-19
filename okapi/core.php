@@ -1413,7 +1413,7 @@ class Okapi
 
     /**
      * Pick text from $langdict based on language preference $langpref.
-     *
+
      * Example:
      * pick_best_language(
      *   array('pl' => 'X', 'de' => 'Y', 'en' => 'Z'),
@@ -1422,6 +1422,7 @@ class Okapi
      *
      * @param array $langdict - assoc array of lang-code => text.
      * @param array $langprefs - list of lang codes, in order of preference.
+     * @return mixed|string
      */
     public static function pick_best_language($langdict, $langprefs)
     {
