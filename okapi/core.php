@@ -1425,11 +1425,28 @@ class Okapi
      */
     public static function pick_best_language($langdict, $langprefs)
     {
-        foreach ($langprefs as $pref)
-            if (isset($langdict[$pref]))
+        /* Try langprefs first. */
+        foreach ($langprefs as $pref) {
+            if (isset($langdict[$pref])) {
                 return $langdict[$pref];
+            }
+        }
+
+        /* Try English next. */
+        if (isset($langdict['en'])) {
+            return $langdict['en'];
+        }
+
+        /* Then, try SITELANG. Should be filled in most cases. */
+        if (isset($langdict[Settings::get('SITELANG')])) {
+            return $langdict[Settings::get('SITELANG')];
+        }
+
+        /* Finally, just pick any. */
         foreach ($langdict as &$text_ref)
             return $text_ref;
+
+        /* Langdict is empty. Simply return an empty string. */
         return "";
     }
 

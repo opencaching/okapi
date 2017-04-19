@@ -56,8 +56,7 @@ class WebService
 
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
-        $langpref .= "|".Settings::get('SITELANG');
-        $langpref = explode("|", $langpref);
+        $langprefs = explode("|", $langpref);
 
         $fields = $request->get_parameter('fields');
         if (!$fields) $fields = "code|name|location|type|status";
@@ -536,7 +535,7 @@ class WebService
 
                     if (in_array($cache_code, $outdated_listings))
                     {
-                        Okapi::gettext_domain_init(array_merge(array($row['language']), $langpref));
+                        Okapi::gettext_domain_init(array_merge(array($row['language']), $langprefs));
                         $tmp = (
                             "<p style='color:#c00000'><strong>".
                             _('Parts of this geocache listing may be outdated.').
@@ -552,7 +551,7 @@ class WebService
                     {
                         $tmp .= "\n<p><em>".
                             self::get_cache_attribution_note(
-                                $row['cache_id'], strtolower($row['language']), $langpref,
+                                $row['cache_id'], strtolower($row['language']), $langprefs,
                                 $results[$cache_code]['owner'], $attribution_append
                             ).
                             "</em></p>";
@@ -572,10 +571,10 @@ class WebService
             }
             foreach ($results as &$result_ref)
             {
-                $result_ref['short_description'] = Okapi::pick_best_language($result_ref['short_descriptions'], $langpref);
-                $result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langpref);
-                $result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langpref);
-                $result_ref['hint2'] = Okapi::pick_best_language($result_ref['hints2'], $langpref);
+                $result_ref['short_description'] = Okapi::pick_best_language($result_ref['short_descriptions'], $langprefs);
+                $result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langprefs);
+                $result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langprefs);
+                $result_ref['hint2'] = Okapi::pick_best_language($result_ref['hints2'], $langprefs);
             }
 
             # Remove unwanted fields.
@@ -687,7 +686,7 @@ class WebService
 
             if (in_array('attrnames', $fields))
             {
-                $acode2bestname = AttrHelper::get_acode_to_name_mapping($langpref);
+                $acode2bestname = AttrHelper::get_acode_to_name_mapping($langprefs);
                 foreach ($results as &$result_ref)
                 {
                     $result_ref['attrnames'] = array();
@@ -1046,7 +1045,7 @@ class WebService
                         'name' => sprintf($wpt_format, $index),
                         'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
                         'type' => $row['okapi_type'],
-                        'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langpref),
+                        'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langprefs),
                         'sym' => $row['sym'],
                         'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
                     );
@@ -1159,7 +1158,7 @@ class WebService
                     if (!isset($country_codes2names[$row['country_code']]))
                         $countries[$row['cache_code']] = '';
                     else
-                        $countries[$row['cache_code']] = Okapi::pick_best_language($country_codes2names[$row['country_code']], $langpref);
+                        $countries[$row['cache_code']] = Okapi::pick_best_language($country_codes2names[$row['country_code']], $langprefs);
                     $states[$row['cache_code']] = $row['state'];
                 }
                 Db::free_result($rs);
@@ -1215,7 +1214,7 @@ class WebService
             foreach ($results as $cache_code => &$result_ref)
                 $result_ref['attribution_note'] =
                     self::get_cache_attribution_note(
-                        $result_ref['internal_id'], $langpref[0], $langpref,
+                        $result_ref['internal_id'], $langprefs[0], $langprefs,
                         $results[$cache_code]['owner'], 'full'
                     );
         }
@@ -1416,7 +1415,7 @@ class WebService
      * don't change that frequently.
      */
     public static function get_cache_attribution_note(
-        $cache_id, $lang, array $langpref, $owner, $type
+        $cache_id, $lang, array $langprefs, $owner, $type
     ) {
         $site_url = Settings::get('SITE_URL');
 
@@ -1427,7 +1426,7 @@ class WebService
         $site_name = Okapi::get_normalized_site_name();
         $cache_url = $site_url."viewcache.php?cacheid=$cache_id";
 
-        Okapi::gettext_domain_init(array_merge(array($lang), $langpref));
+        Okapi::gettext_domain_init(array_merge(array($lang), $langprefs));
         if (Settings::get('OC_BRANCH') == 'oc.pl')
         {
             # This does not vary on $type (yet).
