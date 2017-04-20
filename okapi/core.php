@@ -2194,7 +2194,8 @@ class Okapi
      */
     public static function from_human_to_bytes($val) {
         $val = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
+        $last = strtolower($val[strlen($val) - 1]);
+        $val = substr($val, 0, strlen($val) - 1);
         switch($last) {
             case 'g':
                 return $val * 1024 * 1024 * 1024;
