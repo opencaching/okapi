@@ -28,7 +28,7 @@
         If given, then only those geopaths will be returned, for which their
         <b>my_completed_status</b> matches one of the statuses provided here.</p>
     </opt>
-    <opt name='limit' default='500'>
+    <opt name='limit' default='100'> <!-- WRTODO: not 500 -->
         <p>Integer in range 1..500. Maximum number of geopath codes returned.</p>
     </opt>
     <opt name='offset' default='0'>
@@ -40,7 +40,7 @@
         <p>Pipe separated list of fields to order the results by. Prefix the field name with
         a '-' sign to indicate a descending order.</p>
 
-        <p>Currently, fields which you can order by include: <b>uuid</b>,<b>name</b>,
+        <p>Currently, fields which you can order by include: <!-- WRTODO: bez UUIDa --> <b>name</b>,
         <b>date_created</b>, <b>cache_count</b>, <b>completed_count</b> (tell us if you want more).</p>
 
         <p><b>Examples:</b></p>

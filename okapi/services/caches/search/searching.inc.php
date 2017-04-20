@@ -554,7 +554,7 @@ class SearchAssistant
         }
 
         #
-        # geopath_only, powertrail_only, geopath_uuids, powertrail_ids
+        # geopath_only (aka powertrail_only), geopath_uuids, powertrail_ids
         #
 
         $join_powertrails = false;
@@ -562,7 +562,7 @@ class SearchAssistant
 
         $geopath_uuids = $this->request->get_parameter('geopath_uuids');
         if(!$geopath_uuids)
-            $geopath_uuids = $this->request->get_parameter('powertrail_ids');
+            $geopath_uuids = $this->request->get_parameter('powertrail_ids');  # WRTODO
 
         if ($geopath_uuids)
         {

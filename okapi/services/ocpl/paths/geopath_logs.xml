@@ -1,6 +1,6 @@
 <xml>
     <brief>Retrieve all log entries for the specified geopath</brief>
-    <issue-id>41</issue-id>
+    <issue-id>WRTODO</issue-id>
     <desc>
         <p>Retrieve the log entries for the specified geopath. Use the offset and
         limit parameters for pagination.</p>

@@ -1287,7 +1287,7 @@ class WebService
             }
         }
 
-        # Geopath_uuids
+        # geopath_uuids
 
         if (in_array('geopath_uuids', $fields))
         {
@@ -1312,7 +1312,6 @@ class WebService
                 }
             }
         }
-
 
         # Check which cache codes were not found and mark them with null.
         foreach ($cache_codes as $cache_code)

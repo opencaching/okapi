@@ -231,6 +231,7 @@
     </opt>
     <opt name='powertrail_ids'>
         <p>WRTODO: Alias of geopath_uuids. Power Trails are now a synonim of Geopaths.</p>
+        WRTODO: This should not be an alias (ID != UUID).
     </opt>
     <opt name='set_and'>
         <p>ID of a set previously created with the <b>search/save</b> method.
