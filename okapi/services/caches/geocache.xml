@@ -480,6 +480,12 @@
                 or incomplete, and it is completely missing on some OC installations.</p>
             </li>
             <li>
+                TODO: beta etc.
+                <p><b>geopath_uuids</b> - WRTODO list of geopaths uuids, which this cache belongs to</p>
+                <p>WRTODO: only uuid or structure uuid|name|... ?!</p>
+                <p>WRTODO: only OC:pl, oc:de always empty table?!</p>
+            </li>
+            <li>
                 <p><b>last_found</b> - date and time (ISO 8601) when the
                 geocache was last found <b>or null</b> when it hasn't been yet found.</p>
 

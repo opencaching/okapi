@@ -47,9 +47,10 @@
                 but there are some predefined types that you might want to treat
                 in a special way (separate icons etc.). Primary types include:</p>
                 <ul>
-                    <li><b>WRTODO</b>,</li>
-                    <li><b>WRTODO</b>,</li>
-                    <li><b>WRTODO</b>,</li>
+                    <li><b>Geodraw</b>,</li>
+                    <li><b>Touring</b>,</li>
+                    <li><b>Nature</b>,</li>
+                    <li><b>Thematic</b>,</li>                    
                     <li><i>(any other value is valid too)</i></li>
                 </ul>
             </li>
@@ -109,7 +110,7 @@
             <li>
                 <b>min_founds_to_complete</b> - minimum number of geocaches which a
                 user needs to find in order to be eligible to claim this geopath as
-                "completed".
+                "completed" or 0 if user has enough founds.
             </li>
             <li>
                 <b>min_ratio_to_complete</b> - minimum ratio of found/total geocaches
