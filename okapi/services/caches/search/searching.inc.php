@@ -23,7 +23,7 @@ class SearchAssistant
      * Initializes an object with a content of the client request.
      * (The request should contain common geocache search parameters.)
      */
-    public  function __construct(OkapiRequest $request)
+    public function __construct(OkapiRequest $request)
     {
         $this->request = $request;
         $this->longitude_expr = NULL;

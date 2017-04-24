@@ -27,7 +27,6 @@ class WebService
         if (strpos($cache_code, "|") !== false) throw new InvalidParam('cache_code');
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
-        $langpref .= "|".Settings::get('SITELANG');
         $fields = $request->get_parameter('fields');
         if (!$fields) $fields = "code|name|location|type|status";
         $log_fields = $request->get_parameter('log_fields');

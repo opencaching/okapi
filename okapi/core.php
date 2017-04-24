@@ -678,7 +678,7 @@ class Db
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.
 #
 
-require_once($GLOBALS['rootpath']."okapi/oauth.php");
+require_once __DIR__ . '/oauth.php';
 
 class OkapiConsumer extends OAuthConsumer
 {
@@ -879,8 +879,8 @@ class OkapiOAuthServer extends OAuthServer
 
 # Including local datastore and settings (connecting SQL database etc.).
 
-require_once($GLOBALS['rootpath']."okapi/settings.php");
-require_once($GLOBALS['rootpath']."okapi/datastore.php");
+require_once __DIR__ . '/settings.php';
+require_once __DIR__ . '/datastore.php';
 
 class OkapiHttpResponse
 {
@@ -993,7 +993,7 @@ class OkapiRedirectResponse extends OkapiHttpResponse
     }
 }
 
-require_once ($GLOBALS['rootpath'].'okapi/lib/tbszip.php');
+require_once __DIR__ . '/lib/tbszip.php';
 
 class OkapiZIPHttpResponse extends OkapiHttpResponse
 {
@@ -1425,11 +1425,28 @@ class Okapi
      */
     public static function pick_best_language($langdict, $langprefs)
     {
-        foreach ($langprefs as $pref)
-            if (isset($langdict[$pref]))
+        /* Try langprefs first. */
+        foreach ($langprefs as $pref) {
+            if (isset($langdict[$pref])) {
                 return $langdict[$pref];
+            }
+        }
+
+        /* Try English next. */
+        if (isset($langdict['en'])) {
+            return $langdict['en'];
+        }
+
+        /* Then, try SITELANG. Should be filled in most cases. */
+        if (isset($langdict[Settings::get('SITELANG')])) {
+            return $langdict[Settings::get('SITELANG')];
+        }
+
+        /* Finally, just pick any. */
         foreach ($langdict as &$text_ref)
             return $text_ref;
+
+        /* Langdict is empty. Simply return an empty string. */
         return "";
     }
 
@@ -1457,7 +1474,7 @@ class Okapi
         $nearest_event = Okapi::get_var("cron_nearest_event");
         if ($nearest_event + 0 <= time())
         {
-            require_once($GLOBALS['rootpath']."okapi/cronjobs.php");
+            require_once __DIR__ . '/cronjobs.php';
             try {
                 $nearest_event = CronJobController::run_jobs('pre-request');
                 Okapi::set_var("cron_nearest_event", $nearest_event);
@@ -1480,7 +1497,7 @@ class Okapi
         {
             set_time_limit(0);
             ignore_user_abort(true);
-            require_once($GLOBALS['rootpath']."okapi/cronjobs.php");
+            require_once __DIR__ . '/cronjobs.php';
             try {
                 $nearest_event = CronJobController::run_jobs('cron-5');
                 Okapi::set_var("cron_nearest_event", $nearest_event);
@@ -1627,7 +1644,7 @@ class Okapi
      */
     public static function register_new_consumer($appname, $appurl, $email)
     {
-        require_once($GLOBALS['rootpath']."okapi/service_runner.php");
+        require_once __DIR__ . '/service_runner.php';
         $consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
             $appname, $appurl, $email);
         $sample_cache = OkapiServiceRunner::call("services/caches/search/all",
@@ -2177,14 +2194,14 @@ class Okapi
      */
     public static function from_human_to_bytes($val) {
         $val = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
+        $last = strtolower($val[strlen($val) - 1]);
         switch($last) {
             case 'g':
-                return $val * 1024 * 1024 * 1024;
+                return substr($val, 0, strlen($val) - 1) * 1024 * 1024 * 1024;
             case 'm':
-                return $val * 1024 * 1024;
+                return substr($val, 0, strlen($val) - 1) * 1024 * 1024;
             case 'k':
-                return $val * 1024;
+                return substr($val, 0, strlen($val) - 1) * 1024;
             default:
                 if (($last < '0') || ($last > '9')) {
                     throw new Exception("Unknown suffix");

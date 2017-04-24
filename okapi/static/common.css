@@ -6,10 +6,10 @@ a { cursor: pointer; }
 span.note { color: #888; font-size: 70%; font-weight: normal; }
 
 body.api { background: #f5f1eb; }
-.okd_mid { width: 1025px; margin: 0 auto; background: url(middle.gif) #f5f1eb; background-position: top center; background-repeat: repeat-y; }
-.okd_top { width: 1025px; margin: 0 auto; background: url(top.jpg); background-position: top center; background-repeat: no-repeat; }
-.okd_top_pad { height: 230px; width: 1025px; }
-.okd_bottom { width: 1025px; height: 64px; margin: 0 auto; background: url(bottom.gif); background-position: top center; background-repeat: no-repeat; }
+.okd_mid { width: 1200px; margin: 0 auto; background: url(middle.gif?v2) #f5f1eb; background-position: top center; background-repeat: repeat-y; }
+.okd_top { width: 1200px; margin: 0 auto; background: url(top.jpg?v2); background-position: top center; background-repeat: no-repeat; }
+.okd_top_pad { height: 230px; width: 1200px; }
+.okd_bottom { width: 1200px; height: 64px; margin: 0 auto; background: url(bottom.gif?v2); background-position: top center; background-repeat: no-repeat; }
 .okd_switcher { text-align: right; padding: 30px 30px 0 0; font-size: 11px; color: #888; }
 .okd_switcher select { border: 1px solid #bbb; padding: 2px; font-size: 12px; }
 
