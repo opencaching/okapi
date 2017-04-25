@@ -26,6 +26,26 @@
             </li>
             <li><b>ref_url</b> - URL of the documentation page with method description,</li>
             <li>
+                <p><b>infotags</b> - list of tags. Each tag is represented by its unique code
+                (string). Existence (or absence) of each tag has its meaning. Currently, the
+                following tags are allowed:</p>
+                
+                <ul>
+                    <li>
+                        <p><b>ocpl-specific</b> - if present, then this method is (currently)
+                        specific to OCPL-branch (as described
+                        <a href='%OKAPI:docurl:oc-branch-differences%'>here</a>).</p>
+                        
+                        <p>Please note, that such method may still become a "regular" method in the
+                        future (as support for certain feature gets implemented in other OC
+                        branches).</p>
+                    </li>
+                    <li>
+                        <p><b>ocde-specific</b> - as above, but for OCDE-branch.</p>
+                    </li>
+                </ul>
+            </li>
+            <li>
                 <p><b>auth_options</b> - a dictionary which describes authentication
                 requirements for this method, it has a following structure:</p>
 
@@ -60,6 +80,12 @@
 
                         <p>Currently these values do not mean anything specific. They are used
                         for different coloring/styling in the documentation pages.</p>
+                    </li>
+                    <li>
+                        <p><b>infotags</b> - list of tags. Currently they may have exactly the
+                        same values as the "method-level" infotags defined above. They indicate
+                        that a particular argument is designed to "work best" on one of the OC
+                        branches only.</p>
                     </li>
                 </ul>
             </li>
