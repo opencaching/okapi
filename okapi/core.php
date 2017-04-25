@@ -2242,6 +2242,23 @@ class Okapi
         }
     }
 
+    /**
+     * Take a list of "infotags" (as defined in services/apiref/method), and format
+     * them for being displayed in OKAPI public documentation pages.
+     */
+    public static function format_infotags($infotags) {
+        $chunks = [];
+        $url = Settings::get('SITE_URL')."okapi/introduction.html#oc-branch-differences";
+        foreach ($infotags as $infotag) {
+            if ($infotag == "ocpl-specific") {
+                $chunks[] = "<a href='$url' class='infotag infotag-ocpl-specific'>OCPL</a> ";
+            } elseif ($infotag == "ocde-specific") {
+                $chunks[] = "<a href='$url' class='infotag infotag-ocde-specific'>OCDE</a> ";
+            }
+        }
+        return implode("", $chunks);
+    }
+
     # object types in table okapi_submitted_objects
     const OBJECT_TYPE_CACHE = 1;
     const OBJECT_TYPE_CACHE_DESCRIPTION = 2;

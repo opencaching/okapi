@@ -112,6 +112,14 @@ way, that the same change will also work on all other OC sites:
     you have OKAPI installed, we will make every effort for future versions of
     OKAPIs to be compatible with your site.
 
+You should know that there are two primary branches of Opencaching - we call
+them OCPL and OCDE - and all OKAPI methods MUST support both these branches
+(unless the particular functionality is available on only one of them). You can
+read more about OCPL and OCDE branching
+[here](https://github.com/opencaching/opencaching-pl/wiki#brief-introduction-in-english).
+You can also read about how OKAPI tries to deal with branch differences
+[here](https://opencaching.pl/okapi/introduction.html#oc-branch-differences).
+
 
 ## Requirements ##
 

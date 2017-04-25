@@ -1,4 +1,5 @@
 <xml>
+    <infotags>ocpl-specific</infotags>
     <brief>Retrieve information on a single geopath</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
