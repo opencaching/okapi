@@ -29,13 +29,13 @@
                 <p><b>infotags</b> - list of tags. Each tag is represented by its unique code
                 (string). Existence (or absence) of each tag has its meaning. Currently, the
                 following tags are allowed:</p>
-                
+
                 <ul>
                     <li>
                         <p><b>ocpl-specific</b> - if present, then this method is (currently)
                         specific to OCPL-branch (as described
                         <a href='%OKAPI:docurl:oc-branch-differences%'>here</a>).</p>
-                        
+
                         <p>Please note, that such method may still become a "regular" method in the
                         future (as support for certain feature gets implemented in other OC
                         branches).</p>

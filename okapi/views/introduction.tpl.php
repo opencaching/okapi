@@ -510,6 +510,9 @@ won't throw errors, etc. At worst, they will "fail silently", or return empty
 results. All these differences should be described in detail in the
 documentation of the affected methods, parameters and fields.</p>
 
+<p>If you have any questions about this, then ask them
+<a href="https://github.com/opencaching/okapi/issues/463">here</a>.</p>
+
 
 <h2 id='participate'>How can I participate in OKAPI development?</h2>
 
