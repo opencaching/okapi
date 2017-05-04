@@ -34,7 +34,7 @@ class WebService
         'is_ignored', 'willattends', 'country', 'state', 'preview_image',
         'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
         'protection_areas', 'short_description', 'short_descriptions', 'needs_maintenance',
-        'geopath_uuids');
+        'cacheset_uuids');
 
     public static function call(OkapiRequest $request)
     {
@@ -352,7 +352,7 @@ class WebService
                     case 'internal_id': $entry['internal_id'] = $row['cache_id']; break;
                     case 'attribution_note': /* handled separately */ break;
                     case 'protection_areas': /* handled separately */ break;
-                    case 'geopath_uuids': /* handled separately */ break;
+                    case 'cacheset_uuids': /* handled separately */ break;
                     default: throw new Exception("Missing field case: ".$field);
                 }
             }
@@ -1303,19 +1303,19 @@ class WebService
             }
         }
 
-        # geopath_uuids
+        # cacheset_uuids
 
-        if (in_array('geopath_uuids', $fields))
+        if (in_array('cacheset_uuids', $fields))
         {
             foreach ($results as &$result_ref)
-                $result_ref['geopath_uuids'] = array();
+                $result_ref['cacheset_uuids'] = array();
 
             if (Settings::get('OC_BRANCH') == 'oc.pl')
             {
                 # OCPL uses cache_notes table to store notes.
 
                 $rs = Db::query("
-                    select cacheId as cache_id, PowerTrailId as path_uuid
+                    select cacheId as cache_id, PowerTrailId as cacheset_uuid
                     from powerTrail_caches
                     where
                         cacheId in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($cacheid2wptcode)))."')
@@ -1324,7 +1324,7 @@ class WebService
 
                 while ($row = Db::fetch_assoc($rs))
                 {
-                    $results[$cacheid2wptcode[$row['cache_id']]]['geopath_uuids'][] = $row['path_uuid'];
+                    $results[$cacheid2wptcode[$row['cache_id']]]['cacheset_uuids'][] = $row['cacheset_uuid'];
                 }
             }
         }

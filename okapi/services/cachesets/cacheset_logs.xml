@@ -1,19 +1,19 @@
 <xml>
     <infotags>ocpl-specific</infotags>
-    <brief>Retrieve all log entries for the specified geopath</brief>
+    <brief>Retrieve all log entries for the specified cacheset</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
-        <p>Retrieve the log entries for the specified geopath. Use the offset and
+        <p>Retrieve the log entries for the specified cacheset. Use the offset and
         limit parameters for pagination.</p>
         <p>Log entries are ordered by a descending date of the entry.</p>
     </desc>
-    <req name='path_uuid'>
-        <p>Unique identifier of this geopath.</p>
+    <req name='cacheset_uuid'>
+        <p>Unique identifier of this cacheset.</p>
     </req>
     <opt name='fields' default='date|user|type|comment'>
-        <p>Same as in the services/ocpl/paths/gplog_entry method. Pipe-separated list
+        <p>Same as in the services/cachesets/cslog_entry method. Pipe-separated list
         of field names which you are interested with.
-        See services/ocpl/paths/gplog_entry method for a list of available values.</p>
+        See services/cachesets/cslog_entry method for a list of available values.</p>
     </opt>
     <opt name='offset' default='0'>
         <p>Number of entries to skip at the beginning. Use this along the <b>limit</b> parameter
@@ -25,7 +25,7 @@
     </opt>
     <common-format-params/>
     <returns>
-        <p>A list of geopath log entries, ordered by date. Each geopath log entry is a dictionary of a format
-        described in the "gplog_entry" method.</p>
+        <p>A list of cacheset log entries, ordered by date. Each cacheset log entry is a dictionary of a format
+        described in the "cslog_entry" method.</p>
     </returns>
 </xml>
