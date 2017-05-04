@@ -19,17 +19,7 @@
         statuses will included in the response. For a list of cacheset status codes, see
         services/cachesets/cacheset method.</p>
     </opt>
-    <opt name='my_completed_status'>
-        <p><b>Notice:</b> This parameter may be used only for requests signed
-        with an Access Token (you will need to use <b>Level 3</b>
-        Authentication).</p>
-
-        <p>A pipe-separated list of valid "my_completed_status" codes, as defined in the
-        services/cachesets/cacheset method (see the "my_completed_status" field there).
-        If given, then only those cachesets will be returned, for which their
-        <b>my_completed_status</b> matches one of the statuses provided here.</p>
-    </opt>
-    <opt name='limit' default='100'> <!-- WRTODO: not 500 -->
+    <opt name='limit' default='500'> <!-- WRTODO: not 500 -->
         <p>Integer in range 1..500. Maximum number of cacheset codes returned.</p>
     </opt>
     <opt name='offset' default='0'>
