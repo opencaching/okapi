@@ -1,23 +1,23 @@
 <xml>
     <infotags>ocpl-specific</infotags>
-    <brief>Search for geopaths</brief>
+    <brief>Search for cachesets</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
-        <p>Search for geopaths using some simple filters. All of them are
+        <p>Search for cachesets using some simple filters. All of them are
         optional, but most often you will want to use at least some of them.</p>
     </desc>
     <opt name='type'>
-        <p>Pipe-separated list of geopath type codes. If given, the results will be limited
-        to the given cache types. For a list of geopath type codes, see services/ocpl/paths/geopath
+        <p>Pipe-separated list of cacheset type codes. If given, the results will be limited
+        to the given cache types. For a list of cacheset type codes, see services/cachesets/cacheset
         method.</p>
 
-        <p><b>Notice:</b> If you want to include all geopath types <b>except</b>
+        <p><b>Notice:</b> If you want to include all cacheset types <b>except</b>
         the given ones, prepend your list with the "-" sign.</p>
     </opt>
     <opt name='status' default='Available'>
-        <p>Pipe-separated list of status codes. Only geopath matching any of the given
-        statuses will included in the response. For a list of geopath status codes, see
-        services/ocpl/paths/geopath method.</p>
+        <p>Pipe-separated list of status codes. Only cacheset matching any of the given
+        statuses will included in the response. For a list of cacheset status codes, see
+        services/cachesets/cacheset method.</p>
     </opt>
     <opt name='my_completed_status'>
         <p><b>Notice:</b> This parameter may be used only for requests signed
@@ -25,12 +25,12 @@
         Authentication).</p>
 
         <p>A pipe-separated list of valid "my_completed_status" codes, as defined in the
-        services/ocpl/paths/geopath method (see the "my_completed_status" field there).
-        If given, then only those geopaths will be returned, for which their
+        services/cachesets/cacheset method (see the "my_completed_status" field there).
+        If given, then only those cachesets will be returned, for which their
         <b>my_completed_status</b> matches one of the statuses provided here.</p>
     </opt>
     <opt name='limit' default='100'> <!-- WRTODO: not 500 -->
-        <p>Integer in range 1..500. Maximum number of geopath codes returned.</p>
+        <p>Integer in range 1..500. Maximum number of cacheset codes returned.</p>
     </opt>
     <opt name='offset' default='0'>
         <p>An offset, the amount of items to skip at the beginning of the result. Combined with limit
@@ -46,8 +46,8 @@
 
         <p><b>Examples:</b></p>
         <ul>
-            <li>to order by geopath name use "order_by=name" or "order_by=+name",</li>
-            <li>to have the most often completed geopaths in front, use "order_by=-completed_count",</li>
+            <li>to order by cacheset name use "order_by=name" or "order_by=+name",</li>
+            <li>to have the most often completed cachesets in front, use "order_by=-completed_count",</li>
             <li>multicolumn sorting is also allowed, ex. "order_by=-completed_count|name"</li>
         </ul>
     </opt>

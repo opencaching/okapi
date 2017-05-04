@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\ocpl\paths\geopaths;
+namespace okapi\services\cachesets\cachesets;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
@@ -9,9 +9,9 @@ use okapi\Settings;
 use okapi\ParamMissing;
 use okapi\Db;
 use ArrayObject;
-use okapi\services\ocpl\paths\GeopathStatics;
+use okapi\services\cachesets\CachesetStatics;
 
-require_once('geopath_static.inc.php');
+require_once('cacheset_static.inc.php');
 
 class WebService
 {
@@ -27,25 +27,25 @@ class WebService
         'description','descriptions','geocaches_total','geocaches_found',
         'geocaches_found_ratio','min_founds_to_complete','min_ratio_to_complete',
         'my_completed_status','completed_count','last_completed','date_created',
-        'gplog_uuids');
+        'cslog_uuids');
 
     public static function call(OkapiRequest $request)
     {
-        $path_uuids = $request->get_parameter('path_uuids');
-        if ($path_uuids === null) throw new ParamMissing('path_uuids');
-        if ($path_uuids === "")
+        $cacheset_uuids = $request->get_parameter('cacheset_uuids');
+        if ($cacheset_uuids === null) throw new ParamMissing('cacheset_uuids');
+        if ($cacheset_uuids === "")
         {
-            # All of the queries below have to be ready for $path_uuid to be empty!
-            $path_uuids = array();
+            # All of the queries below have to be ready for $cacheset_uuid to be empty!
+            $cacheset_uuids = array();
         }
         else
-            $path_uuids = explode("|", $path_uuids);
+            $cacheset_uuids = explode("|", $cacheset_uuids);
 
-        if ((count($path_uuids) > 500) && (!$request->skip_limits))
-            throw new InvalidParam('path_uuids', "Maximum allowed number of referenced ".
-                "caches is 500. You provided ".count($path_uuids)." geopaths uuids.");
-        if (count($path_uuids) != count(array_unique($path_uuids)))
-            throw new InvalidParam('path_uuid', "Duplicate uuids detected (make sure each geopath is referenced only once).");
+        if ((count($cacheset_uuids) > 500) && (!$request->skip_limits))
+            throw new InvalidParam('cacheset_uuids', "Maximum allowed number of referenced ".
+                "caches is 500. You provided ".count($cacheset_uuids)." cachesets uuids.");
+        if (count($cacheset_uuids) != count(array_unique($cacheset_uuids)))
+            throw new InvalidParam('cacheset_uuid', "Duplicate uuids detected (make sure each cacheset is referenced only once).");
 
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
@@ -69,7 +69,7 @@ class WebService
             from
                 PowerTrail pt
             where
-                id in ('".implode("','", array_map('\okapi\Db::escape_string', $path_uuids))."')
+                id in ('".implode("','", array_map('\okapi\Db::escape_string', $cacheset_uuids))."')
                 and pt.status in (1,3,4)
         ");
 
@@ -88,8 +88,8 @@ class WebService
                     case 'name': $entry['name'] = $row['name']; break;
                     case 'names': $entry['names'] = array(Settings::get('SITELANG') => $row['name']); break; // for the future
                     case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
-                    case 'type': $entry['type'] = GeopathStatics::geopath_type_id2name($row['type']); break;
-                    case 'status': $entry['status'] = GeopathStatics::geopath_status_id2name($row['status']); break;
+                    case 'type': $entry['type'] = CachesetStatics::cacheset_type_id2name($row['type']); break;
+                    case 'status': $entry['status'] = CachesetStatics::cacheset_status_id2name($row['status']); break;
                     case 'mentor':
                         $entry['mentor'] = null;
                         /* continued later */
@@ -106,10 +106,10 @@ class WebService
                             ); //TODO: will be changed soon
                         break;
                     case 'image_url': $entry['image_url'] = $row['image_url']; break;
-                    case 'description': $entry['description'] = Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_GEOPATH); break;
+                    case 'description': $entry['description'] = Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_CACHESET); break;
                     case 'descriptions':
                         $entry['descriptions'] =
-                            array(Settings::get('SITELANG') => Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_GEOPATH));
+                            array(Settings::get('SITELANG') => Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_CACHESET));
                         break; // for the future
                     case 'geocaches_total': $entry['geocaches_total'] = $row['geocaches_total']; break;
                     case 'geocaches_found':
@@ -138,8 +138,8 @@ class WebService
                     case 'date_created':
                         $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
                         break;
-                    case 'gplog_uuids':
-                        $entry['gplog_uuids'] = array();
+                    case 'cslog_uuids':
+                        $entry['cslog_uuids'] = array();
                         /* continued later */
                         break;
                     default: throw new Exception("Missing field case: ".$field);
@@ -162,7 +162,7 @@ class WebService
 
 
             $rs = Db::query("
-                select user_id, uuid, username, pto.PowerTrailId as path_uuid, pto.privileages as privileges
+                select user_id, uuid, username, pto.PowerTrailId as cacheset_uuid, pto.privileages as privileges
                 from
                     PowerTrail_owners as pto
                     join user as u on u.user_id = pto.userId
@@ -176,7 +176,7 @@ class WebService
                 if( $process_authors )
                 {
                     /* every mentor is also an author */
-                    $results[$row['path_uuid']]['authors'][] = array(
+                    $results[$row['cacheset_uuid']]['authors'][] = array(
                         'uuid' => $row['uuid'],
                         'username' => $row['username'],
                         'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
@@ -185,7 +185,7 @@ class WebService
 
                 if( $process_mentor && $row['privileges'] == 2 )
                 {
-                    $results[$row['path_uuid']]['mentor'] = array(
+                    $results[$row['cacheset_uuid']]['mentor'] = array(
                         'uuid' => $row['uuid'],
                         'username' => $row['username'],
                         'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
@@ -215,7 +215,7 @@ class WebService
             $user_id = $request-> token->user_id;
 
             $rs = Db::query("
-                select count(*) as founds, powerTrail_caches.PowerTrailId as path_uuid
+                select count(*) as founds, powerTrail_caches.PowerTrailId as cacheset_uuid
                 from cache_logs join powerTrail_caches on cache_logs.cache_id = powerTrail_caches.cacheId
                 where cache_logs.user_id = ".Db::escape_string($user_id)." and cache_logs.type = 1
                     and cache_logs.deleted = 0
@@ -225,14 +225,14 @@ class WebService
             ");
 
             $founds_in_paths = array();
-            foreach(array_keys($results) as $path_uuid)
+            foreach(array_keys($results) as $cacheset_uuid)
             {
-                $founds_in_paths[$path_uuid] = 0;
+                $founds_in_paths[$cacheset_uuid] = 0;
             }
 
             while ($row = Db::fetch_assoc($rs))
             {
-                $founds_in_paths[$row['path_uuid']] = $row['founds'];
+                $founds_in_paths[$row['cacheset_uuid']] = $row['founds'];
             }
             Db::free_result($rs);
 
@@ -241,7 +241,7 @@ class WebService
             {
                 # find completetd paths
                 $completed_paths = Db::select_column("
-                    select PowerTrailId as path_uuid
+                    select PowerTrailId as cacheset_uuid
                     from PowerTrail_comments
                     where
                         userId = ".Db::escape_string($user_id)." and commentType = 2
@@ -251,9 +251,9 @@ class WebService
             }
 
 
-            foreach($results as $path_uuid => &$ref_path)
+            foreach($results as $cacheset_uuid => &$ref_path)
             {
-                $founds = $founds_in_paths[$path_uuid];
+                $founds = $founds_in_paths[$cacheset_uuid];
 
 
                 if(in_array('geocaches_found', $fields))
@@ -265,14 +265,14 @@ class WebService
                         $ref_path['geocaches_found_ratio'] = 0;
                     else
                         $ref_path['geocaches_found_ratio'] =
-                            $founds / $total_caches_in_paths[$path_uuid];
+                            $founds / $total_caches_in_paths[$cacheset_uuid];
                 }
 
                 if(in_array('min_founds_to_complete', $fields))
                 {
 
-                    $caches_to_complete = ceil( $complete_ratio_in_paths[$path_uuid] *
-                        $total_caches_in_paths[$path_uuid] / 100) - $founds;
+                    $caches_to_complete = ceil( $complete_ratio_in_paths[$cacheset_uuid] *
+                        $total_caches_in_paths[$cacheset_uuid] / 100) - $founds;
 
                     $ref_path['min_founds_to_complete'] =
                         ($caches_to_complete < 0) ? 0 : $caches_to_complete;
@@ -280,15 +280,15 @@ class WebService
 
                 if(in_array('my_completed_status', $fields))
                 {
-                    if(in_array($path_uuid, $completed_paths)){
+                    if(in_array($cacheset_uuid, $completed_paths)){
                         # path completed
                         $ref_path['my_completed_status'] = 'completed';
                     }
                     else
                     {
                         $ref_path['my_completed_status'] =
-                        ( $founds >= ceil( $complete_ratio_in_paths[$path_uuid] *
-                            $total_caches_in_paths[$path_uuid] / 100 )) ? 'eligable':'not_eligable';
+                        ( $founds >= ceil( $complete_ratio_in_paths[$cacheset_uuid] *
+                            $total_caches_in_paths[$cacheset_uuid] / 100 )) ? 'eligable':'not_eligable';
                     }
                 }
             }
@@ -299,7 +299,7 @@ class WebService
         if ( count($results) > 0 && in_array('last_completed', $fields) )
         {
             $rs = Db::query("
-                select PowerTrailId as path_uuid, MAX(logDateTime) as last_completed
+                select PowerTrailId as cacheset_uuid, MAX(logDateTime) as last_completed
                 from PowerTrail_comments
                 where
                     commentType = 2 and deleted = 0 and PowerTrailId in (".
@@ -309,18 +309,18 @@ class WebService
 
             while ($row = Db::fetch_assoc($rs))
             {
-                $results[$row['path_uuid']]['last_completed'] =
+                $results[$row['cacheset_uuid']]['last_completed'] =
                     date('c', strtotime($row['last_completed']));
             }
             Db::free_result($rs);
         }
 
-        # gplog_uuids
+        # cslog_uuids
 
-        if ( in_array('gplog_uuids', $fields) && count($results) > 0)
+        if ( in_array('cslog_uuids', $fields) && count($results) > 0)
         {
             $rs = Db::query("
-                select id, PowerTrailId as path_uuid
+                select id, PowerTrailId as cacheset_uuid
                 from PowerTrail_comments
                 where PowerTrailId in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
             ");
@@ -328,16 +328,16 @@ class WebService
             while ($row = Db::fetch_assoc($rs))
             {
                 if( $process_authors )
-                    $results[$row['path_uuid']]['gplog_uuids'][] = $row['id'];
+                    $results[$row['cacheset_uuid']]['cslog_uuids'][] = $row['id'];
 
             }
             Db::free_result($rs);
         }
 
-        # Check which geopaths were not found and mark them with null.
-        foreach ($path_uuids as $path_uuid)
-            if (!isset($results[$path_uuid]))
-                $results[$path_uuid] = null;
+        # Check which cachesets were not found and mark them with null.
+        foreach ($cacheset_uuids as $cacheset_uuid)
+            if (!isset($results[$cacheset_uuid]))
+                $results[$cacheset_uuid] = null;
 
 
         # Order the results in the same order as the input uuids were given.
@@ -347,8 +347,8 @@ class WebService
         # so we just have to rewrite it (sequentially).
 
         $ordered_results = new ArrayObject();
-        foreach ($path_uuids as $path_uuid)
-            $ordered_results[$path_uuid] = $results[$path_uuid];
+        foreach ($cacheset_uuids as $cacheset_uuid)
+            $ordered_results[$cacheset_uuid] = $results[$cacheset_uuid];
 
 
         return Okapi::formatted_response($request, $ordered_results);

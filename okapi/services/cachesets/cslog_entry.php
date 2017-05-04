@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\ocpl\paths\gplog_entry;
+namespace okapi\services\cachesets\cslog_entry;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
@@ -21,32 +21,32 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        $gplog_uuid = $request->get_parameter('gplog_uuid');
-        if (!$gplog_uuid) throw new ParamMissing('gplog_uuid');
-        if (strpos($gplog_uuid, "|") !== false) throw new InvalidParam('gplog_uuid');
+        $cslog_uuid = $request->get_parameter('cslog_uuid');
+        if (!$cslog_uuid) throw new ParamMissing('cslog_uuid');
+        if (strpos($cslog_uuid, "|") !== false) throw new InvalidParam('cslog_uuid');
 
         $fields = $request->get_parameter('fields');
         if (!$fields) $fields = "date|user|type|comment";
 
         $params = array(
-            'gplog_uuids' => $gplog_uuid,
+            'cslog_uuids' => $cslog_uuid,
             'fields' => $fields
         );
 
-        $results = OkapiServiceRunner::call('services/ocpl/paths/gplog_entries', new OkapiInternalRequest(
+        $results = OkapiServiceRunner::call('services/cachesets/cslog_entries', new OkapiInternalRequest(
             $request->consumer, $request->token, $params));
-        $result = $results[$gplog_uuid];
+        $result = $results[$cslog_uuid];
         if ($result === null)
         {
             $exists = Db::select_value("
                 select 1
                 from PowerTrail_comments
-                where id=".Db::escape_string($gplog_uuid)."
+                where id=".Db::escape_string($cslog_uuid)."
             ");
             if ($exists) {
-                throw new InvalidParam('gplog_uuid', "This geopath log is not accessible via OKAPI.");
+                throw new InvalidParam('cslog_uuid', "This cacheset log is not accessible via OKAPI.");
             } else {
-                throw new InvalidParam('gplog_uuid', "This geopath log does not exist.");
+                throw new InvalidParam('cslog_uuid', "This cacheset log does not exist.");
             }
         }
 

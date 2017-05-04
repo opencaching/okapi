@@ -1,18 +1,18 @@
 <?php
 
-namespace okapi\services\ocpl\paths\search;
+namespace okapi\services\cachesets\search;
 
 use Exception;
 use okapi\BadRequest;
 use okapi\Db;
 use okapi\InvalidParam;
 use okapi\Okapi;
-use okapi\services\ocpl\paths\GeopathStatics;
+use okapi\services\cachesets\CachesetStatics;
 use okapi\OkapiRequest;
 
-require_once(__DIR__.'/../geopath_static.inc.php');
+require_once(__DIR__.'/../cacheset_static.inc.php');
 
-class GPSearchAssistant
+class CSSearchAssistant
 {
     /**
      * Current request issued by the client.
@@ -21,7 +21,7 @@ class GPSearchAssistant
 
     /**
      * Initializes an object with a content of the client request.
-     * (The request should contain common geopath search parameters.)
+     * (The request should contain common cacheset search parameters.)
      */
     public  function __construct(OkapiRequest $request)
     {
@@ -33,8 +33,8 @@ class GPSearchAssistant
     }
 
     /**
-     * Load, parse and check common geopath search parameters (the ones
-     * described in services/ocpl/paths/search/all method) from $this->request.
+     * Load, parse and check common cacheset search parameters (the ones
+     * described in services/cachesets/search/all method) from $this->request.
      * Most cache search methods share a common set
      * of filtering parameters recognized by this method. It initalizes
      * search params, which can be further altered by calls to other methods
@@ -66,16 +66,16 @@ class GPSearchAssistant
             {
                 try
                 {
-                    $id = GeopathStatics::geopath_type_name2id($name);
+                    $id = CachesetStatics::cacheset_type_name2id($name);
                     $types[] = $id;
                 }
                 catch (Exception $e)
                 {
-                    throw new InvalidParam('type', "'$name' is not a valid geopath type.");
+                    throw new InvalidParam('type', "'$name' is not a valid cacheset type.");
                 }
             }
             if (count($types) > 0)
-                $where_conds[] = "gp.type $operator ('".implode("','", array_map('\okapi\Db::escape_string', $types))."')";
+                $where_conds[] = "cs.type $operator ('".implode("','", array_map('\okapi\Db::escape_string', $types))."')";
             else if ($operator == "in")
                 $where_conds[] = "false";
         }
@@ -92,14 +92,14 @@ class GPSearchAssistant
         {
             try
             {
-                $codes[] = GeopathStatics::geopath_status_name2id($name);
+                $codes[] = CachesetStatics::cacheset_status_name2id($name);
             }
             catch (Exception $e)
             {
-                throw new InvalidParam('status', "'$name' is not a valid geopath status.");
+                throw new InvalidParam('status', "'$name' is not a valid cacheset status.");
             }
         }
-        $where_conds[] = "gp.status in ('".implode("','", array_map('\okapi\Db::escape_string', $codes))."')";
+        $where_conds[] = "cs.status in ('".implode("','", array_map('\okapi\Db::escape_string', $codes))."')";
 
         #
         # my_completetd_status - filter by completetd status for defined user
@@ -190,10 +190,10 @@ class GPSearchAssistant
 
                 switch ($field)
                 {
-                    case 'uuid': $cl = "gp.id"; break;
-                    case 'name': $cl = "gp.name"; break;
-                    case 'date_created': $cl = "gp.dateCreated"; break;
-                    case 'cache_count': $cl = "gp.cacheCount"; break;
+                    case 'uuid': $cl = "cs.id"; break;
+                    case 'name': $cl = "cs.name"; break;
+                    case 'date_created': $cl = "cs.dateCreated"; break;
+                    case 'cache_count': $cl = "cs.cacheCount"; break;
                     default:
                         throw new InvalidParam('order_by', "Unsupported field '$field'");
                 }
@@ -230,20 +230,20 @@ class GPSearchAssistant
 
 
     /**
-     * Search for geopath using conditions and options stored in the instance
+     * Search for cacheset using conditions and options stored in the instance
      * of this class. These conditions are usually initialized by the call
      * to prepare_common_search_params(), and may be further altered by the
      * client of this call by calling get_search_params() and set_search_params().
      *
      * Returns an array in a "standard" format of array('results' => list of
-     * geopath uuids, 'more' => boolean). This method takes care of the
+     * cacheset uuids, 'more' => boolean). This method takes care of the
      * 'more' variable in an appropriate way.
      */
     public function get_common_search_result()
     {
 
         $tables = array_merge(
-            array('PowerTrail as gp '.$this->search_params['caches_indexhint']),
+            array('PowerTrail as cs '.$this->search_params['caches_indexhint']),
             $this->search_params['extra_tables']
             );
 
@@ -252,7 +252,7 @@ class GPSearchAssistant
         # We need to pull limit+1 items, in order to properly determine the
         # value of "more" variable.
 
-        $path_uuids = Db::select_column("
+        $cacheset_uuids = Db::select_column("
             select id
             from ".implode(", ", $tables)." ".
             implode(" ", $this->search_params['extra_joins'])."
@@ -261,16 +261,16 @@ class GPSearchAssistant
             limit ".($this->search_params['offset']).", ".($this->search_params['limit'] + 1).";
         ");
 
-        if (count($path_uuids) > $this->search_params['limit'])
+        if (count($cacheset_uuids) > $this->search_params['limit'])
         {
             $more = true;
-            array_pop($path_uuids); # get rid of the one above the limit
+            array_pop($cacheset_uuids); # get rid of the one above the limit
         } else {
             $more = false;
         }
 
         $result = array(
-            'results' => $path_uuids,
+            'results' => $cacheset_uuids,
             'more' => $more,
         );
         return $result;

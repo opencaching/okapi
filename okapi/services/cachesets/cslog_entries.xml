@@ -1,21 +1,21 @@
 <xml>
     <infotags>ocpl-specific</infotags>
-    <brief>Retrieve information on multiple geopath log entries</brief>
+    <brief>Retrieve information on multiple cacheset log entries</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
-        <p>This method works like the services/ocpl/paths/gplog_entry method,
+        <p>This method works like the services/cachesets/cslog_entry method,
         but works with multiple log entries (instead of only one).</p>
     </desc>
-    <req name='gplog_uuids'>
+    <req name='cslog_uuids'>
         <p>Pipe-separated list of UUIDs. These represent the log entries you
         are interested in. No more than 500 codes are allowed.
         Unlike in the "entry" method, this CAN be an empty string (it will
         result in an empty, but valid, response).</p>
     </req>
     <opt name='fields' default='date|user|type|comment'>
-        <p>Same as in the services/ocpl/paths/gplog_entry method. Pipe-separated list
+        <p>Same as in the services/cachesets/cslog_entry method. Pipe-separated list
         of field names which you are interested with.
-        See services/ocpl/paths/gplog_entry method for a list of available values.</p>
+        See services/cachesets/cslog_entry method for a list of available values.</p>
     </opt>
     <common-format-params/>
     <returns>
@@ -23,7 +23,7 @@
         and each value will be a dictionary of fields you have selected.</p>
 
         <p>Value of <b>null</b> means that the given UUID haven't been found.
-        (This behavior is different than in the services/ocpl/paths/gplog_entry
+        (This behavior is different than in the services/cachesets/cslog_entry
         method, which responds with an HTTP 400 error in such case.)</p>
     </returns>
 </xml>

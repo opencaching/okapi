@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\ocpl\paths\geopath_logs;
+namespace okapi\services\cachesets\cacheset_logs;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
@@ -21,9 +21,9 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        $path_uuid = $request->get_parameter('path_uuid');
-        if (!$path_uuid) throw new ParamMissing('path_uuid');
-        if (strpos($path_uuid, "|") !== false) throw new InvalidParam('path_uuid');
+        $cacheset_uuid = $request->get_parameter('cacheset_uuid');
+        if (!$cacheset_uuid) throw new ParamMissing('cacheset_uuid');
+        if (strpos($cacheset_uuid, "|") !== false) throw new InvalidParam('cacheset_uuid');
 
         $fields = $request->get_parameter('fields');
         if (!$fields) $fields = "date|user|type|comment";
@@ -39,18 +39,18 @@ class WebService
         if ((((int)$limit) != $limit) || ((int)$limit) < 0)
             throw new InvalidParam('limit', "Expecting non-negative integer or 'none'.");
 
-        # Check if this geopath exists and retrieve its UUID (this will throw
+        # Check if this cacheset exists and retrieve its UUID (this will throw
         # a proper exception on invalid code).
 
-        $geopath_uuid = OkapiServiceRunner::call('services/ocpl/paths/geopath', new OkapiInternalRequest(
-            $request->consumer, null, array('path_uuid' => $path_uuid, 'fields' => 'uuid')));
+        $cacheset_uuid = OkapiServiceRunner::call('services/cachesets/cacheset', new OkapiInternalRequest(
+            $request->consumer, null, array('cacheset_uuid' => $cacheset_uuid, 'fields' => 'uuid')));
 
-        # Geopath exists. Getting the uuids of its logs.
+        # Cacheset exists. Getting the uuids of its logs.
 
         $log_uuids = Db::select_column("
             select id as uuid
             from PowerTrail_comments
-            where PowerTrailId = '".Db::escape_string($geopath_uuid['uuid'])."'
+            where PowerTrailId = '".Db::escape_string($cacheset_uuid['uuid'])."'
                 and deleted <> 1
             order by logDateTime desc
             limit $offset, $limit
@@ -58,11 +58,11 @@ class WebService
 
         # Getting the logs themselves. Formatting as an ordered list.
         $internal_request = new OkapiInternalRequest(
-            $request->consumer, $request->token, array('gplog_uuids' => implode("|", $log_uuids),
+            $request->consumer, $request->token, array('cslog_uuids' => implode("|", $log_uuids),
                 'fields' => $fields));
 
         $internal_request->skip_limits = true;
-        $logs = OkapiServiceRunner::call('services/ocpl/paths/gplog_entries', $internal_request);
+        $logs = OkapiServiceRunner::call('services/cachesets/cslog_entries', $internal_request);
 
         $results = array();
         foreach ($log_uuids as $log_uuid)

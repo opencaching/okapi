@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\ocpl\paths\geopath;
+namespace okapi\services\cachesets\cacheset;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
@@ -22,9 +22,9 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        $path_uuid = $request->get_parameter('path_uuid');
-        if (!$path_uuid) throw new ParamMissing('path_uuid');
-        if (strpos($path_uuid, "|") !== false) throw new InvalidParam('path_uuid');
+        $cacheset_uuid = $request->get_parameter('cacheset_uuid');
+        if (!$cacheset_uuid) throw new ParamMissing('cacheset_uuid');
+        if (strpos($cacheset_uuid, "|") !== false) throw new InvalidParam('cacheset_uuid');
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
         $langpref .= "|".Settings::get('SITELANG');
@@ -32,25 +32,25 @@ class WebService
         if (!$fields) $fields = "uuid|name|type|status|url";
 
         $params = array(
-            'path_uuids' => $path_uuid,
+            'cacheset_uuids' => $cacheset_uuid,
             'langpref' => $langpref,
             'fields' => $fields
         );
 
-        $results = OkapiServiceRunner::call('services/ocpl/paths/geopaths', new OkapiInternalRequest(
+        $results = OkapiServiceRunner::call('services/cachesets/cachesets', new OkapiInternalRequest(
             $request->consumer, $request->token, $params));
-        $result = $results[$path_uuid];
+        $result = $results[$cacheset_uuid];
         if ($result === null)
         {
             $exists = Db::select_value("
                 select 1
                 from PowerTrail
-                where id=".Db::escape_string($path_uuid)."
+                where id=".Db::escape_string($cacheset_uuid)."
             ");
             if ($exists) {
-                throw new InvalidParam('path_uuid', "This geopath is not accessible via OKAPI.");
+                throw new InvalidParam('cacheset_uuid', "This cacheset is not accessible via OKAPI.");
             } else {
-                throw new InvalidParam('path_uuid', "This geopath does not exist.");
+                throw new InvalidParam('cacheset_uuid', "This cacheset does not exist.");
             }
         }
 

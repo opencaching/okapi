@@ -60,12 +60,12 @@ class OkapiServiceRunner
         'services/replicate/changelog',
         'services/replicate/fulldump',
         'services/replicate/info',
-        'services/ocpl/paths/search/all',
-        'services/ocpl/paths/geopath',
-        'services/ocpl/paths/geopaths',
-        'services/ocpl/paths/gplog_entries',
-        'services/ocpl/paths/gplog_entry',
-        'services/ocpl/paths/geopath_logs',
+        'services/cachesets/search/all',
+        'services/cachesets/cacheset',
+        'services/cachesets/cachesets',
+        'services/cachesets/cslog_entries',
+        'services/cachesets/cslog_entry',
+        'services/cachesets/cacheset_logs',
     );
 
     /** Check if method exists. */

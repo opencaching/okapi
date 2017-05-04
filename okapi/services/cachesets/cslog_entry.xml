@@ -1,11 +1,11 @@
 <xml>
     <infotags>ocpl-specific</infotags>
-    <brief>Retrieve information on a single geopath log entry</brief>
+    <brief>Retrieve information on a single cacheset log entry</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
-        <p>Retrieve information on a single geopath log entry.</p>
+        <p>Retrieve information on a single cacheset log entry.</p>
     </desc>
-    <req name='gplog_uuid'>UUID of the log entry</req>
+    <req name='cslog_uuid'>UUID of the log entry</req>
     <opt name='fields' default='date|user|type|comment'>
         <p>Pipe-separated list of field names which you are interested with.
         Selected fields will be included in the response. See below fot the list
@@ -17,7 +17,7 @@
 
         <ul>
             <li><b>uuid</b> - unique ID of the log entry,</li>
-            <li><b>geopath_uuid</b> - ID of the geopath which the log entry refers to,</li>
+            <li><b>cacheset_uuid</b> - ID of the cacheset which the log entry refers to,</li>
             <li>
                 <p><b>date</b> - date and time (ISO 8601) when the log entry was submitted.</p>
                 <!-- WRTODO?
@@ -42,7 +42,7 @@
                 <p>Primary types, commonly used:</p>
 
                 <ul>
-                    <li>"Has completed" - a user has completed the geopath.</li>
+                    <li>"Has completed" - a user has completed the cacheset.</li>
                     <li>"Comment".</li>
                 </ul>
 
@@ -52,19 +52,19 @@
                 <ul>
                     <li>
                         "Temporarily unavailable" - log of this type indicates that the status
-                        of the geopath was changed to "Temporarily unavailable" at that time, or it
-                        was confirmed as "Temporarily unavailable". Most probably the geopath was
+                        of the cacheset was changed to "Temporarily unavailable" at that time, or it
+                        was confirmed as "Temporarily unavailable". Most probably the cacheset was
                         not available to be found at that time, but it was expected to be
                         repaired soon (and then, "Ready to search" log type would be submitted).
                     </li>
                     <li>
                         "Ready to search" - log of this type indicates that the status of this
-                        geopath was changed back to "Available", or it was confirmed as "Available".
-                        After some period of not being available the geopath became ready to be found
+                        cacheset was changed back to "Available", or it was confirmed as "Available".
+                        After some period of not being available the cacheset became ready to be found
                         again.
                     </li>
                     <li>
-                        "Archived" - log of this type indicates that the status of this geopath was
+                        "Archived" - log of this type indicates that the status of this cacheset was
                         changed to "Archived" at this point in time. This usually means that the
                         cache could not be found anymore at this time, and it was not expected to
                         be repaired any time soon.
