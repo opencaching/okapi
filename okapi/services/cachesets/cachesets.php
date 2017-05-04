@@ -10,6 +10,7 @@ use okapi\ParamMissing;
 use okapi\Db;
 use ArrayObject;
 use okapi\services\cachesets\CachesetStatics;
+use okapi\InvalidParam;
 
 require_once('cacheset_static.inc.php');
 
