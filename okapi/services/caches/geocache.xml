@@ -481,7 +481,7 @@
             </li>
             <li>
                 TODO: beta etc.
-                <p><b>geopath_uuids</b> - WRTODO list of geopaths uuids, which this cache belongs to</p>
+                <p><b>cacheset_uuids</b> - WRTODO list of cachesets uuids, which this cache belongs to</p>
                 <p>WRTODO: only uuid or structure uuid|name|... ?!</p>
                 <p>WRTODO: only OC:pl, oc:de always empty table?!</p>
             </li>

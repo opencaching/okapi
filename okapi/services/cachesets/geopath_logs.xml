@@ -1,14 +1,14 @@
 <xml>
     <infotags>ocpl-specific</infotags>
-    <brief>Retrieve all log entries for the specified geopath</brief>
+    <brief>Retrieve all log entries for the specified cacheset</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
-        <p>Retrieve the log entries for the specified geopath. Use the offset and
+        <p>Retrieve the log entries for the specified cacheset. Use the offset and
         limit parameters for pagination.</p>
         <p>Log entries are ordered by a descending date of the entry.</p>
     </desc>
     <req name='path_uuid'>
-        <p>Unique identifier of this geopath.</p>
+        <p>Unique identifier of this cacheset.</p>
     </req>
     <opt name='fields' default='date|user|type|comment'>
         <p>Same as in the services/ocpl/paths/gplog_entry method. Pipe-separated list
@@ -25,7 +25,7 @@
     </opt>
     <common-format-params/>
     <returns>
-        <p>A list of geopath log entries, ordered by date. Each geopath log entry is a dictionary of a format
+        <p>A list of cacheset log entries, ordered by date. Each cacheset log entry is a dictionary of a format
         described in the "gplog_entry" method.</p>
     </returns>
 </xml>

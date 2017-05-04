@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\ocpl\paths\geopath;
+namespace okapi\services\ocpl\paths\cacheset;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
@@ -37,7 +37,7 @@ class WebService
             'fields' => $fields
         );
 
-        $results = OkapiServiceRunner::call('services/ocpl/paths/geopaths', new OkapiInternalRequest(
+        $results = OkapiServiceRunner::call('services/ocpl/paths/cachesets', new OkapiInternalRequest(
             $request->consumer, $request->token, $params));
         $result = $results[$path_uuid];
         if ($result === null)
@@ -48,9 +48,9 @@ class WebService
                 where id=".Db::escape_string($path_uuid)."
             ");
             if ($exists) {
-                throw new InvalidParam('path_uuid', "This geopath is not accessible via OKAPI.");
+                throw new InvalidParam('path_uuid', "This cacheset is not accessible via OKAPI.");
             } else {
-                throw new InvalidParam('path_uuid', "This geopath does not exist.");
+                throw new InvalidParam('path_uuid', "This cacheset does not exist.");
             }
         }
 

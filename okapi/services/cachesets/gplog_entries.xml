@@ -1,6 +1,6 @@
 <xml>
     <infotags>ocpl-specific</infotags>
-    <brief>Retrieve information on multiple geopath log entries</brief>
+    <brief>Retrieve information on multiple cacheset log entries</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
         <p>This method works like the services/ocpl/paths/gplog_entry method,

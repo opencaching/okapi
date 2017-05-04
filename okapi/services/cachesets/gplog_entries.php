@@ -12,7 +12,7 @@ use Exception;
 use okapi\services\ocpl\paths\GpLogStatics;
 
 
-require_once('geopath_static.inc.php');
+require_once('cacheset_static.inc.php');
 
 class WebService
 {
@@ -23,7 +23,7 @@ class WebService
         );
     }
 
-    private static $valid_field_names = array('uuid','geopath_uuid', 'date','user','type','comment');
+    private static $valid_field_names = array('uuid','cacheset_uuid', 'date','user','type','comment');
 
 
     public static function call(OkapiRequest $request)
@@ -32,7 +32,7 @@ class WebService
         if ($gplog_uuids === null) throw new ParamMissing('gplog_uuids');
         if ($gplog_uuids === "")
         {
-            # Issue 106 requires us to allow empty list of geopath logs uuids to be passed into this method.
+            # Issue 106 requires us to allow empty list of cacheset logs uuids to be passed into this method.
             # All of the queries below have to be ready for $gplog_uuids to be empty!
             $gplog_uuids = array();
         }
@@ -41,10 +41,10 @@ class WebService
 
         if ((count($gplog_uuids) > 500) && (!$request->skip_limits))
             throw new InvalidParam('gplog_uuids', "Maximum allowed number of referenced ".
-                "geopath logs is 500. You provided ".count($gplog_uuids)." cache codes.");
+                "cacheset logs is 500. You provided ".count($gplog_uuids)." cache codes.");
         if (count($gplog_uuids) != count(array_unique($gplog_uuids)))
-            throw new InvalidParam('gplog_uuids', "Duplicate geopath logs uuid detected ".
-                "(make sure each geopath log uuid is referenced only once).");
+            throw new InvalidParam('gplog_uuids', "Duplicate cacheset logs uuid detected ".
+                "(make sure each cacheset log uuid is referenced only once).");
 
 
         $fields = $request->get_parameter('fields');
@@ -56,7 +56,7 @@ class WebService
 
         $rs = Db::query("
             select
-                id as uuid, userId, PowerTrailId as geopath_uuid, commentType as type,
+                id as uuid, userId, PowerTrailId as cacheset_uuid, commentType as type,
                 commentText as comment, logDateTime as date
             from
                 PowerTrail_comments
@@ -75,7 +75,7 @@ class WebService
                 switch ($field)
                 {
                     case 'uuid': $entry['uuid'] = $row['uuid']; break;
-                    case 'geopath_uuid': $entry['geopath_uuid'] = $row['geopath_uuid']; break;
+                    case 'cacheset_uuid': $entry['cacheset_uuid'] = $row['cacheset_uuid']; break;
                     case 'date': $entry['date'] = date('c', strtotime($row['date'])); break;
                     case 'user':
                         $user_ids[$row['uuid']] = $row['userId'];
@@ -85,7 +85,7 @@ class WebService
                         $entry['type'] = GpLogStatics::gplog_type_id2name($row['type']);
                         break;
                     case 'comment':
-                        $entry['comment'] = Okapi::fix_oc_html($row['comment'], Okapi::OBJECT_TYPE_GEOPATH_LOG);
+                        $entry['comment'] = Okapi::fix_oc_html($row['comment'], Okapi::OBJECT_TYPE_CACHESET_LOG);
                         break;
 
                     default: throw new Exception("Missing field case: ".$field);
@@ -120,7 +120,7 @@ class WebService
             Db::free_result($rs);
         }
 
-        # Check which geopath logs were not found and mark them with null.
+        # Check which cacheset logs were not found and mark them with null.
         foreach ($gplog_uuids as $gplog_uuid)
             if (!isset($results[$gplog_uuid]))
                 $results[$gplog_uuid] = null;

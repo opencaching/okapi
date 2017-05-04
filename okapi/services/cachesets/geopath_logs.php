@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\ocpl\paths\geopath_logs;
+namespace okapi\services\ocpl\paths\cacheset_logs;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
@@ -39,18 +39,18 @@ class WebService
         if ((((int)$limit) != $limit) || ((int)$limit) < 0)
             throw new InvalidParam('limit', "Expecting non-negative integer or 'none'.");
 
-        # Check if this geopath exists and retrieve its UUID (this will throw
+        # Check if this cacheset exists and retrieve its UUID (this will throw
         # a proper exception on invalid code).
 
-        $geopath_uuid = OkapiServiceRunner::call('services/ocpl/paths/geopath', new OkapiInternalRequest(
+        $cacheset_uuid = OkapiServiceRunner::call('services/ocpl/paths/cacheset', new OkapiInternalRequest(
             $request->consumer, null, array('path_uuid' => $path_uuid, 'fields' => 'uuid')));
 
-        # Geopath exists. Getting the uuids of its logs.
+        # Cacheset exists. Getting the uuids of its logs.
 
         $log_uuids = Db::select_column("
             select id as uuid
             from PowerTrail_comments
-            where PowerTrailId = '".Db::escape_string($geopath_uuid['uuid'])."'
+            where PowerTrailId = '".Db::escape_string($cacheset_uuid['uuid'])."'
                 and deleted <> 1
             order by logDateTime desc
             limit $offset, $limit

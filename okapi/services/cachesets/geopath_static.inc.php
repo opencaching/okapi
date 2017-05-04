@@ -5,7 +5,7 @@ namespace okapi\services\ocpl\paths;
 use okapi\Settings;
 use Exception;
 
-class GeopathStatics
+class CachesetStatics
 {
 
     private static $geocache_types = array(
@@ -21,18 +21,18 @@ class GeopathStatics
     );
 
     /** E.g. 'Traditional' => 2. For unknown names throw an Exception. */
-    public static function geopath_type_name2id($name)
+    public static function cacheset_type_name2id($name)
     {
         $ref = &self::$geocache_types[Settings::get('OC_BRANCH')];
         if (isset($ref[$name]))
             return $ref[$name];
 
-        throw new Exception("Method geopath_type_name2id called with unsupported geopath ".
+        throw new Exception("Method cacheset_type_name2id called with unsupported cacheset ".
             "type name '$name'.");
     }
 
     /** E.g. 2 => 'Traditional'. For unknown names throw an Exception. */
-    public static function geopath_type_id2name($id)
+    public static function cacheset_type_id2name($id)
     {
         static $reversed = null;
         if ($reversed == null)
@@ -44,31 +44,31 @@ class GeopathStatics
         if (isset($reversed[$id]))
             return $reversed[$id];
 
-        throw new Exception("Method geopath_type_id2name called with unsupported geopath ".
+        throw new Exception("Method cacheset_type_id2name called with unsupported cacheset ".
             "type id '$id'.");
     }
 
-    private static $geopath_statuses = array(
+    private static $cacheset_statuses = array(
         'Available' => 1, 'Temporarily unavailable' => 4, 'Archived' => 3
     );
 
     /** E.g. 'Available' => 1. For unknown names throws an Exception. */
-    public static function geopath_status_name2id($name)
+    public static function cacheset_status_name2id($name)
     {
-        if (isset(self::$geopath_statuses[$name]))
-            return self::$geopath_statuses[$name];
+        if (isset(self::$cacheset_statuses[$name]))
+            return self::$cacheset_statuses[$name];
 
-        throw new Exception("Method geopath_status_name2id called with invalid name '$name'.");
+        throw new Exception("Method cacheset_status_name2id called with invalid name '$name'.");
     }
 
     /** E.g. 1 => 'Available'. For unknown ids returns 'Archived'. */
-    public static function geopath_status_id2name($id)
+    public static function cacheset_status_id2name($id)
     {
         static $reversed = null;
         if ($reversed == null)
         {
             $reversed = array();
-            foreach (self::$geopath_statuses as $key => $value)
+            foreach (self::$cacheset_statuses as $key => $value)
                 $reversed[$value] = $key;
         }
         if (isset($reversed[$id]))
@@ -99,7 +99,7 @@ class GpLogStatics
         if (isset($ref[$name]))
             return $ref[$name];
 
-            throw new Exception("Method gplog_type_name2id called with unsupported geopath log ".
+            throw new Exception("Method gplog_type_name2id called with unsupported cacheset log ".
                 "type name '$name'.");
     }
 

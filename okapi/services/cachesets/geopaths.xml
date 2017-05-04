@@ -1,14 +1,14 @@
 <xml>
     <infotags>ocpl-specific</infotags>
-    <brief>Retrieve information on a multiple geopaths</brief>
+    <brief>Retrieve information on a multiple cachesets</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
         <p>WRTODO</p>
     </desc>
     <req name='path_uuids'>
-        <p>Pipe-separated list of geopath UUIDs. These represent the
+        <p>Pipe-separated list of cacheset UUIDs. These represent the
         paths you are interested in. No more than 500 UUIDs are allowed.
-        Unlike in the "geopath" method, this CAN be an empty string (it will
+        Unlike in the "cacheset" method, this CAN be an empty string (it will
         result in an empty, but valid, response).</p>
     </req>
     <opt name='langpref' default='en'>
@@ -22,8 +22,8 @@
         <p>A dictionary. Path UUIDs you provide will be mapped to dictionary keys,
         and each value will be a dictionary of fields you have selected.</p>
 
-        <p>Value of <b>null</b> means that no geopath by this UUID has been found.
-        (This behavior is different than in the services/ocpl/paths/geopath method, which
+        <p>Value of <b>null</b> means that no cacheset by this UUID has been found.
+        (This behavior is different than in the services/ocpl/paths/cacheset method, which
         responds with a HTTP 400 error in such case.)</p>
     </returns>
 </xml>

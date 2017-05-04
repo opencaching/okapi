@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\services\ocpl\paths\geopaths;
+namespace okapi\services\ocpl\paths\cachesets;
 
 use okapi\Okapi;
 use okapi\OkapiRequest;
@@ -9,9 +9,9 @@ use okapi\Settings;
 use okapi\ParamMissing;
 use okapi\Db;
 use ArrayObject;
-use okapi\services\ocpl\paths\GeopathStatics;
+use okapi\services\ocpl\paths\CachesetStatics;
 
-require_once('geopath_static.inc.php');
+require_once('cacheset_static.inc.php');
 
 class WebService
 {
@@ -43,9 +43,9 @@ class WebService
 
         if ((count($path_uuids) > 500) && (!$request->skip_limits))
             throw new InvalidParam('path_uuids', "Maximum allowed number of referenced ".
-                "caches is 500. You provided ".count($path_uuids)." geopaths uuids.");
+                "caches is 500. You provided ".count($path_uuids)." cachesets uuids.");
         if (count($path_uuids) != count(array_unique($path_uuids)))
-            throw new InvalidParam('path_uuid', "Duplicate uuids detected (make sure each geopath is referenced only once).");
+            throw new InvalidParam('path_uuid', "Duplicate uuids detected (make sure each cacheset is referenced only once).");
 
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
@@ -88,8 +88,8 @@ class WebService
                     case 'name': $entry['name'] = $row['name']; break;
                     case 'names': $entry['names'] = array(Settings::get('SITELANG') => $row['name']); break; // for the future
                     case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
-                    case 'type': $entry['type'] = GeopathStatics::geopath_type_id2name($row['type']); break;
-                    case 'status': $entry['status'] = GeopathStatics::geopath_status_id2name($row['status']); break;
+                    case 'type': $entry['type'] = CachesetStatics::cacheset_type_id2name($row['type']); break;
+                    case 'status': $entry['status'] = CachesetStatics::cacheset_status_id2name($row['status']); break;
                     case 'mentor':
                         $entry['mentor'] = null;
                         /* continued later */
@@ -106,10 +106,10 @@ class WebService
                             ); //TODO: will be changed soon
                         break;
                     case 'image_url': $entry['image_url'] = $row['image_url']; break;
-                    case 'description': $entry['description'] = Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_GEOPATH); break;
+                    case 'description': $entry['description'] = Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_CACHESET); break;
                     case 'descriptions':
                         $entry['descriptions'] =
-                            array(Settings::get('SITELANG') => Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_GEOPATH));
+                            array(Settings::get('SITELANG') => Okapi::fix_oc_html($row['description'], Okapi::OBJECT_TYPE_CACHESET));
                         break; // for the future
                     case 'geocaches_total': $entry['geocaches_total'] = $row['geocaches_total']; break;
                     case 'geocaches_found':
@@ -334,7 +334,7 @@ class WebService
             Db::free_result($rs);
         }
 
-        # Check which geopaths were not found and mark them with null.
+        # Check which cachesets were not found and mark them with null.
         foreach ($path_uuids as $path_uuid)
             if (!isset($results[$path_uuid]))
                 $results[$path_uuid] = null;

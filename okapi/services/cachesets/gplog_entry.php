@@ -44,9 +44,9 @@ class WebService
                 where id=".Db::escape_string($gplog_uuid)."
             ");
             if ($exists) {
-                throw new InvalidParam('gplog_uuid', "This geopath log is not accessible via OKAPI.");
+                throw new InvalidParam('gplog_uuid', "This cacheset log is not accessible via OKAPI.");
             } else {
-                throw new InvalidParam('gplog_uuid', "This geopath log does not exist.");
+                throw new InvalidParam('gplog_uuid', "This cacheset log does not exist.");
             }
         }
 

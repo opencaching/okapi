@@ -16,6 +16,8 @@ use Exception;
 # Please note: These settings WILL mutate. Some of them might get deprecated,
 # others might change their meaning and/or possible values.
 
+$GLOBALS['rootpath'] = __DIR__.'/../../ocpl/';
+
 final class Settings
 {
     /** Default values for setting keys. */
