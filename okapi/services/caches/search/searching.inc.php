@@ -558,8 +558,10 @@ class SearchAssistant
         $cacheset_allowed_statuses = "1"; # status 'Available'
 
         $cacheset_uuids = $this->request->get_parameter('cacheset_uuids');
-        if(!$cacheset_uuids)
-            $cacheset_uuids = $this->request->get_parameter('powertrail_ids');  # WRTODO: ID != UUID
+        if (!$cacheset_uuids) {
+            $cacheset_uuids = $this->request->get_parameter('powertrail_ids');
+            # PJTODO: ID != UUID, you'll need some new variable here
+        }
 
         if ($cacheset_uuids)
         {
