@@ -214,10 +214,13 @@
         it, and you will set this parameter to <b>true</b>, then you will
         <b>always</b> receive an empty result.</p>
     </opt>
-    <opt name='powertrail_only' default='false' infotags="ocpl-specific">
-        <p>WRTODO: Alias of cacheset_only. Power Trails are now a synonim of Cachesets.</p>
+    <opt name='powertrail_only' default='false' infotags="ocpl-specific" class='deprecated'>
+        <p>This is an older (and deprecated) name of the <b>cacheset_only</b> parameter.
+        "Power Trails" were renamed to "cache sets", so please use <b>cacheset_only</b>
+        instead.</p>
     </opt>
     <opt name='cacheset_uuids' infotags="ocpl-specific">
+        <!-- PJTODO: Make sure that cacheset_uuids refer to UUIDs, not IDs. -->
         <p>Pipe-separated list of cacheset uuids. If given, then only
         the caches which belong to at least one of the referenced cachesets
         will be included.</p>
@@ -229,9 +232,17 @@
         retrieve any cachesets, or their uuids. So, this parameter is
         primarily for internal use only.</p>
     </opt>
-    <opt name='powertrail_ids' infotags="ocpl-specific">
-        <p>WRTODO: Alias of cacheset_uuids. Power Trails are now a synonim of Cachesets.</p>
-        WRTODO: This should not be an alias (ID != UUID).
+    <opt name='powertrail_ids' infotags="ocpl-specific" class='deprecated'>
+        <!--
+        PJTODO: These, on the other hand, should still refer to IDs, for
+        backward-compatibility.
+        -->
+        <p>This parameter is quite similar to <b>cacheset_uuids</b> parameter, but it
+        uses internal IDs, instead of UUIDs, and it uses the older name of the "cache
+        sets" feature (initially they were named "power trails").</p>
+
+        <p>You should avoid using this parameter. Switch to <b>cacheset_uuids</b>
+        instead.</p>
     </opt>
     <opt name='set_and'>
         <p>ID of a set previously created with the <b>search/save</b> method.

@@ -559,7 +559,7 @@ class SearchAssistant
 
         $cacheset_uuids = $this->request->get_parameter('cacheset_uuids');
         if(!$cacheset_uuids)
-            $cacheset_uuids = $this->request->get_parameter('powertrail_ids');  # WRTODO
+            $cacheset_uuids = $this->request->get_parameter('powertrail_ids');  # WRTODO: ID != UUID
 
         if ($cacheset_uuids)
         {

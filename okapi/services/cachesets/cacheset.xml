@@ -3,7 +3,19 @@
     <brief>Retrieve information on a single cacheset</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
-        <p>WRTODO</p>
+        <p>Cache sets are simply sets of caches.</p>
+
+        <p>These entities may be named very differently in different Opencaching site
+        GUIs (e.g. "Power Trails" on OCPL), and they might follow different rules on
+        each of those sites (e.g. on OCPL-related sites, one cache can be found in only
+        a single cache set). But in principle, you, the developer, do not need to care
+        about these things - you only need to know that these are sets of caches.</p>
+
+        <p>This particular method allows you to retrieve the information about a
+        single such set.</p>
+
+        <p>Please note, that cachesets are currently implemented for OCPL-based
+        Opencaching installations only. This may change in the future.</p>
     </desc>
     <req name='cacheset_uuid'>Unique identifier of this cacheset</req>
     <opt name='langpref' default='en'>
@@ -11,7 +23,7 @@
         order of preference in which language will be chosen for fields like
         <b>name</b> and <b>description</b>.</p>
 
-        <p>Please note, that you may also access paths' descriptions in all
+        <p>Please note, that you may also access sets' descriptions in all
         available languages. If you want to do this, you should use fields
         <b>names</b>, <b>descriptions</b> (etc.) instead of <b>name</b> and
         <b>description</b> (etc.).</p>
@@ -38,31 +50,54 @@
                 (<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point).</p>
 
                 <p>Cachesets consist of many geocaches, so it's usually not possible to
-                assign a single, good location to a path. The location returned here
+                assign a single, good location to a cacheset. The location returned here
                 is the same one we use to display cachesets on the map. It will <i>usually</i>
-                point to the center of the area in which the path's geocaches are
+                point to the center of the area in which the set's geocaches are
                 located, but this <b>may</b> change in the future.</p>
             </li>
             <li>
-                <p><b>type</b> - path type. This might be <b>pretty much everything</b>,
+                <p><b>type</b> - cacheset type. This might be <b>pretty much everything</b>,
                 but there are some predefined types that you might want to treat
                 in a special way (separate icons etc.). Primary types include:</p>
                 <ul>
-                    <li><b>Geodraw</b>,</li> <!-- WRTODO -->
-                    <li><b>Touring</b>,</li> <!-- WRTODO -->
-                    <li><b>Nature</b>,</li>
-                    <li><b>Thematic</b>,</li> <!-- WRTODO -->
-                    <li><i>(any other value is valid too)</i></li>
+                    <li>
+                        <b>Geo-drawing</b> - when geocaches in this set, when shown on a map,
+                        resamble a drawing of something (a symbol, a stick figure, etc.),
+                    </li>
+                    <li>
+                        <b>Sightseeing</b> - when geocaches in this set are focused on statues,
+                        memorials etc.
+                    </li>
+                    <li>
+                        <b>Nature</b> - when geocaches in this set are focused on natural
+                        monuments, land sceneries, etc.
+                    </li>
+                    <li>
+                        <b>Thematic</b> - when geocaches in this set are focues on some other
+                        theme, which doesn't fit with any of the others,
+                    </li>
+                    <li>
+                        <i>(any other value is valid too)</i>
+                    </li>
                 </ul>
             </li>
             <li>
-                <p><b>status</b> - path status. Valid cacheset status codes currently include:</p>
+                <p><b>status</b> - status of this cache set. Valid cacheset status codes currently
+                include:</p>
+
                 <ul>
-                    <li><b>Available</b> - cacheset is available and ready to be WRTODOed,</li>
-                    <li><b>Temporarily unavailable</b> - cacheset is currently unavailable
-                    (it cannot be WRTODOed) but it will probably be restored soon,</li>
-                    <li><b>Archived</b> - cacheset permanently unavailable (moved to the
-                    archives).</li>
+                    <li>
+                        <b>Available</b> - cacheset is available and ready to be completed
+                        by users,
+                    </li>
+                    <li>
+                        <b>Temporarily unavailable</b> - cacheset is currently unavailable
+                        (it cannot be completed by users) but it will probably be available
+                        again soon,
+                    </li>
+                    <li>
+                        <b>Archived</b> - cacheset permanently unavailable.
+                    </li>
                 </ul>
             </li>
             <li>
@@ -77,10 +112,10 @@
                 <b>authors</b> - a list of authors. Each element of this list has the same
                 structure as the <b>mentor</b> element described above.
             </li>
-            <li><b>url</b> - URL of the path's web page.</li>
+            <li><b>url</b> - URL of the cacheset's web page.</li>
             <li>
                 <b>image_url</b> - an URL of the "main" image of this cacheset (e.g. a logo
-                or a photo related to the path's topic), <b>or null</b> if no such photo has
+                or a photo related to the cacheset's topic), <b>or null</b> if no such photo has
                 been assigned.
             </li>
             <li>
@@ -109,9 +144,13 @@
                 <p>If <b>geocaches_total</b> is zero, then this ratio will also be zero.</p>
             </li>
             <li>
-                <b>min_founds_to_complete</b> - minimum number of geocaches which a
+                <p><b>min_founds_to_complete</b> - minimum number of geocaches which a
                 user needs to find in order to be eligible to claim this cacheset as
-                "completed" WRTODO: or 0 if user has enough founds?
+                "completed".</p>
+
+                <p>If the value of <b>geocaches_found</b> reaches the value
+                of <b>min_founds_to_complete</b> (or more), then <b>my_completed_status</b>
+                becomes <b>eligable</b>.</p>
             </li>
             <li>
                 <b>min_ratio_to_complete</b> - minimum ratio of found/total geocaches
@@ -122,7 +161,7 @@
                 <p><b>my_completed_status</b> - indicates the status of this cacheset from
                 the user's perspective. It has one of the following values:</p>
                 <ul>
-                    <li><b>not_eligable</b> - if the user has not completed this path,
+                    <li><b>not_eligable</b> - if the user has not completed this cacheset,
                     and he didn't find a proper number of its geocaches to be eligable to
                     claim this cacheset as completed,</li>
                     <li><b>eligable</b> - if the user has already found a proper minimum
@@ -139,8 +178,8 @@
                 less than <code>1.0</code>.</p>
             </li>
             <li>
-                <b>completed_count</b> - number of times the path has been successfully
-                completed (by all users).
+                <b>completed_count</b> - number of times the set has been successfully
+                completed (or, in other words, the total number of users who completed it).
             </li>
             <li>
                 <b>last_completed</b> - date and time (ISO 8601) when the

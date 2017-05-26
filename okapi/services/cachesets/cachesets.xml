@@ -3,23 +3,29 @@
     <brief>Retrieve information on a multiple cachesets</brief>
     <issue-id>WRTODO</issue-id>
     <desc>
-        <p>WRTODO</p>
+        <p>Retrieve information on a multiple cache sets in one request.</p>
+
+        <p>Please see the <b>cacheset</b> method for more information about what
+        cache sets are.</p>
     </desc>
     <req name='cacheset_uuids'>
         <p>Pipe-separated list of cacheset UUIDs. These represent the
-        paths you are interested in. No more than 500 UUIDs are allowed.
+        cachesets you are interested in. No more than 500 UUIDs are allowed.
         Unlike in the "cacheset" method, this CAN be an empty string (it will
         result in an empty, but valid, response).</p>
     </req>
     <opt name='langpref' default='en'>
-        WRTODO (the same)
+        <p>Same as in the services/cachesets/cacheset method. Pipe-separated list
+        of ISO 639-1 language codes (preferred languages for fields like
+        <b>name</b> and <b>description</b>).</p>
     </opt>
     <opt name='fields' default='uuid|name|location|type|status'>
-        WRTODO (the same)
+        <p>Same as in the services/cachesets/cacheset method. Pipe-separated list
+        of field names which you are interested with.</p>
     </opt>
     <common-format-params/>
     <returns>
-        <p>A dictionary. Path UUIDs you provide will be mapped to dictionary keys,
+        <p>A dictionary. Cacheset UUIDs you provide will be mapped to dictionary keys,
         and each value will be a dictionary of fields you have selected.</p>
 
         <p>Value of <b>null</b> means that no cacheset by this UUID has been found.

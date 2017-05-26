@@ -480,10 +480,12 @@
                 or incomplete, and it is completely missing on some OC installations.</p>
             </li>
             <li>
-                TODO: beta etc.
-                <p><b>cacheset_uuids</b> - WRTODO list of cachesets uuids, which this cache belongs to</p>
-                <p>WRTODO: only uuid or structure uuid|name|... ?!</p>
-                <p>WRTODO: only OC:pl, oc:de always empty table?!</p>
+                <p>%OKAPI:infotag:ocpl-specific% <b>cacheset_uuids</b> - list of UUIDs of cache
+                sets inside which this geocache is present.</p>
+
+                <p>Currently, this feature is supported only by some OCPL-based Opencaching
+                installations. For other OCDE-based installations, this list will be always empty.
+                See services/cachesets/cacheset method for more information on cache sets.</p>
             </li>
             <li>
                 <p><b>last_found</b> - date and time (ISO 8601) when the

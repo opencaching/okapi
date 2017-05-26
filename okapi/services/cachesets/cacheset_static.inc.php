@@ -5,18 +5,22 @@ namespace okapi\services\cachesets;
 use okapi\Settings;
 use Exception;
 
+/** Collection of static methods related to cache sets. */
 class CachesetStatics
 {
-
-    private static $geocache_types = array(
+    private static $geocache_types = array( # WRTODO: geocache types? Doesn't seem to be ;)
         #
         # OKAPI does not expose type IDs. Instead, it uses the following
         # "code words".
         # Changing this may introduce nasty bugs (e.g. in the replicate module).
         # CONTACT ME BEFORE YOU MODIFY THIS!
+        # WRTODO: But these are not used in the replicate module, so what do you mean here exactly?
         #
         'oc.pl' => array(
-            'Geodraw' => 1, 'Touring' => 2, 'Nature' => 3, 'Thematic' => 4
+            'Geo-drawing' => 1,
+            'Sightseeing' => 2,
+            'Nature' => 3,
+            'Thematic' => 4
         )
     );
 
@@ -78,14 +82,18 @@ class CachesetStatics
     }
 }
 
+/** Collection of static methods related to cache set log entries. */
 class CsLogStatics
 {
-    private static $geocache_types = array(
+    private static $geocache_types = array( # WRTODO: Same as above
         #
         # OKAPI does not expose type IDs. Instead, it uses the following
         # "code words".
         # Changing this may introduce nasty bugs (e.g. in the replicate module).
         # CONTACT ME BEFORE YOU MODIFY THIS!
+
+        # WRTODO: This seems to be copied and pasted. Please fix, or
+        # at least remove the misleading comments! ;>
         #
         'oc.pl' => array(
             'Comment' => 1, 'Completed' => 2
@@ -118,6 +126,4 @@ class CsLogStatics
 
         return 'Other';
     }
-
 }
-
