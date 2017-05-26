@@ -18,7 +18,7 @@ class OCSession
         $cookie_name = Settings::get('OC_COOKIE_NAME');
         if (!isset($_COOKIE[$cookie_name]))
             return null;
-        $OC_data = unserialize(base64_decode($_COOKIE[$cookie_name]));
+        $OC_data = self::a_bit_safer_unserialize(base64_decode($_COOKIE[$cookie_name]));
         if (!isset($OC_data['sessionid']))
             return null;
         $OC_sessionid = $OC_data['sessionid'];
@@ -35,5 +35,16 @@ class OCSession
                 and user.user_id = sys_sessions.user_id
                 and user.is_active_flag = 1
         ");
+    }
+
+    private static function a_bit_safer_unserialize($str) {
+        // Related OCPL issue: https://github.com/opencaching/opencaching-pl/issues/1020
+        if (PHP_MAJOR_VERSION > 7) {
+            return unserialize($str, array(
+                'allowed_classes' => false
+            ));
+        } else {
+            return unserialize($str);
+        }
     }
 }
