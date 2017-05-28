@@ -26,7 +26,15 @@ class OCSession
             return null;
         }
 
-        $OC_data = self::a_bit_safer_unserialize($binary_content);
+        /* The "unserialize" function is unsafe, and probably both OC branches
+         * will switch to JSON soon. Currently, only OCDE did:
+         * https://github.com/opencaching/opencaching-pl/issues/1020 */
+
+        if (Settings::get('OC_BRANCH') == 'oc.pl') {
+            $OC_data = self::a_bit_safer_unserialize($binary_content);
+        } else {
+            $OC_data = json_decode($binary_content, true);
+        }
 
         if (!is_array($OC_data)) {
             return null;
