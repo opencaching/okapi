@@ -53,7 +53,7 @@
 
         <p>OpenCaching.com no longer exists, but its XML namespace is still used by many
         applications (and not only the Garmin ones, e.g. see
-        <a href='http://help.locusmap.eu/topic/how-to-use-gcvotes-functionality-with-opencaching'>here</a>).
+        <a href='http://help.locusmap.eu/topic/how-to-use-gcvotes-functionality-with-opencaching'>here</a>).</p>
     </opt>
     <opt name='images' default='descrefs:nonspoilers'>
         <p>Which images to include (and how to include them). One of the following values:</p>
