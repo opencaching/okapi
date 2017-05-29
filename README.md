@@ -91,9 +91,9 @@ and conditions" document. **BUT**, you have to commit all these changes to the
 **official OKAPI repository** (not YOUR repository). This means that, for
 example, OKAPI code **SHOULD** contain different versions of one SQL query
 **IF** tables in OC databases turn out to be incompatible. You have to think of
-all other installations when you commit anything. Once you commit to the trunk,
-new public package will be automatically generated for other OC servers to
-download.
+all other installations when you commit anything. Once you commit to the
+`master` branch, new public package will be automatically generated for other
+OC servers to download.
 
 In other words, if you want to change something, you have to do this in such
 way, that the same change will also work on all other OC sites:
@@ -137,7 +137,7 @@ You can also read about how OKAPI tries to deal with branch differences
      and replace the files**. If you're using SVN/GIT, then you will probably
      also want to view and commit the changes to your local repository.
   4. Create `<rootpath>/okapi_settings.php` file.
-     [See an example here](http://code.google.com/p/opencaching-pl/source/browse/trunk/okapi_settings.php)
+     [See an example here](https://github.com/opencaching/opencaching-pl/blob/master/okapi_settings.php)
      (from OCPL). See `okapi/settings.php` for the full list of available settings.
   5. Make sure Apache allows OKAPI's `.htaccess` to override stuff. On some
      servers you don't need to do anything. On others, you need to add
