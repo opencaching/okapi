@@ -71,6 +71,15 @@
                 mobile-optimized page exists.
             </li>
             <li>
+                <p><b>submit_charset</b> - the character set for submitting
+                text (e.g. log entry comments) to the OC site, either
+                <b>utf8mb3</b> (16-bit Unicode) or <b>utf8mb4</b> (full 21-bit
+                Unicode). When submitting 21-bit Unicode like smiley symbols
+                to a site which does not support <b>utf8mb4</b>, the text will
+                be crippled somehow. E.g. it may be truncated to the position
+                of the first non-16-bit character.</p>
+            </li>
+            <li>
                 <p><b>image_max_upload_size</b> - the maximum size (in bytes)
                 of images which can be uploaded via this OKAPI installation.
                 Larger images will be <em>rejected</em>. This value may change

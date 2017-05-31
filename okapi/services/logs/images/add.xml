@@ -25,6 +25,12 @@
         an empty caption), but you should always be prepared to receive
         <b>false</b> in the <b>success</b> field due to restrictions on what
         captions are accepted.</p>
+
+        <p>Note: Some OC sites support only 16-bit Unicode. If you submit 21-bit
+        Unicode captions to these sites (e.g. containing smiley symbols), the
+        text will be crippled. The <b>submit_charset</b> field of
+        <a href='../../../services/apisrv/installation.html'>services/apisrv/installation</a>
+        tells you which character set is supported by an OC site.</p>
     </opt>
     <opt name='is_spoiler' default='false'>
         <p>Set this to <b>true</b> to indicate that the submitted image contains
