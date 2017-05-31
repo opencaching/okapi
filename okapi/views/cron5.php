@@ -14,7 +14,7 @@ class View
     {
         ignore_user_abort(true);
         set_time_limit(0);
-        header("Content-Type: text/plain; charset=utf-8");
+        header('Content-Type: text/plain; charset=utf-8');
 
         # Uncomment the following if you want to debug a specific cronjob. It will be run
         # every 5 minutes (run 'crontab -e' to change or disable it) AND additionally

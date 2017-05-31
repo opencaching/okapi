@@ -157,7 +157,7 @@ class OkapiServiceRunner
      */
     public static function save_stats_extra($extra_name, $request, $runtime)
     {
-        self::save_stats("extra/".$extra_name, $request, $runtime);
+        self::save_stats('extra/' .$extra_name, $request, $runtime);
     }
 
     private static function save_stats($service_name, $request, $runtime)
