@@ -25,6 +25,11 @@
         an empty caption), but you should always be prepared to receive
         <b>false</b> in the <b>success</b> field due to restrictions on what
         captions are accepted.</p>
+
+        <p>Note: Some OC sites support only BMP (Basic Multilingual Plane) Unicode
+        characters on some database fields. If you submit characters from outside of
+        the BMP plane (known as "supplementary planes", they include characters such
+        as smiley symbols), then keep in mind that your text might be saved garbled.</p>
     </opt>
     <opt name='is_spoiler' default='false'>
         <p>Set this to <b>true</b> to indicate that the submitted image contains

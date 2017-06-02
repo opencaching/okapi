@@ -22,6 +22,11 @@
     </req>
     <opt name='comment'>
         <p>Text to be submitted with the log entry.</p>
+
+        <p>Note: Some OC sites support only BMP (Basic Multilingual Plane) Unicode
+        characters on some database fields. If you submit characters from outside of
+        the BMP plane (known as "supplementary planes", they include characters such
+        as smiley symbols), then keep in mind that your text might be saved garbled.</p>
     </opt>
     <opt name='comment_format' default='auto'>
         <p>Indicates the format of your <b>comment</b>. Three values allowed:

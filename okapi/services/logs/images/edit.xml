@@ -19,6 +19,11 @@
         <p>Please note that providing an empty value indicates that your user
         would like to remove the caption, which will often not be allowed
         (then <b>success</b> will be <b>false</b>).</p>
+
+        <p>Note: Some OC sites support only BMP (Basic Multilingual Plane) Unicode
+        characters on some database fields. If you submit characters from outside of
+        the BMP plane (known as "supplementary planes", they include characters such
+        as smiley symbols), then keep in mind that your text might be saved garbled.</p>
     </opt>
     <opt name='is_spoiler'>
         <p>One of the following:</p>
