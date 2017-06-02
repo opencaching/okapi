@@ -11,21 +11,21 @@ class View
 {
     public static function call()
     {
-        require_once($GLOBALS['rootpath'].'okapi/views/changelog_helper.inc.php');
+        require_once __DIR__ . '/../views/changelog_helper.inc.php';
 
         $changelog = new Changelog();
         $changes = array_merge($changelog->unavailable_changes, $changelog->available_changes);
         $changes = array_slice($changes, 0, 20);
 
-        $vars = array(
+        $vars = [
             'changes' => $changes,
             'site_url' => Settings::get('SITE_URL'),
-        );
+        ];
 
         $response = new OkapiHttpResponse();
         $response->content_type = "application/rss+xml; charset=utf-8";
         ob_start();
-        include 'changelog_feed.tpl.php';
+        include __DIR__ . '/changelog_feed.tpl.php';
         $response->body = ob_get_clean();
         return $response;
     }

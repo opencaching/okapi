@@ -30,13 +30,13 @@ class WebService
         if (!$fields) $fields = "name";
 
         $only_locally_used = $request->get_parameter('only_locally_used');
-        if (!$only_locally_used) $only_locally_used = "false";
-        $only_locally_used = ($only_locally_used == "true");
+        if (!$only_locally_used) $only_locally_used = 'false';
+        $only_locally_used = ($only_locally_used == 'true');
 
         # Get the list of attributes and filter the A-codes based on the
         # parameters.
 
-        require_once 'attr_helper.inc.php';
+        require_once __DIR__ . '/attr_helper.inc.php';
         $attrdict = AttrHelper::get_attrdict();
         $acodes = array();
         foreach ($attrdict as $acode => &$attr_ref)

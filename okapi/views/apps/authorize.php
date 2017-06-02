@@ -64,7 +64,7 @@ class View
             $response->content_type = "text/html; charset=utf-8";
             ob_start();
             $vars['locale_displayed'] = Okapi::gettext_domain_init($langprefs);
-            include 'authorize.tpl.php';
+            include __DIR__ . '/authorize.tpl.php';
             $response->body = ob_get_clean();
             Okapi::gettext_domain_restore();
             return $response;
@@ -100,7 +100,7 @@ class View
                     # OCPL uses REAL MAGIC for session handling. I don't get ANY of it.
                     # The logout.php DOES NOT support the "target" parameter, so we
                     # can't just call it. The only thing that comes to mind is...
-                    # Try to destroy EVERYTHING. (This still won't necessarilly work,
+                    # Try to destroy EVERYTHING. (This still won't necessarily work,
                     # because OC may store cookies in separate paths, but hopefully
                     # they won't).
 
@@ -121,9 +121,9 @@ class View
                 }
             }
 
-            $after_login = "okapi/apps/authorize?oauth_token=$token_key".(($langpref != Settings::get('SITELANG'))?"&langpref=".$langpref:"");
+            $after_login = 'okapi/apps/authorize?oauth_token='.$token_key.(($langpref != Settings::get('SITELANG'))? '&langpref=' .$langpref: '');
             $login_url = Settings::get('SITE_URL').$login_page."target=".urlencode($after_login)
-                ."&langpref=".$langpref;
+                . '&langpref=' .$langpref;
             return new OkapiRedirectResponse($login_url);
         }
 

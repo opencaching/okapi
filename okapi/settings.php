@@ -225,10 +225,10 @@ final class Settings
     {
         try {
             # This is an external code and it MAY generate E_NOTICEs.
-            # We have to temporarilly disable our default error handler.
+            # We have to temporarily disable our default error handler.
 
             OkapiErrorHandler::disable();
-            require_once($GLOBALS['rootpath']."okapi_settings.php");
+            require_once $GLOBALS['rootpath']. 'okapi_settings.php';
             $ref = get_okapi_settings();
             OkapiErrorHandler::reenable();
 

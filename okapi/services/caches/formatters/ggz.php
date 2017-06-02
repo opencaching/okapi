@@ -5,7 +5,7 @@ namespace okapi\services\caches\formatters\ggz;
 use okapi\OkapiRequest;
 use okapi\OkapiZIPHttpResponse;
 
-require_once($GLOBALS['rootpath']."okapi/services/caches/formatters/gpx.php");
+require_once __DIR__. '/gpx.php';
 
 class WebService
 {

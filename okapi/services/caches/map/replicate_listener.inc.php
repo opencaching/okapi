@@ -8,7 +8,7 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 
-require_once 'tiletree.inc.php';
+require_once __DIR__ . '/tiletree.inc.php';
 
 class ReplicateListener
 {

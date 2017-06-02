@@ -120,7 +120,7 @@ class WebService
         {
             if (!is_numeric($lpc))
                 throw new InvalidParam('lpc', "Invalid number: '$lpc'");
-            $lpc = intval($lpc);
+            $lpc = (int) $lpc;
             if ($lpc < 0)
                 throw new InvalidParam('lpc', "Must be a positive value.");
         }
@@ -133,12 +133,12 @@ class WebService
                 throw new BadRequest("When using 'distance' or 'bearing' fields, you have to supply 'my_location' parameter.");
             $parts = explode('|', $tmp);
             if (count($parts) != 2)
-                throw new InvalidParam('my_location', "Expecting 2 pipe-separated parts, got ".count($parts).".");
+                throw new InvalidParam('my_location', 'Expecting 2 pipe-separated parts, got ' .count($parts). '.');
             foreach ($parts as &$part_ref)
             {
                 if (!preg_match("/^-?[0-9]+(\.?[0-9]*)$/", $part_ref))
                     throw new InvalidParam('my_location', "'$part_ref' is not a valid float number.");
-                $part_ref = floatval($part_ref);
+                $part_ref = (float) $part_ref;
             }
             list($center_lat, $center_lon) = $parts;
             if ($center_lat > 90 || $center_lat < -90)
@@ -657,11 +657,11 @@ class WebService
                 $fields_to_remove_later[] = 'attr_acodes';
             }
             foreach ($results as &$result_ref)
-                $result_ref['attr_acodes'] = array();
+                $result_ref['attr_acodes'] = [];
 
             # Load internal_attr_id => acode mapping.
 
-            require_once($GLOBALS['rootpath'].'okapi/services/attrs/attr_helper.inc.php');
+            require_once __DIR__ . '/../attrs/attr_helper.inc.php';
             $internal2acode = AttrHelper::get_internal_id_to_acode_mapping();
 
             $rs = Db::query("
@@ -1341,7 +1341,7 @@ class WebService
                     'description', 'descriptions'
                 ), $fields)) > 0)
             ) {
-                require_once($GLOBALS['rootpath'].'okapi/lib/ocpl_access_logs.php');
+                require_once __DIR__ . '/../../lib/ocpl_access_logs.php';
                 \okapi\OCPLAccessLogs::log_geocache_access($request, $cache_ids);
             }
         }
