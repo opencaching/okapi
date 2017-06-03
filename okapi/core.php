@@ -678,7 +678,7 @@ class Db
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.
 #
 
-require_once $GLOBALS['rootpath']."okapi/oauth.php";
+require_once "okapi/oauth.php";
 
 class OkapiConsumer extends OAuthConsumer
 {
@@ -879,8 +879,8 @@ class OkapiOAuthServer extends OAuthServer
 
 # Including local datastore and settings (connecting SQL database etc.).
 
-require_once $GLOBALS['rootpath']."okapi/settings.php";
-require_once $GLOBALS['rootpath']."okapi/datastore.php";
+require_once "okapi/settings.php";
+require_once "okapi/datastore.php";
 
 class OkapiHttpResponse
 {
@@ -993,7 +993,7 @@ class OkapiRedirectResponse extends OkapiHttpResponse
     }
 }
 
-require_once $GLOBALS['rootpath'].'okapi/lib/tbszip.php';
+require_once 'okapi/lib/tbszip.php';
 
 class OkapiZIPHttpResponse extends OkapiHttpResponse
 {
@@ -1474,7 +1474,7 @@ class Okapi
         $nearest_event = Okapi::get_var("cron_nearest_event");
         if ($nearest_event + 0 <= time())
         {
-            require_once $GLOBALS['rootpath']."okapi/cronjobs.php";
+            require_once "okapi/cronjobs.php";
             try {
                 $nearest_event = CronJobController::run_jobs('pre-request');
                 Okapi::set_var("cron_nearest_event", $nearest_event);
@@ -1497,7 +1497,7 @@ class Okapi
         {
             set_time_limit(0);
             ignore_user_abort(true);
-            require_once $GLOBALS['rootpath']."okapi/cronjobs.php";
+            require_once "okapi/cronjobs.php";
             try {
                 $nearest_event = CronJobController::run_jobs('cron-5');
                 Okapi::set_var("cron_nearest_event", $nearest_event);
@@ -1644,7 +1644,7 @@ class Okapi
      */
     public static function register_new_consumer($appname, $appurl, $email)
     {
-        require_once $GLOBALS['rootpath']."okapi/service_runner.php";
+        require_once "okapi/service_runner.php";
         $consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
             $appname, $appurl, $email);
         $sample_cache = OkapiServiceRunner::call("services/caches/search/all",
