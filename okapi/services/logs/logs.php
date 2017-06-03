@@ -72,7 +72,7 @@ class WebService
             && Settings::get('OCPL_ENABLE_GEOCACHE_ACCESS_LOGS')
             && (count($log_uuids) > 0)
         ) {
-            require_once($GLOBALS['rootpath'].'okapi/lib/ocpl_access_logs.php');
+            require_once 'okapi/lib/ocpl_access_logs.php';
             \okapi\OCPLAccessLogs::log_geocache_access($request, $cache['internal_id']);
         }
 

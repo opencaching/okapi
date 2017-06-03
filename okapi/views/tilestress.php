@@ -10,7 +10,7 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 
-require_once($GLOBALS['rootpath']."okapi/service_runner.php");
+require_once "okapi/service_runner.php";
 
 class View
 {

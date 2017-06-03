@@ -24,14 +24,26 @@ namespace okapi;
 
 # EXAMPLE OF USAGE:
 
-# require_once($rootpath.'okapi/facade.php');
+# require_once $rootpath.'okapi/facade.php';
 # \okapi\Facade::schedule_user_entries_check(...);
 # \okapi\Facade::disable_error_handling();
 
+# --------------------
 
-require_once __DIR__ . '/core.php';
+#
+# Make sure that rootpath is on the include_path (OKAPI uses paths relative to
+# rootpath in all require_once statements). See this thread for more info:
+# https://github.com/opencaching/okapi/pull/466#issuecomment-305978466
+#
+
+if (!in_array($GLOBALS['rootpath'], explode(PATH_SEPARATOR, get_include_path()))) {
+    set_include_path(get_include_path().PATH_SEPARATOR.$GLOBALS['rootpath']);
+}
+
+
+require_once "okapi/core.php";
 OkapiErrorHandler::$treat_notices_as_errors = true;
-require_once __DIR__ . '/service_runner.php';
+require_once "okapi/service_runner.php";
 Okapi::init_internals();
 
 /**
@@ -90,7 +102,7 @@ class Facade
      */
     public static function import_search_set($temp_table, $min_store, $max_ref_age)
     {
-        require_once __DIR__ . '/services/caches/search/save.php';
+        require_once 'okapi/services/caches/search/save.php';
         $tables = array('caches', $temp_table);
         $where_conds = array(
             $temp_table.".cache_id = caches.cache_id",
@@ -161,7 +173,7 @@ class Facade
      */
     public static function database_update()
     {
-        require_once __DIR__ . '/views/update.php';
+        require_once "okapi/views/update.php";
         $update = new views\update\View;
         $update->call();
     }

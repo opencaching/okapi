@@ -228,7 +228,7 @@ final class Settings
             # We have to temporarilly disable our default error handler.
 
             OkapiErrorHandler::disable();
-            require_once($GLOBALS['rootpath']."okapi_settings.php");
+            require_once "okapi_settings.php";
             $ref = get_okapi_settings();
             OkapiErrorHandler::reenable();
 
@@ -317,7 +317,7 @@ final class Settings
      */
     public static function default_gettext_init($langprefs)
     {
-        require_once __DIR__ . '/locale/locales.php';
+        require_once "okapi/locale/locales.php";
         $locale = Locales::get_best_locale($langprefs);
         putenv("LC_ALL=$locale");
         setlocale(LC_ALL, $locale);

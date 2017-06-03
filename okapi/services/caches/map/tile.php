@@ -16,9 +16,9 @@ use okapi\services\caches\map\TileRenderer;
 use okapi\services\caches\map\TileTree;
 use okapi\Settings;
 
-require_once('tiletree.inc.php');
-require_once('tilerenderer.inc.php');
-require_once($GLOBALS['rootpath']."okapi/services/caches/search/searching.inc.php");
+require_once 'tiletree.inc.php';
+require_once 'tilerenderer.inc.php';
+require_once "okapi/services/caches/search/searching.inc.php";
 
 class WebService
 {

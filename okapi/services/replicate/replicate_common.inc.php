@@ -291,7 +291,7 @@ class ReplicateCommon
         # Get the current values for objects. Compare them with their previous versions
         # and generate changelog entries.
 
-        require_once($GLOBALS['rootpath'].'okapi/service_runner.php');
+        require_once 'okapi/service_runner.php';
         $current_values = OkapiServiceRunner::call($feeder_method, new OkapiInternalRequest(
             new OkapiInternalConsumer(), null, array(
                 $feeder_keys_param => implode("|", $key_values),

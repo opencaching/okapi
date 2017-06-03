@@ -41,7 +41,7 @@ class WebService
         # exceptions. CannotPublishException will be caught by the service's
         # call() function and returns a message to be displayed to the user.
 
-        require_once('log_images_common.inc.php');
+        require_once 'log_images_common.inc.php';
 
         # validate the 'image_uuid' parameter
 

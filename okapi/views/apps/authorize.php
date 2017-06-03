@@ -72,7 +72,7 @@ class View
 
         # Determine which user is logged in to OC.
 
-        require_once($GLOBALS['rootpath']."okapi/lib/oc_session.php");
+        require_once "okapi/lib/oc_session.php";
         $OC_user_id = OCSession::get_user_id();
 
         # Ensure a user is logged in (or force re-login).

@@ -661,7 +661,7 @@ class WebService
 
             # Load internal_attr_id => acode mapping.
 
-            require_once($GLOBALS['rootpath'].'okapi/services/attrs/attr_helper.inc.php');
+            require_once 'okapi/services/attrs/attr_helper.inc.php';
             $internal2acode = AttrHelper::get_internal_id_to_acode_mapping();
 
             $rs = Db::query("
@@ -1341,7 +1341,7 @@ class WebService
                     'description', 'descriptions'
                 ), $fields)) > 0)
             ) {
-                require_once($GLOBALS['rootpath'].'okapi/lib/ocpl_access_logs.php');
+                require_once 'okapi/lib/ocpl_access_logs.php';
                 \okapi\OCPLAccessLogs::log_geocache_access($request, $cache_ids);
             }
         }

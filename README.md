@@ -159,6 +159,12 @@ script. This means that every change commited to OKAPI will be immediatelly
 installed on production servers (after about 30 seconds of delay). If you'd
 like your installation to be updated in a similar manner, email us.
 
+### Additional development settings ###
+
+If you want your IDE to properly match OKAPI's absolute paths used in OKAPI's
+require_once statements, then add your OC site's `<rootpath>` to your IDE's
+include path.
+
 
 ### Reverting to a previous revision ###
 

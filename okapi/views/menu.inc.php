@@ -8,7 +8,7 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 use okapi\Settings;
 
-require_once($GLOBALS['rootpath'].'okapi/service_runner.php');
+require_once 'okapi/service_runner.php';
 
 class OkapiMenu
 {

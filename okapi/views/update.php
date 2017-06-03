@@ -11,7 +11,7 @@ use okapi\OkapiLock;
 use okapi\services\replicate\ReplicateCommon;
 use okapi\Settings;
 
-require_once($GLOBALS['rootpath']."okapi/cronjobs.php");
+require_once "okapi/cronjobs.php";
 
 class View
 {
@@ -687,7 +687,7 @@ class View
         # Ignore newly added replicate fields. This way we will avoid generating
         # changelog entries for these fields.
 
-        require_once($GLOBALS['rootpath']."okapi/services/replicate/replicate_common.inc.php");
+        require_once "okapi/services/replicate/replicate_common.inc.php";
         $new_geocache_fields = array(
             'attr_acodes', 'willattends', 'country', 'state', 'preview_image',
             'trip_time', 'trip_distance', 'gc_code',  'hints2', 'protection_areas'
