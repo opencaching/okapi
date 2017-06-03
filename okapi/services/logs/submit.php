@@ -314,7 +314,7 @@ class WebService
 
                 $opt['rootpath'] = $GLOBALS['rootpath'];
                 $opt['html_purifier'] = Settings::get('OCDE_HTML_PURIFIER_SETTINGS');
-                require_once($GLOBALS['rootpath'] . 'lib2/OcHTMLPurifier.class.php');
+                require_once $GLOBALS['rootpath'] . 'lib2/OcHTMLPurifier.class.php';
 
                 $purifier = new \OcHTMLPurifier($opt);
                 $formatted_comment = $purifier->purify($formatted_comment);

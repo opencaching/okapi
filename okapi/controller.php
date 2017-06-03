@@ -14,9 +14,9 @@ use Exception;
 
 $GLOBALS['rootpath'] = '../'; # this is for OC-code compatibility
 
-require_once($GLOBALS['rootpath'].'okapi/core.php');
+require_once $GLOBALS['rootpath'].'okapi/core.php';
 OkapiErrorHandler::$treat_notices_as_errors = true;
-require_once($GLOBALS['rootpath'].'okapi/urls.php');
+require_once $GLOBALS['rootpath'].'okapi/urls.php';
 
 if (ob_list_handlers() === ['default output handler']) {
     # We will assume that this one comes from "output_buffering" being turned on
@@ -68,7 +68,7 @@ class OkapiScriptEntryPointController
                     # Pattern matched! Moving on to the proper View...
 
                     array_shift($matches);
-                    require_once($GLOBALS['rootpath']."okapi/views/$namespace.php");
+                    require_once $GLOBALS['rootpath']."okapi/views/$namespace.php";
                     $response = call_user_func_array(array('\\okapi\\views\\'.
                         str_replace('/', '\\', $namespace).'\\View', 'call'), $matches);
                     if ($response)
@@ -84,7 +84,7 @@ class OkapiScriptEntryPointController
 
         # None of the patterns matched OR method threw the Http404 exception.
 
-        require_once($GLOBALS['rootpath']."okapi/views/http404.php");
+        require_once $GLOBALS['rootpath']."okapi/views/http404.php";
         $response = \okapi\views\http404\View::call();
         $response->display();
     }

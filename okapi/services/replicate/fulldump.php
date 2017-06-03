@@ -42,7 +42,7 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        require_once('replicate_common.inc.php');
+        require_once 'replicate_common.inc.php';
 
         $data = Cache::get("last_fulldump");
         if ($data == null)
