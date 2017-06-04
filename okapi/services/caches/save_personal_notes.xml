@@ -25,6 +25,12 @@
     <req name='new_value'>
         <p>The new content of the note, this also can be an empty string (in
         this case you indicate that you want the note to be removed).</p>
+
+        <p>There's no official length limit for this note, but if you want to
+        be on the safe side, then you can warn your users if they try to submit
+        texts longer that 20k characters (see
+        <a href='https://github.com/opencaching/okapi/issues/302#issuecomment-306027953'>this
+        discussion</a>).</p>
     </req>
     <opt name='old_value' default="(empty string)">
         <p>The previous content of the note. (The content that you <b>think</b>
