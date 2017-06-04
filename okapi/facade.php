@@ -90,6 +90,17 @@ class Facade
     }
 
     /**
+     * Return ID of currently logged in user or NULL if no user is logged in.
+     * OKAPI detects signed-in users by comparing browser's cookies with database
+     * user sessions.
+     */
+    public static function detect_user_id()
+    {
+        require_once "okapi/lib/oc_session.php";
+        return OCSession::get_user_id();
+    }
+
+    /**
      * Create a search set from a temporary table. This is very similar to
      * the "services/caches/search/save" method, but allows OC server to
      * include its own result instead of using OKAPI's search options. The
