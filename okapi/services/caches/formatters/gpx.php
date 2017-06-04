@@ -348,6 +348,9 @@ class WebService
                         $cache_ref['attrnames'][] = 'Needs maintenance';
                 }
             }
+        } else {
+            $vars['gc_attrs'] = null;
+            $vars['gc_ocde_attrs'] = null;
         }
 
         /* OC sites always used internal user_ids in their generated GPX files.
