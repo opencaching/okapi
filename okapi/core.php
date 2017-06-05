@@ -8,10 +8,10 @@ namespace okapi;
 # see facade.php. You should not rely on any other file, never!
 
 use ArrayObject;
-use clsTbsZip;
 use ErrorException;
 use Exception;
 use okapi\cronjobs\CronJobController;
+use okapi\lib\ClsTbsZip;
 use okapi\oauth\OAuthConsumer;
 use okapi\oauth\OAuthMissingParameterException;
 use okapi\oauth\OAuthRequest;
@@ -1000,26 +1000,24 @@ class OkapiRedirectResponse extends OkapiHttpResponse
     }
 }
 
-require_once 'okapi/lib/tbszip.php';
-
 class OkapiZIPHttpResponse extends OkapiHttpResponse
 {
     public $zip;
 
     public function __construct()
     {
-        $this->zip = new clsTbsZip();
+        $this->zip = new ClsTbsZip();
         $this->zip->CreateNew();
     }
 
     public function print_body()
     {
-        $this->zip->Flush(clsTbsZip::TBSZIP_DOWNLOAD|clsTbsZip::TBSZIP_NOHEADER);
+        $this->zip->Flush(ClsTbsZip::TBSZIP_DOWNLOAD|ClsTbsZip::TBSZIP_NOHEADER);
     }
 
     public function get_body()
     {
-        $this->zip->Flush(clsTbsZip::TBSZIP_STRING);
+        $this->zip->Flush(ClsTbsZip::TBSZIP_STRING);
         return $this->zip->OutputSrc;
     }
 
