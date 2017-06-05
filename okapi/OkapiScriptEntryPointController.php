@@ -20,21 +20,11 @@ use Exception;
 # endpoint (this one!), then we need to set it up ourselves.
 #
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 $GLOBALS['rootpath'] = realpath('..').'/';
 
-#
-# Make sure that rootpath is on the include_path (OKAPI uses paths relative to
-# rootpath in all require_once statements). See this thread for more info:
-# https://github.com/opencaching/okapi/pull/466#issuecomment-305978466
-#
-
-if (!in_array($GLOBALS['rootpath'], explode(PATH_SEPARATOR, get_include_path()))) {
-    set_include_path(get_include_path().PATH_SEPARATOR.$GLOBALS['rootpath']);
-}
-
-require_once 'okapi/core.php';
 OkapiErrorHandler::$treat_notices_as_errors = true;
-require_once 'okapi/urls.php';
 
 if (ob_list_handlers() === ['default output handler']) {
     # We will assume that this one comes from "output_buffering" being turned on

@@ -47,7 +47,7 @@ class View
     public static function out($str)
     {
         print $str;
-        # No ob_flush(). Output buffering should not be started (see controller.php).
+        # No ob_flush(). Output buffering should not be started (see OkapiScriptEntryPointController.php).
         # Therefore, calling ob_flush would give an error.
         flush();
     }
