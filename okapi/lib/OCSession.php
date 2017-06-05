@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi;
+namespace okapi\lib;
 
 /**
  * Use this class to access OC session variables. This is especially useful if

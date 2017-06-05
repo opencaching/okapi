@@ -3,8 +3,8 @@
 namespace okapi\views\apps\authorize;
 
 use okapi\Db;
+use okapi\lib\OCSession;
 use okapi\locale\Locales;
-use okapi\OCSession;
 use okapi\Okapi;
 use okapi\OkapiHttpResponse;
 use okapi\OkapiRedirectResponse;
@@ -72,7 +72,6 @@ class View
 
         # Determine which user is logged in to OC.
 
-        require_once "okapi/lib/oc_session.php";
         $OC_user_id = OCSession::get_user_id();
 
         # Ensure a user is logged in (or force re-login).
