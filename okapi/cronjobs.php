@@ -18,7 +18,7 @@ use Exception;
 use okapi\BadRequest;
 use okapi\Cache;
 use okapi\Db;
-use okapi\Locales;
+use okapi\locale\Locales;
 use okapi\Okapi;
 use okapi\OkapiExceptionHandler;
 use okapi\OkapiInternalConsumer;
@@ -858,7 +858,6 @@ class LocaleChecker extends Cron5Job
     public function get_period() { return 7*86400; }
     public function execute()
     {
-        require_once "okapi/locale/locales.php";
         $required = Locales::get_required_locales();
         $installed = Locales::get_installed_locales();
         $missing = array();

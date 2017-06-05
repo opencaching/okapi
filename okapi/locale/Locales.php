@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi;
+namespace okapi\locale;
 
 class Locales
 {
