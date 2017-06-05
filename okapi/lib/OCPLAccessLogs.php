@@ -1,9 +1,9 @@
 <?php
 
-namespace okapi;
+namespace okapi\lib;
 
 /**
- * This is a (hopefully temporary) class which holds all funtionality related
+ * This is a (hopefully temporary) class which holds all funtionallity related
  * to OCPL's "access logging" feature. OCPL admins use this feature to track
  * suspicious activity of some certain users.
  *
