@@ -1,5 +1,7 @@
 <?php
 
+namespace okapi\lib;
+
 /*
 TbsZip version 2.16
 Date    : 2014-04-08
@@ -11,7 +13,7 @@ Visit http://www.tinybutstrong.com
 */
 
 
-class clsTbsZip {
+class ClsTbsZip {
     const TBSZIP_DOWNLOAD = 1;   // download (default)
     const TBSZIP_NOHEADER = 4;   // option to use with DOWNLOAD: no header is sent
     const TBSZIP_FILE     = 8;   // output to file  , or add from file

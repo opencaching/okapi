@@ -3,10 +3,10 @@
 namespace okapi\services\caches\formatters\garmin;
 
 
-use clsTbsZip;
 use Exception;
 use okapi\Cache;
 use okapi\InvalidParam;
+use okapi\lib\ClsTbsZip;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiRequest;
 use okapi\OkapiServiceRunner;
@@ -89,7 +89,7 @@ class WebService
             $request->consumer, $request->token, $data_method_params
         ))->get_body();
         $response->zip->FileAdd(
-            $data_filename, $data_contents, clsTbsZip::TBSZIP_STRING, $data_use_compression
+            $data_filename, $data_contents, ClsTbsZip::TBSZIP_STRING, $data_use_compression
         );
 
         # Then, include all the images.
@@ -144,7 +144,7 @@ class WebService
                     $syspath = Settings::get('IMAGES_DIR')."/".$img['uuid'].".jpg";
                     if (file_exists($syspath))
                     {
-                        $response->zip->FileAdd($zippath, $syspath, clsTbsZip::TBSZIP_FILE, false);
+                        $response->zip->FileAdd($zippath, $syspath, ClsTbsZip::TBSZIP_FILE, false);
                     }
                     else
                     {
@@ -182,7 +182,7 @@ class WebService
                             }
                         }
                         if ($jpeg_contents)  # This can be "null" *or* "false"!
-                            $response->zip->FileAdd($zippath, $jpeg_contents, clsTbsZip::TBSZIP_STRING, false);
+                            $response->zip->FileAdd($zippath, $jpeg_contents, ClsTbsZip::TBSZIP_STRING, false);
                     }
                 }
             }
