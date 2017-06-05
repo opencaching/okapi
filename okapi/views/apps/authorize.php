@@ -3,7 +3,7 @@
 namespace okapi\views\apps\authorize;
 
 use okapi\Db;
-use okapi\Locales;
+use okapi\locale\Locales;
 use okapi\OCSession;
 use okapi\Okapi;
 use okapi\OkapiHttpResponse;
