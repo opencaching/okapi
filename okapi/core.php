@@ -679,7 +679,7 @@ class Db
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.
 #
 
-require_once "okapi/oauth.php";
+require_once __DIR__ . '/oauth.php';
 
 class OkapiConsumer extends OAuthConsumer
 {
@@ -886,8 +886,8 @@ class OkapiOAuthServer extends OAuthServer
 
 # Including local datastore and settings (connecting SQL database etc.).
 
-require_once "okapi/settings.php";
-require_once "okapi/datastore.php";
+require_once __DIR__ . '/settings.php';
+require_once __DIR__ . '/datastore.php';
 
 class OkapiHttpResponse
 {
@@ -1467,7 +1467,7 @@ class Okapi
         $nearest_event = Okapi::get_var("cron_nearest_event");
         if ($nearest_event + 0 <= time())
         {
-            require_once "okapi/cronjobs.php";
+            require_once __DIR__ . '/cronjobs.php';
             try {
                 $nearest_event = CronJobController::run_jobs('pre-request');
                 Okapi::set_var("cron_nearest_event", $nearest_event);

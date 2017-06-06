@@ -80,7 +80,7 @@ class OkapiServiceRunner
         if (!self::exists($service_name)) {
             throw new Exception();
         }
-        require_once "okapi/$service_name.php";
+
         try {
             return call_user_func(['\\okapi\\' . str_replace('/', '\\', $service_name) . '\\WebService', 'options']);
         } catch (Exception $e) {
@@ -102,7 +102,7 @@ class OkapiServiceRunner
             throw new Exception();
         }
         try {
-            return file_get_contents("$service_name.xml", true);
+            return file_get_contents("$service_name/docs.xml", true);
         } catch (Exception $e) {
             throw new Exception("Missing documentation file: $service_name.xml");
         }
@@ -141,7 +141,6 @@ class OkapiServiceRunner
         Okapi::gettext_domain_init();
         try
         {
-            require_once "okapi/$service_name.php";
             $response = call_user_func(array('\\okapi\\'.
                 str_replace('/', '\\', $service_name).'\\WebService', 'call'), $request);
         } finally {
