@@ -36,7 +36,6 @@ class WebService
         # Get the list of attributes and filter the A-codes based on the
         # parameters.
 
-        require_once 'attr_helper.inc.php';
         $attrdict = AttrHelper::get_attrdict();
         $acodes = array();
         foreach ($attrdict as $acode => &$attr_ref)
