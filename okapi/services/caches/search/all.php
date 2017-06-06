@@ -14,8 +14,6 @@ use okapi\Okapi;
 use okapi\OkapiRequest;
 use okapi\services\caches\search\SearchAssistant;
 
-require_once 'searching.inc.php';
-
 class WebService
 {
     public static function options()
