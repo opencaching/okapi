@@ -5,8 +5,6 @@ namespace okapi\services\caches\formatters\ggz;
 use okapi\OkapiRequest;
 use okapi\OkapiZIPHttpResponse;
 
-require_once "okapi/services/caches/formatters/gpx.php";
-
 class WebService
 {
     public static function options()
@@ -40,7 +38,7 @@ class WebService
         $vars['files'] = array($ggz_file);
 
         ob_start();
-        include 'ggzindex.tpl.php';
+        include __DIR__ . '/ggzindex.tpl.php';
         $index_content = ob_get_clean();
 
         $response->zip->FileAdd("index/com/garmin/geocaches/v0/index.xml", $index_content);
