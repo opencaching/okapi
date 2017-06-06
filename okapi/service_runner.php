@@ -17,18 +17,15 @@ class OkapiServiceRunner
     public static $all_names = array(
         # Valid format: ^services/[0-9a-z_/]*$ (it means you may use only alphanumeric
         # characters and the "_" sign in your method names).
-        'services/apisrv/installation',
-        'services/apisrv/installations',
-        'services/apisrv/stats',
         'services/apiref/method',
         'services/apiref/method_index',
         'services/apiref/issue',
+        'services/apisrv/installation',
+        'services/apisrv/installations',
+        'services/apisrv/stats',
         'services/attrs/attribute_index',
         'services/attrs/attribute',
         'services/attrs/attributes',
-        'services/oauth/request_token',
-        'services/oauth/authorize',
-        'services/oauth/access_token',
         'services/caches/search/all',
         'services/caches/search/bbox',
         'services/caches/search/nearest',
@@ -51,15 +48,18 @@ class OkapiServiceRunner
         'services/logs/images/add',
         'services/logs/images/edit',
         'services/logs/images/delete',
+        'services/oauth/request_token',
+        'services/oauth/authorize',
+        'services/oauth/access_token',
+        'services/replicate/changelog',
+        'services/replicate/fulldump',
+        'services/replicate/info',
         'services/users/user',
         'services/users/users',
         'services/users/by_usernames',
         'services/users/by_username',
         'services/users/by_internal_id',
         'services/users/by_internal_ids',
-        'services/replicate/changelog',
-        'services/replicate/fulldump',
-        'services/replicate/info',
     );
 
     /** Check if method exists. */
@@ -68,20 +68,24 @@ class OkapiServiceRunner
         return in_array($service_name, self::$all_names);
     }
 
-    /** Get method options (is consumer required etc.). */
+    /**
+     * Get method options (is consumer required etc.).
+     *
+     * @param $service_name
+     * @return mixed
+     * @throws Exception
+     */
     public static function options($service_name)
     {
-        if (!self::exists($service_name))
+        if (!self::exists($service_name)) {
             throw new Exception();
+        }
         require_once "okapi/$service_name.php";
-        try
-        {
-            return call_user_func(array('\\okapi\\'.
-                str_replace('/', '\\', $service_name).'\\WebService', 'options'));
-        } catch (Exception $e)
-        {
+        try {
+            return call_user_func(['\\okapi\\' . str_replace('/', '\\', $service_name) . '\\WebService', 'options']);
+        } catch (Exception $e) {
             throw new Exception("Make sure you've declared your WebService class ".
-                "in an valid namespace (".'okapi\\'.str_replace('/', '\\', $service_name)."); ".
+                'in an valid namespace (' .'okapi\\'.str_replace('/', '\\', $service_name)."); ".
                 $e->getMessage());
         }
     }
@@ -89,11 +93,14 @@ class OkapiServiceRunner
     /**
      * Get method documentation file contents (stuff within the XML file).
      * If you're looking for a parsed representation, use services/apiref/method.
+     *
+     * @throws \Exception
      */
     public static function docs($service_name)
     {
-        if (!self::exists($service_name))
+        if (!self::exists($service_name)) {
             throw new Exception();
+        }
         try {
             return file_get_contents("$service_name.xml", true);
         } catch (Exception $e) {
