@@ -605,7 +605,6 @@ class ChangeLogWriterJob extends Cron5Job
     public function get_period() { return 300; }
     public function execute()
     {
-        require_once "okapi/services/replicate/replicate_common.inc.php";
         ReplicateCommon::update_clog_table();
     }
 }
@@ -621,7 +620,6 @@ class ChangeLogCheckerJob extends Cron24Job
     public function get_scheduled_time() { return "04:20"; }
     public function execute()
     {
-        require_once "okapi/services/replicate/replicate_common.inc.php";
         $ignored_fields = array('url');
         ReplicateCommon::verify_clog_consistency(false, $ignored_fields);
     }
@@ -635,7 +633,6 @@ class FulldumpGeneratorJob extends Cron5Job
     public function get_period() { return 7*86400; }
     public function execute()
     {
-        require_once "okapi/services/replicate/replicate_common.inc.php";
         ReplicateCommon::generate_fulldump();
     }
 }
@@ -691,7 +688,6 @@ class ChangeLogCleanerJob extends Cron24Job
     public function get_scheduled_time() { return "04:20"; }
     public function execute()
     {
-        require_once "okapi/services/replicate/replicate_common.inc.php";
         $max_revision = ReplicateCommon::get_revision();
         $cache_key = 'clog_revisions_daily';
         $data = Cache::get($cache_key);

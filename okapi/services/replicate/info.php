@@ -18,8 +18,6 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        require_once 'replicate_common.inc.php';
-
         $result = array();
         $result['changelog'] = array(
             'min_since' => ReplicateCommon::get_min_since(),
