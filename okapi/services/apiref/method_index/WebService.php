@@ -9,7 +9,6 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiRequest;
 use okapi\OkapiServiceRunner;
 use okapi\Settings;
-use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
 
