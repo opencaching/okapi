@@ -661,7 +661,6 @@ class WebService
 
             # Load internal_attr_id => acode mapping.
 
-            require_once 'okapi/services/attrs/attr_helper.inc.php';
             $internal2acode = AttrHelper::get_internal_id_to_acode_mapping();
 
             $rs = Db::query("

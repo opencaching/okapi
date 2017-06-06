@@ -54,7 +54,6 @@ class WebService
 
         # Load the attributes (all of them).
 
-        require_once 'attr_helper.inc.php';
         $attrdict = AttrHelper::get_attrdict();
 
         # For each A-code, check if it exists, filter its fields and add it
