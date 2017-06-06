@@ -42,8 +42,6 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        require_once 'replicate_common.inc.php';
-
         $data = Cache::get("last_fulldump");
         if ($data == null)
             throw new BadRequest("No fulldump found. Try again later. If this doesn't help ".
