@@ -20,8 +20,6 @@ class WebService
 
     static function call(OkapiRequest $request)
     {
-        require_once 'log_images_common.inc.php';
-
         list($image_uuid, $log_internal_id) = LogImagesCommon::validate_image_uuid($request);
         $image_uuid_escaped = Db::escape_string($image_uuid);
 

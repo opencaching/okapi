@@ -37,8 +37,6 @@ class WebService
 
     private static function _call(OkapiRequest $request)
     {
-        require_once 'log_images_common.inc.php';
-
         # Developers! Please notice the fundamental difference between throwing
         # CannotPublishException and the "standard" BadRequest/InvalidParam
         # exceptions. You're reading the "_call" method now (see below for
@@ -294,7 +292,6 @@ class WebService
         $consumer_key, $user_id,
         $log_internal_id, $image_uuid, $position, $caption, $is_spoiler, $file_ext)
     {
-        require_once 'log_images_common.inc.php';
         list($position, $seq, $log_images_count) = LogImagesCommon::prepare_position(
             $log_internal_id,
             $position,
