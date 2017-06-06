@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'okapi\\' => array($baseDir . '/okapi'),
+    'okapi\\' => array($baseDir . '/'),
 );
