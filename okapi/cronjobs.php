@@ -77,8 +77,6 @@ class CronJobController
      */
     public static function run_jobs($type, $wait=false)
     {
-        require_once 'okapi/service_runner.php';
-
         # We don't want other cronjobs of the same time to run simultanously.
         $lock = OkapiLock::get('cronjobs-'.$type);
         if (!$lock->try_acquire()) {
@@ -146,8 +144,6 @@ class CronJobController
      */
     public static function force_run($job_name)
     {
-        require_once 'okapi/service_runner.php';
-
         foreach (self::get_enabled_cronjobs() as $cronjob)
         {
             if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\cronjobs\\".$job_name))

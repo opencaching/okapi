@@ -48,7 +48,6 @@ class View
             return $response;
         }
 
-        require_once 'okapi/service_runner.php';
         require_once 'okapi/views/menu.inc.php';
 
         $vars = array(

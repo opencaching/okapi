@@ -129,7 +129,6 @@ class View
      */
     private static function requireSafe($url)
     {
-        require_once 'okapi/service_runner.php';
         $installations = OkapiServiceRunner::call(
             "services/apisrv/installations",
             new OkapiInternalRequest(

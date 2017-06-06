@@ -10,8 +10,6 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 
-require_once "okapi/service_runner.php";
-
 class View
 {
     public static function out($str)

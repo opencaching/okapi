@@ -43,7 +43,6 @@ if (!in_array($GLOBALS['rootpath'], explode(PATH_SEPARATOR, get_include_path()))
 
 require_once "okapi/core.php";
 OkapiErrorHandler::$treat_notices_as_errors = true;
-require_once "okapi/service_runner.php";
 Okapi::init_internals();
 
 /**
