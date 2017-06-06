@@ -2,8 +2,6 @@
 
 namespace okapi\services\caches\search\save;
 
-require_once 'searching.inc.php';
-
 use okapi\Db;
 use okapi\InvalidParam;
 use okapi\Okapi;
