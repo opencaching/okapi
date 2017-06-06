@@ -4,7 +4,6 @@ namespace okapi\oauth;
 
 use Exception;
 
-
 # MODIFIED, May 2012, Wojciech Rygielski <rygielski@mimuw.edu.pl>.
 #
 # This is a splightly modifier version of the original library.
@@ -1052,5 +1051,3 @@ class OAuthUtil {
     return implode('&', $pairs);
   }
 }
-
-?>

@@ -3,6 +3,7 @@
 namespace okapi;
 
 use Exception;
+use okapi\locale\Locales;
 
 # DO NOT MODIFY THIS FILE. This file should always look like the original here:
 # https://github.com/opencaching/okapi/blob/master/okapi/settings.php
@@ -225,7 +226,7 @@ final class Settings
     {
         try {
             # This is an external code and it MAY generate E_NOTICEs.
-            # We have to temporarilly disable our default error handler.
+            # We have to temporarily disable our default error handler.
 
             OkapiErrorHandler::disable();
             require_once "okapi_settings.php";

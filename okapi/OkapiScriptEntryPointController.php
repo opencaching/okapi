@@ -20,9 +20,14 @@ use Exception;
 # endpoint (this one!), then we need to set it up ourselves.
 #
 
-require_once __DIR__ . '/../vendor/autoload.php';
+$GLOBALS['rootpath'] = __DIR__.'/../';
 
-$GLOBALS['rootpath'] = realpath('..').'/';
+if (!in_array($GLOBALS['rootpath'], explode(PATH_SEPARATOR, get_include_path()))) {
+    set_include_path(get_include_path().PATH_SEPARATOR.$GLOBALS['rootpath']);
+}
+
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ .'/core.php';
 
 OkapiErrorHandler::$treat_notices_as_errors = true;
 
