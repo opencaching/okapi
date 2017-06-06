@@ -8,8 +8,6 @@ use okapi\OkapiInternalConsumer;
 use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
 
-require_once 'tiletree.inc.php';
-
 class ReplicateListener
 {
     public static function receive($changelog)
