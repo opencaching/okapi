@@ -653,7 +653,6 @@ class TileTreeUpdater extends Cron5Job
         if ($tiletree_revision === $current_clog_revision) {
             # No update necessary.
         } elseif ($tiletree_revision < $current_clog_revision) {
-            require_once "okapi/services/caches/map/replicate_listener.inc.php";
             if ($current_clog_revision - $tiletree_revision < 30000)  # In the middle of 2012, OCPL generated 30000 entries per week
             {
                 for ($timeout = time() + 240; time() < $timeout; )  # Try to stop after 4 minutes.
