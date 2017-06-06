@@ -34,7 +34,7 @@ class OCPLAccessLogs
             }
             if (isset($frame['file']) &&
                     // test if file ends with service_runner.php
-                    substr($frame['file'], -strlen('service_runner.php')) === 'service_runner.php')
+                    substr($frame['file'], -strlen('OkapiServiceRunner.php')) === 'OkapiServiceRunner.php')
             {
                 $break_next = true;
             }

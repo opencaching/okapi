@@ -1637,7 +1637,6 @@ class Okapi
      */
     public static function register_new_consumer($appname, $appurl, $email)
     {
-        require_once "okapi/service_runner.php";
         $consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
             $appname, $appurl, $email);
         $sample_cache = OkapiServiceRunner::call("services/caches/search/all",
