@@ -8,13 +8,12 @@ use Exception;
 /** Collection of static methods related to cache sets. */
 class CachesetStatics
 {
-    private static $geocache_types = array( # PJTODO: geocache types? Doesn't seem to be ;)
+    private static $cacheset_types = array(
         #
-        # OKAPI does not expose type IDs. Instead, it uses the following
-        # "code words".
-        # Changing this may introduce nasty bugs (e.g. in the replicate module).
+        # OKAPI does not expose cacheset type IDs.
+        # Instead, it uses the following "code words".
+        # Changing this may introduce nasty bugs
         # CONTACT ME BEFORE YOU MODIFY THIS!
-        # PJTODO: But these are not used in the replicate module, so what do you mean here exactly?
         #
         'oc.pl' => array(
             'Geo-drawing' => 1,
@@ -27,7 +26,7 @@ class CachesetStatics
     /** E.g. 'Traditional' => 2. For unknown names throw an Exception. */
     public static function cacheset_type_name2id($name)
     {
-        $ref = &self::$geocache_types[Settings::get('OC_BRANCH')];
+        $ref = &self::$cacheset_types[Settings::get('OC_BRANCH')];
         if (isset($ref[$name]))
             return $ref[$name];
 
@@ -42,7 +41,7 @@ class CachesetStatics
         if ($reversed == null)
         {
             $reversed = array();
-            foreach (self::$geocache_types[Settings::get('OC_BRANCH')] as $key => $value)
+            foreach (self::$cacheset_types[Settings::get('OC_BRANCH')] as $key => $value)
                 $reversed[$value] = $key;
         }
         if (isset($reversed[$id]))
@@ -85,16 +84,12 @@ class CachesetStatics
 /** Collection of static methods related to cache set log entries. */
 class CsLogStatics
 {
-    private static $geocache_types = array( # PJTODO: Same as above
+    private static $csLog_types = array(
         #
-        # OKAPI does not expose type IDs. Instead, it uses the following
-        # "code words".
-        # Changing this may introduce nasty bugs (e.g. in the replicate module).
+        # OKAPI does not expose cacheset logs IDs.
+        # Instead, it uses the following "code words".
+        # Changing this may introduce nasty bugs
         # CONTACT ME BEFORE YOU MODIFY THIS!
-
-        # PJTODO: This seems to be copied and pasted. Please fix, or
-        # at least remove the misleading comments! ;>
-        #
         'oc.pl' => array(
             'Comment' => 1, 'Completed' => 2
         )
@@ -103,13 +98,12 @@ class CsLogStatics
     /** E.g. 'Traditional' => 2. For unknown names throw an Exception. */
     public static function cslog_type_name2id($name)
     {
-        $ref = &self::$geocache_types[Settings::get('OC_BRANCH')];
+        $ref = &self::$csLog_types[Settings::get('OC_BRANCH')];
         if (isset($ref[$name]))
             return $ref[$name];
 
-            throw new Exception("Method cslog_type_name2id called with unsupported cacheset log ".
-                "type name '$name'.");
-            # PJTODO: Bad indentation. This looks like it's under the "if", but isn't.
+        throw new Exception("Method cslog_type_name2id called with unsupported cacheset log ".
+            "type name '$name'.");
     }
 
     /** E.g. 2 => 'Traditional'. For unknown names return type 'Other'. */
@@ -119,7 +113,7 @@ class CsLogStatics
         if ($reversed == null)
         {
             $reversed = array();
-            foreach (self::$geocache_types[Settings::get('OC_BRANCH')] as $key => $value)
+            foreach (self::$csLog_types[Settings::get('OC_BRANCH')] as $key => $value)
                 $reversed[$value] = $key;
         }
         if (isset($reversed[$id]))
