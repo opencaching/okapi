@@ -9,7 +9,9 @@ use okapi\OkapiInternalRequest;
 use okapi\OkapiRequest;
 use okapi\OkapiServiceRunner;
 use okapi\Settings;
+use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+
 
 class WebService
 {
@@ -76,9 +78,9 @@ class WebService
     }
 
     private static function getDirModDateRecursive($absoluteDir) {
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($absoluteDir, RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($absoluteDir, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
         );
         $max_timestamp = 0;
         foreach ($iterator as $item) {

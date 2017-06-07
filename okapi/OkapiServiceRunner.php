@@ -68,13 +68,7 @@ class OkapiServiceRunner
         return in_array($service_name, self::$all_names);
     }
 
-    /**
-     * Get method options (is consumer required etc.).
-     *
-     * @param $service_name
-     * @return mixed
-     * @throws Exception
-     */
+    /** Get method options (is consumer required etc.). */
     public static function options($service_name)
     {
         if (!self::exists($service_name)) {
@@ -93,8 +87,6 @@ class OkapiServiceRunner
     /**
      * Get method documentation file contents (stuff within the XML file).
      * If you're looking for a parsed representation, use services/apiref/method.
-     *
-     * @throws \Exception
      */
     public static function docs($service_name)
     {

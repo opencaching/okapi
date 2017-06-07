@@ -2,6 +2,9 @@
 
 namespace okapi\lib;
 
+use okapi\Settings;
+use okapi\Db;
+
 /**
  * Use this class to access OC session variables. This is especially useful if
  * you want to determine which user is currently logged in to OC.

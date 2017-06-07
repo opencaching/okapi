@@ -1,5 +1,8 @@
 <?php
 
+# WARNING: This version of the library has been custom-tailored for use with
+# Composer's autoloader. Keep in mind when updating.
+
 namespace okapi\lib;
 
 /*

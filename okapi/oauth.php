@@ -6,7 +6,7 @@ use Exception;
 
 # MODIFIED, May 2012, Wojciech Rygielski <rygielski@mimuw.edu.pl>.
 #
-# This is a splightly modifier version of the original library.
+# This is a slightly modified version of the original library.
 # The original library couldn't be used if we wanted to be 100%
 # consistent with the OAuth response codes advice on
 # http://oauth.net/core/1.0a/#http_codes - it threw only one type
