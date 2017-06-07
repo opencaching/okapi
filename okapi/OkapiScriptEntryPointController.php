@@ -22,12 +22,16 @@ use Exception;
 
 $GLOBALS['rootpath'] = __DIR__.'/../';
 
+#
+# TETODO: We should probably get to the point at which this can be removed.
+#
+
 if (!in_array($GLOBALS['rootpath'], explode(PATH_SEPARATOR, get_include_path()))) {
     set_include_path(get_include_path().PATH_SEPARATOR.$GLOBALS['rootpath']);
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ .'/core.php';
+require_once __DIR__ . '/core.php';
 
 OkapiErrorHandler::$treat_notices_as_errors = true;
 

@@ -3,7 +3,7 @@
 namespace okapi\lib;
 
 /**
- * This is a (hopefully temporary) class which holds all funtionallity related
+ * This is a (hopefully temporary) class which holds all functionality related
  * to OCPL's "access logging" feature. OCPL admins use this feature to track
  * suspicious activity of some certain users.
  *
@@ -20,7 +20,7 @@ class OCPLAccessLogs
         $org_caller = null;
         $break_next = false;
         // traverse PHP call stack to find out who originally called us
-        // first, find first service_runner.php invocation
+        // first, find first OkapiServiceRunner.php invocation
         // then, find previous class invocation
         for($i = count($trace)-1; $i >= 0; $i--)
         {
@@ -33,7 +33,7 @@ class OCPLAccessLogs
                 break;
             }
             if (isset($frame['file']) &&
-                    // test if file ends with service_runner.php
+                    // test if file ends with OkapiServiceRunner.php
                     substr($frame['file'], -strlen('OkapiServiceRunner.php')) === 'OkapiServiceRunner.php')
             {
                 $break_next = true;

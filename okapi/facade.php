@@ -2,6 +2,8 @@
 
 namespace okapi;
 
+use okapi\lib\OCSession;
+
 # OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
 
 # Use this class when you want to use OKAPI's services within OC code.
@@ -31,16 +33,14 @@ namespace okapi;
 # --------------------
 
 #
-# Make sure that rootpath is on the include_path (OKAPI uses paths relative to
-# rootpath in all require_once statements). See this thread for more info:
-# https://github.com/opencaching/okapi/pull/466#issuecomment-305978466
+# TETODO: We should probably get to the point at which this can be removed.
 #
 
 if (!in_array($GLOBALS['rootpath'], explode(PATH_SEPARATOR, get_include_path()))) {
     set_include_path(get_include_path().PATH_SEPARATOR.$GLOBALS['rootpath']);
 }
 
-
+require_once __DIR__ . '/vendor/autoload.php';
 require_once "okapi/core.php";
 OkapiErrorHandler::$treat_notices_as_errors = true;
 Okapi::init_internals();
@@ -95,7 +95,6 @@ class Facade
      */
     public static function detect_user_id()
     {
-        require_once "okapi/lib/oc_session.php";
         return OCSession::get_user_id();
     }
 
