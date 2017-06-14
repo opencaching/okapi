@@ -1445,7 +1445,7 @@ class WebService
                 $note = sprintf(
                     _(
                         "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, ".
-                        "<a href='http://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, ".
+                        "<a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, ".
                         "as of %s; all log entries &copy; their authors"
                     ),
                     $owner['profile_url'], $owner['username'], $cache_url, $site_name, strftime('%x')
@@ -1456,7 +1456,7 @@ class WebService
                 $note = sprintf(
                     _(
                         "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, ".
-                        "<a href='http://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>; ".
+                        "<a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>; ".
                         "all log entries &copy; their authors"
                     ),
                     $owner['profile_url'], $owner['username'], $cache_url, $site_name
