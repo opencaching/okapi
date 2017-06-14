@@ -58,7 +58,7 @@ Here is the list of other OKAPI installations:</p>
         <a href='https://github.com/opencaching/okapi/'>https://github.com/opencaching/okapi/</a>
     </li>
     <li>
-        OKAPI News blog -
+        OKAPI News blog (rarely updated, but still) -
         <a href='https://opencaching-api.blogspot.com/'>https://opencaching-api.blogspot.com/</a>
     </li>
 </ul>
