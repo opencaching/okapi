@@ -1243,7 +1243,7 @@ class WebService
                     order by npa_types.ordinal
                 ");
             }
-            else if (in_array(Okapi::get_oc_schema_code(), array("OCPL", "OCNL")))
+            else if (in_array(Okapi::get_oc_installation_code(), array("OCPL", "OCNL")))
             {
                 # Current OCPL table definitions use collation 'latin1' for parkipl
                 # and 'utf8' for np_areas. Union needs identical collations.
