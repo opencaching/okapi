@@ -57,7 +57,7 @@ class WebService
                     return Okapi::formatted_response($request, $results);
                 }
 
-                # Backup has expired (or have never been cached). If we're on a development
+                # Backup has expired (or has never been cached). If we're on a development
                 # server then probably it's okay. In production this SHOULD NOT happen.
 
                 $results = array(
