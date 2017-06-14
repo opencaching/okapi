@@ -6,7 +6,7 @@ Quick download link: http://rygielski.net/r/okapi-latest
 ## Why are you here? ##
 
 If you are an external developer and you want to **USE** the API (not implement
-it), you should rather [be reading this](http://opencaching.pl/okapi/).
+it), you should rather [be reading this](https://opencaching.pl/okapi/).
 The description below is primarily for OC administrators _AND_ people who want
 to help implement OKAPI backend.
 
@@ -21,7 +21,7 @@ to help implement OKAPI backend.
     authorization.
   * Sends **email notifications** to site admins in case something goes wrong.
 
-See a live installation here: http://opencaching.pl/okapi/
+See a live installation here: https://opencaching.pl/okapi/
 
 
 ### Who's using OKAPI? ###
@@ -29,12 +29,12 @@ See a live installation here: http://opencaching.pl/okapi/
 OKAPI Project started in August 2011. Currently it is being used by the
 following Opencaching sites:
 
-  * http://www.opencaching.pl/okapi/
-  * http://www.opencaching.de/okapi/ (+.it +.fr)
+  * https://www.opencaching.pl/okapi/
+  * https://www.opencaching.de/okapi/ (+.it +.fr)
   * http://www.opencaching.us/okapi/
   * http://www.opencaching.nl/okapi/
   * http://www.opencaching.ro/okapi/
-  * http://www.opencache.uk/okapi/
+  * https://www.opencache.uk/okapi/
 
 The API itself is also being used by numerous geocaching clients (e.g. c:geo).
 The OKAPI project is aiming to become a standard API for all National
@@ -74,7 +74,7 @@ Also, check [our coding style guide](etc/CODESTYLE.md).
 ## Terms of data use ##
 
 Current version of OKAPI comes with a document describing _Terms of Use for
-Opencaching data_ (like [this one](http://opencaching.pl/okapi/signup.html)).
+Opencaching data_ (like [this one](https://opencaching.pl/okapi/signup.html)).
 This document is about the OC data and **IS NOT** necessarily meant to stay the
 same across different OKAPI installations. Every OC installation may have its
 own version of this document. Contact us if you need one.
@@ -150,7 +150,7 @@ You can also read about how OKAPI tries to deal with branch differences
 </Directory>
 ```
 
-  6. Update OKAPI database (visit http://yoursite/okapi/update),
+  6. Update OKAPI database (visit `http(s)://yoursite/okapi/update`),
   7. Check your email. OKAPI should send you email messages with further
      installation steps.
 
@@ -175,7 +175,7 @@ Scenario:
 
 Possible reasons:
 
-  * You forgot to run http://yoursite/okapi/update script.
+  * You forgot to run `http(s)://yoursite/okapi/update` script.
   * Missing a table/field in database (which wasn't required in X, but is
     required in Y).
   * Missing PHP module (which wasn't required in X, but is required in Y).

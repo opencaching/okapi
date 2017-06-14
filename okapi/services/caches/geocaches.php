@@ -867,7 +867,7 @@ class WebService
                     $result_ref['trackables'][] = array(
                         'code' => 'GK'.str_pad(strtoupper(dechex($t['gk_id'])), 4, "0", STR_PAD_LEFT),
                         'name' => $t['name'],
-                        'url' => 'http://geokrety.org/konkret.php?id='.$t['gk_id']
+                        'url' => 'https://geokrety.org/konkret.php?id='.$t['gk_id']
                     );
                 }
             }

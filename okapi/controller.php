@@ -56,7 +56,7 @@ class OkapiScriptEntryPointController
 
         # Chop off everything before "/okapi/". This should work for okay for most "weird"
         # server configurations. It will also address a more subtle issue described here:
-        # http://stackoverflow.com/questions/8040461/request-uri-unexpectedly-contains-fqdn
+        # https://stackoverflow.com/questions/8040461/request-uri-unexpectedly-contains-fqdn
 
         if (strpos($uri, "/okapi/") !== false)
             $uri = substr($uri, strpos($uri, "/okapi/"));

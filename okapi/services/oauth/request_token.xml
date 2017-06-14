@@ -13,7 +13,7 @@
         If the client is unable to receive callbacks, the parameter
         must be set to "oob", OKAPI will provide a user with a
         PIN code (oauth_verifier) in this case.</p>
-        Consult <a href='http://oauth.net/documentation/spec/'>OAuth documentation</a> for details.
+        Consult <a href='https://oauth.net/core/1.0a/'>OAuth 1.0a documentation</a> for details.
     </req>
     <returns>
         <p>Standard OAuth 1.0a Token response - a string in a form-encoded format:</p>

@@ -41,7 +41,7 @@
     </opt>
     <opt name='when'>
         <p>A date and time string. This should be in ISO 8601 format (currently any
-        format acceptable by PHP's <a href='http://php.net/manual/function.strtotime.php'>strtotime</a>
+        format acceptable by PHP's <a href='https://php.net/manual/function.strtotime.php'>strtotime</a>
         function also will do, but most of them don't handle time zones properly,
         try to use ISO 8601!). You MAY (and are encouraged to) omit the time segment
         (and just submit a date in "yyyy-mm-dd" format) if the time is either unknown

@@ -51,7 +51,7 @@ class WebService
             return null;
         if (preg_match("#^/(O[A-Z][A-Z0-9]{4,5})$#", $uri['path'], $matches))
         {
-            # Some servers allow "http://oc.xx/<cache_code>" shortcut.
+            # Some servers allow "http(s)://oc.xx/<cache_code>" shortcut.
             return array('cache_code', $matches[1]);
         }
         $parts = array();

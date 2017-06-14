@@ -112,7 +112,7 @@ class WebService
             /* See:
              *
              * - https://github.com/OpencachingDeutschland/oc-server3/tree/master/htdocs/libse/CacheNote
-             * - http://www.opencaching.de/okapi/devel/dbstruct
+             * - https://www.opencaching.de/okapi/devel/dbstruct
              */
 
             $rs = Db::query("

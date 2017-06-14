@@ -12,7 +12,7 @@ namespace okapi\cronjobs;
 # - delete from okapi_cache where `key`='cron_schedule';
 # - delete from okapi_vars where var='cron_nearest_event';
 #
-# Then, visit http://yoursite/okapi/cron5.
+# Then, visit http(s)://yoursite/okapi/cron5.
 
 use Exception;
 use okapi\BadRequest;

@@ -9,7 +9,7 @@
         are required.</p>
     </desc>
     <req name='oauth_verifier'>
-        Consult <a href='http://oauth.net/documentation/spec/'>OAuth documentation</a> for details.
+        Consult <a href='https://oauth.net/core/1.0a/'>OAuth 1.0a documentation</a> for details.
     </req>
     <returns>
         <p>Standard OAuth 1.0a Token response - a string in a form-encoded format:</p>

@@ -54,7 +54,7 @@ final class Settings
          * https://github.com/opencaching/okapi/issues/177)
          * You should set it to the timezone used in your country (the one you'd
          * use for your database inserts etc.). Choose one of the values listed
-         * here: http://www.php.net/manual/en/timezones.php
+         * here: https://www.php.net/manual/en/timezones.php
          *
          * E.g. "Europe/Berlin", "America/New_York".
          */
