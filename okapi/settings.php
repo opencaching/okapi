@@ -49,9 +49,13 @@ final class Settings
         'SITELANG' => "en",
 
         /**
-         * If set, it will be passed to date_default_timezone_set. OKAPI may
-         * refuse to start if this value is unset (more information here:
-         * https://github.com/opencaching/okapi/issues/177)
+         * If set, it will be passed to date_default_timezone_set.
+         *
+         * If your system is configured properly, then you are not required to
+         * set this value. However, in other cases, OKAPI may refuse to start
+         * if this value is not set (more information here:
+         * https://github.com/opencaching/okapi/issues/177).
+         *
          * You should set it to the timezone used in your country (the one you'd
          * use for your database inserts etc.). Choose one of the values listed
          * here: https://www.php.net/manual/en/timezones.php
