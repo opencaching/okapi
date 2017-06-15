@@ -1665,7 +1665,7 @@ class Okapi
         print Settings::get('SITE_URL')."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n";
         print "If you plan on using OKAPI for a longer time, then you might also want\n";
         print "to subscribe to the OKAPI News blog (it is not much updated, but it might\n";
-        print "still be worth the trouble):\n"
+        print "still be worth the trouble):\n";
         print "https://opencaching-api.blogspot.com/\n\n";
         print "Have fun!\n\n";
         print "-- \n";
