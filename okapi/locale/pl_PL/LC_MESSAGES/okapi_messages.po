@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 15:43+0200\n"
-"PO-Revision-Date: 2017-06-15 15:43+0200\n"
+"POT-Creation-Date: 2017-06-15 15:50+0200\n"
+"PO-Revision-Date: 2017-06-15 15:50+0200\n"
 "Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -161,6 +161,8 @@ msgstr ""
 #, php-format
 msgid "%s requires all images to have captions. Please provide one."
 msgstr ""
+"%s wymaga, aby wszystkie obrazki miały swoje tytuły. Tytuł nie może pozostać "
+"pusty."
 
 #: services/logs/images/add.php:106
 #, php-format
@@ -168,16 +170,19 @@ msgid ""
 "Your image file is too large (%s.%s MB); %s accepts a maximum image size of "
 "%s.%s MB."
 msgstr ""
+"Twój plik z obrazkiem jest za duży (%s.%s MB). %s akceptuje pliki o "
+"maksymalnym rozmiarze %s.%s MB."
 
 #: services/logs/images/add.php:134 services/logs/images/add.php:159
 #, php-format
 msgid "%s reported an error when it tried to read your file."
-msgstr ""
+msgstr "Serwis %s zgłosił błąd podczas próby odczytu Twojego pliku."
 
 #: services/logs/images/add.php:138
 msgid ""
 "Make sure you are sending a file in an appropriate format (JPEG, PNG or GIF)."
 msgstr ""
+"Upewnij się, że wysyłasz plik w odpowiednim formacie (JPEG, PNG lub GIF)."
 
 #: services/logs/images/add.php:147
 #, php-format
@@ -186,14 +191,18 @@ msgid ""
 "external application to downscale it first. (You can also contact the "
 "developers of '%s' and ask them to downscale uploaded images automatically.)"
 msgstr ""
+"Przesłany obrazek jest za duży (%s megapikseli). Najpierw użyj zewnętrznej "
+"aplikacji aby zmniejszyć jego wymiary. (Możesz również skontaktować się z "
+"autorami aplikacji '%s' i poprosić ich, aby zmniejszali przesyłane obrazki "
+"automatycznie.)"
 
 #: services/logs/images/add.php:411
 msgid "Image has been successfully saved."
-msgstr ""
+msgstr "Obrazek został pomyślnie zapisany."
 
 #: services/logs/images/edit.php:215
 msgid "Image properties have been successfully updated."
-msgstr ""
+msgstr "Właściwości obrazka został pomyślnie zaktualizowane."
 
 #: services/logs/submit.php:75
 msgid ""
