@@ -52,6 +52,10 @@
         <p>Note: Some installations will ignore this option and always append
         new images to the end of the list.</p>
     </opt>
+    <opt name='langpref' default='en'>
+        <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+        order of preference in which language will be chosen for error messages.</p>
+    </opt>
     <common-format-params/>
     <returns>
         <p>A dictionary of the following structure:</p>
