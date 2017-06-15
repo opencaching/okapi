@@ -224,7 +224,7 @@ class CSSearchAssistant
         # value of "more" variable.
 
         $cacheset_uuids = Db::select_column("
-            select id
+            select uuid
             from ".implode(", ", $tables)." ".
             implode(" ", $this->search_params['extra_joins'])."
             where ".implode(" and ", $where_conds)."

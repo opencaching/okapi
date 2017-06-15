@@ -558,12 +558,14 @@ class SearchAssistant
         $cacheset_allowed_statuses = "1"; # status 'Available'
 
         $cacheset_uuids = $this->request->get_parameter('cacheset_uuids');
-        if (!$cacheset_uuids) {
-            $cacheset_uuids = $this->request->get_parameter('powertrail_ids');
-            # PJTODO: ID != UUID, you'll need some new variable here
+
+        if (!$cacheset_uuids) { // if cacheset_uuids defined skip powertrail_ids
+            $cacheset_ids = $this->request->get_parameter('powertrail_ids');
+        }else {
+            $cacheset_ids = null;
         }
 
-        if ($cacheset_uuids)
+        if ($cacheset_uuids || $cacheset_ids)
         {
             $join_powertrails = true;
 
@@ -580,11 +582,18 @@ class SearchAssistant
                 $where_conds[] = "PowerTrail.status in ( ".
                     Db::escape_string($cacheset_allowed_statuses).")";
 
+
                 if ($cacheset_uuids) {
-                    $where_conds[] = "PowerTrail.id in ('".implode(
+                    $where_conds[] = "PowerTrail.uuid in ('".implode(
                         "','", array_map('\okapi\Db::escape_string', explode("|", $cacheset_uuids))
                     )."')";
                 }
+                if ($cacheset_ids) {
+                    $where_conds[] = "PowerTrail.id in ('".implode(
+                        "','", array_map('\okapi\Db::escape_string', explode("|", $cacheset_ids))
+                        )."')";
+                }
+
             } else {
                 $where_conds[] = "0=1";
             }

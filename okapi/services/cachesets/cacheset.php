@@ -45,7 +45,7 @@ class WebService
             $exists = Db::select_value("
                 select 1
                 from PowerTrail
-                where id=".Db::escape_string($cacheset_uuid)."
+                where uuid=".Db::escape_string($cacheset_uuid)."
             ");
             if ($exists) {
                 throw new InvalidParam('cacheset_uuid', "This cacheset is not accessible via OKAPI.");

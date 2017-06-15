@@ -48,9 +48,10 @@ class WebService
         # Cacheset exists. Getting the uuids of its logs.
 
         $log_uuids = Db::select_column("
-            select id as uuid
-            from PowerTrail_comments
-            where PowerTrailId = '".Db::escape_string($cacheset_uuid['uuid'])."'
+            select pt_logs.uuid as uuid
+            from PowerTrail_comments AS pt_logs
+            join PowerTrail on PowerTrail.id = pt_logs.PowerTrailId
+            where PowerTrail.uuid = '".Db::escape_string($cacheset_uuid['uuid'])."'
                 and deleted <> 1
             order by logDateTime desc
             limit $offset, $limit
