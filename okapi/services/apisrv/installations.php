@@ -22,7 +22,7 @@ class WebService
         # The list of installations is periodically refreshed by contacting OKAPI
         # repository. This method usually displays the cached version of it.
 
-        $VERSION = "2";
+        $VERSION = "3";
         $cachekey = 'apisrv/installations-v'.$VERSION;
         $backupkey = 'apisrv/installations-v'.$VERSION.'-backup';
         $results = Cache::get($cachekey);
