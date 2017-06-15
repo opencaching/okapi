@@ -78,7 +78,7 @@ class WebService
         $caption = $request->get_parameter('caption');
         if (!$caption) {
             throw new CannotPublishException(sprintf(
-                _("Please enter an image caption."),
+                _("%s requires all images to have captions. Please provide one."),
                 Okapi::get_normalized_site_name()
             ));
         }
@@ -129,29 +129,36 @@ class WebService
             # About 1 of 2000 JPEGs at OC.de is not readable by the PHP functions,
             # though they can be displayed by web browsers.
 
-            throw new CannotPublishException(sprintf(
-                _("The uploaded image file is broken, or the image type is not accepted by %s. Allowed types are JPEG, PNG and GIF."),
-                Okapi::get_normalized_site_name()
-            ));
+            throw new CannotPublishException(
+                sprintf(
+                    _("%s reported an error when it tried to read your file."),
+                    Okapi::get_normalized_site_name()
+                ).
+                " ".
+                _("Make sure you are sending a file in an appropriate format (JPEG, PNG or GIF).")
+            );
         }
         unset($image_properties);
 
         if ($width * $height > self::max_pixels($base64_image)) {
             # This large image may crash the image processing functions.
 
-            throw new CannotPublishException(sprintf(
-                # This limit is very dynamic; therefore it does not make sense to
-                # give an advice on the maximum accepted size.
-                _("The uploaded image is too large (%s megapixels), please downscale it."),
-                round($width * $height / 1024 / 1024)
-            ));
+            throw new CannotPublishException(sprintf(_(
+                "The image you have uploaded is too large (%s megapixels). ".
+                "Please use an external application to downscale it first. ".
+                "(You can also contact the developers of '%s' and ask them to ".
+                "downscale uploaded images automatically.)"
+            ), round($width * $height / 1024 / 1024), $request->consumer->name));
         }
         try {
             $image = imagecreatefromstring($image);  # can throw
             if (!$image) throw new Exception();
         }
         catch (Exception $e) {
-            throw new CannotPublishException(_("The uploaded image file is broken."));
+            throw new CannotPublishException(sprintf(
+                _("%s reported an error when it tried to read your file."),
+                Okapi::get_normalized_site_name()
+            ));
         }
 
         # Now all supplied paramters are validated.
@@ -401,7 +408,7 @@ class WebService
             list($image_uuid, $position) = self::_call($request);
             $result = array(
                 'success' => true,
-                'message' => _("Your log image has been saved."),
+                'message' => _("Image has been successfully saved."),
                 'image_uuid' => $image_uuid,
                 'position' => $position
             );

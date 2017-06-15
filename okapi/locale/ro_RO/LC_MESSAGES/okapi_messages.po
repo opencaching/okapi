@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 10:41+0200\n"
-"PO-Revision-Date: 2017-06-15 10:42+0200\n"
+"POT-Creation-Date: 2017-06-15 15:43+0200\n"
+"PO-Revision-Date: 2017-06-15 15:43+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ro_RO\n"
@@ -169,8 +169,8 @@ msgstr ""
 
 #: services/logs/images/add.php:81 services/logs/images/edit.php:55
 #, php-format
-msgid "Please enter an image caption."
-msgstr "Te rog introdu un titlu pentru această poză."
+msgid "%s requires all images to have captions. Please provide one."
+msgstr ""
 
 #: services/logs/images/add.php:106
 #, php-format
@@ -180,31 +180,31 @@ msgid ""
 msgstr ""
 "Poza este prea mare (%s.%s MB); %s acceptă o dimensiune maximă de %s.%s MB."
 
-#: services/logs/images/add.php:133
+#: services/logs/images/add.php:134 services/logs/images/add.php:159
+#, php-format
+msgid "%s reported an error when it tried to read your file."
+msgstr ""
+
+#: services/logs/images/add.php:138
+msgid ""
+"Make sure you are sending a file in an appropriate format (JPEG, PNG or GIF)."
+msgstr ""
+
+#: services/logs/images/add.php:147
 #, php-format
 msgid ""
-"The uploaded image file is broken, or the image type is not accepted by %s. "
-"Allowed types are JPEG, PNG and GIF."
+"The image you have uploaded is too large (%s megapixels). Please use an "
+"external application to downscale it first. (You can also contact the "
+"developers of '%s' and ask them to downscale uploaded images automatically.)"
 msgstr ""
-"Imaginea încărcată este defectă sau într-un alt format decât cele acceptate "
-"de %s. Formatele permise sunt JPEG, PNG şi GIF."
 
-#: services/logs/images/add.php:145
-#, php-format
-msgid "The uploaded image is too large (%s megapixels), please downscale it."
-msgstr "Poza încărcată este prea mare (%s megapixeli), te rog micşoreaz-o."
-
-#: services/logs/images/add.php:154
-msgid "The uploaded image file is broken."
-msgstr "Imaginea încărcată este defectă."
-
-#: services/logs/images/add.php:404
-msgid "Your log image has been saved."
-msgstr "Însemnarea cu poză a fost salvată."
+#: services/logs/images/add.php:411
+msgid "Image has been successfully saved."
+msgstr ""
 
 #: services/logs/images/edit.php:215
-msgid "Your log image has been updated."
-msgstr "Însemnarea cu poză a fost actualizată."
+msgid "Image properties have been successfully updated."
+msgstr ""
 
 #: services/logs/submit.php:75
 msgid ""
@@ -461,6 +461,29 @@ msgstr ""
 "să foloseşti aplicaţii externe,\n"
 "                    ele vor apărea aici.</p>\n"
 "                "
+
+#~ msgid "Please enter an image caption."
+#~ msgstr "Te rog introdu un titlu pentru această poză."
+
+#~ msgid ""
+#~ "The uploaded image file is broken, or the image type is not accepted by "
+#~ "%s. Allowed types are JPEG, PNG and GIF."
+#~ msgstr ""
+#~ "Imaginea încărcată este defectă sau într-un alt format decât cele "
+#~ "acceptate de %s. Formatele permise sunt JPEG, PNG şi GIF."
+
+#~ msgid ""
+#~ "The uploaded image is too large (%s megapixels), please downscale it."
+#~ msgstr "Poza încărcată este prea mare (%s megapixeli), te rog micşoreaz-o."
+
+#~ msgid "The uploaded image file is broken."
+#~ msgstr "Imaginea încărcată este defectă."
+
+#~ msgid "Your log image has been saved."
+#~ msgstr "Însemnarea cu poză a fost salvată."
+
+#~ msgid "Your log image has been updated."
+#~ msgstr "Însemnarea cu poză a fost actualizată."
 
 #~ msgid ""
 #~ "However, your \"needs maintenance\" flag was ignored, because %s does not "
