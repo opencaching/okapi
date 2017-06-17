@@ -1312,19 +1312,20 @@ class WebService
 
             if (Settings::get('OC_BRANCH') == 'oc.pl')
             {
-                # OCPL uses cache_notes table to store notes.
-
                 $rs = Db::query("
-                    select cacheId as cache_id, PowerTrailId as cacheset_uuid
+                    select powerTrail_caches.cacheId as cache_id, PowerTrail.uuid as cacheset_uuid
                     from powerTrail_caches
+                    join PowerTrail on PowerTrail.id = PowerTrailId
                     where
-                        cacheId in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($cacheid2wptcode)))."')
+                        cacheId in ('".implode("','",
+                            array_map('\okapi\Db::escape_string', array_keys($cacheid2wptcode)))."')
                     order by PowerTrailId
                 ");
 
                 while ($row = Db::fetch_assoc($rs))
                 {
-                    $results[$cacheid2wptcode[$row['cache_id']]]['cacheset_uuids'][] = $row['cacheset_uuid'];
+                    $results[$cacheid2wptcode[$row['cache_id']]]['cacheset_uuids'][] =
+                    row['cacheset_uuid'];
                 }
             }
         }

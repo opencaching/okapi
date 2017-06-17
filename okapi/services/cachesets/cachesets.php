@@ -62,7 +62,7 @@ class WebService
 
         $rs = Db::query("
             select
-                pt.id as uuid, pt.name, pt.centerLatitude as latitude,
+                pt.uuid as uuid, pt.name, pt.centerLatitude as latitude,
                 pt.centerLongitude as longitude,
                 pt.type, pt.status, pt.dateCreated as date_created, pt.cacheCount as geocaches_total,
                 pt.description, pt.image as image_url, pt.perccentRequired as min_ratio_to_complete,
@@ -70,7 +70,7 @@ class WebService
             from
                 PowerTrail pt
             where
-                id in ('".implode("','", array_map('\okapi\Db::escape_string', $cacheset_uuids))."')
+                uuid in ('".implode("','", array_map('\okapi\Db::escape_string', $cacheset_uuids))."')
                 and pt.status in (1,3,4)
         ");
 
@@ -163,12 +163,13 @@ class WebService
 
 
             $rs = Db::query("
-                select user_id, uuid, username, pto.PowerTrailId as cacheset_uuid, pto.privileages as privileges
+                select user_id, u.uuid as user_uuid, username, pt.uuid as cacheset_uuid, pto.privileages as privileges
                 from
-                    PowerTrail_owners as pto
+                    PowerTrail as pt
+                    join PowerTrail_owners as pto on pt.id = pto.PowerTrailId
                     join user as u on u.user_id = pto.userId
                 where
-                    pto.PowerTrailId in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
+                    pt.uuid in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
                     and privileages in ('".implode("','", array_map('\okapi\Db::escape_string', array_values($privileges)))."')
             ");
 
@@ -178,7 +179,7 @@ class WebService
                 {
                     /* every mentor is also an author */
                     $results[$row['cacheset_uuid']]['authors'][] = array(
-                        'uuid' => $row['uuid'],
+                        'uuid' => $row['user_uuid'],
                         'username' => $row['username'],
                         'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
                     );
@@ -187,7 +188,7 @@ class WebService
                 if( $process_mentor && $row['privileges'] == 2 )
                 {
                     $results[$row['cacheset_uuid']]['mentor'] = array(
-                        'uuid' => $row['uuid'],
+                        'uuid' => $row['user_uuid'],
                         'username' => $row['username'],
                         'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
                     );
@@ -216,13 +217,15 @@ class WebService
             $user_id = $request-> token->user_id;
 
             $rs = Db::query("
-                select count(*) as founds, powerTrail_caches.PowerTrailId as cacheset_uuid
-                from cache_logs join powerTrail_caches on cache_logs.cache_id = powerTrail_caches.cacheId
+                select count(*) as founds, pt.uuid as cacheset_uuid
+                from cache_logs
+                    join powerTrail_caches on cache_logs.cache_id = powerTrail_caches.cacheId
+                    join PowerTrail as pt on powerTrail_caches.PowerTrailId = pt.id
                 where cache_logs.user_id = ".Db::escape_string($user_id)." and cache_logs.type = 1
                     and cache_logs.deleted = 0
-                    and powerTrail_caches.PowerTrailId in (".
+                    and pt.uuid in (".
                         implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
-                group by powerTrail_caches.PowerTrailId
+                group by pt.uuid
             ");
 
             $founds_in_paths = array();
@@ -242,11 +245,12 @@ class WebService
             {
                 # find completetd paths
                 $completed_paths = Db::select_column("
-                    select PowerTrailId as cacheset_uuid
+                    select pt.uuid as cacheset_uuid
                     from PowerTrail_comments
+                        join PowerTrail as pt on PowerTrail_comments.PowerTrailId = pt.id
                     where
                         userId = ".Db::escape_string($user_id)." and commentType = 2
-                        and deleted = 0 and PowerTrailId in (".
+                        and deleted = 0 and pt.uuid in (".
                         implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
                 ");
             }
@@ -300,12 +304,13 @@ class WebService
         if ( count($results) > 0 && in_array('last_completed', $fields) )
         {
             $rs = Db::query("
-                select PowerTrailId as cacheset_uuid, MAX(logDateTime) as last_completed
+                select pt.uuid as cacheset_uuid, MAX(logDateTime) as last_completed
                 from PowerTrail_comments
+                    join PowerTrail as pt on PowerTrail_comments.PowerTrailId = pt.id
                 where
-                    commentType = 2 and deleted = 0 and PowerTrailId in (".
+                    commentType = 2 and deleted = 0 and pt.uuid in (".
                     implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
-                group by PowerTrailId
+                group by pt.uuid
             ");
 
             while ($row = Db::fetch_assoc($rs))
@@ -321,15 +326,16 @@ class WebService
         if ( in_array('cslog_uuids', $fields) && count($results) > 0)
         {
             $rs = Db::query("
-                select id, PowerTrailId as cacheset_uuid
-                from PowerTrail_comments
-                where PowerTrailId in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
+                select ptc.uuid as cslog_uuid, pt.uuid as cacheset_uuid
+                from PowerTrail_comments as ptc
+                    join PowerTrail as pt on ptc.PowerTrailId = pt.id
+                where pt.uuid in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
             ");
 
             while ($row = Db::fetch_assoc($rs))
             {
                 if( $process_authors )
-                    $results[$row['cacheset_uuid']]['cslog_uuids'][] = $row['id'];
+                    $results[$row['cacheset_uuid']]['cslog_uuids'][] = $row['cslog_uuid'];
 
             }
             Db::free_result($rs);

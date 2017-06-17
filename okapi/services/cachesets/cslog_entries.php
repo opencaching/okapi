@@ -56,12 +56,13 @@ class WebService
 
         $rs = Db::query("
             select
-                id as uuid, userId, PowerTrailId as cacheset_uuid, commentType as type,
+                ptc.uuid as cslog_uuid, userId, pt.uuid as cacheset_uuid, commentType as type,
                 commentText as comment, logDateTime as date
             from
-                PowerTrail_comments
+                PowerTrail_comments as ptc
+                join PowerTrail as pt on ptc.PowerTrailId = pt.id
             where
-                id in ('".implode("','", array_map('\okapi\Db::escape_string', $cslog_uuids))."')
+                ptc.uuid in ('".implode("','", array_map('\okapi\Db::escape_string', $cslog_uuids))."')
                 and deleted <> 1
         ");
 
@@ -74,11 +75,11 @@ class WebService
             {
                 switch ($field)
                 {
-                    case 'uuid': $entry['uuid'] = $row['uuid']; break;
+                    case 'uuid': $entry['uuid'] = $row['cslog_uuid']; break;
                     case 'cacheset_uuid': $entry['cacheset_uuid'] = $row['cacheset_uuid']; break;
                     case 'date': $entry['date'] = date('c', strtotime($row['date'])); break;
                     case 'user':
-                        $user_ids[$row['uuid']] = $row['userId'];
+                        $user_ids[$row['cslog_uuid']] = $row['userId'];
                         /* continued later */
                         break;
                     case 'type':
@@ -91,7 +92,7 @@ class WebService
                     default: throw new Exception("Missing field case: ".$field);
                 }
             }
-            $results[$row['uuid']] = $entry;
+            $results[$row['cslog_uuid']] = $entry;
         }
         Db::free_result($rs);
 
