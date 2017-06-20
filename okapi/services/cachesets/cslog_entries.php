@@ -60,7 +60,8 @@ class WebService
                 commentText as comment, logDateTime as date
             from
                 PowerTrail_comments as ptc
-                join PowerTrail as pt on ptc.PowerTrailId = pt.id
+                join PowerTrail as pt
+                    on ptc.PowerTrailId = pt.id
             where
                 ptc.uuid in ('".implode("','", array_map('\okapi\Db::escape_string', $cslog_uuids))."')
                 and deleted <> 1

@@ -49,9 +49,12 @@ class WebService
 
         $log_uuids = Db::select_column("
             select pt_logs.uuid as uuid
-            from PowerTrail_comments AS pt_logs
-            join PowerTrail on PowerTrail.id = pt_logs.PowerTrailId
-            where PowerTrail.uuid = '".Db::escape_string($cacheset_uuid['uuid'])."'
+            from
+                PowerTrail_comments as pt_logs
+                join PowerTrail
+                    on PowerTrail.id = pt_logs.PowerTrailId
+            where
+                PowerTrail.uuid = '".Db::escape_string($cacheset_uuid['uuid'])."'
                 and deleted <> 1
             order by logDateTime desc
             limit $offset, $limit

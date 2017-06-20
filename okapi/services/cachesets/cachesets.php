@@ -166,8 +166,10 @@ class WebService
                 select user_id, u.uuid as user_uuid, username, pt.uuid as cacheset_uuid, pto.privileages as privileges
                 from
                     PowerTrail as pt
-                    join PowerTrail_owners as pto on pt.id = pto.PowerTrailId
-                    join user as u on u.user_id = pto.userId
+                    join PowerTrail_owners as pto
+                        on pt.id = pto.PowerTrailId
+                    join user as u
+                        on u.user_id = pto.userId
                 where
                     pt.uuid in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
                     and privileages in ('".implode("','", array_map('\okapi\Db::escape_string', array_values($privileges)))."')
@@ -202,13 +204,15 @@ class WebService
         # min_founds_to_complete
         # my_completed_status
 
-        if ( count($results) > 0 &&
-                (in_array('geocaches_found', $fields) ||
-                 in_array('geocaches_found_ratio', $fields) ||
-                 in_array('min_founds_to_complete', $fields) ||
-                 in_array('my_completed_status', $fields))
-           )
-        {
+        if (
+            count($results) > 0
+            && (
+                in_array('geocaches_found', $fields)
+                || in_array('geocaches_found_ratio', $fields)
+                || in_array('min_founds_to_complete', $fields)
+                || in_array('my_completed_status', $fields)
+            )
+        ) {
             if ($request->token == null)
                 throw new BadRequest(
                     "Level 3 Authentication is required to access my_notes data."
@@ -219,12 +223,17 @@ class WebService
             $rs = Db::query("
                 select count(*) as founds, pt.uuid as cacheset_uuid
                 from cache_logs
-                    join powerTrail_caches on cache_logs.cache_id = powerTrail_caches.cacheId
-                    join PowerTrail as pt on powerTrail_caches.PowerTrailId = pt.id
-                where cache_logs.user_id = ".Db::escape_string($user_id)." and cache_logs.type = 1
+                    join powerTrail_caches
+                        on cache_logs.cache_id = powerTrail_caches.cacheId
+                    join PowerTrail as pt
+                        on powerTrail_caches.PowerTrailId = pt.id
+                where
+                    cache_logs.user_id = '".Db::escape_string($user_id)."'
+                    and cache_logs.type = 1
                     and cache_logs.deleted = 0
-                    and pt.uuid in (".
-                        implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
+                    and pt.uuid in (
+                        '".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."'
+                    )
                 group by pt.uuid
             ");
 
@@ -243,15 +252,20 @@ class WebService
             $completed_paths = array();
             if(in_array('my_completed_status', $fields))
             {
-                # find completetd paths
+                # find completed paths
                 $completed_paths = Db::select_column("
                     select pt.uuid as cacheset_uuid
-                    from PowerTrail_comments
-                        join PowerTrail as pt on PowerTrail_comments.PowerTrailId = pt.id
+                    from
+                        PowerTrail_comments
+                        join PowerTrail as pt
+                            on PowerTrail_comments.PowerTrailId = pt.id
                     where
-                        userId = ".Db::escape_string($user_id)." and commentType = 2
-                        and deleted = 0 and pt.uuid in (".
-                        implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
+                        userId = '".Db::escape_string($user_id)."'
+                        and commentType = 2
+                        and deleted = 0
+                        and pt.uuid in (
+                            '".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."'
+                        )
                 ");
             }
 
@@ -304,12 +318,17 @@ class WebService
         if ( count($results) > 0 && in_array('last_completed', $fields) )
         {
             $rs = Db::query("
-                select pt.uuid as cacheset_uuid, MAX(logDateTime) as last_completed
-                from PowerTrail_comments
-                    join PowerTrail as pt on PowerTrail_comments.PowerTrailId = pt.id
+                select pt.uuid as cacheset_uuid, max(logDateTime) as last_completed
+                from
+                    PowerTrail_comments
+                    join PowerTrail as pt
+                        on PowerTrail_comments.PowerTrailId = pt.id
                 where
-                    commentType = 2 and deleted = 0 and pt.uuid in (".
-                    implode(",", array_map('\okapi\Db::escape_string', array_keys($results))).")
+                    commentType = 2
+                    and deleted = 0
+                    and pt.uuid in (
+                        '".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."'
+                    )
                 group by pt.uuid
             ");
 
@@ -327,9 +346,13 @@ class WebService
         {
             $rs = Db::query("
                 select ptc.uuid as cslog_uuid, pt.uuid as cacheset_uuid
-                from PowerTrail_comments as ptc
-                    join PowerTrail as pt on ptc.PowerTrailId = pt.id
-                where pt.uuid in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."')
+                from
+                    PowerTrail_comments as ptc
+                    join PowerTrail as pt
+                        on ptc.PowerTrailId = pt.id
+                where pt.uuid in (
+                    '".implode("','", array_map('\okapi\Db::escape_string', array_keys($results)))."'
+                )
             ");
 
             while ($row = Db::fetch_assoc($rs))

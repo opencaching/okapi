@@ -559,7 +559,7 @@ class SearchAssistant
 
         $cacheset_uuids = $this->request->get_parameter('cacheset_uuids');
 
-        if (!$cacheset_uuids) { // if cacheset_uuids defined skip powertrail_ids
+        if (!$cacheset_uuids) { // if cacheset_uuids defined skip powertrail_ids - WRTODO
             $cacheset_ids = $this->request->get_parameter('powertrail_ids');
         }else {
             $cacheset_ids = null;
@@ -582,7 +582,6 @@ class SearchAssistant
                 $where_conds[] = "PowerTrail.status in ( ".
                     Db::escape_string($cacheset_allowed_statuses).")";
 
-
                 if ($cacheset_uuids) {
                     $where_conds[] = "PowerTrail.uuid in ('".implode(
                         "','", array_map('\okapi\Db::escape_string', explode("|", $cacheset_uuids))
@@ -591,7 +590,7 @@ class SearchAssistant
                 if ($cacheset_ids) {
                     $where_conds[] = "PowerTrail.id in ('".implode(
                         "','", array_map('\okapi\Db::escape_string', explode("|", $cacheset_ids))
-                        )."')";
+                    )."')";
                 }
 
             } else {
