@@ -111,7 +111,7 @@ class WebService
         {
             /* See:
              *
-             * - https://github.com/OpencachingDeutschland/oc-server3/tree/master/htdocs/libse/CacheNote
+             * - https://github.com/OpencachingDeutschland/oc-server3/tree/development/htdocs/src/Oc/Libse/CacheNote
              * - https://www.opencaching.de/okapi/devel/dbstruct
              */
 
