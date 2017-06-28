@@ -165,9 +165,10 @@ class OkapiExceptionHandler
             }
             else
             {
-                $subject = "OKAPI Method Error - ".substr(
-                    $_SERVER['REQUEST_URI'], 0, strpos(
-                    $_SERVER['REQUEST_URI'].'?', '?'));
+                $requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'cli-execution';
+                $subject = 'OKAPI Method Error - ' .substr(
+                        $requestUri, 0, strpos(
+                        $requestUri.'?', '?'));
 
                 $message = (
                     "OKAPI caught the following exception while executing API method request.\n".
@@ -1490,7 +1491,7 @@ class Okapi
         {
             set_time_limit(0);
             ignore_user_abort(true);
-            require_once "okapi/cronjobs.php";
+            require_once __DIR__ . '/cronjobs.php';
             try {
                 $nearest_event = CronJobController::run_jobs('cron-5');
                 Okapi::set_var("cron_nearest_event", $nearest_event);

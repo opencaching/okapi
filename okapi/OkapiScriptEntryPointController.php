@@ -3,6 +3,7 @@
 namespace okapi;
 
 use Exception;
+use okapi\views\http404\View;
 
 #
 # All HTTP requests within the /okapi/ path are redirected through this
@@ -85,7 +86,7 @@ class OkapiScriptEntryPointController
                     # Pattern matched! Moving on to the proper View...
 
                     array_shift($matches);
-                    require_once "okapi/views/$namespace.php";
+                    require_once __DIR__ . "/views/$namespace.php";
                     $response = call_user_func_array(array('\\okapi\\views\\'.
                         str_replace('/', '\\', $namespace).'\\View', 'call'), $matches);
                     if ($response)
@@ -101,8 +102,8 @@ class OkapiScriptEntryPointController
 
         # None of the patterns matched OR method threw the Http404 exception.
 
-        require_once "okapi/views/http404.php";
-        $response = \okapi\views\http404\View::call();
+        require_once __DIR__ . '/views/http404.php';
+        $response = View::call();
         $response->display();
     }
 }
