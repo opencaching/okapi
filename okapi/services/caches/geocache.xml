@@ -281,12 +281,12 @@
                 without notice.</p>
             </li>
             <li>
-                <p><b>rating_votes</b> - number of votes submitted for the
-                rating of this cache.</p>
+                <p>%OKAPI:infotag:ocpl-specific% <b>rating_votes</b> - number of votes submitted
+                for the rating of this cache.</p>
 
-                <p>Please note: some OC installations do not use the
-                rating/voting system. The <b>rating_votes</b> will always be
-                <b>0</b> on such installations.</p>
+                <p><b>Notice:</b> Only OCPL-based Opencaching installations provide ratings for
+                their geocaches. On OCDE-based installations, this field will always contain
+                <b>0</b>.</p>
             </li>
             <li><b>recommendations</b> - number of recommendations for this cache,</li>
             <li>
