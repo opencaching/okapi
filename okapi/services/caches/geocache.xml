@@ -274,6 +274,11 @@
                 <p><b>Notice:</b> Only OCPL-based Opencaching installations provide ratings for
                 their geocaches. On OCDE-based installations, this field will always contain
                 <b>null</b>.</p>
+
+                <p><b>Notice:</b> Currently OCPL exposes cache ratings as integers only.
+                OKAPI used floats here for forward-compatibility only. In other words, currently
+                you can get 4.0 or 5.0 here, but not 4.5. This may change in the future though,
+                without notice.</p>
             </li>
             <li>
                 <p><b>rating_votes</b> - number of votes submitted for the
