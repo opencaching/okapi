@@ -78,11 +78,11 @@ $m = $vars['method'];
                                     <?php } else { ?>
                                         <b>Plus required</b>
                                         standard OAuth Consumer signing arguments:
-                                        <i>oauth_consumer_key, oauth_nonce, oauth_timestamp, oauth_signature,
-                                        oauth_signature_method, oauth_version</i>.
+                                        <i>oauth_version, oauth_signature_method, oauth_consumer_key, oauth_signature</i>.
                                         <?php if ($m['auth_options']['min_auth_level'] == 3) { ?>
                                             <b>Plus required</b> <i>oauth_token</i> for Token authorization.
                                         <?php } ?>
+                                        If you use non-HTTPS connection, you will also need <i>oauth_nonce</i> and <i>oauth_timestamp</i>.
                                     <?php } ?>
                                 </td>
                             </tr>

@@ -5,8 +5,10 @@
         <p>Exchange authorized Request Token for an Access Token.
         Access Token can be used to access resources of a user who
         authorized the Request Token.</p>
+        
         <p>Standard OAuth "Consumer &amp; Request Token" Authorization arguments
-        are required.</p>
+        are required. If you use HTTPS and PLAINTEXT signature method, then you
+        don't need to specify nonce and timestamp.</p>
     </desc>
     <req name='oauth_verifier'>
         Consult <a href='https://oauth.net/core/1.0a/'>OAuth 1.0a documentation</a> for details.

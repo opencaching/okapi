@@ -24,6 +24,9 @@ use okapi\oauth\OAuthToken;
 use PDO;
 use PDOException;
 
+# WRBUG
+$_SERVER['HTTPS'] = 'yes';
+
 /** Return an array of email addresses which always get notified on OKAPI errors. */
 function get_admin_emails()
 {
