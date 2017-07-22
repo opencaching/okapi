@@ -832,6 +832,8 @@ class OAuthServer {
         ? $request->get_parameter('oauth_nonce')
         : NULL;
 
+    $signature_method = $this->get_signature_method($request);
+
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
       # HTTPS connection. Safe to skip timestamp/nonce checks in this case.
       # https://github.com/opencaching/okapi/issues/475#issuecomment-317169756
@@ -840,8 +842,6 @@ class OAuthServer {
       $this->check_timestamp($timestamp);
       $this->check_nonce($consumer, $token, $nonce, $timestamp);
     }
-
-    $signature_method = $this->get_signature_method($request);
 
     $signature = $request->get_parameter('oauth_signature');
     $valid_sig = $signature_method->check_signature(
