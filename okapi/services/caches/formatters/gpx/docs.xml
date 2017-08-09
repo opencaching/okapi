@@ -28,7 +28,7 @@
         Boolean. If <b>true</b> then response will include
         <a href='http://www.groundspeak.com/cache/1/0/1/cache.xsd'>Groundspeak's
         GPX extension</a>. This namespace declares an extra &lt;cache&gt; element
-        used by <a href='http://www.geocaching.com/'>geocaching.com</a> and <b>many others</b>.
+        used by <a href='https://www.geocaching.com/'>geocaching.com</a> and <b>many others</b>.
         This namespace was initially associatied with geocaching.com, but now seems to
         be used in every geocaching GPX file. You probably want to have it.
     </opt>
@@ -91,7 +91,7 @@
                 <p><b>gc:attrs</b> - attributes will be listed as Groundspeak's
                 <i>groundspeak:attribute</i> elements (<b>ns_ground</b> has to be <b>true</b>),
                 compatible with Geocaching.com (see the list
-                <a href='http://www.geocaching.com/about/icons.aspx'>here</a>).</p>
+                <a href='https://www.geocaching.com/about/icons.aspx'>here</a>).</p>
                 <p>Note that most Opencaching attributes don't have Geocaching.com counterparts.
                 Such attributes cannot be included as gc:attrs and will be ignored.</p>
             </li>

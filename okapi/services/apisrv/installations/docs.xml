@@ -15,18 +15,26 @@
             <li>
                 <b>site_url</b> - URL of the Opencaching site which is running
                 the OKAPI installation (usually this looks like
-                "http://www.opencaching.<i>xx</i>/", where <b>xx</b> is a top
+                "https://www.opencaching.<i>xx</i>/", where <b>xx</b> is a top
                 level domain of a country).
+
+                <p>Once OKAPI maintainers are notified that this particular site
+                supports HTTPS, this field will return a HTTPS URL from then on.
+                Otherwise, HTTP URL will be returned.</p>
             </li>
             <li>
                 <b>site_name</b> - universal name for this site (should be fine
                 for all languages),
             </li>
             <li>
-                <b>okapi_base_url</b> - URL of the OKAPI installation (usually this is
+                <p><b>okapi_base_url</b> - URL of the OKAPI installation (usually this is
                 <b>site_url</b> with "okapi/" appended, but you should not assume
                 that); this value is to be used as a prefix when constructing service
-                method URLs.
+                method URLs.</p>
+
+                <p>Once OKAPI maintainers are notified that this particular site
+                supports HTTPS, this field will return a HTTPS URL from then on.
+                Otherwise, HTTP URL will be returned.</p>
             </li>
         </ul>
     </returns>

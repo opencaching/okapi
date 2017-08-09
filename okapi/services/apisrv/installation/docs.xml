@@ -9,15 +9,21 @@
         <p>A dictionary of the following structure:</p>
         <ul>
             <li>
-                <b>site_url</b> - URL of the Opencaching site which is running
+                <p><b>site_url</b> - URL of the Opencaching site which is running
                 the OKAPI installation (usually this looks like
-                "http://www.opencaching.<i>xx</i>/", where <b>xx</b> is a top
-                level domain of a country).
+                "https://www.opencaching.<i>xx</i>/", where <b>xx</b> is a top
+                level domain of a country).</p>
+
+                <p>Note, that sites which do not support HTTPS yet, will return HTTP
+                URL here.</p>
             </li>
             <li>
-                <b>okapi_base_url</b> - the <i>recommended</i> base URL to be used when
+                <p><b>okapi_base_url</b> - the <i>recommended</i> base URL to be used when
                 accessing this OKAPI installation (it should be used as a prefix when
-                constructing method URLs),
+                constructing method URLs).</p>
+
+                <p>Note, that sites which do not support HTTPS yet, will return HTTP
+                URL here.</p>
             </li>
             <li>
                 <p><b>okapi_base_urls</b> - a list of <i>all</i> base URLs allowed to be used

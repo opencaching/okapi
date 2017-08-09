@@ -3,11 +3,14 @@
     This is the list of all official OKAPI installations. This file is periodically
     read by every OKAPI installation, *directly from repository*. See the code for
     services/apisrv/installations method for explanation.
+
+    Once a site implements HTTPS, the scheme used below should be upgraded to
+    "https://" to reflect that.
     -->
-    <installation site_url="http://opencaching.pl/"/>
-    <installation site_url="http://www.opencaching.de/"/>
-    <installation site_url="http://www.opencaching.us/"/>
+    <installation site_url="https://opencaching.pl/"/>
+    <installation site_url="https://www.opencaching.de/"/>
+    <installation site_url="https://www.opencaching.us/"/>
     <installation site_url="http://www.opencaching.nl/"/>
     <installation site_url="http://www.opencaching.ro/"/>
-    <installation site_url="http://opencache.uk/"/>
+    <installation site_url="https://opencache.uk/"/>
 </installations>

@@ -351,7 +351,7 @@ class WebService
         # rows here (user, cache, type=1), but this wouldn't work, because there's
         # no index for this.
         #
-        # http://stackoverflow.com/questions/17068686/
+        # https://stackoverflow.com/questions/17068686/
 
         Db::execute("start transaction");
         Db::select_column("
@@ -600,7 +600,7 @@ class WebService
             # one made here (both of them are non-linear). Also, once submitted,
             # the rating can never be changed. It surely feels quite inconsistent,
             # but presumably has some deep logic into it. See also here (Polish):
-            # http://wiki.opencaching.pl/index.php/Oceny_skrzynek
+            # https://wiki.opencaching.pl/index.php/Oceny_skrzynek
 
             switch ($rating)
             {

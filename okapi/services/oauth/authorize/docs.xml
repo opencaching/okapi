@@ -24,7 +24,7 @@
         </ul>
     </desc>
     <req name='oauth_token'>
-        Consult <a href='http://oauth.net/documentation/spec/'>OAuth documentation</a> for details.
+        Consult <a href='https://oauth.net/core/1.0a/'>OAuth 1.0a documentation</a> for details.
     </req>
     <opt name='interactivity' default='minimal'>
         <p>Currently, one of the following values:</p>

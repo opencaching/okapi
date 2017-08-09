@@ -92,12 +92,15 @@
         have 'nano' nor 'other' caches (but it might have them in the future).</p>
     </opt>
     <opt name='rating' infotags="ocpl-specific">
-        <p>A string "X-Y", where X and Y are integers between 1 and 5, and X &lt;= Y.
+        <p>A string "X-Y", where X and Y are integers
+        (<a href='https://github.com/opencaching/okapi/issues/15#issuecomment-198932230'>why not floats?</a>)
+        between 1 and 5, and X &lt;= Y.
         Only caches with an overall rating between these numbers (inclusive) will be returned
         (1 - poor, 5 - excellent).</p>
 
-        <p><b>Notice:</b> If you use this parameter, all caches with too few votes will be
-        excluded from results. If you still want unrated caches included, append "|X" suffix
+        <p><b>Notice:</b> If you use this parameter, then caches with "not enough" votes will be
+        excluded from results. The definition of "not enough" may vary. If you want such
+        "insufficiently rated" caches to be included, then append "|X" suffix
         to the value of this parameter (e.g. "3-5|X").</p>
 
         <p><b>Notice:</b> Only OCPL-based Opencaching installations provide ratings for their
@@ -125,7 +128,7 @@
     </opt>
     <opt name='modified_since'>
         <p>A date and time string. This should be in ISO 8601 format (currently any
-        format acceptable by PHP's <a href='http://php.net/manual/function.strtotime.php'>strtotime</a>
+        format acceptable by PHP's <a href='https://php.net/manual/function.strtotime.php'>strtotime</a>
         function also will do, but most of them don't handle time zones properly,
         try to use ISO 8601!).</p>
 
@@ -231,7 +234,7 @@
     <opt name='set_and'>
         <p>ID of a set previously created with the <b>search/save</b> method.
         If given, the results are
-        <a href='http://en.wikipedia.org/wiki/Logical_conjunction'>AND</a>ed
+        <a href='https://en.wikipedia.org/wiki/Logical_conjunction'>AND</a>ed
         together with this set.</p>
 
         <p>If you want to simply retrieve the contents of set, then please note

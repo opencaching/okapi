@@ -22,7 +22,7 @@ class WebService
         # The list of installations is periodically refreshed by contacting OKAPI
         # repository. This method usually displays the cached version of it.
 
-        $VERSION = "2";
+        $VERSION = "3";
         $cachekey = 'apisrv/installations-v'.$VERSION;
         $backupkey = 'apisrv/installations-v'.$VERSION.'-backup';
         $results = Cache::get($cachekey);
@@ -57,7 +57,7 @@ class WebService
                     return Okapi::formatted_response($request, $results);
                 }
 
-                # Backup has expired (or have never been cached). If we're on a development
+                # Backup has expired (or has never been cached). If we're on a development
                 # server then probably it's okay. In production this SHOULD NOT happen.
 
                 $results = array(

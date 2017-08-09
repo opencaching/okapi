@@ -866,7 +866,7 @@ class WebService
                     $result_ref['trackables'][] = array(
                         'code' => 'GK'.str_pad(strtoupper(dechex($t['gk_id'])), 4, "0", STR_PAD_LEFT),
                         'name' => $t['name'],
-                        'url' => 'http://geokrety.org/konkret.php?id='.$t['gk_id']
+                        'url' => 'https://geokrety.org/konkret.php?id='.$t['gk_id']
                     );
                 }
             }
@@ -1242,7 +1242,7 @@ class WebService
                     order by npa_types.ordinal
                 ");
             }
-            else if (in_array(Okapi::get_oc_schema_code(), array("OCPL", "OCNL")))
+            else if (in_array(Okapi::get_oc_installation_code(), array("OCPL", "OCNL")))
             {
                 # Current OCPL table definitions use collation 'latin1' for parkipl
                 # and 'utf8' for np_areas. Union needs identical collations.
@@ -1443,7 +1443,7 @@ class WebService
                 $note = sprintf(
                     _(
                         "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, ".
-                        "<a href='http://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, ".
+                        "<a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, ".
                         "as of %s; all log entries &copy; their authors"
                     ),
                     $owner['profile_url'], $owner['username'], $cache_url, $site_name, strftime('%x')
@@ -1454,7 +1454,7 @@ class WebService
                 $note = sprintf(
                     _(
                         "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, ".
-                        "<a href='http://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>; ".
+                        "<a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>; ".
                         "all log entries &copy; their authors"
                     ),
                     $owner['profile_url'], $owner['username'], $cache_url, $site_name

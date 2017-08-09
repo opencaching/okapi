@@ -19,6 +19,7 @@ use okapi\oauth\OAuthServer;
 use okapi\oauth\OAuthServer400Exception;
 use okapi\oauth\OAuthServerException;
 use okapi\oauth\OAuthSignatureMethod_HMAC_SHA1;
+use okapi\oauth\OAuthSignatureMethod_PLAINTEXT;
 use okapi\oauth\OAuthToken;
 use PDO;
 use PDOException;
@@ -81,7 +82,7 @@ class OkapiExceptionHandler
         {
             # This is thrown on invalid OAuth requests. There are many subclasses
             # of this exception. All of them result in HTTP 400 or HTTP 401 error
-            # code. See also: http://oauth.net/core/1.0a/#http_codes
+            # code. See also: https://oauth.net/core/1.0a/#http_codes
 
             if ($e instanceof OAuthServer400Exception)
                 header("HTTP/1.0 400 Bad Request");
@@ -848,8 +849,14 @@ class OkapiOAuthServer extends OAuthServer
     public function __construct($data_store)
     {
         parent::__construct($data_store);
-        # We want HMAC_SHA1 authorization method only.
+
+        # https://github.com/opencaching/okapi/issues/475
+
         $this->add_signature_method(new OAuthSignatureMethod_HMAC_SHA1());
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+            # Request was made over HTTPS. Allow PLAINTEXT method.
+            $this->add_signature_method(new OAuthSignatureMethod_PLAINTEXT());
+        }
     }
 
     /**
@@ -1282,29 +1289,16 @@ class Okapi
     }
 
     /**
-     * Return a "schema code" of this OC site.
-     *
-     * While there are only two primary OC_BRANCHes (OCPL and OCDE), sites
-     * based on the same branch may have a different schema of attributes,
-     * cache types, log types, or even database structures. This method returns
-     * a unique internal code which identifies a set of sites that share the
-     * same schema. As all OCPL-based sites currently have different attribute
-     * sets, there is a separate schema for each OCPL site.
+     * Return a "code" of this OC node.
      *
      * These values are used internally only, they SHOULD NOT be exposed to
      * external developers!
      */
-    public static function get_oc_schema_code()
+    public static function get_oc_installation_code()
     {
-        /* All OCDE-based sites use exactly the same schema. */
-
         if (Settings::get('OC_BRANCH') == 'oc.de') {
             return "OCDE";  // OC
         }
-
-        /* All OCPL-based sites use separate schemas. (Hopefully, this will
-         * change in time.) */
-
         $mapping = array(
             2 => "OCPL",  // OP
             6 => "OCUK",  // OK
@@ -1348,13 +1342,9 @@ class Okapi
         /* Currently, there are no config settings which would let us allow
          * to determine the proper values for this list. So, we need to have it
          * hardcoded. (Perhaps we should move this to etc/installations.xml?
-         * But this wouldn't be efficient...)
-         *
-         * TODO: Replace "self::get_oc_schema_code()" by something better.
-         *       Base URls depend on installations, not on schemas.
-         */
+         * But this wouldn't be efficient...) */
 
-        switch (self::get_oc_schema_code()) {
+        switch (self::get_oc_installation_code()) {
             case 'OCPL':
                 $urls = array(
                     "http://opencaching.pl/okapi/",
@@ -1364,6 +1354,11 @@ class Okapi
                 break;
             case 'OCDE':
                 if (in_array(Settings::get('OC_NODE_ID'), array(4,5))) {
+                    /* In OCDE, node_ids 4 and 5 are used to indicate a development
+                     * installation. Other sites rely on the fact, that
+                     * self::get_recommended_base_url() is appended to $urls below.
+                     * For OCDE this is not enough, because they want to test both
+                     * HTTP and HTTPS in their development installations. */
                     $urls = array(
                         preg_replace("/^https:/", "http:", Settings::get('SITE_URL')) . 'okapi/',
                         preg_replace("/^http:/", "https:", Settings::get('SITE_URL')) . 'okapi/',
@@ -1660,9 +1655,10 @@ class Okapi
         print "You don't need Consumer Secret for Level 1 Authentication.\n\n";
         print "Now you can easily access Level 1 OKAPI methods. E.g.:\n";
         print Settings::get('SITE_URL')."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n";
-        print "If you plan on using OKAPI for a longer time, then you may want to\n";
-        print "subscribe to the OKAPI News blog to stay up-to-date:\n";
-        print "http://opencaching-api.blogspot.com/\n\n";
+        print "If you plan on using OKAPI for a longer time, then you might also want\n";
+        print "to subscribe to the OKAPI News blog (it is not much updated, but it might\n";
+        print "still be worth the trouble):\n";
+        print "https://opencaching-api.blogspot.com/\n\n";
         print "Have fun!\n\n";
         print "-- \n";
         print "OKAPI Team\n";
@@ -2463,7 +2459,7 @@ abstract class OkapiRequest
 {
     public $consumer;
     public $token;
-    public $etag;  # see: http://en.wikipedia.org/wiki/HTTP_ETag
+    public $etag;  # see: https://en.wikipedia.org/wiki/HTTP_ETag
 
     /**
      * Set this to true, for some method to allow you to set higher "limit"

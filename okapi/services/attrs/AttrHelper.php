@@ -81,7 +81,7 @@ class AttrHelper
          * installation uses internal IDs of its own. Which "attribute schema"
          * is being used in THIS installation? */
 
-        $my_schema = Okapi::get_oc_schema_code();
+        $my_schema = Okapi::get_oc_installation_code();
 
         $doc = simplexml_load_string($xml);
         $cachedvalue = array(
