@@ -2,6 +2,8 @@
 
 namespace okapi;
 
+use okapi\lib\OCSession;
+
 # OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
 
 # Use this class when you want to use OKAPI's services within OC code.
@@ -31,19 +33,16 @@ namespace okapi;
 # --------------------
 
 #
-# Make sure that rootpath is on the include_path (OKAPI uses paths relative to
-# rootpath in all require_once statements). See this thread for more info:
-# https://github.com/opencaching/okapi/pull/466#issuecomment-305978466
+# TETODO: We should probably get to the point at which this can be removed.
 #
 
 if (!in_array($GLOBALS['rootpath'], explode(PATH_SEPARATOR, get_include_path()))) {
     set_include_path(get_include_path().PATH_SEPARATOR.$GLOBALS['rootpath']);
 }
 
-
-require_once "okapi/core.php";
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/core.php';
 OkapiErrorHandler::$treat_notices_as_errors = true;
-require_once "okapi/service_runner.php";
 Okapi::init_internals();
 
 /**
@@ -96,7 +95,6 @@ class Facade
      */
     public static function detect_user_id()
     {
-        require_once "okapi/lib/oc_session.php";
         return OCSession::get_user_id();
     }
 
@@ -113,7 +111,6 @@ class Facade
      */
     public static function import_search_set($temp_table, $min_store, $max_ref_age)
     {
-        require_once 'okapi/services/caches/search/save.php';
         $tables = array('caches', $temp_table);
         $where_conds = array(
             $temp_table.".cache_id = caches.cache_id",
@@ -184,7 +181,7 @@ class Facade
      */
     public static function database_update()
     {
-        require_once "okapi/views/update.php";
+        require_once __DIR__ . "/views/update.php";
         $update = new views\update\View;
         $update->call();
     }
