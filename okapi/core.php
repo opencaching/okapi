@@ -8,10 +8,10 @@ namespace okapi;
 # see facade.php. You should not rely on any other file, never!
 
 use ArrayObject;
-use clsTbsZip;
 use ErrorException;
 use Exception;
 use okapi\cronjobs\CronJobController;
+use okapi\lib\ClsTbsZip;
 use okapi\oauth\OAuthConsumer;
 use okapi\oauth\OAuthMissingParameterException;
 use okapi\oauth\OAuthRequest;
@@ -28,7 +28,7 @@ use PDOException;
 function get_admin_emails()
 {
     $emails = array();
-    if (class_exists("okapi\\Settings"))
+    if (class_exists(Settings::class))
     {
         try
         {
@@ -152,22 +152,23 @@ class OkapiExceptionHandler
 
             $exception_info = self::get_exception_info($e);
 
-            if (class_exists("okapi\\Settings") && (Settings::get('DEBUG')))
+            if (class_exists(Settings::class) && (Settings::get('DEBUG')))
             {
                 print "\n\nBUT! Since the DEBUG flag is on, then you probably ARE a developer yourself.\n";
                 print "Let's cut to the chase then:";
                 print "\n\n".$exception_info;
             }
-            if (class_exists("okapi\\Settings") && (Settings::get('DEBUG_PREVENT_EMAILS')))
+            if (class_exists(Settings::class) && (Settings::get('DEBUG_PREVENT_EMAILS')))
             {
                 # Sending emails was blocked on admin's demand.
                 # This is possible only on development environment.
             }
             else
             {
-                $subject = "OKAPI Method Error - ".substr(
-                    $_SERVER['REQUEST_URI'], 0, strpos(
-                    $_SERVER['REQUEST_URI'].'?', '?'));
+                $requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'cli-execution';
+                $subject = 'OKAPI Method Error - '.substr(
+                    $requestUri, 0, strpos($requestUri.'?', '?')
+                );
 
                 $message = (
                     "OKAPI caught the following exception while executing API method request.\n".
@@ -199,7 +200,7 @@ class OkapiExceptionHandler
                     @touch($lock_file);
 
                     $admin_email = implode(", ", get_admin_emails());
-                    $sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
+                    $sender_email = class_exists(Settings::class) ? Settings::get('FROM_FIELD') : 'root@localhost';
                     $subject = "Fatal error mode: ".$subject;
                     $message = "Fatal error mode: OKAPI will send at most ONE message per minute.\n\n".$message;
                     $headers = (
@@ -309,7 +310,7 @@ class OkapiErrorHandler
     /** Use this AFTER calling a piece of buggy code. */
     public static function reenable()
     {
-        set_error_handler(array('\okapi\OkapiErrorHandler', 'handle'));
+        set_error_handler(array(OkapiErrorHandler::class, 'handle'));
     }
 
     /** Handle FATAL errors (not catchable, report only). */
@@ -318,7 +319,7 @@ class OkapiErrorHandler
         $error = error_get_last();
 
         # We don't know whether this error has been already handled. The error_get_last
-        # function will return E_NOTICE or E_STRICT errors if the stript has shut down
+        # function will return E_NOTICE or E_STRICT errors if the script has shut down
         # correctly. The only error which cannot be recovered from is E_ERROR, we have
         # to check the type then.
 
@@ -331,12 +332,12 @@ class OkapiErrorHandler
 }
 
 # Setting handlers. Errors will now throw exceptions, and all exceptions
-# will be properly handled. (Unfortunetelly, only SOME errors can be caught
+# will be properly handled. (Unfortunately, only SOME errors can be caught
 # this way, PHP limitations...)
 
-set_exception_handler(array('\okapi\OkapiExceptionHandler', 'handle'));
-set_error_handler(array('\okapi\OkapiErrorHandler', 'handle'));
-register_shutdown_function(array('\okapi\OkapiErrorHandler', 'handle_shutdown'));
+set_exception_handler(array(OkapiExceptionHandler::class, 'handle'));
+set_error_handler(array(OkapiErrorHandler::class, 'handle'));
+register_shutdown_function(array(OkapiErrorHandler::class, 'handle_shutdown'));
 
 #
 # Extending exception types (introducing some convenient shortcuts for
@@ -679,7 +680,7 @@ class Db
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.
 #
 
-require_once "okapi/oauth.php";
+require_once __DIR__ . '/oauth.php';
 
 class OkapiConsumer extends OAuthConsumer
 {
@@ -886,8 +887,8 @@ class OkapiOAuthServer extends OAuthServer
 
 # Including local datastore and settings (connecting SQL database etc.).
 
-require_once "okapi/settings.php";
-require_once "okapi/datastore.php";
+require_once __DIR__ . '/settings.php';
+require_once __DIR__ . '/datastore.php';
 
 class OkapiHttpResponse
 {
@@ -1000,26 +1001,24 @@ class OkapiRedirectResponse extends OkapiHttpResponse
     }
 }
 
-require_once 'okapi/lib/tbszip.php';
-
 class OkapiZIPHttpResponse extends OkapiHttpResponse
 {
     public $zip;
 
     public function __construct()
     {
-        $this->zip = new clsTbsZip();
+        $this->zip = new ClsTbsZip();
         $this->zip->CreateNew();
     }
 
     public function print_body()
     {
-        $this->zip->Flush(clsTbsZip::TBSZIP_DOWNLOAD|clsTbsZip::TBSZIP_NOHEADER);
+        $this->zip->Flush(ClsTbsZip::TBSZIP_DOWNLOAD|ClsTbsZip::TBSZIP_NOHEADER);
     }
 
     public function get_body()
     {
-        $this->zip->Flush(clsTbsZip::TBSZIP_STRING);
+        $this->zip->Flush(ClsTbsZip::TBSZIP_STRING);
         return $this->zip->OutputSrc;
     }
 
@@ -1469,7 +1468,7 @@ class Okapi
         $nearest_event = Okapi::get_var("cron_nearest_event");
         if ($nearest_event + 0 <= time())
         {
-            require_once "okapi/cronjobs.php";
+            require_once __DIR__ . '/cronjobs.php';
             try {
                 $nearest_event = CronJobController::run_jobs('pre-request');
                 Okapi::set_var("cron_nearest_event", $nearest_event);
@@ -1492,7 +1491,7 @@ class Okapi
         {
             set_time_limit(0);
             ignore_user_abort(true);
-            require_once "okapi/cronjobs.php";
+            require_once __DIR__ . '/cronjobs.php';
             try {
                 $nearest_event = CronJobController::run_jobs('cron-5');
                 Okapi::set_var("cron_nearest_event", $nearest_event);
@@ -1639,7 +1638,6 @@ class Okapi
      */
     public static function register_new_consumer($appname, $appurl, $email)
     {
-        require_once "okapi/service_runner.php";
         $consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
             $appname, $appurl, $email);
         $sample_cache = OkapiServiceRunner::call("services/caches/search/all",
