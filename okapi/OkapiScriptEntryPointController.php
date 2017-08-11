@@ -19,8 +19,6 @@ use Exception;
 # variable is being set up by the OC site. If it is called via the controller
 # endpoint (this one!), then we need to set it up ourselves.
 #
-error_reporting(E_ALL);
-ini_set('display_errors', 'on');
 
 $GLOBALS['rootpath'] = __DIR__.'/../';
 
