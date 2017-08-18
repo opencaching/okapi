@@ -256,7 +256,8 @@
         a '-' sign to indicate a descending order.</p>
 
         <p>Currently, fields which you can order by include: <b>code</b>, <b>name</b>,
-        <b>founds</b>, <b>rcmds</b>, <b>rcmds%</b> (tell us if you want more).</p>
+        <b>founds</b>, <b>rcmds</b>, <b>rcmds%</b>, <b>date_created</b>, <b>date_hidden</b>
+        (tell us if you want more).</p>
 
         <p><b>Examples:</b></p>
         <ul>
