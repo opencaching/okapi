@@ -16,7 +16,20 @@
 
     -->
     <changes>
-        <change commit="f911bd97" version="1337" time="2016-07-27T22:52:18+0200" type="enhancement">
+        <change commit="35ac1c21" version="1498" time="2017-08-18T11:08:19+0200" type="enhancement">
+            Added options <i>date_created</i> and <i>date_hidden</i> to the
+            services/caches/search <i>order_by</i> parameter.
+        </change>
+        <change commit="42170a0d" version="1459" time="2017-06-13T22:06:00+0200" type="other">
+            The scheme for the <a href="services/apisrv/installations.html">installation URLs</a>
+            of several Opencaching sites has changed from <i>http</i> to <i>https</i>.
+        </change>
+        <change commit="b6852646" version="1381" time="2017-04-25T22:04:45+0200" type="docs">
+            Documentation tags <a href="introduction.html#oc-branch-differences">OCPL and OCDE</a>
+            have been added, informing about different behaviour of OKAPI methods on the
+            two Opencaching code branches.
+        </change>
+        <change commit="f911bd97" version="1337" time="2016-07-27T22:07:18+0200" type="enhancement">
             Found geocaches are now marked properly in services/caches/formatters/garmin
             method.
         </change>
