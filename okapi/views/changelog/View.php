@@ -3,7 +3,7 @@
 namespace okapi\views\changelog;
 
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
+use okapi\Response\OkapiHttpResponse;
 use okapi\Settings;
 use okapi\views\menu\OkapiMenu;
 
@@ -11,10 +11,7 @@ class View
 {
     public static function call()
     {
-        require_once __DIR__ . '/menu.inc.php';
-        require_once __DIR__ . '/changelog_helper.inc.php';
-
-        $changelog = new Changelog();
+        $changelog = new ChangelogHelper();
 
         $vars = array(
             'menu' => OkapiMenu::get_menu_html("changelog.html"),

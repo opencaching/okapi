@@ -8,7 +8,7 @@ use okapi\Cache;
 use okapi\Okapi;
 
 
-class Changelog
+class ChangelogHelper
 {
     public $unavailable_changes = array();
     public $available_changes = array();
@@ -35,9 +35,10 @@ class Changelog
                 );
                 $context = stream_context_create($opts);
                 $changes_xml = file_get_contents(
-                     # TODO: load from OKAPI repo
+                    # TODO: load from OKAPI repo
                     'https://raw.githubusercontent.com/opencaching/okapi/master/etc/changes.xml',
-                    false, $context
+                    false,
+                    $context
                 );
                 $changelog = simplexml_load_string($changes_xml);
                 if (!$changelog) {
