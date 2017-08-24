@@ -2,6 +2,8 @@
 
 namespace okapi\Token;
 
+use okapi\OAuth\OAuthToken;
+
 class OkapiToken extends OAuthToken
 {
     public $consumer_key;
