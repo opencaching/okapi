@@ -2,7 +2,7 @@
 
 namespace okapi\views\index;
 
-use okapi\OkapiRedirectResponse;
+use okapi\Response\OkapiRedirectResponse;
 use okapi\Settings;
 
 class View
