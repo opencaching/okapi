@@ -2,12 +2,12 @@
 
 namespace okapi\views\method_doc;
 
-use okapi\BadRequest;
-use okapi\Http404;
+use okapi\Exception\BadRequest;
+use okapi\Exception\Http404;
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
-use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\Request\OkapiInternalRequest;
+use okapi\Response\OkapiHttpResponse;
 use okapi\Settings;
 use okapi\views\menu\OkapiMenu;
 
@@ -15,8 +15,6 @@ class View
 {
     public static function call($methodname)
     {
-        require_once __DIR__ . '/menu.inc.php';
-
         try
         {
             $method = OkapiServiceRunner::call('services/apiref/method', new OkapiInternalRequest(
