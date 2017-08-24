@@ -1,4 +1,7 @@
 <?php
+
+namespace okapi\lib;
+
 /**
 TODO: make it work even without ';' delimiters or at least warn about that
 TODO: better parse error reporting
@@ -42,7 +45,7 @@ DONE: move all options to $this->config
 * the column with the old name and one to create column with the new name, so if there is a data in the dropped
 * column, it will be lost.
 * Usage example:
-  $updater = new dbStructUpdater();
+  $updater = new DbStructUpdater();
   $res = $updater->getUpdates($struct1, $struct2);
   -----
   $res == array (
@@ -50,11 +53,11 @@ DONE: move all options to $this->config
     ...
   )
 */
-class dbStructUpdater
+class DbStructUpdater
 {
-    var $sourceStruct = '';//structure dump of the reference database
-    var $destStruct = '';//structure dump of database to update
-    var $config = array();//updater configuration
+    public $sourceStruct = '';//structure dump of the reference database
+    public $destStruct = '';//structure dump of database to update
+    public $config = array();//updater configuration
 
     /**
     * Constructor
