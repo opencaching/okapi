@@ -2,9 +2,9 @@
 
 namespace okapi\views\method_call;
 
-use okapi\BadRequest;
-use okapi\OkapiHttpRequest;
+use okapi\Exception\BadRequest;
 use okapi\OkapiServiceRunner;
+use okapi\Request\OkapiHttpRequest;
 use okapi\Settings;
 
 class View
