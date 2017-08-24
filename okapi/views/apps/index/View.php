@@ -5,8 +5,8 @@ namespace okapi\views\apps\index;
 use okapi\Db;
 use okapi\lib\OCSession;
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
-use okapi\OkapiRedirectResponse;
+use okapi\Response\OkapiHttpResponse;
+use okapi\Response\OkapiRedirectResponse;
 use okapi\Settings;
 
 class View
@@ -53,7 +53,7 @@ class View
         $response->content_type = "text/html; charset=utf-8";
         ob_start();
         Okapi::gettext_domain_init($langprefs);
-        include 'index.tpl.php';
+        include __DIR__ . '/index.tpl.php';
         $response->body = ob_get_clean();
         Okapi::gettext_domain_restore();
         return $response;

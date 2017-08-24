@@ -6,8 +6,8 @@ use okapi\Db;
 use okapi\lib\OCSession;
 use okapi\locale\Locales;
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
-use okapi\OkapiRedirectResponse;
+use okapi\Response\OkapiHttpResponse;
+use okapi\Response\OkapiRedirectResponse;
 use okapi\Settings;
 
 class View
@@ -172,11 +172,11 @@ class View
                             $token['callback'].$callback_concat_char."error=access_denied".
                             "&oauth_token=".$token['key']
                         );
-                    } else {
-                        # Consumer did not provide a callback URL (oauth_callback=oob).
-                        # We'll have to redirect to the Opencaching main page then...
-                        return new OkapiRedirectResponse(Settings::get('SITE_URL')."index.php");
                     }
+
+                    # Consumer did not provide a callback URL (oauth_callback=oob).
+                    # We'll have to redirect to the Opencaching main page then...
+                    return new OkapiRedirectResponse(Settings::get('SITE_URL')."index.php");
                 }
             }
             else
@@ -217,14 +217,14 @@ class View
                 $token['callback'] . $callback_concat_char . "oauth_token=" . $token_key .
                 "&oauth_verifier=" . $token['verifier']
             );
-        } else {
-            # Consumer did not provide a callback URL (probably the user is using a desktop
-            # or mobile application). We'll just have to display the verifier to the user.
-            return new OkapiRedirectResponse(
-                Settings::get('SITE_URL') . "okapi/apps/authorized?oauth_token=" . $token_key
-                . "&oauth_verifier=" . $token['verifier'] . "&langpref=" . $langpref
-            );
         }
+
+        # Consumer did not provide a callback URL (probably the user is using a desktop
+        # or mobile application). We'll just have to display the verifier to the user.
+        return new OkapiRedirectResponse(
+            Settings::get('SITE_URL') . "okapi/apps/authorized?oauth_token=" . $token_key
+            . "&oauth_verifier=" . $token['verifier'] . "&langpref=" . $langpref
+        );
     }
 
     /**

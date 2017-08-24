@@ -4,8 +4,8 @@ namespace okapi\views\apps\authorized;
 
 use okapi\Db;
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
-use okapi\OkapiRedirectResponse;
+use okapi\Response\OkapiHttpResponse;
+use okapi\Response\OkapiRedirectResponse;
 use okapi\Settings;
 
 class View
