@@ -50,7 +50,7 @@ class View
         $response->content_type = "text/html; charset=utf-8";
         ob_start();
         Okapi::gettext_domain_init($langprefs);
-        include 'authorized.tpl.php';
+        include __DIR__ . '/authorized.tpl.php';
         $response->body = ob_get_clean();
         Okapi::gettext_domain_restore();
         return $response;
