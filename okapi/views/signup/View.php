@@ -3,7 +3,7 @@
 namespace okapi\views\signup;
 
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
+use okapi\Response\OkapiHttpResponse;
 use okapi\Settings;
 use okapi\views\menu\OkapiMenu;
 
@@ -47,8 +47,6 @@ class View
             ));
             return $response;
         }
-
-        require_once __DIR__ . '/menu.inc.php';
 
         $vars = array(
             'menu' => OkapiMenu::get_menu_html("signup.html"),
