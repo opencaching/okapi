@@ -65,7 +65,7 @@ class View
             $response->content_type = "text/html; charset=utf-8";
             ob_start();
             $vars['locale_displayed'] = Okapi::gettext_domain_init($langprefs);
-            include 'authorize.tpl.php';
+            include __DIR__ . '/authorize.tpl.php';
             $response->body = ob_get_clean();
             Okapi::gettext_domain_restore();
 
