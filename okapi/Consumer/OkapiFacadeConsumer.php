@@ -10,7 +10,7 @@ class OkapiFacadeConsumer extends OkapiConsumer
 {
     public function __construct()
     {
-        $admins = get_admin_emails();
+        $admins = \get_admin_emails();
         parent::__construct('facade', null, "Internal usage via Facade", null, $admins[0]);
     }
 }

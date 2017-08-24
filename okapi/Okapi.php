@@ -131,7 +131,7 @@ class Okapi
         {
             # We're not spamming yet.
 
-            self::mail_from_okapi(get_admin_emails(), $subject, $message);
+            self::mail_from_okapi(\get_admin_emails(), $subject, $message);
         }
         else
         {
@@ -141,7 +141,7 @@ class Okapi
             $timeout = 86400;
             if ($counter == 6)
             {
-                self::mail_from_okapi(get_admin_emails(), "Anti-spam mode activated for '$subject'",
+                self::mail_from_okapi(\get_admin_emails(), "Anti-spam mode activated for '$subject'",
                     "OKAPI has activated an \"anti-spam\" mode for the following subject:\n\n".
                     "\"$subject\"\n\n".
                     "Anti-spam mode is activiated when more than 5 messages with\n".

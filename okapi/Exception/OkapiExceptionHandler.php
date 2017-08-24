@@ -61,7 +61,7 @@ class OkapiExceptionHandler
                     "OKAPI is experiencing an increased server load and cannot handle your ".
                     "request just now. Please repeat your request in a minute. If this ".
                     "problem persists, then please contact us at: ".
-                    implode(", ", get_admin_emails())
+                    implode(", ", \get_admin_emails())
                 )
             )));
         }
@@ -133,7 +133,7 @@ class OkapiExceptionHandler
                     }
                     @touch($lock_file);
 
-                    $admin_email = implode(", ", get_admin_emails());
+                    $admin_email = implode(", ", \get_admin_emails());
                     $sender_email = class_exists(Settings::class) ? Settings::get('FROM_FIELD') : 'root@localhost';
                     $subject = "Fatal error mode: ".$subject;
                     $message = "Fatal error mode: OKAPI will send at most ONE message per minute.\n\n".$message;

@@ -10,7 +10,7 @@ class OkapiInternalConsumer extends OkapiConsumer
 {
     public function __construct()
     {
-        $admins = get_admin_emails();
+        $admins = \get_admin_emails();
         parent::__construct('internal', null, "Internal OKAPI jobs", null, $admins[0]);
     }
 }
