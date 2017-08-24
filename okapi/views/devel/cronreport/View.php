@@ -3,9 +3,9 @@
 namespace okapi\views\devel\cronreport;
 
 use okapi\Cache;
-use okapi\cronjobs\CronJobController;
+use okapi\CronJob\CronJobController;
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
+use okapi\Response\OkapiHttpResponse;
 
 class View
 {
@@ -18,7 +18,6 @@ class View
         $response->content_type = "text/plain; charset=utf-8";
         ob_start();
 
-        require_once __DIR__ . '/../../cronjobs.php';
         $schedule = Cache::get("cron_schedule");
         if ($schedule == null)
             $schedule = array();

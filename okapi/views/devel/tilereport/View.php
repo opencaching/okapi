@@ -2,10 +2,10 @@
 
 namespace okapi\views\devel\tilereport;
 
-use okapi\cronjobs\CronJobController;
+use okapi\CronJob\CronJobController;
 use okapi\Db;
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
+use okapi\Response\OkapiHttpResponse;
 
 class View
 {
@@ -13,7 +13,6 @@ class View
     {
         Okapi::require_developer_cookie();
 
-        require_once __DIR__ . '/../../cronjobs.php';
         CronJobController::force_run("StatsWriterCronJob");
 
         # When services/caches/map/tile method is called, it writes some extra

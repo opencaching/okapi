@@ -3,7 +3,7 @@
 namespace okapi\views\devel\attrlist;
 
 use okapi\Db;
-use okapi\OkapiHttpResponse;
+use okapi\Response\OkapiHttpResponse;
 use okapi\services\attrs\AttrHelper;
 use okapi\Settings;
 

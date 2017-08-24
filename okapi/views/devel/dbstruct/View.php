@@ -3,11 +3,12 @@
 namespace okapi\views\devel\dbstruct;
 
 use Exception;
-use okapi\BadRequest;
-use okapi\OkapiHttpResponse;
-use okapi\OkapiInternalConsumer;
-use okapi\OkapiInternalRequest;
+use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Exception\BadRequest;
+use okapi\lib\DbStructUpdater;
 use okapi\OkapiServiceRunner;
+use okapi\Request\OkapiInternalRequest;
+use okapi\Response\OkapiHttpResponse;
 use okapi\Settings;
 
 class View
@@ -75,8 +76,7 @@ class View
                     "-- Note: The following script has some limitations. It will render database\n".
                     "-- structure compatible, but not necessarilly EXACTLY the same. It might be\n".
                     "-- better to use manual diff instead.\n\n";
-                require_once "comparator.inc.php";
-                $updater = new \dbStructUpdater();
+                $updater = new DbStructUpdater();
                 if (isset($_GET['reverse']) && ($_GET['reverse'] == 'true'))
                 {
                     $response->body .=
