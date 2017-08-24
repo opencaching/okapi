@@ -20,7 +20,6 @@ use okapi\Exception\OkapiExceptionHandler;
 use okapi\lib\OkapiScriptEntryPointController;
 use okapi\Okapi;
 use okapi\OkapiErrorHandler;
-use okapi\Settings;
 
 $GLOBALS['rootpath'] = __DIR__.'/../';
 
@@ -36,25 +35,6 @@ if (ob_list_handlers() === ['default output handler']) {
     # in PHP config. This is very common and probably is good for most other OC
     # pages. But we don't need it in OKAPI. We will just turn this off.
     ob_end_clean();
-}
-
-/** Return an array of email addresses which always get notified on OKAPI errors. */
-function get_admin_emails()
-{
-    $emails = array();
-    if (class_exists(Settings::class))
-    {
-        try
-        {
-            foreach (Settings::get('ADMINS') as $email)
-                if (!in_array($email, $emails))
-                    $emails[] = $email;
-        }
-        catch (Exception $e) { /* pass */ }
-    }
-    if (count($emails) == 0)
-        $emails[] = 'root@localhost';
-    return $emails;
 }
 
 # Setting handlers. Errors will now throw exceptions, and all exceptions
