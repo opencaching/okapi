@@ -4,14 +4,12 @@ namespace okapi\views\update;
 
 use Exception;
 use okapi\Cache;
-use okapi\cronjobs\CronJobController;
+use okapi\CronJob\CronJobController;
 use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiLock;
 use okapi\services\replicate\ReplicateCommon;
 use okapi\Settings;
-
-require_once __DIR__ . '/../cronjobs.php';
 
 class View
 {
