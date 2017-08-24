@@ -2,18 +2,15 @@
 
 namespace okapi\views\changelog_feed;
 
-use okapi\OkapiHttpResponse;
+use okapi\Response\OkapiHttpResponse;
 use okapi\Settings;
-use okapi\views\changelog\Changelog;
-
+use okapi\views\changelog\ChangelogHelper;
 
 class View
 {
     public static function call()
     {
-        require_once __DIR__ . '/changelog_helper.inc.php';
-
-        $changelog = new Changelog();
+        $changelog = new ChangelogHelper();
         $changes = array_merge($changelog->unavailable_changes, $changelog->available_changes);
         $changes = array_slice($changes, 0, 20);
 
