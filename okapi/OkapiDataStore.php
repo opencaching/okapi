@@ -3,7 +3,11 @@
 namespace okapi;
 
 use Exception;
-use okapi\oauth\OAuthDataStore;
+use okapi\Consumer\OkapiConsumer;
+use okapi\Exception\BadRequest;
+use okapi\OAuth\OAuthDataStore;
+use okapi\Token\OkapiAccessToken;
+use okapi\Token\OkapiRequestToken;
 
 class OkapiDataStore extends OAuthDataStore
 {
