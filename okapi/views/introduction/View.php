@@ -2,11 +2,11 @@
 
 namespace okapi\views\introduction;
 
+use okapi\Consumer\OkapiInternalConsumer;
 use okapi\Okapi;
-use okapi\OkapiHttpResponse;
-use okapi\OkapiInternalConsumer;
-use okapi\OkapiInternalRequest;
 use okapi\OkapiServiceRunner;
+use okapi\Request\OkapiInternalRequest;
+use okapi\Response\OkapiHttpResponse;
 use okapi\Settings;
 use okapi\views\menu\OkapiMenu;
 
@@ -14,8 +14,6 @@ class View
 {
     public static function call()
     {
-        require_once __DIR__ . '/menu.inc.php';
-
         $vars = array(
             'menu' => OkapiMenu::get_menu_html("introduction.html"),
             'okapi_base_url' => Settings::get('SITE_URL')."okapi/",
