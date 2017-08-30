@@ -726,7 +726,7 @@ class WebService
         {
             # OCPL doesn't use triggers for this. We need to update manually.
 
-            if ($logtype == 'Found it')
+            if ($logtype == 'Found it' || $logtype == 'Attended')
             {
                 Db::execute("
                     update caches
@@ -739,7 +739,7 @@ class WebService
                     where cache_id = '".Db::escape_string($cache_internal_id)."'
                 ");
             }
-            elseif ($logtype == "Didn't find it")
+            elseif ($logtype == "Didn't find it" || $logtype == 'Will attend')
             {
                 Db::execute("
                     update caches
