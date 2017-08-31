@@ -1,10 +1,10 @@
 <xml>
-    <brief>Get list of allowed geocache report reasons</brief>
+    <brief>Get the list of allowed geocache report reasons</brief>
     <issue-id>TODO</issue-id>
     <desc>
         <p>This method returns an installation-dependent list of the allowed values
         for the <b>reason</b> parameter of
-        <a href="submit.html">services/caches/reports/submit</a>.</p>
+        <a href="%OKAPI:methodargref:services/caches/reports/submit%">services/caches/reports/submit</a>.</p>
     </desc>
     <opt name='langpref' default='en'>
         <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
