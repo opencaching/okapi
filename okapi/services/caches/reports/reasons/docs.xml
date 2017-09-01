@@ -13,7 +13,7 @@
     </opt>
     <common-format-params/>
     <returns>
-        <p>Am array of dictionaries, each describing an allowed geocache report reason and
+        <p>An array of dictionaries, each describing an allowed geocache report reason and
         having the following structure:</p>
         <ul>
             <li>

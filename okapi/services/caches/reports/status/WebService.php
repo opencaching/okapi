@@ -2,17 +2,11 @@
 
 namespace okapi\services\caches\reports\status;
 
-use Exception;
 use okapi\Okapi;
 use okapi\Db;
-use okapi\OkapiRequest;
-use okapi\ParamMissing;
-use okapi\InvalidParam;
-use okapi\BadRequest;
-use okapi\OkapiInternalRequest;
-use okapi\OkapiServiceRunner;
-use okapi\OkapiAccessToken;
-use okapi\Settings;
+use okapi\Request\OkapiRequest;
+use okapi\Exception\ParamMissing;
+use okapi\services\caches\reports\CacheReports;
 
 
 class WebService
@@ -26,20 +20,30 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        # User is already verified (via OAuth), but we need to verify the
-        # cache code (check if it exists). We will simply call a geocache method
-        # on it - this will also throw a proper exception if it doesn't exist.
+        $report_uuids = $request->get_parameter('report_uuids');
+        if ($report_uuids === null)
+            throw new ParamMissing('report_uuids');
+        if ($report_uuids === '')
+            $report_uuids = [];
+        else
+            $report_uuids = explode('|', $report_uuids);
+        $report_uuids_escaped = array_map('\okapi\Db::escape_string', $report_uuids);
 
-        $cache_code = $request->get_parameter('cache_code');
-        if ($cache_code == null)
-            throw new ParamMissing('cache_code');
-        $geocache = OkapiServiceRunner::call('services/caches/geocache', new OkapiInternalRequest(
-            $request->consumer, $request->token, array('cache_code' => $cache_code, 'fields' => 'internal_id')));
+        $reports_status_is_closed = Db::select_group_by('uuid', "
+            select uuid, status = ".CacheReports::getClosedReportStatusId()." as is_closed
+            from ".CacheReports::getReportsTableName()."
+            where uuid in ('" . implode("','", $report_uuids) . "')
+        ");
 
+        $result = [];
+        foreach ($report_uuids as $report_uuid) {
+            if (array_key_exists($report_uuid, $reports_status_is_closed))
+                $status = $reports_status_is_closed[$report_uuid][0]['is_closed'] ? 'Closed' : 'Open';
+            else
+                $status = null;
+            $result[] = [$report_uuid => $status];
+        }
 
-        $result = array(
-            'success' => true,
-        );
         return Okapi::formatted_response($request, $result);
     }
 }
