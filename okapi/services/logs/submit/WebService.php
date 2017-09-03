@@ -710,6 +710,11 @@ class WebService
                 'log_uuids' => array()
             );
         }
+        catch (Exception $e)
+        {
+            Okapi::gettext_domain_restore();
+            throw $e;
+        }
 
         Okapi::update_user_activity($request);
         return Okapi::formatted_response($request, $result);
