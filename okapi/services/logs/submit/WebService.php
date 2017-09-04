@@ -290,28 +290,31 @@ class WebService
                 $value_for_text_html_field = 1;
             }
         }
-        elseif ($comment_format == 'auto')
-        {
-            # 'Auto' is for backward compatibility. Before the "comment_format"
-            # was introduced, OKAPI used a weird format in between (it allowed
-            # HTML, but applied nl2br too).
-
-            $formatted_comment = nl2br($comment);
-            $value_for_text_html_field = 1;
-        }
         else
         {
-            $formatted_comment = $comment;
+            if ($comment_format == 'auto')
+            {
+                # 'Auto' is for backward compatibility. Before the "comment_format"
+                # was introduced, OKAPI used a weird format in between (it allowed
+                # HTML, but applied nl2br too).
+
+                $formatted_comment = nl2br($comment);
+            }
+            else
+            {
+                $formatted_comment = $comment;
+            }
+            $value_for_text_html_field = 1;
 
             # For user-supplied HTML comments, OC sites require us to do
             # additional HTML purification prior to the insertion into the
             # database.
 
+            # NOTICE: We are including EXTERNAL OCDE libraries here! This
+            # code does not belong to OKAPI!
+
             if (Settings::get('OC_BRANCH') == 'oc.de')
             {
-                # NOTICE: We are including EXTERNAL OCDE library here! This
-                # code does not belong to OKAPI!
-
                 $opt['rootpath'] = $GLOBALS['rootpath'];
                 $opt['html_purifier'] = Settings::get('OCDE_HTML_PURIFIER_SETTINGS');
                 require_once $GLOBALS['rootpath'] . 'lib2/OcHTMLPurifier.class.php';
@@ -321,11 +324,10 @@ class WebService
             }
             else
             {
-                # TODO: Add OCPL HTML filtering.
-                # See https://github.com/opencaching/okapi/issues/412.
+                require_once $GLOBALS['rootpath'] . 'lib/class.inputfilter.php';
+                $myFilter = new \InputFilter($allowedtags, $allowedattr, 0, 0, 1);
+                $formatted_comment = $myFilter->process($formatted_comment);
             }
-
-            $value_for_text_html_field = 1;
         }
 
         if (Settings::get('OC_BRANCH') == 'oc.pl')
