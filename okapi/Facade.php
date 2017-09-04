@@ -183,8 +183,7 @@ class Facade
      */
     public static function database_update()
     {
-        $update = new views\update\View;
-        $update::call();
+        views\update\View::call();
     }
 
     /**
