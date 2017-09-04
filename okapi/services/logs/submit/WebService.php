@@ -405,29 +405,42 @@ class WebService
 
         # Check if already found it (and make sure the user is not the owner).
         #
-        # OCPL forbids logging 'Found it' or "Didn't find" for an already found cache,
-        # while OCDE allows all kinds of duplicate logs.
+        # OCPL forbids logging 'Found it', 'Attended' and "Didn't find" for an
+        # already found/attended cache, while OCDE allows all kinds of duplicate logs.
+        #
+        # Duplicate 'Will attend' logs are currently allowed by OCPL code, though
+        # this may be unintentional and change in the future.
 
         if (
             Settings::get('OC_BRANCH') == 'oc.pl'
-            && (($logtype == 'Found it') || ($logtype == "Didn't find it"))
+            && in_array($logtype, ['Found it', 'Attended', "Didn't find it"])
         ) {
+            $matching_logtype = ($logtype == "Didn't find it" ? 'Found it' : $logtype);
             $has_already_found_it = Db::select_value("
                 select 1
                 from cache_logs
                 where
                     user_id = '".Db::escape_string($user['internal_id'])."'
                     and cache_id = '".Db::escape_string($cache['internal_id'])."'
-                    and type = '".Db::escape_string(Okapi::logtypename2id("Found it"))."'
+                    and type = '".Db::escape_string(Okapi::logtypename2id($matching_logtype))."'
                     and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
+                limit 1
+                /* there should be maximum 1 of these logs, but who knows ... */
             ");
             if ($has_already_found_it) {
-                throw new CannotPublishException(_(
-                    "You have already submitted a \"Found it\" log entry once. ".
-                    "Now you may submit \"Comments\" only!"
-                ));
+                throw new CannotPublishException(
+                    $matching_logtype == 'Found it'
+                    ? _("You have already submitted a \"Found it\" log entry once. ".
+                        "Now you may submit \"Comments\" only!")
+                    : _("You have already submitted an \"Attended\" log entry once. ".
+                        "Now you may submit \"Comments\" only!")
+                );
             }
-            if ($user['uuid'] == $cache['owner']['uuid']) {
+
+            # OCPL owners are allowed to attend their own events, but not to
+            # search their own caches.
+
+            if ($user['uuid'] == $cache['owner']['uuid'] && $logtype != 'Attended') {
                 throw new CannotPublishException(_(
                     "You are the owner of this cache. You may submit ".
                     "\"Comments\" only!"
