@@ -3,10 +3,10 @@
 namespace okapi\services\caches\search\save;
 
 use okapi\Db;
-use okapi\Exception\InvalidParam;
+use okapi\InvalidParam;
 use okapi\Okapi;
 use okapi\OkapiLock;
-use okapi\Request\OkapiRequest;
+use okapi\OkapiRequest;
 use okapi\services\caches\search\SearchAssistant;
 
 class WebService

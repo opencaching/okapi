@@ -4,7 +4,7 @@ namespace okapi\services\replicate\info;
 
 use okapi\Cache;
 use okapi\Okapi;
-use okapi\Request\OkapiRequest;
+use okapi\OkapiRequest;
 use okapi\services\replicate\ReplicateCommon;
 
 class WebService

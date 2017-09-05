@@ -4,14 +4,14 @@ namespace okapi\services\caches\geocaches;
 
 use ArrayObject;
 use Exception;
+use okapi\BadRequest;
 use okapi\Db;
-use okapi\Exception\BadRequest;
-use okapi\Exception\InvalidParam;
-use okapi\Exception\ParamMissing;
+use okapi\InvalidParam;
 use okapi\Okapi;
+use okapi\OkapiInternalRequest;
+use okapi\OkapiRequest;
 use okapi\OkapiServiceRunner;
-use okapi\Request\OkapiInternalRequest;
-use okapi\Request\OkapiRequest;
+use okapi\ParamMissing;
 use okapi\services\attrs\AttrHelper;
 use okapi\Settings;
 

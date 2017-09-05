@@ -2,11 +2,11 @@
 
 namespace okapi\services\replicate\changelog;
 
-use okapi\Exception\BadRequest;
-use okapi\Exception\InvalidParam;
-use okapi\Exception\ParamMissing;
+use okapi\BadRequest;
+use okapi\InvalidParam;
 use okapi\Okapi;
-use okapi\Request\OkapiRequest;
+use okapi\OkapiRequest;
+use okapi\ParamMissing;
 use okapi\services\replicate\ReplicateCommon;
 
 class WebService
