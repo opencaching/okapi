@@ -103,7 +103,7 @@ class View
             self::out("It is up-to-date.\n\n");
         }
         elseif ($max_ver < $current_ver)
-            throw new Exception();
+            throw new Exception("Your database version (".$current_ver.") is ahead of time.");
         else
         {
             self::out("Updating to version $max_ver... PLEASE WAIT\n\n");
