@@ -213,7 +213,7 @@ final class Settings
          * used in OCPL code. As OKAPI always resamples uploaded images - which
          * involves a bit of quality loss - we set a higher default:
          */
-        'JPEG_QUALITY' => 80
+        'JPEG_QUALITY' => 80,
 
     );
 
