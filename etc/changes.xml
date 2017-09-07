@@ -16,6 +16,12 @@
 
     -->
     <changes>
+        <change commit="7348ce9e" version="1564" time="2017-09-06T12:09:19+0200" type="enhancement">
+            Added 'location' field to <a href="services/logs/entry.html">services/logs/entry</a>.
+        </change>
+        <change commit="99dd6896" version="1545" time="2017-08-30T12:08:13+0200" type="bugfix">
+            Submitting OCPL event cache logs now exactly behaves like the native log functions.
+        </change>
         <change commit="35ac1c21" version="1498" time="2017-08-18T11:08:19+0200" type="enhancement">
             Added options <i>date_created</i> and <i>date_hidden</i> to the
             services/caches/search <i>order_by</i> parameter.
