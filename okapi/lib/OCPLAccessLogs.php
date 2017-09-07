@@ -2,6 +2,8 @@
 
 namespace okapi\lib;
 
+use okapi\Settings;
+
 /**
  * This is a (hopefully temporary) class which holds all functionality related
  * to OCPL's "access logging" feature. OCPL admins use this feature to track

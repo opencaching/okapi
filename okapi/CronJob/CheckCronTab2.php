@@ -4,6 +4,7 @@ namespace okapi\CronJob;
 
 use okapi\Cache;
 use okapi\Okapi;
+use okapi\Settings;
 
 /**
  * Twice an hour, upon request, checks if the test entry (previously put by
