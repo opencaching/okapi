@@ -4,7 +4,7 @@ namespace okapi\Consumer;
 
 /**
  * Use this when calling OKAPI methods internally from OKAPI code. (If you want call
- * OKAPI from other OC code, you must use Facade class - see facade.php)
+ * OKAPI from other OC code, you must use Facade class - see Facade.php)
  */
 class OkapiInternalConsumer extends OkapiConsumer
 {
