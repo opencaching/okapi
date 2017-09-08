@@ -3,6 +3,7 @@
 namespace okapi\Core;
 
 use okapi\Core\Request\OkapiRequest;
+use okapi\Settings;
 
 class OkapiServiceRunner
 {
