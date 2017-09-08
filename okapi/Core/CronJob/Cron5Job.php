@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\CronJob;
+namespace okapi\Core\CronJob;
 
 /**
  * CronJob which is run from crontab. It may be invoked every 5 minutes, or

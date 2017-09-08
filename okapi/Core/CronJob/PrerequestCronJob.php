@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\CronJob;
+namespace okapi\Core\CronJob;
 
 /**
  * CronJob which is run before requests. All implenatations specify a *minimum* time period

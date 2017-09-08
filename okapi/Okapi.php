@@ -3,7 +3,7 @@
 namespace okapi;
 
 use okapi\Core\Consumer\OkapiConsumer;
-use okapi\CronJob\CronJobController;
+use okapi\Core\CronJob\CronJobController;
 use okapi\Exception\BadRequest;
 use okapi\Exception\DbException;
 use okapi\Exception\InvalidParam;

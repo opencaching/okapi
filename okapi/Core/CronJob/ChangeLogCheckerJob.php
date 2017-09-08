@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\CronJob;
+namespace okapi\Core\CronJob;
 
 use okapi\services\replicate\ReplicateCommon;
 

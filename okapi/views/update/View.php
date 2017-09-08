@@ -4,7 +4,7 @@ namespace okapi\views\update;
 
 use Exception;
 use okapi\Cache;
-use okapi\CronJob\CronJobController;
+use okapi\Core\CronJob\CronJobController;
 use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiLock;

@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\CronJob;
+namespace okapi\Core\CronJob;
 
 /**
  * A bit similar to Cron5Job with get_period=24h, but this one is trying to be
