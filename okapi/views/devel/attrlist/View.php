@@ -2,8 +2,8 @@
 
 namespace okapi\views\devel\attrlist;
 
+use okapi\Core\Response\OkapiHttpResponse;
 use okapi\Db;
-use okapi\Response\OkapiHttpResponse;
 use okapi\services\attrs\AttrHelper;
 use okapi\Settings;
 

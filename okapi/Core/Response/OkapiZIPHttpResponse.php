@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Response;
+namespace okapi\Core\Response;
 
 use okapi\lib\ClsTbsZip;
 

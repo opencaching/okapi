@@ -2,9 +2,9 @@
 
 namespace okapi\views\apps\revoke_access;
 
+use okapi\Core\Response\OkapiRedirectResponse;
 use okapi\Db;
 use okapi\lib\OCSession;
-use okapi\Response\OkapiRedirectResponse;
 use okapi\Settings;
 
 class View

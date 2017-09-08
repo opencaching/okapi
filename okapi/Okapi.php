@@ -12,7 +12,7 @@ use okapi\Core\Exception\OkapiExceptionHandler;
 use okapi\Core\OAuth\OkapiOAuthServer;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Response\OkapiHttpResponse;
+use okapi\Core\Response\OkapiHttpResponse;
 
 /** Container for various OKAPI functions. */
 class Okapi

@@ -8,10 +8,10 @@ use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\ParamMissing;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Core\Request\OkapiRequest;
+use okapi\Core\Response\OkapiHttpResponse;
 use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
-use okapi\Response\OkapiHttpResponse;
 use okapi\services\attrs\AttrHelper;
 use okapi\Settings;
 

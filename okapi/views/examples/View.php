@@ -2,8 +2,8 @@
 
 namespace okapi\views\examples;
 
+use okapi\Core\Response\OkapiHttpResponse;
 use okapi\Okapi;
-use okapi\Response\OkapiHttpResponse;
 use okapi\Settings;
 use okapi\views\menu\OkapiMenu;
 

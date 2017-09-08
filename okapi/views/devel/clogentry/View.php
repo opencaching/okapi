@@ -3,8 +3,8 @@
 namespace okapi\views\devel\clogentry;
 
 use okapi\Core\Exception\ParamMissing;
+use okapi\Core\Response\OkapiHttpResponse;
 use okapi\Db;
-use okapi\Response\OkapiHttpResponse;
 
 class View
 {
