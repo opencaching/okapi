@@ -2,7 +2,7 @@
 
 namespace okapi;
 
-use okapi\Request\OkapiRequest;
+use okapi\Core\Request\OkapiRequest;
 
 class OkapiServiceRunner
 {

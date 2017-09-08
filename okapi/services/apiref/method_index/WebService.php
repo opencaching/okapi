@@ -4,10 +4,10 @@ namespace okapi\services\apiref\method_index;
 
 use okapi\Cache;
 use okapi\Core\Consumer\OkapiInternalConsumer;
+use okapi\Core\Request\OkapiInternalRequest;
+use okapi\Core\Request\OkapiRequest;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
-use okapi\Request\OkapiInternalRequest;
-use okapi\Request\OkapiRequest;
 use okapi\Settings;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

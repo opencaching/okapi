@@ -4,8 +4,8 @@ namespace okapi\services\apisrv\installations;
 
 use ErrorException;
 use okapi\Cache;
+use okapi\Core\Request\OkapiRequest;
 use okapi\Okapi;
-use okapi\Request\OkapiRequest;
 use okapi\Settings;
 
 class WebService

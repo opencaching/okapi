@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Request;
+namespace okapi\Core\Request;
 
 /**
  * Represents an OKAPI web method request.

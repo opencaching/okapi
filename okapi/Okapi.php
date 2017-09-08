@@ -10,8 +10,8 @@ use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\JobsAlreadyInProgress;
 use okapi\Core\Exception\OkapiExceptionHandler;
 use okapi\Core\OAuth\OkapiOAuthServer;
-use okapi\Request\OkapiInternalRequest;
-use okapi\Request\OkapiRequest;
+use okapi\Core\Request\OkapiInternalRequest;
+use okapi\Core\Request\OkapiRequest;
 use okapi\Response\OkapiHttpResponse;
 
 /** Container for various OKAPI functions. */

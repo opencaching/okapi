@@ -4,8 +4,8 @@ namespace okapi\services\replicate\fulldump;
 
 use okapi\Cache;
 use okapi\Core\Exception\BadRequest;
+use okapi\Core\Request\OkapiRequest;
 use okapi\Db;
-use okapi\Request\OkapiRequest;
 use okapi\Response\OkapiHttpResponse;
 
 class WebService

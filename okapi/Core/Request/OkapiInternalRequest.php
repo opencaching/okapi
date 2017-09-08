@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Request;
+namespace okapi\Core\Request;
 
 class OkapiInternalRequest extends OkapiRequest
 {

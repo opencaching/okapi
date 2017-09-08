@@ -5,10 +5,10 @@ namespace okapi\services\replicate;
 use Exception;
 use okapi\Cache;
 use okapi\Core\Consumer\OkapiInternalConsumer;
+use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
-use okapi\Request\OkapiInternalRequest;
 use okapi\Settings;
 
 class ReplicateCommon

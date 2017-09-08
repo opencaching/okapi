@@ -7,11 +7,11 @@ use Exception;
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\ParamMissing;
+use okapi\Core\Request\OkapiInternalRequest;
+use okapi\Core\Request\OkapiRequest;
 use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
-use okapi\Request\OkapiInternalRequest;
-use okapi\Request\OkapiRequest;
 use okapi\services\attrs\AttrHelper;
 use okapi\Settings;
 

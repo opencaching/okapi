@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Request;
+namespace okapi\Core\Request;
 
 use okapi\Core\Consumer\OkapiConsumer;
 use okapi\Core\Consumer\OkapiDebugConsumer;

@@ -3,8 +3,8 @@
 namespace okapi;
 
 use okapi\Core\Consumer\OkapiFacadeConsumer;
+use okapi\Core\Request\OkapiInternalRequest;
 use okapi\lib\OCSession;
-use okapi\Request\OkapiInternalRequest;
 use okapi\Token\OkapiFacadeAccessToken;
 
 # OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>

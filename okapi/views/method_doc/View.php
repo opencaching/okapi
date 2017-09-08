@@ -4,9 +4,9 @@ namespace okapi\views\method_doc;
 
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\Exception\Http404;
+use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
-use okapi\Request\OkapiInternalRequest;
 use okapi\Response\OkapiHttpResponse;
 use okapi\Settings;
 use okapi\views\menu\OkapiMenu;

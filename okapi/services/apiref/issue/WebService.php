@@ -7,8 +7,8 @@ use okapi\Cache;
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\ParamMissing;
+use okapi\Core\Request\OkapiRequest;
 use okapi\Okapi;
-use okapi\Request\OkapiRequest;
 use okapi\Settings;
 
 class WebService
