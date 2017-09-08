@@ -4,8 +4,8 @@ namespace okapi\views\menu;
 
 use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Core\Okapi;
+use okapi\Core\OkapiServiceRunner;
 use okapi\Core\Request\OkapiInternalRequest;
-use okapi\OkapiServiceRunner;
 use okapi\Settings;
 
 class OkapiMenu

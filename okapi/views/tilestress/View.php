@@ -6,9 +6,9 @@ use Exception;
 use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Core\Db;
 use okapi\Core\Exception\OkapiExceptionHandler;
+use okapi\Core\OkapiServiceRunner;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Core\Token\OkapiInternalAccessToken;
-use okapi\OkapiServiceRunner;
 
 class View
 {

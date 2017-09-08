@@ -7,6 +7,7 @@ use Exception;
 use okapi\Core\Cache;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\ParamMissing;
+use okapi\Core\OkapiServiceRunner;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Core\Request\OkapiRequest;
 use okapi\lib\ClsTbsZip;

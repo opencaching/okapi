@@ -5,8 +5,8 @@ namespace okapi\Core\CronJob;
 use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Core\Db;
 use okapi\Core\Okapi;
+use okapi\Core\OkapiServiceRunner;
 use okapi\Core\Request\OkapiInternalRequest;
-use okapi\OkapiServiceRunner;
 
 /**
  * Once per week, sends simple OKAPI usage stats to the admins.
