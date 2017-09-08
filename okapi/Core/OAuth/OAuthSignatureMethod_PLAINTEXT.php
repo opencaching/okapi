@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\OAuth;
+namespace okapi\Core\OAuth;
 
 /**
  * The PLAINTEXT method does not provide any security protection and SHOULD only be used

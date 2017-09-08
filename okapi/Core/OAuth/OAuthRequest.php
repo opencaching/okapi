@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\OAuth;
+namespace okapi\Core\OAuth;
 
 class OAuthRequest {
     protected $parameters;

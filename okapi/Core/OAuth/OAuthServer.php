@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\OAuth;
+namespace okapi\Core\OAuth;
 
 use okapi\Core\Exception\OAuthExpiredTimestampException;
 use okapi\Core\Exception\OAuthInvalidConsumerException;

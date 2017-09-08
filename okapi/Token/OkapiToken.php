@@ -2,7 +2,7 @@
 
 namespace okapi\Token;
 
-use okapi\OAuth\OAuthToken;
+use okapi\Core\OAuth\OAuthToken;
 
 class OkapiToken extends OAuthToken
 {

@@ -9,7 +9,7 @@ use okapi\Core\Exception\DbException;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\JobsAlreadyInProgress;
 use okapi\Core\Exception\OkapiExceptionHandler;
-use okapi\OAuth\OkapiOAuthServer;
+use okapi\Core\OAuth\OkapiOAuthServer;
 use okapi\Request\OkapiInternalRequest;
 use okapi\Request\OkapiRequest;
 use okapi\Response\OkapiHttpResponse;

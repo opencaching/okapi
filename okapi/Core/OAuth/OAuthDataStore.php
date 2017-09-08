@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\OAuth;
+namespace okapi\Core\OAuth;
 
 class OAuthDataStore {
     public function lookup_consumer($consumer_key) {

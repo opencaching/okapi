@@ -6,7 +6,7 @@ namespace okapi\Core\Consumer;
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.
 #
 
-use okapi\OAuth\OAuthConsumer;
+use okapi\Core\OAuth\OAuthConsumer;
 
 class OkapiConsumer extends OAuthConsumer
 {

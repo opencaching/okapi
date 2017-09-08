@@ -5,7 +5,7 @@ namespace okapi;
 use Exception;
 use okapi\Core\Consumer\OkapiConsumer;
 use okapi\Core\Exception\BadRequest;
-use okapi\OAuth\OAuthDataStore;
+use okapi\Core\OAuth\OAuthDataStore;
 use okapi\Token\OkapiAccessToken;
 use okapi\Token\OkapiRequestToken;
 
