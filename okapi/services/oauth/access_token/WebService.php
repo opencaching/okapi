@@ -2,7 +2,7 @@
 
 namespace okapi\services\oauth\access_token;
 
-use okapi\Exception\ParamMissing;
+use okapi\Core\Exception\ParamMissing;
 use okapi\Okapi;
 use okapi\Request\OkapiRequest;
 use okapi\Response\OkapiHttpResponse;

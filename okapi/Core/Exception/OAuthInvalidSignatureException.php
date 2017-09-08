@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Client's signature was invalid. */
 class OAuthInvalidSignatureException extends OAuthServer401Exception {

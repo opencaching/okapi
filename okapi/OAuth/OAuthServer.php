@@ -2,14 +2,14 @@
 
 namespace okapi\OAuth;
 
-use okapi\Exception\OAuthExpiredTimestampException;
-use okapi\Exception\OAuthInvalidConsumerException;
-use okapi\Exception\OAuthInvalidSignatureException;
-use okapi\Exception\OAuthInvalidTokenException;
-use okapi\Exception\OAuthMissingParameterException;
-use okapi\Exception\OAuthNonceAlreadyUsedException;
-use okapi\Exception\OAuthUnsupportedSignatureMethodException;
-use okapi\Exception\OAuthVersionNotSupportedException;
+use okapi\Core\Exception\OAuthExpiredTimestampException;
+use okapi\Core\Exception\OAuthInvalidConsumerException;
+use okapi\Core\Exception\OAuthInvalidSignatureException;
+use okapi\Core\Exception\OAuthInvalidTokenException;
+use okapi\Core\Exception\OAuthMissingParameterException;
+use okapi\Core\Exception\OAuthNonceAlreadyUsedException;
+use okapi\Core\Exception\OAuthUnsupportedSignatureMethodException;
+use okapi\Core\Exception\OAuthVersionNotSupportedException;
 
 class OAuthServer {
     protected $timestamp_threshold = 300; // in seconds, five minutes

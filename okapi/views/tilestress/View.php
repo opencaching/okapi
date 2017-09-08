@@ -4,8 +4,8 @@ namespace okapi\views\tilestress;
 
 use Exception;
 use okapi\Core\Consumer\OkapiInternalConsumer;
+use okapi\Core\Exception\OkapiExceptionHandler;
 use okapi\Db;
-use okapi\Exception\OkapiExceptionHandler;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;
 use okapi\Token\OkapiInternalAccessToken;

@@ -2,8 +2,8 @@
 
 namespace okapi\services\oauth\authorize;
 
-use okapi\Exception\InvalidParam;
-use okapi\Exception\ParamMissing;
+use okapi\Core\Exception\InvalidParam;
+use okapi\Core\Exception\ParamMissing;
 use okapi\Request\OkapiRequest;
 use okapi\Response\OkapiRedirectResponse;
 use okapi\Settings;

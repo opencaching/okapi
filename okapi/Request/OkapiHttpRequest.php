@@ -4,9 +4,9 @@ namespace okapi\Request;
 
 use okapi\Core\Consumer\OkapiConsumer;
 use okapi\Core\Consumer\OkapiDebugConsumer;
+use okapi\Core\Exception\BadRequest;
+use okapi\Core\Exception\InvalidParam;
 use okapi\Db;
-use okapi\Exception\BadRequest;
-use okapi\Exception\InvalidParam;
 use okapi\OAuth\OAuthRequest;
 use okapi\Okapi;
 use okapi\Settings;

@@ -3,8 +3,8 @@
 namespace okapi\services\replicate\fulldump;
 
 use okapi\Cache;
+use okapi\Core\Exception\BadRequest;
 use okapi\Db;
-use okapi\Exception\BadRequest;
 use okapi\Request\OkapiRequest;
 use okapi\Response\OkapiHttpResponse;
 

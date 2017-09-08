@@ -3,7 +3,7 @@
 namespace okapi\Core\CronJob;
 
 use okapi\Core\Consumer\OkapiInternalConsumer;
-use okapi\Exception\BadRequest;
+use okapi\Core\Exception\BadRequest;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

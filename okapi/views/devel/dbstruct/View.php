@@ -4,7 +4,7 @@ namespace okapi\views\devel\dbstruct;
 
 use Exception;
 use okapi\Core\Consumer\OkapiInternalConsumer;
-use okapi\Exception\BadRequest;
+use okapi\Core\Exception\BadRequest;
 use okapi\lib\DbStructUpdater;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

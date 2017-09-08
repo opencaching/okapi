@@ -2,8 +2,8 @@
 
 namespace okapi\views\method_doc;
 
-use okapi\Exception\BadRequest;
-use okapi\Exception\Http404;
+use okapi\Core\Exception\BadRequest;
+use okapi\Core\Exception\Http404;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

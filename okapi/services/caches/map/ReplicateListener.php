@@ -3,8 +3,8 @@
 namespace okapi\services\caches\map;
 
 use okapi\Core\Consumer\OkapiInternalConsumer;
+use okapi\Core\Exception\InvalidParam;
 use okapi\Db;
-use okapi\Exception\InvalidParam;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;
 

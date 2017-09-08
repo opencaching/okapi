@@ -1,5 +1,5 @@
 <?php
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 use okapi\Settings;
 

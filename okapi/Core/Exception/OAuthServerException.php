@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** OAuth server errors. */
 abstract class OAuthServerException extends OAuthException {

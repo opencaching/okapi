@@ -1,5 +1,5 @@
 <?php
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /**
  * Thrown in CronJobController::run_jobs when other thread is already

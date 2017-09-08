@@ -2,9 +2,9 @@
 
 namespace okapi\services\replicate\changelog;
 
-use okapi\Exception\BadRequest;
-use okapi\Exception\InvalidParam;
-use okapi\Exception\ParamMissing;
+use okapi\Core\Exception\BadRequest;
+use okapi\Core\Exception\InvalidParam;
+use okapi\Core\Exception\ParamMissing;
 use okapi\Okapi;
 use okapi\Request\OkapiRequest;
 use okapi\services\replicate\ReplicateCommon;

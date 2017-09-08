@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Client used the same nonce for the second time. */
 class OAuthNonceAlreadyUsedException extends OAuthServer400Exception {

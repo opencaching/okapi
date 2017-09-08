@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Client asked for an unsupported OAuth version (not 1.0). */
 class OAuthVersionNotSupportedException extends OAuthServer400Exception {

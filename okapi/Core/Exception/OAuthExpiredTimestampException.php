@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Client used expired timestamp (or timestamp too far in future). */
 class OAuthExpiredTimestampException extends OAuthServer400Exception {

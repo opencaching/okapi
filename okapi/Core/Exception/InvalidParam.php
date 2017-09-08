@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Common type of BadRequest: Parameter has invalid value. */
 class InvalidParam extends BadRequest

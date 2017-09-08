@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Client used unsupported signature method. */
 class OAuthUnsupportedSignatureMethodException extends OAuthServer400Exception {

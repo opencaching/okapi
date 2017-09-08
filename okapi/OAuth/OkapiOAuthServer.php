@@ -2,7 +2,7 @@
 
 namespace okapi\OAuth;
 
-use okapi\Exception\OAuthMissingParameterException;
+use okapi\Core\Exception\OAuthMissingParameterException;
 
 /** Default OAuthServer with some OKAPI-specific methods added. */
 class OkapiOAuthServer extends OAuthServer

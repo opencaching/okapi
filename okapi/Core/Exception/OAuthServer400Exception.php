@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** OAuth server errors which should result in HTTP 400 response. */
 abstract class OAuthServer400Exception extends OAuthServerException {

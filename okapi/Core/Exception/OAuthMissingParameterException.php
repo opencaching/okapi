@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Client didn't provide one of the key OAuth parameters. */
 class OAuthMissingParameterException extends OAuthServer400Exception {

@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 # All OAuthExceptions fall back into these two categories:
 /** OAuth client errors. */

@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Client provider invalid token (either Request Token or Access Token). */
 class OAuthInvalidTokenException extends OAuthServer401Exception {

@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** Common type of BadRequest: Required parameter is missing. */
 class ParamMissing extends BadRequest

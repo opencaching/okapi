@@ -5,10 +5,10 @@ namespace okapi;
 #
 # Database access abstraction layer.
 #
-use okapi\Exception\DbException;
-use okapi\Exception\DbInitException;
-use okapi\Exception\DbLockWaitTimeoutException;
-use okapi\Exception\DbTooManyRowsException;
+use okapi\Core\Exception\DbException;
+use okapi\Core\Exception\DbInitException;
+use okapi\Core\Exception\DbLockWaitTimeoutException;
+use okapi\Core\Exception\DbTooManyRowsException;
 use PDO;
 use PDOException;
 

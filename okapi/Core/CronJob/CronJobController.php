@@ -3,8 +3,8 @@
 namespace okapi\Core\CronJob;
 
 use okapi\Cache;
-use okapi\Exception\JobsAlreadyInProgress;
-use okapi\Exception\OkapiExceptionHandler;
+use okapi\Core\Exception\JobsAlreadyInProgress;
+use okapi\Core\Exception\OkapiExceptionHandler;
 use okapi\Okapi;
 use okapi\OkapiLock;
 

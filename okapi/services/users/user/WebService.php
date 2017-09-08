@@ -2,8 +2,8 @@
 
 namespace okapi\services\users\user;
 
-use okapi\Exception\BadRequest;
-use okapi\Exception\InvalidParam;
+use okapi\Core\Exception\BadRequest;
+use okapi\Core\Exception\InvalidParam;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

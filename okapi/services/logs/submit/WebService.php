@@ -3,10 +3,10 @@
 namespace okapi\services\logs\submit;
 
 use Exception;
+use okapi\Core\Exception\BadRequest;
+use okapi\Core\Exception\InvalidParam;
+use okapi\Core\Exception\ParamMissing;
 use okapi\Db;
-use okapi\Exception\BadRequest;
-use okapi\Exception\InvalidParam;
-use okapi\Exception\ParamMissing;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

@@ -2,8 +2,8 @@
 
 namespace okapi;
 
-use okapi\Exception\FatalError;
-use okapi\Exception\OkapiExceptionHandler;
+use okapi\Core\Exception\FatalError;
+use okapi\Core\Exception\OkapiExceptionHandler;
 
 /** Container for error-handling functions. */
 class OkapiErrorHandler

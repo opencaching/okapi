@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Exception;
+namespace okapi\Core\Exception;
 
 /** OAuth server errors which should result in HTTP 401 response. */
 abstract class OAuthServer401Exception extends OAuthServerException {

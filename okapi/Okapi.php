@@ -4,11 +4,11 @@ namespace okapi;
 
 use okapi\Core\Consumer\OkapiConsumer;
 use okapi\Core\CronJob\CronJobController;
-use okapi\Exception\BadRequest;
-use okapi\Exception\DbException;
-use okapi\Exception\InvalidParam;
-use okapi\Exception\JobsAlreadyInProgress;
-use okapi\Exception\OkapiExceptionHandler;
+use okapi\Core\Exception\BadRequest;
+use okapi\Core\Exception\DbException;
+use okapi\Core\Exception\InvalidParam;
+use okapi\Core\Exception\JobsAlreadyInProgress;
+use okapi\Core\Exception\OkapiExceptionHandler;
 use okapi\OAuth\OkapiOAuthServer;
 use okapi\Request\OkapiInternalRequest;
 use okapi\Request\OkapiRequest;

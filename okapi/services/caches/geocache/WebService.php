@@ -2,9 +2,9 @@
 
 namespace okapi\services\caches\geocache;
 
+use okapi\Core\Exception\InvalidParam;
+use okapi\Core\Exception\ParamMissing;
 use okapi\Db;
-use okapi\Exception\InvalidParam;
-use okapi\Exception\ParamMissing;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

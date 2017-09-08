@@ -2,8 +2,8 @@
 
 namespace okapi\services\caches\save_personal_notes;
 
+use okapi\Core\Exception\ParamMissing;
 use okapi\Db;
-use okapi\Exception\ParamMissing;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

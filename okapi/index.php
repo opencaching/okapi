@@ -16,7 +16,7 @@
 # endpoint (this one!), then we need to set it up ourselves.
 #
 
-use okapi\Exception\OkapiExceptionHandler;
+use okapi\Core\Exception\OkapiExceptionHandler;
 use okapi\lib\OkapiScriptEntryPointController;
 use okapi\Okapi;
 use okapi\OkapiErrorHandler;
