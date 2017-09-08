@@ -2,6 +2,8 @@
 
 namespace okapi\Core;
 
+use ErrorException;
+
 /** A data caching layer. For slow SQL queries etc. */
 class Cache
 {
