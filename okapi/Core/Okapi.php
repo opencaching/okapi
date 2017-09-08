@@ -384,7 +384,7 @@ class Okapi
             try {
                 $nearest_event = CronJobController::run_jobs('pre-request');
                 Okapi::set_var("cron_nearest_event", $nearest_event);
-            } catch (\okapi\Exception\JobsAlreadyInProgress $e) {
+            } catch (JobsAlreadyInProgress $e) {
                 // Ignore.
             }
         }
