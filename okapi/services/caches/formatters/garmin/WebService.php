@@ -9,7 +9,7 @@ use okapi\Exception\InvalidParam;
 use okapi\Exception\ParamMissing;
 use okapi\lib\ClsTbsZip;
 use okapi\OkapiServiceRunner;
-use okapi\OkapiZIPHttpResponse;
+use okapi\Response\OkapiZIPHttpResponse;
 use okapi\Request\OkapiInternalRequest;
 use okapi\Request\OkapiRequest;
 use okapi\Settings;
