@@ -2,11 +2,11 @@
 
 namespace okapi\services\users\by_usernames;
 
+use okapi\Core\Db;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\ParamMissing;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Settings;
@@ -38,7 +38,7 @@ class WebService
         $rs = Db::query("
             select username, uuid
             from user
-            where username collate ".Settings::get('DB_CHARSET')."_general_ci in ('".implode("','", array_map('\okapi\Db::escape_string', $usernames))."')
+            where username collate ".Settings::get('DB_CHARSET')."_general_ci in ('".implode("','", array_map('\okapi\Core\Db::escape_string', $usernames))."')
         ");
         $lower_username2useruuid = array();
         while ($row = Db::fetch_assoc($rs))

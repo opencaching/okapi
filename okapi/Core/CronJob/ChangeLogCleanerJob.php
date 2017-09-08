@@ -3,7 +3,7 @@
 namespace okapi\Core\CronJob;
 
 use okapi\Core\Cache;
-use okapi\Db;
+use okapi\Core\Db;
 use okapi\services\replicate\ReplicateCommon;
 
 /** Once per day, removes all revisions older than 10 days from okapi_clog table. */

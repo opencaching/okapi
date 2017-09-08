@@ -138,7 +138,7 @@ class Facade
         Db::execute("
             update caches
             set okapi_syncbase = now()
-            where wp_oc in ('".implode("','", array_map('\okapi\Db::escape_string', $cache_codes))."')
+            where wp_oc in ('".implode("','", array_map('\okapi\Core\Db::escape_string', $cache_codes))."')
         ");
     }
 

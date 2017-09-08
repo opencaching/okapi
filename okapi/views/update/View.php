@@ -5,7 +5,7 @@ namespace okapi\views\update;
 use Exception;
 use okapi\Core\Cache;
 use okapi\Core\CronJob\CronJobController;
-use okapi\Db;
+use okapi\Core\Db;
 use okapi\Okapi;
 use okapi\OkapiLock;
 use okapi\services\replicate\ReplicateCommon;
@@ -147,7 +147,7 @@ class View
                 okapi_stats_hourly sh
             where
                 sh.consumer_key = c.`key`
-                and sh.service_name in ('".implode("','", array_map('\okapi\Db::escape_string', $service_names))."')
+                and sh.service_name in ('".implode("','", array_map('\okapi\Core\Db::escape_string', $service_names))."')
                 ".(($days != null) ? "and sh.period_start > date_add(now(), interval '".Db::escape_string(-$days)."' day)" : "")."
         ");
     }

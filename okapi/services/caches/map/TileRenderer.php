@@ -4,7 +4,7 @@ namespace okapi\services\caches\map;
 
 use Exception;
 use okapi\Core\Cache;
-use okapi\Db;
+use okapi\Core\Db;
 use okapi\FileCache;
 use okapi\Okapi;
 

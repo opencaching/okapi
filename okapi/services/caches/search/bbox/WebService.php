@@ -2,10 +2,10 @@
 
 namespace okapi\services\caches\search\bbox;
 
+use okapi\Core\Db;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\ParamMissing;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Db;
 use okapi\Okapi;
 use okapi\services\caches\search\SearchAssistant;
 

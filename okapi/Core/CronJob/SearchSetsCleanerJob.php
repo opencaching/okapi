@@ -2,7 +2,7 @@
 
 namespace okapi\Core\CronJob;
 
-use okapi\Db;
+use okapi\Core\Db;
 
 /** Clean up the saved search tables, every 10 minutes. */
 class SearchSetsCleanerJob extends Cron5Job

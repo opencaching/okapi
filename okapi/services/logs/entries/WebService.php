@@ -2,10 +2,10 @@
 
 namespace okapi\services\logs\entries;
 
+use okapi\Core\Db;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\ParamMissing;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Db;
 use okapi\Okapi;
 use okapi\Settings;
 
@@ -89,7 +89,7 @@ class WebService
                     )
                 ".$join_SQL."
             where
-                cl.uuid in ('".implode("','", array_map('\okapi\Db::escape_string', $log_uuids))."')
+                cl.uuid in ('".implode("','", array_map('\okapi\Core\Db::escape_string', $log_uuids))."')
                 and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "cl.deleted = 0" : "true")."
                 and cl.user_id = u.user_id
                 and c.cache_id = cl.cache_id
@@ -135,7 +135,7 @@ class WebService
                 from pictures
                 where
                     object_type = 1
-                    and object_id in ('".implode("','", array_map('\okapi\Db::escape_string', array_keys($log_id2uuid)))."')
+                    and object_id in ('".implode("','", array_map('\okapi\Core\Db::escape_string', array_keys($log_id2uuid)))."')
                     and display = 1   /* currently is always 1 for logpix */
                     and unknown_format = 0
                 order by seq, date_created

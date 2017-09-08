@@ -2,7 +2,7 @@
 
 namespace okapi\Core\CronJob;
 
-use okapi\Db;
+use okapi\Core\Db;
 use okapi\Okapi;
 
 /** Clean up the cache, once per day. */

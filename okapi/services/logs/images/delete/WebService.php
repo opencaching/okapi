@@ -2,8 +2,8 @@
 
 namespace okapi\services\logs\images\delete;
 
+use okapi\Core\Db;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Db;
 use okapi\Okapi;
 use okapi\services\logs\images\LogImagesCommon;
 use okapi\Settings;

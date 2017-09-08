@@ -3,8 +3,8 @@
 namespace okapi\views\devel\tilereport;
 
 use okapi\Core\CronJob\CronJobController;
+use okapi\Core\Db;
 use okapi\Core\Response\OkapiHttpResponse;
-use okapi\Db;
 use okapi\Okapi;
 
 class View

@@ -2,7 +2,7 @@
 
 namespace okapi\Core\CronJob;
 
-use okapi\Db;
+use okapi\Core\Db;
 
 /** Once per day, optimize certain MySQL tables. */
 class TableOptimizerJob extends Cron24Job

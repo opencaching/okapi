@@ -3,10 +3,10 @@
 namespace okapi\services\replicate\fulldump;
 
 use okapi\Core\Cache;
+use okapi\Core\Db;
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\Request\OkapiRequest;
 use okapi\Core\Response\OkapiHttpResponse;
-use okapi\Db;
 
 class WebService
 {

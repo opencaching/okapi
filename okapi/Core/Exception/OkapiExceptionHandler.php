@@ -2,7 +2,7 @@
 
 namespace okapi\Core\Exception;
 
-use okapi\Db;
+use okapi\Core\Db;
 use okapi\Okapi;
 use okapi\Settings;
 

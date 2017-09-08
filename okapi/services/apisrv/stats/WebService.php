@@ -3,8 +3,8 @@
 namespace okapi\services\apisrv\stats;
 
 use okapi\Core\Cache;
+use okapi\Core\Db;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Db;
 use okapi\Okapi;
 use okapi\Settings;
 

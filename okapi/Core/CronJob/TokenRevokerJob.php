@@ -2,7 +2,7 @@
 
 namespace okapi\Core\CronJob;
 
-use okapi\Db;
+use okapi\Core\Db;
 
 class TokenRevokerJob extends Cron5Job
 {

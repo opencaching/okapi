@@ -108,7 +108,7 @@ class Cache
             select `key`, value
             from okapi_cache
             where
-                `key` in ('".implode("','", array_map('\okapi\Db::escape_string', $keys))."')
+                `key` in ('".implode("','", array_map('\okapi\Core\Db::escape_string', $keys))."')
                 and expires > now()
         ");
         while ($row = Db::fetch_assoc($rs))
@@ -149,7 +149,7 @@ class Cache
             return;
         Db::execute("
             delete from okapi_cache
-            where `key` in ('".implode("','", array_map('\okapi\Db::escape_string', $keys))."')
+            where `key` in ('".implode("','", array_map('\okapi\Core\Db::escape_string', $keys))."')
         ");
     }
 }

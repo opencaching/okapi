@@ -4,10 +4,10 @@ namespace okapi\views\tilestress;
 
 use Exception;
 use okapi\Core\Consumer\OkapiInternalConsumer;
+use okapi\Core\Db;
 use okapi\Core\Exception\OkapiExceptionHandler;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Core\Token\OkapiInternalAccessToken;
-use okapi\Db;
 use okapi\OkapiServiceRunner;
 
 class View
