@@ -2,7 +2,7 @@
 
 namespace okapi\Core\CronJob;
 
-use okapi\Okapi;
+use okapi\Core\Okapi;
 
 /**
  * Deletes old Request Tokens and Nonces every 5 minutes. This is required for

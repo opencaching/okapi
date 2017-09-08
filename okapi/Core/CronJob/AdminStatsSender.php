@@ -4,8 +4,8 @@ namespace okapi\Core\CronJob;
 
 use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Core\Db;
+use okapi\Core\Okapi;
 use okapi\Core\Request\OkapiInternalRequest;
-use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 
 /**

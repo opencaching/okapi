@@ -2,8 +2,8 @@
 
 namespace okapi\Core\CronJob;
 
+use okapi\Core\Okapi;
 use okapi\locale\Locales;
-use okapi\Okapi;
 
 /**
  * Once per week, check if all required locales are installed. If not,

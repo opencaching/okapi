@@ -4,8 +4,8 @@ namespace okapi\services\apisrv\stats;
 
 use okapi\Core\Cache;
 use okapi\Core\Db;
+use okapi\Core\Okapi;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Okapi;
 use okapi\Settings;
 
 class WebService

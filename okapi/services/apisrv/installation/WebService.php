@@ -2,8 +2,8 @@
 
 namespace okapi\services\apisrv\installation;
 
+use okapi\Core\Okapi;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Okapi;
 use okapi\Settings;
 
 class WebService

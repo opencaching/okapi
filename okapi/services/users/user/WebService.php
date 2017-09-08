@@ -4,9 +4,9 @@ namespace okapi\services\users\user;
 
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\Exception\InvalidParam;
+use okapi\Core\Okapi;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 
 class WebService

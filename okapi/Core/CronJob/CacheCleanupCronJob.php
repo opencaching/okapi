@@ -3,7 +3,7 @@
 namespace okapi\Core\CronJob;
 
 use okapi\Core\Db;
-use okapi\Okapi;
+use okapi\Core\Okapi;
 
 /** Clean up the cache, once per day. */
 class CacheCleanupCronJob extends Cron24Job

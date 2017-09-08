@@ -3,7 +3,7 @@
 namespace okapi\Core\CronJob;
 
 use okapi\Core\Db;
-use okapi\Okapi;
+use okapi\Core\Okapi;
 
 /** Reads temporary (fast) stats-tables and reformats them into more permanent structures. */
 class StatsWriterCronJob extends PrerequestCronJob

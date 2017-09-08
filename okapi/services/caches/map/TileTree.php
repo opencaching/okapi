@@ -5,8 +5,8 @@ namespace okapi\services\caches\map;
 use Exception;
 use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Core\Db;
+use okapi\Core\Okapi;
 use okapi\Core\Request\OkapiInternalRequest;
-use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 
 

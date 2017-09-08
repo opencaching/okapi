@@ -3,9 +3,9 @@
 namespace okapi\services\oauth\request_token;
 
 use okapi\Core\Exception\ParamMissing;
+use okapi\Core\Okapi;
 use okapi\Core\Request\OkapiRequest;
 use okapi\Core\Response\OkapiHttpResponse;
-use okapi\Okapi;
 
 class WebService
 {

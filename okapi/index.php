@@ -17,8 +17,8 @@
 #
 
 use okapi\Core\Exception\OkapiExceptionHandler;
+use okapi\Core\Okapi;
 use okapi\lib\OkapiScriptEntryPointController;
-use okapi\Okapi;
 use okapi\OkapiErrorHandler;
 
 $GLOBALS['rootpath'] = __DIR__.'/../';

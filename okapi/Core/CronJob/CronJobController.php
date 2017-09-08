@@ -5,7 +5,7 @@ namespace okapi\Core\CronJob;
 use okapi\Core\Cache;
 use okapi\Core\Exception\JobsAlreadyInProgress;
 use okapi\Core\Exception\OkapiExceptionHandler;
-use okapi\Okapi;
+use okapi\Core\Okapi;
 use okapi\OkapiLock;
 
 class CronJobController

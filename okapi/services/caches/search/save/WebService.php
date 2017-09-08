@@ -4,8 +4,8 @@ namespace okapi\services\caches\search\save;
 
 use okapi\Core\Db;
 use okapi\Core\Exception\InvalidParam;
+use okapi\Core\Okapi;
 use okapi\Core\Request\OkapiRequest;
-use okapi\Okapi;
 use okapi\OkapiLock;
 use okapi\services\caches\search\SearchAssistant;
 

@@ -6,8 +6,8 @@ use Exception;
 use okapi\Core\Cache;
 use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Core\Db;
+use okapi\Core\Okapi;
 use okapi\Core\Request\OkapiInternalRequest;
-use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Settings;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi;
+namespace okapi\Core;
 
 use okapi\Core\Consumer\OkapiConsumer;
 use okapi\Core\CronJob\CronJobController;

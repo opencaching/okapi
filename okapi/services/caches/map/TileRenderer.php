@@ -6,7 +6,7 @@ use Exception;
 use okapi\Core\Cache;
 use okapi\Core\Db;
 use okapi\Core\FileCache;
-use okapi\Okapi;
+use okapi\Core\Okapi;
 
 
 class TileRenderer

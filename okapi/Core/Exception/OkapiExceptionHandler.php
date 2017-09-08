@@ -3,7 +3,7 @@
 namespace okapi\Core\Exception;
 
 use okapi\Core\Db;
-use okapi\Okapi;
+use okapi\Core\Okapi;
 use okapi\Settings;
 
 /** Container for exception-handling functions. */

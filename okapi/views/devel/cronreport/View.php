@@ -4,8 +4,8 @@ namespace okapi\views\devel\cronreport;
 
 use okapi\Core\Cache;
 use okapi\Core\CronJob\CronJobController;
+use okapi\Core\Okapi;
 use okapi\Core\Response\OkapiHttpResponse;
-use okapi\Okapi;
 
 class View
 {
