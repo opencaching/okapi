@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi;
+namespace okapi\Core;
 
 /**
  * Sometimes it is desirable to get the cached contents in a file,
