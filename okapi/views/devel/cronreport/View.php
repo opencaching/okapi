@@ -2,7 +2,7 @@
 
 namespace okapi\views\devel\cronreport;
 
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Core\CronJob\CronJobController;
 use okapi\Core\Response\OkapiHttpResponse;
 use okapi\Okapi;

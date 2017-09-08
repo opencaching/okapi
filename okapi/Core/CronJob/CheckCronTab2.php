@@ -2,7 +2,7 @@
 
 namespace okapi\Core\CronJob;
 
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Okapi;
 use okapi\Settings;
 

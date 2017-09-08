@@ -3,7 +3,7 @@
 namespace okapi\services\apiref\issue;
 
 use ErrorException;
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\Exception\ParamMissing;

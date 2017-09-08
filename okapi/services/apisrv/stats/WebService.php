@@ -2,7 +2,7 @@
 
 namespace okapi\services\apisrv\stats;
 
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Core\Request\OkapiRequest;
 use okapi\Db;
 use okapi\Okapi;

@@ -2,7 +2,7 @@
 
 namespace okapi\services\replicate\info;
 
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Core\Request\OkapiRequest;
 use okapi\Okapi;
 use okapi\services\replicate\ReplicateCommon;

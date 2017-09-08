@@ -2,7 +2,7 @@
 
 namespace okapi\services\replicate\fulldump;
 
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\Request\OkapiRequest;
 use okapi\Core\Response\OkapiHttpResponse;

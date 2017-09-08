@@ -2,7 +2,7 @@
 
 namespace okapi\Core\CronJob;
 
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Core\Exception\JobsAlreadyInProgress;
 use okapi\Core\Exception\OkapiExceptionHandler;
 use okapi\Okapi;

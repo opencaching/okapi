@@ -3,7 +3,7 @@
 namespace okapi\services\replicate;
 
 use Exception;
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Db;

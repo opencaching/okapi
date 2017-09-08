@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi;
+namespace okapi\Core;
 
 /** A data caching layer. For slow SQL queries etc. */
 class Cache

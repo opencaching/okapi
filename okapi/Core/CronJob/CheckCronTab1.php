@@ -2,7 +2,7 @@
 
 namespace okapi\Core\CronJob;
 
-use okapi\Cache;
+use okapi\Core\Cache;
 
 /**
  * Once per hour, puts a test entry in the database. This is to make sure

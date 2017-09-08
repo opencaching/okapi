@@ -3,7 +3,7 @@
 namespace okapi\services\attrs;
 
 use Exception;
-use okapi\Cache;
+use okapi\Core\Cache;
 use okapi\Okapi;
 use okapi\Settings;
 
