@@ -2,7 +2,12 @@
 
 namespace okapi;
 
+use okapi\Core\Cache;
 use okapi\Core\Consumer\OkapiFacadeConsumer;
+use okapi\Core\Db;
+use okapi\Core\Okapi;
+use okapi\Core\OkapiErrorHandler;
+use okapi\Core\OkapiServiceRunner;
 use okapi\Core\Request\OkapiInternalRequest;
 use okapi\Core\Token\OkapiFacadeAccessToken;
 use okapi\lib\OCSession;
