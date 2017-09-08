@@ -9,6 +9,7 @@ use okapi\Core\Exception\DbException;
 use okapi\Core\Exception\DbInitException;
 use okapi\Core\Exception\DbLockWaitTimeoutException;
 use okapi\Core\Exception\DbTooManyRowsException;
+use okapi\Settings;
 use PDO;
 use PDOException;
 
