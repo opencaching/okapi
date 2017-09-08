@@ -2,7 +2,7 @@
 
 namespace okapi;
 
-use okapi\Consumer\OkapiFacadeConsumer;
+use okapi\Core\Consumer\OkapiFacadeConsumer;
 use okapi\lib\OCSession;
 use okapi\Request\OkapiInternalRequest;
 use okapi\Token\OkapiFacadeAccessToken;

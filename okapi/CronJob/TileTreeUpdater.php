@@ -2,7 +2,7 @@
 
 namespace okapi\CronJob;
 
-use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Exception\BadRequest;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;

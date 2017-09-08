@@ -3,7 +3,7 @@
 namespace okapi\services\caches\map;
 
 use Exception;
-use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;

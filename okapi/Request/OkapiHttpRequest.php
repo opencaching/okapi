@@ -2,8 +2,8 @@
 
 namespace okapi\Request;
 
-use okapi\Consumer\OkapiConsumer;
-use okapi\Consumer\OkapiDebugConsumer;
+use okapi\Core\Consumer\OkapiConsumer;
+use okapi\Core\Consumer\OkapiDebugConsumer;
 use okapi\Db;
 use okapi\Exception\BadRequest;
 use okapi\Exception\InvalidParam;

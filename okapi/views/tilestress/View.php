@@ -3,7 +3,7 @@
 namespace okapi\views\tilestress;
 
 use Exception;
-use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Db;
 use okapi\Exception\OkapiExceptionHandler;
 use okapi\OkapiServiceRunner;

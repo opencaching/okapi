@@ -2,7 +2,7 @@
 
 namespace okapi\views\introduction;
 
-use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

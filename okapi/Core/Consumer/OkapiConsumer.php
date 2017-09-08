@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Consumer;
+namespace okapi\Core\Consumer;
 
 #
 # Including OAuth internals. Preparing OKAPI Consumer and Token classes.

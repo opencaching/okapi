@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Consumer;
+namespace okapi\Core\Consumer;
 
 /**
  * Use this when calling OKAPI methods internally from OKAPI code. (If you want call

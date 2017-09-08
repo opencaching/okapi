@@ -4,7 +4,7 @@ namespace okapi\services\replicate;
 
 use Exception;
 use okapi\Cache;
-use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Db;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;

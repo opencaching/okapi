@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Consumer;
+namespace okapi\Core\Consumer;
 
 /**
  * Used when debugging methods using DEBUG_AS_USERNAME flag.

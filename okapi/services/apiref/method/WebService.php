@@ -3,7 +3,7 @@
 namespace okapi\services\apiref\method;
 
 use Exception;
-use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Exception\InvalidParam;
 use okapi\Exception\ParamMissing;
 use okapi\Okapi;

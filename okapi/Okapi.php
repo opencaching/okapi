@@ -2,7 +2,7 @@
 
 namespace okapi;
 
-use okapi\Consumer\OkapiConsumer;
+use okapi\Core\Consumer\OkapiConsumer;
 use okapi\CronJob\CronJobController;
 use okapi\Exception\BadRequest;
 use okapi\Exception\DbException;

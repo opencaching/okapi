@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Consumer;
+namespace okapi\Core\Consumer;
 
 /**
  * Used by calls made via Facade class. SHOULD NOT be referenced anywhere else from

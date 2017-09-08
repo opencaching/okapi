@@ -3,7 +3,7 @@
 namespace okapi\services\apiref\method_index;
 
 use okapi\Cache;
-use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Okapi;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;

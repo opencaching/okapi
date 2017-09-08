@@ -2,7 +2,7 @@
 
 namespace okapi\services\caches\formatters\gpx;
 
-use okapi\Consumer\OkapiInternalConsumer;
+use okapi\Core\Consumer\OkapiInternalConsumer;
 use okapi\Db;
 use okapi\Exception\BadRequest;
 use okapi\Exception\InvalidParam;

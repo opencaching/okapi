@@ -3,7 +3,7 @@
 namespace okapi;
 
 use Exception;
-use okapi\Consumer\OkapiConsumer;
+use okapi\Core\Consumer\OkapiConsumer;
 use okapi\Exception\BadRequest;
 use okapi\OAuth\OAuthDataStore;
 use okapi\Token\OkapiAccessToken;
