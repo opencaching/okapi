@@ -2,6 +2,8 @@
 
 namespace okapi\Core;
 
+use okapi\Settings;
+
 class OkapiLock
 {
     private $lockfile;
