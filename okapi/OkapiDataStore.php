@@ -6,8 +6,8 @@ use Exception;
 use okapi\Core\Consumer\OkapiConsumer;
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\OAuth\OAuthDataStore;
-use okapi\Token\OkapiAccessToken;
-use okapi\Token\OkapiRequestToken;
+use okapi\Core\Token\OkapiAccessToken;
+use okapi\Core\Token\OkapiRequestToken;
 
 class OkapiDataStore extends OAuthDataStore
 {

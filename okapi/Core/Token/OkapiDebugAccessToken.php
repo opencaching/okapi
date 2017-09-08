@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Token;
+namespace okapi\Core\Token;
 
 /** Used when debugging with DEBUG_AS_USERNAME. */
 class OkapiDebugAccessToken extends OkapiAccessToken

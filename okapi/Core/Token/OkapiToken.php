@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Token;
+namespace okapi\Core\Token;
 
 use okapi\Core\OAuth\OAuthToken;
 

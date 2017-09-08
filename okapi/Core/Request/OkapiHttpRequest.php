@@ -7,10 +7,10 @@ use okapi\Core\Consumer\OkapiDebugConsumer;
 use okapi\Core\Exception\BadRequest;
 use okapi\Core\Exception\InvalidParam;
 use okapi\Core\OAuth\OAuthRequest;
+use okapi\Core\Token\OkapiDebugAccessToken;
 use okapi\Db;
 use okapi\Okapi;
 use okapi\Settings;
-use okapi\Token\OkapiDebugAccessToken;
 
 class OkapiHttpRequest extends OkapiRequest
 {

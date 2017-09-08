@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Token;
+namespace okapi\Core\Token;
 
 /** Use this in conjunction with OkapiInternalConsumer. */
 class OkapiInternalAccessToken extends OkapiAccessToken
