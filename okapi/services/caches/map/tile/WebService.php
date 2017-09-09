@@ -7,7 +7,7 @@ use okapi\Db;
 use okapi\Exception\BadRequest;
 use okapi\Exception\InvalidParam;
 use okapi\Exception\ParamMissing;
-use okapi\OkapiConsumer;
+use okapi\Consumer\OkapiConsumer;
 use okapi\OkapiServiceRunner;
 use okapi\Request\OkapiInternalRequest;
 use okapi\Request\OkapiRequest;
