@@ -1,6 +1,6 @@
 <?php
 
-namespace okapi\Core;
+namespace okapi\core;
 
 # This is the list of OKAPI views. Regexps are mapped to namespaces.
 # Each namespace should expose the Webservice class with a method "call".

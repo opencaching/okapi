@@ -2,7 +2,6 @@
 
 namespace okapi\services\caches\formatters\garmin;
 
-
 use Exception;
 use okapi\core\Cache;
 use okapi\core\Exception\InvalidParam;
@@ -10,9 +9,8 @@ use okapi\core\Exception\ParamMissing;
 use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Request\OkapiRequest;
+use okapi\core\Response\OkapiZIPHttpResponse;
 use okapi\lib\ClsTbsZip;
-use okapi\OkapiServiceRunner;
-use okapi\Response\OkapiZIPHttpResponse;
 use okapi\Settings;
 
 class WebService
