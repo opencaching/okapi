@@ -10,7 +10,7 @@
 #   - checks if the commit changed anything within the okapi directory of the
 #     master branch (only this location matters to us),
 #   - exports the current code to a temporary location,
-#   - replaces Okapi::$version_number and $git_revision fields in okapi/Okapi.php,
+#   - replaces Okapi::$version_number and $git_revision fields in okapi/core/Okapi.php,
 #   - builds a new package (hosted on http://rygielski.net/r/okapi-latest),
 #   - checks out okapi directory of the opencaching-pl project,
 #   - replaces the okapi directory with the new version,
@@ -121,7 +121,7 @@ def deploy(git_revision):
         deployment_name = "okapi-v" + str(version_number) + "-r" + git_rev
         #
         print "Adding version information..."
-        fp = open(okapi_working_dir + '/okapi/Okapi.php', 'r')
+        fp = open(okapi_working_dir + '/okapi/core/Okapi.php', 'r')
         core_contents = fp.read()
         fp.close()
         core_contents = core_contents.replace(
@@ -130,7 +130,7 @@ def deploy(git_revision):
         core_contents = core_contents.replace(
             "public static $git_revision = null;",
             "public static $git_revision = '" + git_revision + "';")
-        fp = open(okapi_working_dir + '/okapi/Okapi.php', 'w')
+        fp = open(okapi_working_dir + '/okapi/core/Okapi.php', 'w')
         fp.write(core_contents)
         fp.close()
         #
