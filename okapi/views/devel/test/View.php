@@ -3,9 +3,9 @@
 namespace okapi\views\devel\test;
 
 use Exception;
-use okapi\Okapi;
-use okapi\Cache;
-use okapi\Response\OkapiHttpResponse;
+use okapi\core\Cache;
+use okapi\core\Okapi;
+use okapi\core\Response\OkapiHttpResponse;
 
 class View
 {
