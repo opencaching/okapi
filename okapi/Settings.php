@@ -3,6 +3,8 @@
 namespace okapi;
 
 use Exception;
+use okapi\core\Okapi;
+use okapi\core\OkapiErrorHandler;
 use okapi\locale\Locales;
 
 # DO NOT MODIFY THIS FILE. This file should always look like the original here:
