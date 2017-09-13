@@ -17,7 +17,7 @@
     -->
     <changes>
         <change commit="7348ce9e" version="1564" time="2017-09-06T12:09:19+0200" type="enhancement">
-            Added 'location' field to <a href="services/logs/entry.html">services/logs/entry</a>.
+            Added <em>location</em> field to <a href="services/logs/entry.html">services/logs/entry</a>.
         </change>
         <change commit="99dd6896" version="1545" time="2017-08-30T12:08:13+0200" type="bugfix">
             Submitting OCPL event cache logs now exactly behaves like the native log functions.
@@ -29,6 +29,10 @@
         <change commit="42170a0d" version="1459" time="2017-06-13T22:06:00+0200" type="other">
             The scheme for the <a href="services/apisrv/installations.html">installation URLs</a>
             of several Opencaching sites has changed from <i>http</i> to <i>https</i>.
+        </change>
+        <change commit="cc7f9a77" version="1398" time="2017-06-04T13:06:29+0200" type="docs">
+            Added <b>advice</b> on the length of
+            <a href="services/caches/save_personal_notes.html">saved personal notes</a>.
         </change>
         <change commit="b6852646" version="1381" time="2017-04-25T22:04:45+0200" type="docs">
             Documentation tags <a href="introduction.html#oc-branch-differences">OCPL and OCDE</a>
