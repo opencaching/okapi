@@ -24,13 +24,13 @@
         non-urgent cases, before reporting to the OC team. The owner currently
         cannot be contacted via OKAPI but only through the OC website.
         You may link to the owner's profile page as given
-        by <a href="%OKAPI:methodargref:services/users/user%">services/users/user</a>;
+        by <a href="../../users/user.html">services/users/user</a>;
         there is an email button.</p>
     </req>
     <req name='reason'>
         <p>String - the reason for the report; any of the reason values as returned
-        by <a href="%OKAPI:methodargref:services/caches/reports/reasons%">services/caches/reports/reasons</a>.</p>
-        <p>It is recommended to let the user choose out of a list of all allowed
+        by <a href="reasons.html">services/caches/reports/reasons</a>.</p>
+        <p>It is recommended to let the user chose out of a list of all allowed
         reasons for the OC site, and to display the corresponding explanation, as
         returned by services/caches/reports/reasons, for the selected reason.</p>
     </req>
@@ -63,7 +63,7 @@
                     <li>the 1-based number of the new report in the list of
                     unprocessed reports, after successfully submitting to the OC
                     team; e.g. 5 means that there are four reports waiting which
-                    probably will be processed first, or</li>
+                    probably will be processed first,</li>
                     <li><b>null</b> in case of an error.</li>
                 </ul>
             </li>

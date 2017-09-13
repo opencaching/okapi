@@ -3,7 +3,7 @@
     <issue-id>TODO</issue-id>
     <desc>
         <p>This method queries the status of one or more geocache reports that were
-        submitted trough <a href="%OKAPI:methodargref:services/caches/reports/submit%">services/caches/reports/submit</a>.</p>
+        submitted trough <a href="submit.html">services/caches/reports/submit</a>.</p>
         <!-- TODO: link the terms of use here. -->
     </desc>
     <req name='report_uuids'>
@@ -11,13 +11,30 @@
     </req>
     <common-format-params/>
     <returns>
-        <p>A dictionary. The report IDs that you provide will be mapped to dictionary
-        keys. Each value will be either <b>null</b> if there is no report with
-        this ID, or one of these strings:</p>
+        <p>An array, each element corresponding to one of the provided reports IDs and
+        having one of these values:</p>
         <ul>
-            <li><b>Open</b> - the report is either waiting to be processed,
-            or someone is working on it.</li>
-            <li><b>Closed</b> - the report has been closed.</li>
+            <li>
+                <b>null</b> - there is no report with this ID, or
+            </li>
+            <li>
+                <p>a dictionary, having this structure:</p>
+                <ul>
+                    <li>
+                        <p><b>status</b> - the status of the report, which is
+                        either <b>Unassigned</b>, <b>In progress</b> or <b>Closed</b>,</p>
+                    </li>
+                    <li>
+                        <p><b>admin_id</b> - if the report is in progress, the user ID
+                        of the Opencaching team member to whom it is assigned;
+                        <b>null</b> if the report is not in progress,</p>
+                    </li>
+                    <li>
+                        <p><b>admin_name</b> - the team member's username, or <b>null</b>
+                        if the report is not in progress.</p>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </returns>
 </xml>
