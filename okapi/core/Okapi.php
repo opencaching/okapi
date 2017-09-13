@@ -29,8 +29,8 @@ class Okapi
 
     # temporary workaround until postcommit.py is updated on the OCPL deployment server;
     # last-but-one version number is inserted manually here
-    public static $version_number = 1619;
-    public static $git_revision = 'a1f1e2d7fce342b39ccd7db9b27dfb8d3b2b7383';
+    public static $version_number = 1620;
+    public static $git_revision = '0a8aafe08e12975ae5447b9b47a43e41aed3ffe1';
 
     private static $okapi_vars = null;
 

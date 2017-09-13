@@ -769,4 +769,16 @@ class View
         # dummy mutation after accidentially deploying a DB mutation to OCPL
         # which is still in development
     }
+
+    private static function ver119()
+    {
+        # another fix for the accidential code deployment, see
+        # https://github.com/opencaching/okapi/pull/487#issuecomment-329170043
+
+        if (Settings::get('OC_BRANCH') == 'oc.pl' && Db::field_exists('reports', 'uuid')) {
+            Db::execute("
+                ALTER TABLE `reports` CHANGE `uuid` `uuid` VARCHAR(36) NULL DEFAULT NULL
+            ");
+        }
+    }
 }
