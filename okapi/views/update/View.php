@@ -763,4 +763,10 @@ class View
     private static function ver115() { Db::execute("alter table okapi_stats_monthly engine=MyISAM"); }
     private static function ver116() { Db::execute("alter table okapi_cache_reads engine=MyISAM"); }
     private static function ver117() { Db::execute("alter table okapi_cache engine=MyISAM"); }
+
+    private static function ver118()
+    {
+        # dummy mutation after accidentially deploying a DB mutation to OCPL
+        # which is still in development
+    }
 }
