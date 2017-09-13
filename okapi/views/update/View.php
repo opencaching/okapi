@@ -3,14 +3,15 @@
 namespace okapi\views\update;
 
 use Exception;
-use okapi\Settings;
 use okapi\core\Cache;
 use okapi\core\CronJob\CronJobController;
 use okapi\core\Db;
 use okapi\core\Okapi;
 use okapi\core\OkapiLock;
 use okapi\services\replicate\ReplicateCommon;
-use okapi\services\caches\reports\CacheReports;
+use okapi\Settings;
+
+;
 
 class View
 {
@@ -762,33 +763,4 @@ class View
     private static function ver115() { Db::execute("alter table okapi_stats_monthly engine=MyISAM"); }
     private static function ver116() { Db::execute("alter table okapi_cache_reads engine=MyISAM"); }
     private static function ver117() { Db::execute("alter table okapi_cache engine=MyISAM"); }
-
-    private static function ver118()
-    {
-        # Add uuid field to the OC site's cache reports table. This avoids
-        # manual operations by OCPL site administrators.
-
-        $reports_table = CacheReports::getReportsTableName();
-        Db::execute("alter table ".$reports_table." add `uuid` varchar(36) not null after `id`");
-
-        # status index is needed to optimize the calculation of 'position' return value
-        # by services/caches/reports/submit.
-
-        if (Settings::get('OC_BRANCH') == 'oc.pl')
-            Db::execute("alter table ".$reports_table." add key `status` (`status`)");
-    }
-/*
-    This code is to be enabled AFTER uuid generation has been added to OCDE and OCPL
-    native cache reporting.
-
-    private static function ver119()
-    {
-        # Initialize uuids for old cache reports created by native OC code.
-
-        $report_ids = Db::select_column("select id from ".$reports_table." where uuid=''");
-        foreach ($report_ids as $report_id)
-            Db::execute("update ".$reports_table." set uuid='".Okapi::create_uuid()."' where id=".$report_id);
-        Db::execute("alter table ".$reports_table." add unique key `uuid` (`uuid`)");
-    }
-*/
 }
