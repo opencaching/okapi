@@ -15,6 +15,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1"
     xmlns:ox="http://www.opencaching.com/xmlschemas/opencaching/1/0"
+    xmlns:oc="https://opencaching.pl/okapi/static/ocgpx/1"
     xmlns:gsak="http://www.gsak.net/xmlv1/5"
     xsi:schemaLocation="
         http://www.topografix.com/GPX/1/0
@@ -25,6 +26,9 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
 
         http://www.opencaching.com/xmlschemas/opencaching/1/0
         https://raw.githubusercontent.com/opencaching/okapi/master/etc/nsox.xsd
+
+        https://opencaching.pl/okapi/static/ocgpx/1
+        https://opencaching.pl/okapi/static/ocgpx/1/ocgpx.xsd
 
         http://www.gsak.net/xmlv1/5
         http://www.gsak.net/xmlv1/5/gsak.xsd
@@ -172,6 +176,11 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                     <groundspeak:type><?= $log['type'] ?></groundspeak:type>
                                     <groundspeak:finder id="<?= $vars['user_uuid_to_internal_id'][$log['user']['uuid']] ?>"><?= Okapi::xmlescape($log['user']['username']) ?></groundspeak:finder>
                                     <groundspeak:text encoded="False"><?= $log['was_recommended'] ? "(*) ": "" ?><?= Okapi::xmlescape($log['comment']) ?></groundspeak:text>
+                                    <?php if ($vars['ns_oc']) { /* Does user want us to include the common Opencaching <log> element? */ ?>
+                                        <oc:log>
+                                            <oc:uuid><?= $log['uuid'] ?></oc:uuid>
+                                        </oc:log>
+                                    <?php } ?>
                                 </groundspeak:log>
                             <?php } ?>
                         </groundspeak:logs>
@@ -202,6 +211,11 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                         </ox:images>
                     <?php } ?>
                 </ox:opencaching>
+            <?php } ?>
+            <?php if ($vars['ns_oc']) { /* Does user want us to include the common Opencaching <cache> element? */ ?>
+                <oc:cache>
+                    <oc:req_passwd><?= ($c['req_passwd'] ? "true" : "false") ?></req_passwd>
+                </oc:cache>
             <?php } ?>
         </wpt>
         <?php

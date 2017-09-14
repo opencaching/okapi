@@ -95,7 +95,7 @@ class WebService
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
         $langprefs = explode("|", $langpref);
-        foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'latest_logs', 'alt_wpts', 'mark_found') as $param)
+        foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'ns_oc', 'latest_logs', 'alt_wpts', 'mark_found') as $param)
         {
             $val = $request->get_parameter($param);
             if (!$val) $val = "false";
@@ -205,7 +205,7 @@ class WebService
 
         $fields = 'code|name|location|date_created|url|type|status|size|size2|oxsize'.
             '|difficulty|terrain|description|hint2|rating|owner|url|internal_id'.
-            '|protection_areas|short_description';
+            '|protection_areas|short_description|req_passwd';
         if ($vars['images'] != 'none')
             $fields .= "|images";
         if (count($vars['attrs']) > 0)

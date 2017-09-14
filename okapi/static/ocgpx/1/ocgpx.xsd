@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="https://opencaching.pl/okapi/static/ocgpx/1"
+    targetNamespace="https://opencaching.pl/okapi/static/ocgpx/1"
+    elementFormDefault="qualified">
+
+    <xsd:annotation>
+        <xsd:documentation>
+            Common Opencaching extensions to the Topografix GPX schema.
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="cache" type="cache_type" />
+
+    <xsd:complexType name="cache_type">
+        <xsd:sequence>
+            <xsd:element name="logpw" type="xsd:boolean" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="log" type="log_type" />
+
+    <xsd:complexType name="log_type">
+        <xsd:sequence>
+            <xsd:element name="uuid" type="xsd:string" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

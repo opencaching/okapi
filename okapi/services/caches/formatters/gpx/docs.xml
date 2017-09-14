@@ -55,6 +55,27 @@
         applications (and not only the Garmin ones, e.g. see
         <a href='http://help.locusmap.eu/topic/how-to-use-gcvotes-functionality-with-opencaching'>here</a>).</p>
     </opt>
+    <opt name='ns_oc' default='false'>
+        <p>Boolean. If <b>true</b> then response will include the
+        <a href='http://opencaching.pl/okapi/static/ocgpx/1/ocgpx.xsd'>Common
+        Opencaching GPX extension</a>. This namespace declares an extra
+        &lt;cache&gt; element which currently includes this subelement:</p>
+        <ul>
+            <li>
+                <b>req_passwd</b> - boolean, <b>true</b> if the geocache requires
+                a password for 'Found' or 'Attended' logs, <b>false</b> otherwise.
+            </li>
+        </ul>
+        <p>If <b>ns_ground</b> and <b>latest_logs</b> are set to <b>true</b>,
+        the response will also include an extra &lt;oc:log&gt; element for
+        each &lt;groundspeak:log&gt; element, which currently includes this
+        subelement:</p>
+        <ul>
+            <li><b>uuid</b> - string, the uuid of the log.</li>
+        </ul>
+        <p>The <em>Common Opencaching GPX extension</em> was introduced by OKAPI
+        and is expected to be included in most OC sites' native GPX files.</p>
+    </opt>
     <opt name='images' default='descrefs:nonspoilers'>
         <p>Which images to include (and how to include them). One of the following values:</p>
         <ul>
