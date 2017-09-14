@@ -1,6 +1,6 @@
 <xml>
     <brief>Change the properties of a geocache</brief>
-    <issue-id>TODO</issue-id>
+    <issue-id>510</issue-id>
     <desc>
         <p>This method allows your users to change properties of an owned
         geocache. Currently, only the log password can be changed.

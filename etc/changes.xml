@@ -16,6 +16,10 @@
 
     -->
     <changes>
+        <change commit="4535d114" version="1611" time="2017-09-14T14:09:11+0200" type="enhancement">
+            Added <a href="services/caches/edit.html">services/caches/edit</a>
+            for changing geocaches' log passwords.
+        </change>
         <change commit="7348ce9e" version="1564" time="2017-09-06T12:09:19+0200" type="enhancement">
             Added <em>location</em> field to <a href="services/logs/entry.html">services/logs/entry</a>.
         </change>
