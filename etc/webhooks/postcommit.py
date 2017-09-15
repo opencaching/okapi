@@ -171,7 +171,7 @@ def deploy(git_revision):
         )
         #
         print "Commiting and pushing to OCPL repo..."
-        my_call(["git", "add", "."], cwd=ocpl_working_dir)
+        my_call(["git", "add", "-A", "."], cwd=ocpl_working_dir)
         message = (
             "Automatic OKAPI Project update - ver. " + str(version_number) +
             " (rev. " + git_rev + ")"
