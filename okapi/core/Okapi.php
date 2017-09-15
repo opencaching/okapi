@@ -279,7 +279,6 @@ class Okapi
                     );
                 } else {
                     $urls = array(
-                        "http://www.opencaching.de/okapi/",
                         "https://www.opencaching.de/okapi/",
                     );
                 }
