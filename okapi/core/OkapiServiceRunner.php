@@ -96,7 +96,7 @@ class OkapiServiceRunner
             throw new \Exception();
         }
         try {
-            return file_get_contents("$service_name/docs.xml", true);
+            return file_get_contents(__DIR__.'/../'.$service_name. '/docs.xml', true);
         } catch (\Exception $e) {
             throw new \Exception("Missing documentation file: $service_name.xml");
         }

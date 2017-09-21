@@ -126,7 +126,7 @@ class TileRenderer
             {
                 # Miss again (or error decoding). Read the image from PNG.
 
-                $locmem_cache[$key] = imagecreatefrompng($GLOBALS['rootpath']."okapi/static/tilemap/$name.png");
+                $locmem_cache[$key] = imagecreatefrompng(__DIR__."/../../../../okapi/static/tilemap/$name.png");
 
                 # Apply all wanted effects.
 
@@ -357,7 +357,7 @@ class TileRenderer
             # Split the name into a couple of lines.
 
             //$font = $GLOBALS['rootpath'].'util.sec/bt.ttf';
-            $font = $GLOBALS['rootpath'].'okapi/static/tilemap/tahoma.ttf';
+            $font = __DIR__.'/../../../../okapi/static/tilemap/tahoma.ttf';
             $size = 25;
             $lines = explode("\n", self::wordwrap($font, $size, 64*4 - 6*2, $name));
 

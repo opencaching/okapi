@@ -71,7 +71,7 @@ class WebService
 
             return (
                 "api_ref/method_index#dev#".
-                self::getDirModDateRecursive($GLOBALS['rootpath']."okapi/services")
+                self::getDirModDateRecursive(__DIR__. '/../../../../okapi/services')
             );
         }
     }
