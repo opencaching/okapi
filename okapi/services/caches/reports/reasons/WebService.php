@@ -12,7 +12,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 0
+            'min_auth_level' => 1
         );
     }
 
