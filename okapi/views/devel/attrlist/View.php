@@ -17,11 +17,19 @@ class View
         ob_start();
 
         print "Cache Types:\n\n";
-        foreach (self::get_all_cachetypes() as $id => $name)
+        foreach (self::get_elements('cache_type') as $id => $name)
+            print "$id: $name\n";
+
+        print "\nCache Sizes:\n\n";
+        foreach (self::get_elements('cache_size') as $id => $name)
             print "$id: $name\n";
 
         print "\nLog Types:\n\n";
-        foreach (self::get_all_logtypes() as $id => $name)
+        foreach (self::get_elements('log_types') as $id => $name)
+            print "$id: $name\n";
+
+        print "\nWaypoint Types:\n\n";
+        foreach (self::get_elements('waypoint_type', 'coordinates_type') as $id => $name)
             print "$id: $name\n";
 
         print "\nAttributes:\n\n";
@@ -127,15 +135,24 @@ class View
     }
 
     /**
-     * Get an array of all site-specific cache-types (id => name in English).
+     * Get an array of all site-specific types/sizes (id => name in English).
      */
-    private static function get_all_cachetypes()
+
+    private static function get_elements($table, $table_ocde = false)
     {
+        if  (Settings::get('OC_BRANCH') == 'oc.de' && $table_ocde !== false) {
+            $table = $table_ocde;
+        }
+        if (!in_array($table, ['cache_type', 'cache_size', 'log_types', 'waypoint_type', 'coordinates_type'])) {
+            throw Exception('invalid table name');
+        }
+
         if (Settings::get('OC_BRANCH') == 'oc.pl')
         {
-            # OCPL branch does not store cache types in many languages (just two).
+            # OCPL branch does store elements in at least three languages (pl, en, nl),
+            # which are columns of the definition table.
 
-            $rs = Db::query("select id, en from cache_type order by id");
+            $rs = Db::query("select id, en from ".$table." order by id");
         }
         else
         {
@@ -143,49 +160,14 @@ class View
 
             $rs = Db::query("
                 select
-                    ct.id,
+                    elements.id,
                     stt.text as en
                 from
-                    cache_type ct
+                    ".$table." elements
                     left join sys_trans_text stt
-                        on ct.trans_id = stt.trans_id
+                        on elements.trans_id = stt.trans_id
                         and stt.lang = 'EN'
-                order by ct.id
-            ");
-        }
-
-        $dict = array();
-        while ($row = Db::fetch_assoc($rs)) {
-            $dict[$row['id']] = $row['en'];
-        }
-        return $dict;
-    }
-
-    /**
-     * Get an array of all site-specific log-types (id => name in English).
-     */
-    private static function get_all_logtypes()
-    {
-        if (Settings::get('OC_BRANCH') == 'oc.pl')
-        {
-            # OCPL branch does not store cache types in many languages (just two).
-
-            $rs = Db::query("select id, en from log_types order by id");
-        }
-        else
-        {
-            # OCDE branch uses translation tables.
-
-            $rs = Db::query("
-                select
-                    lt.id,
-                    stt.text as en
-                from
-                    log_types lt
-                    left join sys_trans_text stt
-                        on lt.trans_id = stt.trans_id
-                        and stt.lang = 'EN'
-                order by lt.id
+                order by elements.id
             ");
         }
 
