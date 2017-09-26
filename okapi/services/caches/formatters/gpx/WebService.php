@@ -335,6 +335,15 @@ class WebService
                             'name' => 'Needs maintenance',
                         );
                     }
+                    if ($cache_ref['type'] == 'Drive-In')
+                    {
+                        # export the Drive-In flag as GC attribute #53
+                        # (while the type is exported as 'Traditional')
+                        $cache_ref['gc_attrs']['53'] = array(
+                            'inc' => 1,
+                            'name' => 'Park and grab',
+                        );
+                    }
                 }
             }
 
