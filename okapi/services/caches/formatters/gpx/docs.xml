@@ -57,20 +57,14 @@
     </opt>
     <opt name='ns_oc' default='false'>
         <p>Boolean. If <b>true</b> then the response will include the
-        <a href='https://github.com/opencaching/gpx-extension'>
+        <a href='https://github.com/opencaching/gpx-extension-v1/blob/master/schema.xsd'>
         Opencaching GPX extension</a>. The GPX files will contain an
-        addition element &lt;oc:cache&gt; for each geocache, which currently
-        includes this subelement:</p>
-        <ul>
-            <li>
-                <b>requires_passwd</b> - boolean, <b>true</b> if the geocache requires
-                a password for 'Found' or 'Attended' logs, <b>false</b> otherwise.
-            </li>
-        </ul>
-        <p>If <b>ns_ground</b> and <b>latest_logs</b> are set to <b>true</b>,
-        the response will also include an extra &lt;oc:uuid&gt; element for
-        each &lt;groundspeak:log&gt; element, which gives the uuid of the log
-        entry.</p>
+        addition element &lt;oc:cache&gt; for each geocache, which
+        cointans Opencaching-specific information about the geocache.
+        If <b>ns_ground</b> and <b>latest_logs</b> are set to <b>true</b>,
+        the response will also include some extra &lt;oc:&gt; elements
+        for each &lt;groundspeak:log&gt; element.</p>
+
         <p>The Opencaching GPX extension was introduced by OKAPI and is
         expected to be included in most OC sites' native GPX files.</p>
     </opt>

@@ -15,7 +15,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1"
     xmlns:ox="http://www.opencaching.com/xmlschemas/opencaching/1/0"
-    xmlns:oc="https://raw.githubusercontent.com/opencaching/gpx-extension/stable-v1"
+    xmlns:oc="https://github.com/opencaching/gpx-extension-v1"
     xmlns:gsak="http://www.gsak.net/xmlv1/5"
     xsi:schemaLocation="
         http://www.topografix.com/GPX/1/0
@@ -27,8 +27,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
         http://www.opencaching.com/xmlschemas/opencaching/1/0
         https://raw.githubusercontent.com/opencaching/okapi/master/etc/nsox.xsd
 
-        https://raw.githubusercontent.com/opencaching/gpx-extension/stable-v1
-        https://raw.githubusercontent.com/opencaching/gpx-extension/stable-v1/schema.xsd
+        https://github.com/opencaching/gpx-extension-v1
+        https://raw.githubusercontent.com/opencaching/gpx-extension-v1/master/schema.xsd
 
         http://www.gsak.net/xmlv1/5
         http://www.gsak.net/xmlv1/5/gsak.xsd
@@ -57,14 +57,14 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
             <url><?= $c['url'] ?></url>
             <urlname><?= Okapi::xmlescape($c['name']) ?></urlname>
             <sym><?= ($vars['mark_found'] && $c['is_found']) ? "Geocache Found" : "Geocache" ?></sym>
-            <type>Geocache|<?= $vars['cache_GPX_types'][$c['type']] ?></type>
+            <type>Geocache|<?= $vars['cache_GPX_types'][$c['type']]['gc'] ?></type>
             <?php if ($vars['ns_ground']) { /* Does user want us to include Groundspeak's <cache> element? */ ?>
                 <groundspeak:cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="<?= $c['internal_id'] ?>">
                     <groundspeak:name><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?></groundspeak:name>
                     <groundspeak:placed_by><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:placed_by>
                     <groundspeak:owner id="<?= $vars['user_uuid_to_internal_id'][$c['owner']['uuid']] ?>"><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:owner>
-                    <groundspeak:type><?= $vars['cache_GPX_types'][$c['type']] ?></groundspeak:type>
-                    <groundspeak:container><?= $vars['cache_GPX_sizes'][$c['size2']] ?></groundspeak:container>
+                    <groundspeak:type><?= $vars['cache_GPX_types'][$c['type']]['gc'] ?></groundspeak:type>
+                    <groundspeak:container><?= $vars['cache_GPX_sizes'][$c['size2']]['gc'] ?></groundspeak:container>
                     <?php if ($vars['gc_attrs'] || $vars['gc_ocde_attrs']) { /* Does user want us to include groundspeak:attributes? */ ?>
                         <groundspeak:attributes>
                             <?php
@@ -178,6 +178,9 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                     <groundspeak:text encoded="False"><?= $log['was_recommended'] ? "(*) ": "" ?><?= Okapi::xmlescape($log['comment']) ?></groundspeak:text>
                                     <?php if ($vars['ns_oc']) { /* Does user want us to include the common Opencaching <log> element? */ ?>
                                         <oc:log_uuid><?= $log['uuid'] ?></oc:log_uuid>
+                                        <?php if ($log['oc_team_entry']) { ?>
+                                            <oc:site_team_entry>true</oc:site_team_entry>
+                                        <?php } ?>
                                     <?php } ?>
                                 </groundspeak:log>
                             <?php } ?>
@@ -212,7 +215,18 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
             <?php } ?>
             <?php if ($vars['ns_oc']) { /* Does user want us to include the common Opencaching <cache> element? */ ?>
                 <oc:cache>
-                    <oc:requires_passwd><?= ($c['req_passwd'] ? "true" : "false") ?></oc:requires_passwd>
+                    <oc:type><?= $vars['cache_GPX_types'][$c['type']]['oc'] ?></oc:type>
+                    <oc:size><?= $vars['cache_GPX_sizes'][$c['size2']]['oc'] ?></oc:size>
+                    <oc:requires_password><?= ($c['req_passwd'] ? "true" : "false") ?></oc:requires_password>
+                    <?php if ($c['trip_time'] > 0) { ?>
+                        <oc:trip_time><?= $c['trip_time'] ?></oc:trip_time>
+                    <?php } ?>
+                    <?php if ($c['trip_distance'] > 0) { ?>
+                        <oc:trip_distance><?= $c['trip_distance'] ?></oc:trip_distance>
+                    <?php } ?>
+                    <?php if ($c['gc_code']) { ?>
+                        <oc:other_code><?= $c['gc_code'] ?></oc:other_code>
+                    <?php } ?>
                 </oc:cache>
             <?php } ?>
         </wpt>
