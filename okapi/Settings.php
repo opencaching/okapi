@@ -332,7 +332,7 @@ final class Settings
         putenv("LC_ALL=$locale");
         setlocale(LC_ALL, $locale);
         setlocale(LC_NUMERIC, "POSIX"); # We don't want *this one* to get out of control.
-        bindtextdomain("okapi_messages", $GLOBALS['rootpath'].'okapi/locale');
+        bindtextdomain("okapi_messages", __DIR__ . '/locale');
         return $locale;
     }
 
