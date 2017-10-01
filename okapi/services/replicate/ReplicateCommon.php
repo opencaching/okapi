@@ -491,15 +491,16 @@ class ReplicateCommon
         $dir = Okapi::get_var_dir(). '/okapi-db-dump';
         $i = 1;
         $json_files = array();
+        $shell_output = [];
 
         # Cleanup (from a previous, possibly unsuccessful, execution)
 
-        shell_exec("rm -f $dir/*");
         if (is_dir($dir)) {
-            shell_exec("rmdir $dir");
+            self::execute("rm -f $dir/*", $shell_output);
+            self::execute("rmdir $dir", $shell_output);
         }
-        shell_exec("mkdir $dir");
-        shell_exec("chmod 777 $dir");
+        self::execute("mkdir $dir", $shell_output);
+        self::execute("chmod 777 $dir", $shell_output);
 
         # Geocaches
 
@@ -584,17 +585,20 @@ class ReplicateCommon
 
         $use_bzip2 = true;
         $dumpfilename = "okapi-dump.tar.".($use_bzip2 ? "bz2" : "gz");
-        shell_exec("tar --directory $dir -c".($use_bzip2 ? "j" : "z")."f $dir/$dumpfilename index.json ".implode(" ", $json_files). " 2>&1");
+        self::execute(
+            "tar --directory $dir -c".($use_bzip2 ? "j" : "z")."f $dir/$dumpfilename index.json ".implode(" ", $json_files),
+            $shell_output
+        );
 
         # Delete temporary files.
 
-        shell_exec("rm -f $dir/*.json");
+        self::execute("rm -f $dir/*.json", $shell_output);
 
         # Move the archive one directory upwards, replacing the previous one.
         # Remove the temporary directory.
 
-        shell_exec("mv -f $dir/$dumpfilename ".Okapi::get_var_dir());
-        shell_exec("rmdir $dir");
+        self::execute("mv -f $dir/$dumpfilename ".Okapi::get_var_dir(), $shell_output);
+        self::execute("rmdir $dir", $shell_output);
 
         # Update the database info.
 
@@ -604,6 +608,20 @@ class ReplicateCommon
         $metadata['meta']['uncompressed_size'] = $size;
         $metadata['meta']['compressed_size'] = filesize($metadata['meta']['filepath']);
         Cache::set("last_fulldump", $metadata, 10 * 86400);
+
+        # inform admins about shell execution problems
+        if ($shell_output)
+            Okapi::mail_admins('Fulldump generation problem', implode("\n", $shell_output));
+    }
+
+    private static function execute($command, &$shell_output)
+    {
+        exec($command.' 2>&1', $output);
+        if ($output) {
+            $shell_output[] = $command;
+            $shell_output = array_merge($shell_output, $output);
+            $shell_output[] = '';
+        }
     }
 
     public static function get_fulldump_status_message()

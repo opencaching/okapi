@@ -132,14 +132,18 @@ class CronJobController
      * Reset the schedule of a specified cronjob. This will force the job to
      * run on nearest occasion (but not NOW).
      */
-    public static function reset_job_schedule($job_name)
+    public static function reset_job_schedule($job_name, $key=null)
     {
         $thejob = null;
         foreach (self::get_enabled_cronjobs() as $tmp)
             if (($tmp->get_name() == $job_name) || ($tmp->get_name() == "okapi\\cronjobs\\".$job_name))
                 $thejob = $tmp;
-        if ($thejob == null)
-            throw new \Exception("Could not reset schedule for job $job_name. $job_name not found.");
+        if ($thejob == null) {
+            if ($key === null)
+                throw new \Exception("Could not reset schedule for job $job_name. $jon_name not found.");
+            else
+                return;
+        }
 
         # We have to acquire lock on the schedule. This might take some time if cron-5 jobs are
         # currently being run.
@@ -151,7 +155,7 @@ class CronJobController
         $schedule = Cache::get("cron_schedule");
         if ($schedule != null)
         {
-            if (isset($schedule[$thejob->get_name()]))
+            if (isset($schedule[$thejob->get_name()]) && ($key === null || $key == $schedule[$thejob->get_name()]))
                 unset($schedule[$thejob->get_name()]);
             Cache::set("cron_schedule", $schedule, 30*86400);
         }
