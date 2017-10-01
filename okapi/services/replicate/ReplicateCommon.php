@@ -589,7 +589,7 @@ class ReplicateCommon
         file_put_contents($testfile, $testfile);
         exec("bzip2 $testfile");
         $use_bzip2 = file_exists("$testfile.bz2");
-        exec("rm -f $testfile.*");
+        exec("rm -f $testfile*");
 
         $dumpfilename = "okapi-dump.tar.".($use_bzip2 ? "bz2" : "gz");
         self::execute(
