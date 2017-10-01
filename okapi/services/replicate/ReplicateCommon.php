@@ -591,7 +591,8 @@ class ReplicateCommon
         $use_bzip2 = file_exists("$testfile.bz2");
         exec("rm -f $testfile*");
 
-        $dumpfilename = "okapi-dump.tar.".($use_bzip2 ? "bz2" : "gz");
+        $dumpfile_tarname = "okapi-dump.tar";
+        $dumpfilename = $dumpfile_tarname.($use_bzip2 ? ".bz2" : ".gz");
         self::execute(
             "tar --directory $dir -c".($use_bzip2 ? "j" : "z")."f $dir/$dumpfilename index.json ".implode(" ", $json_files),
             $shell_output
@@ -606,6 +607,12 @@ class ReplicateCommon
 
         self::execute("mv -f $dir/$dumpfilename ".Okapi::get_var_dir(), $shell_output);
         self::execute("rmdir $dir", $shell_output);
+
+        # For the case the compression method has changed, remove the old archive.
+
+        $old_dumpfile_path = Okapi::get_var_dir()."/".$dumpfile_tarname.($use_bzip2 ? ".gz" : ".bz2");
+        if (file_exists($old_dumpfile_path))
+            self::execute("rm $old_dumpfile_path", $output);
 
         # Update the database info.
 
