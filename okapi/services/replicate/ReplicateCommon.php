@@ -583,7 +583,14 @@ class ReplicateCommon
         # Create JSON archive. We use tar options: -j for bzip2, -z for gzip
         # (bzip2 is MUCH slower).
 
-        $use_bzip2 = true;
+        # Use bzip2 is available (see https://github.com/opencaching/opencaching-pl/issues/1147)
+
+        $testfile = Okapi::get_var_dir().'/fulldump_bzip2test';
+        file_put_contents($testfile, $testfile);
+        exec("bzip2 $testfile");
+        $use_bzip2 = file_exists("$testfile.bz2");
+        exec("rm -f $testfile.*");
+
         $dumpfilename = "okapi-dump.tar.".($use_bzip2 ? "bz2" : "gz");
         self::execute(
             "tar --directory $dir -c".($use_bzip2 ? "j" : "z")."f $dir/$dumpfilename index.json ".implode(" ", $json_files),
@@ -640,7 +647,8 @@ class ReplicateCommon
                 if  (!$stat) {
                     $msg = "could not retrieve file stats";
                 } else {
-                    $msg = $stat['size'] . " bytes, ";
+                    $msg = basename($data['meta']['filepath']) . ", ";
+                    $msg .= $stat['size'] . " bytes, ";
                     $msg .= "generated " . date('c', $stat['mtime']);
                 }
             }
