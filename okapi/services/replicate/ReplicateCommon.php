@@ -585,7 +585,7 @@ class ReplicateCommon
 
         # Use bzip2 is available (see https://github.com/opencaching/opencaching-pl/issues/1147)
 
-        $testfile = Okapi::get_var_dir().'/fulldump_bzip2test';
+        $testfile = Okapi::get_var_dir().'/okapi-fulldump-bzip2test';
         file_put_contents($testfile, $testfile);
         exec("bzip2 $testfile");
         $use_bzip2 = file_exists("$testfile.bz2");
@@ -612,7 +612,7 @@ class ReplicateCommon
 
         $old_dumpfile_path = Okapi::get_var_dir()."/".$dumpfile_tarname.($use_bzip2 ? ".gz" : ".bz2");
         if (file_exists($old_dumpfile_path))
-            self::execute("rm $old_dumpfile_path", $output);
+            self::execute("rm $old_dumpfile_path", $shell_output);
 
         # Update the database info.
 
