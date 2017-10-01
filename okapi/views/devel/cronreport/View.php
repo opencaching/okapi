@@ -6,6 +6,7 @@ use okapi\core\Cache;
 use okapi\core\CronJob\CronJobController;
 use okapi\core\Okapi;
 use okapi\core\Response\OkapiHttpResponse;
+use okapi\services\replicate\ReplicateCommon;
 
 class View
 {
@@ -70,6 +71,7 @@ class View
             print "\n";
         }
         print "\n";
+
         print "Crontab last ping: ";
         if (Cache::get('crontab_last_ping'))
             print (time() - Cache::get('crontab_last_ping'))." seconds ago";
@@ -91,6 +93,8 @@ class View
         } else {
             print "NULL\n";
         }
+        print "Fulldump: " . ReplicateCommon::get_fulldump_status_message() . "\n";
+
         $response->body = ob_get_clean();
         return $response;
     }

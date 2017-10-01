@@ -605,4 +605,32 @@ class ReplicateCommon
         $metadata['meta']['compressed_size'] = filesize($metadata['meta']['filepath']);
         Cache::set("last_fulldump", $metadata, 10 * 86400);
     }
+
+    public static function get_fulldump_status_message()
+    {
+        # see https://github.com/opencaching/opencaching-pl/issues/1147
+
+        $data = Cache::get("last_fulldump");
+        if ($data === null) {
+            $msg = "not generated";
+        } else if (!file_exists($data['meta']['filepath'])) {
+            $msg = "file not found";
+        } else {
+            try
+            {
+                $stat = stat($data['meta']['filepath']);
+                if  (!$stat) {
+                    $msg = "could not retrieve file stats";
+                } else {
+                    $msg = $stat['size'] . " bytes, ";
+                    $msg .= "generated " . date('c', $stat['mtime']);
+                }
+            }
+            catch (Exception $e)
+            {
+                $msg = "error while retrieving file stats: " . $e->getMessage();
+            }
+        }
+        return $msg;
+    }
 }
