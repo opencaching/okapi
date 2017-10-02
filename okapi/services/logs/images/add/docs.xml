@@ -74,6 +74,10 @@
                 case of an error,
             </li>
             <li>
+                <b>image_url</b> - URL of the appended image, or <b>null</b> in
+                case of an error,
+            </li>
+            <li>
                 <b>position</b> - 0-based position of the appended image
                 on the log entry's list of images; <b>null</b> in case of
                 an error.

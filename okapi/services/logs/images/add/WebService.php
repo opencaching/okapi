@@ -200,7 +200,7 @@ class WebService
 
         try
         {
-            $position = self::db_insert_image(
+            list($position, $image_url) = self::db_insert_image(
                 $request->consumer->key, $request->token->user_id,
                 $log_internal_id, $image_uuid, $position, $caption, $is_spoiler, $file_ext
             );
@@ -216,7 +216,7 @@ class WebService
             throw $e;
         }
 
-        return array($image_uuid, $position);
+        return array($image_uuid, $position, $image_url);
     }
 
     /**
@@ -333,6 +333,7 @@ class WebService
                 "NOW(), NOW(), '', 0, NOW(), '".Db::escape_string($user_id)."'";
         }
 
+        $image_url = Settings::get('IMAGES_URL').$image_uuid.$file_ext;
         Db::execute("
             insert into pictures (
                 uuid, node, local, title, spoiler, url, object_type, object_id,
@@ -345,7 +346,7 @@ class WebService
                 1,
                 '".Db::escape_string($caption)."',
                 '".($is_spoiler == 'true' ? 1 : 0)."',
-                '".Db::escape_string(Settings::get('IMAGES_URL').$image_uuid.$file_ext)."',
+                '".Db::escape_string($image_url)."',
                 1,
                 '".Db::escape_string($log_internal_id)."',
                 0,
@@ -386,7 +387,7 @@ class WebService
         Db::execute('commit');
         Db::execute('unlock tables');
 
-        return $position;
+        return array($position, $image_url);
     }
 
 
@@ -401,11 +402,12 @@ class WebService
 
         try
         {
-            list($image_uuid, $position) = self::_call($request);
+            list($image_uuid, $position, $image_url) = self::_call($request);
             $result = array(
                 'success' => true,
                 'message' => _("Image has been successfully saved."),
                 'image_uuid' => $image_uuid,
+                'image_url' => $image_url,
                 'position' => $position
             );
             Okapi::gettext_domain_restore();
@@ -417,6 +419,7 @@ class WebService
                 'success' => false,
                 'message' => $e->getMessage(),
                 'image_uuid' => null,
+                'image_url' => null,
                 'position' => null
             );
         }
