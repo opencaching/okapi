@@ -176,12 +176,6 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                     <groundspeak:type><?= $log['type'] ?></groundspeak:type>
                                     <groundspeak:finder id="<?= $vars['user_uuid_to_internal_id'][$log['user']['uuid']] ?>"><?= Okapi::xmlescape($log['user']['username']) ?></groundspeak:finder>
                                     <groundspeak:text encoded="False"><?= $log['was_recommended'] ? "(*) ": "" ?><?= Okapi::xmlescape($log['comment']) ?></groundspeak:text>
-                                    <?php if ($vars['ns_oc']) { /* Does user want us to include the common Opencaching <log> element? */ ?>
-                                        <oc:log_uuid><?= $log['uuid'] ?></oc:log_uuid>
-                                        <?php if ($log['oc_team_entry']) { ?>
-                                            <oc:site_team_entry>true</oc:site_team_entry>
-                                        <?php } ?>
-                                    <?php } ?>
                                 </groundspeak:log>
                             <?php } ?>
                         </groundspeak:logs>
@@ -213,19 +207,30 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                     <?php } ?>
                 </ox:opencaching>
             <?php } ?>
-            <?php if ($vars['ns_oc']) { /* Does user want us to include the common Opencaching <cache> element? */ ?>
+            <?php if ($vars['ns_oc']) { /* Does user want us to include the Opencaching <cache> element? */ ?>
                 <oc:cache>
                     <oc:type><?= $vars['cache_GPX_types'][$c['type']]['oc'] ?></oc:type>
                     <oc:size><?= $vars['cache_GPX_sizes'][$c['size2']]['oc'] ?></oc:size>
-                    <oc:requires_password><?= ($c['req_passwd'] ? "true" : "false") ?></oc:requires_password>
                     <?php if ($c['trip_time'] > 0) { ?>
                         <oc:trip_time><?= $c['trip_time'] ?></oc:trip_time>
                     <?php } ?>
                     <?php if ($c['trip_distance'] > 0) { ?>
                         <oc:trip_distance><?= $c['trip_distance'] ?></oc:trip_distance>
                     <?php } ?>
+                    <oc:requires_password><?= ($c['req_passwd'] ? "true" : "false") ?></oc:requires_password>
                     <?php if ($c['gc_code']) { ?>
                         <oc:other_code><?= $c['gc_code'] ?></oc:other_code>
+                    <?php } ?>
+                    <?php if ($vars['latest_logs']) { /* Does user want us to include latest log entries? */ ?>
+                        <oc:logs>
+                            <?php foreach ($c['latest_logs'] as $log) { ?>
+                                <oc:log id="<?= $log['internal_id'] ?>" uuid="<?= $log['uuid'] ?>">
+                                    <?php if ($log['oc_team_entry']) { ?>
+                                        <oc:site_team_entry>true</oc:site_team_entry>
+                                    <?php } ?>
+                                </oc:log>
+                            <?php } ?>
+                        </oc:logs>
                     <?php } ?>
                 </oc:cache>
             <?php } ?>

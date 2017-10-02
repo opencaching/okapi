@@ -32,6 +32,17 @@
         This namespace was initially associatied with geocaching.com, but now seems to
         be used in every geocaching GPX file. You probably want to have it.
     </opt>
+    <opt name='ns_oc' default='false'>
+        <p>Boolean. If <b>true</b> then the response will include the
+        <a href='https://github.com/opencaching/gpx-extension-v1/blob/master/schema.xsd'>
+        Opencaching GPX extension</a>. The GPX files will contain an additional
+        &lt;oc:cache&gt; element for each geocache, which contains Opencaching-specific
+        information about the geocache. If <b>latest_logs</b> is set to <b>true</b>,
+        then it will also contain Opencaching-specific information about log entries.</p>
+
+        <p>The Opencaching GPX extension was introduced by OKAPI and is expected to
+        be included in most OC sites' native GPX files.</p>
+    </opt>
     <opt name='ns_gsak' default='false'>
         <p>Boolean. If <b>true</b> then the response will include
         <a href='http://www.gsak.net/xmlv1/5/gsak.xsd'>GSAK GPX extension</a>.
@@ -54,19 +65,6 @@
         <p>OpenCaching.com no longer exists, but its XML namespace is still used by many
         applications (and not only the Garmin ones, e.g. see
         <a href='http://help.locusmap.eu/topic/how-to-use-gcvotes-functionality-with-opencaching'>here</a>).</p>
-    </opt>
-    <opt name='ns_oc' default='false'>
-        <p>Boolean. If <b>true</b> then the response will include the
-        <a href='https://github.com/opencaching/gpx-extension-v1/blob/master/schema.xsd'>
-        Opencaching GPX extension</a>. The GPX files will contain an
-        addition element &lt;oc:cache&gt; for each geocache, which
-        cointans Opencaching-specific information about the geocache.
-        If <b>ns_ground</b> and <b>latest_logs</b> are set to <b>true</b>,
-        the response will also include some extra &lt;oc:&gt; elements
-        for each &lt;groundspeak:log&gt; element.</p>
-
-        <p>The Opencaching GPX extension was introduced by OKAPI and is
-        expected to be included in most OC sites' native GPX files.</p>
     </opt>
     <opt name='images' default='descrefs:nonspoilers'>
         <p>Which images to include (and how to include them). One of the following values:</p>
