@@ -32,34 +32,31 @@ class View
         #  - plausibility test for data amount
         #  - verify that the output does not contain table contents
 
+        # At least the password must be quoted, because it often contains characters
+        # that the shell will misunderstand.
+
         ini_set('memory_limit', '16M');
-        $shell_arguments = "mysqldump --no-data -h$dbserver -u$user -p$password $dbname";
+        $password_escaped = str_replace('"', '\"', $password);
+        $shell_arguments = "mysqldump --no-data -h'$dbserver' -u'$user' -p\"".$password_escaped."\" '$dbname'";
         if (!strpos($shell_arguments,"--no-data"))
             throw new Exception("wrong database dump arguments");
         $struct = shell_exec($shell_arguments);
         if (strlen($struct) > 1000000)
             throw new Exception("something went wrong while dumping table structures");
-        if (stripos($struct,"dumping data") !== FALSE)
+        if (stripos($struct,"dumping data") !== false)
             throw new Exception("something went wrong while dumping table structures");
 
-        # If mysqldump does not return table structures, we will try some workarounds
-        # and diagnostics. See https://github.com/opencaching/okapi/issues/494.
+        # If mysqldump does not return table structures, test for errors.
+        # See https://github.com/opencaching/okapi/issues/494.
 
         if (strlen($struct) < 10000)
         {
-            # Does mysqldump send any message to stderr?
             $mysqldump_errors = shell_exec("$shell_arguments 2>&1 >/dev/null");
             if ($mysqldump_errors) {
+                # make sure that we do not disclose the password
+                $mysqldump_errors = str_replace($password_escaped, '<password>', $mysqldump_errors);
                 $mysqldump_errors = str_replace($password, '<password>', $mysqldump_errors);
-                Okapi::mail_admins('myslqdump problem', $mysqldump_errors);
-            }
-
-            # Did the pipe from shell_exec() break?
-            $tempfile = Okapi::get_var_dir().'/okapi-dbstruct-dump';
-            shell_exec("$shell_arguments >$tempfile");
-            if (file_exists($tempfile)) {
-                $struct = "[using mysqldump fallback]\n" . file_get_contents($tempfile);
-                unlink($tempfile);
+                Okapi::mail_admins('mysqldump problem', $mysqldump_errors);
             }
         }
 
