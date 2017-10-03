@@ -3,6 +3,7 @@
 namespace okapi\views\devel\dbstruct;
 
 use Exception;
+use okapi\core\Okapi;
 use okapi\core\Consumer\OkapiInternalConsumer;
 use okapi\core\Exception\BadRequest;
 use okapi\core\OkapiServiceRunner;
@@ -37,9 +38,30 @@ class View
             throw new Exception("wrong database dump arguments");
         $struct = shell_exec($shell_arguments);
         if (strlen($struct) > 1000000)
-            throw new Exception("something went terribly wrong while dumping table structures");
+            throw new Exception("something went wrong while dumping table structures");
         if (stripos($struct,"dumping data") !== FALSE)
-            throw new Exception("something went terribly wrong while dumping table structures");
+            throw new Exception("something went wrong while dumping table structures");
+
+        # If mysqldump does not return table structures, we will try some workarounds
+        # and diagnostics. See https://github.com/opencaching/okapi/issues/494.
+
+        if (strlen($struct) < 10000)
+        {
+            # Does mysqldump send any message to stderr?
+            $mysqldump_errors = shell_exec("$shell_arguments 2>&1 >/dev/null");
+            if ($mysqldump_errors) {
+                $mysqldump_errors = str_replace($password, '<password>', $mysqldump_errors);
+                Okapi::mail_admins('myslqdump problem', $mysqldump_errors);
+            }
+
+            # Did the pipe from shell_exec() break?
+            $tempfile = Okapi::get_var_dir().'/okapi-dbstruct-dump';
+            shell_exec("$shell_arguments >$tempfile");
+            if (file_exists($tempfile)) {
+                $struct = "[using mysqldump fallback]\n" . file_get_contents($tempfile);
+                unlink($tempfile);
+            }
+        }
 
         # Remove the "AUTO_INCREMENT=..." values. They break the diffs.
 
