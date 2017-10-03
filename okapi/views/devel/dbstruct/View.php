@@ -84,12 +84,17 @@ class View
             $scheme = parse_url($_GET['compare_to'], PHP_URL_SCHEME);
             if (in_array($scheme, array('http', 'https')))
             {
+                $response->body = '';
                 try {
                     $alternate_struct = @file_get_contents($_GET['compare_to']);
                 } catch (Exception $e) {
-                    throw new BadRequest("Failed to load ".$_GET['compare_to']);
+                    # curl fallback
+                    $alternate_struct = shell_exec('curl "'.$_GET['compare_to'].'"');
+                    if (strlen($alternate_struct) < 10000)
+                        throw new BadRequest("Failed to load ".$_GET['compare_to']);
+                    $response->body .= "[using fallback]\n";
                 }
-                $response->body =
+                $response->body .=
                     "-- Automatically generated database diff. Use with caution!\n".
                     "-- Differences obtained with help of cool library by Kirill Gerasimenko.\n\n".
                     "-- Note: The following script has some limitations. It will render database\n".
