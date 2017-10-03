@@ -11,7 +11,6 @@ use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Response\OkapiHttpResponse;
 use okapi\lib\DbStructUpdater;
 use okapi\Settings;
-use okapi\core\Db;
 
 class View
 {
@@ -25,10 +24,6 @@ class View
         $password = Settings::get('DB_PASSWORD');
         $dbname = Settings::get('DB_NAME');
         $dbserver = Settings::get('DB_SERVER');
-
-        # temporary code to fix the https://github.com/opencaching/okapi/issues/494 issue
-        if (isset($_GET['show_compatibility_56']))
-            Db::execute('set @@global.show_compatibility_56=ON');
 
         # Some security measures are taken to hinder us from accidentally dumping
         # database contents:
