@@ -22,7 +22,10 @@ use okapi\core\Exception\OkapiExceptionHandler;
 use okapi\core\Okapi;
 use okapi\core\OkapiErrorHandler;
 
-$GLOBALS['rootpath'] = __DIR__.'/../';
+# When deployed via composer, the rootpath is already set.
+if (!isset($GLOBALS['rootpath'])) {
+    $GLOBALS['rootpath'] = __DIR__.'/../';
+}
 
 require_once __DIR__ . '/autoload.php';
 
