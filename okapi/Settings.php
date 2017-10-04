@@ -237,7 +237,7 @@ final class Settings
             OkapiErrorHandler::disable();
             $okapiSettings = __DIR__ . '/../okapi_settings.php';
             if (!file_exists($okapiSettings)) {
-                $okapiSettings = __DIR__ . '/../../../okapi_settings.php';
+                $okapiSettings = __DIR__ . '/../../../../okapi_settings.php';
             }
             require_once $okapiSettings;
             $ref = get_okapi_settings();
