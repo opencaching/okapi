@@ -88,11 +88,17 @@ class View
                 try {
                     $alternate_struct = @file_get_contents($_GET['compare_to']);
                 } catch (Exception $e) {
-                    # curl fallback
+                    # curl fallback;
+                    # see https://github.com/opencaching/okapi/issues/494.
+
                     $alternate_struct = shell_exec('curl "'.$_GET['compare_to'].'"');
-                    if (strlen($alternate_struct) < 10000)
-                        throw new BadRequest("Failed to load ".$_GET['compare_to']);
-                    $response->body .= "[using fallback]\n";
+                    if (strlen($alternate_struct) < 10000) {
+                        # curl should not output any sensitive information.
+                        # Let's return the error message.
+                        $errormsg = shell_exec('curl "'.$_GET['compare_to'].'" 2>&1 >/dev/null');
+                        throw new BadRequest("Failed to load ".$_GET['compare_to'].": ".$errormsg);
+                    }
+                    $response->body .= "-- [using fallback]\n\n";
                 }
                 $response->body .=
                     "-- Automatically generated database diff. Use with caution!\n".
