@@ -20,7 +20,7 @@
     <body class='api'>
         <div class='okd_mid'>
             <div class='okd_top'>
-                <?php include __DIR__ . '/../snippets/installations_box.tpl.php'; ?>
+                <?php include __DIR__.'/../snippets/installations_box.tpl.php'; ?>
                 <table cellspacing='0' cellpadding='0'><tr>
                     <td class='apimenu'>
                         <?= $vars['menu'] ?>
@@ -32,9 +32,12 @@
 
                         <h1>Changes to the OKAPI interface or administration</h1>
 
-                        <?php if (!$vars['changes']['available']) { ?>
+                        <?php if (!$vars['changes']['available']) {
+    ?>
                         <p><em>The Changelog is currently not available.</em></p>
-                        <?php } else { ?>
+                        <?php 
+} else {
+    ?>
 
                         <p>Changes to the interface are always backward compatible.
                         You need not to update your applications after any change.
@@ -43,14 +46,14 @@
 
                         <?php
                         $br = '';
-                        foreach ($vars['changes'] as $type => $changes) {
-                            if (count($changes)) {
-                                if ($type == 'unavailable') {
-                                    echo "<p>The following changes are not available yet at " . $vars['site_name'] . ":</p>";
-                                    $br = '<br />';
-                                } else {
-                                    echo "<p>".$br."The following changes are available at " . $vars['site_name'] . ":</p>";
-                                } ?>
+    foreach ($vars['changes'] as $type => $changes) {
+        if (count($changes)) {
+            if ($type == 'unavailable') {
+                echo '<p>The following changes are not available yet at '.$vars['site_name'].':</p>';
+                $br = '<br />';
+            } else {
+                echo '<p>'.$br.'The following changes are available at '.$vars['site_name'].':</p>';
+            } ?>
 
                                 <table cellspacing='1px' class='changelog'>
                                     <tr>
@@ -58,16 +61,20 @@
                                         <th>Date</th>
                                         <th>Change</th>
                                     </tr>
-                                <?php foreach($changes as $change) { ?>
+                                <?php foreach ($changes as $change) {
+                ?>
                                     <tr id="v<?= $change['version'] ?>">
                                         <td><a href="https://github.com/opencaching/okapi/commit/<?= $change['commit'] ?>"><?= $change['version'] ?></a></td>
                                         <td><?= substr($change['time'], 0, 10) ?></td>
-                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed: ' : '') . $change['comment'] ?></td>
+                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed: ' : '').$change['comment'] ?></td>
                                     </tr>
-                                <?php } ?>
+                                <?php 
+            } ?>
                                 </table>
-                            <?php } ?>
-                        <?php } ?>
+                            <?php 
+        } ?>
+                        <?php 
+    } ?>
 
                         <br />
                         <p>This list shows only changes that are considered to be
@@ -78,7 +85,8 @@
                         <p>OKAPI was started in August 2011 at the OCPL code branch,
                         and it was deployed to the OCDE branch in April 2013.</p>
 
-                        <?php } ?>
+                        <?php 
+} ?>
 
                         <h2 id='comments'>Comments</h2>
 

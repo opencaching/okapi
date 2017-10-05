@@ -15,7 +15,7 @@ class View
         $token_key = isset($_GET['oauth_token']) ? $_GET['oauth_token'] : '';
         $verifier = isset($_GET['oauth_verifier']) ? $_GET['oauth_verifier'] : '';
         $langpref = isset($_GET['langpref']) ? $_GET['langpref'] : Settings::get('SITELANG');
-        $langprefs = explode("|", $langpref);
+        $langprefs = explode('|', $langpref);
 
         $token = Db::select_row("
             select
@@ -31,15 +31,14 @@ class View
                 and t.consumer_key = c.`key`
         ");
 
-        if (!$token)
-        {
-            # Probably Request Token has expired or it was already used. We'll
-            # just redirect to the Opencaching main page.
+        if (!$token) {
+            // Probably Request Token has expired or it was already used. We'll
+            // just redirect to the Opencaching main page.
             return new OkapiRedirectResponse(Settings::get('SITE_URL'));
         }
 
         $vars = array(
-            'okapi_base_url' => Settings::get('SITE_URL')."okapi/",
+            'okapi_base_url' => Settings::get('SITE_URL').'okapi/',
             'token' => $token,
             'verifier' => $verifier,
             'site_name' => Okapi::get_normalized_site_name(),
@@ -47,12 +46,13 @@ class View
             'site_logo' => Settings::get('SITE_LOGO'),
         );
         $response = new OkapiHttpResponse();
-        $response->content_type = "text/html; charset=utf-8";
+        $response->content_type = 'text/html; charset=utf-8';
         ob_start();
         Okapi::gettext_domain_init($langprefs);
-        include __DIR__ . '/authorized.tpl.php';
+        include __DIR__.'/authorized.tpl.php';
         $response->body = ob_get_clean();
         Okapi::gettext_domain_restore();
+
         return $response;
     }
 }

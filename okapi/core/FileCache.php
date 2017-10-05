@@ -11,9 +11,11 @@ class FileCache
 {
     public static function get_file_path($key)
     {
-        $filename = Okapi::get_var_dir()."/okapi_filecache_".md5($key);
-        if (!file_exists($filename))
+        $filename = Okapi::get_var_dir().'/okapi_filecache_'.md5($key);
+        if (!file_exists($filename)) {
             return null;
+        }
+
         return $filename;
     }
 
@@ -24,8 +26,9 @@ class FileCache
      */
     public static function set($key, $value)
     {
-        $filename = Okapi::get_var_dir()."/okapi_filecache_".md5($key);
+        $filename = Okapi::get_var_dir().'/okapi_filecache_'.md5($key);
         file_put_contents($filename, $value);
+
         return $filename;
     }
 }

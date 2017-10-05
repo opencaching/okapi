@@ -2,7 +2,7 @@
 
 use okapi\core\Okapi;
 
-# Shortcuts
+// Shortcuts
 $m = $vars['method'];
 
 ?>
@@ -22,7 +22,7 @@ $m = $vars['method'];
     <body class='api'>
         <div class='okd_mid'>
             <div class='okd_top'>
-                <?php include __DIR__ . '/../snippets/installations_box.tpl.php'; ?>
+                <?php include __DIR__.'/../snippets/installations_box.tpl.php'; ?>
                 <table cellspacing='0' cellpadding='0'><tr>
                     <td class='apimenu'>
                         <?= $vars['menu'] ?>
@@ -45,7 +45,7 @@ $m = $vars['method'];
                             </tr>
                             <tr>
                                 <td class='caption' colspan='3'>
-                                    <b><?= \okapi\Settings::get('SITE_URL')."okapi/".$m['name'] ?></b>
+                                    <b><?= \okapi\Settings::get('SITE_URL').'okapi/'.$m['name'] ?></b>
                                 </td>
                             </tr>
                             <tr>
@@ -53,7 +53,8 @@ $m = $vars['method'];
                                     <?= $m['description'] ?>
                                 </td>
                             </tr>
-                            <?php foreach ($m['arguments'] as $arg) { ?>
+                            <?php foreach ($m['arguments'] as $arg) {
+    ?>
                                 <tr class='<?= $arg['class'] ?>' id='<?= 'arg_'.$arg['name'] ?>'>
                                     <td class='argname'>
                                         <?= $arg['name'] ?>
@@ -62,30 +63,41 @@ $m = $vars['method'];
                                         <?php echo $arg['is_required'] ? 'required' : 'optional'; ?>
                                     </td>
                                     <td class='argdesc'>
-                                        <?php if (count($arg['infotags']) > 0) { ?>
+                                        <?php if (count($arg['infotags']) > 0) {
+        ?>
                                             <div style='float: right'>
                                                 <?= Okapi::format_infotags($arg['infotags']) ?>
                                             </div>
-                                        <?php } ?>
+                                        <?php 
+    } ?>
                                         <?= $arg['description'] ?>
                                     </td>
                                 </tr>
-                            <?php } ?>
+                            <?php 
+} ?>
                             <tr>
                                 <td colspan='3' class='oauth_args'>
-                                    <?php if ($m['auth_options']['min_auth_level'] == 0) { ?>
+                                    <?php if ($m['auth_options']['min_auth_level'] == 0) {
+    ?>
                                         No additional authentication parameters are required.
-                                    <?php } elseif ($m['auth_options']['min_auth_level'] == 1) { ?>
+                                    <?php 
+} elseif ($m['auth_options']['min_auth_level'] == 1) {
+    ?>
                                         <b>Plus required</b> <i>consumer_key</i> argument, assigned for your application.
-                                    <?php } else { ?>
+                                    <?php 
+} else {
+    ?>
                                         <b>Plus required</b>
                                         standard OAuth Consumer signing arguments:
                                         <i>oauth_consumer_key, oauth_nonce, oauth_timestamp, oauth_signature,
                                         oauth_signature_method, oauth_version</i>.
-                                        <?php if ($m['auth_options']['min_auth_level'] == 3) { ?>
+                                        <?php if ($m['auth_options']['min_auth_level'] == 3) {
+        ?>
                                             <b>Plus required</b> <i>oauth_token</i> for Token authorization.
-                                        <?php } ?>
-                                    <?php } ?>
+                                        <?php 
+    } ?>
+                                    <?php 
+} ?>
                                 </td>
                             </tr>
                             <tr><td colspan='3' class='returns'>
@@ -93,9 +105,11 @@ $m = $vars['method'];
                                 <?= $m['returns'] ?>
                             </td></tr>
                         </table>
-                        <?php if ($m['issue_id']) { ?>
+                        <?php if ($m['issue_id']) {
+    ?>
                             <div class='issue-comments' issue_id='<?= $m['issue_id'] ?>'></div>
-                        <?php } ?>
+                        <?php 
+} ?>
                     </td>
                 </tr></table>
             </div>

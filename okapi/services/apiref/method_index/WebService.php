@@ -17,7 +17,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 0
+            'min_auth_level' => 0,
         );
     }
 
@@ -25,11 +25,9 @@ class WebService
     {
         $cache_key = self::generateCacheKey();
         $results = Cache::get($cache_key);
-        if ($results == null)
-        {
+        if ($results == null) {
             $results = array();
-            foreach (OkapiServiceRunner::$all_names as $methodname)
-            {
+            foreach (OkapiServiceRunner::$all_names as $methodname) {
                 $info = OkapiServiceRunner::call('services/apiref/method', new OkapiInternalRequest(
                     new OkapiInternalConsumer(), null, array('name' => $methodname)));
                 $results[] = array(
@@ -42,6 +40,7 @@ class WebService
             }
             Cache::set($cache_key, $results, 86400);
         }
+
         return Okapi::formatted_response($request, $results);
     }
 
@@ -51,40 +50,37 @@ class WebService
      * We want the method index to return fast, but we also don't want developers to see cached
      * results when they are adding (or changing) methods (in dev-environments).
      */
-    private static function generateCacheKey() {
-
+    private static function generateCacheKey()
+    {
         if (!Settings::get('DEBUG')) {
-
             /* Production. */
 
             if (Okapi::$version_number !== null) {
-                return "api_ref/method_index#prod#".Okapi::$version_number;
-            } else {
-                $methodnames = OkapiServiceRunner::$all_names;
-                sort($methodnames);
-                return "api_ref/method_index#".md5(implode("#", $methodnames));
+                return 'api_ref/method_index#prod#'.Okapi::$version_number;
             }
+            $methodnames = OkapiServiceRunner::$all_names;
+            sort($methodnames);
 
-        } else {
-
+            return 'api_ref/method_index#'.md5(implode('#', $methodnames));
+        }
             /* Development. */
 
-            return (
-                "api_ref/method_index#dev#".
-                self::getDirModDateRecursive(__DIR__. '/../../../../okapi/services')
-            );
-        }
+            return
+                'api_ref/method_index#dev#'.
+                self::getDirModDateRecursive(__DIR__.'/../../../../okapi/services')
+            ;
     }
 
-    private static function getDirModDateRecursive($absoluteDir) {
+    private static function getDirModDateRecursive($absoluteDir)
+    {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($absoluteDir, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::SELF_FIRST
         );
         $max_timestamp = 0;
         foreach ($iterator as $item) {
-            if($item->isDir()) {
-                $pth = $item->getPath()."/.";
+            if ($item->isDir()) {
+                $pth = $item->getPath().'/.';
             } else {
                 $pth = $item->getPathname();
             }
@@ -93,6 +89,7 @@ class WebService
                 $max_timestamp = $timestamp;
             }
         }
+
         return $max_timestamp;
     }
 }

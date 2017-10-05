@@ -13,13 +13,16 @@ abstract class PrerequestCronJob extends CronJob
     /**
      * Always returns 'pre-request'.
      */
-    public final function get_type() { return 'pre-request'; }
+    final public function get_type()
+    {
+        return 'pre-request';
+    }
 
     /**
      * Return number of seconds - a *minimum* time period that should pass between
      * running the job.
      */
-    public abstract function get_period();
+    abstract public function get_period();
 
     public function get_next_scheduled_run($previously_scheduled_run)
     {

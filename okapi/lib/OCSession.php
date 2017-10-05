@@ -54,6 +54,7 @@ class OCSession
                 and user.user_id = sys_sessions.user_id
                 and user.is_active_flag = 1
         ");
+
         return $cached_result;
     }
 }

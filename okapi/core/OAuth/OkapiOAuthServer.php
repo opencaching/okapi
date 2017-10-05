@@ -11,11 +11,11 @@ class OkapiOAuthServer extends OAuthServer
     {
         parent::__construct($data_store);
 
-        # https://github.com/opencaching/okapi/issues/475
+        // https://github.com/opencaching/okapi/issues/475
 
         $this->add_signature_method(new OAuthSignatureMethod_HMAC_SHA1());
         if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-            # Request was made over HTTPS. Allow PLAINTEXT method.
+            // Request was made over HTTPS. Allow PLAINTEXT method.
             $this->add_signature_method(new OAuthSignatureMethod_PLAINTEXT());
         }
     }
@@ -33,14 +33,16 @@ class OkapiOAuthServer extends OAuthServer
         try {
             $token = $this->get_token($request, $consumer, $token_type);
         } catch (OAuthMissingParameterException $e) {
-            # Note, that exception will be different if token is supplied
-            # and is invalid. We catch only a completely MISSING token parameter.
-            if (($e->getParamName() == 'oauth_token') && (!$token_required))
+            // Note, that exception will be different if token is supplied
+            // and is invalid. We catch only a completely MISSING token parameter.
+            if (($e->getParamName() == 'oauth_token') && (!$token_required)) {
                 $token = null;
-            else
+            } else {
                 throw $e;
+            }
         }
         $this->check_signature($request, $consumer, $token);
+
         return array($consumer, $token);
     }
 }

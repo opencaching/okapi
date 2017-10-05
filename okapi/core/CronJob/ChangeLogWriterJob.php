@@ -9,7 +9,11 @@ use okapi\services\replicate\ReplicateCommon;
  */
 class ChangeLogWriterJob extends Cron5Job
 {
-    public function get_period() { return 300; }
+    public function get_period()
+    {
+        return 300;
+    }
+
     public function execute()
     {
         ReplicateCommon::update_clog_table();

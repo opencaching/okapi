@@ -15,59 +15,62 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 3
+            'min_auth_level' => 3,
         );
     }
 
     public static function call(OkapiRequest $request)
     {
-        # Get current notes, and verify cache_code
+        // Get current notes, and verify cache_code
 
         $cache_code = $request->get_parameter('cache_code');
-        if ($cache_code == null)
+        if ($cache_code == null) {
             throw new ParamMissing('cache_code');
+        }
         $geocache = OkapiServiceRunner::call(
             'services/caches/geocache',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'cache_code' => $cache_code,
-                'fields' => 'my_notes|internal_id'
+                'fields' => 'my_notes|internal_id',
             ))
         );
         $current_value = $geocache['my_notes'];
         if ($current_value == null) {
-            $current_value = "";
+            $current_value = '';
         }
         $cache_id = $geocache['internal_id'];
 
-        # old_value
+        // old_value
 
         $old_value = $request->get_parameter('old_value');
-        if ($old_value === null)
+        if ($old_value === null) {
             $old_value = '';
+        }
 
-        # new_value (force "no HTML" policy).
+        // new_value (force "no HTML" policy).
 
         $new_value = $request->get_parameter('new_value');
-        if ($new_value === null)
+        if ($new_value === null) {
             throw new ParamMissing('new_value');
+        }
 
-        # Force "no HTML" policy.
+        // Force "no HTML" policy.
 
         $new_value = strip_tags($new_value);
 
-        # Placeholders for returned values.
+        // Placeholders for returned values.
 
         $ret_saved_value = null;
         $ret_replaced = false;
 
         if (
-            trim($current_value) == "" ||
+            trim($current_value) == '' ||
             self::str_equals($old_value, $current_value)
         ) {
             /* REPLACE mode */
 
             $ret_replaced = true;
-            if (trim($new_value) == "") {
+            if (trim($new_value) == '') {
                 /* empty new value means delete */
                 self::remove_notes($cache_id, $request->token->user_id);
                 $ret_saved_value = null;
@@ -75,9 +78,7 @@ class WebService
                 self::update_notes($cache_id, $request->token->user_id, $new_value);
                 $ret_saved_value = $new_value;
             }
-
         } else {
-
             /* APPEND mode */
 
             $ret_saved_value = trim($current_value)."\n\n".trim($new_value);
@@ -87,17 +88,20 @@ class WebService
         Okapi::update_user_activity($request);
         $result = array(
             'saved_value' => $ret_saved_value,
-            'replaced' => $ret_replaced
+            'replaced' => $ret_replaced,
         );
+
         return Okapi::formatted_response($request, $result);
     }
 
     private static function str_equals($str1, $str2)
     {
-        if ($str1 == null)
+        if ($str1 == null) {
             $str1 = '';
-        if ($str2 == null)
+        }
+        if ($str2 == null) {
             $str2 = '';
+        }
         $str1 = mb_ereg_replace("[ \t\n\r\x0B]+", '', $str1);
         $str2 = mb_ereg_replace("[ \t\n\r\x0B]+", '', $str2);
 
@@ -106,8 +110,7 @@ class WebService
 
     private static function update_notes($cache_id, $user_id, $new_notes)
     {
-        if (Settings::get('OC_BRANCH') == 'oc.de')
-        {
+        if (Settings::get('OC_BRANCH') == 'oc.de') {
             /* See:
              *
              * - https://github.com/OpencachingDeutschland/oc-server3/tree/development/htdocs/src/Oc/Libse/CacheNote
@@ -123,7 +126,7 @@ class WebService
                     and user_id = '".Db::escape_string($user_id)."'
             ");
             $id = null;
-            if($row = Db::fetch_assoc($rs)) {
+            if ($row = Db::fetch_assoc($rs)) {
                 $id = $row['id'];
             }
             if ($id == null) {
@@ -147,9 +150,7 @@ class WebService
                         and type = 2
                 ");
             }
-        }
-        else  # oc.pl branch
-        {
+        } else {  // oc.pl branch
             $rs = Db::query("
                 select max(note_id) as id
                 from cache_notes
@@ -158,7 +159,7 @@ class WebService
                     and user_id = '".Db::escape_string($user_id)."'
             ");
             $id = null;
-            if($row = Db::fetch_assoc($rs)) {
+            if ($row = Db::fetch_assoc($rs)) {
                 $id = $row['id'];
             }
             if ($id == null) {
@@ -188,7 +189,7 @@ class WebService
     private static function remove_notes($cache_id, $user_id)
     {
         if (Settings::get('OC_BRANCH') == 'oc.de') {
-            # we can delete row if and only if there are no coords in it
+            // we can delete row if and only if there are no coords in it
             $affected_row_count = Db::execute("
                 delete from coordinates
                 where
@@ -198,9 +199,9 @@ class WebService
                     and longitude = 0
                     and latitude = 0
             ");
-            if ($affected_row_count <= 0){
-                # no rows deleted - record either doesn't exist, or has coords
-                # remove only description
+            if ($affected_row_count <= 0) {
+                // no rows deleted - record either doesn't exist, or has coords
+                // remove only description
                 Db::execute("
                     update coordinates
                     set description = null
@@ -210,7 +211,7 @@ class WebService
                         and user_id = '".Db::escape_string($user_id)."'
                 ");
             }
-        } else {  # oc.pl branch
+        } else {  // oc.pl branch
             Db::execute("
                 delete from cache_notes
                 where

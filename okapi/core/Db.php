@@ -2,9 +2,9 @@
 
 namespace okapi\core;
 
-#
-# Database access abstraction layer.
-#
+//
+// Database access abstraction layer.
+//
 use okapi\core\Exception\DbException;
 use okapi\core\Exception\DbInitException;
 use okapi\core\Exception\DbLockWaitTimeoutException;
@@ -39,7 +39,7 @@ class Db
         $dsnarr = array(
             'host' => Settings::get('DB_SERVER'),
             'dbname' => Settings::get('DB_NAME'),
-            'charset' => Settings::get('DB_CHARSET')
+            'charset' => Settings::get('DB_CHARSET'),
         );
 
         $options = array(
@@ -52,7 +52,7 @@ class Db
         /* Older PHP versions do not support the 'charset' DSN option. */
 
         if ($dsnarr['charset'] and version_compare(PHP_VERSION, '5.3.6', '<')) {
-            $options[PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES ' . $dsnarr['charset'];
+            $options[PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES '.$dsnarr['charset'];
         }
 
         $dsnpairs = array();
@@ -60,10 +60,10 @@ class Db
             if ($v === null) {
                 continue;
             }
-            $dsnpairs[] = $k . "=" . $v;
+            $dsnpairs[] = $k.'='.$v;
         }
 
-        $dsn = 'mysql:' . implode(';', $dsnpairs);
+        $dsn = 'mysql:'.implode(';', $dsnpairs);
         try {
             self::$dbh = new PDO(
                 $dsn, Settings::get('DB_USERNAME'), Settings::get('DB_PASSWORD'), $options
@@ -78,8 +78,7 @@ class Db
     public static function select_row($query)
     {
         $rows = self::select_all($query);
-        switch (count($rows))
-        {
+        switch (count($rows)) {
             case 0: return null;
             case 1: return $rows[0];
             default:
@@ -92,24 +91,26 @@ class Db
     {
         $rows = array();
         self::select_and_push($query, $rows);
+
         return $rows;
     }
 
     /** Private. */
-    private static function select_and_push($query, & $arr, $keyField = null)
+    private static function select_and_push($query, &$arr, $keyField = null)
     {
         $rs = self::query($query);
-        while (true)
-        {
-            $row = Db::fetch_assoc($rs);
-            if ($row === false)
+        while (true) {
+            $row = self::fetch_assoc($rs);
+            if ($row === false) {
                 break;
-            if ($keyField == null)
+            }
+            if ($keyField == null) {
                 $arr[] = $row;
-            else
+            } else {
                 $arr[$row[$keyField]] = $row;
+            }
         }
-        Db::free_result($rs);
+        self::free_result($rs);
     }
 
     /** Fetch all [(A,A), (A,B), (B,A)], return {A: [{row}, {row}], B: [{row}]}. */
@@ -117,14 +118,15 @@ class Db
     {
         $groups = array();
         $rs = self::query($query);
-        while (true)
-        {
-            $row = Db::fetch_assoc($rs);
-            if ($row === false)
+        while (true) {
+            $row = self::fetch_assoc($rs);
+            if ($row === false) {
                 break;
+            }
             $groups[$row[$keyField]][] = $row;
         }
-        Db::free_result($rs);
+        self::free_result($rs);
+
         return $groups;
     }
 
@@ -132,10 +134,12 @@ class Db
     public static function select_value($query)
     {
         $column = self::select_column($query);
-        if ($column == null)
+        if ($column == null) {
             return null;
-        if (count($column) == 1)
+        }
+        if (count($column) == 1) {
             return $column[0];
+        }
         throw new DbTooManyRowsException("Invalid query. Db::select_value returned more than one row for:\n\n".$query."\n");
     }
 
@@ -144,14 +148,15 @@ class Db
     {
         $column = array();
         $rs = self::query($query);
-        while (true)
-        {
-            $values = Db::fetch_row($rs);
-            if ($values === false)
+        while (true) {
+            $values = self::fetch_row($rs);
+            if ($values === false) {
                 break;
+            }
             array_push($column, $values[0]);
         }
-        Db::free_result($rs);
+        self::free_result($rs);
+
         return $column;
     }
 
@@ -177,8 +182,10 @@ class Db
 
     public static function escape_string($value)
     {
-        if (!self::$connected)
+        if (!self::$connected) {
             self::connect();
+        }
+
         return substr(self::$dbh->quote($value), 1, -1);  // soo ugly!
     }
 
@@ -188,8 +195,9 @@ class Db
      */
     public static function execute($query)
     {
-        if (!self::$connected)
+        if (!self::$connected) {
             self::connect();
+        }
         try {
             return self::$dbh->exec($query);
         } catch (PDOException $e) {
@@ -218,70 +226,70 @@ class Db
      */
     public static function query($query)
     {
-        if (!self::$connected)
+        if (!self::$connected) {
             self::connect();
-        try
-        {
-            $rs = self::$dbh->query($query);
         }
-        catch (PDOException $e)
-        {
+        try {
+            $rs = self::$dbh->query($query);
+        } catch (PDOException $e) {
             list($sqlstate, $errno, $msg) = $e->errorInfo;
 
             /* Detect issue #340 and try to repair... */
 
-            if (in_array($errno, array(144, 130)) && strstr($msg, "okapi_cache")) {
-
+            if (in_array($errno, array(144, 130)) && strstr($msg, 'okapi_cache')) {
                 /* MySQL claims that is tries to repair it automatically. We'll
                  * try outselves. */
 
                 try {
-                    self::execute("repair table okapi_cache");
+                    self::execute('repair table okapi_cache');
                     Okapi::mail_admins(
-                        "okapi_cache - Automatic repair",
+                        'okapi_cache - Automatic repair',
                         "Hi.\n\nOKAPI detected that okapi_cache table needed ".
                         "repairs and it has performed such\nrepairs automatically. ".
-                        "However, this should not happen regularly!"
+                        'However, this should not happen regularly!'
                     );
                 } catch (\Exception $e) {
-
                     /* Last resort. */
 
                     try {
-                        self::execute("truncate okapi_cache");
+                        self::execute('truncate okapi_cache');
                         Okapi::mail_admins(
-                            "okapi_cache was truncated",
+                            'okapi_cache was truncated',
                             "Hi.\n\nOKAPI detected that okapi_cache table needed ".
                             "repairs, but it failed to repair\nthe table automatically. ".
                             "In order to counteract more severe errors, \nwe have ".
                             "truncated the okapi_cache table to make it alive.\n".
-                            "However, this should not happen regularly!"
+                            'However, this should not happen regularly!'
                         );
                     } catch (\Exception $e) {
-                        # pass
+                        // pass
                     }
                 }
             }
 
             self::throwProperDbException($e, $query);
         }
+
         return $rs;
     }
 
     public static function field_exists($table, $field)
     {
-        if (!preg_match("/[a-z0-9_]+/", $table.$field))
+        if (!preg_match('/[a-z0-9_]+/', $table.$field)) {
             return false;
+        }
         try {
-            $spec = self::select_all("desc ".$table.";");
+            $spec = self::select_all('desc '.$table.';');
         } catch (\Exception $e) {
             /* Table doesn't exist, probably. */
             return false;
         }
         foreach ($spec as &$row_ref) {
-            if (strtoupper($row_ref['Field']) == strtoupper($field))
+            if (strtoupper($row_ref['Field']) == strtoupper($field)) {
                 return true;
+            }
         }
+
         return false;
     }
 

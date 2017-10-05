@@ -2,9 +2,9 @@
 
 namespace okapi\services\apisrv\installation;
 
+use okapi\core\Db;
 use okapi\core\Okapi;
 use okapi\core\Request\OkapiRequest;
-use okapi\core\Db;
 use okapi\Settings;
 
 class WebService
@@ -12,7 +12,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 0
+            'min_auth_level' => 0,
         );
     }
 

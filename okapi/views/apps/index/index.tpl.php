@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <title><?= _("My Apps") ?></title>
+        <title><?= _('My Apps') ?></title>
     </head>
     <style>
         .okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
@@ -26,33 +26,43 @@
             <a href='<?= $vars['site_url'] ?>'><img src="<?= $vars['site_logo'] ?>" alt='Opencaching' style='float: left; margin-right: 10px'></a>
             <a href='<?= $vars['site_url'] ?>' class='opencaching'><?= $vars['site_name'] ?></a>
 
-            <h1 style='clear: both'><?= _("Your external applications") ?></h1>
-            <?php if (count($vars['apps']) > 0) { ?>
-                <?= sprintf(_("
+            <h1 style='clear: both'><?= _('Your external applications') ?></h1>
+            <?php if (count($vars['apps']) > 0) {
+    ?>
+                <?= sprintf(_('
                     <p>This is the list of applications which you granted access to your <b>%s</b> account.
                     This page gives you the ability to revoke all previously granted privileges.
-                    Once you click \"remove\" the application will no longer be able to perform any
+                    Once you click "remove" the application will no longer be able to perform any
                     actions on your behalf.</p>
-                "), $vars['site_name']) ?>
+                '), $vars['site_name']) ?>
                 <ul>
-                    <?php foreach ($vars['apps'] as $app) { ?>
+                    <?php foreach ($vars['apps'] as $app) {
+        ?>
                         <li>
-                            <?php if ($app['url']) { ?>
+                            <?php if ($app['url']) {
+            ?>
                                 <a href='<?= htmlspecialchars($app['url'], ENT_QUOTES, 'utf-8') ?>'><?= htmlspecialchars($app['name'], ENT_QUOTES, 'utf-8') ?></a>
-                            <?php } else { ?>
+                            <?php 
+        } else {
+            ?>
                                 <?= htmlspecialchars($app['name'], ENT_QUOTES, 'utf-8') ?>
-                            <?php } ?>
-                            - <a href='<?= $vars['okapi_base_url'] ?>apps/revoke_access?consumer_key=<?= $app['key'] ?>'><?= _("remove") ?></a>
+                            <?php 
+        } ?>
+                            - <a href='<?= $vars['okapi_base_url'] ?>apps/revoke_access?consumer_key=<?= $app['key'] ?>'><?= _('remove') ?></a>
                         </li>
-                    <?php } ?>
+                    <?php 
+    } ?>
                 </ul>
-            <?php } else { ?>
+            <?php 
+} else {
+    ?>
                 <?= sprintf(_("
                     <p>Thanks to the <a href='%s'>OKAPI Framework</a> you can grant external applications
                     access to your <b>%s</b> account. Currently no applications are authorized to act
                     on your behalf. Once you start using external Opencaching applications, they will appear here.</p>
                 "), $vars['okapi_base_url'], $vars['site_name']) ?>
-            <?php } ?>
+            <?php 
+} ?>
         </div>
 
     </body>

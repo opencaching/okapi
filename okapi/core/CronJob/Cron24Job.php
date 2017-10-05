@@ -15,25 +15,29 @@ abstract class Cron24Job extends CronJob
     /**
      * Always returns 'cron-5'.
      */
-    public final function get_type() { return 'cron-5'; }
+    final public function get_type()
+    {
+        return 'cron-5';
+    }
 
     /**
      * Return "hh:mm" (must be exactly 5 chars!) - the (local) time of day at
      * which the cronjob should be executed.
      */
-    public abstract function get_scheduled_time();
+    abstract public function get_scheduled_time();
 
     public function get_next_scheduled_run($previously_scheduled_run)
     {
         $datestr = date('c'); // e.g. "2004-02-12T15:19:21+02:00"
         $datestr = (
-            substr($datestr, 0, 11) . $this->get_scheduled_time() . ":00" .
+            substr($datestr, 0, 11).$this->get_scheduled_time().':00'.
             substr($datestr, 19)
         );
         $t = strtotime($datestr);
         if ($t <= time()) {
             $t += 86400;
         }
+
         return $t;
     }
 }

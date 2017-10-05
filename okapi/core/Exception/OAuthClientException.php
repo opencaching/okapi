@@ -2,6 +2,8 @@
 
 namespace okapi\core\Exception;
 
-# All OAuthExceptions fall back into these two categories:
+// All OAuthExceptions fall back into these two categories:
 /** OAuth client errors. */
-class OAuthClientException extends OAuthException {}
+class OAuthClientException extends OAuthException
+{
+}

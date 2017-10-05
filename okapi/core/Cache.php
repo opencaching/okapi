@@ -17,11 +17,10 @@ class Cache
      */
     public static function set($key, $value, $timeout)
     {
-        if ($timeout == null)
-        {
-            # The current cache implementation is ALWAYS persistent, so we will
-            # just replace it with a big value.
-            $timeout = 100*365*86400;
+        if ($timeout == null) {
+            // The current cache implementation is ALWAYS persistent, so we will
+            // just replace it with a big value.
+            $timeout = 100 * 365 * 86400;
         }
         Db::execute("
             replace into okapi_cache (`key`, value, expires)
@@ -53,27 +52,26 @@ class Cache
     /** Do 'set' on many keys at once. */
     public static function set_many($dict, $timeout)
     {
-        if (count($dict) == 0)
+        if (count($dict) == 0) {
             return;
-        if ($timeout == null)
-        {
-            # The current cache implementation is ALWAYS persistent, so we will
-            # just replace it with a big value.
-            $timeout = 100*365*86400;
+        }
+        if ($timeout == null) {
+            // The current cache implementation is ALWAYS persistent, so we will
+            // just replace it with a big value.
+            $timeout = 100 * 365 * 86400;
         }
         $entries_escaped = array();
-        foreach ($dict as $key => $value)
-        {
+        foreach ($dict as $key => $value) {
             $entries_escaped[] = "(
                 '".Db::escape_string($key)."',
                 '".Db::escape_string(gzdeflate(serialize($value)))."',
                 date_add(now(), interval '".Db::escape_string($timeout)."' second)
             )";
         }
-        Db::execute("
+        Db::execute('
             replace into okapi_cache (`key`, value, expires)
-            values ".implode(", ", $entries_escaped)."
-        ");
+            values '.implode(', ', $entries_escaped).'
+        ');
     }
 
     /**
@@ -90,15 +88,16 @@ class Cache
                 and expires > now()
         ");
         list($blob, $score) = Db::fetch_row($rs);
-        if (!$blob)
+        if (!$blob) {
             return null;
-        if ($score != null)  # Only non-null entries are scored.
-        {
+        }
+        if ($score != null) {  // Only non-null entries are scored.
             Db::execute("
                 insert into okapi_cache_reads (`cache_key`)
                 values ('".Db::escape_string($key)."')
             ");
         }
+
         return unserialize(gzinflate($blob));
     }
 
@@ -113,26 +112,26 @@ class Cache
                 `key` in ('".implode("','", array_map('\okapi\core\Db::escape_string', $keys))."')
                 and expires > now()
         ");
-        while ($row = Db::fetch_assoc($rs))
-        {
-            try
-            {
+        while ($row = Db::fetch_assoc($rs)) {
+            try {
                 $dict[$row['key']] = unserialize(gzinflate($row['value']));
-            }
-            catch (ErrorException $e)
-            {
+            } catch (ErrorException $e) {
                 unset($dict[$row['key']]);
-                Okapi::mail_admins("Debug: Unserialize error",
+                Okapi::mail_admins('Debug: Unserialize error',
                     "Could not unserialize key '".$row['key']."' from Cache.\n".
                     "Probably something REALLY big was put there and data has been truncated.\n".
                     "Consider upgrading cache table to LONGBLOB.\n\n".
-                    "Length of data, compressed: ".strlen($row['value']));
+                    'Length of data, compressed: '.strlen($row['value']));
             }
         }
-        if (count($dict) < count($keys))
-            foreach ($keys as $key)
-                if (!isset($dict[$key]))
+        if (count($dict) < count($keys)) {
+            foreach ($keys as $key) {
+                if (!isset($dict[$key])) {
                     $dict[$key] = null;
+                }
+            }
+        }
+
         return $dict;
     }
 
@@ -147,8 +146,9 @@ class Cache
     /** Do 'delete' on many keys at once. */
     public static function delete_many($keys)
     {
-        if (count($keys) == 0)
+        if (count($keys) == 0) {
             return;
+        }
         Db::execute("
             delete from okapi_cache
             where `key` in ('".implode("','", array_map('\okapi\core\Db::escape_string', $keys))."')

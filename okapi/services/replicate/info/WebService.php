@@ -12,7 +12,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 1
+            'min_auth_level' => 1,
         );
     }
 
@@ -23,9 +23,8 @@ class WebService
             'min_since' => ReplicateCommon::get_min_since(),
             'revision' => ReplicateCommon::get_revision(),
         );
-        $dump = Cache::get("last_fulldump");
-        if ($dump)
-        {
+        $dump = Cache::get('last_fulldump');
+        if ($dump) {
             $result['latest_fulldump'] = array(
                 'revision' => $dump['revision'],
                 'generated_at' => $dump['meta']['generated_at'],

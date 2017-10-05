@@ -17,7 +17,7 @@ abstract class OkapiRequest
 {
     public $consumer;
     public $token;
-    public $etag;  # see: https://en.wikipedia.org/wiki/HTTP_ETag
+    public $etag;  // see: https://en.wikipedia.org/wiki/HTTP_ETag
 
     /**
      * Set this to true, for some method to allow you to set higher "limit"
@@ -30,15 +30,15 @@ abstract class OkapiRequest
      * Return request parameter, or NULL when not found. Use this instead of
      * $_GET or $_POST or $_REQUEST.
      */
-    public abstract function get_parameter($name);
+    abstract public function get_parameter($name);
 
     /**
      * Return the list of all request parameters. You should use this method
      * ONLY when you use <import-params/> in your documentation and you want
      * to pass all unknown parameters onto the other method.
      */
-    public abstract function get_all_parameters_including_unknown();
+    abstract public function get_all_parameters_including_unknown();
 
     /** Return true, if this requests is to be logged as HTTP request in okapi_stats. */
-    public abstract function is_http_request();
+    abstract public function is_http_request();
 }

@@ -2,4 +2,6 @@
 
 namespace okapi\core\Exception;
 
-class Http404 extends BadRequest {}
+class Http404 extends BadRequest
+{
+}

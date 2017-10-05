@@ -1,9 +1,10 @@
 <?php
+
 namespace okapi\core\Exception;
 
 use okapi\Settings;
 
-# BEWARE: This class is also used in native OCPL code.
+// BEWARE: This class is also used in native OCPL code.
 
 /** A base class for all bad request exceptions. */
 class BadRequest extends \Exception
@@ -21,8 +22,8 @@ class BadRequest extends \Exception
             'reason_stack' => [],
         ];
         $this->provideExtras($extras);
-        $extras['more_info'] = Settings::get('SITE_URL') . "okapi/introduction.html#errors";
+        $extras['more_info'] = Settings::get('SITE_URL').'okapi/introduction.html#errors';
 
-        return json_encode(["error" => $extras]);
+        return json_encode(['error' => $extras]);
     }
 }

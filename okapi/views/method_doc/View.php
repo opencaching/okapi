@@ -15,28 +15,26 @@ class View
 {
     public static function call($methodname)
     {
-        try
-        {
+        try {
             $method = OkapiServiceRunner::call('services/apiref/method', new OkapiInternalRequest(
                 null, null, array('name' => $methodname)));
-        }
-        catch (BadRequest $e)
-        {
+        } catch (BadRequest $e) {
             throw new Http404();
         }
         $vars = array(
             'method' => $method,
-            'menu' => OkapiMenu::get_menu_html($methodname.".html"),
-            'okapi_base_url' => Settings::get('SITE_URL')."okapi/",
+            'menu' => OkapiMenu::get_menu_html($methodname.'.html'),
+            'okapi_base_url' => Settings::get('SITE_URL').'okapi/',
             'installations' => OkapiMenu::get_installations(),
             'okapi_rev' => Okapi::$version_number,
         );
 
         $response = new OkapiHttpResponse();
-        $response->content_type = "text/html; charset=utf-8";
+        $response->content_type = 'text/html; charset=utf-8';
         ob_start();
-        require_once __DIR__ . '/method_doc.tpl.php';
+        require_once __DIR__.'/method_doc.tpl.php';
         $response->body = ob_get_clean();
+
         return $response;
     }
 }
