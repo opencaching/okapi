@@ -45,9 +45,10 @@ class OkapiLock
     {
         if ($this->lock !== null) {
             return flock($this->lock, LOCK_EX | LOCK_NB);
-        } else {
-            return true;
-        }  // $lock can be null only when debugging
+        }
+
+        return true;
+          // $lock can be null only when debugging
     }
 
     public function release()

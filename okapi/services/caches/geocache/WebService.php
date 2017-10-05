@@ -81,9 +81,8 @@ class WebService
             ");
             if ($exists) {
                 throw new InvalidParam('cache_code', 'This cache is not accessible via OKAPI.');
-            } else {
-                throw new InvalidParam('cache_code', 'This cache does not exist.');
             }
+            throw new InvalidParam('cache_code', 'This cache does not exist.');
         }
 
         return Okapi::formatted_response($request, $result);

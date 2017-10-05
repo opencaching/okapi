@@ -796,10 +796,9 @@ class WebService
             } catch (Exception $e) {
                 if (($e instanceof InvalidParam) && ($e->paramName == 'fields')) {
                     throw new InvalidParam('log_fields', $e->whats_wrong_about_it);
-                } else {
+                }
                     /* Something is wrong with OUR code. */
                     throw new Exception($e);
-                }
             }
         }
 

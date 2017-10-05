@@ -57,20 +57,18 @@ class WebService
 
             if (Okapi::$version_number !== null) {
                 return 'api_ref/method_index#prod#'.Okapi::$version_number;
-            } else {
-                $methodnames = OkapiServiceRunner::$all_names;
-                sort($methodnames);
-
-                return 'api_ref/method_index#'.md5(implode('#', $methodnames));
             }
-        } else {
+            $methodnames = OkapiServiceRunner::$all_names;
+            sort($methodnames);
+
+            return 'api_ref/method_index#'.md5(implode('#', $methodnames));
+        }
             /* Development. */
 
             return
                 'api_ref/method_index#dev#'.
                 self::getDirModDateRecursive(__DIR__.'/../../../../okapi/services')
             ;
-        }
     }
 
     private static function getDirModDateRecursive($absoluteDir)

@@ -88,11 +88,10 @@ class ReplicateListener
             self::add_geocache_to_cached_tiles($theirs);
         } elseif ($ours != $theirs) {
             self::update_geocache_attributes_in_cached_tiles($theirs);
-        } else {
+        }
             // No need to update anything. This is very common (i.e. when the
             // cache was simply found, not actually changed). Replicate module generates
             // many updates which do not influence our cache.
-        }
     }
 
     private static function remove_geocache_from_cached_tiles($cache_id)

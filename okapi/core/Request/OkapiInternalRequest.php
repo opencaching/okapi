@@ -41,9 +41,9 @@ class OkapiInternalRequest extends OkapiRequest
     {
         if (isset($this->parameters[$name])) {
             return $this->parameters[$name];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public function get_all_parameters_including_unknown()

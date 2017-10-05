@@ -192,11 +192,10 @@ class AttrHelper
                 self::init_from_cache(false);
 
                 return;
-            } else {
-                $cachedvalue = array(
+            }
+            $cachedvalue = array(
                     'attr_dict' => array(),
                 );
-            }
         }
         self::$attr_dict = $cachedvalue['attr_dict'];
     }

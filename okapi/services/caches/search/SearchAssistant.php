@@ -278,9 +278,9 @@ class SearchAssistant
                                 $where_conds[] = "($X_SCORE >= $min and $X_SCORE < $max and $X_VOTES >= 3)".
                                     ($allow_null ? " or ($X_VOTES < 3)" : '');
                             }
-                        } else {
-                            // OCDE does not support rating. We will ignore this parameter.
                         }
+                            // OCDE does not support rating. We will ignore this parameter.
+
                         break;
                 }
             }

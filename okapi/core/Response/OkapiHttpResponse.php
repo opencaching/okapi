@@ -50,9 +50,9 @@ class OkapiHttpResponse
             fpassthru($this->body);
 
             return ob_get_clean();
-        } else {
-            return $this->body;
         }
+
+        return $this->body;
     }
 
     /**

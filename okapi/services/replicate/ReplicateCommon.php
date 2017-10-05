@@ -347,7 +347,7 @@ class ReplicateCommon
 
         if ($fulldump_mode) {
             return $entries;
-        } else {
+        }
             // Save the entries to the clog table.
 
             if (count($entries) > 0) {
@@ -367,7 +367,6 @@ class ReplicateCommon
                 Cache::set_many($cached_values1, $cache_timeout);
                 Cache::set_many($cached_values2, null);  // make it persistent
             }
-        }
     }
 
     /**
@@ -411,9 +410,9 @@ class ReplicateCommon
 
             if ($current_revision - $since > $since - $last_chunk_cut) {
                 return array($last_chunk_cut + 1, $current_revision);
-            } else {
-                return array($since + 1, $current_revision);
             }
+
+            return array($since + 1, $current_revision);
         }
         $prev_chunk_cut = $since - ($since % self::$chunk_size);
 

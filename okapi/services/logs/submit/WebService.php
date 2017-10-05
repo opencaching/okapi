@@ -733,9 +733,8 @@ class WebService
                     set notes = notes + 1
                     where cache_id = '".Db::escape_string($cache_internal_id)."'
                 ");
-            } else {
-                // This log type is not represented in cache stats.
             }
+                // This log type is not represented in cache stats.
         }
     }
 

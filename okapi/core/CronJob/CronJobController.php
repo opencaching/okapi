@@ -139,9 +139,9 @@ class CronJobController
         if ($thejob == null) {
             if ($key === null) {
                 throw new \Exception("Could not reset schedule for job $job_name. $jon_name not found.");
-            } else {
-                return;
             }
+
+            return;
         }
 
         // We have to acquire lock on the schedule. This might take some time if cron-5 jobs are

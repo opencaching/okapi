@@ -99,18 +99,17 @@ class OkapiHttpRequest extends OkapiRequest
             if ($this->opt_min_auth_level >= 2) {
                 throw new BadRequest('This method requires OAuth signature (Level '.
                     $this->opt_min_auth_level." Authentication). You didn't sign your request.");
-            } else {
-                $consumer_key = $this->get_parameter('consumer_key');
-                if ($consumer_key) {
-                    $this->consumer = Okapi::$data_store->lookup_consumer($consumer_key);
-                    if (!$this->consumer) {
-                        throw new InvalidParam('consumer_key', 'Consumer does not exist.');
-                    }
+            }
+            $consumer_key = $this->get_parameter('consumer_key');
+            if ($consumer_key) {
+                $this->consumer = Okapi::$data_store->lookup_consumer($consumer_key);
+                if (!$this->consumer) {
+                    throw new InvalidParam('consumer_key', 'Consumer does not exist.');
                 }
-                if (($this->opt_min_auth_level == 1) && (!$this->consumer)) {
-                    throw new BadRequest("This method requires the 'consumer_key' argument (Level 1 ".
+            }
+            if (($this->opt_min_auth_level == 1) && (!$this->consumer)) {
+                throw new BadRequest("This method requires the 'consumer_key' argument (Level 1 ".
                         "Authentication). You didn't provide one.");
-                }
             }
         }
 

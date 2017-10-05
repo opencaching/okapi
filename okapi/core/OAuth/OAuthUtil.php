@@ -14,9 +14,9 @@ class OAuthUtil
                 ' ',
                 str_replace('%7E', '~', rawurlencode($input))
             );
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     // This decode function isn't taking into consideration the above

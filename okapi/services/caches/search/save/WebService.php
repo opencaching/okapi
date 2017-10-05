@@ -155,10 +155,9 @@ class WebService
                         set params_hash = '".Db::escape_string($params_hash)."'
                         where id = '".Db::escape_string($set_id)."'
                     ");
-                } else {
+                }
                     // Some other thread acquired the lock before us and it has
                     // generated the result set. We don't need to do anything.
-                }
             } finally {
                 $lock->release();
             }

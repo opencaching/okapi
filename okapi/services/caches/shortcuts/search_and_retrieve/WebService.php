@@ -106,13 +106,12 @@ class WebService
             }
 
             return Okapi::formatted_response($request, $result);
-        } else {
-            if ($retr_result instanceof OkapiHttpResponse) {
-                return $retr_result;
-            } else {
-                return Okapi::formatted_response($request, $retr_result);
-            }
         }
+        if ($retr_result instanceof OkapiHttpResponse) {
+            return $retr_result;
+        }
+
+        return Okapi::formatted_response($request, $retr_result);
     }
 
     private static function map_values_to_strings(&$dict)

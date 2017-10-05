@@ -753,10 +753,9 @@ class Okapi
             $response->body = self::xmlmap2_dumps($object);
 
             return $response;
-        } else {
+        }
             // Should not happen (as we do a proper check above).
             throw new \Exception();
-        }
     }
 
     private static function _xmlmap_add(&$chunks, &$obj)

@@ -176,16 +176,15 @@ class WebService
 
         if ($as_dict) {
             return Okapi::formatted_response($request, $results);
-        } else {
-            $cache_codes = array();
-            foreach ($results as $url => $cache_code) {
-                if ($cache_code != null) {
-                    $cache_codes[$cache_code] = true;
-                }
-            }
-            $flattened = array('results' => array_keys($cache_codes));
-
-            return Okapi::formatted_response($request, $flattened);
         }
+        $cache_codes = array();
+        foreach ($results as $url => $cache_code) {
+            if ($cache_code != null) {
+                $cache_codes[$cache_code] = true;
+            }
+        }
+        $flattened = array('results' => array_keys($cache_codes));
+
+        return Okapi::formatted_response($request, $flattened);
     }
 }
