@@ -113,7 +113,7 @@ class TileRenderer
 
             try
             {
-                $cache_key = "tilesrc/".Okapi::$git_revision."/".self::$VERSION."/".$key;
+                $cache_key = "tilesrc/".Okapi::getGitRevision()."/".self::$VERSION."/".$key;
                 $gd2_path = self::$USE_STATIC_IMAGE_CACHE
                     ? FileCache::get_file_path($cache_key) : null;
                 if ($gd2_path === null)

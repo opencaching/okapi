@@ -202,8 +202,8 @@ class OkapiExceptionHandler
 
         $exception_info .= (isset($_SERVER['REQUEST_URI']) ? "--- OKAPI method called ---\n".
             preg_replace("/([?&])/", "\n$1", $_SERVER['REQUEST_URI'])."\n\n" : "");
-        $exception_info .= "--- OKAPI version ---\n".Okapi::$version_number.
-            " (".Okapi::$git_revision.")\n\n";
+        $exception_info .= "--- OKAPI version ---\n".Okapi::getVersionNumber().
+            " (".Okapi::getGitRevision().")\n\n";
 
         # This if-condition will solve some (but not all) problems when trying to execute
         # OKAPI code from command line;

@@ -158,6 +158,11 @@ final class Settings
         'OC_NODE_ID' => null,
 
         /**
+         * in this file are version number and git revision stored of the used okapi. Only used in composer packages.
+         */
+        'VERSION_FILE' => null,
+
+        /**
          * Your OC sites data licencing document. All OKAPI Consumers will be
          * required to accept this.
          */

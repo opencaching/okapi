@@ -20,9 +20,9 @@ class OkapiMenu
     public static function get_menu_html($current_path = null)
     {
         $chunks = array();
-        if (Okapi::$version_number)
-            $chunks[] = "<div class='revision'>ver. ".Okapi::$version_number.
-                " (".substr(Okapi::$git_revision, 0, 7).")</div>";
+        if (Okapi::getVersionNumber())
+            $chunks[] = "<div class='revision'>ver. ".Okapi::getVersionNumber().
+                " (".substr(Okapi::getGitRevision(), 0, 7).")</div>";
         $chunks[] = "<div class='main'>";
         $chunks[] = self::link($current_path, "introduction.html", "Introduction");
         $chunks[] = self::link($current_path, "signup.html", "Sign up");

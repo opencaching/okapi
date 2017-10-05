@@ -21,7 +21,7 @@ class View
             'method_index' => OkapiServiceRunner::call('services/apiref/method_index',
                 new OkapiInternalRequest(new OkapiInternalConsumer(), null, array())),
             'installations' => OkapiMenu::get_installations(),
-            'okapi_rev' => Okapi::$version_number,
+            'okapi_rev' => Okapi::getVersionNumber(),
         );
 
         $response = new OkapiHttpResponse();

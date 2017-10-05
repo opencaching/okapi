@@ -566,9 +566,9 @@ class ReplicateCommon
             'data_files' => $json_files,
             'meta' => array(
                 'site_name' => Okapi::get_normalized_site_name(),
-                'okapi_version_number' => Okapi::$version_number,
-                'okapi_revision' => Okapi::$version_number, /* Important for backward-compatibility! */
-                'okapi_git_revision' => Okapi::$git_revision,
+                'okapi_version_number' => Okapi::getVersionNumber(),
+                'okapi_revision' => Okapi::getVersionNumber(), /* Important for backward-compatibility! */
+                'okapi_git_revision' => Okapi::getGitRevision(),
                 'generated_at' => $generated_at,
             ),
         );

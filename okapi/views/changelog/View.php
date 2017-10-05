@@ -18,7 +18,7 @@ class View
             'okapi_base_url' => Settings::get('SITE_URL')."okapi/",
             'site_url' => Settings::get('SITE_URL'),
             'installations' => OkapiMenu::get_installations(),
-            'okapi_rev' => Okapi::$version_number,
+            'okapi_rev' => Okapi::getVersionNumber(),
             'site_name' => Okapi::get_normalized_site_name(),
             'changes' => array(
                 'unavailable' => $changelog->unavailable_changes,

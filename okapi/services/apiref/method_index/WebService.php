@@ -57,8 +57,8 @@ class WebService
 
             /* Production. */
 
-            if (Okapi::$version_number !== null) {
-                return "api_ref/method_index#prod#".Okapi::$version_number;
+            if (Okapi::getVersionNumber() !== null) {
+                return "api_ref/method_index#prod#".Okapi::getVersionNumber();
             } else {
                 $methodnames = OkapiServiceRunner::$all_names;
                 sort($methodnames);

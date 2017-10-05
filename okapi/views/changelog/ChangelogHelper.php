@@ -4,9 +4,9 @@ namespace okapi\views\changelog;
 
 use ErrorException;
 use Exception;
-use okapi\Settings;
 use okapi\core\Cache;
 use okapi\core\Okapi;
+use okapi\Settings;
 
 
 class ChangelogHelper
@@ -107,7 +107,7 @@ class ChangelogHelper
                         "Someone forgot to run update_changes.php (or ignored error messages)."
                     );
                 } else {
-                    if ($change['version'] > Okapi::$version_number) {
+                    if ($change['version'] > Okapi::getVersionNumber()) {
                         $this->unavailable_changes[] = $change;
                     } else {
                         $this->available_changes[] = $change;
