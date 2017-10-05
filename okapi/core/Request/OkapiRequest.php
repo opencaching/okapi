@@ -17,7 +17,7 @@ abstract class OkapiRequest
 {
     public $consumer;
     public $token;
-    public $etag;  # see: https://en.wikipedia.org/wiki/HTTP_ETag
+    public $etag;  // see: https://en.wikipedia.org/wiki/HTTP_ETag
 
     /**
      * Set this to true, for some method to allow you to set higher "limit"

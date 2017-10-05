@@ -11,12 +11,12 @@ use okapi\core\Request\OkapiInternalRequest;
 
 class TileTree
 {
-    # Static flags (stored in the database).
+    // Static flags (stored in the database).
     public static $FLAG_STAR = 0x01;
     public static $FLAG_HAS_TRACKABLES = 0x02;
     public static $FLAG_NOT_YET_FOUND = 0x04;
 
-    # Dynamic flags (added at runtime).
+    // Dynamic flags (added at runtime).
     public static $FLAG_FOUND = 0x0100;
     public static $FLAG_OWN = 0x0200;
     public static $FLAG_NEW = 0x0400;
@@ -50,23 +50,23 @@ class TileTree
      */
     public static function query_fast($zoom, $x, $y, $set_id)
     {
-        # First, we check if the cache-set for this tile was already computed
-        # (and if it was, was it empty).
+        // First, we check if the cache-set for this tile was already computed
+        // (and if it was, was it empty).
 
         $status = self::get_tile_status($zoom, $x, $y);
-        if ($status === null) {  # Not yet computed.
-            # Note, that computing the tile does not involve taking any
-            # search parameters.
+        if ($status === null) {  // Not yet computed.
+            // Note, that computing the tile does not involve taking any
+            // search parameters.
 
             $status = self::compute_tile($zoom, $x, $y);
         }
 
-        if ($status === 1) {  # Computed and empty.
-            # This tile was already computed and it is empty.
+        if ($status === 1) {  // Computed and empty.
+            // This tile was already computed and it is empty.
             return null;
         }
 
-        # If we got here, then the tile is computed and not empty (status 2).
+        // If we got here, then the tile is computed and not empty (status 2).
 
         $tile_upper_x = $x << 8;
         $tile_leftmost_y = $y << 8;
@@ -74,6 +74,7 @@ class TileTree
         $zoom_escaped = "'".Db::escape_string($zoom)."'";
         $tile_upper_x_escaped = "'".Db::escape_string($tile_upper_x)."'";
         $tile_leftmost_y_escaped = "'".Db::escape_string($tile_leftmost_y)."'";
+
         return Db::query("
             select
                 otc.cache_id,
@@ -105,8 +106,8 @@ class TileTree
     {
         $time_started = microtime(true);
 
-        # Note, that multiple threads may try to compute tiles simulatanously.
-        # For low-level tiles, this can be expensive.
+        // Note, that multiple threads may try to compute tiles simulatanously.
+        // For low-level tiles, this can be expensive.
 
         $status = self::get_tile_status($zoom, $x, $y);
         if ($status !== null) {
@@ -114,29 +115,29 @@ class TileTree
         }
 
         if ($zoom === 0) {
-            # When computing zoom zero, we don't have a parent to speed up
-            # the computation. We need to use the caches table. Note, that
-            # zoom level 0 contains *entire world*, so we don't have to use
-            # any WHERE condition in the following query.
+            // When computing zoom zero, we don't have a parent to speed up
+            // the computation. We need to use the caches table. Note, that
+            // zoom level 0 contains *entire world*, so we don't have to use
+            // any WHERE condition in the following query.
 
-            # This can be done a little faster (without the use of internal requests),
-            # but there is *no need* to - this query is run seldom and is cached.
+            // This can be done a little faster (without the use of internal requests),
+            // but there is *no need* to - this query is run seldom and is cached.
 
             $params = array();
-            $params['status'] = "Available|Temporarily unavailable|Archived";  # we want them all
-            $params['limit'] = "10000000";  # no limit
+            $params['status'] = 'Available|Temporarily unavailable|Archived';  // we want them all
+            $params['limit'] = '10000000';  // no limit
 
             $internal_request = new OkapiInternalRequest(new OkapiInternalConsumer(), null, $params);
             $internal_request->skip_limits = true;
-            $response = OkapiServiceRunner::call("services/caches/search/all", $internal_request);
+            $response = OkapiServiceRunner::call('services/caches/search/all', $internal_request);
             $cache_codes = $response['results'];
 
             $internal_request = new OkapiInternalRequest(new OkapiInternalConsumer(), null, array(
                 'cache_codes' => implode('|', $cache_codes),
-                'fields' => 'internal_id|code|name|location|type|status|rating|recommendations|founds|trackables_count'
+                'fields' => 'internal_id|code|name|location|type|status|rating|recommendations|founds|trackables_count',
             ));
             $internal_request->skip_limits = true;
-            $caches = OkapiServiceRunner::call("services/caches/geocaches", $internal_request);
+            $caches = OkapiServiceRunner::call('services/caches/geocaches', $internal_request);
 
             foreach ($caches as $cache) {
                 $row = self::generate_short_row($cache);
@@ -154,7 +155,7 @@ class TileTree
                         '".Db::escape_string($row[2])."',
                         '".Db::escape_string($row[3])."',
                         '".Db::escape_string($row[4])."',
-                        ".(($row[5] === null) ? "null" : "'".Db::escape_string($row[5])."'").",
+                        ".(($row[5] === null) ? 'null' : "'".Db::escape_string($row[5])."'").",
                         '".Db::escape_string($row[6])."',
                         '".Db::escape_string($row[7])."'
                     );
@@ -162,21 +163,21 @@ class TileTree
             }
             $status = 2;
         } else {
-            # We will use the parent tile to compute the contents of this tile.
+            // We will use the parent tile to compute the contents of this tile.
 
             $parent_zoom = $zoom - 1;
             $parent_x = $x >> 1;
             $parent_y = $y >> 1;
 
             $status = self::get_tile_status($parent_zoom, $parent_x, $parent_y);
-            if ($status === null) {  # Not computed.
+            if ($status === null) {  // Not computed.
                 $time_started = microtime(true);
                 $status = self::compute_tile($parent_zoom, $parent_x, $parent_y);
             }
 
-            if ($status === 1) {  # Computed and empty.
-                # No need to check.
-            } else {  # Computed, not empty.
+            if ($status === 1) {  // Computed and empty.
+                // No need to check.
+            } else {  // Computed, not empty.
                 $scale = 8 + 21 - $zoom;
                 $parentcenter_z21x = (($parent_x << 1) | 1) << $scale;
                 $parentcenter_z21y = (($parent_y << 1) | 1) << $scale;
@@ -186,26 +187,26 @@ class TileTree
                 $top_z21y = (($parent_y << 1) << $scale) - $margin;
                 $bottom_z21y = ((($parent_y + 1) << 1) << $scale) + $margin;
 
-                # Choose the right quarter.
-                # |1 2|
-                # |3 4|
+                // Choose the right quarter.
+                // |1 2|
+                // |3 4|
 
-                if ($x & 1) {  # 2 or 4
+                if ($x & 1) {  // 2 or 4
                     $left_z21x = $parentcenter_z21x - $margin;
-                } else {  # 1 or 3
+                } else {  // 1 or 3
                     $right_z21x = $parentcenter_z21x + $margin;
                 }
-                if ($y & 1) {  # 3 or 4
+                if ($y & 1) {  // 3 or 4
                     $top_z21y = $parentcenter_z21y - $margin;
-                } else {  # 1 or 2
+                } else {  // 1 or 2
                     $bottom_z21y = $parentcenter_z21y + $margin;
                 }
 
-                # Cache the result.
+                // Cache the result.
 
-                # Avoid deadlocks, see https://github.com/opencaching/okapi/issues/388
-                # Possible alternative: https://github.com/opencaching/okapi/issues/388#issuecomment-197673621
-                Db::execute("lock tables okapi_tile_caches write, okapi_tile_caches tc2 read");
+                // Avoid deadlocks, see https://github.com/opencaching/okapi/issues/388
+                // Possible alternative: https://github.com/opencaching/okapi/issues/388#issuecomment-197673621
+                Db::execute('lock tables okapi_tile_caches write, okapi_tile_caches tc2 read');
                 try {
                     Db::execute("
                         replace into okapi_tile_caches (
@@ -227,7 +228,7 @@ class TileTree
                             and z21y between $top_z21y and $bottom_z21y
                     ");
                 } finally {
-                    Db::execute("unlock tables");
+                    Db::execute('unlock tables');
                 }
                 $test = Db::select_value("
                     select 1
@@ -246,7 +247,7 @@ class TileTree
             }
         }
 
-        # Mark tile as computed.
+        // Mark tile as computed.
 
         Db::execute("
             replace into okapi_tile_status (z, x, y, status)
@@ -269,7 +270,7 @@ class TileTree
      */
     public static function generate_short_row($cache)
     {
-        list($lat, $lon) = explode("|", $cache['location']);
+        list($lat, $lon) = explode('|', $cache['location']);
         try {
             list($z21x, $z21y) = self::latlon_to_z21xy($lat, $lon);
         } catch (Exception $e) {
@@ -286,9 +287,10 @@ class TileTree
         if ($cache['founds'] == 0) {
             $flags |= self::$FLAG_NOT_YET_FOUND;
         }
+
         return array($cache['internal_id'], $z21x, $z21y, Okapi::cache_status_name2id($cache['status']),
             Okapi::cache_type_name2id($cache['type']), $cache['rating'], $flags,
-            self::compute_name_crc($cache['name']));
+            self::compute_name_crc($cache['name']), );
     }
 
     private static function compute_name_crc($name)
@@ -305,7 +307,8 @@ class TileTree
     {
         $offset = 128 << 21;
         $x = round($offset + ($offset * $lon / 180));
-        $y = round($offset - $offset/pi() * log((1 + sin($lat * pi() / 180)) / (1 - sin($lat * pi() / 180))) / 2);
+        $y = round($offset - $offset / pi() * log((1 + sin($lat * pi() / 180)) / (1 - sin($lat * pi() / 180))) / 2);
+
         return array($x, $y);
     }
 }

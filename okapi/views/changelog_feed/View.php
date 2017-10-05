@@ -20,10 +20,11 @@ class View
         );
 
         $response = new OkapiHttpResponse();
-        $response->content_type = "application/rss+xml; charset=utf-8";
+        $response->content_type = 'application/rss+xml; charset=utf-8';
         ob_start();
-        require_once __DIR__ . '/changelog_feed.tpl.php';
+        require_once __DIR__.'/changelog_feed.tpl.php';
         $response->body = ob_get_clean();
+
         return $response;
     }
 }

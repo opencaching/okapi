@@ -13,33 +13,33 @@ class StatsCompressorCronJob extends Cron24Job
 {
     public function get_scheduled_time()
     {
-        return "04:20";
+        return '04:20';
     }
+
     public function execute()
     {
         if (Okapi::get_var('db_version', 0) + 0 < 94) {
             return;
         }
 
-        # We will process a single month, every time we are being run.
+        // We will process a single month, every time we are being run.
 
-        $month = Db::select_value("
+        $month = Db::select_value('
             select substr(min(period_start), 1, 7)
             from okapi_stats_hourly ignore index (primary)
             where period_start < date_add(now(), interval -12 month)
-        ");
+        ');
 
-        Db::execute("
+        Db::execute('
             lock tables
                 okapi_stats_monthly write,
                 okapi_stats_hourly write,
                 okapi_stats_monthly m read,
                 okapi_stats_hourly h read;
-        ");
+        ');
         try {
             if ($month !== null) {
-
-                # Update the monthly stats.
+                // Update the monthly stats.
 
                 Db::execute("
                     replace into okapi_stats_monthly (
@@ -66,7 +66,7 @@ class StatsCompressorCronJob extends Cron24Job
                     group by substr(h.period_start, 1, 7), h.consumer_key, h.user_id, h.service_name;
                 ");
 
-                # Remove the processed data.
+                // Remove the processed data.
 
                 Db::execute("
                     delete from okapi_stats_hourly
@@ -74,7 +74,7 @@ class StatsCompressorCronJob extends Cron24Job
                 ");
             }
         } finally {
-            Db::execute("unlock tables;");
+            Db::execute('unlock tables;');
         }
     }
 }

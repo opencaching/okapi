@@ -2,10 +2,10 @@
 
 namespace okapi;
 
-# This is the list of OKAPI views. Regexps are mapped to namespaces.
-# Each namespace should expose the Webservice class with a method "call".
-# The "call" method should return OkapiResponse, or throw a BadRequest
-# exception.
+// This is the list of OKAPI views. Regexps are mapped to namespaces.
+// Each namespace should expose the Webservice class with a method "call".
+// The "call" method should return OkapiResponse, or throw a BadRequest
+// exception.
 
 class OkapiUrls
 {
@@ -32,9 +32,9 @@ class OkapiUrls
         '^devel/test$' => 'devel/test',
         '^devel/sysinfo$' => 'devel/sysinfo',
 
-        # For debugging TileMap performance only.
+        // For debugging TileMap performance only.
         // '^tilestress$' => 'tilestress',
     );
 }
 
-# This line is used for commit-hooks testing: ..........>
+// This line is used for commit-hooks testing: ..........>

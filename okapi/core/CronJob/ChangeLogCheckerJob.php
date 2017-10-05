@@ -14,8 +14,9 @@ class ChangeLogCheckerJob extends Cron24Job
 {
     public function get_scheduled_time()
     {
-        return "04:20";
+        return '04:20';
     }
+
     public function execute()
     {
         $ignored_fields = array('url');

@@ -20,7 +20,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 1
+            'min_auth_level' => 1,
         );
     }
 
@@ -37,7 +37,7 @@ class WebService
         'Drive-In' => 'Traditional Cache',
         'Podcast' => 'Unknown Cache',
         'Own' => 'Unknown Cache',
-        'Other' => 'Unknown Cache'
+        'Other' => 'Unknown Cache',
     );
 
     /** Maps OKAPI's 'size2' values to geocaching.com size codes. */
@@ -62,7 +62,7 @@ class WebService
     public static function call(OkapiRequest $request)
     {
         $response = new OkapiHttpResponse();
-        $response->content_type = "application/gpx; charset=utf-8";
+        $response->content_type = 'application/gpx; charset=utf-8';
         $response->content_disposition = 'attachment; filename="results.gpx"';
 
         $result_ref = self::create_gpx($request);
@@ -75,38 +75,40 @@ class WebService
      * Generate a GPX file.
      *
      * @param OkapiRequest $request
-     * @param integer $flags
+     * @param int          $flags
+     *
      * @throws BadRequest
+     *
      * @return An array with GPX file content under 'gpx' key
      */
     public static function create_gpx(OkapiRequest $request, $flags = null)
     {
         $vars = array();
 
-        # Validating arguments. We will also assign some of them to the
-        # $vars variable which we will use later in the GPS template.
+        // Validating arguments. We will also assign some of them to the
+        // $vars variable which we will use later in the GPS template.
 
         $cache_codes = $request->get_parameter('cache_codes');
         if ($cache_codes === null) {
             throw new ParamMissing('cache_codes');
         }
 
-        # Issue 106 requires us to allow empty list of cache codes to be passed into this method.
-        # All of the queries below have to be ready for $cache_codes to be empty!
+        // Issue 106 requires us to allow empty list of cache codes to be passed into this method.
+        // All of the queries below have to be ready for $cache_codes to be empty!
 
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) {
-            $langpref = "en";
+            $langpref = 'en';
         }
-        $langprefs = explode("|", $langpref);
+        $langprefs = explode('|', $langpref);
         foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'latest_logs', 'alt_wpts', 'mark_found') as $param) {
             $val = $request->get_parameter($param);
             if (!$val) {
-                $val = "false";
-            } elseif (!in_array($val, array("true", "false"))) {
+                $val = 'false';
+            } elseif (!in_array($val, array('true', 'false'))) {
                 throw new InvalidParam($param);
             }
-            $vars[$param] = ($val == "true");
+            $vars[$param] = ($val == 'true');
         }
         if ($vars['latest_logs'] && (!$vars['ns_ground'])) {
             throw new BadRequest("In order for 'latest_logs' to work you have to also include 'ns_ground' extensions.");
@@ -127,7 +129,7 @@ class WebService
                     }
                     if ($request->token == null) {
                         throw new BadRequest(
-                            "Level 3 Authentication is required to access my_notes data."
+                            'Level 3 Authentication is required to access my_notes data.'
                         );
                     }
                     $vars['my_notes'][] = $elem;
@@ -150,7 +152,7 @@ class WebService
         if (!$tmp) {
             $tmp = 'desc:text';
         }
-        $tmp = explode("|", $tmp);
+        $tmp = explode('|', $tmp);
         $vars['attrs'] = array();
         foreach ($tmp as $elem) {
             if ($elem == 'none') {
@@ -200,56 +202,56 @@ class WebService
         $lpc = $request->get_parameter('lpc');
         if ($lpc === null) {
             $lpc = 10;
-        } # will be checked in services/caches/geocaches call
+        } // will be checked in services/caches/geocaches call
 
         $user_uuid = $request->get_parameter('user_uuid');
 
-        # location_source (part 1 of 2)
+        // location_source (part 1 of 2)
 
         $location_source = $request->get_parameter('location_source');
         if (!$location_source) {
             $location_source = 'default-coords';
         }
-        # Make sure location_source has prefix alt_wpt:
+        // Make sure location_source has prefix alt_wpt:
         if ($location_source != 'default-coords' && strncmp($location_source, 'alt_wpt:', 8) != 0) {
             throw new InvalidParam('location_source', '\''.$location_source.'\'');
         }
 
-        # Make sure we have sufficient authorization
+        // Make sure we have sufficient authorization
         if ($location_source == 'alt_wpt:user-coords' && $request->token == null) {
             throw new BadRequest("Level 3 Authentication is required to access 'alt_wpt:user-coords'.");
         }
 
-        # Which fields of the services/caches/geocaches method do we need?
+        // Which fields of the services/caches/geocaches method do we need?
 
         $fields = 'code|name|location|date_created|url|type|status|size|size2|oxsize'.
             '|difficulty|terrain|description|hint2|rating|owner|url|internal_id'.
             '|protection_areas|short_description';
         if ($vars['images'] != 'none') {
-            $fields .= "|images";
+            $fields .= '|images';
         }
         if (count($vars['attrs']) > 0) {
-            $fields .= "|attrnames|attr_acodes|needs_maintenance";
+            $fields .= '|attrnames|attr_acodes|needs_maintenance';
         }
         if ($vars['trackables'] == 'desc:list') {
-            $fields .= "|trackables";
+            $fields .= '|trackables';
         } elseif ($vars['trackables'] == 'desc:count') {
-            $fields .= "|trackables_count";
+            $fields .= '|trackables_count';
         }
         if ($vars['alt_wpts'] == 'true' || $location_source != 'default-coords') {
-            $fields .= "|alt_wpts";
+            $fields .= '|alt_wpts';
         }
         if ($vars['recommendations'] != 'none') {
-            $fields .= "|recommendations|founds";
+            $fields .= '|recommendations|founds';
         }
         if (count($vars['my_notes']) > 0) {
-            $fields .= "|my_notes";
+            $fields .= '|my_notes';
         }
         if ($vars['latest_logs']) {
-            $fields .= "|latest_logs";
+            $fields .= '|latest_logs';
         }
         if ($vars['mark_found']) {
-            $fields .= "|is_found";
+            $fields .= '|is_found';
         }
 
         $vars['caches'] = OkapiServiceRunner::call(
@@ -260,12 +262,12 @@ class WebService
                     'fields' => $fields,
                     'lpc' => $lpc,
                     'user_uuid' => $user_uuid,
-                    'log_fields' => 'uuid|date|user|type|comment|internal_id|was_recommended'
+                    'log_fields' => 'uuid|date|user|type|comment|internal_id|was_recommended',
                 )
             )
         );
 
-        # Get rid of invalid cache references.
+        // Get rid of invalid cache references.
 
         $valid = array();
         foreach ($vars['caches'] as $key => &$ref) {
@@ -276,7 +278,7 @@ class WebService
         $vars['caches'] = &$valid;
         unset($valid);
 
-        # Get all the other data need.
+        // Get all the other data need.
 
         $vars['installation'] = OkapiServiceRunner::call(
             'services/apisrv/installation', new OkapiInternalRequest(
@@ -296,26 +298,26 @@ class WebService
                     $request->consumer, $request->token, array(
                         'only_locally_used' => 'true',
                         'langpref' => $langpref,
-                        'fields' => 'name|gc_equivs'
+                        'fields' => 'name|gc_equivs',
                     )
                 )
             );
 
-            # prepare GS attribute data
+            // prepare GS attribute data
 
             $vars['gc_attrs'] = in_array('gc:attrs', $vars['attrs']);
             $vars['gc_ocde_attrs'] = in_array('gc_ocde:attrs', $vars['attrs']);
             if ($vars['gc_attrs'] || $vars['gc_ocde_attrs']) {
                 if ($vars['gc_ocde_attrs']) {
-                    # As this is an OCDE compatibility feature, we use the same Pseudo-GS
-                    # attribute names here as OCDE. Note that this code is specific to OCDE
-                    # database; OCPL stores attribute names in a different way and may use
-                    # different names for equivalent attributes.
+                    // As this is an OCDE compatibility feature, we use the same Pseudo-GS
+                    // attribute names here as OCDE. Note that this code is specific to OCDE
+                    // database; OCPL stores attribute names in a different way and may use
+                    // different names for equivalent attributes.
 
-                    $ocde_attrnames = Db::select_group_by('id', "
+                    $ocde_attrnames = Db::select_group_by('id', '
                         select id, name
                         from cache_attrib
-                    ");
+                    ');
                     $attr_dict = AttrHelper::get_attrdict();
                 }
 
@@ -324,21 +326,21 @@ class WebService
                     foreach ($cache_ref['attr_acodes'] as $acode) {
                         $has_gc_equivs = false;
                         foreach ($vars['attr_index'][$acode]['gc_equivs'] as $gc) {
-                            # The assignment via GC-ID as array key will prohibit duplicate
-                            # GC attributes, which can result from
-                            # - assigning the same GC ID to multiple A-Codes,
-                            # - contradicting attributes in one OC listing, e.g. 24/4 + not 24/7.
+                            // The assignment via GC-ID as array key will prohibit duplicate
+                            // GC attributes, which can result from
+                            // - assigning the same GC ID to multiple A-Codes,
+                            // - contradicting attributes in one OC listing, e.g. 24/4 + not 24/7.
 
                             $cache_ref['gc_attrs'][$gc['id']] = $gc;
                             $has_gc_equivs = true;
                         }
                         if (!$has_gc_equivs && $vars['gc_ocde_attrs']) {
-                            # Generate an OCDE pseudo-GS attribute;
-                            # see https://github.com/opencaching/okapi/issues/190 and
-                            # https://github.com/opencaching/okapi/issues/271.
-                            #
-                            # Groundspeak uses ID 1..65 (as of June, 2013), and OCDE makeshift
-                            # IDs start at 106, so there is space for 40 new GS attributes.
+                            // Generate an OCDE pseudo-GS attribute;
+                            // see https://github.com/opencaching/okapi/issues/190 and
+                            // https://github.com/opencaching/okapi/issues/271.
+                            //
+                            // Groundspeak uses ID 1..65 (as of June, 2013), and OCDE makeshift
+                            // IDs start at 106, so there is space for 40 new GS attributes.
 
                             $internal_id = $attr_dict[$acode]['internal_id'];
                             $cache_ref['gc_attrs'][100 + $internal_id] = array(
@@ -348,15 +350,15 @@ class WebService
                         }
                     }
                     if ($cache_ref['needs_maintenance']) {
-                        # export NM cache flag as GC attribute #42
+                        // export NM cache flag as GC attribute #42
                         $cache_ref['gc_attrs']['42'] = array(
                             'inc' => 1,
                             'name' => 'Needs maintenance',
                         );
                     }
                     if ($cache_ref['type'] == 'Drive-In') {
-                        # export the Drive-In flag as GC attribute #53
-                        # (while the type is exported as 'Traditional')
+                        // export the Drive-In flag as GC attribute #53
+                        // (while the type is exported as 'Traditional')
                         $cache_ref['gc_attrs']['53'] = array(
                             'inc' => 1,
                             'name' => 'Park and grab',
@@ -365,8 +367,8 @@ class WebService
                 }
             }
 
-            # As the 'needs maintenance' flag is usually transported as attribute in
-            # GPX files, we add it also to desc:text attribs.
+            // As the 'needs maintenance' flag is usually transported as attribute in
+            // GPX files, we add it also to desc:text attribs.
             if (in_array('desc:text', $vars['attrs'])) {
                 foreach ($vars['caches'] as &$cache_ref) {
                     if ($cache_ref['needs_maintenance']) {
@@ -409,48 +411,48 @@ class WebService
         $vars['user_uuid_to_internal_id'] = &$dict;
         unset($dict);
 
-        # location_source (part 2 of 2)
+        // location_source (part 2 of 2)
 
         if ($location_source != 'default-coords') {
             $location_change_prefix = $request->get_parameter('location_change_prefix');
             if (!$location_change_prefix) {
                 $location_change_prefix = '# ';
             }
-            # lets find requested coords
+            // lets find requested coords
             foreach ($vars['caches'] as &$cache_ref) {
                 foreach ($cache_ref['alt_wpts'] as $alt_wpt_key => $alt_wpt) {
                     if ('alt_wpt:'.$alt_wpt['type'] == $location_source) {
-                        # Switch locations between primary wpt and alternate wpt.
-                        # Also alter the cache name and make sure to append a proper
-                        # notice.
+                        // Switch locations between primary wpt and alternate wpt.
+                        // Also alter the cache name and make sure to append a proper
+                        // notice.
 
                         $original_location = $cache_ref['location'];
                         $cache_ref['location'] = $alt_wpt['location'];
                         $cache_ref['name_2'] = $location_change_prefix.$cache_ref['name'];
-                        if ($location_source == "alt_wpt:user-coords") {
-                            # In case of "user-coords", replace the default warning with a custom-tailored one.
+                        if ($location_source == 'alt_wpt:user-coords') {
+                            // In case of "user-coords", replace the default warning with a custom-tailored one.
                             $cache_ref['warning_prefix'] = _(
-                                "<b>Geocache coordinates have been changed.</b> They have been replaced with ".
-                                "your own custom coordinates which you have provided for this geocache."
+                                '<b>Geocache coordinates have been changed.</b> They have been replaced with '.
+                                'your own custom coordinates which you have provided for this geocache.'
                             );
                         } else {
-                            # Default warning
+                            // Default warning
                             $cache_ref['warning_prefix'] = _(
-                                "<b>Geocache coordinates have been changed.</b> Currently they ".
-                                "point to one of the alternate waypoints originally described as:"
-                            ) . " " . $alt_wpt['description'];
+                                '<b>Geocache coordinates have been changed.</b> Currently they '.
+                                'point to one of the alternate waypoints originally described as:'
+                            ).' '.$alt_wpt['description'];
                         }
-                        # remove current alt waypoint
+                        // remove current alt waypoint
                         unset($cache_ref['alt_wpts'][$alt_wpt_key]);
-                        # add original location as alternate
+                        // add original location as alternate
                         if ($vars['alt_wpts']) {
                             $cache_ref['alt_wpts'][] = array(
                                 'name' => $cache_ref['code'].'-DEFAULT-COORDS',
                                 'location' => $original_location,
                                 'type' => 'default-coords',
-                                'type_name' => _("Original geocache location"),
+                                'type_name' => _('Original geocache location'),
                                 'sym' => 'Block, Blue',
-                                'description' => sprintf(_("Original (owner-supplied) location of the %s geocache"), $cache_ref['code']),
+                                'description' => sprintf(_('Original (owner-supplied) location of the %s geocache'), $cache_ref['code']),
                             );
                         }
                         break;
@@ -459,18 +461,17 @@ class WebService
             }
         }
 
-        # Do we need a GGZ index?
+        // Do we need a GGZ index?
 
         if ($flags & self::FLAG_CREATE_GGZ_IDX) {
-
-            # GGZ index consist of entries - one per each waypoint in the GPX file.
-            # We will keep a list of all such entries here.
+            // GGZ index consist of entries - one per each waypoint in the GPX file.
+            // We will keep a list of all such entries here.
 
             $ggz_entries = array();
 
             foreach ($vars['caches'] as &$cache_ref) {
-                # Every $cache_ref will also be holding a reference to its entry.
-                # Note, that more attributes are added while processing gpsfile.tpl.php!
+                // Every $cache_ref will also be holding a reference to its entry.
+                // Note, that more attributes are added while processing gpsfile.tpl.php!
 
                 if (!isset($cache_ref['ggz_entry'])) {
                     $cache_ref['ggz_entry'] = array();
@@ -481,7 +482,7 @@ class WebService
                 $ggz_entry['code'] = $cache_ref['code'];
                 $ggz_entry['name'] = isset($cache_ref['name_2']) ? $cache_ref['name_2'] : $cache_ref['name'];
                 $ggz_entry['type'] = $vars['cache_GPX_types'][$cache_ref['type']];
-                list($lat, $lon) = explode("|", $cache_ref['location']);
+                list($lat, $lon) = explode('|', $cache_ref['location']);
                 $ggz_entry['lat'] = $lat;
                 $ggz_entry['lon'] = $lon;
 
@@ -502,8 +503,8 @@ class WebService
                     $ggz_entry['found'] = true;
                 }
 
-                # Additional waypoints. Currently, we're not 100% sure if their entries should
-                # be included in the GGZ file (the format is undocumented).
+                // Additional waypoints. Currently, we're not 100% sure if their entries should
+                // be included in the GGZ file (the format is undocumented).
 
                 if (isset($cache_ref['alt_wpts'])) {
                     $idx = 1;
@@ -514,22 +515,22 @@ class WebService
                         $ggz_entry = &$alt_wpt_ref['ggz_entry'];
                         $ggz_entries[] = &$ggz_entry;
 
-                        $ggz_entry['code'] = $cache_ref['code'] . '-' . $idx;
+                        $ggz_entry['code'] = $cache_ref['code'].'-'.$idx;
                         $ggz_entry['name'] = $alt_wpt_ref['type_name'];
                         $ggz_entry['type'] = $alt_wpt_ref['sym'];
-                        list($lat, $lon) = explode("|", $alt_wpt_ref['location']);
+                        list($lat, $lon) = explode('|', $alt_wpt_ref['location']);
                         $ggz_entry['lat'] = $lat;
                         $ggz_entry['lon'] = $lon;
 
-                        $idx++;
+                        ++$idx;
                     }
                 }
             }
         }
 
         ob_start();
-        Okapi::gettext_domain_init($langprefs); # Consumer gets properly localized GPX file.
-        include __DIR__ . '/gpxfile.tpl.php';
+        Okapi::gettext_domain_init($langprefs); // Consumer gets properly localized GPX file.
+        include __DIR__.'/gpxfile.tpl.php';
         Okapi::gettext_domain_restore();
 
         $result = array('gpx' => ob_get_clean());

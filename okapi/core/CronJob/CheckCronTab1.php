@@ -14,6 +14,7 @@ class CheckCronTab1 extends Cron5Job
     {
         return 3600;
     }
+
     public function execute()
     {
         Cache::set('crontab_last_ping', time(), 86400);

@@ -17,7 +17,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 0
+            'min_auth_level' => 0,
         );
     }
 
@@ -40,6 +40,7 @@ class WebService
             }
             Cache::set($cache_key, $results, 86400);
         }
+
         return Okapi::formatted_response($request, $results);
     }
 
@@ -52,24 +53,23 @@ class WebService
     private static function generateCacheKey()
     {
         if (!Settings::get('DEBUG')) {
-
             /* Production. */
 
             if (Okapi::$version_number !== null) {
-                return "api_ref/method_index#prod#".Okapi::$version_number;
+                return 'api_ref/method_index#prod#'.Okapi::$version_number;
             } else {
                 $methodnames = OkapiServiceRunner::$all_names;
                 sort($methodnames);
-                return "api_ref/method_index#".md5(implode("#", $methodnames));
+
+                return 'api_ref/method_index#'.md5(implode('#', $methodnames));
             }
         } else {
-
             /* Development. */
 
-            return (
-                "api_ref/method_index#dev#".
-                self::getDirModDateRecursive(__DIR__. '/../../../../okapi/services')
-            );
+            return
+                'api_ref/method_index#dev#'.
+                self::getDirModDateRecursive(__DIR__.'/../../../../okapi/services')
+            ;
         }
     }
 
@@ -82,7 +82,7 @@ class WebService
         $max_timestamp = 0;
         foreach ($iterator as $item) {
             if ($item->isDir()) {
-                $pth = $item->getPath()."/.";
+                $pth = $item->getPath().'/.';
             } else {
                 $pth = $item->getPathname();
             }
@@ -91,6 +91,7 @@ class WebService
                 $max_timestamp = $timestamp;
             }
         }
+
         return $max_timestamp;
     }
 }

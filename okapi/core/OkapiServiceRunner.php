@@ -7,17 +7,17 @@ use okapi\Settings;
 
 class OkapiServiceRunner
 {
-    #
-    # This the list of all available OKAPI methods. All methods on this list become
-    # immediately public and all of them have to be documented. It is not possible
-    # to create an invisible or undocumented OKAPI method. If you want to test your
-    # methods, you should do it in your local development server. If you want to
-    # create a private, "internal" method, you still have to document it properly
-    # (you may describe it as "internal" and accessible to selected consumer keys only).
-    #
+    //
+    // This the list of all available OKAPI methods. All methods on this list become
+    // immediately public and all of them have to be documented. It is not possible
+    // to create an invisible or undocumented OKAPI method. If you want to test your
+    // methods, you should do it in your local development server. If you want to
+    // create a private, "internal" method, you still have to document it properly
+    // (you may describe it as "internal" and accessible to selected consumer keys only).
+    //
     public static $all_names = array(
-        # Valid format: ^services/[0-9a-z_/]*$ (it means you may use only alphanumeric
-        # characters and the "_" sign in your method names).
+        // Valid format: ^services/[0-9a-z_/]*$ (it means you may use only alphanumeric
+        // characters and the "_" sign in your method names).
         'services/apiref/method',
         'services/apiref/method_index',
         'services/apiref/issue',
@@ -78,10 +78,10 @@ class OkapiServiceRunner
         }
 
         try {
-            return call_user_func(['\\okapi\\' . str_replace('/', '\\', $service_name) . '\\WebService', 'options']);
+            return call_user_func(['\\okapi\\'.str_replace('/', '\\', $service_name).'\\WebService', 'options']);
         } catch (\Exception $e) {
             throw new \Exception("Make sure you've declared your WebService class ".
-                'in an valid namespace (' .'okapi\\'.str_replace('/', '\\', $service_name)."); ".
+                'in an valid namespace ('.'okapi\\'.str_replace('/', '\\', $service_name).'); '.
                 $e->getMessage());
         }
     }
@@ -96,7 +96,7 @@ class OkapiServiceRunner
             throw new \Exception();
         }
         try {
-            return file_get_contents(__DIR__.'/../'.$service_name. '/docs.xml', true);
+            return file_get_contents(__DIR__.'/../'.$service_name.'/docs.xml', true);
         } catch (\Exception $e) {
             throw new \Exception("Missing documentation file: $service_name.xml");
         }
@@ -122,26 +122,26 @@ class OkapiServiceRunner
         $options = self::options($service_name);
         if ($options['min_auth_level'] >= 2 && $request->consumer == null) {
             throw new \Exception("Method '$service_name' called with mismatched OkapiRequest: ".
-                "\$request->consumer MAY NOT be empty for Level 2 and Level 3 methods. Provide ".
-                "a dummy Consumer if you have to.");
+                '$request->consumer MAY NOT be empty for Level 2 and Level 3 methods. Provide '.
+                'a dummy Consumer if you have to.');
         }
         if ($options['min_auth_level'] >= 3 && $request->token == null) {
             throw new \Exception("Method '$service_name' called with mismatched OkapiRequest: ".
-                "\$request->token MAY NOT be empty for Level 3 methods.");
+                '$request->token MAY NOT be empty for Level 3 methods.');
         }
 
         $time_started = microtime(true);
         Okapi::gettext_domain_init();
         try {
             $response = call_user_func(array('\\okapi\\'.
-                str_replace('/', '\\', $service_name).'\\WebService', 'call'), $request);
+                str_replace('/', '\\', $service_name).'\\WebService', 'call', ), $request);
         } finally {
             Okapi::gettext_domain_restore();
         }
         $runtime = microtime(true) - $time_started;
 
-        # Log the request to the stats table. Only valid requests (these which didn't end up
-        # with an exception) are logged.
+        // Log the request to the stats table. Only valid requests (these which didn't end up
+        // with an exception) are logged.
         self::save_stats($service_name, $request, $runtime);
 
         return $response;
@@ -155,19 +155,19 @@ class OkapiServiceRunner
      */
     public static function save_stats_extra($extra_name, $request, $runtime)
     {
-        self::save_stats("extra/".$extra_name, $request, $runtime);
+        self::save_stats('extra/'.$extra_name, $request, $runtime);
     }
 
     private static function save_stats($service_name, $request, $runtime)
     {
-        # Getting rid of nulls. MySQL PRIMARY keys cannot contain nullable columns.
-        # Temp table doesn't have primary key, but other stats tables (which are
-        # dependant on stats table) - do.
+        // Getting rid of nulls. MySQL PRIMARY keys cannot contain nullable columns.
+        // Temp table doesn't have primary key, but other stats tables (which are
+        // dependant on stats table) - do.
 
         if ($request !== null) {
             $consumer_key = ($request->consumer != null) ? $request->consumer->key : 'anonymous';
             $user_id = (($request->token != null) && ($request->token instanceof OkapiAccessToken)) ? $request->token->user_id : -1;
-            if ($request->is_http_request() && ($service_name[0] == 's')) {  # 's' for "services/", we don't want "extra/" included
+            if ($request->is_http_request() && ($service_name[0] == 's')) {  // 's' for "services/", we don't want "extra/" included
                 $calltype = 'http';
             } else {
                 $calltype = 'internal';

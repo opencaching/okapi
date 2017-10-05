@@ -39,6 +39,7 @@ class CronJobController
                 }
             }
         }
+
         return $cache;
     }
 
@@ -49,9 +50,9 @@ class CronJobController
      * If $wait is false, then it may throw JobsAlreadyInProgress if another
      * thread is currently executing these type of jobs.
      */
-    public static function run_jobs($type, $wait=false)
+    public static function run_jobs($type, $wait = false)
     {
-        # We don't want other cronjobs of the same time to run simultanously.
+        // We don't want other cronjobs of the same time to run simultanously.
         $lock = OkapiLock::get('cronjobs-'.$type);
         if (!$lock->try_acquire()) {
             if ($wait) {
@@ -61,7 +62,7 @@ class CronJobController
             }
         }
 
-        $schedule = Cache::get("cron_schedule");
+        $schedule = Cache::get('cron_schedule');
         if ($schedule == null) {
             $schedule = array();
         }
@@ -74,17 +75,17 @@ class CronJobController
                     try {
                         $cronjob->execute();
                     } catch (\Exception $e) {
-                        Okapi::mail_admins("Cronjob error: ".$cronjob->get_name(),
+                        Okapi::mail_admins('Cronjob error: '.$cronjob->get_name(),
                             OkapiExceptionHandler::get_exception_info($e));
                     }
                     $next_run = $cronjob->get_next_scheduled_run(isset($schedule[$name]) ? $schedule[$name] : time());
                 }
                 $schedule[$name] = $next_run;
-                Cache::set("cron_schedule", $schedule, 30*86400);
+                Cache::set('cron_schedule', $schedule, 30 * 86400);
             }
         }
 
-        # Remove "stale" schedule keys (those which are no longer declared).
+        // Remove "stale" schedule keys (those which are no longer declared).
 
         $fixed_schedule = array();
         foreach (self::get_enabled_cronjobs() as $cronjob) {
@@ -93,7 +94,7 @@ class CronJobController
         }
         unset($schedule);
 
-        # Return the nearest scheduled event time.
+        // Return the nearest scheduled event time.
 
         $nearest = time() + 3600;
         foreach ($fixed_schedule as $name => $time) {
@@ -101,8 +102,9 @@ class CronJobController
                 $nearest = $time;
             }
         }
-        Cache::set("cron_schedule", $fixed_schedule, 30*86400);
+        Cache::set('cron_schedule', $fixed_schedule, 30 * 86400);
         $lock->release();
+
         return $nearest;
     }
 
@@ -113,8 +115,9 @@ class CronJobController
     public static function force_run($job_name)
     {
         foreach (self::get_enabled_cronjobs() as $cronjob) {
-            if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\CronJob\\".$job_name)) {
+            if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == 'okapi\\CronJob\\'.$job_name)) {
                 $cronjob->execute();
+
                 return;
             }
         }
@@ -125,11 +128,11 @@ class CronJobController
      * Reset the schedule of a specified cronjob. This will force the job to
      * run on nearest occasion (but not NOW).
      */
-    public static function reset_job_schedule($job_name, $key=null)
+    public static function reset_job_schedule($job_name, $key = null)
     {
         $thejob = null;
         foreach (self::get_enabled_cronjobs() as $tmp) {
-            if (($tmp->get_name() == $job_name) || ($tmp->get_name() == "okapi\\cronjobs\\".$job_name)) {
+            if (($tmp->get_name() == $job_name) || ($tmp->get_name() == 'okapi\\cronjobs\\'.$job_name)) {
                 $thejob = $tmp;
             }
         }
@@ -141,19 +144,19 @@ class CronJobController
             }
         }
 
-        # We have to acquire lock on the schedule. This might take some time if cron-5 jobs are
-        # currently being run.
+        // We have to acquire lock on the schedule. This might take some time if cron-5 jobs are
+        // currently being run.
 
         $type = $thejob->get_type();
         $lock = OkapiLock::get('cronjobs-'.$type);
         $lock->acquire();
 
-        $schedule = Cache::get("cron_schedule");
+        $schedule = Cache::get('cron_schedule');
         if ($schedule != null) {
             if (isset($schedule[$thejob->get_name()]) && ($key === null || $key == $schedule[$thejob->get_name()])) {
                 unset($schedule[$thejob->get_name()]);
             }
-            Cache::set("cron_schedule", $schedule, 30*86400);
+            Cache::set('cron_schedule', $schedule, 30 * 86400);
         }
 
         $lock->release();

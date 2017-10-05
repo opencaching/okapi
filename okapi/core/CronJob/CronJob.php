@@ -28,7 +28,7 @@ abstract class CronJob
      * ONLY ONCE per cronjob execution, directly AFTER the job was run.
      * (Scheduling the *first* run of `execute` method is out of this method's
      * control, but you can prevent the actual job from being executed by using
-     * custom conditions in your `execute` method.)
+     * custom conditions in your `execute` method.).
      */
     abstract public function get_next_scheduled_run($previously_scheduled_run);
 }

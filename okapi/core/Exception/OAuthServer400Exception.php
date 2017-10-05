@@ -10,6 +10,7 @@ abstract class OAuthServer400Exception extends OAuthServerException
         parent::provideExtras($extras);
         $extras['status'] = 400;
     }
+
     public function getHttpStatusCode()
     {
         return 400;

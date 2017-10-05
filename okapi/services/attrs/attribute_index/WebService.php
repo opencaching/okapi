@@ -14,32 +14,32 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 1
+            'min_auth_level' => 1,
         );
     }
 
     public static function call(OkapiRequest $request)
     {
-        # Read the parameters.
+        // Read the parameters.
 
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) {
-            $langpref = "en";
+            $langpref = 'en';
         }
 
         $fields = $request->get_parameter('fields');
         if (!$fields) {
-            $fields = "name";
+            $fields = 'name';
         }
 
         $only_locally_used = $request->get_parameter('only_locally_used');
         if (!$only_locally_used) {
-            $only_locally_used = "false";
+            $only_locally_used = 'false';
         }
-        $only_locally_used = ($only_locally_used == "true");
+        $only_locally_used = ($only_locally_used == 'true');
 
-        # Get the list of attributes and filter the A-codes based on the
-        # parameters.
+        // Get the list of attributes and filter the A-codes based on the
+        // parameters.
 
         $attrdict = AttrHelper::get_attrdict();
         $acodes = array();
@@ -52,11 +52,11 @@ class WebService
             $acodes[] = $acode;
         }
 
-        # Retrieve the attribute objects and return the results.
+        // Retrieve the attribute objects and return the results.
 
         if (count($acodes) > 0) {
             $params = array(
-                'acodes' => implode("|", $acodes),
+                'acodes' => implode('|', $acodes),
                 'langpref' => $langpref,
                 'fields' => $fields,
             );
@@ -65,6 +65,7 @@ class WebService
         } else {
             $results = new ArrayObject();
         }
+
         return Okapi::formatted_response($request, $results);
     }
 }

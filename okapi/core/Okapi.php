@@ -32,8 +32,8 @@ class Okapi
     {
         /* If we're on Linux, then we'll use a system function for that. */
 
-        if (file_exists("/proc/sys/kernel/random/uuid")) {
-            return trim(file_get_contents("/proc/sys/kernel/random/uuid"));
+        if (file_exists('/proc/sys/kernel/random/uuid')) {
+            return trim(file_get_contents('/proc/sys/kernel/random/uuid'));
         }
 
         /* On other systems (as well as on some other Linux distributions)
@@ -53,10 +53,10 @@ class Okapi
     public static function get_var($varname, $default = null)
     {
         if (self::$okapi_vars === null) {
-            $rs = Db::query("
+            $rs = Db::query('
                 select var, value
                 from okapi_vars
-            ");
+            ');
             self::$okapi_vars = array();
             while ($row = Db::fetch_assoc($rs)) {
                 self::$okapi_vars[$row['var']] = $row['value'];
@@ -65,6 +65,7 @@ class Okapi
         if (isset(self::$okapi_vars[$varname])) {
             return self::$okapi_vars[$varname];
         }
+
         return $default;
     }
 
@@ -75,7 +76,7 @@ class Okapi
      */
     public static function set_var($varname, $value)
     {
-        Okapi::get_var($varname);
+        self::get_var($varname);
         Db::execute("
             replace into okapi_vars (var, value)
             values (
@@ -91,8 +92,8 @@ class Okapi
      */
     public static function removeSensitiveData($message)
     {
-        # This method is initially defined in the OkapiExceptionHandler class,
-        # so that it is accessible even before the Okapi class is initialized.
+        // This method is initially defined in the OkapiExceptionHandler class,
+        // so that it is accessible even before the Okapi class is initialized.
 
         return OkapiExceptionHandler::removeSensitiveData($message);
     }
@@ -100,42 +101,42 @@ class Okapi
     /** Send an email message to local OKAPI administrators. */
     public static function mail_admins($subject, $message)
     {
-        # Make sure we're not sending HUGE emails.
+        // Make sure we're not sending HUGE emails.
 
         if (strlen($message) > 100000) {
             $message = substr($message, 0, 100000)."\n\n...(message clipped at 100k chars)\n";
         }
 
-        # Make sure we're not spamming.
+        // Make sure we're not spamming.
 
         $cache_key = 'mail_admins_counter/'.(floor(time() / 3600) * 3600).'/'.md5($subject);
         try {
             $counter = Cache::get($cache_key);
         } catch (\Exception $e) {
-            # Exception can occur during OKAPI update (#156, #434), or when
-            # the cache table is broken (#340). I am not sure which option is
-            # better: 1. notify the admins about the error and risk spamming
-            # them, 2. don't notify and don't risk spamming them. Currently,
-            # I choose option 2.
+            // Exception can occur during OKAPI update (#156, #434), or when
+            // the cache table is broken (#340). I am not sure which option is
+            // better: 1. notify the admins about the error and risk spamming
+            // them, 2. don't notify and don't risk spamming them. Currently,
+            // I choose option 2.
 
             return;
         }
         if ($counter === null) {
             $counter = 0;
         }
-        $counter++;
+        ++$counter;
         try {
             Cache::set($cache_key, $counter, 3600);
         } catch (DbException $e) {
-            # If `get` succeeded and `set` did not, then probably we're having
-            # issue #156 scenario. We can ignore it here.
+            // If `get` succeeded and `set` did not, then probably we're having
+            // issue #156 scenario. We can ignore it here.
         }
         if ($counter <= 5) {
-            # We're not spamming yet.
+            // We're not spamming yet.
 
             self::mail_from_okapi(\get_admin_emails(), $subject, $message);
         } else {
-            # We are spamming. Prevent sending more emails.
+            // We are spamming. Prevent sending more emails.
 
             $content_cache_key_prefix = 'mail_admins_spam/'.(floor(time() / 3600) * 3600).'/';
             $timeout = 86400;
@@ -159,16 +160,16 @@ class Okapi
     /** Send an email message from OKAPI to the given recipients. */
     public static function mail_from_okapi($email_addresses, $subject, $message)
     {
-        if (class_exists("okapi\\Settings") && (Settings::get('DEBUG_PREVENT_EMAILS'))) {
-            # Sending emails was blocked on admin's demand.
-            # This is possible only on development environment.
+        if (class_exists('okapi\\Settings') && (Settings::get('DEBUG_PREVENT_EMAILS'))) {
+            // Sending emails was blocked on admin's demand.
+            // This is possible only on development environment.
             return;
         }
         if (!is_array($email_addresses)) {
             $email_addresses = array($email_addresses);
         }
-        $sender_email = class_exists("okapi\\Settings") ? Settings::get('FROM_FIELD') : 'root@localhost';
-        mail(implode(", ", $email_addresses), $subject, $message,
+        $sender_email = class_exists('okapi\\Settings') ? Settings::get('FROM_FIELD') : 'root@localhost';
+        mail(implode(', ', $email_addresses), $subject, $message,
             "Content-Type: text/plain; charset=utf-8\n".
             "From: OKAPI <$sender_email>\n".
             "Reply-To: $sender_email\n"
@@ -180,9 +181,9 @@ class Okapi
     {
         $dir = Settings::get('VAR_DIR');
         if ($dir != null) {
-            return rtrim($dir, "/");
+            return rtrim($dir, '/');
         }
-        throw new \Exception("You need to set a valid VAR_DIR.");
+        throw new \Exception('You need to set a valid VAR_DIR.');
     }
 
     /** Returns something like "Opencaching.PL" or "Opencaching.DE". */
@@ -192,14 +193,14 @@ class Okapi
             $site_url = Settings::get('SITE_URL');
         }
         $matches = null;
-        if (preg_match("#^https?://(www.)?opencaching.([a-z.]+)/$#", $site_url, $matches)) {
-            return "Opencaching.".strtoupper($matches[2]);
+        if (preg_match('#^https?://(www.)?opencaching.([a-z.]+)/$#', $site_url, $matches)) {
+            return 'Opencaching.'.strtoupper($matches[2]);
         }
-        if (preg_match("#^https?://(www.)?opencache.([a-z.]+)/$#", $site_url, $matches)) {
-            return "Opencache.".strtoupper($matches[2]);
+        if (preg_match('#^https?://(www.)?opencache.([a-z.]+)/$#', $site_url, $matches)) {
+            return 'Opencache.'.strtoupper($matches[2]);
         }
 
-        return "DEVELSITE";
+        return 'DEVELSITE';
     }
 
     /**
@@ -211,22 +212,22 @@ class Okapi
     public static function get_oc_installation_code()
     {
         if (Settings::get('OC_BRANCH') == 'oc.de') {
-            return "OCDE";  // OC
+            return 'OCDE';  // OC
         }
         $mapping = array(
-            2 => "OCPL",  // OP
-            6 => "OCUK",  // OK
-            10 => "OCUS",  // OU
-            14 => "OCNL",  // OB
-            16 => "OCRO",  // OR
+            2 => 'OCPL',  // OP
+            6 => 'OCUK',  // OK
+            10 => 'OCUS',  // OU
+            14 => 'OCNL',  // OB
+            16 => 'OCRO',  // OR
             // should be expanded when new OCPL-based sites are added
         );
-        $oc_node_id = Settings::get("OC_NODE_ID");
+        $oc_node_id = Settings::get('OC_NODE_ID');
         if (isset($mapping[$oc_node_id])) {
             return $mapping[$oc_node_id];
         }
 
-        return "OTHER";
+        return 'OTHER';
     }
 
     /**
@@ -240,7 +241,7 @@ class Okapi
      */
     public static function get_recommended_base_url()
     {
-        return Settings::get('SITE_URL')."okapi/";
+        return Settings::get('SITE_URL').'okapi/';
     }
 
     /**
@@ -261,49 +262,49 @@ class Okapi
         switch (self::get_oc_installation_code()) {
             case 'OCPL':
                 $urls = array(
-                    "http://opencaching.pl/okapi/",
-                    "http://www.opencaching.pl/okapi/",
-                    "https://opencaching.pl/okapi/",
+                    'http://opencaching.pl/okapi/',
+                    'http://www.opencaching.pl/okapi/',
+                    'https://opencaching.pl/okapi/',
                 );
                 break;
             case 'OCDE':
-                if (in_array(Settings::get('OC_NODE_ID'), array(4,5))) {
+                if (in_array(Settings::get('OC_NODE_ID'), array(4, 5))) {
                     /* In OCDE, node_ids 4 and 5 are used to indicate a development
                      * installation. Other sites rely on the fact, that
                      * self::get_recommended_base_url() is appended to $urls below.
                      * For OCDE this is not enough, because they want to test both
                      * HTTP and HTTPS in their development installations. */
                     $urls = array(
-                        preg_replace("/^https:/", "http:", Settings::get('SITE_URL')) . 'okapi/',
-                        preg_replace("/^http:/", "https:", Settings::get('SITE_URL')) . 'okapi/',
+                        preg_replace('/^https:/', 'http:', Settings::get('SITE_URL')).'okapi/',
+                        preg_replace('/^http:/', 'https:', Settings::get('SITE_URL')).'okapi/',
                     );
                 } else {
                     $urls = array(
-                        "http://www.opencaching.de/okapi/",
-                        "https://www.opencaching.de/okapi/",
+                        'http://www.opencaching.de/okapi/',
+                        'https://www.opencaching.de/okapi/',
                     );
                 }
                 break;
             case 'OCNL':
                 $urls = array(
-                    "http://www.opencaching.nl/okapi/",
+                    'http://www.opencaching.nl/okapi/',
                 );
                 break;
             case 'OCRO':
                 $urls = array(
-                    "http://www.opencaching.ro/okapi/",
+                    'http://www.opencaching.ro/okapi/',
                 );
                 break;
             case 'OCUK':
                 $urls = array(
-                    "http://opencache.uk/okapi/",
-                    "https://opencache.uk/okapi/",
+                    'http://opencache.uk/okapi/',
+                    'https://opencache.uk/okapi/',
                 );
                 break;
             case 'OCUS':
                 $urls = array(
-                    "http://www.opencaching.us/okapi/",
-                    "http://opencaching.us/okapi/",
+                    'http://www.opencaching.us/okapi/',
+                    'http://opencaching.us/okapi/',
                 );
                 break;
             default:
@@ -327,8 +328,8 @@ class Okapi
      *   array('sp', 'de', 'en')
      * ) == 'Y'.
      *
-     * @param array $langdict - assoc array of lang-code => text.
-     * @param array $langprefs - list of lang codes, in order of preference.
+     * @param array $langdict  - assoc array of lang-code => text
+     * @param array $langprefs - list of lang codes, in order of preference
      */
     public static function pick_best_language($langdict, $langprefs)
     {
@@ -355,7 +356,7 @@ class Okapi
         }
 
         /* Langdict is empty. Simply return an empty string. */
-        return "";
+        return '';
     }
 
     /**
@@ -369,6 +370,7 @@ class Okapi
             $groups[] = array_slice($array, $i, $size);
             $i += $size;
         }
+
         return $groups;
     }
 
@@ -378,11 +380,11 @@ class Okapi
      */
     public static function execute_prerequest_cronjobs()
     {
-        $nearest_event = Okapi::get_var("cron_nearest_event");
+        $nearest_event = self::get_var('cron_nearest_event');
         if ($nearest_event + 0 <= time()) {
             try {
                 $nearest_event = CronJobController::run_jobs('pre-request');
-                Okapi::set_var("cron_nearest_event", $nearest_event);
+                self::set_var('cron_nearest_event', $nearest_event);
             } catch (JobsAlreadyInProgress $e) {
                 // Ignore.
             }
@@ -397,13 +399,13 @@ class Okapi
      */
     public static function execute_cron5_cronjobs()
     {
-        $nearest_event = Okapi::get_var("cron_nearest_event");
+        $nearest_event = self::get_var('cron_nearest_event');
         if ($nearest_event + 0 <= time()) {
             set_time_limit(0);
             ignore_user_abort(true);
             try {
                 $nearest_event = CronJobController::run_jobs('cron-5');
-                Okapi::set_var("cron_nearest_event", $nearest_event);
+                self::set_var('cron_nearest_event', $nearest_event);
             } catch (JobsAlreadyInProgress $e) {
                 // Ignore.
             }
@@ -415,15 +417,16 @@ class Okapi
         static $gettext_last_used_langprefs = null;
         static $gettext_last_set_locale = null;
 
-        # We remember the last $langprefs argument which we've been called with.
-        # This way, we don't need to call the actual locale-switching code most
-        # of the times.
+        // We remember the last $langprefs argument which we've been called with.
+        // This way, we don't need to call the actual locale-switching code most
+        // of the times.
 
         if ($gettext_last_used_langprefs != $langprefs) {
-            $gettext_last_set_locale = call_user_func(Settings::get("GETTEXT_INIT"), $langprefs);
+            $gettext_last_set_locale = call_user_func(Settings::get('GETTEXT_INIT'), $langprefs);
             $gettext_last_used_langprefs = $langprefs;
-            textdomain(Settings::get("GETTEXT_DOMAIN"));
+            textdomain(Settings::get('GETTEXT_DOMAIN'));
         }
+
         return $gettext_last_set_locale;
     }
 
@@ -437,7 +440,7 @@ class Okapi
      */
     public static function gettext_domain_init($langprefs = null)
     {
-        # Put the langprefs on the stack.
+        // Put the langprefs on the stack.
 
         if ($langprefs == null) {
             $langprefs = array(Settings::get('SITELANG'));
@@ -445,24 +448,25 @@ class Okapi
         self::$gettext_langprefs_stack[] = $langprefs;
 
         if (count(self::$gettext_langprefs_stack) == 1) {
-            # This is the first time gettext_domain_init is called. In order to
-            # properly reinitialize the original settings after gettext_domain_restore
-            # is called for the last time, we need to save current textdomain (which
-            # should be different than the one which we use - Settings::get("GETTEXT_DOMAIN")).
+            // This is the first time gettext_domain_init is called. In order to
+            // properly reinitialize the original settings after gettext_domain_restore
+            // is called for the last time, we need to save current textdomain (which
+            // should be different than the one which we use - Settings::get("GETTEXT_DOMAIN")).
 
             self::$gettext_original_domain = textdomain(null);
         }
 
-        # Attempt to change the language. Acquire the actual locale code used
-        # (might differ from expected when language was not found).
+        // Attempt to change the language. Acquire the actual locale code used
+        // (might differ from expected when language was not found).
 
         return self::gettext_set_lang($langprefs);
     }
+
     public static function gettext_domain_restore()
     {
-        # Dismiss the last element on the langpref stack. This is the language
-        # which we've been actualy using until now. We want it replaced with
-        # the language below it.
+        // Dismiss the last element on the langpref stack. This is the language
+        // which we've been actualy using until now. We want it replaced with
+        // the language below it.
 
         array_pop(self::$gettext_langprefs_stack);
 
@@ -471,8 +475,8 @@ class Okapi
             $langprefs = self::$gettext_langprefs_stack[$size - 1];
             self::gettext_set_lang($langprefs);
         } else {
-            # The stack is empty. This means we're going out of OKAPI code and
-            # we want the original textdomain reestablished.
+            // The stack is empty. This means we're going out of OKAPI code and
+            // we want the original textdomain reestablished.
 
             textdomain(self::$gettext_original_domain);
             self::$gettext_original_domain = null;
@@ -489,8 +493,8 @@ class Okapi
             return;
         }
         self::increase_memory_limit('512M');
-        # The memory limit is - among other - crucial for the maximum size
-        # of processable images; see services/logs/images/add.php: max_pixels()
+        // The memory limit is - among other - crucial for the maximum size
+        // of processable images; see services/logs/images/add.php: max_pixels()
         Db::connect();
         if (Settings::get('TIMEZONE') !== null) {
             date_default_timezone_set(Settings::get('TIMEZONE'));
@@ -528,15 +532,16 @@ class Okapi
     public static function generate_key($length, $user_friendly = false)
     {
         if ($user_friendly) {
-            $chars = "0123456789";
+            $chars = '0123456789';
         } else {
-            $chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         }
         $max = strlen($chars);
-        $key = "";
-        for ($i=0; $i<$length; $i++) {
-            $key .= $chars[rand(0, $max-1)];
+        $key = '';
+        for ($i = 0; $i < $length; ++$i) {
+            $key .= $chars[rand(0, $max - 1)];
         }
+
         return $key;
     }
 
@@ -547,42 +552,42 @@ class Okapi
      */
     public static function register_new_consumer($appname, $appurl, $email)
     {
-        $consumer = new OkapiConsumer(Okapi::generate_key(20), Okapi::generate_key(40),
+        $consumer = new OkapiConsumer(self::generate_key(20), self::generate_key(40),
             $appname, $appurl, $email);
-        $sample_cache = OkapiServiceRunner::call("services/caches/search/all",
+        $sample_cache = OkapiServiceRunner::call('services/caches/search/all',
             new OkapiInternalRequest($consumer, null, array('limit', 1)));
         if (count($sample_cache['results']) > 0) {
             $sample_cache_code = $sample_cache['results'][0];
         } else {
-            $sample_cache_code = "CACHECODE";
+            $sample_cache_code = 'CACHECODE';
         }
 
-        # Message for the Consumer.
+        // Message for the Consumer.
         ob_start();
-        print "This is the key-pair we have created for your application:\n\n";
-        print "Consumer Key: $consumer->key\n";
-        print "Consumer Secret: $consumer->secret\n\n";
-        print "Note: Consumer Secret is needed only when you intend to use OAuth.\n";
-        print "You don't need Consumer Secret for Level 1 Authentication.\n\n";
-        print "Now you can easily access Level 1 OKAPI methods. E.g.:\n";
-        print Settings::get('SITE_URL')."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n";
-        print "If you plan on using OKAPI for a longer time, then you might also want\n";
-        print "to subscribe to the OKAPI News blog (it is not much updated, but it might\n";
-        print "still be worth the trouble):\n";
-        print "https://opencaching-api.blogspot.com/\n\n";
-        print "Have fun!\n\n";
-        print "-- \n";
-        print "OKAPI Team\n";
-        Okapi::mail_from_okapi($email, "Your OKAPI Consumer Key", ob_get_clean());
+        echo "This is the key-pair we have created for your application:\n\n";
+        echo "Consumer Key: $consumer->key\n";
+        echo "Consumer Secret: $consumer->secret\n\n";
+        echo "Note: Consumer Secret is needed only when you intend to use OAuth.\n";
+        echo "You don't need Consumer Secret for Level 1 Authentication.\n\n";
+        echo "Now you can easily access Level 1 OKAPI methods. E.g.:\n";
+        echo Settings::get('SITE_URL')."okapi/services/caches/geocache?cache_code=$sample_cache_code&consumer_key=$consumer->key\n\n";
+        echo "If you plan on using OKAPI for a longer time, then you might also want\n";
+        echo "to subscribe to the OKAPI News blog (it is not much updated, but it might\n";
+        echo "still be worth the trouble):\n";
+        echo "https://opencaching-api.blogspot.com/\n\n";
+        echo "Have fun!\n\n";
+        echo "-- \n";
+        echo "OKAPI Team\n";
+        self::mail_from_okapi($email, 'Your OKAPI Consumer Key', ob_get_clean());
 
-        # Message for the Admins.
+        // Message for the Admins.
 
         ob_start();
-        print "Name: $consumer->name\n";
-        print "Developer: $consumer->email\n";
-        print($consumer->url ? "URL: $consumer->url\n" : "");
-        print "Consumer Key: $consumer->key\n";
-        Okapi::mail_admins("New OKAPI app registered!", ob_get_clean());
+        echo "Name: $consumer->name\n";
+        echo "Developer: $consumer->email\n";
+        echo $consumer->url ? "URL: $consumer->url\n" : '';
+        echo "Consumer Key: $consumer->key\n";
+        self::mail_admins('New OKAPI app registered!', ob_get_clean());
 
         Db::execute("
             insert into okapi_consumers (`key`, name, secret, url, email, date_created)
@@ -600,16 +605,17 @@ class Okapi
     /** Return the distance between two geopoints, in meters. */
     public static function get_distance($lat1, $lon1, $lat2, $lon2)
     {
-        $x1 = (90-$lat1) * 3.14159 / 180;
-        $x2 = (90-$lat2) * 3.14159 / 180;
-        #
-        # min(1, ...) was added below to prevent getting values greater than 1 due
-        # to floating point precision limits. See issue #351 for details.
-        #
-        $d = acos(min(1, cos($x1) * cos($x2) + sin($x1) * sin($x2) * cos(($lon1-$lon2) * 3.14159 / 180))) * 6371000;
+        $x1 = (90 - $lat1) * 3.14159 / 180;
+        $x2 = (90 - $lat2) * 3.14159 / 180;
+        //
+        // min(1, ...) was added below to prevent getting values greater than 1 due
+        // to floating point precision limits. See issue #351 for details.
+        //
+        $d = acos(min(1, cos($x1) * cos($x2) + sin($x1) * sin($x2) * cos(($lon1 - $lon2) * 3.14159 / 180))) * 6371000;
         if ($d < 0) {
             $d = 0;
         }
+
         return $d;
     }
 
@@ -621,11 +627,12 @@ class Okapi
     {
         $x1 = "(90-$lat1) * 3.14159 / 180";
         $x2 = "(90-$lat2) * 3.14159 / 180";
-        #
-        # least(1, ...) was added below to prevent getting values greater than 1 due
-        # to floating point precision limits. See issue #351 for details.
-        #
+        //
+        // least(1, ...) was added below to prevent getting values greater than 1 due
+        // to floating point precision limits. See issue #351 for details.
+        //
         $d = "acos(least(1, cos($x1) * cos($x2) + sin($x1) * sin($x2) * cos(($lon1-$lon2) * 3.14159 / 180))) * 6371000";
+
         return $d;
     }
 
@@ -665,6 +672,7 @@ class Okapi
         if ($b === null) {
             return 'n/a';
         }
+
         return $names[round(($b / 360.0) * 8.0) % 8];
     }
 
@@ -672,10 +680,11 @@ class Okapi
     public static function bearing_as_three_letters($b)
     {
         static $names = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
-            'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW');
+            'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', );
         if ($b === null) {
             return 'n/a';
         }
+
         return $names[round(($b / 360.0) * 16.0) % 16];
     }
 
@@ -684,7 +693,8 @@ class Okapi
     {
         static $pattern = '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u';
         $string = preg_replace($pattern, '', $string);
-        return strtr($string, array("<" => "&lt;", ">" => "&gt;", "\"" => "&quot;", "'" => "&apos;", "&" => "&amp;"));
+
+        return strtr($string, array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;', "'" => '&apos;', '&' => '&amp;'));
     }
 
     /**
@@ -697,8 +707,8 @@ class Okapi
     public static function formatted_response(OkapiRequest $request, &$object)
     {
         if ($request instanceof OkapiInternalRequest && (!$request->i_want_OkapiResponse)) {
-            # If you call a method internally, then you probably expect to get
-            # the actual object instead of it's formatted representation.
+            // If you call a method internally, then you probably expect to get
+            // the actual object instead of it's formatted representation.
             return $object;
         }
         $format = $request->get_parameter('format');
@@ -714,33 +724,37 @@ class Okapi
         }
         if ($format == 'json') {
             $response = new OkapiHttpResponse();
-            $response->content_type = "application/json; charset=utf-8";
+            $response->content_type = 'application/json; charset=utf-8';
             $response->body = json_encode($object);
+
             return $response;
         } elseif ($format == 'jsonp') {
             if (!$callback) {
                 throw new BadRequest("'callback' parameter is required for JSONP calls");
             }
-            if (!preg_match("/^[a-zA-Z_][a-zA-Z0-9_]*$/", $callback)) {
+            if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $callback)) {
                 throw new InvalidParam('callback', "'$callback' doesn't seem to be a valid JavaScript function name (should match /^[a-zA-Z_][a-zA-Z0-9_]*\$/).");
             }
             $response = new OkapiHttpResponse();
-            $response->content_type = "application/javascript; charset=utf-8";
-            $response->body = $callback."(".json_encode($object).");";
+            $response->content_type = 'application/javascript; charset=utf-8';
+            $response->body = $callback.'('.json_encode($object).');';
+
             return $response;
         } elseif ($format == 'xmlmap') {
-            # Deprecated (see issue 128). Keeping this for backward-compatibility.
+            // Deprecated (see issue 128). Keeping this for backward-compatibility.
             $response = new OkapiHttpResponse();
-            $response->content_type = "text/xml; charset=utf-8";
+            $response->content_type = 'text/xml; charset=utf-8';
             $response->body = self::xmlmap_dumps($object);
+
             return $response;
         } elseif ($format == 'xmlmap2') {
             $response = new OkapiHttpResponse();
-            $response->content_type = "text/xml; charset=utf-8";
+            $response->content_type = 'text/xml; charset=utf-8';
             $response->body = self::xmlmap2_dumps($object);
+
             return $response;
         } else {
-            # Should not happen (as we do a proper check above).
+            // Should not happen (as we do a proper check above).
             throw new \Exception();
         }
     }
@@ -748,51 +762,51 @@ class Okapi
     private static function _xmlmap_add(&$chunks, &$obj)
     {
         if (is_string($obj)) {
-            $chunks[] = "<string>";
+            $chunks[] = '<string>';
             $chunks[] = self::xmlescape($obj);
-            $chunks[] = "</string>";
+            $chunks[] = '</string>';
         } elseif (is_int($obj)) {
             $chunks[] = "<int>$obj</int>";
         } elseif (is_float($obj)) {
             $chunks[] = "<float>$obj</float>";
         } elseif (is_bool($obj)) {
-            $chunks[] = $obj ? "<bool>true</bool>" : "<bool>false</bool>";
+            $chunks[] = $obj ? '<bool>true</bool>' : '<bool>false</bool>';
         } elseif (is_null($obj)) {
-            $chunks[] = "<null/>";
+            $chunks[] = '<null/>';
         } elseif (is_array($obj)) {
-            # Have to check if this is associative or not! Shit. I hate PHP.
+            // Have to check if this is associative or not! Shit. I hate PHP.
             if (array_keys($obj) === range(0, count($obj) - 1)) {
-                # Not assoc.
-                $chunks[] = "<list>";
+                // Not assoc.
+                $chunks[] = '<list>';
                 foreach ($obj as &$item_ref) {
-                    $chunks[] = "<item>";
+                    $chunks[] = '<item>';
                     self::_xmlmap_add($chunks, $item_ref);
-                    $chunks[] = "</item>";
+                    $chunks[] = '</item>';
                 }
-                $chunks[] = "</list>";
+                $chunks[] = '</list>';
             } else {
-                # Assoc.
-                $chunks[] = "<dict>";
+                // Assoc.
+                $chunks[] = '<dict>';
                 foreach ($obj as $key => &$item_ref) {
-                    $chunks[] = "<item key=\"".self::xmlescape($key)."\">";
+                    $chunks[] = '<item key="'.self::xmlescape($key).'">';
                     self::_xmlmap_add($chunks, $item_ref);
-                    $chunks[] = "</item>";
+                    $chunks[] = '</item>';
                 }
-                $chunks[] = "</dict>";
+                $chunks[] = '</dict>';
             }
         } else {
-            # That's a bug.
-            throw new \Exception("Cannot encode as xmlmap: " . print_r($obj, true));
+            // That's a bug.
+            throw new \Exception('Cannot encode as xmlmap: '.print_r($obj, true));
         }
     }
 
     private static function _xmlmap2_add(&$chunks, &$obj, $key)
     {
-        $attrs = ($key !== null) ? " key=\"".self::xmlescape($key)."\"" : "";
+        $attrs = ($key !== null) ? ' key="'.self::xmlescape($key).'"' : '';
         if (is_string($obj)) {
             $chunks[] = "<string$attrs>";
             $chunks[] = self::xmlescape($obj);
-            $chunks[] = "</string>";
+            $chunks[] = '</string>';
         } elseif (is_int($obj)) {
             $chunks[] = "<number$attrs>$obj</number>";
         } elseif (is_float($obj)) {
@@ -802,25 +816,25 @@ class Okapi
         } elseif (is_null($obj)) {
             $chunks[] = "<null$attrs/>";
         } elseif (is_array($obj) || ($obj instanceof \ArrayObject)) {
-            # Have to check if this is associative or not! Shit. I hate PHP.
+            // Have to check if this is associative or not! Shit. I hate PHP.
             if (is_array($obj) && (array_keys($obj) === range(0, count($obj) - 1))) {
-                # Not assoc.
+                // Not assoc.
                 $chunks[] = "<array$attrs>";
                 foreach ($obj as &$item_ref) {
                     self::_xmlmap2_add($chunks, $item_ref, null);
                 }
-                $chunks[] = "</array>";
+                $chunks[] = '</array>';
             } else {
-                # Assoc.
+                // Assoc.
                 $chunks[] = "<object$attrs>";
                 foreach ($obj as $key => &$item_ref) {
                     self::_xmlmap2_add($chunks, $item_ref, $key);
                 }
-                $chunks[] = "</object>";
+                $chunks[] = '</object>';
             }
         } else {
-            # That's a bug.
-            throw new \Exception("Cannot encode as xmlmap2: " . print_r($obj, true));
+            // That's a bug.
+            throw new \Exception('Cannot encode as xmlmap2: '.print_r($obj, true));
         }
     }
 
@@ -829,6 +843,7 @@ class Okapi
     {
         $chunks = array();
         self::_xmlmap_add($chunks, $obj);
+
         return implode('', $chunks);
     }
 
@@ -837,36 +852,37 @@ class Okapi
     {
         $chunks = array();
         self::_xmlmap2_add($chunks, $obj, null);
+
         return implode('', $chunks);
     }
 
     private static $cache_types = array(
-        #
-        # OKAPI does not expose type IDs. Instead, it uses the following
-        # "code words". Only the "primary" cache types are documented.
-        # This means that all other types may (in theory) be altered.
-        # Cache type may become "primary" ONLY when *all* OC servers recognize
-        # that type.
-        #
-        # Changing this may introduce nasty bugs (e.g. in the replicate module).
-        # CONTACT ME BEFORE YOU MODIFY THIS!
-        #
+        //
+        // OKAPI does not expose type IDs. Instead, it uses the following
+        // "code words". Only the "primary" cache types are documented.
+        // This means that all other types may (in theory) be altered.
+        // Cache type may become "primary" ONLY when *all* OC servers recognize
+        // that type.
+        //
+        // Changing this may introduce nasty bugs (e.g. in the replicate module).
+        // CONTACT ME BEFORE YOU MODIFY THIS!
+        //
         'oc.pl' => array(
-            # Primary types (documented, cannot change)
+            // Primary types (documented, cannot change)
             'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
             'Event' => 6,
-            # Additional types (may get changed)
+            // Additional types (may get changed)
             'Other' => 1, 'Webcam' => 5,
             'Moving' => 8, 'Podcast' => 9, 'Own' => 10,
         ),
         'oc.de' => array(
-            # Primary types (documented, cannot change)
+            // Primary types (documented, cannot change)
             'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
             'Event' => 6,
-            # Additional types (might get changed)
+            // Additional types (might get changed)
             'Other' => 1, 'Webcam' => 5,
             'Math/Physics' => 8, 'Moving' => 9, 'Drive-In' => 10,
-        )
+        ),
     );
 
     /** E.g. 'Traditional' => 2. For unknown names throw an Exception. */
@@ -876,9 +892,9 @@ class Okapi
         if (isset($ref[$name])) {
             return $ref[$name];
         }
-        throw new \Exception("Method cache_type_name2id called with unsupported cache ".
+        throw new \Exception('Method cache_type_name2id called with unsupported cache '.
             "type name '$name'. You should not allow users to submit caches ".
-            "of non-primary type.");
+            'of non-primary type.');
     }
 
     /** E.g. 2 => 'Traditional'. For unknown ids returns "Other". */
@@ -894,11 +910,12 @@ class Okapi
         if (isset($reversed[$id])) {
             return $reversed[$id];
         }
-        return "Other";
+
+        return 'Other';
     }
 
     private static $cache_statuses = array(
-        'Available' => 1, 'Temporarily unavailable' => 2, 'Archived' => 3
+        'Available' => 1, 'Temporarily unavailable' => 2, 'Archived' => 3,
     );
 
     /** E.g. 'Available' => 1. For unknown names throws an Exception. */
@@ -923,6 +940,7 @@ class Okapi
         if (isset($reversed[$id])) {
             return $reversed[$id];
         }
+
         return 'Archived';
     }
 
@@ -959,7 +977,8 @@ class Okapi
         if (isset($reversed[$id])) {
             return $reversed[$id];
         }
-        return "other";
+
+        return 'other';
     }
 
     /** Maps OKAPI's 'size2' values to opencaching.com (OX) size codes. */
@@ -1016,59 +1035,59 @@ class Okapi
     /** E.g. 1 => 'Found it'. For unknown ids returns 'Comment'. */
     public static function logtypeid2name($id)
     {
-        # Various OC sites use different English names, even for primary
-        # log types. OKAPI needs to have them the same across *all* OKAPI
-        # installations. That's why all known types are hardcoded here.
-        # These names are officially documented and may never change!
+        // Various OC sites use different English names, even for primary
+        // log types. OKAPI needs to have them the same across *all* OKAPI
+        // installations. That's why all known types are hardcoded here.
+        // These names are officially documented and may never change!
 
-        # Primary.
+        // Primary.
         if ($id == 1) {
-            return "Found it";
+            return 'Found it';
         }
         if ($id == 2) {
             return "Didn't find it";
         }
         if ($id == 3) {
-            return "Comment";
+            return 'Comment';
         }
         if ($id == 7) {
-            return "Attended";
+            return 'Attended';
         }
         if ($id == 8) {
-            return "Will attend";
+            return 'Will attend';
         }
 
-        # Other.
+        // Other.
         if ($id == 4) {
-            return "Moved";
+            return 'Moved';
         }
         if ($id == 5) {
-            return "Needs maintenance";
+            return 'Needs maintenance';
         }
         if ($id == 6) {
-            return "Maintenance performed";
+            return 'Maintenance performed';
         }
         if ($id == 9) {
-            return "Archived";
+            return 'Archived';
         }
         if ($id == 10) {
-            return "Ready to search";
+            return 'Ready to search';
         }
         if ($id == 11) {
-            return "Temporarily unavailable";
+            return 'Temporarily unavailable';
         }
         if ($id == 12) {
-            return "OC Team comment";
+            return 'OC Team comment';
         }
         if ($id == 13 || $id == 14) {
-            return "Locked";
+            return 'Locked';
         }
 
-        # Important: This set is not closed. Other types may be introduced
-        # in the future. This has to be documented in the public method
-        # description.
+        // Important: This set is not closed. Other types may be introduced
+        // in the future. This has to be documented in the public method
+        // description.
 
-        return "Comment";
+        return 'Comment';
     }
 
     /**
@@ -1085,19 +1104,19 @@ class Okapi
 
         $html = preg_replace(
             "~\b(src|href)=([\"'])(?![a-z0-9_-]+:)~",
-            "$1=$2".Settings::get("SITE_URL"),
+            '$1=$2'.Settings::get('SITE_URL'),
             $html
         );
 
         if ($object_type == self::OBJECT_TYPE_CACHE_LOG
             && Settings::get('OC_BRANCH') === 'oc.pl'
         ) {
-            # Decode special OCPL entity-encoding produced by logs/submit.
-            # See https://github.com/opencaching/okapi/issues/413.
-            #
-            # This might be restricted to log entries created by OKAPI (that are
-            # recorded in okapi_submitted_objects). However, they may have been
-            # edited later, so we don't know who created the HTML encoding.
+            // Decode special OCPL entity-encoding produced by logs/submit.
+            // See https://github.com/opencaching/okapi/issues/413.
+            //
+            // This might be restricted to log entries created by OKAPI (that are
+            // recorded in okapi_submitted_objects). However, they may have been
+            // edited later, so we don't know who created the HTML encoding.
 
             $html = preg_replace('/&amp;#(38|60|62);/', '&#$1;', $html);
         }
@@ -1127,7 +1146,7 @@ class Okapi
                 return substr($val, 0, strlen($val) - 1) * 1024;
             default:
                 if (($last < '0') || ($last > '9')) {
-                    throw new \Exception("Unknown suffix");
+                    throw new \Exception('Unknown suffix');
                 }
 
                 return $val;
@@ -1145,8 +1164,8 @@ class Okapi
             (!isset($_COOKIE['okapi_devel_key']))
             || (md5($_COOKIE['okapi_devel_key']) != '5753f318c1495c01637f7f6b7fc9c5db')
         ) {
-            header("Content-Type: text/plain; charset=utf-8");
-            print "I need a cookie!";
+            header('Content-Type: text/plain; charset=utf-8');
+            echo 'I need a cookie!';
             die();
         }
     }
@@ -1159,7 +1178,7 @@ class Okapi
      */
     public static function update_user_activity($request)
     {
-        if ($request && $request->token && $request->token->token_type == "access") {
+        if ($request && $request->token && $request->token->token_type == 'access') {
             Db::execute("
                 update user set last_login=now()
                 where user_id='".Db::escape_string($request->token->user_id)."'
@@ -1174,24 +1193,25 @@ class Okapi
     public static function format_infotags($infotags)
     {
         $chunks = [];
-        $url = Settings::get('SITE_URL')."okapi/introduction.html#oc-branch-differences";
+        $url = Settings::get('SITE_URL').'okapi/introduction.html#oc-branch-differences';
         foreach ($infotags as $infotag) {
-            if ($infotag == "ocpl-specific") {
+            if ($infotag == 'ocpl-specific') {
                 $chunks[] = "<a href='$url' class='infotag infotag-ocpl-specific'>OCPL</a> ";
-            } elseif ($infotag == "ocde-specific") {
+            } elseif ($infotag == 'ocde-specific') {
                 $chunks[] = "<a href='$url' class='infotag infotag-ocde-specific'>OCDE</a> ";
             }
         }
-        return implode("", $chunks);
+
+        return implode('', $chunks);
     }
 
-    # object types in table okapi_submitted_objects
+    // object types in table okapi_submitted_objects
     const OBJECT_TYPE_CACHE = 1;
     const OBJECT_TYPE_CACHE_DESCRIPTION = 2;
     const OBJECT_TYPE_CACHE_IMAGE = 3;
     const OBJECT_TYPE_CACHE_MP3 = 4;
-    const OBJECT_TYPE_CACHE_LOG = 5;           # implemented
-    const OBJECT_TYPE_CACHE_LOG_IMAGE = 6;     # implemented
+    const OBJECT_TYPE_CACHE_LOG = 5;           // implemented
+    const OBJECT_TYPE_CACHE_LOG_IMAGE = 6;     // implemented
     const OBJECT_TYPE_CACHELIST = 7;
     const OBJECT_TYPE_EMAIL = 8;
     const OBJECT_TYPE_CACHE_REPORT = 9;

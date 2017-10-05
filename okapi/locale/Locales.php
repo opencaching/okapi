@@ -23,6 +23,7 @@ class Locales
         foreach (self::$languages as $key => $value) {
             $arr[] = $value['locale'];
         }
+
         return $arr;
     }
 
@@ -32,11 +33,12 @@ class Locales
     public static function get_installed_locales()
     {
         $arr = array();
-        foreach (explode("\n", shell_exec("locale -a")) as $item) {
+        foreach (explode("\n", shell_exec('locale -a')) as $item) {
             if ($item) {
                 $arr[] = $item;
             }
         }
+
         return $arr;
     }
 
@@ -45,6 +47,7 @@ class Locales
         if (isset(self::$languages[$lang])) {
             return self::$languages[$lang]['locale'];
         }
+
         return null;
     }
 
@@ -56,6 +59,7 @@ class Locales
                 return $locale;
             }
         }
+
         return self::$languages['en']['locale'];
     }
 }

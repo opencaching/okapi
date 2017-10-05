@@ -13,7 +13,10 @@ class OAuthCleanupCronJob extends PrerequestCronJob
     public function get_period()
     {
         return 300;
-    } # 5 minutes
+    }
+
+ // 5 minutes
+
     public function execute()
     {
         if (Okapi::$data_store) {

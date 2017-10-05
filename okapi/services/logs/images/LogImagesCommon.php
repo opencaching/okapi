@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Common code of add.php and edit.php
+ * Common code of add.php and edit.php.
  */
 
 namespace okapi\services\logs\images;
@@ -21,11 +21,11 @@ class LogImagesCommon
             throw new ParamMissing('image_uuid');
         }
 
-        # When uploading images, OCPL stores the user_id of the uploader
-        # in the 'pictures' table. This is redundant to cache_logs.user_id,
-        # because only the log entry author may append images. We will stick
-        # to log_entries.user_id here, which is the original value and works
-        # for all OC branches, and ignore pictures.user_id.
+        // When uploading images, OCPL stores the user_id of the uploader
+        // in the 'pictures' table. This is redundant to cache_logs.user_id,
+        // because only the log entry author may append images. We will stick
+        // to log_entries.user_id here, which is the original value and works
+        // for all OC branches, and ignore pictures.user_id.
 
         $rs = Db::query("
             select
@@ -47,29 +47,28 @@ class LogImagesCommon
         if ($row['node'] != Settings::get('OC_NODE_ID')) {
             throw new Exception(
                 "This site's database contains the image '$image_uuid' which has been"
-                . " imported from another OC node. OKAPI is not prepared for that."
+                .' imported from another OC node. OKAPI is not prepared for that.'
             );
         }
         if ($row['user_id'] != $request->token->user_id) {
             throw new InvalidParam(
                 'image_uuid',
-                "The user of your access token is not the author of the associated log entry."
+                'The user of your access token is not the author of the associated log entry.'
             );
         }
 
         return array($image_uuid, $row['log_internal_id']);
     }
 
-
     public static function validate_position($request)
     {
         $position = $request->get_parameter('position');
-        if ($position !== null && !preg_match("/^-?[0-9]+$/", $position)) {
+        if ($position !== null && !preg_match('/^-?[0-9]+$/', $position)) {
             throw new InvalidParam('position', "'".$position."' is not an integer number.");
         }
+
         return $position;
     }
-
 
     /**
      * OCDE supports arbitrary ordering of log images. The pictures table
@@ -86,27 +85,26 @@ class LogImagesCommon
      * This function is always called when adding images. When editing images,
      * it is called only for OCDE and if the position parameter was supplied.
      */
-
     public static function prepare_position($log_internal_id, $position, $end_offset)
     {
         if (Settings::get('OC_BRANCH') == 'oc.de' && $position !== null) {
-            # Prevent race conditions when creating sequence numbers if a
-            # user tries to upload multiple images simultaneously. With a
-            # few picture uploads per hour - most of them probably witout
-            # a 'position' parameter - the lock is neglectable.
+            // Prevent race conditions when creating sequence numbers if a
+            // user tries to upload multiple images simultaneously. With a
+            // few picture uploads per hour - most of them probably witout
+            // a 'position' parameter - the lock is neglectable.
 
             Db::execute('lock tables pictures write');
         }
 
-        $log_images_count =  Db::select_value("
+        $log_images_count = Db::select_value("
             select count(*)
             from pictures
             where object_type = 1 and object_id = '".Db::escape_string($log_internal_id)."'
         ");
 
         if (Settings::get('OC_BRANCH') == 'oc.pl') {
-            # Ignore the position parameter, always insert at end.
-            # Remember that this function is NOT called when editing OCPL images.
+            // Ignore the position parameter, always insert at end.
+            // Remember that this function is NOT called when editing OCPL images.
 
             $position = $log_images_count;
             $seq = 1;
@@ -127,12 +125,12 @@ class LogImagesCommon
                     from pictures
                     where object_type = 1 and object_id = '".Db::escape_string($log_internal_id)."'
                     order by seq
-                    limit ".($position+0).", 1
-                ");
+                    limit ".($position + 0).', 1
+                ');
             }
         }
 
-        # $position may have become a string, as returned by database queries.
+        // $position may have become a string, as returned by database queries.
         return array($position + 0, $seq, $log_images_count);
     }
 }

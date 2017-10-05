@@ -4,7 +4,7 @@
 
 use okapi\Settings;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 function get_admin_emails()
 {
@@ -22,5 +22,6 @@ function get_admin_emails()
     if (count($emails) == 0) {
         $emails[] = 'root@localhost';
     }
+
     return $emails;
 }

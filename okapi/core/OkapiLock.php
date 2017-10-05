@@ -12,24 +12,25 @@ class OkapiLock
     /** Note: This does NOT tell you if someone currently locked it! */
     public static function exists($name)
     {
-        $lockFile = Okapi::get_var_dir()."/okapi-lock-".$name;
+        $lockFile = Okapi::get_var_dir().'/okapi-lock-'.$name;
+
         return file_exists($lockFile);
     }
 
     public static function get($name)
     {
-        return new OkapiLock($name);
+        return new self($name);
     }
 
     private function __construct($name)
     {
         if (Settings::get('DEBUG_PREVENT_SEMAPHORES')) {
-            # Using semaphores is forbidden on this server by its admin.
-            # This is possible only on development environment.
+            // Using semaphores is forbidden on this server by its admin.
+            // This is possible only on development environment.
             $this->lock = null;
         } else {
-            $this->lockfile = Okapi::get_var_dir()."/okapi-lock-".$name;
-            $this->lock = fopen($this->lockfile, "wb");
+            $this->lockfile = Okapi::get_var_dir().'/okapi-lock-'.$name;
+            $this->lock = fopen($this->lockfile, 'wb');
         }
     }
 
@@ -46,7 +47,7 @@ class OkapiLock
             return flock($this->lock, LOCK_EX | LOCK_NB);
         } else {
             return true;
-        }  # $lock can be null only when debugging
+        }  // $lock can be null only when debugging
     }
 
     public function release()

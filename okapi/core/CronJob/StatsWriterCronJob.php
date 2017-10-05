@@ -11,13 +11,16 @@ class StatsWriterCronJob extends PrerequestCronJob
     public function get_period()
     {
         return 60;
-    } # 1 minute
+    }
+
+ // 1 minute
+
     public function execute()
     {
         if (Okapi::get_var('db_version', 0) + 0 < 32) {
             return;
         }
-        Db::execute("lock tables okapi_stats_hourly write, okapi_stats_temp write;");
+        Db::execute('lock tables okapi_stats_hourly write, okapi_stats_temp write;');
         try {
             $rs = Db::query("
                 select
@@ -49,14 +52,14 @@ class StatsWriterCronJob extends PrerequestCronJob
                         ".(($row['calltype'] == 'http') ? "
                             http_calls = http_calls + '".Db::escape_string($row['calls'])."',
                             http_runtime = http_runtime + '".Db::escape_string($row['runtime'])."',
-                        " : "")."
+                        " : '')."
                         total_calls = total_calls + '".Db::escape_string($row['calls'])."',
                         total_runtime = total_runtime + '".Db::escape_string($row['runtime'])."'
                 ");
             }
-            Db::execute("delete from okapi_stats_temp;");
+            Db::execute('delete from okapi_stats_temp;');
         } finally {
-            Db::execute("unlock tables;");
+            Db::execute('unlock tables;');
         }
     }
 }

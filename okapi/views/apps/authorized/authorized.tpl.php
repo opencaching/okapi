@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <title><?= _("Authorization Succeeded") ?></title>
+        <title><?= _('Authorization Succeeded') ?></title>
     </head>
     <style>
         .okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
@@ -25,7 +25,7 @@
             <a href='<?= $vars['site_url'] ?>'><img src="<?= $vars['site_logo'] ?>" alt='Opencaching' style='float: left; margin-right: 10px'></a>
             <a href='<?= $vars['site_url'] ?>' class='opencaching'><?= $vars['site_name'] ?></a>
 
-            <h1 style='clear: both'><?= _("Access successfully granted") ?></h1>
+            <h1 style='clear: both'><?= _('Access successfully granted') ?></h1>
             <?= sprintf(_("
                 <p><b>You've just granted %s application access to your %s account.</b>
                 To complete the operation, go back to %s and enter the following PIN code:</p>

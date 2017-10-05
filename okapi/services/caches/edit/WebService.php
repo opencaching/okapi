@@ -39,7 +39,7 @@ class WebService
             "select user_id from caches where cache_id = '".$internal_id_escaped."'"
         );
         if ($owner_id != $request->token->user_id) {
-            throw new BadRequest("Only own caches may be edited.");
+            throw new BadRequest('Only own caches may be edited.');
         }
 
         $problems = [];
@@ -47,13 +47,13 @@ class WebService
 
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) {
-            $langpref = "en";
+            $langpref = 'en';
         }
-        $langprefs = explode("|", $langpref);
+        $langprefs = explode('|', $langpref);
 
         Okapi::gettext_domain_init($langprefs);
         try {
-            # passwd
+            // passwd
             $newpw = $request->get_parameter('passwd');
             if ($newpw !== null) {
                 $installation = OkapiServiceRunner::call(
@@ -70,9 +70,9 @@ class WebService
                     $geocache['type'] == 'Traditional' &&
                     $geocache['date_created'] > '2010-06-18 20:03:18'
                 ) {
-                    # We won't bother the user with the creation date thing here.
-                    # The *current* rule is that OCPL sites do not allow tradi passwords.
-                    # For older caches, the user won't see this message.
+                    // We won't bother the user with the creation date thing here.
+                    // The *current* rule is that OCPL sites do not allow tradi passwords.
+                    // For older caches, the user won't see this message.
 
                     $problems['passwd'] = sprintf(
                         _('%s does not allow log passwords for traditional caches.'),
@@ -94,11 +94,11 @@ class WebService
             throw $e;
         }
 
-        # save changes
+        // save changes
         if (count($problems) == 0 && count($change_sqls_escaped) > 0) {
-            Db::execute("
+            Db::execute('
                 update caches
-                set " . implode(', ', $change_sqls_escaped) . ", last_modified=NOW()
+                set '.implode(', ', $change_sqls_escaped).", last_modified=NOW()
                 where cache_id = '".$internal_id_escaped."'
             ");
         }
@@ -106,6 +106,7 @@ class WebService
         $result = ['success' => count($problems) == 0, 'messages' => $problems];
 
         Okapi::update_user_activity($request);
+
         return Okapi::formatted_response($request, $result);
     }
 }

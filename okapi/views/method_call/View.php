@@ -13,10 +13,11 @@ class View
     {
         if (!OkapiServiceRunner::exists($methodname)) {
             throw new BadRequest("Method '$methodname' does not exist. ".
-                "See OKAPI docs at ".Settings::get('SITE_URL')."okapi/");
+                'See OKAPI docs at '.Settings::get('SITE_URL').'okapi/');
         }
         $options = OkapiServiceRunner::options($methodname);
         $request = new OkapiHttpRequest($options);
+
         return OkapiServiceRunner::call($methodname, $request);
     }
 }

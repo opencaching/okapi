@@ -17,7 +17,8 @@ class InvalidParam extends BadRequest
         $extras['parameter'] = $this->paramName;
         $extras['whats_wrong_about_it'] = $this->whats_wrong_about_it;
     }
-    public function __construct($paramName, $whats_wrong_about_it = "", $code = 0)
+
+    public function __construct($paramName, $whats_wrong_about_it = '', $code = 0)
     {
         $this->paramName = $paramName;
         $this->whats_wrong_about_it = $whats_wrong_about_it;

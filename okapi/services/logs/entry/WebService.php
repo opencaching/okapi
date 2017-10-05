@@ -14,7 +14,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 1
+            'min_auth_level' => 1,
         );
     }
 
@@ -26,16 +26,17 @@ class WebService
         }
         $fields = $request->get_parameter('fields');
         if (!$fields) {
-            $fields = "date|user|type|comment";
+            $fields = 'date|user|type|comment';
         }
 
         $results = OkapiServiceRunner::call('services/logs/entries', new OkapiInternalRequest(
             $request->consumer, $request->token, array('log_uuids' => $log_uuid,
-            'fields' => $fields)));
+            'fields' => $fields, )));
         $result = $results[$log_uuid];
         if ($result == null) {
-            throw new InvalidParam('log_uuid', "This log entry does not exist.");
+            throw new InvalidParam('log_uuid', 'This log entry does not exist.');
         }
+
         return Okapi::formatted_response($request, $result);
     }
 }

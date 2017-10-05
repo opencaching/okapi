@@ -2,7 +2,7 @@
 
 use okapi\core\Okapi;
 
-# Shortcuts
+// Shortcuts
 $m = $vars['method'];
 
 ?>
@@ -22,7 +22,7 @@ $m = $vars['method'];
     <body class='api'>
         <div class='okd_mid'>
             <div class='okd_top'>
-                <?php include __DIR__ . '/../snippets/installations_box.tpl.php'; ?>
+                <?php include __DIR__.'/../snippets/installations_box.tpl.php'; ?>
                 <table cellspacing='0' cellpadding='0'><tr>
                     <td class='apimenu'>
                         <?= $vars['menu'] ?>
@@ -45,7 +45,7 @@ $m = $vars['method'];
                             </tr>
                             <tr>
                                 <td class='caption' colspan='3'>
-                                    <b><?= \okapi\Settings::get('SITE_URL')."okapi/".$m['name'] ?></b>
+                                    <b><?= \okapi\Settings::get('SITE_URL').'okapi/'.$m['name'] ?></b>
                                 </td>
                             </tr>
                             <tr>

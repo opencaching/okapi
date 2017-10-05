@@ -14,7 +14,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 1
+            'min_auth_level' => 1,
         );
     }
 
@@ -30,24 +30,24 @@ class WebService
         if ($log_uuids === null) {
             throw new ParamMissing('log_uuids');
         }
-        if ($log_uuids === "") {
+        if ($log_uuids === '') {
             $log_uuids = array();
         } else {
-            $log_uuids = explode("|", $log_uuids);
+            $log_uuids = explode('|', $log_uuids);
         }
 
         if ((count($log_uuids) > 500) && (!$request->skip_limits)) {
-            throw new InvalidParam('log_uuids', "Maximum allowed number of referenced ".
-                "log entries is 500. You provided ".count($log_uuids)." UUIDs.");
+            throw new InvalidParam('log_uuids', 'Maximum allowed number of referenced '.
+                'log entries is 500. You provided '.count($log_uuids).' UUIDs.');
         }
         if (count($log_uuids) != count(array_unique($log_uuids))) {
-            throw new InvalidParam('log_uuids', "Duplicate UUIDs detected (make sure each UUID is referenced only once).");
+            throw new InvalidParam('log_uuids', 'Duplicate UUIDs detected (make sure each UUID is referenced only once).');
         }
         $fields = $request->get_parameter('fields');
         if (!$fields) {
-            $fields = "date|user|type|comment";
+            $fields = 'date|user|type|comment';
         }
-        $fields = explode("|", $fields);
+        $fields = explode('|', $fields);
         foreach ($fields as $field) {
             if (!in_array($field, self::$valid_field_names)) {
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
@@ -69,16 +69,16 @@ class WebService
             $join_SQL = 'left join cache_moved cm on cm.log_id=cl.id';
             $latlong_SQL = ', cm.latitude, cm.longitude';
         }
-        $rs = Db::query("
+        $rs = Db::query('
             select
                 cl.id, c.wp_oc as cache_code, cl.uuid, cl.type,
-                ".$teamentry_field." as oc_team_entry,
-                ".$needs_maintenance_SQL." as needs_maintenance2,
-                ".$listing_is_outdated_SQL." as listing_is_outdated,
+                '.$teamentry_field.' as oc_team_entry,
+                '.$needs_maintenance_SQL.' as needs_maintenance2,
+                '.$listing_is_outdated_SQL.' as listing_is_outdated,
                 unix_timestamp(cl.date) as date, cl.text,
                 u.uuid as user_uuid, u.username, u.user_id,
                 if(cr.user_id is null, 0, 1) as was_recommended
-                ".$latlong_SQL."
+                '.$latlong_SQL.'
             from
                 (cache_logs cl,
                 user u,
@@ -86,19 +86,19 @@ class WebService
                 left join cache_rating cr
                     on cr.user_id = u.user_id
                     and cr.cache_id = c.cache_id
-                    ".$ratingdate_condition."
+                    '.$ratingdate_condition.'
                     and cl.type in (
-                        ".Okapi::logtypename2id("Found it").",
-                        ".Okapi::logtypename2id("Attended")."
+                        '.Okapi::logtypename2id('Found it').',
+                        '.Okapi::logtypename2id('Attended').'
                     )
-                ".$join_SQL."
+                '.$join_SQL."
             where
                 cl.uuid in ('".implode("','", array_map('\okapi\core\Db::escape_string', $log_uuids))."')
-                and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "cl.deleted = 0" : "true")."
+                and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? 'cl.deleted = 0' : 'true').'
                 and cl.user_id = u.user_id
                 and c.cache_id = cl.cache_id
                 and c.status in (1,2,3)
-        ");
+        ');
         $results = array();
         $log_id2uuid = array(); /* Maps logs' internal_ids to uuids */
         $flag_options = array('null', 'false', 'true');
@@ -110,7 +110,7 @@ class WebService
                 'user' => array(
                     'uuid' => $row['user_uuid'],
                     'username' => $row['username'],
-                    'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id'],
+                    'profile_url' => Settings::get('SITE_URL').'viewprofile.php?userid='.$row['user_id'],
                 ),
                 'type' => Okapi::logtypeid2name($row['type']),
                 'was_recommended' => $row['was_recommended'] ? true : false,
@@ -118,7 +118,7 @@ class WebService
                 'listing_is_outdated' => $flag_options[$row['listing_is_outdated']],
                 'oc_team_entry' => $row['oc_team_entry'] ? true : false,
                 'comment' => Okapi::fix_oc_html($row['text'], Okapi::OBJECT_TYPE_CACHE_LOG),
-                'location' => $row['latitude'] === null ? null : round($row['latitude'], 6)."|".round($row['longitude'], 6),
+                'location' => $row['latitude'] === null ? null : round($row['latitude'], 6).'|'.round($row['longitude'], 6),
                 'images' => array(),
                 'internal_id' => $row['id'],
             );
@@ -126,11 +126,11 @@ class WebService
         }
         Db::free_result($rs);
 
-        # fetch images
+        // fetch images
 
         if (in_array('images', $fields)) {
-            # For OCPL log entry images, pictures.seq currently is always = 1,
-            # while OCDE uses it for ordering the images.
+            // For OCPL log entry images, pictures.seq currently is always = 1,
+            // while OCDE uses it for ordering the images.
 
             $rs = Db::query("
                 select object_id, uuid, url, title, spoiler
@@ -152,7 +152,7 @@ class WebService
                     array(
                         'uuid' => $row['uuid'],
                         'url' => $row['url'],
-                        'thumb_url' => Settings::get('SITE_URL') . 'thumbs.php?'.$object_type_param.'uuid=' . $row['uuid'],
+                        'thumb_url' => Settings::get('SITE_URL').'thumbs.php?'.$object_type_param.'uuid='.$row['uuid'],
                         'caption' => $row['title'],
                         'is_spoiler' => ($row['spoiler'] ? true : false),
                     );
@@ -160,7 +160,7 @@ class WebService
             Db::free_result($rs);
         }
 
-        # Check which UUIDs were not found and mark them with null.
+        // Check which UUIDs were not found and mark them with null.
 
         foreach ($log_uuids as $log_uuid) {
             if (!isset($results[$log_uuid])) {
@@ -168,7 +168,7 @@ class WebService
             }
         }
 
-        # Remove unwanted fields.
+        // Remove unwanted fields.
 
         foreach (self::$valid_field_names as $field) {
             if (!in_array($field, $fields)) {
@@ -178,7 +178,7 @@ class WebService
             }
         }
 
-        # Order the results in the same order as the input codes were given.
+        // Order the results in the same order as the input codes were given.
 
         $ordered_results = array();
         foreach ($log_uuids as $log_uuid) {

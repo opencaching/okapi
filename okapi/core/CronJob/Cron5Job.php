@@ -25,6 +25,7 @@ abstract class Cron5Job extends CronJob
     public function get_next_scheduled_run($previously_scheduled_run)
     {
         $t = time() + $this->get_period();
-        return ($t - ($t % 300));
+
+        return $t - ($t % 300);
     }
 }

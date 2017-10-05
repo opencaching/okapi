@@ -19,7 +19,6 @@ class OAuthUtil
         }
     }
 
-
     // This decode function isn't taking into consideration the above
     // modifications to the encoding process. However, this method doesn't
     // seem to be used anywhere so leaving it as is.
@@ -38,12 +37,13 @@ class OAuthUtil
         $params = array();
         if (preg_match_all('/('.($only_allow_oauth_parameters ? 'oauth_' : '').'[a-z_-]*)=(:?"([^"]*)"|([^,]*))/', $header, $matches)) {
             foreach ($matches[1] as $i => $h) {
-                $params[$h] = OAuthUtil::urldecode_rfc3986(empty($matches[3][$i]) ? $matches[4][$i] : $matches[3][$i]);
+                $params[$h] = self::urldecode_rfc3986(empty($matches[3][$i]) ? $matches[4][$i] : $matches[3][$i]);
             }
             if (isset($params['realm'])) {
                 unset($params['realm']);
             }
         }
+
         return $params;
     }
 
@@ -62,9 +62,9 @@ class OAuthUtil
             $out = array();
             foreach ($headers as $key => $value) {
                 $key = str_replace(
-                    " ",
-                    "-",
-                    ucwords(strtolower(str_replace("-", " ", $key)))
+                    ' ',
+                    '-',
+                    ucwords(strtolower(str_replace('-', ' ', $key)))
                 );
                 $out[$key] = $value;
             }
@@ -80,19 +80,20 @@ class OAuthUtil
             }
 
             foreach ($_SERVER as $key => $value) {
-                if (substr($key, 0, 5) == "HTTP_") {
+                if (substr($key, 0, 5) == 'HTTP_') {
                     // this is chaos, basically it is just there to capitalize the first
                     // letter of every word that is not an initial HTTP and strip HTTP
                     // code from przemek
                     $key = str_replace(
-                        " ",
-                        "-",
-                        ucwords(strtolower(str_replace("_", " ", substr($key, 5))))
+                        ' ',
+                        '-',
+                        ucwords(strtolower(str_replace('_', ' ', substr($key, 5))))
                     );
                     $out[$key] = $value;
                 }
             }
         }
+
         return $out;
     }
 
@@ -110,8 +111,8 @@ class OAuthUtil
         $parsed_parameters = array();
         foreach ($pairs as $pair) {
             $split = explode('=', $pair, 2);
-            $parameter = OAuthUtil::urldecode_rfc3986($split[0]);
-            $value = isset($split[1]) ? OAuthUtil::urldecode_rfc3986($split[1]) : '';
+            $parameter = self::urldecode_rfc3986($split[0]);
+            $value = isset($split[1]) ? self::urldecode_rfc3986($split[1]) : '';
 
             if (isset($parsed_parameters[$parameter])) {
                 // We have already recieved parameter(s) with this name, so add to the list
@@ -128,6 +129,7 @@ class OAuthUtil
                 $parsed_parameters[$parameter] = $value;
             }
         }
+
         return $parsed_parameters;
     }
 
@@ -138,8 +140,8 @@ class OAuthUtil
         }
 
         // Urlencode both keys and values
-        $keys = OAuthUtil::urlencode_rfc3986(array_keys($params));
-        $values = OAuthUtil::urlencode_rfc3986(array_values($params));
+        $keys = self::urlencode_rfc3986(array_keys($params));
+        $values = self::urlencode_rfc3986(array_values($params));
         $params = array_combine($keys, $values);
 
         // Parameters are sorted by name, using lexicographical byte value ordering.
@@ -154,10 +156,10 @@ class OAuthUtil
                 // June 12th, 2010 - changed to sort because of issue 164 by hidetaka
                 sort($value, SORT_STRING);
                 foreach ($value as $duplicate_value) {
-                    $pairs[] = $parameter . '=' . $duplicate_value;
+                    $pairs[] = $parameter.'='.$duplicate_value;
                 }
             } else {
-                $pairs[] = $parameter . '=' . $value;
+                $pairs[] = $parameter.'='.$value;
             }
         }
         // For each parameter, the name is separated from the corresponding value by an '=' character (ASCII code 61)

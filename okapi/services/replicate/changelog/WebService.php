@@ -14,7 +14,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 1
+            'min_auth_level' => 1,
         );
     }
 
@@ -24,17 +24,17 @@ class WebService
         if ($since === null) {
             throw new ParamMissing('since');
         }
-        if ((int)$since != $since) {
+        if ((int) $since != $since) {
             throw new InvalidParam('since');
         }
 
-        # Let's check the $since parameter.
+        // Let's check the $since parameter.
 
         if (!ReplicateCommon::check_since_param($since)) {
             throw new BadRequest("The 'since' parameter is too old. You must update your database more frequently.");
         }
 
-        # Select a best chunk for the given $since, get the chunk from the database (or cache).
+        // Select a best chunk for the given $since, get the chunk from the database (or cache).
 
         list($from, $to) = ReplicateCommon::select_best_chunk($since);
         $clog_entries = ReplicateCommon::get_chunk($from, $to);

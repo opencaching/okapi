@@ -31,7 +31,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
     "
 >
     <name><?= $vars['installation']['site_name'] ?> Geocache Search Results</name>
-    <desc><?= $vars['installation']['site_name'] ?> Geocache Search Results, downloaded via OKAPI - <?= $vars['installation']['okapi_base_url'] . ($vars['alt_wpts'] && $vars['ns_gsak'] ? ' (HasChildren)' : '') ?></desc>
+    <desc><?= $vars['installation']['site_name'] ?> Geocache Search Results, downloaded via OKAPI - <?= $vars['installation']['okapi_base_url'].($vars['alt_wpts'] && $vars['ns_gsak'] ? ' (HasChildren)' : '') ?></desc>
     <author><?= $vars['installation']['site_name'] ?></author>
     <url><?= $vars['installation']['site_url'] ?></url>
     <urlname><?= $vars['installation']['site_name'] ?></urlname>
@@ -45,21 +45,21 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                 $cache_ref['ggz_entry']['file_pos'] = ob_get_length();
             }
     $c = $cache_ref;
-    list($lat, $lon) = explode("|", $c['location']); ?>
+    list($lat, $lon) = explode('|', $c['location']); ?>
         <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
             <time><?= $c['date_created'] ?></time>
             <name><?= $c['code'] ?></name>
-            <desc><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?> <?= _("hidden by") ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= $c['difficulty'] ?>/<?= $c['terrain'] ?><?php if ($c['size'] !== null) {
-        echo "/".$c['size'];
+            <desc><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?> <?= _('hidden by') ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= $c['difficulty'] ?>/<?= $c['terrain'] ?><?php if ($c['size'] !== null) {
+        echo '/'.$c['size'];
     } else {
-        echo "/X";
+        echo '/X';
     } ?>/<?= $c['rating'] ?>)</desc>
             <url><?= $c['url'] ?></url>
             <urlname><?= Okapi::xmlescape($c['name']) ?></urlname>
-            <sym><?= ($vars['mark_found'] && $c['is_found']) ? "Geocache Found" : "Geocache" ?></sym>
+            <sym><?= ($vars['mark_found'] && $c['is_found']) ? 'Geocache Found' : 'Geocache' ?></sym>
             <type>Geocache|<?= $vars['cache_GPX_types'][$c['type']] ?></type>
             <?php if ($vars['ns_ground']) { /* Does user want us to include Groundspeak's <cache> element? */ ?>
-                <groundspeak:cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="<?= $c['internal_id'] ?>">
+                <groundspeak:cache archived="<?= ($c['status'] == 'Archived') ? 'True' : 'False' ?>" available="<?= ($c['status'] == 'Available') ? 'True' : 'False' ?>" id="<?= $c['internal_id'] ?>">
                     <groundspeak:name><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?></groundspeak:name>
                     <groundspeak:placed_by><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:placed_by>
                     <groundspeak:owner id="<?= $vars['user_uuid_to_internal_id'][$c['owner']['uuid']] ?>"><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:owner>
@@ -69,10 +69,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                         <groundspeak:attributes>
                             <?php
                                 foreach ($c['gc_attrs'] as $gc_id => $gc_attr) {
-                                    print "<groundspeak:attribute id=\"".$gc_id."\" ";
-                                    print "inc=\"".$gc_attr['inc']."\">";
-                                    print Okapi::xmlescape($gc_attr['name']);
-                                    print "</groundspeak:attribute>";
+                                    echo '<groundspeak:attribute id="'.$gc_id.'" ';
+                                    echo 'inc="'.$gc_attr['inc'].'">';
+                                    echo Okapi::xmlescape($gc_attr['name']);
+                                    echo '</groundspeak:attribute>';
                                 } ?>
                         </groundspeak:attributes>
                     <?php 
@@ -92,29 +92,29 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
     } ?>
                         &lt;p&gt;
                             &lt;a href="<?= $c['url'] ?>"&gt;<?= Okapi::xmlescape($c['name']) ?>&lt;/a&gt;
-                            <?= _("hidden by") ?> &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= Okapi::xmlescape($c['owner']['username']) ?>&lt;/a&gt;&lt;br/&gt;
+                            <?= _('hidden by') ?> &lt;a href='<?= $c['owner']['profile_url'] ?>'&gt;<?= Okapi::xmlescape($c['owner']['username']) ?>&lt;/a&gt;&lt;br/&gt;
                             <?php if ($vars['recommendations'] == 'desc:count') { /* Does user want us to include recommendations count? */ ?>
-                                <?= sprintf(ngettext("%d recommendation", "%d recommendations", $c['recommendations']), $c['recommendations']) ?>
-                                (<?= sprintf(ngettext("found %d time", "found %d times", $c['founds']), $c['founds']) ?>).
+                                <?= sprintf(ngettext('%d recommendation', '%d recommendations', $c['recommendations']), $c['recommendations']) ?>
+                                (<?= sprintf(ngettext('found %d time', 'found %d times', $c['founds']), $c['founds']) ?>).
                             <?php 
     } ?>
                             <?php if ($vars['trackables'] == 'desc:count') { /* Does user want us to include trackables count? */ ?>
-                                <?= sprintf(ngettext("%d trackable", "%d trackables", $c['trackables_count']), $c['trackables_count']) ?>.
+                                <?= sprintf(ngettext('%d trackable', '%d trackables', $c['trackables_count']), $c['trackables_count']) ?>.
                             <?php 
     } ?>
                         &lt;/p&gt;
                         <?php if ((in_array('desc:text', $vars['my_notes'])) && ($c['my_notes'] != null)) { /* Does user want us to include personal notes? */ ?>
-                            &lt;p&gt;&lt;b&gt;<?= _("Personal notes") ?>:&lt;/b&gt;&lt;br&gt;<?= Okapi::xmlescape(nl2br($c['my_notes'])) ?>&lt;/p&gt;
+                            &lt;p&gt;&lt;b&gt;<?= _('Personal notes') ?>:&lt;/b&gt;&lt;br&gt;<?= Okapi::xmlescape(nl2br($c['my_notes'])) ?>&lt;/p&gt;
                         <?php 
     } ?>
 
                         <?php if (in_array('desc:text', $vars['attrs']) && count($c['attrnames']) > 0) { /* Does user want us to include attributes? */ ?>
-                            &lt;p&gt;<?= _("Attributes") ?>:&lt;/p&gt;
-                            &lt;ul&gt;&lt;li&gt;<?= implode("&lt;/li&gt;&lt;li&gt;", $c['attrnames']) ?>&lt;/li&gt;&lt;/ul&gt;
+                            &lt;p&gt;<?= _('Attributes') ?>:&lt;/p&gt;
+                            &lt;ul&gt;&lt;li&gt;<?= implode('&lt;/li&gt;&lt;li&gt;', $c['attrnames']) ?>&lt;/li&gt;&lt;/ul&gt;
                         <?php 
     } ?>
                         <?php if ($vars['trackables'] == 'desc:list' && count($c['trackables']) > 0) { /* Does user want us to include trackables list? */ ?>
-                            &lt;p&gt;<?= _("Trackables") ?>:&lt;/p&gt;
+                            &lt;p&gt;<?= _('Trackables') ?>:&lt;/p&gt;
                             &lt;ul&gt;
                             <?php foreach ($c['trackables'] as $t) {
         ?>
@@ -125,10 +125,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                         <?php 
     } ?>
                         <?= Okapi::xmlescape($c['description']) ?>
-                        <?php if ((strpos($vars['images'], "descrefs:") === 0) && count($c['images']) > 0) { /* Does user want us to include <img> references in cache descriptions? */
-                            if ($vars['images'] == "descrefs:thumblinks") {
+                        <?php if ((strpos($vars['images'], 'descrefs:') === 0) && count($c['images']) > 0) { /* Does user want us to include <img> references in cache descriptions? */
+                            if ($vars['images'] == 'descrefs:thumblinks') {
                                 ?>
-                                &lt;h2&gt;<?= _("Images") ?> (<?= count($c['images']) ?>)&lt;/h2&gt;
+                                &lt;h2&gt;<?= _('Images') ?> (<?= count($c['images']) ?>)&lt;/h2&gt;
                                 &lt;div&gt;
                                 <?php foreach ($c['images'] as $img) {
                                     ?>
@@ -139,7 +139,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                 &lt;/div&gt;
                             <?php 
                             } else {
-                                # We will split images into two subcategories: spoilers and nonspoilers.
+                                // We will split images into two subcategories: spoilers and nonspoilers.
                                 $spoilers = array();
                                 $nonspoilers = array();
                                 foreach ($c['images'] as $img) {
@@ -151,7 +151,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                 } ?>
                                 <?php if (count($nonspoilers) > 0) {
                                     ?>
-                                    &lt;h2&gt;<?= _("Images") ?> (<?= count($nonspoilers) ?>)&lt;/h2&gt;
+                                    &lt;h2&gt;<?= _('Images') ?> (<?= count($nonspoilers) ?>)&lt;/h2&gt;
                                     <?php foreach ($nonspoilers as $img) {
                                         ?>
                                         &lt;p&gt;&lt;img src='<?= Okapi::xmlescape($img['url']) ?>'&gt;&lt;br&gt;
@@ -162,7 +162,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                 } ?>
                                 <?php if (count($spoilers) > 0 && $vars['images'] == 'descrefs:all') {
                                     ?>
-                                    &lt;h2&gt;<?= _("Spoilers") ?> (<?= count($spoilers) ?>)&lt;/h2&gt;
+                                    &lt;h2&gt;<?= _('Spoilers') ?> (<?= count($spoilers) ?>)&lt;/h2&gt;
                                     <?php foreach ($spoilers as $img) {
                                         ?>
                                         &lt;p&gt;&lt;img src='<?= Okapi::xmlescape($img['url']) ?>'&gt;&lt;br&gt;
@@ -175,8 +175,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                             } ?>
                         <?php 
     } ?>
-                        <?php if ((strpos($vars['images'], "ox:") === 0) && count($c['images']) > 0) { /* Include image descriptions (for ox:image numbers)? */ ?>
-                            &lt;p&gt;<?= _("Image descriptions") ?>:&lt;/p&gt;
+                        <?php if ((strpos($vars['images'], 'ox:') === 0) && count($c['images']) > 0) { /* Include image descriptions (for ox:image numbers)? */ ?>
+                            &lt;p&gt;<?= _('Image descriptions') ?>:&lt;/p&gt;
                             &lt;ul&gt;
                                 <?php foreach ($c['images'] as $no => $img) {
         ?>
@@ -188,11 +188,11 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
     } ?>
                         <?php if ($vars['protection_areas'] == 'desc:text' && count($c['protection_areas'])) {
         ?>
-                            &lt;p&gt;<?= _("The cache probably is located in the following protection areas:") ?>&lt;/p&gt;
+                            &lt;p&gt;<?= _('The cache probably is located in the following protection areas:') ?>&lt;/p&gt;
                             &lt;ul&gt;
                             <?php foreach ($c['protection_areas'] as $protection_area) {
             ?>
-                                &lt;li&gt;<?= Okapi::xmlescape($protection_area['type'])." - ".Okapi::xmlescape($protection_area['name']) ?>&lt;/li&gt;
+                                &lt;li&gt;<?= Okapi::xmlescape($protection_area['type']).' - '.Okapi::xmlescape($protection_area['name']) ?>&lt;/li&gt;
                             <?php 
         } ?>
                             &lt;/ul;&gt;
@@ -212,7 +212,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                     <groundspeak:date><?= $log['date'] ?></groundspeak:date>
                                     <groundspeak:type><?= $log['type'] ?></groundspeak:type>
                                     <groundspeak:finder id="<?= $vars['user_uuid_to_internal_id'][$log['user']['uuid']] ?>"><?= Okapi::xmlescape($log['user']['username']) ?></groundspeak:finder>
-                                    <groundspeak:text encoded="False"><?= $log['was_recommended'] ? "(*) ": "" ?><?= Okapi::xmlescape($log['comment']) ?></groundspeak:text>
+                                    <groundspeak:text encoded="False"><?= $log['was_recommended'] ? '(*) ' : '' ?><?= Okapi::xmlescape($log['comment']) ?></groundspeak:text>
                                 </groundspeak:log>
                             <?php 
     } ?>
@@ -235,10 +235,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                         <ox:terrain><?= $c['terrain'] ?></ox:terrain>
                     </ox:ratings>
                     <?php if (in_array('ox:tags', $vars['attrs']) && count($c['attrnames']) > 0) { /* Does user want us to include ox:tags? */ ?>
-                        <ox:tags><ox:tag><?= implode("</ox:tag><ox:tag>", $c['attrnames']) ?></ox:tag></ox:tags>
+                        <ox:tags><ox:tag><?= implode('</ox:tag><ox:tag>', $c['attrnames']) ?></ox:tag></ox:tags>
                     <?php 
     } ?>
-                    <?php if ((strpos($vars['images'], "ox:") === 0) && count($c['images']) > 0) { /* Does user want us to include ox:image references? */ ?>
+                    <?php if ((strpos($vars['images'], 'ox:') === 0) && count($c['images']) > 0) { /* Does user want us to include ox:image references? */ ?>
                         <ox:images>
                             <?php foreach ($c['images'] as $no => $img) {
         ?>
@@ -246,7 +246,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                     <ox:name><?= $img['unique_caption'] ?>.jpg</ox:name>
                                     <ox:size>0</ox:size>
                                     <ox:required>false</ox:required>
-                                    <ox:spoiler><?= ($img['is_spoiler'] ? "true" : "false") ?></ox:spoiler>
+                                    <ox:spoiler><?= ($img['is_spoiler'] ? 'true' : 'false') ?></ox:spoiler>
                                 </ox:image>
                             <?php 
     } ?>
@@ -270,7 +270,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                         $wpt_ref['ggz_entry']['file_pos'] = ob_get_length();
                     }
                     $wpt = $wpt_ref;
-                    list($lat, $lon) = explode("|", $wpt['location']); ?>
+                    list($lat, $lon) = explode('|', $wpt['location']); ?>
                 <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
                     <time><?= $c['date_created'] ?></time>
                     <name><?= Okapi::xmlescape($wpt['name']) ?></name>

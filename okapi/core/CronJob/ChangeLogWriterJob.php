@@ -13,6 +13,7 @@ class ChangeLogWriterJob extends Cron5Job
     {
         return 300;
     }
+
     public function execute()
     {
         ReplicateCommon::update_clog_table();

@@ -2,9 +2,9 @@
 
 namespace okapi\core\Consumer;
 
-#
-# Including OAuth internals. Preparing OKAPI Consumer and Token classes.
-#
+//
+// Including OAuth internals. Preparing OKAPI Consumer and Token classes.
+//
 
 use okapi\core\OAuth\OAuthConsumer;
 
@@ -42,7 +42,7 @@ class OkapiConsumer extends OAuthConsumer
      */
     const FLAG_KEY_REVOKED = 4;
 
-    public function __construct($key, $secret, $name, $url, $email, $bflags=0)
+    public function __construct($key, $secret, $name, $url, $email, $bflags = 0)
     {
         parent::__construct($key, $secret, null);
         $this->name = $name;

@@ -13,7 +13,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 3
+            'min_auth_level' => 3,
         );
     }
 
@@ -33,32 +33,32 @@ class WebService
             delete from pictures where uuid = '".$image_uuid_escaped."'
         ");
 
-        # Remember that OCPL picture sequence numbers are always 1, and
-        # OCDE sequence numbers may have gaps. So we do not need to adjust
-        # any numbers after deleting from table 'pictures'.
+        // Remember that OCPL picture sequence numbers are always 1, and
+        // OCDE sequence numbers may have gaps. So we do not need to adjust
+        // any numbers after deleting from table 'pictures'.
 
         if (Settings::get('OC_BRANCH') == 'oc.de') {
-            # OCDE does all the housekeeping by triggers
+            // OCDE does all the housekeeping by triggers
         } else {
-            Db::execute("
+            Db::execute('
                 INSERT INTO removed_objects (
                     localID, uuid, type, removed_date, node
                 )
                 VALUES (
-                    ".$image_row['id']."
+                    '.$image_row['id']."
                     '".$image_uuid_escaped."',
                     6,
                     NOW(),
                     ".$image_row['node']
-                    # OCPL code inserts the site's node ID here, which is wrong
-                    # but currently is always the same as the image's node ID.
-                    ."
+                    // OCPL code inserts the site's node ID here, which is wrong
+                    // but currently is always the same as the image's node ID.
+                    .'
                 )
-            ");
+            ');
 
-            # This will also update cache_logs.okapi_syncbase, so that replication
-            # can output the updated log entry with one image less. For OCDE
-            # that's done by DB trigges.
+            // This will also update cache_logs.okapi_syncbase, so that replication
+            // can output the updated log entry with one image less. For OCDE
+            // that's done by DB trigges.
 
             Db::execute("
                 update cache_logs
@@ -80,6 +80,7 @@ class WebService
         $result = array(
             'success' => true,
         );
+
         return Okapi::formatted_response($request, $result);
     }
 }

@@ -11,8 +11,9 @@ class FulldumpGeneratorJob extends Cron5Job
 {
     public function get_period()
     {
-        return 7*86400;
+        return 7 * 86400;
     }
+
     public function execute()
     {
         ReplicateCommon::generate_fulldump();

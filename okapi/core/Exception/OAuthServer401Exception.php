@@ -10,6 +10,7 @@ abstract class OAuthServer401Exception extends OAuthServerException
         parent::provideExtras($extras);
         $extras['status'] = 401;
     }
+
     public function getHttpStatusCode()
     {
         return 401;

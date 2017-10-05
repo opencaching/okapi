@@ -20,7 +20,7 @@
     <body class='api'>
         <div class='okd_mid'>
             <div class='okd_top'>
-                <?php include __DIR__ . '/../snippets/installations_box.tpl.php'; ?>
+                <?php include __DIR__.'/../snippets/installations_box.tpl.php'; ?>
                 <table cellspacing='0' cellpadding='0'><tr>
                     <td class='apimenu'>
                         <?= $vars['menu'] ?>
@@ -49,10 +49,10 @@
     foreach ($vars['changes'] as $type => $changes) {
         if (count($changes)) {
             if ($type == 'unavailable') {
-                echo "<p>The following changes are not available yet at " . $vars['site_name'] . ":</p>";
+                echo '<p>The following changes are not available yet at '.$vars['site_name'].':</p>';
                 $br = '<br />';
             } else {
-                echo "<p>".$br."The following changes are available at " . $vars['site_name'] . ":</p>";
+                echo '<p>'.$br.'The following changes are available at '.$vars['site_name'].':</p>';
             } ?>
 
                                 <table cellspacing='1px' class='changelog'>
@@ -66,7 +66,7 @@
                                     <tr id="v<?= $change['version'] ?>">
                                         <td><a href="https://github.com/opencaching/okapi/commit/<?= $change['commit'] ?>"><?= $change['version'] ?></a></td>
                                         <td><?= substr($change['time'], 0, 10) ?></td>
-                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed: ' : '') . $change['comment'] ?></td>
+                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed: ' : '').$change['comment'] ?></td>
                                     </tr>
                                 <?php 
             } ?>

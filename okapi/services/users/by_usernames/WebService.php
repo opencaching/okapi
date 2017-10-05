@@ -16,7 +16,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 1
+            'min_auth_level' => 1,
         );
     }
 
@@ -26,23 +26,23 @@ class WebService
         if (!$usernames) {
             throw new ParamMissing('usernames');
         }
-        $usernames = explode("|", $usernames);
+        $usernames = explode('|', $usernames);
         if (count($usernames) > 500) {
-            throw new InvalidParam('usernames', "Maximum allowed number of referenced users ".
-                "is 500. You provided ".count($usernames)." usernames.");
+            throw new InvalidParam('usernames', 'Maximum allowed number of referenced users '.
+                'is 500. You provided '.count($usernames).' usernames.');
         }
         $fields = $request->get_parameter('fields');
         if (!$fields) {
             throw new ParamMissing('fields');
         }
 
-        # There's no need to validate the fields parameter as the 'users'
-        # method does this (it will raise a proper exception on invalid values).
+        // There's no need to validate the fields parameter as the 'users'
+        // method does this (it will raise a proper exception on invalid values).
 
-        $rs = Db::query("
+        $rs = Db::query('
             select username, uuid
             from user
-            where username collate ".Settings::get('DB_CHARSET')."_general_ci in ('".implode("','", array_map('\okapi\core\Db::escape_string', $usernames))."')
+            where username collate '.Settings::get('DB_CHARSET')."_general_ci in ('".implode("','", array_map('\okapi\core\Db::escape_string', $usernames))."')
         ");
         $lower_username2useruuid = array();
         while ($row = Db::fetch_assoc($rs)) {
@@ -50,18 +50,18 @@ class WebService
         }
         Db::free_result($rs);
 
-        # Retrieve data for the found user_uuids.
+        // Retrieve data for the found user_uuids.
 
         if (count($lower_username2useruuid) > 0) {
             $id_results = OkapiServiceRunner::call('services/users/users', new OkapiInternalRequest(
-                $request->consumer, $request->token, array('user_uuids' => implode("|", array_values($lower_username2useruuid)),
-                'fields' => $fields)));
+                $request->consumer, $request->token, array('user_uuids' => implode('|', array_values($lower_username2useruuid)),
+                'fields' => $fields, )));
         } else {
             $id_results = array();
         }
 
-        # Map user_uuids back to usernames. Also check which usernames were not found
-        # and mark them with null.
+        // Map user_uuids back to usernames. Also check which usernames were not found
+        // and mark them with null.
 
         $results = array();
         foreach ($usernames as $username) {

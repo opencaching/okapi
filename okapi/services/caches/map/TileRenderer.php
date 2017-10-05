@@ -51,17 +51,17 @@ class TileRenderer
     public function get_unique_hash()
     {
         return md5(json_encode(array(
-            "TileRenderer",
+            'TileRenderer',
             self::$VERSION,
             $this->zoom,
-            $this->rows_ref
+            $this->rows_ref,
         )));
     }
 
     /** Get the content type of the data returned by the render method. */
     public function get_content_type()
     {
-        return "image/png";
+        return 'image/png';
     }
 
     /**
@@ -70,13 +70,13 @@ class TileRenderer
      */
     public function render()
     {
-        # Preprocess the rows.
+        // Preprocess the rows.
 
         if ($this->zoom >= 5) {
             $this->decide_which_get_captions();
         }
 
-        # Make a background.
+        // Make a background.
 
         $this->im = imagecreatetruecolor(256, 256);
         imagealphablending($this->im, false);
@@ -89,48 +89,49 @@ class TileRenderer
         imagefilledrectangle($this->im, 0, 0, 256, 256, $transparent);
         imagealphablending($this->im, true);
 
-        # Draw the caches.
+        // Draw the caches.
 
         foreach ($this->rows_ref as &$row_ref) {
             $this->draw_cache($row_ref);
         }
 
-        # Return the result.
+        // Return the result.
 
         ob_start();
         imagesavealpha($this->im, true);
         imagepng($this->im);
         imagedestroy($this->im);
+
         return ob_get_clean();
     }
 
-    private static function get_image($name, $opacity=1, $brightness=0,
-        $contrast=0, $r=0, $g=0, $b=0)
+    private static function get_image($name, $opacity = 1, $brightness = 0,
+        $contrast = 0, $r = 0, $g = 0, $b = 0)
     {
         static $locmem_cache = array();
 
-        # Check locmem cache.
+        // Check locmem cache.
 
         $key = "$name/$opacity/$brightness/$contrast/$r/$g/$b";
         if (!isset($locmem_cache[$key])) {
-            # Miss. Check default cache.
+            // Miss. Check default cache.
 
             try {
-                $cache_key = "tilesrc/".Okapi::$git_revision."/".self::$VERSION."/".$key;
+                $cache_key = 'tilesrc/'.Okapi::$git_revision.'/'.self::$VERSION.'/'.$key;
                 $gd2_path = self::$USE_STATIC_IMAGE_CACHE
                     ? FileCache::get_file_path($cache_key) : null;
                 if ($gd2_path === null) {
-                    throw new Exception("Not in cache");
+                    throw new Exception('Not in cache');
                 }
-                # File cache hit. GD2 files are much faster to read than PNGs.
-                # This can throw an Exception (see bug#160).
+                // File cache hit. GD2 files are much faster to read than PNGs.
+                // This can throw an Exception (see bug#160).
                 $locmem_cache[$key] = imagecreatefromgd2($gd2_path);
             } catch (Exception $e) {
-                # Miss again (or error decoding). Read the image from PNG.
+                // Miss again (or error decoding). Read the image from PNG.
 
                 $locmem_cache[$key] = imagecreatefrompng(__DIR__."/../../../../okapi/static/tilemap/$name.png");
 
-                # Apply all wanted effects.
+                // Apply all wanted effects.
 
                 if ($opacity != 1) {
                     self::change_opacity($locmem_cache[$key], $opacity);
@@ -146,7 +147,7 @@ class TileRenderer
                     imagefilter($locmem_cache[$key], IMG_FILTER_COLORIZE, $r, $g, $b);
                 }
 
-                # Cache the result.
+                // Cache the result.
 
                 ob_start();
                 imagegd2($locmem_cache[$key]);
@@ -154,6 +155,7 @@ class TileRenderer
                 FileCache::set($cache_key, $gd2);
             }
         }
+
         return $locmem_cache[$key];
     }
 
@@ -167,8 +169,8 @@ class TileRenderer
         $w = imagesx($im);
         $h = imagesy($im);
 
-        for ($x = 0; $x < $w; $x++) {
-            for ($y = 0; $y < $h; $y++) {
+        for ($x = 0; $x < $w; ++$x) {
+            for ($y = 0; $y < $h; ++$y) {
                 $color = imagecolorat($im, $x, $y);
                 $new_color = ((max(0, floor(127 - ((127 - (($color >> 24) & 0x7f)) * $ratio))) & 0x7f) << 24) | ($color & 0x80ffffff);
                 imagesetpixel($im, $x, $y, $new_color);
@@ -190,14 +192,13 @@ class TileRenderer
             $this->draw_cache_large($cache_struct);
         }
 
-        # Put caption (this flag is set only when there is plenty of space around).
+        // Put caption (this flag is set only when there is plenty of space around).
 
         if ($capt) {
             $caption = $this->get_caption($cache_struct[0], $cache_struct[7]);
             imagecopy($this->im, $caption, $cache_struct[1] - 32, $cache_struct[2] + 6, 0, 0, 64, 26);
         }
     }
-
 
     private function draw_cache_large(&$cache_struct)
     {
@@ -207,7 +208,7 @@ class TileRenderer
         $own = $flags & TileTree::$FLAG_OWN;
         $new = $flags & TileTree::$FLAG_NEW;
 
-        # Prepare vars.
+        // Prepare vars.
 
         if ($own) {
             $key = 'large_outer_own';
@@ -244,7 +245,7 @@ class TileRenderer
             $b = 0;
         }
 
-        # Put the outer marker (indicates the found/new/own status).
+        // Put the outer marker (indicates the found/new/own status).
 
         $outer_marker = self::get_image($key, $a);
 
@@ -260,45 +261,45 @@ class TileRenderer
         }
         imagecopy($this->im, $outer_marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
 
-        # Put the inner marker (indicates the type).
+        // Put the inner marker (indicates the type).
 
-        $inner_marker = self::get_image("large_inner_".self::get_type_suffix(
+        $inner_marker = self::get_image('large_inner_'.self::get_type_suffix(
             $type, true), $a, $br, $c, $r, $g, $b);
         imagecopy($this->im, $inner_marker, $px - 7, $py - 22, 0, 0, 16, 16);
 
-        # If the cache is unavailable, mark it with X.
+        // If the cache is unavailable, mark it with X.
 
         if (($status != 1) && ($count == 1)) {
-            $icon = self::get_image(($status == 2) ? "status_unavailable"
-                : "status_archived", $a);
+            $icon = self::get_image(($status == 2) ? 'status_unavailable'
+                : 'status_archived', $a);
             imagecopy($this->im, $icon, $px - 1, $py - $center_y - 4, 0, 0, 16, 16);
         }
 
-        # Put the rating smile. :)
+        // Put the rating smile. :)
 
         if ($status == 1) {
             if ($rating >= 4.2) {
                 if ($flags & TileTree::$FLAG_STAR) {
-                    $icon = self::get_image("rating_grin", $a, $br, $c, $r, $g, $b);
+                    $icon = self::get_image('rating_grin', $a, $br, $c, $r, $g, $b);
                     imagecopy($this->im, $icon, $px - 7 - 6, $py - $center_y - 8, 0, 0, 16, 16);
-                    $icon = self::get_image("rating_star", $a, $br, $c, $r, $g, $b);
+                    $icon = self::get_image('rating_star', $a, $br, $c, $r, $g, $b);
                     imagecopy($this->im, $icon, $px - 7 + 6, $py - $center_y - 8, 0, 0, 16, 16);
                 } else {
-                    $icon = self::get_image("rating_grin", $a, $br, $c, $r, $g, $b);
+                    $icon = self::get_image('rating_grin', $a, $br, $c, $r, $g, $b);
                     imagecopy($this->im, $icon, $px - 7, $py - $center_y - 8, 0, 0, 16, 16);
                 }
             }
-            # This was commented out because users complained about too many smiles ;)
+            // This was commented out because users complained about too many smiles ;)
             // elseif ($rating >= 3.6) {
             //   $icon = self::get_image("rating_smile", $a, $br, $c, $r, $g, $b);
             //   imagecopy($this->im, $icon, $px - 7, $py - $center_y - 8, 0, 0, 16, 16);
             // }
         }
 
-        # Mark found caches with V.
+        // Mark found caches with V.
 
         if ($found) {
-            $icon = self::get_image("found", 0.7*$a, $br, $c, $r, $g, $b);
+            $icon = self::get_image('found', 0.7 * $a, $br, $c, $r, $g, $b);
             imagecopy($this->im, $icon, $px - 2, $py - $center_y - 3, 0, 0, 16, 16);
         }
     }
@@ -308,36 +309,37 @@ class TileRenderer
      */
     private static function wordwrap($font, $size, $maxWidth, $text)
     {
-        $words = explode(" ", $text);
+        $words = explode(' ', $text);
         $lines = array();
-        $line = "";
-        $nextBonus = "";
-        for ($i=0; ($i<count($words)) || (mb_strlen($nextBonus)>0); $i++) {
-            $word = isset($words[$i])?$words[$i]:"";
+        $line = '';
+        $nextBonus = '';
+        for ($i = 0; ($i < count($words)) || (mb_strlen($nextBonus) > 0); ++$i) {
+            $word = isset($words[$i]) ? $words[$i] : '';
             if (mb_strlen($nextBonus) > 0) {
-                $word = $nextBonus." ".$word;
+                $word = $nextBonus.' '.$word;
             }
-            $nextBonus = "";
+            $nextBonus = '';
             while (true) {
                 $bbox = imagettfbbox($size, 0, $font, $line.$word);
-                $width = $bbox[2]-$bbox[0];
+                $width = $bbox[2] - $bbox[0];
                 if ($width <= $maxWidth) {
-                    $line .= $word." ";
+                    $line .= $word.' ';
                     continue 2;
                 }
                 if (mb_strlen($line) > 0) {
                     $lines[] = trim($line);
-                    $line = "";
+                    $line = '';
                     continue;
                 }
-                $nextBonus = $word[mb_strlen($word)-1].$nextBonus;
-                $word = mb_substr($word, 0, mb_strlen($word)-1);
+                $nextBonus = $word[mb_strlen($word) - 1].$nextBonus;
+                $word = mb_substr($word, 0, mb_strlen($word) - 1);
                 continue;
             }
         }
         if (mb_strlen($line) > 0) {
             $lines[] = trim($line);
         }
+
         return implode("\n", $lines);
     }
 
@@ -346,20 +348,20 @@ class TileRenderer
      */
     private function get_caption($cache_id, $name_crc)
     {
-        # Check cache.
+        // Check cache.
 
-        $cache_key = "tilecaption/".self::$VERSION."/".$cache_id."/".$name_crc;
+        $cache_key = 'tilecaption/'.self::$VERSION.'/'.$cache_id.'/'.$name_crc;
         $gd2 = self::$USE_CAPTIONS_CACHE ? Cache::get($cache_key) : null;
         if ($gd2 === null) {
-            # We'll work with 16x bigger image to get smoother interpolation.
+            // We'll work with 16x bigger image to get smoother interpolation.
 
-            $im = imagecreatetruecolor(64*4, 26*4);
+            $im = imagecreatetruecolor(64 * 4, 26 * 4);
             imagealphablending($im, false);
             $transparent = imagecolorallocatealpha($im, 255, 255, 255, 127);
-            imagefilledrectangle($im, 0, 0, 64*4, 26*4, $transparent);
+            imagefilledrectangle($im, 0, 0, 64 * 4, 26 * 4, $transparent);
             imagealphablending($im, true);
 
-            # Get the name of the cache.
+            // Get the name of the cache.
 
             $name = Db::select_value("
                 select name
@@ -367,58 +369,58 @@ class TileRenderer
                 where cache_id = '".Db::escape_string($cache_id)."'
             ");
 
-            # Split the name into a couple of lines.
+            // Split the name into a couple of lines.
 
             //$font = $GLOBALS['rootpath'].'util.sec/bt.ttf';
             $font = __DIR__.'/../../../../okapi/static/tilemap/tahoma.ttf';
             $size = 25;
-            $lines = explode("\n", self::wordwrap($font, $size, 64*4 - 6*2, $name));
+            $lines = explode("\n", self::wordwrap($font, $size, 64 * 4 - 6 * 2, $name));
 
-            # For each line, compute its (x, y) so that the text is centered.
+            // For each line, compute its (x, y) so that the text is centered.
 
             $y = 0;
             $positions = array();
             foreach ($lines as $line) {
                 $bbox = imagettfbbox($size, 0, $font, $line);
-                $width = $bbox[2]-$bbox[0];
+                $width = $bbox[2] - $bbox[0];
                 $x = 128 - ($width >> 1);
                 $positions[] = array($x, $y);
                 $y += 36;
             }
             $drawer = function ($x, $y, $color) use (&$lines, &$positions, &$im, &$size, &$font) {
                 $len = count($lines);
-                for ($i=0; $i<$len; $i++) {
+                for ($i = 0; $i < $len; ++$i) {
                     $line = $lines[$i];
                     list($offset_x, $offset_y) = $positions[$i];
                     imagettftext($im, $size, 0, $offset_x + $x, $offset_y + $y, $color, $font, $line);
                 }
             };
 
-            # Draw an outline.
+            // Draw an outline.
 
             $outline_color = imagecolorallocatealpha($im, 255, 255, 255, 80);
-            for ($x=0; $x<=12; $x+=3) {
-                for ($y=$size-3; $y<=$size+9; $y+=3) {
+            for ($x = 0; $x <= 12; $x += 3) {
+                for ($y = $size - 3; $y <= $size + 9; $y += 3) {
                     $drawer($x, $y, $outline_color);
                 }
             }
 
-            # Add a slight shadow effect (on top of the outline).
+            // Add a slight shadow effect (on top of the outline).
 
             $drawer(9, $size + 3, imagecolorallocatealpha($im, 0, 0, 0, 110));
 
-            # Draw the caption.
+            // Draw the caption.
 
             $drawer(6, $size + 3, imagecolorallocatealpha($im, 150, 0, 0, 40));
 
-            # Resample.
+            // Resample.
 
             imagealphablending($im, false);
             $small = imagecreatetruecolor(64, 26);
             imagealphablending($small, false);
-            imagecopyresampled($small, $im, 0, 0, 0, 0, 64, 26, 64*4, 26*4);
+            imagecopyresampled($small, $im, 0, 0, 0, 0, 64, 26, 64 * 4, 26 * 4);
 
-            # Cache it!
+            // Cache it!
 
             ob_start();
             imagegd2($small);
@@ -442,9 +444,9 @@ class TileRenderer
             $a = 1;
         }
 
-        # Put the marker (indicates the type).
+        // Put the marker (indicates the type).
 
-        $marker = self::get_image("medium_".self::get_type_suffix($type, false), $a);
+        $marker = self::get_image('medium_'.self::get_type_suffix($type, false), $a);
         $width = 14;
         $height = 14;
         $center_x = 7;
@@ -455,50 +457,50 @@ class TileRenderer
         if ($count > 1) {
             imagecopy($this->im, $marker, $px - $center_x + 3, $py - $center_y - 2, 0, 0, $width, $height);
             imagecopy($this->im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
-        } elseif ($status == 1) {  # don't put the marker for unavailable caches (X only)
+        } elseif ($status == 1) {  // don't put the marker for unavailable caches (X only)
             imagecopy($this->im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
         }
 
-        # If the cache is unavailable, mark it with X.
+        // If the cache is unavailable, mark it with X.
 
         if (($status != 1) && ($count == 1)) {
-            $icon = self::get_image(($status == 2) ? "status_unavailable"
-                : "status_archived");
+            $icon = self::get_image(($status == 2) ? 'status_unavailable'
+                : 'status_archived');
             imagecopy($this->im, $icon, $px - ($center_x - $markercenter_x) - 6,
                 $py - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
         }
 
-        # Put small versions of rating icons.
+        // Put small versions of rating icons.
 
         if ($status == 1) {
             if ($rating >= 4.2) {
                 if ($flags & TileTree::$FLAG_STAR) {
-                    $icon = self::get_image("rating_grin_small", max(0.6, $a));
+                    $icon = self::get_image('rating_grin_small', max(0.6, $a));
                     imagecopy($this->im, $icon, $px - 5, $py - $center_y - 1, 0, 0, 6, 6);
-                    $icon = self::get_image("rating_star_small", max(0.6, $a));
+                    $icon = self::get_image('rating_star_small', max(0.6, $a));
                     imagecopy($this->im, $icon, $px - 2, $py - $center_y - 3, 0, 0, 10, 10);
                 } else {
-                    $icon = self::get_image("rating_grin_small", max(0.6, $a));
+                    $icon = self::get_image('rating_grin_small', max(0.6, $a));
                     imagecopy($this->im, $icon, $px - 3, $py - $center_y - 1, 0, 0, 6, 6);
                 }
             }
         }
 
         if ($own) {
-            # Mark own caches with additional overlay.
+            // Mark own caches with additional overlay.
 
-            $overlay = self::get_image("medium_overlay_own");
+            $overlay = self::get_image('medium_overlay_own');
             imagecopy($this->im, $overlay, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
         } elseif ($found) {
-            # Mark found caches with V.
+            // Mark found caches with V.
 
-            $icon = self::get_image("found", 0.7*$a);
+            $icon = self::get_image('found', 0.7 * $a);
             imagecopy($this->im, $icon, $px - ($center_x - $markercenter_x) - 7,
                 $py - ($center_y - $markercenter_y) - 9, 0, 0, 16, 16);
         } elseif ($new) {
-            # Mark new caches with additional overlay.
+            // Mark new caches with additional overlay.
 
-            $overlay = self::get_image("medium_overlay_new");
+            $overlay = self::get_image('medium_overlay_new');
             imagecopy($this->im, $overlay, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
         }
     }
@@ -520,6 +522,7 @@ class TileRenderer
                 case 5: return 'webcam';
             }
         }
+
         return 'other';
     }
 
@@ -531,7 +534,7 @@ class TileRenderer
         $own = $flags & TileTree::$FLAG_OWN;
         $new = $flags & TileTree::$FLAG_NEW;
 
-        $marker = self::get_image("tiny_".self::get_type_suffix($type, false));
+        $marker = self::get_image('tiny_'.self::get_type_suffix($type, false));
         $width = 10;
         $height = 10;
         $center_x = 5;
@@ -539,7 +542,7 @@ class TileRenderer
         $markercenter_x = 5;
         $markercenter_y = 6;
 
-        # Put the marker. If cache covers more caches, then put two markers instead of one.
+        // Put the marker. If cache covers more caches, then put two markers instead of one.
 
         if ($count > 1) {
             imagecopy($this->im, $marker, $px - $center_x + 3, $py - $center_y - 2, 0, 0, $width, $height);
@@ -548,11 +551,11 @@ class TileRenderer
             imagecopy($this->im, $marker, $px - $center_x, $py - $center_y, 0, 0, $width, $height);
         }
 
-        # If the cache is unavailable, mark it with X.
+        // If the cache is unavailable, mark it with X.
 
         if (($status != 1) && ($count == 1)) {
-            $icon = self::get_image(($status == 2) ? "status_unavailable"
-                : "status_archived");
+            $icon = self::get_image(($status == 2) ? 'status_unavailable'
+                : 'status_archived');
             imagecopy($this->im, $icon, $px - ($center_x - $markercenter_x) - 6,
                 $py - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
         }
@@ -566,13 +569,13 @@ class TileRenderer
      */
     private function decide_which_get_captions()
     {
-        # We will split the tile (along with its margins) into 12x12 squares.
-        # A single geocache placed in square (x, y) gets the caption only
-        # when there are no other geocaches in any of the adjacent squares.
-        # This is efficient and yields acceptable results.
+        // We will split the tile (along with its margins) into 12x12 squares.
+        // A single geocache placed in square (x, y) gets the caption only
+        // when there are no other geocaches in any of the adjacent squares.
+        // This is efficient and yields acceptable results.
 
         $matrix = array();
-        for ($i=0; $i<12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $matrix[] = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
@@ -582,27 +585,27 @@ class TileRenderer
             if (($mx >= 12) || ($my >= 12)) {
                 continue;
             }
-            if (($matrix[$mx][$my] === 0) && ($row_ref[8] == 1)) {  # 8 is count
+            if (($matrix[$mx][$my] === 0) && ($row_ref[8] == 1)) {  // 8 is count
                 $matrix[$mx][$my] = $row_ref[0];
-            }  # 0 is cache_id
+            }  // 0 is cache_id
             else {
                 $matrix[$mx][$my] = -1;
             }
         }
         $selected_cache_ids = array();
-        for ($mx=1; $mx<11; $mx++) {
-            for ($my=1; $my<11; $my++) {
-                if ($matrix[$mx][$my] > 0) {  # cache_id
-                    # Check all adjacent squares.
+        for ($mx = 1; $mx < 11; ++$mx) {
+            for ($my = 1; $my < 11; ++$my) {
+                if ($matrix[$mx][$my] > 0) {  // cache_id
+                    // Check all adjacent squares.
 
-                    if (($matrix[$mx-1][$my-1] === 0)
-                        && ($matrix[$mx-1][$my  ] === 0)
-                        && ($matrix[$mx-1][$my+1] === 0)
-                        && ($matrix[$mx  ][$my-1] === 0)
-                        && ($matrix[$mx  ][$my+1] === 0)
-                        && ($matrix[$mx+1][$my-1] === 0)
-                        && ($matrix[$mx+1][$my  ] === 0)
-                        && ($matrix[$mx+1][$my+1] === 0)
+                    if (($matrix[$mx - 1][$my - 1] === 0)
+                        && ($matrix[$mx - 1][$my] === 0)
+                        && ($matrix[$mx - 1][$my + 1] === 0)
+                        && ($matrix[$mx][$my - 1] === 0)
+                        && ($matrix[$mx][$my + 1] === 0)
+                        && ($matrix[$mx + 1][$my - 1] === 0)
+                        && ($matrix[$mx + 1][$my] === 0)
+                        && ($matrix[$mx + 1][$my + 1] === 0)
                     ) {
                         $selected_cache_ids[] = $matrix[$mx][$my];
                     }

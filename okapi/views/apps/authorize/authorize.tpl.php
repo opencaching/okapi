@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <title><?= _("Authorization Form") ?></title>
+        <title><?= _('Authorization Form') ?></title>
         <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
         <style>
             .okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
@@ -38,7 +38,7 @@
                 <select id='langpref' style='border: 1px solid #ccc'>
                     <?php foreach ($vars['locales'] as $locale => $attrs) {
     ?>
-                        <option value='<?= $attrs['lang'] ?>' <?= ($attrs['locale'] == $vars['locale_displayed']) ? "selected" : "" ?>><?= $attrs['name'] ?></option>
+                        <option value='<?= $attrs['lang'] ?>' <?= ($attrs['locale'] == $vars['locale_displayed']) ? 'selected' : '' ?>><?= $attrs['name'] ?></option>
                     <?php 
 } ?>
                 </select>
@@ -46,17 +46,17 @@
 
             <?php if (isset($vars['token_expired']) && $vars['token_expired']) {
     ?>
-                <h1 style='clear: both'><?= _("Expired request") ?></h1>
-                <p><?= _("Unfortunately, the request has expired. Please try again.") ?></p>
+                <h1 style='clear: both'><?= _('Expired request') ?></h1>
+                <p><?= _('Unfortunately, the request has expired. Please try again.') ?></p>
             <?php 
 } elseif ($vars['token']) {
     ?>
-                <h1 style='clear: both'><?= _("External application is requesting access...") ?></h1>
-                <p><?= sprintf(_("<b>%s</b> wants to access your <b>%s</b> account. Do you agree to grant access to this application?"), htmlentities($vars['token']['consumer_name']), $vars['site_name']) ?></p>
+                <h1 style='clear: both'><?= _('External application is requesting access...') ?></h1>
+                <p><?= sprintf(_('<b>%s</b> wants to access your <b>%s</b> account. Do you agree to grant access to this application?'), htmlentities($vars['token']['consumer_name']), $vars['site_name']) ?></p>
                 <form id='authform' method='POST' class='form'>
                     <input type='hidden' name='authorization_result' id='authform_result' value='denied'>
-                    <input type='button' value="<?= _("I agree") ?>" onclick="document.getElementById('authform_result').setAttribute('value', 'granted'); document.forms['authform'].submit();">
-                    <input type='button' value="<?= _("Decline") ?>" onclick="document.forms['authform'].submit();">
+                    <input type='button' value="<?= _('I agree') ?>" onclick="document.getElementById('authform_result').setAttribute('value', 'granted'); document.forms['authform'].submit();">
+                    <input type='button' value="<?= _('Decline') ?>" onclick="document.forms['authform'].submit();">
                 </form>
                 <?= sprintf(_("
                     <p>Once permission is granted it is valid until its withdrawal on
@@ -65,7 +65,7 @@
                     If you allow this request application will be able to access all methods delivered
                     by the OKAPI Framework, i.e. post log entries on geocaches in your name.
                     You can revoke this permission at any moment.</p>
-                "), $vars['okapi_base_url']."apps/", $vars['okapi_base_url']) ?>
+                "), $vars['okapi_base_url'].'apps/', $vars['okapi_base_url']) ?>
             <?php 
 } ?>
         </div>

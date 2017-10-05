@@ -1,4 +1,5 @@
 <?php
+
 namespace okapi\core\Exception;
 
 /**

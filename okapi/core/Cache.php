@@ -18,9 +18,9 @@ class Cache
     public static function set($key, $value, $timeout)
     {
         if ($timeout == null) {
-            # The current cache implementation is ALWAYS persistent, so we will
-            # just replace it with a big value.
-            $timeout = 100*365*86400;
+            // The current cache implementation is ALWAYS persistent, so we will
+            // just replace it with a big value.
+            $timeout = 100 * 365 * 86400;
         }
         Db::execute("
             replace into okapi_cache (`key`, value, expires)
@@ -56,9 +56,9 @@ class Cache
             return;
         }
         if ($timeout == null) {
-            # The current cache implementation is ALWAYS persistent, so we will
-            # just replace it with a big value.
-            $timeout = 100*365*86400;
+            // The current cache implementation is ALWAYS persistent, so we will
+            // just replace it with a big value.
+            $timeout = 100 * 365 * 86400;
         }
         $entries_escaped = array();
         foreach ($dict as $key => $value) {
@@ -68,10 +68,10 @@ class Cache
                 date_add(now(), interval '".Db::escape_string($timeout)."' second)
             )";
         }
-        Db::execute("
+        Db::execute('
             replace into okapi_cache (`key`, value, expires)
-            values ".implode(", ", $entries_escaped)."
-        ");
+            values '.implode(', ', $entries_escaped).'
+        ');
     }
 
     /**
@@ -91,12 +91,13 @@ class Cache
         if (!$blob) {
             return null;
         }
-        if ($score != null) {  # Only non-null entries are scored.
+        if ($score != null) {  // Only non-null entries are scored.
             Db::execute("
                 insert into okapi_cache_reads (`cache_key`)
                 values ('".Db::escape_string($key)."')
             ");
         }
+
         return unserialize(gzinflate($blob));
     }
 
@@ -116,11 +117,11 @@ class Cache
                 $dict[$row['key']] = unserialize(gzinflate($row['value']));
             } catch (ErrorException $e) {
                 unset($dict[$row['key']]);
-                Okapi::mail_admins("Debug: Unserialize error",
+                Okapi::mail_admins('Debug: Unserialize error',
                     "Could not unserialize key '".$row['key']."' from Cache.\n".
                     "Probably something REALLY big was put there and data has been truncated.\n".
                     "Consider upgrading cache table to LONGBLOB.\n\n".
-                    "Length of data, compressed: ".strlen($row['value']));
+                    'Length of data, compressed: '.strlen($row['value']));
             }
         }
         if (count($dict) < count($keys)) {
@@ -130,6 +131,7 @@ class Cache
                 }
             }
         }
+
         return $dict;
     }
 

@@ -30,13 +30,14 @@ abstract class Cron24Job extends CronJob
     {
         $datestr = date('c'); // e.g. "2004-02-12T15:19:21+02:00"
         $datestr = (
-            substr($datestr, 0, 11) . $this->get_scheduled_time() . ":00" .
+            substr($datestr, 0, 11).$this->get_scheduled_time().':00'.
             substr($datestr, 19)
         );
         $t = strtotime($datestr);
         if ($t <= time()) {
             $t += 86400;
         }
+
         return $t;
     }
 }

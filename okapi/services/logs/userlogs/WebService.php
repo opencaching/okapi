@@ -16,9 +16,10 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 1
+            'min_auth_level' => 1,
         );
     }
+
     public static function call(OkapiRequest $request)
     {
         $user_uuid = $request->get_parameter('user_uuid');
@@ -27,18 +28,18 @@ class WebService
         }
         $limit = $request->get_parameter('limit');
         if (!$limit) {
-            $limit = "20";
+            $limit = '20';
         }
         if (!is_numeric($limit)) {
             throw new InvalidParam('limit', "'$limit'");
         }
         $limit = intval($limit);
         if (($limit < 1) || ($limit > 1000)) {
-            throw new InvalidParam('limit', "Has to be in range 1..1000.");
+            throw new InvalidParam('limit', 'Has to be in range 1..1000.');
         }
         $offset = $request->get_parameter('offset');
         if (!$offset) {
-            $offset = "0";
+            $offset = '0';
         }
         if (!is_numeric($offset)) {
             throw new InvalidParam('offset', "'$offset'");
@@ -48,12 +49,12 @@ class WebService
             throw new InvalidParam('offset', "'$offset'");
         }
 
-        # Check if user exists and retrieve user's ID (this will throw
-        # a proper exception on invalid UUID).
+        // Check if user exists and retrieve user's ID (this will throw
+        // a proper exception on invalid UUID).
         $user = OkapiServiceRunner::call('services/users/user', new OkapiInternalRequest(
             $request->consumer, null, array('user_uuid' => $user_uuid, 'fields' => 'internal_id')));
 
-        # User exists. Retrieving logs.
+        // User exists. Retrieving logs.
 
         $rs = Db::query("
             select cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
@@ -61,7 +62,7 @@ class WebService
             from cache_logs cl, caches c
             where
                 cl.user_id = '".Db::escape_string($user['internal_id'])."'
-                and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "cl.deleted = 0" : "true")."
+                and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? 'cl.deleted = 0' : 'true')."
                 and c.status in (1,2,3)
                 and cl.cache_id = c.cache_id
             order by cl.date desc
@@ -74,7 +75,7 @@ class WebService
                 'date' => date('c', $row['date']),
                 'cache_code' => $row['cache_code'],
                 'type' => Okapi::logtypeid2name($row['type']),
-                'comment' => $row['text']
+                'comment' => $row['text'],
             );
         }
 

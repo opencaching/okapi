@@ -13,7 +13,7 @@ class WebService
     {
         return array(
             'min_auth_level' => 3,
-            'token_type' => 'request'
+            'token_type' => 'request',
         );
     }
 
@@ -21,15 +21,16 @@ class WebService
     {
         $verifier = $request->get_parameter('oauth_verifier');
         if (!$verifier) {
-            # We require the 1.0a flow (throw an error when there is no oauth_verifier).
-            throw new ParamMissing("oauth_verifier");
+            // We require the 1.0a flow (throw an error when there is no oauth_verifier).
+            throw new ParamMissing('oauth_verifier');
         }
 
         $new_token = Okapi::$data_store->new_access_token($request->token, $request->consumer, $verifier);
 
         $response = new OkapiHttpResponse();
-        $response->content_type = "text/plain; charset=utf-8";
+        $response->content_type = 'text/plain; charset=utf-8';
         $response->body = $new_token;
+
         return $response;
     }
 }

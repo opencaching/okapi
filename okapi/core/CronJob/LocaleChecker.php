@@ -13,8 +13,9 @@ class LocaleChecker extends Cron5Job
 {
     public function get_period()
     {
-        return 7*86400;
+        return 7 * 86400;
     }
+
     public function execute()
     {
         $required = Locales::get_required_locales();
@@ -27,35 +28,35 @@ class LocaleChecker extends Cron5Job
         }
         if (count($missing) == 0) {
             return;
-        } # okay!
+        } // okay!
         ob_start();
-        print "Hi!\n\n";
-        print "Your system is missing some locales required by OKAPI for proper\n";
-        print "internationalization support. OKAPI comes with support for different\n";
-        print "languages. This number (hopefully) will be growing.\n\n";
-        print "Please take a moment to install the following missing locales:\n\n";
+        echo "Hi!\n\n";
+        echo "Your system is missing some locales required by OKAPI for proper\n";
+        echo "internationalization support. OKAPI comes with support for different\n";
+        echo "languages. This number (hopefully) will be growing.\n\n";
+        echo "Please take a moment to install the following missing locales:\n\n";
         $prefixes = array();
         foreach ($missing as $locale) {
-            print " - ".$locale."\n";
+            echo ' - '.$locale."\n";
             $prefixes[substr($locale, 0, 2)] = true;
         }
         $prefixes = array_keys($prefixes);
-        print "\n";
+        echo "\n";
         if ((count($missing) == 1) && ($missing[0] == 'POSIX')) {
-            # I don't remember how to install POSIX, probably everyone has it anyway.
+            // I don't remember how to install POSIX, probably everyone has it anyway.
         } else {
-            print "On Debian, try the following:\n\n";
+            echo "On Debian, try the following:\n\n";
             foreach ($prefixes as $lang) {
-                if ($lang != 'PO') { # Two first letters cut from POSIX.
-                    print "sudo apt-get install language-pack-".$lang."-base\n";
+                if ($lang != 'PO') { // Two first letters cut from POSIX.
+                    echo 'sudo apt-get install language-pack-'.$lang."-base\n";
                 }
             }
-            print "sudo service apache2 restart\n";
-            print "\n";
+            echo "sudo service apache2 restart\n";
+            echo "\n";
         }
-        print "Thanks!\n\n";
-        print "-- \n";
-        print "OKAPI Team";
-        Okapi::mail_admins("Additional setup needed: Missing locales.", ob_get_clean());
+        echo "Thanks!\n\n";
+        echo "-- \n";
+        echo 'OKAPI Team';
+        Okapi::mail_admins('Additional setup needed: Missing locales.', ob_get_clean());
     }
 }

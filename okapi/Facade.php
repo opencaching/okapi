@@ -12,35 +12,35 @@ use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Token\OkapiFacadeAccessToken;
 use okapi\lib\OCSession;
 
-# OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
+// OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
 
-# Use this class when you want to use OKAPI's services within OC code.
-# (Your service calls will appear with the name "Facade" in the weekly
-# OKAPI usage report).
+// Use this class when you want to use OKAPI's services within OC code.
+// (Your service calls will appear with the name "Facade" in the weekly
+// OKAPI usage report).
 
-# IMPORTANT COMPATIBILITY NOTES:
+// IMPORTANT COMPATIBILITY NOTES:
 
-# Note, that this is the *ONLY* internal OKAPI file that is guaranteed
-# to stay backward-compatible (note that we mean FILES here, all OKAPI
-# methods will stay compatible forever). If you want to use any class or
-# method that has not been exposed through the Facade class, contact
-# OKAPI developers, we will add it here.
+// Note, that this is the *ONLY* internal OKAPI file that is guaranteed
+// to stay backward-compatible (note that we mean FILES here, all OKAPI
+// methods will stay compatible forever). If you want to use any class or
+// method that has not been exposed through the Facade class, contact
+// OKAPI developers, we will add it here.
 
-# Including this file will initialize OKAPI Framework with its default
-# exception and error handlers. OKAPI is strict about PHP warnings and
-# notices, so you might need to temporarily disable the error handler in
-# order to get it to work with your code. Just call this after you
-# include the Facade file: Facade::disable_error_handling().
+// Including this file will initialize OKAPI Framework with its default
+// exception and error handlers. OKAPI is strict about PHP warnings and
+// notices, so you might need to temporarily disable the error handler in
+// order to get it to work with your code. Just call this after you
+// include the Facade file: Facade::disable_error_handling().
 
-# EXAMPLE OF USAGE:
+// EXAMPLE OF USAGE:
 
-# require_once $rootpath.'okapi/Facade.php';
-# \okapi\Facade::schedule_user_entries_check(...);
-# \okapi\Facade::disable_error_handling();
+// require_once $rootpath.'okapi/Facade.php';
+// \okapi\Facade::schedule_user_entries_check(...);
+// \okapi\Facade::disable_error_handling();
 
-# --------------------
+// --------------------
 
-require_once __DIR__ . '/autoload.php';
+require_once __DIR__.'/autoload.php';
 OkapiErrorHandler::$treat_notices_as_errors = true;
 Okapi::init_internals();
 
@@ -63,6 +63,7 @@ class Facade
             $parameters
         );
         $request->perceive_as_http_request = true;
+
         return OkapiServiceRunner::call($service_name, $request);
     }
 
@@ -103,7 +104,7 @@ class Facade
      * the "services/caches/search/save" method, but allows OC server to
      * include its own result instead of using OKAPI's search options. The
      * $temp_table should be a valid name of a temporary table with the
-     * following (or similar) structure:
+     * following (or similar) structure:.
      *
      *   create temporary table temp_12345 (
      *     cache_id integer primary key
@@ -113,9 +114,10 @@ class Facade
     {
         $tables = array('caches', $temp_table);
         $where_conds = array(
-            $temp_table.".cache_id = caches.cache_id",
+            $temp_table.'.cache_id = caches.cache_id',
             'caches.status in (1,2,3)',
         );
+
         return \okapi\services\caches\search\save\WebService::get_set(
             $tables, array() /* joins */, $where_conds, $min_store, $max_ref_age
         );
@@ -230,7 +232,7 @@ class Facade
      */
     public static function cache_set($key, $value, $timeout)
     {
-        Cache::set("facade#".$key, $value, $timeout);
+        Cache::set('facade#'.$key, $value, $timeout);
     }
 
     /** Same as `cache_set`, but works on many key->value pair at once. */
@@ -238,7 +240,7 @@ class Facade
     {
         $prefixed_dict = array();
         foreach ($dict as $key => &$value_ref) {
-            $prefixed_dict["facade#".$key] = &$value_ref;
+            $prefixed_dict['facade#'.$key] = &$value_ref;
         }
         Cache::set_many($prefixed_dict, $timeout);
     }
@@ -249,7 +251,7 @@ class Facade
      */
     public static function cache_get($key)
     {
-        return Cache::get("facade#".$key);
+        return Cache::get('facade#'.$key);
     }
 
     /** Same as `cache_get`, but it works on multiple keys at once. */
@@ -257,13 +259,14 @@ class Facade
     {
         $prefixed_keys = array();
         foreach ($keys as $key) {
-            $prefixed_keys[] = "facade#".$key;
+            $prefixed_keys[] = 'facade#'.$key;
         }
         $prefixed_result = Cache::get_many($prefixed_keys);
         $result = array();
         foreach ($prefixed_result as $prefixed_key => &$value_ref) {
             $result[substr($prefixed_key, 7)] = &$value_ref;
         }
+
         return $result;
     }
 
@@ -272,7 +275,7 @@ class Facade
      */
     public static function cache_delete($key)
     {
-        Cache::delete("facade#".$key);
+        Cache::delete('facade#'.$key);
     }
 
     /** Same as `cache_delete`, but works on many keys at once. */
@@ -280,10 +283,10 @@ class Facade
     {
         $prefixed_keys = array();
         foreach ($keys as $key) {
-            $prefixed_keys[] = "facade#".$key;
+            $prefixed_keys[] = 'facade#'.$key;
         }
         Cache::delete_many($prefixed_keys);
     }
 }
 
-# (This comment is added here simply to debug OKAPI deployment........)
+// (This comment is added here simply to debug OKAPI deployment........)
