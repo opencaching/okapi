@@ -312,7 +312,7 @@ class WebService
             # NOTICE: We are including EXTERNAL OCDE libraries here! This
             # code does not belong to OKAPI!
 
-            if (Settings::get('OC_BRANCH') === 'oc.de')
+            if (Settings::get('OC_BRANCH') == 'oc.de')
             {
                 $opt['html_purifier'] = Settings::get('OCDE_HTML_PURIFIER_SETTINGS');
 

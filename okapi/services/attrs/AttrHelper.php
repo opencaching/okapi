@@ -42,7 +42,7 @@ class AttrHelper
     {
         try
         {
-            $path = __DIR__ . '/../../../okapi/services/attrs/attribute-definitions.xml';
+            $path = __DIR__ . '/attribute-definitions.xml';
             $xml = file_get_contents($path);
             self::refresh_from_string($xml);
         }
