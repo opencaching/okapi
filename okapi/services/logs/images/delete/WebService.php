@@ -17,7 +17,7 @@ class WebService
         );
     }
 
-    static function call(OkapiRequest $request)
+    public static function call(OkapiRequest $request)
     {
         list($image_uuid, $log_internal_id) = LogImagesCommon::validate_image_uuid($request);
         $image_uuid_escaped = Db::escape_string($image_uuid);
@@ -37,12 +37,9 @@ class WebService
         # OCDE sequence numbers may have gaps. So we do not need to adjust
         # any numbers after deleting from table 'pictures'.
 
-        if (Settings::get('OC_BRANCH') == 'oc.de')
-        {
+        if (Settings::get('OC_BRANCH') == 'oc.de') {
             # OCDE does all the housekeeping by triggers
-        }
-        else
-        {
+        } else {
             Db::execute("
                 INSERT INTO removed_objects (
                     localID, uuid, type, removed_date, node

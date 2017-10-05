@@ -8,7 +8,10 @@ use okapi\core\Okapi;
 /** Clean up the cache, once per day. */
 class CacheCleanupCronJob extends Cron24Job
 {
-    public function get_scheduled_time() { return "04:20"; }
+    public function get_scheduled_time()
+    {
+        return "04:20";
+    }
     public function execute()
     {
         # Delete all expired elements.

@@ -7,8 +7,10 @@ namespace okapi\core\OAuth;
  * over a secure channel such as HTTPS. It does not use the Signature Base String.
  *   - Chapter 9.4 ("PLAINTEXT")
  */
-class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod {
-    public function get_name() {
+class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod
+{
+    public function get_name()
+    {
         return "PLAINTEXT";
     }
 
@@ -21,7 +23,8 @@ class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod {
      * Please note that the second encoding MUST NOT happen in the SignatureMethod, as
      * OAuthRequest handles this!
      */
-    public function build_signature($request, $consumer, $token) {
+    public function build_signature($request, $consumer, $token)
+    {
         $key_parts = array(
             $consumer->secret,
             ($token) ? $token->secret : ""

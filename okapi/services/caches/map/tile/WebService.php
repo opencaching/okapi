@@ -46,11 +46,13 @@ class WebService
     private static function require_uint($request, $name, $min_value = 0)
     {
         $val = $request->get_parameter($name);
-        if ($val === null)
+        if ($val === null) {
             throw new ParamMissing($name);
+        }
         $ret = intval($val);
-        if ($ret < 0 || ("$ret" !== $val))
+        if ($ret < 0 || ("$ret" !== $val)) {
             throw new InvalidParam($name, "Expecting non-negative integer, got '".$val."'.");
+        }
         return $ret;
     }
 
@@ -72,14 +74,17 @@ class WebService
         # zoom, x, y - required tile-specific parameters.
 
         $zoom = self::require_uint($request, 'z');
-        if ($zoom > 21)
+        if ($zoom > 21) {
             throw new InvalidParam('z', "Maximum value for this parameter is 21.");
+        }
         $x = self::require_uint($request, 'x');
         $y = self::require_uint($request, 'y');
-        if ($x >= 1<<$zoom)
+        if ($x >= 1<<$zoom) {
             throw new InvalidParam('x', "Should be in 0..".((1<<$zoom) - 1).".");
-        if ($y >= 1<<$zoom)
+        }
+        if ($y >= 1<<$zoom) {
             throw new InvalidParam('y', "Should be in 0..".((1<<$zoom) - 1).".");
+        }
 
         # Now, we will create a search set (or use one previously created).
         # Instead of creating a new OkapiInternalRequest object, we will pass
@@ -100,10 +105,10 @@ class WebService
 
         $rs = TileTree::query_fast($zoom, $x, $y, $set_id);
         $rows = array();
-        if ($rs !== null)
-        {
-            while ($row = Db::fetch_row($rs))
+        if ($rs !== null) {
+            while ($row = Db::fetch_row($rs)) {
                 $rows[] = $row;
+            }
             unset($row);
         }
         OkapiServiceRunner::save_stats_extra("caches/map/tile/checkpointA", null,
@@ -112,14 +117,12 @@ class WebService
 
         # Add dynamic, user-related flags.
 
-        if (count($rows) > 0)
-        {
+        if (count($rows) > 0) {
             # Load user-related cache ids.
 
             $cache_key = "tileuser/".$request->token->user_id;
             $user = self::$USE_OTHER_CACHE ? Cache::get($cache_key) : null;
-            if ($user === null)
-            {
+            if ($user === null) {
                 $user = array();
 
                 # Ignored caches.
@@ -130,8 +133,9 @@ class WebService
                     where user_id = '".Db::escape_string($request->token->user_id)."'
                 ");
                 $user['ignored'] = array();
-                while (list($cache_id) = Db::fetch_row($rs))
+                while (list($cache_id) = Db::fetch_row($rs)) {
                     $user['ignored'][$cache_id] = true;
+                }
 
                 # Found caches.
 
@@ -144,8 +148,9 @@ class WebService
                         and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
                 ");
                 $user['found'] = array();
-                while (list($cache_id) = Db::fetch_row($rs))
+                while (list($cache_id) = Db::fetch_row($rs)) {
                     $user['found'][$cache_id] = true;
+                }
 
                 # Own caches.
 
@@ -155,24 +160,26 @@ class WebService
                     where user_id = '".Db::escape_string($request->token->user_id)."'
                 ");
                 $user['own'] = array();
-                while (list($cache_id) = Db::fetch_row($rs))
+                while (list($cache_id) = Db::fetch_row($rs)) {
                     $user['own'][$cache_id] = true;
+                }
 
                 Cache::set($cache_key, $user, 30);
             }
 
             # Add extra flags to geocaches.
 
-            foreach ($rows as &$row_ref)
-            {
+            foreach ($rows as &$row_ref) {
                 # Add the "found" flag (to indicate that this cache needs
                 # to be drawn as found) and the "own" flag (to indicate that
                 # the current user is the owner).
 
-                if (isset($user['found'][$row_ref[0]]))
-                    $row_ref[6] |= TileTree::$FLAG_FOUND;  # $row[6] is "flags"
-                if (isset($user['own'][$row_ref[0]]))
-                    $row_ref[6] |= TileTree::$FLAG_OWN;  # $row[6] is "flags"
+                if (isset($user['found'][$row_ref[0]])) {
+                    $row_ref[6] |= TileTree::$FLAG_FOUND;
+                }  # $row[6] is "flags"
+                if (isset($user['own'][$row_ref[0]])) {
+                    $row_ref[6] |= TileTree::$FLAG_OWN;
+                }  # $row[6] is "flags"
             }
         }
 
@@ -195,8 +202,7 @@ class WebService
         OkapiServiceRunner::save_stats_extra("caches/map/tile/checkpointB", null,
             microtime(true) - $checkpointB_started);
         $checkpointC_started = microtime(true);
-        if (self::$USE_ETAGS_CACHE && ($request->etag == $response->etag))
-        {
+        if (self::$USE_ETAGS_CACHE && ($request->etag == $response->etag)) {
             # Hit. Report the content was unmodified.
 
             $response->etag = null;
@@ -211,8 +217,7 @@ class WebService
         OkapiServiceRunner::save_stats_extra("caches/map/tile/checkpointC", null,
             microtime(true) - $checkpointC_started);
         $checkpointD_started = microtime(true);
-        if ($response->body !== null)
-        {
+        if ($response->body !== null) {
             # Hit. We will use the cached version of the image.
 
             return $response;

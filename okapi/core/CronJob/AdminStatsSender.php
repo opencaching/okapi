@@ -13,7 +13,10 @@ use okapi\core\Request\OkapiInternalRequest;
  */
 class AdminStatsSender extends Cron5Job
 {
-    public function get_period() { return 7*86400; }
+    public function get_period()
+    {
+        return 7*86400;
+    }
     public function execute()
     {
         ob_start();
@@ -58,15 +61,16 @@ class AdminStatsSender extends Cron5Job
         print "== Consumers ==\n\n";
         print "Consumer name                         Calls     Runtime\n";
         print "----------------------------------- ------- -----------\n";
-        foreach ($consumers as $row)
-        {
+        foreach ($consumers as $row) {
             $name = $row['name'];
-            if ($row['consumer_key'] == 'anonymous')
+            if ($row['consumer_key'] == 'anonymous') {
                 $name = "Anonymous (Level 0 Authentication)";
-            elseif ($row['consumer_key'] == 'facade')
+            } elseif ($row['consumer_key'] == 'facade') {
                 $name = "Internal usage via Facade";
-            if (mb_strlen($name) > 35)
+            }
+            if (mb_strlen($name) > 35) {
                 $name = mb_substr($name, 0, 32)."...";
+            }
             print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
             print str_pad($row['http_calls'], 8, " ", STR_PAD_LEFT);
             print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)."s\n";
@@ -86,11 +90,11 @@ class AdminStatsSender extends Cron5Job
         print "== Methods ==\n\n";
         print "Service name                          Calls     Runtime      Avg\n";
         print "----------------------------------- ------- ----------- --------\n";
-        foreach ($methods as $row)
-        {
+        foreach ($methods as $row) {
             $name = $row['service_name'];
-            if (mb_strlen($name) > 35)
+            if (mb_strlen($name) > 35) {
                 $name = mb_substr($name, 0, 32)."...";
+            }
             print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
             print str_pad($row['http_calls'], 8, " ", STR_PAD_LEFT);
             print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)."s";
@@ -114,11 +118,11 @@ class AdminStatsSender extends Cron5Job
         print "== Current OAuth usage by Consumers with at least 5 users ==\n\n";
         print "Consumer name                         Users\n";
         print "----------------------------------- -------\n";
-        foreach ($oauth_users as $row)
-        {
+        foreach ($oauth_users as $row) {
             $name = $row['name'];
-            if (mb_strlen($name) > 35)
+            if (mb_strlen($name) > 35) {
                 $name = mb_substr($name, 0, 32)."...";
+            }
             print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
             print str_pad($row['users'], 8, " ", STR_PAD_LEFT)."\n";
         }

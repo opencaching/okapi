@@ -10,10 +10,14 @@ use okapi\core\Okapi;
  */
 class OAuthCleanupCronJob extends PrerequestCronJob
 {
-    public function get_period() { return 300; } # 5 minutes
+    public function get_period()
+    {
+        return 300;
+    } # 5 minutes
     public function execute()
     {
-        if (Okapi::$data_store)
+        if (Okapi::$data_store) {
             Okapi::$data_store->cleanup();
+        }
     }
 }

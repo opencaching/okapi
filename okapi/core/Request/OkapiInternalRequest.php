@@ -30,17 +30,20 @@ class OkapiInternalRequest extends OkapiRequest
         $this->consumer = $consumer;
         $this->token = $token;
         $this->parameters = array();
-        foreach ($parameters as $key => $value)
-            if ($value !== null)
+        foreach ($parameters as $key => $value) {
+            if ($value !== null) {
                 $this->parameters[$key] = $value;
+            }
+        }
     }
 
     public function get_parameter($name)
     {
-        if (isset($this->parameters[$name]))
+        if (isset($this->parameters[$name])) {
             return $this->parameters[$name];
-        else
+        } else {
             return null;
+        }
     }
 
     public function get_all_parameters_including_unknown()
@@ -48,5 +51,8 @@ class OkapiInternalRequest extends OkapiRequest
         return $this->parameters;
     }
 
-    public function is_http_request() { return $this->perceive_as_http_request; }
+    public function is_http_request()
+    {
+        return $this->perceive_as_http_request;
+    }
 }

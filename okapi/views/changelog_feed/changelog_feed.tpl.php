@@ -9,7 +9,8 @@
         <ttl>60</ttl>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
-<?php foreach ($vars['changes'] as $change) { ?>
+<?php foreach ($vars['changes'] as $change) {
+    ?>
         <item>
             <title>Version <?= $change['version'] ?></title>
             <link><?= $vars['site_url'] ?>okapi/changelog.html#v<?= $change['version'] ?></link>
@@ -18,6 +19,7 @@
             <category><?= $change['type'] ?></category>
             <description><![CDATA[<?= $change['comment'] ?>]]></description>
         </item>
-<?php } ?>
+<?php 
+} ?>
     </channel>
 </rss>

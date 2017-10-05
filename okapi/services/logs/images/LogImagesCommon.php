@@ -17,8 +17,9 @@ class LogImagesCommon
     public static function validate_image_uuid($request)
     {
         $image_uuid = $request->get_parameter('image_uuid');
-        if (!$image_uuid)
+        if (!$image_uuid) {
             throw new ParamMissing('image_uuid');
+        }
 
         # When uploading images, OCPL stores the user_id of the uploader
         # in the 'pictures' table. This is redundant to cache_logs.user_id,
@@ -86,10 +87,9 @@ class LogImagesCommon
      * it is called only for OCDE and if the position parameter was supplied.
      */
 
-    static function prepare_position($log_internal_id, $position, $end_offset)
+    public static function prepare_position($log_internal_id, $position, $end_offset)
     {
-        if (Settings::get('OC_BRANCH') == 'oc.de' && $position !== null)
-        {
+        if (Settings::get('OC_BRANCH') == 'oc.de' && $position !== null) {
             # Prevent race conditions when creating sequence numbers if a
             # user tries to upload multiple images simultaneously. With a
             # few picture uploads per hour - most of them probably witout
@@ -104,16 +104,13 @@ class LogImagesCommon
             where object_type = 1 and object_id = '".Db::escape_string($log_internal_id)."'
         ");
 
-        if (Settings::get('OC_BRANCH') == 'oc.pl')
-        {
+        if (Settings::get('OC_BRANCH') == 'oc.pl') {
             # Ignore the position parameter, always insert at end.
             # Remember that this function is NOT called when editing OCPL images.
 
             $position = $log_images_count;
             $seq = 1;
-        }
-        else
-        {
+        } else {
             if ($position === null || $position >= $log_images_count) {
                 $position = $log_images_count - 1 + $end_offset;
                 $seq = Db::select_value("
@@ -121,7 +118,7 @@ class LogImagesCommon
                     from pictures
                     where object_type = 1 and object_id = '".Db::escape_string($log_internal_id)."'
                 ") + $end_offset;
-            } else if ($position <= 0) {
+            } elseif ($position <= 0) {
                 $position = 0;
                 $seq = 1;
             } else {

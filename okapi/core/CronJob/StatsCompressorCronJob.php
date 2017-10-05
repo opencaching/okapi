@@ -11,11 +11,15 @@ use okapi\core\Okapi;
  */
 class StatsCompressorCronJob extends Cron24Job
 {
-    public function get_scheduled_time() { return "04:20"; }
+    public function get_scheduled_time()
+    {
+        return "04:20";
+    }
     public function execute()
     {
-        if (Okapi::get_var('db_version', 0) + 0 < 94)
+        if (Okapi::get_var('db_version', 0) + 0 < 94) {
             return;
+        }
 
         # We will process a single month, every time we are being run.
 

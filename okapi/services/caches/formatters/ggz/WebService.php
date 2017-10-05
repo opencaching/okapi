@@ -28,7 +28,7 @@ class WebService
         # Geocaching.com (groundspeak:) and Opencaching.com (ox:) extensions. It will
         # also include personal data (if the method was invoked using Level 3 Authentication).
 
-        $file_item_name = "data_".time()."_".rand(100000,999999).".gpx";
+        $file_item_name = "data_".time()."_".rand(100000, 999999).".gpx";
         $ggz_file = array(
             'name' => $file_item_name,
             'crc32' => sprintf('%08X', crc32($gpx_result['gpx'])),

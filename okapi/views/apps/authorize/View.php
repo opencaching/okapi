@@ -47,8 +47,7 @@ class View
 
         $callback_concat_char = (strpos($token['callback'], '?') === false) ? "?" : "&";
 
-        if (!$token)
-        {
+        if (!$token) {
             # Probably Request Token has expired. This will be usually viewed
             # by the user, who knows nothing on tokens and OAuth. Let's be nice then!
 
@@ -78,26 +77,21 @@ class View
 
         # Ensure a user is logged in (or force re-login).
 
-        if ($force_relogin || ($OC_user_id == null))
-        {
+        if ($force_relogin || ($OC_user_id == null)) {
             # TODO: confirm_user should first ask the user if he's "the proper one",
             # and then offer to sign in as a different user.
 
             $login_page = 'login.php?';
 
-            if ($OC_user_id !== null)
-            {
-                if (Settings::get('OC_BRANCH') == 'oc.de')
-                {
+            if ($OC_user_id !== null) {
+                if (Settings::get('OC_BRANCH') == 'oc.de') {
                     # OCDE login.php?action=logout&target=... will NOT logout and
                     # then redirect to the target, but it will log out, prompt for
                     # login and then redirect to the target after logging in -
                     # that's exactly the relogin that we want.
 
                     $login_page .= 'action=logout&';
-                }
-                else
-                {
+                } else {
                     # OCPL uses REAL MAGIC for session handling. I don't get ANY of it.
                     # The logout.php DOES NOT support the "target" parameter, so we
                     # can't just call it. The only thing that comes to mind is...
@@ -144,15 +138,12 @@ class View
                 and consumer_key = '".Db::escape_string($token['consumer_key'])."'
         ");
 
-        if (!$authorized)
-        {
-            if (isset($_POST['authorization_result']))
-            {
+        if (!$authorized) {
+            if (isset($_POST['authorization_result'])) {
                 # Not yet authorized, but user have just submitted the authorization form.
                 # Note, that currently there is no CSRF protection here.
 
-                if ($_POST['authorization_result'] == 'granted')
-                {
+                if ($_POST['authorization_result'] == 'granted') {
                     Db::execute("
                         insert ignore into okapi_authorizations (consumer_key, user_id)
                         values (
@@ -161,9 +152,7 @@ class View
                         );
                     ");
                     $authorized = true;
-                }
-                else
-                {
+                } else {
                     # User denied access. Nothing sensible to do now. Will try to report
                     # back to the Consumer application with an error.
 
@@ -178,9 +167,7 @@ class View
                     # We'll have to redirect to the Opencaching main page then...
                     return new OkapiRedirectResponse(Settings::get('SITE_URL')."index.php");
                 }
-            }
-            else
-            {
+            } else {
                 # Not yet authorized. Display an authorization request.
                 $vars = array(
                     'okapi_base_url' => Settings::get('SITE_URL')."okapi/",

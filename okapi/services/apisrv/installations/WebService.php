@@ -26,12 +26,10 @@ class WebService
         $cachekey = 'apisrv/installations-v'.$VERSION;
         $backupkey = 'apisrv/installations-v'.$VERSION.'-backup';
         $results = Cache::get($cachekey);
-        if (!$results)
-        {
+        if (!$results) {
             # Download the current list of OKAPI servers.
 
-            try
-            {
+            try {
                 $opts = array(
                     'http' => array(
                         'method' => "GET",
@@ -45,14 +43,11 @@ class WebService
                 if (!$doc) {
                     throw new ErrorException(); # just to get to the catch block
                 }
-            }
-            catch (ErrorException $e)
-            {
+            } catch (ErrorException $e) {
                 # GitHub failed on us. Try to respond with a backup list.
 
                 $results = Cache::get($backupkey);
-                if ($results)
-                {
+                if ($results) {
                     Cache::set($cachekey, $results, 12 * 3600); # so to retry no earlier than after 12 hours
                     return Okapi::formatted_response($request, $results);
                 }
@@ -73,31 +68,32 @@ class WebService
 
             $results = array();
             $i_was_included = false;
-            foreach ($doc->installation as $inst)
-            {
+            foreach ($doc->installation as $inst) {
                 $site_url = (string)$inst[0]['site_url'];
-                if ($inst[0]['okapi_base_url'])
+                if ($inst[0]['okapi_base_url']) {
                     $okapi_base_url = (string)$inst[0]['okapi_base_url'];
-                else
+                } else {
                     $okapi_base_url = $site_url."okapi/";
-                if ($inst[0]['site_name'])
+                }
+                if ($inst[0]['site_name']) {
                     $site_name = (string)$inst[0]['site_name'];
-                else
+                } else {
                     $site_name = Okapi::get_normalized_site_name($site_url);
+                }
                 $results[] = array(
                     'site_url' => $site_url,
                     'site_name' => $site_name,
                     'okapi_base_url' => $okapi_base_url,
                 );
-                if (in_array($okapi_base_url, Okapi::get_allowed_base_urls()))
+                if (in_array($okapi_base_url, Okapi::get_allowed_base_urls())) {
                     $i_was_included = true;
+                }
             }
 
             # If running on a local development installation, then include the local
             # installation URL.
 
-            if (!$i_was_included)
-            {
+            if (!$i_was_included) {
                 $results[] = array(
                     'site_url' => Settings::get('SITE_URL'),
                     'site_name' => "DEVELSITE",

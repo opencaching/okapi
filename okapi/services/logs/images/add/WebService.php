@@ -17,7 +17,9 @@ use okapi\Settings;
  * the Consumer did anything wrong (it's the user who did). This exception shouldn't
  * be used outside of this file.
  */
-class CannotPublishException extends Exception {}
+class CannotPublishException extends Exception
+{
+}
 
 class WebService
 {
@@ -44,8 +46,9 @@ class WebService
         # validate the 'log_uuid' parameter
 
         $log_uuid = $request->get_parameter('log_uuid');
-        if (!$log_uuid)
+        if (!$log_uuid) {
             throw new ParamMissing('log_uuid');
+        }
         $rs = Db::query("
             select id, node, user_id
             from cache_logs
@@ -53,8 +56,9 @@ class WebService
         );
         $row = Db::fetch_assoc($rs);
         Db::free_result($rs);
-        if (!$row)
+        if (!$row) {
             throw new InvalidParam('log_uuid', "There is no log entry with uuid '".$log_uuid."'.");
+        }
         if ($row['node'] != Settings::get('OC_NODE_ID')) {
             throw new Exception(
                 "This site's database contains the log entry '$log_uuid' which has been"
@@ -81,21 +85,24 @@ class WebService
         }
 
         $is_spoiler = $request->get_parameter('is_spoiler');
-        if ($is_spoiler === null) $is_spoiler = 'false';
-        if (!in_array($is_spoiler, array('true', 'false')))
+        if ($is_spoiler === null) {
+            $is_spoiler = 'false';
+        }
+        if (!in_array($is_spoiler, array('true', 'false'))) {
             throw new InvalidParam('is_spoiler');
+        }
 
         $position = LogImagesCommon::validate_position($request);
 
         # validate the 'image' parameter
 
         $base64_image = $request->get_parameter('image');
-        if (!$base64_image)
+        if (!$base64_image) {
             throw new ParamMissing('image');
+        }
 
         $estimated_decoded_size = strlen($base64_image) / 4 * 3 - 2;
-        if ($estimated_decoded_size > Settings::get('IMAGE_MAX_UPLOAD_SIZE'))
-        {
+        if ($estimated_decoded_size > Settings::get('IMAGE_MAX_UPLOAD_SIZE')) {
             $estimated_decoded_size_MB = round($estimated_decoded_size / 1024 / 1024, 1);
             $max_upload_size_MB = round(Settings::get('IMAGE_MAX_UPLOAD_SIZE') / 1024 / 1024, 1);
 
@@ -108,20 +115,21 @@ class WebService
         }
 
         $image = base64_decode($base64_image);
-        if (!$image)
+        if (!$image) {
             throw new InvalidParam('image', "bad base64 encoding");
+        }
 
         try {
             $image_properties = getimagesizefromstring($image);  # can throw
-            if (!$image_properties)
+            if (!$image_properties) {
                 throw new Exception();
+            }
             list($width, $height, $image_type) = $image_properties;
             if (!in_array($image_type, array(IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF))) {
                 # This will happen e.g. for BMP and XBM images, which are supported by GD.
                 throw new Exception();
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             # Note: There may be *subtypes* which are not accepted by the GD library.
             # About 1 of 2000 JPEGs at OC.de is not readable by the PHP functions,
             # though they can be displayed by web browsers.
@@ -149,9 +157,10 @@ class WebService
         }
         try {
             $image = imagecreatefromstring($image);  # can throw
-            if (!$image) throw new Exception();
-        }
-        catch (Exception $e) {
+            if (!$image) {
+                throw new Exception();
+            }
+        } catch (Exception $e) {
             throw new CannotPublishException(sprintf(
                 _("%s reported an error when it tried to read your file."),
                 Okapi::get_normalized_site_name()
@@ -171,8 +180,7 @@ class WebService
 
         $image_uuid = Okapi::create_uuid();
         $imagepath = Settings::get('IMAGES_DIR').'/'.$image_uuid;
-        switch ($image_type)
-        {
+        switch ($image_type) {
             case IMAGETYPE_JPEG:
                 $file_ext = '.jpg';
                 $quality = Settings::get('JPEG_QUALITY');
@@ -193,26 +201,26 @@ class WebService
                 $file_ext = '.???';
                 $result = false;
         }
-        if (!$result)
+        if (!$result) {
             throw new Exception("could not save image file '".$imagepath.$file_ext."'");
+        }
 
         # insert image into database
 
-        try
-        {
+        try {
             list($position, $image_url) = self::db_insert_image(
                 $request->consumer->key, $request->token->user_id,
                 $log_internal_id, $image_uuid, $position, $caption, $is_spoiler, $file_ext
             );
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             # TODO: Proper handling of nested exception if the unlink() fails
             # (which is very unlikely, and will just add a bit more of garbage
             # to that which is already present in the images directory).
 
-            try { unlink($imagepath.$file_ext); }
-            catch (Exception $e2) {}
+            try {
+                unlink($imagepath.$file_ext);
+            } catch (Exception $e2) {
+            }
             throw $e;
         }
 
@@ -242,15 +250,15 @@ class WebService
         # and more powerful alternative (e.g. allowing more file types),
         # but that needs additional and sometimes non-trivial installation.
 
-        if (!extension_loaded('gd'))
+        if (!extension_loaded('gd')) {
             throw new Exception('PHP GD image processing module is disabled');
+        }
 
         # rescale image if necessary
 
         $scale_factor = sqrt(Settings::get('IMAGE_MAX_PIXEL_COUNT') / ($width * $height));
 
-        if ($scale_factor < 1)
-        {
+        if ($scale_factor < 1) {
             $new_width = $width * $scale_factor;
             $new_height = $height * $scale_factor;
             $scaled_image = imagecreatetruecolor($new_width, $new_height);
@@ -264,18 +272,17 @@ class WebService
         #   - GD cannot save EXIF data anyway, and
         #   - the orientation flag may not be recognized by all image processors.
 
-        if (!extension_loaded('exif'))
+        if (!extension_loaded('exif')) {
             throw new Exception('PHP Exif module is disabled');
+        }
 
-        if ($image_type == IMAGETYPE_JPEG)
-        {
+        if ($image_type == IMAGETYPE_JPEG) {
             # The PHP Exif module can read EXIF data only from files. To avoid
             # disk I/O overhead, we pipe the image string through a pseudo-file:
 
             $exif_data = exif_read_data("data://image/jpeg;base64," . $base64_image);
             if ($exif_data && isset($exif_data['Orientation'])) {
-                switch ($exif_data['Orientation'])
-                {
+                switch ($exif_data['Orientation']) {
                     case 3: $image = imagerotate($image, 180, 0); break;
                     case 6: $image = imagerotate($image, -90, 0); break;
                     case 8: $image = imagerotate($image, 90, 0); break;
@@ -396,12 +403,13 @@ class WebService
         # This is the "real" entry point. A wrapper for the _call method.
 
         $langpref = $request->get_parameter('langpref');
-        if (!$langpref) $langpref = "en";
+        if (!$langpref) {
+            $langpref = "en";
+        }
         $langprefs = explode("|", $langpref);
         Okapi::gettext_domain_init($langprefs);
 
-        try
-        {
+        try {
             list($image_uuid, $position, $image_url) = self::_call($request);
             $result = array(
                 'success' => true,
@@ -411,9 +419,7 @@ class WebService
                 'position' => $position
             );
             Okapi::gettext_domain_restore();
-        }
-        catch (CannotPublishException $e)
-        {
+        } catch (CannotPublishException $e) {
             Okapi::gettext_domain_restore();
             $result = array(
                 'success' => false,
@@ -422,9 +428,7 @@ class WebService
                 'image_url' => null,
                 'position' => null
             );
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             Okapi::gettext_domain_restore();
             throw $e;
         }

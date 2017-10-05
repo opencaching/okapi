@@ -20,9 +20,10 @@ class OkapiMenu
     public static function get_menu_html($current_path = null)
     {
         $chunks = array();
-        if (Okapi::$version_number)
+        if (Okapi::$version_number) {
             $chunks[] = "<div class='revision'>ver. ".Okapi::$version_number.
                 " (".substr(Okapi::$git_revision, 0, 7).")</div>";
+        }
         $chunks[] = "<div class='main'>";
         $chunks[] = self::link($current_path, "introduction.html", "Introduction");
         $chunks[] = self::link($current_path, "signup.html", "Sign up");
@@ -49,19 +50,18 @@ class OkapiMenu
         sort($methodnames);
 
         $module_methods = array();
-        foreach ($methodnames as $methodname)
-        {
+        foreach ($methodnames as $methodname) {
             $pos = strrpos($methodname, "/");
             $modulename = substr($methodname, 0, $pos);
-            if (!isset($module_methods[$modulename]))
+            if (!isset($module_methods[$modulename])) {
                 $module_methods[$modulename] = array();
+            }
             $module_methods[$modulename][] = $method_descs[$methodname];
         }
         $modulenames = array_keys($module_methods);
         sort($modulenames);
 
-        foreach ($modulenames as $modulename)
-        {
+        foreach ($modulenames as $modulename) {
             $chunks[] = "<div class='module'>$modulename</div>";
             $chunks[] = "<div class='methods'>";
             foreach ($module_methods[$modulename] as $method_desc) {
@@ -80,21 +80,17 @@ class OkapiMenu
             new OkapiInternalRequest(new OkapiInternalConsumer(), null, array()));
         $site_url = Settings::get('SITE_URL');
 
-        foreach ($installations as &$inst_ref)
-        {
+        foreach ($installations as &$inst_ref) {
             # $inst_ref['site_url'] and $site_url can have different protocols
             # (http / https). We compare only the domain parts and use
             # $site_url (which has the current request's protocol) for the menu
             # so that the menu works properly.
 
-            if (self::domains_are_equal($inst_ref['site_url'], $site_url))
-            {
+            if (self::domains_are_equal($inst_ref['site_url'], $site_url)) {
                 $inst_ref['site_url'] = $site_url;
                 $inst_ref['okapi_base_url'] = $site_url . 'okapi/';
                 $inst_ref['selected'] = true;
-            }
-            else
-            {
+            } else {
                 $inst_ref['selected'] = false;
             }
         }

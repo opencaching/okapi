@@ -25,11 +25,9 @@ class WebService
     {
         $cache_key = self::generateCacheKey();
         $results = Cache::get($cache_key);
-        if ($results == null)
-        {
+        if ($results == null) {
             $results = array();
-            foreach (OkapiServiceRunner::$all_names as $methodname)
-            {
+            foreach (OkapiServiceRunner::$all_names as $methodname) {
                 $info = OkapiServiceRunner::call('services/apiref/method', new OkapiInternalRequest(
                     new OkapiInternalConsumer(), null, array('name' => $methodname)));
                 $results[] = array(
@@ -51,8 +49,8 @@ class WebService
      * We want the method index to return fast, but we also don't want developers to see cached
      * results when they are adding (or changing) methods (in dev-environments).
      */
-    private static function generateCacheKey() {
-
+    private static function generateCacheKey()
+    {
         if (!Settings::get('DEBUG')) {
 
             /* Production. */
@@ -64,7 +62,6 @@ class WebService
                 sort($methodnames);
                 return "api_ref/method_index#".md5(implode("#", $methodnames));
             }
-
         } else {
 
             /* Development. */
@@ -76,14 +73,15 @@ class WebService
         }
     }
 
-    private static function getDirModDateRecursive($absoluteDir) {
+    private static function getDirModDateRecursive($absoluteDir)
+    {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($absoluteDir, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::SELF_FIRST
         );
         $max_timestamp = 0;
         foreach ($iterator as $item) {
-            if($item->isDir()) {
+            if ($item->isDir()) {
                 $pth = $item->getPath()."/.";
             } else {
                 $pth = $item->getPathname();

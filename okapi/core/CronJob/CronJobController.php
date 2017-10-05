@@ -14,8 +14,7 @@ class CronJobController
     public static function get_enabled_cronjobs()
     {
         static $cache = null;
-        if ($cache == null)
-        {
+        if ($cache == null) {
             $cache = array(
                 new OAuthCleanupCronJob(),
                 new CacheCleanupCronJob(),
@@ -34,9 +33,11 @@ class CronJobController
                 new TableOptimizerJob(),
                 new TokenRevokerJob(),
             );
-            foreach ($cache as $cronjob)
-                if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
+            foreach ($cache as $cronjob) {
+                if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5'))) {
                     throw new \Exception("Cronjob '".$cronjob->get_name()."' has an invalid (unsupported) type.");
+                }
+            }
         }
         return $cache;
     }
@@ -61,25 +62,18 @@ class CronJobController
         }
 
         $schedule = Cache::get("cron_schedule");
-        if ($schedule == null)
+        if ($schedule == null) {
             $schedule = array();
-        foreach (self::get_enabled_cronjobs() as $cronjob)
-        {
+        }
+        foreach (self::get_enabled_cronjobs() as $cronjob) {
             $name = $cronjob->get_name();
-            if ((!isset($schedule[$name])) || ($schedule[$name] <= time()))
-            {
-                if ($cronjob->get_type() != $type)
-                {
+            if ((!isset($schedule[$name])) || ($schedule[$name] <= time())) {
+                if ($cronjob->get_type() != $type) {
                     $next_run = isset($schedule[$name]) ? $schedule[$name] : (time() - 1);
-                }
-                else
-                {
-                    try
-                    {
+                } else {
+                    try {
                         $cronjob->execute();
-                    }
-                    catch (\Exception $e)
-                    {
+                    } catch (\Exception $e) {
                         Okapi::mail_admins("Cronjob error: ".$cronjob->get_name(),
                             OkapiExceptionHandler::get_exception_info($e));
                     }
@@ -93,8 +87,7 @@ class CronJobController
         # Remove "stale" schedule keys (those which are no longer declared).
 
         $fixed_schedule = array();
-        foreach (self::get_enabled_cronjobs() as $cronjob)
-        {
+        foreach (self::get_enabled_cronjobs() as $cronjob) {
             $name = $cronjob->get_name();
             $fixed_schedule[$name] = $schedule[$name];
         }
@@ -103,9 +96,11 @@ class CronJobController
         # Return the nearest scheduled event time.
 
         $nearest = time() + 3600;
-        foreach ($fixed_schedule as $name => $time)
-            if ($time < $nearest)
+        foreach ($fixed_schedule as $name => $time) {
+            if ($time < $nearest) {
                 $nearest = $time;
+            }
+        }
         Cache::set("cron_schedule", $fixed_schedule, 30*86400);
         $lock->release();
         return $nearest;
@@ -117,10 +112,8 @@ class CronJobController
      */
     public static function force_run($job_name)
     {
-        foreach (self::get_enabled_cronjobs() as $cronjob)
-        {
-            if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\CronJob\\".$job_name))
-            {
+        foreach (self::get_enabled_cronjobs() as $cronjob) {
+            if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\CronJob\\".$job_name)) {
                 $cronjob->execute();
                 return;
             }
@@ -135,14 +128,17 @@ class CronJobController
     public static function reset_job_schedule($job_name, $key=null)
     {
         $thejob = null;
-        foreach (self::get_enabled_cronjobs() as $tmp)
-            if (($tmp->get_name() == $job_name) || ($tmp->get_name() == "okapi\\cronjobs\\".$job_name))
+        foreach (self::get_enabled_cronjobs() as $tmp) {
+            if (($tmp->get_name() == $job_name) || ($tmp->get_name() == "okapi\\cronjobs\\".$job_name)) {
                 $thejob = $tmp;
+            }
+        }
         if ($thejob == null) {
-            if ($key === null)
+            if ($key === null) {
                 throw new \Exception("Could not reset schedule for job $job_name. $jon_name not found.");
-            else
+            } else {
                 return;
+            }
         }
 
         # We have to acquire lock on the schedule. This might take some time if cron-5 jobs are
@@ -153,10 +149,10 @@ class CronJobController
         $lock->acquire();
 
         $schedule = Cache::get("cron_schedule");
-        if ($schedule != null)
-        {
-            if (isset($schedule[$thejob->get_name()]) && ($key === null || $key == $schedule[$thejob->get_name()]))
+        if ($schedule != null) {
+            if (isset($schedule[$thejob->get_name()]) && ($key === null || $key == $schedule[$thejob->get_name()])) {
                 unset($schedule[$thejob->get_name()]);
+            }
             Cache::set("cron_schedule", $schedule, 30*86400);
         }
 

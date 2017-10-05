@@ -10,7 +10,8 @@ class InvalidParam extends BadRequest
     /** What was wrong about the param? */
     public $whats_wrong_about_it;
 
-    protected function provideExtras(&$extras) {
+    protected function provideExtras(&$extras)
+    {
         parent::provideExtras($extras);
         $extras['reason_stack'][] = 'invalid_parameter';
         $extras['parameter'] = $this->paramName;
@@ -20,9 +21,10 @@ class InvalidParam extends BadRequest
     {
         $this->paramName = $paramName;
         $this->whats_wrong_about_it = $whats_wrong_about_it;
-        if ($whats_wrong_about_it)
+        if ($whats_wrong_about_it) {
             parent::__construct("Parameter '$paramName' has invalid value: ".$whats_wrong_about_it, $code);
-        else
+        } else {
             parent::__construct("Parameter '$paramName' has invalid value.", $code);
+        }
     }
 }

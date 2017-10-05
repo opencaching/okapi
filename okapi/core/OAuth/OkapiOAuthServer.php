@@ -35,10 +35,11 @@ class OkapiOAuthServer extends OAuthServer
         } catch (OAuthMissingParameterException $e) {
             # Note, that exception will be different if token is supplied
             # and is invalid. We catch only a completely MISSING token parameter.
-            if (($e->getParamName() == 'oauth_token') && (!$token_required))
+            if (($e->getParamName() == 'oauth_token') && (!$token_required)) {
                 $token = null;
-            else
+            } else {
                 throw $e;
+            }
         }
         $this->check_signature($request, $consumer, $token);
         return array($consumer, $token);

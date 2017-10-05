@@ -10,7 +10,10 @@ use okapi\core\Cache;
  */
 class CheckCronTab1 extends Cron5Job
 {
-    public function get_period() { return 3600; }
+    public function get_period()
+    {
+        return 3600;
+    }
     public function execute()
     {
         Cache::set('crontab_last_ping', time(), 86400);

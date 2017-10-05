@@ -2,16 +2,14 @@
 
 namespace okapi\services\caches\edit;
 
-use okapi\core\Okapi;
 use okapi\core\Db;
 use okapi\core\Exception\BadRequest;
-use okapi\core\Exception\InvalidParam;
 use okapi\core\Exception\ParamMissing;
-use okapi\core\Request\OkapiRequest;
-use okapi\core\Request\OkapiInternalRequest;
+use okapi\core\Okapi;
 use okapi\core\OkapiServiceRunner;
+use okapi\core\Request\OkapiInternalRequest;
+use okapi\core\Request\OkapiRequest;
 use okapi\Settings;
-
 
 class WebService
 {
@@ -25,8 +23,9 @@ class WebService
     public static function call(OkapiRequest $request)
     {
         $cache_code = $request->get_parameter('cache_code');
-        if ($cache_code == null)
+        if ($cache_code == null) {
             throw new ParamMissing('cache_code');
+        }
         $geocache = OkapiServiceRunner::call(
             'services/caches/geocache',
             new OkapiInternalRequest(
@@ -39,23 +38,24 @@ class WebService
         $owner_id = Db::select_value(
             "select user_id from caches where cache_id = '".$internal_id_escaped."'"
         );
-        if ($owner_id != $request->token->user_id)
+        if ($owner_id != $request->token->user_id) {
             throw new BadRequest("Only own caches may be edited.");
+        }
 
         $problems = [];
         $change_sqls_escaped = [];
 
         $langpref = $request->get_parameter('langpref');
-        if (!$langpref) $langpref = "en";
+        if (!$langpref) {
+            $langpref = "en";
+        }
         $langprefs = explode("|", $langpref);
 
         Okapi::gettext_domain_init($langprefs);
-        try
-        {
+        try {
             # passwd
             $newpw = $request->get_parameter('passwd');
-            if ($newpw !== null)
-            {
+            if ($newpw !== null) {
                 $installation = OkapiServiceRunner::call(
                     'services/apisrv/installation',
                     new OkapiInternalRequest($request->consumer, $request->token, [])
@@ -80,17 +80,16 @@ class WebService
                     );
                 } else {
                     $oldpw = Db::select_value("select logpw from caches where cache_id='".$internal_id_escaped."'");
-                    if ($newpw != $oldpw)
+                    if ($newpw != $oldpw) {
                         $change_sqls_escaped[] = "logpw = '".Db::escape_string($newpw)."'";
+                    }
                     unset($oldpw);
                 }
             }
             unset($newpw);
 
             Okapi::gettext_domain_restore();
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             Okapi::gettext_domain_restore();
             throw $e;
         }

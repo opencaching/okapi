@@ -6,7 +6,10 @@ use okapi\core\Db;
 
 class TokenRevokerJob extends Cron5Job
 {
-    public function get_period() { return 7200; }
+    public function get_period()
+    {
+        return 7200;
+    }
     public function execute()
     {
         # Remove tokens of banned users (there's no need to remove authorizations).

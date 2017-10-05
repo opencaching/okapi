@@ -4,10 +4,9 @@ namespace okapi\views\changelog;
 
 use ErrorException;
 use Exception;
-use okapi\Settings;
 use okapi\core\Cache;
 use okapi\core\Okapi;
-
+use okapi\Settings;
 
 class ChangelogHelper
 {
@@ -31,12 +30,10 @@ class ChangelogHelper
         }
         $changelog = null;
 
-        if (!$changes_xml)
-        {
+        if (!$changes_xml) {
             # Download the current changelog.
 
-            try
-            {
+            try {
                 $opts = array(
                     'http' => array(
                         'method' => "GET",
@@ -53,9 +50,7 @@ class ChangelogHelper
                     Cache::set($cache_key, $changes_xml, 3600);
                     Cache::set($cache_backup_key, $changes_xml, 3600*24*30);
                 }
-            }
-            catch (Exception $e)
-            {
+            } catch (Exception $e) {
                 # GitHub failed on us. User backup list, if available.
 
                 if ($cache_key) {
@@ -75,14 +70,11 @@ class ChangelogHelper
         $this->unavailable_changes = array();
         $this->available_changes = array();
 
-        if (!$changelog)
-        {
+        if (!$changelog) {
             # We could not retreive the changelog from Github, and there was
             # no backup key or it expired. Probably we are on a developer
             # machine. The template will output some error message.
-        }
-        else
-        {
+        } else {
             $commits = array();
             $versions = array();
 

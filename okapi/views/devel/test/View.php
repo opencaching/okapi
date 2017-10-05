@@ -4,10 +4,9 @@ namespace okapi\views\devel\test;
 
 use Exception;
 use okapi\core\Cache;
+use okapi\core\CronJob\CronJobController;
 use okapi\core\Okapi;
 use okapi\core\Response\OkapiHttpResponse;
-use okapi\core\CronJob\CronJobController;
-use okapi\services\replicate\ReplicateCommon;
 
 class View
 {
@@ -30,8 +29,7 @@ class View
             $body .= "An email with subject '".$_GET['adminmail']."' has been sent to the site admins.\n";
         }
 
-        if (isset($_GET['mail_admins_counter']))
-        {
+        if (isset($_GET['mail_admins_counter'])) {
             # see Okapi::mail_admins
             # subject for method errors is eg. "OKAPI Method Error - /okapi/devel/test"
 
@@ -46,11 +44,13 @@ class View
             }
         }
 
-        if (isset($_GET['exception']))
+        if (isset($_GET['exception'])) {
             throw new Exception("Testing OKAPI exception handling. " . $_GET['exception']);
+        }
 
-        if (isset($_GET['cronjob']) && isset($_GET['key']))
+        if (isset($_GET['cronjob']) && isset($_GET['key'])) {
             CronJobController::reset_job_schedule($_GET['cronjob'], $_GET['key']);
+        }
 
         $response = new OkapiHttpResponse();
         $response->content_type = "text/plain; charset=utf-8";

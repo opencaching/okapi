@@ -12,45 +12,39 @@ class OkapiExceptionHandler
     /** Handle exception thrown while executing OKAPI request. */
     public static function handle($e)
     {
-        if ($e instanceof OAuthServerException)
-        {
+        if ($e instanceof OAuthServerException) {
             # This is thrown on invalid OAuth requests. There are many subclasses
             # of this exception. All of them result in HTTP 400 or HTTP 401 error
             # code. See also: https://oauth.net/core/1.0a/#http_codes
 
-            if ($e instanceof OAuthServer400Exception)
+            if ($e instanceof OAuthServer400Exception) {
                 header("HTTP/1.0 400 Bad Request");
-            else
+            } else {
                 header("HTTP/1.0 401 Unauthorized");
+            }
             header("Access-Control-Allow-Origin: *");
             header("Content-Type: application/json; charset=utf-8");
 
             print $e->getOkapiJSON();
-        }
-        elseif ($e instanceof BadRequest)
-        {
+        } elseif ($e instanceof BadRequest) {
             # Intentionally thrown from within the OKAPI method code.
             # Consumer (aka external developer) had something wrong with his
             # request and we want him to know that.
 
             # headers may have been sent e.g. by views/update
-            if (!headers_sent())
-            {
+            if (!headers_sent()) {
                 header("HTTP/1.0 400 Bad Request");
                 header("Access-Control-Allow-Origin: *");
                 header("Content-Type: application/json; charset=utf-8");
             }
 
             print $e->getOkapiJSON();
-        }
-        elseif ($e instanceof DbLockWaitTimeoutException)
-        {
+        } elseif ($e instanceof DbLockWaitTimeoutException) {
             # As long as it happens occasionally only, it is safe to silently cast
             # this error into a HTTP 503 response. (In the future, we might want to
             # measure the frequency of such errors too.)
 
-            if (!headers_sent())
-            {
+            if (!headers_sent()) {
                 header("HTTP/1.0 503 Service Unavailable");
                 header("Access-Control-Allow-Origin: *");
                 header("Content-Type: application/json; charset=utf-8");
@@ -64,15 +58,12 @@ class OkapiExceptionHandler
                     implode(", ", \get_admin_emails())
                 )
             )));
-        }
-        else # (ErrorException, SQL syntax exception etc.)
-        {
+        } else { # (ErrorException, SQL syntax exception etc.)
             # This one is thrown on PHP notices and warnings - usually this
             # indicates an error in OKAPI method. If thrown, then something
             # must be fixed on OUR part.
 
-            if (!headers_sent())
-            {
+            if (!headers_sent()) {
                 header("HTTP/1.0 500 Internal Server Error");
                 header("Access-Control-Allow-Origin: *");
                 header("Content-Type: text/plain; charset=utf-8");
@@ -86,19 +77,15 @@ class OkapiExceptionHandler
 
             $exception_info = self::get_exception_info($e);
 
-            if (class_exists(Settings::class) && (Settings::get('DEBUG')))
-            {
+            if (class_exists(Settings::class) && (Settings::get('DEBUG'))) {
                 print "\n\nBUT! Since the DEBUG flag is on, then you probably ARE a developer yourself.\n";
                 print "Let's cut to the chase then:";
                 print "\n\n".$exception_info;
             }
-            if (class_exists(Settings::class) && (Settings::get('DEBUG_PREVENT_EMAILS')))
-            {
+            if (class_exists(Settings::class) && (Settings::get('DEBUG_PREVENT_EMAILS'))) {
                 # Sending emails was blocked on admin's demand.
                 # This is possible only on development environment.
-            }
-            else
-            {
+            } else {
                 $requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'cli-execution';
                 $subject = 'OKAPI Method Error - '.substr(
                         $requestUri, 0, strpos($requestUri.'?', '?')
@@ -110,19 +97,17 @@ class OkapiExceptionHandler
                     "developer of the module that threw this error. Thanks!\n\n".
                     $exception_info
                 );
-                try
-                {
+                try {
                     Okapi::mail_admins($subject, $message);
-                }
-                catch (\Exception $e)
-                {
+                } catch (\Exception $e) {
                     # Unable to use full-featured mail_admins version. We'll use a backup.
                     # We need to make sure we're not spamming.
 
                     $lock_file = "/tmp/okapi-fatal-error-mode";
                     $last_email = false;
-                    if (file_exists($lock_file))
+                    if (file_exists($lock_file)) {
                         $last_email = filemtime($lock_file);
+                    }
                     if ($last_email === false) {
                         # Assume this is the first email.
                         $last_email = 0;
@@ -173,16 +158,13 @@ class OkapiExceptionHandler
             .get_class($e).":\n"
             .trim(self::removeSensitiveData($e->getMessage()))
             ."\n=========================\n\n";
-        if ($e instanceof FatalError)
-        {
+        if ($e instanceof FatalError) {
             # This one doesn't have a stack trace. It is fed directly to OkapiExceptionHandler::handle
             # by OkapiErrorHandler::handle_shutdown. Instead of printing trace, we will just print
             # the file and line.
 
             $exception_info .= "File: ".$e->getFile()."\nLine: ".$e->getLine()."\n\n";
-        }
-        else
-        {
+        } else {
             $exception_info .= "--- Stack trace ---\n".
                 self::removeSensitiveData($e->getTraceAsString())."\n\n";
 
@@ -208,10 +190,11 @@ class OkapiExceptionHandler
         # This if-condition will solve some (but not all) problems when trying to execute
         # OKAPI code from command line;
         # see https://github.com/opencaching/okapi/issues/243.
-        if (function_exists('getallheaders'))
-        {
+        if (function_exists('getallheaders')) {
             $exception_info .= "--- Request headers ---\n".implode("\n", array_map(
-                    function($k, $v) { return "$k: $v"; },
+                    function ($k, $v) {
+                        return "$k: $v";
+                    },
                     array_keys(getallheaders()), array_values(getallheaders())
                 ));
         }

@@ -24,8 +24,9 @@ class WebService
         # Get current notes, and verify cache_code
 
         $cache_code = $request->get_parameter('cache_code');
-        if ($cache_code == null)
+        if ($cache_code == null) {
             throw new ParamMissing('cache_code');
+        }
         $geocache = OkapiServiceRunner::call(
             'services/caches/geocache',
             new OkapiInternalRequest($request->consumer, $request->token, array(
@@ -42,14 +43,16 @@ class WebService
         # old_value
 
         $old_value = $request->get_parameter('old_value');
-        if ($old_value === null)
+        if ($old_value === null) {
             $old_value = '';
+        }
 
         # new_value (force "no HTML" policy).
 
         $new_value = $request->get_parameter('new_value');
-        if ($new_value === null)
+        if ($new_value === null) {
             throw new ParamMissing('new_value');
+        }
 
         # Force "no HTML" policy.
 
@@ -75,7 +78,6 @@ class WebService
                 self::update_notes($cache_id, $request->token->user_id, $new_value);
                 $ret_saved_value = $new_value;
             }
-
         } else {
 
             /* APPEND mode */
@@ -94,10 +96,12 @@ class WebService
 
     private static function str_equals($str1, $str2)
     {
-        if ($str1 == null)
+        if ($str1 == null) {
             $str1 = '';
-        if ($str2 == null)
+        }
+        if ($str2 == null) {
             $str2 = '';
+        }
         $str1 = mb_ereg_replace("[ \t\n\r\x0B]+", '', $str1);
         $str2 = mb_ereg_replace("[ \t\n\r\x0B]+", '', $str2);
 
@@ -106,8 +110,7 @@ class WebService
 
     private static function update_notes($cache_id, $user_id, $new_notes)
     {
-        if (Settings::get('OC_BRANCH') == 'oc.de')
-        {
+        if (Settings::get('OC_BRANCH') == 'oc.de') {
             /* See:
              *
              * - https://github.com/OpencachingDeutschland/oc-server3/tree/development/htdocs/src/Oc/Libse/CacheNote
@@ -123,7 +126,7 @@ class WebService
                     and user_id = '".Db::escape_string($user_id)."'
             ");
             $id = null;
-            if($row = Db::fetch_assoc($rs)) {
+            if ($row = Db::fetch_assoc($rs)) {
                 $id = $row['id'];
             }
             if ($id == null) {
@@ -147,9 +150,7 @@ class WebService
                         and type = 2
                 ");
             }
-        }
-        else  # oc.pl branch
-        {
+        } else {  # oc.pl branch
             $rs = Db::query("
                 select max(note_id) as id
                 from cache_notes
@@ -158,7 +159,7 @@ class WebService
                     and user_id = '".Db::escape_string($user_id)."'
             ");
             $id = null;
-            if($row = Db::fetch_assoc($rs)) {
+            if ($row = Db::fetch_assoc($rs)) {
                 $id = $row['id'];
             }
             if ($id == null) {
@@ -198,7 +199,7 @@ class WebService
                     and longitude = 0
                     and latitude = 0
             ");
-            if ($affected_row_count <= 0){
+            if ($affected_row_count <= 0) {
                 # no rows deleted - record either doesn't exist, or has coords
                 # remove only description
                 Db::execute("

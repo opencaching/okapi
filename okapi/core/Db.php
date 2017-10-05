@@ -78,8 +78,7 @@ class Db
     public static function select_row($query)
     {
         $rows = self::select_all($query);
-        switch (count($rows))
-        {
+        switch (count($rows)) {
             case 0: return null;
             case 1: return $rows[0];
             default:
@@ -99,15 +98,16 @@ class Db
     private static function select_and_push($query, & $arr, $keyField = null)
     {
         $rs = self::query($query);
-        while (true)
-        {
+        while (true) {
             $row = Db::fetch_assoc($rs);
-            if ($row === false)
+            if ($row === false) {
                 break;
-            if ($keyField == null)
+            }
+            if ($keyField == null) {
                 $arr[] = $row;
-            else
+            } else {
                 $arr[$row[$keyField]] = $row;
+            }
         }
         Db::free_result($rs);
     }
@@ -117,11 +117,11 @@ class Db
     {
         $groups = array();
         $rs = self::query($query);
-        while (true)
-        {
+        while (true) {
             $row = Db::fetch_assoc($rs);
-            if ($row === false)
+            if ($row === false) {
                 break;
+            }
             $groups[$row[$keyField]][] = $row;
         }
         Db::free_result($rs);
@@ -132,10 +132,12 @@ class Db
     public static function select_value($query)
     {
         $column = self::select_column($query);
-        if ($column == null)
+        if ($column == null) {
             return null;
-        if (count($column) == 1)
+        }
+        if (count($column) == 1) {
             return $column[0];
+        }
         throw new DbTooManyRowsException("Invalid query. Db::select_value returned more than one row for:\n\n".$query."\n");
     }
 
@@ -144,11 +146,11 @@ class Db
     {
         $column = array();
         $rs = self::query($query);
-        while (true)
-        {
+        while (true) {
             $values = Db::fetch_row($rs);
-            if ($values === false)
+            if ($values === false) {
                 break;
+            }
             array_push($column, $values[0]);
         }
         Db::free_result($rs);
@@ -177,8 +179,9 @@ class Db
 
     public static function escape_string($value)
     {
-        if (!self::$connected)
+        if (!self::$connected) {
             self::connect();
+        }
         return substr(self::$dbh->quote($value), 1, -1);  // soo ugly!
     }
 
@@ -188,8 +191,9 @@ class Db
      */
     public static function execute($query)
     {
-        if (!self::$connected)
+        if (!self::$connected) {
             self::connect();
+        }
         try {
             return self::$dbh->exec($query);
         } catch (PDOException $e) {
@@ -218,14 +222,12 @@ class Db
      */
     public static function query($query)
     {
-        if (!self::$connected)
+        if (!self::$connected) {
             self::connect();
-        try
-        {
-            $rs = self::$dbh->query($query);
         }
-        catch (PDOException $e)
-        {
+        try {
+            $rs = self::$dbh->query($query);
+        } catch (PDOException $e) {
             list($sqlstate, $errno, $msg) = $e->errorInfo;
 
             /* Detect issue #340 and try to repair... */
@@ -270,8 +272,9 @@ class Db
 
     public static function field_exists($table, $field)
     {
-        if (!preg_match("/[a-z0-9_]+/", $table.$field))
+        if (!preg_match("/[a-z0-9_]+/", $table.$field)) {
             return false;
+        }
         try {
             $spec = self::select_all("desc ".$table.";");
         } catch (\Exception $e) {
@@ -279,8 +282,9 @@ class Db
             return false;
         }
         foreach ($spec as &$row_ref) {
-            if (strtoupper($row_ref['Field']) == strtoupper($field))
+            if (strtoupper($row_ref['Field']) == strtoupper($field)) {
                 return true;
+            }
         }
         return false;
     }

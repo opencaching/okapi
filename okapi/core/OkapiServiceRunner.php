@@ -115,26 +115,24 @@ class OkapiServiceRunner
     {
         Okapi::init_internals();
 
-        if (!self::exists($service_name))
+        if (!self::exists($service_name)) {
             throw new \Exception("Method does not exist: '$service_name'");
+        }
 
         $options = self::options($service_name);
-        if ($options['min_auth_level'] >= 2 && $request->consumer == null)
-        {
+        if ($options['min_auth_level'] >= 2 && $request->consumer == null) {
             throw new \Exception("Method '$service_name' called with mismatched OkapiRequest: ".
                 "\$request->consumer MAY NOT be empty for Level 2 and Level 3 methods. Provide ".
                 "a dummy Consumer if you have to.");
         }
-        if ($options['min_auth_level'] >= 3 && $request->token == null)
-        {
+        if ($options['min_auth_level'] >= 3 && $request->token == null) {
             throw new \Exception("Method '$service_name' called with mismatched OkapiRequest: ".
                 "\$request->token MAY NOT be empty for Level 3 methods.");
         }
 
         $time_started = microtime(true);
         Okapi::gettext_domain_init();
-        try
-        {
+        try {
             $response = call_user_func(array('\\okapi\\'.
                 str_replace('/', '\\', $service_name).'\\WebService', 'call'), $request);
         } finally {
@@ -169,18 +167,20 @@ class OkapiServiceRunner
         if ($request !== null) {
             $consumer_key = ($request->consumer != null) ? $request->consumer->key : 'anonymous';
             $user_id = (($request->token != null) && ($request->token instanceof OkapiAccessToken)) ? $request->token->user_id : -1;
-            if ($request->is_http_request() && ($service_name[0] == 's'))  # 's' for "services/", we don't want "extra/" included
+            if ($request->is_http_request() && ($service_name[0] == 's')) {  # 's' for "services/", we don't want "extra/" included
                 $calltype = 'http';
-            else
+            } else {
                 $calltype = 'internal';
+            }
         } else {
             $consumer_key = 'internal';
             $user_id = -1;
             $calltype = 'internal';
         }
 
-        if (Settings::get('OC_BRANCH') == 'oc.de' && $user_id != -1)
+        if (Settings::get('OC_BRANCH') == 'oc.de' && $user_id != -1) {
             $user_id = 0;
+        }
 
         Db::execute("
             insert into okapi_stats_temp (`datetime`, consumer_key, user_id, service_name, calltype, runtime)

@@ -11,18 +11,21 @@ use okapi\core\Exception\OAuthNonceAlreadyUsedException;
 use okapi\core\Exception\OAuthUnsupportedSignatureMethodException;
 use okapi\core\Exception\OAuthVersionNotSupportedException;
 
-class OAuthServer {
+class OAuthServer
+{
     protected $timestamp_threshold = 300; // in seconds, five minutes
     protected $version = '1.0';             // hi blaine
     protected $signature_methods = array();
 
     protected $data_store;
 
-    public function __construct($data_store) {
+    public function __construct($data_store)
+    {
         $this->data_store = $data_store;
     }
 
-    public function add_signature_method($signature_method) {
+    public function add_signature_method($signature_method)
+    {
         $this->signature_methods[$signature_method->get_name()] =
             $signature_method;
     }
@@ -33,13 +36,14 @@ class OAuthServer {
      * process a request_token request
      * returns the request token on success
      */
-    public function fetch_request_token(&$request) {
+    public function fetch_request_token(&$request)
+    {
         $this->get_version($request);
 
         $consumer = $this->get_consumer($request);
 
         // no token required for the initial token request
-        $token = NULL;
+        $token = null;
 
         $this->check_signature($request, $consumer, $token);
 
@@ -54,7 +58,8 @@ class OAuthServer {
      * process an access_token request
      * returns the access token on success
      */
-    public function fetch_access_token(&$request) {
+    public function fetch_access_token(&$request)
+    {
         $this->get_version($request);
 
         $consumer = $this->get_consumer($request);
@@ -74,7 +79,8 @@ class OAuthServer {
     /**
      * verify an api call, checks all the parameters
      */
-    public function verify_request(&$request) {
+    public function verify_request(&$request)
+    {
         $this->get_version($request);
         $consumer = $this->get_consumer($request);
         $token = $this->get_token($request, $consumer, "access");
@@ -86,7 +92,8 @@ class OAuthServer {
     /**
      * version 1
      */
-    protected function get_version(&$request) {
+    protected function get_version(&$request)
+    {
         $version = $request->get_parameter("oauth_version");
         if (!$version) {
             // Service Providers MUST assume the protocol version to be 1.0 if this parameter is not present.
@@ -102,10 +109,11 @@ class OAuthServer {
     /**
      * figure out the signature with some defaults
      */
-    private function get_signature_method($request) {
+    private function get_signature_method($request)
+    {
         $signature_method = $request instanceof OAuthRequest
             ? $request->get_parameter("oauth_signature_method")
-            : NULL;
+            : null;
 
         if (!$signature_method) {
             // According to chapter 7 ("Accessing Protected Ressources") the signature-method
@@ -133,10 +141,11 @@ class OAuthServer {
     /**
      * try to find the consumer for the provided request's consumer key
      */
-    protected function get_consumer($request) {
+    protected function get_consumer($request)
+    {
         $consumer_key = $request instanceof OAuthRequest
             ? $request->get_parameter("oauth_consumer_key")
-            : NULL;
+            : null;
 
         if (!$consumer_key) {
             throw new OAuthMissingParameterException('oauth_consumer_key');
@@ -153,10 +162,11 @@ class OAuthServer {
     /**
      * try to find the token for the provided request's token key
      */
-    protected function get_token($request, $consumer, $token_type="access") {
+    protected function get_token($request, $consumer, $token_type="access")
+    {
         $token_field = $request instanceof OAuthRequest
             ? $request->get_parameter('oauth_token')
-            : NULL;
+            : null;
         if (!$token_field) {
             throw new OAuthMissingParameterException('oauth_token');
         }
@@ -173,14 +183,15 @@ class OAuthServer {
      * all-in-one function to check the signature on a request
      * should guess the signature method appropriately
      */
-    protected function check_signature($request, $consumer, $token) {
+    protected function check_signature($request, $consumer, $token)
+    {
         // this should probably be in a different method
         $timestamp = $request instanceof OAuthRequest
             ? $request->get_parameter('oauth_timestamp')
-            : NULL;
+            : null;
         $nonce = $request instanceof OAuthRequest
             ? $request->get_parameter('oauth_nonce')
-            : NULL;
+            : null;
 
         $signature_method = $this->get_signature_method($request);
 
@@ -209,9 +220,11 @@ class OAuthServer {
     /**
      * check that the timestamp is new enough
      */
-    private function check_timestamp($timestamp) {
-        if( ! $timestamp )
+    private function check_timestamp($timestamp)
+    {
+        if (! $timestamp) {
             throw new OAuthMissingParameterException('oauth_timestamp');
+        }
 
         // Cast to integer. See issue #314.
         $timestamp = $timestamp + 0;
@@ -227,9 +240,11 @@ class OAuthServer {
     /**
      * check that the nonce is not repeated
      */
-    private function check_nonce($consumer, $token, $nonce, $timestamp) {
-        if( ! $nonce )
+    private function check_nonce($consumer, $token, $nonce, $timestamp)
+    {
+        if (! $nonce) {
             throw new OAuthMissingParameterException('oauth_nonce');
+        }
 
         // verify that the nonce is uniqueish
         $found = $this->data_store->lookup_nonce(
@@ -242,5 +257,4 @@ class OAuthServer {
             throw new OAuthNonceAlreadyUsedException("Nonce already used: $nonce.");
         }
     }
-
 }

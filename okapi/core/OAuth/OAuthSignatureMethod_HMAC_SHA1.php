@@ -9,12 +9,15 @@ namespace okapi\core\OAuth;
  * character (ASCII code 38) even if empty.
  *   - Chapter 9.2 ("HMAC-SHA1")
  */
-class OAuthSignatureMethod_HMAC_SHA1 extends OAuthSignatureMethod {
-    public function get_name() {
+class OAuthSignatureMethod_HMAC_SHA1 extends OAuthSignatureMethod
+{
+    public function get_name()
+    {
         return "HMAC-SHA1";
     }
 
-    public function build_signature($request, $consumer, $token) {
+    public function build_signature($request, $consumer, $token)
+    {
         $base_string = $request->get_signature_base_string();
         $request->base_string = $base_string;
 

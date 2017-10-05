@@ -2,11 +2,13 @@
 
 namespace okapi\core\OAuth;
 
-class OAuthUtil {
-    public static function urlencode_rfc3986($input) {
+class OAuthUtil
+{
+    public static function urlencode_rfc3986($input)
+    {
         if (is_array($input)) {
             return array_map(array('\okapi\core\OAuth\OAuthUtil', 'urlencode_rfc3986'), $input);
-        } else if (is_scalar($input)) {
+        } elseif (is_scalar($input)) {
             return str_replace(
                 '+',
                 ' ',
@@ -21,7 +23,8 @@ class OAuthUtil {
     // This decode function isn't taking into consideration the above
     // modifications to the encoding process. However, this method doesn't
     // seem to be used anywhere so leaving it as is.
-    public static function urldecode_rfc3986($string) {
+    public static function urldecode_rfc3986($string)
+    {
         return urldecode($string);
     }
 
@@ -30,7 +33,8 @@ class OAuthUtil {
     // Can filter out any non-oauth parameters if needed (default behaviour)
     // May 28th, 2010 - method updated to tjerk.meesters for a speed improvement.
     //                  see https://code.google.com/archive/p/oauth/issues/163
-    public static function split_header($header, $only_allow_oauth_parameters = true) {
+    public static function split_header($header, $only_allow_oauth_parameters = true)
+    {
         $params = array();
         if (preg_match_all('/('.($only_allow_oauth_parameters ? 'oauth_' : '').'[a-z_-]*)=(:?"([^"]*)"|([^,]*))/', $header, $matches)) {
             foreach ($matches[1] as $i => $h) {
@@ -44,7 +48,8 @@ class OAuthUtil {
     }
 
     // helper to try to sort out headers for people who aren't running apache
-    public static function get_headers() {
+    public static function get_headers()
+    {
         if (function_exists('apache_request_headers')) {
             // we need this to get the actual Authorization: header
             // because apache tends to tell us it doesn't exist
@@ -55,7 +60,7 @@ class OAuthUtil {
             // returns the headers in the same case as they are in the
             // request
             $out = array();
-            foreach ($headers AS $key => $value) {
+            foreach ($headers as $key => $value) {
                 $key = str_replace(
                     " ",
                     "-",
@@ -67,10 +72,12 @@ class OAuthUtil {
             // otherwise we don't have apache and are just going to have to hope
             // that $_SERVER actually contains what we need
             $out = array();
-            if( isset($_SERVER['CONTENT_TYPE']) )
+            if (isset($_SERVER['CONTENT_TYPE'])) {
                 $out['Content-Type'] = $_SERVER['CONTENT_TYPE'];
-            if( isset($_ENV['CONTENT_TYPE']) )
+            }
+            if (isset($_ENV['CONTENT_TYPE'])) {
                 $out['Content-Type'] = $_ENV['CONTENT_TYPE'];
+            }
 
             foreach ($_SERVER as $key => $value) {
                 if (substr($key, 0, 5) == "HTTP_") {
@@ -92,8 +99,11 @@ class OAuthUtil {
     // This function takes a input like a=b&a=c&d=e and returns the parsed
     // parameters like this
     // array('a' => array('b','c'), 'd' => 'e')
-    public static function parse_parameters( $input ) {
-        if (!isset($input) || !$input) return array();
+    public static function parse_parameters($input)
+    {
+        if (!isset($input) || !$input) {
+            return array();
+        }
 
         $pairs = explode('&', $input);
 
@@ -121,8 +131,11 @@ class OAuthUtil {
         return $parsed_parameters;
     }
 
-    public static function build_http_query($params) {
-        if (!$params) return '';
+    public static function build_http_query($params)
+    {
+        if (!$params) {
+            return '';
+        }
 
         // Urlencode both keys and values
         $keys = OAuthUtil::urlencode_rfc3986(array_keys($params));

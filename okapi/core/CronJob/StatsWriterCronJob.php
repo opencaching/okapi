@@ -8,11 +8,15 @@ use okapi\core\Okapi;
 /** Reads temporary (fast) stats-tables and reformats them into more permanent structures. */
 class StatsWriterCronJob extends PrerequestCronJob
 {
-    public function get_period() { return 60; } # 1 minute
+    public function get_period()
+    {
+        return 60;
+    } # 1 minute
     public function execute()
     {
-        if (Okapi::get_var('db_version', 0) + 0 < 32)
+        if (Okapi::get_var('db_version', 0) + 0 < 32) {
             return;
+        }
         Db::execute("lock tables okapi_stats_hourly write, okapi_stats_temp write;");
         try {
             $rs = Db::query("
@@ -27,8 +31,7 @@ class StatsWriterCronJob extends PrerequestCronJob
                 from okapi_stats_temp
                 group by substr(`datetime`, 1, 13), consumer_key, user_id, service_name, calltype
             ");
-            while ($row = Db::fetch_assoc($rs))
-            {
+            while ($row = Db::fetch_assoc($rs)) {
                 Db::execute("
                     insert into okapi_stats_hourly (consumer_key, user_id, period_start, service_name,
                         total_calls, http_calls, total_runtime, http_runtime)

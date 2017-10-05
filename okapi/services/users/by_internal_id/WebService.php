@@ -21,7 +21,9 @@ class WebService
     public static function call(OkapiRequest $request)
     {
         $internal_id = $request->get_parameter('internal_id');
-        if (!$internal_id) throw new ParamMissing('internal_id');
+        if (!$internal_id) {
+            throw new ParamMissing('internal_id');
+        }
         $fields = $request->get_parameter('fields');
 
         # There's no need to validate the fields parameter.
@@ -30,8 +32,9 @@ class WebService
             $request->consumer, $request->token, array('internal_ids' => $internal_id,
             'fields' => $fields)));
         $result = $results[$internal_id];
-        if ($result == null)
+        if ($result == null) {
             throw new InvalidParam('internal_id', "There is no user by this internal_id.");
+        }
         return Okapi::formatted_response($request, $result);
     }
 }

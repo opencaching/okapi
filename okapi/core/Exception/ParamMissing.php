@@ -6,7 +6,8 @@ namespace okapi\core\Exception;
 class ParamMissing extends BadRequest
 {
     private $paramName;
-    protected function provideExtras(&$extras) {
+    protected function provideExtras(&$extras)
+    {
         parent::provideExtras($extras);
         $extras['reason_stack'][] = 'missing_parameter';
         $extras['parameter'] = $this->paramName;

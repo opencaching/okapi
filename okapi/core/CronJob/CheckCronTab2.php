@@ -12,14 +12,17 @@ use okapi\Settings;
  */
 class CheckCronTab2 extends PrerequestCronJob
 {
-    public function get_period() { return 30 * 60; }
+    public function get_period()
+    {
+        return 30 * 60;
+    }
     public function execute()
     {
         $last_ping = Cache::get('crontab_last_ping');
-        if ($last_ping === null)
-            $last_ping = time() - 86400; # if not set, assume 1 day ago.
-        if ($last_ping > time() - 3600)
-        {
+        if ($last_ping === null) {
+            $last_ping = time() - 86400;
+        } # if not set, assume 1 day ago.
+        if ($last_ping > time() - 3600) {
             # There was a ping during the last hour. Everything is okay.
             # Reset the counter and return.
 
@@ -30,15 +33,13 @@ class CheckCronTab2 extends PrerequestCronJob
         # There was no ping. Decrement the counter. When reached zero, alert.
 
         $counter = Cache::get('crontab_check_counter');
-        if ($counter === null)
+        if ($counter === null) {
             $counter = 5;
-        $counter--;
-        if ($counter > 0)
-        {
-            Cache::set('crontab_check_counter', $counter, 86400);
         }
-        elseif ($counter == 0)
-        {
+        $counter--;
+        if ($counter > 0) {
+            Cache::set('crontab_check_counter', $counter, 86400);
+        } elseif ($counter == 0) {
             Okapi::mail_admins(
                 "Crontab not working.",
                 "Hello. OKAPI detected, that it's crontab is not working properly.\n".

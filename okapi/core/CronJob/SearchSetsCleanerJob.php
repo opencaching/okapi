@@ -7,7 +7,10 @@ use okapi\core\Db;
 /** Clean up the saved search tables, every 10 minutes. */
 class SearchSetsCleanerJob extends Cron5Job
 {
-    public function get_period() { return 600; }
+    public function get_period()
+    {
+        return 600;
+    }
     public function execute()
     {
         Db::execute("

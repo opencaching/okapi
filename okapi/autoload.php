@@ -9,17 +9,18 @@ require_once __DIR__ . '/vendor/autoload.php';
 function get_admin_emails()
 {
     $emails = array();
-    if (class_exists(Settings::class))
-    {
-        try
-        {
-            foreach (Settings::get('ADMINS') as $email)
-                if (!in_array($email, $emails))
+    if (class_exists(Settings::class)) {
+        try {
+            foreach (Settings::get('ADMINS') as $email) {
+                if (!in_array($email, $emails)) {
                     $emails[] = $email;
+                }
+            }
+        } catch (Exception $e) { /* pass */
         }
-        catch (Exception $e) { /* pass */ }
     }
-    if (count($emails) == 0)
+    if (count($emails) == 0) {
         $emails[] = 'root@localhost';
+    }
     return $emails;
 }

@@ -3,12 +3,15 @@
 namespace okapi\core\Exception;
 
 /** OAuth server errors. */
-abstract class OAuthServerException extends OAuthException {
+abstract class OAuthServerException extends OAuthException
+{
     abstract public function getHttpStatusCode();
-    protected function provideExtras(&$extras) {
+    protected function provideExtras(&$extras)
+    {
         $extras['reason_stack'][] = 'invalid_oauth_request';
     }
-    public function getOkapiJSON() {
+    public function getOkapiJSON()
+    {
         $extras = array(
             'developer_message' => $this->getMessage(),
             'reason_stack' => array(),

@@ -26,20 +26,16 @@ class OkapiHttpRequest extends OkapiRequest
         # Parsing options.
         #
         $DEBUG_AS_USERNAME = null;
-        foreach ($options as $key => $value)
-        {
-            switch ($key)
-            {
+        foreach ($options as $key => $value) {
+            switch ($key) {
                 case 'min_auth_level':
-                    if (!in_array($value, array(0, 1, 2, 3)))
-                    {
+                    if (!in_array($value, array(0, 1, 2, 3))) {
                         throw new \Exception("'min_auth_level' option has invalid value: $value");
                     }
                     $this->opt_min_auth_level = $value;
                     break;
                 case 'token_type':
-                    if (!in_array($value, array("request", "access")))
-                    {
+                    if (!in_array($value, array("request", "access"))) {
                         throw new \Exception("'token_type' option has invalid value: $value");
                     }
                     $this->opt_token_type = $value;
@@ -52,15 +48,15 @@ class OkapiHttpRequest extends OkapiRequest
                     break;
             }
         }
-        if ($this->opt_min_auth_level === null) throw new \Exception("Required 'min_auth_level' option is missing.");
+        if ($this->opt_min_auth_level === null) {
+            throw new \Exception("Required 'min_auth_level' option is missing.");
+        }
 
-        if ($DEBUG_AS_USERNAME != null)
-        {
+        if ($DEBUG_AS_USERNAME != null) {
             # Enables debugging Level 2 and Level 3 methods. Should not be committed
             # at any time! If run on production server, make it an error.
 
-            if (!Settings::get('DEBUG'))
-            {
+            if (!Settings::get('DEBUG')) {
                 throw new \Exception("Attempted to use DEBUG_AS_USERNAME in ".
                     "non-debug environment. Accidental commit?");
             }
@@ -75,8 +71,7 @@ class OkapiHttpRequest extends OkapiRequest
         # It it's not, check if it isn't against the rules defined in the $options.
         #
 
-        if ($this->get_parameter('oauth_signature'))
-        {
+        if ($this->get_parameter('oauth_signature')) {
             # User is using OAuth.
 
             # Check for duplicate keys in the parameters. (Datastore doesn't
@@ -91,36 +86,31 @@ class OkapiHttpRequest extends OkapiRequest
 
             list($this->consumer, $this->token) = Okapi::$server->
             verify_request2($this->request, $this->opt_token_type, $this->opt_min_auth_level == 3);
-            if ($this->get_parameter('consumer_key') && $this->get_parameter('consumer_key') != $this->get_parameter('oauth_consumer_key'))
+            if ($this->get_parameter('consumer_key') && $this->get_parameter('consumer_key') != $this->get_parameter('oauth_consumer_key')) {
                 throw new BadRequest("Inproper mixing of authentication types. You used both 'consumer_key' ".
                     "and 'oauth_consumer_key' parameters (Level 1 and Level 2), but they do not match with ".
                     "each other. Were you trying to hack me? ;)");
-            if ($this->opt_min_auth_level == 3 && !$this->token)
-            {
+            }
+            if ($this->opt_min_auth_level == 3 && !$this->token) {
                 throw new BadRequest("This method requires a valid Token to be included (Level 3 ".
                     "Authentication). You didn't provide one.");
             }
-        }
-        else
-        {
-            if ($this->opt_min_auth_level >= 2)
-            {
+        } else {
+            if ($this->opt_min_auth_level >= 2) {
                 throw new BadRequest("This method requires OAuth signature (Level ".
                     $this->opt_min_auth_level." Authentication). You didn't sign your request.");
-            }
-            else
-            {
+            } else {
                 $consumer_key = $this->get_parameter('consumer_key');
-                if ($consumer_key)
-                {
+                if ($consumer_key) {
                     $this->consumer = Okapi::$data_store->lookup_consumer($consumer_key);
                     if (!$this->consumer) {
                         throw new InvalidParam('consumer_key', "Consumer does not exist.");
                     }
                 }
-                if (($this->opt_min_auth_level == 1) && (!$this->consumer))
+                if (($this->opt_min_auth_level == 1) && (!$this->consumer)) {
                     throw new BadRequest("This method requires the 'consumer_key' argument (Level 1 ".
                         "Authentication). You didn't provide one.");
+                }
             }
         }
 
@@ -147,23 +137,24 @@ class OkapiHttpRequest extends OkapiRequest
 
         # When debugging, simulate as if been run using a proper Level 3 Authentication.
 
-        if ($DEBUG_AS_USERNAME != null)
-        {
+        if ($DEBUG_AS_USERNAME != null) {
             # Note, that this will override any other valid authentication the
             # developer might have issued.
 
             $debug_user_id = Db::select_value("select user_id from user where username='".
                 Db::escape_string($options['DEBUG_AS_USERNAME'])."'");
-            if ($debug_user_id == null)
+            if ($debug_user_id == null) {
                 throw new \Exception("Invalid user name in DEBUG_AS_USERNAME: '".$options['DEBUG_AS_USERNAME']."'");
+            }
             $this->consumer = new OkapiDebugConsumer();
             $this->token = new OkapiDebugAccessToken($debug_user_id);
         }
 
         # Read the ETag.
 
-        if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
             $this->etag = $_SERVER['HTTP_IF_NONE_MATCH'];
+        }
     }
 
     private function init_request()
@@ -211,8 +202,9 @@ class OkapiHttpRequest extends OkapiRequest
         # in OKAPI and should be reported back. See issue 85:
         # https://github.com/opencaching/okapi/issues/85
 
-        if (is_array($value))
+        if (is_array($value)) {
             throw new InvalidParam($name, "Make sure you are using '$name' no more than ONCE in your URL.");
+        }
         return $value;
     }
 
@@ -221,5 +213,8 @@ class OkapiHttpRequest extends OkapiRequest
         return $this->request->get_parameters();
     }
 
-    public function is_http_request() { return true; }
+    public function is_http_request()
+    {
+        return true;
+    }
 }

@@ -17,7 +17,9 @@ use okapi\Settings;
  * the Consumer did anything wrong (it's the user who did). This exception shouldn't
  * be used outside of this file.
  */
-class CannotPublishException extends Exception {}
+class CannotPublishException extends Exception
+{
+}
 
 class WebService
 {
@@ -56,8 +58,9 @@ class WebService
 
         $is_spoiler = $request->get_parameter('is_spoiler');
         if ($is_spoiler !== null) {
-            if (!in_array($is_spoiler, array('true', 'false')))
+            if (!in_array($is_spoiler, array('true', 'false'))) {
                 throw new InvalidParam('is_spoiler');
+            }
         }
 
         $position = LogImagesCommon::validate_position($request);
@@ -94,10 +97,8 @@ class WebService
         }
 
         # update position
-        if ($position !== null)
-        {
-            if (Settings::get('OC_BRANCH') == 'oc.pl')
-            {
+        if ($position !== null) {
+            if (Settings::get('OC_BRANCH') == 'oc.pl') {
                 # OCPL as no arbitrary log picture ordering => ignore position parameter
                 # and return the picture's current position.
 
@@ -107,9 +108,7 @@ class WebService
                     order by date_created
                 ");
                 $position = array_search($image_uuid, $image_uuids);
-            }
-            else
-            {
+            } else {
                 list($position, $seq) = LogImagesCommon::prepare_position(
                     $log_internal_id,
                     $position,
@@ -121,8 +120,7 @@ class WebService
                     select seq from pictures where uuid = '".$image_uuid_escaped."'
                 ");
 
-                if ($seq != $old_seq)
-                {
+                if ($seq != $old_seq) {
                     # First move the edited picture to the end, to make space for rotating.
                     # Remember that we have no transactions at OC.de. If something goes wrong,
                     # the image will stay at the end of the list.
@@ -200,12 +198,13 @@ class WebService
         # This is the "real" entry point. A wrapper for the _call method.
 
         $langpref = $request->get_parameter('langpref');
-        if (!$langpref) $langpref = "en";
+        if (!$langpref) {
+            $langpref = "en";
+        }
         $langprefs = explode("|", $langpref);
         Okapi::gettext_domain_init($langprefs);
 
-        try
-        {
+        try {
             $position = self::_call($request);
             $result = array(
                 'success' => true,
@@ -213,9 +212,7 @@ class WebService
                 'position' => $position
             );
             Okapi::gettext_domain_restore();
-        }
-        catch (CannotPublishException $e)
-        {
+        } catch (CannotPublishException $e) {
             Okapi::gettext_domain_restore();
             $result = array(
                 'success' => false,
@@ -227,5 +224,4 @@ class WebService
         Okapi::update_user_activity($request);
         return Okapi::formatted_response($request, $result);
     }
-
 }

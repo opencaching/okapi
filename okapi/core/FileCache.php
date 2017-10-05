@@ -12,8 +12,9 @@ class FileCache
     public static function get_file_path($key)
     {
         $filename = Okapi::get_var_dir()."/okapi_filecache_".md5($key);
-        if (!file_exists($filename))
+        if (!file_exists($filename)) {
             return null;
+        }
         return $filename;
     }
 

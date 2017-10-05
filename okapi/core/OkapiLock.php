@@ -23,14 +23,11 @@ class OkapiLock
 
     private function __construct($name)
     {
-        if (Settings::get('DEBUG_PREVENT_SEMAPHORES'))
-        {
+        if (Settings::get('DEBUG_PREVENT_SEMAPHORES')) {
             # Using semaphores is forbidden on this server by its admin.
             # This is possible only on development environment.
             $this->lock = null;
-        }
-        else
-        {
+        } else {
             $this->lockfile = Okapi::get_var_dir()."/okapi-lock-".$name;
             $this->lock = fopen($this->lockfile, "wb");
         }
@@ -38,22 +35,25 @@ class OkapiLock
 
     public function acquire()
     {
-        if ($this->lock !== null)
+        if ($this->lock !== null) {
             flock($this->lock, LOCK_EX);
+        }
     }
 
     public function try_acquire()
     {
-        if ($this->lock !== null)
+        if ($this->lock !== null) {
             return flock($this->lock, LOCK_EX | LOCK_NB);
-        else
-            return true;  # $lock can be null only when debugging
+        } else {
+            return true;
+        }  # $lock can be null only when debugging
     }
 
     public function release()
     {
-        if ($this->lock !== null)
+        if ($this->lock !== null) {
             flock($this->lock, LOCK_UN);
+        }
     }
 
     /**
@@ -62,8 +62,7 @@ class OkapiLock
      */
     public function remove()
     {
-        if ($this->lock !== null)
-        {
+        if ($this->lock !== null) {
             fclose($this->lock);
             unlink($this->lockfile);
         }

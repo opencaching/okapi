@@ -15,13 +15,10 @@ class View
 {
     public static function call($methodname)
     {
-        try
-        {
+        try {
             $method = OkapiServiceRunner::call('services/apiref/method', new OkapiInternalRequest(
                 null, null, array('name' => $methodname)));
-        }
-        catch (BadRequest $e)
-        {
+        } catch (BadRequest $e) {
             throw new Http404();
         }
         $vars = array(

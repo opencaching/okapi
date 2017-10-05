@@ -43,24 +43,24 @@ class WebService
     public static function call(OkapiRequest $request)
     {
         $data = Cache::get("last_fulldump");
-        if ($data == null)
+        if ($data == null) {
             throw new BadRequest("No fulldump found. Try again later. If this doesn't help ".
                 "contact site administrator and/or OKAPI developers.");
+        }
 
         # Check consumer's quota
 
         $please = $request->get_parameter('pleeaase');
-        if ($please != 'true')
-        {
+        if ($please != 'true') {
             $not_good = 3 < self::count_calls($request->consumer->key, 30);
-            if ($not_good)
+            if ($not_good) {
                 throw new BadRequest("Consumer's monthly quota exceeded. Try later or call with '&pleeaase=true'.");
-        }
-        else
-        {
+            }
+        } else {
             $not_good = 5 < self::count_calls($request->consumer->key, 1);
-            if ($not_good)
+            if ($not_good) {
                 throw new BadRequest("No more please. Seriously, dude...");
+            }
         }
 
         $response = new OkapiHttpResponse();

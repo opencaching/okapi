@@ -20,21 +20,22 @@ class OkapiHttpResponse
 
     public function get_length()
     {
-        if (is_resource($this->body))
+        if (is_resource($this->body)) {
             return $this->stream_length;
+        }
         return strlen($this->body);
     }
 
     /** Note: You can call this only once! */
     public function print_body()
     {
-        if (is_resource($this->body))
-        {
-            while (!feof($this->body))
+        if (is_resource($this->body)) {
+            while (!feof($this->body)) {
                 print fread($this->body, 1024*1024);
-        }
-        else
+            }
+        } else {
             print $this->body;
+        }
     }
 
     /**
@@ -43,14 +44,13 @@ class OkapiHttpResponse
      */
     public function get_body()
     {
-        if (is_resource($this->body))
-        {
+        if (is_resource($this->body)) {
             ob_start();
             fpassthru($this->body);
             return ob_get_clean();
-        }
-        else
+        } else {
             return $this->body;
+        }
     }
 
     /**
@@ -62,32 +62,33 @@ class OkapiHttpResponse
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: ".$this->content_type);
         header("Cache-Control: ".$this->cache_control);
-        if ($this->connection_close)
+        if ($this->connection_close) {
             header("Connection: close");
-        if ($this->content_disposition)
+        }
+        if ($this->content_disposition) {
             header("Content-Disposition: ".$this->content_disposition);
-        if ($this->etag)
+        }
+        if ($this->etag) {
             header("ETag: $this->etag");
+        }
 
         # Make sure that gzip is supported by the client.
         $use_gzip = $this->allow_gzip;
-        if (empty($_SERVER["HTTP_ACCEPT_ENCODING"]) || (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip") === false))
+        if (empty($_SERVER["HTTP_ACCEPT_ENCODING"]) || (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip") === false)) {
             $use_gzip = false;
+        }
 
         # We will gzip the data ourselves, while disabling gziping by Apache. This way, we can
         # set the Content-Length correctly which is handy in some scenarios.
 
-        if ($use_gzip && is_string($this->body))
-        {
+        if ($use_gzip && is_string($this->body)) {
             # Apache won't gzip a response which is already gzipped.
 
             header("Content-Encoding: gzip");
             $gzipped = gzencode($this->body, 5);
             header("Content-Length: ".strlen($gzipped));
             print $gzipped;
-        }
-        else
-        {
+        } else {
             # We don't want Apache to gzip this response. Tell it so.
 
             if (function_exists('apache_setenv')) {
@@ -95,8 +96,9 @@ class OkapiHttpResponse
             }
 
             $length = $this->get_length();
-            if ($length)
+            if ($length) {
                 header("Content-Length: ".$length);
+            }
             $this->print_body();
         }
     }
