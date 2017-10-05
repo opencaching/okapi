@@ -127,10 +127,9 @@ class ClsTbsZip
             //echo 'p='.var_export($p,true); exit;
             if ($p === false) {
                 return $this->RaiseError('The End of Central Directory Record is not found.');
-            } else {
-                $this->CdEndPos = $p;
-                $this->_MoveTo($p + 4);
             }
+            $this->CdEndPos = $p;
+            $this->_MoveTo($p + 4);
         }
         $this->CdInfo = $this->CentralDirRead_End($cd_info);
         $this->CdFileLst = array();
@@ -288,16 +287,15 @@ class ClsTbsZip
         if (is_string($NameOrIdx)) {
             if (isset($this->CdFileByName[$NameOrIdx])) {
                 return $this->CdFileByName[$NameOrIdx];
-            } else {
-                return false;
             }
-        } else {
-            if (isset($this->CdFileLst[$NameOrIdx])) {
-                return $NameOrIdx;
-            } else {
-                return false;
-            }
+
+            return false;
         }
+        if (isset($this->CdFileLst[$NameOrIdx])) {
+            return $NameOrIdx;
+        }
+
+        return false;
     }
 
     public function FileGetIdxAdd($Name)
@@ -435,9 +433,9 @@ class ClsTbsZip
         // Return the info
         if ($ReadData) {
             return $Data;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     public function FileReplace($NameOrIdx, $Data, $DataType = self::TBSZIP_STRING, $Compress = true)
@@ -483,18 +481,18 @@ class ClsTbsZip
             $idx = $this->FileGetIdxAdd($NameOrIdx);
             if ($idx === false) {
                 return false;
-            } else {
-                return 'a';
             }
+
+            return 'a';
         } elseif (isset($this->ReplInfo[$idx])) {
             if ($this->ReplInfo[$idx] === false) {
                 return 'd';
-            } else {
-                return 'm';
             }
-        } else {
-            return 'u';
+
+            return 'm';
         }
+
+        return 'u';
     }
 
     public function FileCancelModif($NameOrIdx, $ReplacedAndDeleted = true)
@@ -788,9 +786,9 @@ class ClsTbsZip
             $x = fread($this->ArchHnd, $len);
 
             return $x;
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     // ----------------
@@ -1107,9 +1105,8 @@ class ClsTbsZip
             $Ref = &$this->AddInfo[$i];
             if ($Ref['len_c'] === false) {
                 return false; // information not yet known
-            } else {
-                $Len += $Ref['len_c'] + $Ref['diff'];
             }
+            $Len += $Ref['len_c'] + $Ref['diff'];
         }
 
         return $Len;

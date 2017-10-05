@@ -7,5 +7,6 @@ return PhpCsFixer\Config::create()
        '@PSR2' => true,
        '@Symfony' => true,
        'no_useless_else' => true,
+       'no_useless_return' => true,
    ])
     ->setFinder($finder);

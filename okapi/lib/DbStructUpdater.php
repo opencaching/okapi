@@ -587,9 +587,8 @@ class DbStructUpdater
             if (!empty($m[7][0])) {// ';' found
                 if (empty($stack)) {
                     return $m[7][1];
-                } else {
-                    //var_dump($stack, substr($string, $offset-strlen($m[0][0])));
                 }
+                    //var_dump($stack, substr($string, $offset-strlen($m[0][0])));
             }
             if (!empty($m[6][0])) {// '(' or ')' found
                 if (empty($stack) && $m[6][0] == '(') {

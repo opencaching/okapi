@@ -98,15 +98,14 @@ class ChangelogHelper
                     throw new Exception(
                         'Someone forgot to run update_changes.php (or ignored error messages).'
                     );
-                } else {
-                    if ($change['version'] > Okapi::$version_number) {
-                        $this->unavailable_changes[] = $change;
-                    } else {
-                        $this->available_changes[] = $change;
-                    }
-                    $commits[$change['commit']] = true;
-                    $versions[$change['version']] = true;
                 }
+                if ($change['version'] > Okapi::$version_number) {
+                    $this->unavailable_changes[] = $change;
+                } else {
+                    $this->available_changes[] = $change;
+                }
+                $commits[$change['commit']] = true;
+                $versions[$change['version']] = true;
             }
         }
     }
