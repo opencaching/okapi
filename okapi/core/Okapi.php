@@ -22,6 +22,7 @@ class Okapi
     public static $server;
 
     /* These two get replaced in automatically deployed packages. */
+    /* TODO: Make these version variables private. */
     public static $version_number = null;
     public static $git_revision = null;
 
@@ -29,33 +30,27 @@ class Okapi
 
     public static function getVersionNumber()
     {
-        if (!self::$version_number) {
+        if (!self::$version_number)
+        {
             $versionFile = Settings::get('VERSION_FILE');
-
-            if (!$versionFile) {
-                return self::$version_number;
+            if ($versionFile) {
+                $meta = include $versionFile;
+                self::$version_number = $meta['version_number'];
             }
-
-            $meta = include $versionFile;
-            self::$version_number = $meta['version_number'];
         }
-
         return self::$version_number;
     }
 
     public static function getGitRevision()
     {
-        if (!self::$git_revision) {
+        if (!self::$git_revision)
+        {
             $versionFile = Settings::get('VERSION_FILE');
-
-            if (!$versionFile) {
-                return self::$git_revision;
+            if ($versionFile) {
+                $meta = include $versionFile;
+                self::$git_revision = $meta['git_revision'];
             }
-
-            $meta = include $versionFile;
-            self::$git_revision = $meta['git_revision'];
         }
-
         return self::$git_revision;
     }
 

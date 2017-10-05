@@ -158,7 +158,8 @@ final class Settings
         'OC_NODE_ID' => null,
 
         /**
-         * in this file are version number and git revision stored of the used okapi. Only used in composer packages.
+         * Path to PHP script which returns the OKAPI version number and Git revision;
+         * used only with composer deployment.
          */
         'VERSION_FILE' => null,
 

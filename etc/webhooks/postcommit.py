@@ -125,11 +125,11 @@ def deploy(git_revision):
         core_contents = fp.read()
         fp.close()
         core_contents = core_contents.replace(
-            "public static $version_number = null;",
-            "public static $version_number = " + str(version_number) + ";")
+            "private static $version_number = null;",
+            "private static $version_number = " + str(version_number) + ";")
         core_contents = core_contents.replace(
-            "public static $git_revision = null;",
-            "public static $git_revision = '" + git_revision + "';")
+            "private static $git_revision = null;",
+            "private static $git_revision = '" + git_revision + "';")
         fp = open(okapi_working_dir + '/okapi/core/Okapi.php', 'w')
         fp.write(core_contents)
         fp.close()
