@@ -8,5 +8,7 @@ return PhpCsFixer\Config::create()
        '@Symfony' => true,
        'no_useless_else' => true,
        'no_useless_return' => true,
+       'ordered_imports' => true,
+
    ])
     ->setFinder($finder);
