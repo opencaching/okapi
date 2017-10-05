@@ -9,6 +9,6 @@ return PhpCsFixer\Config::create()
        'no_useless_else' => true,
        'no_useless_return' => true,
        'ordered_imports' => true,
-
+       'visibility_required' => true,
    ])
     ->setFinder($finder);
