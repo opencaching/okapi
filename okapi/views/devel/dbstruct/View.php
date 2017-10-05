@@ -91,7 +91,7 @@ class View
                     # curl fallback;
                     # see https://github.com/opencaching/okapi/issues/494.
 
-                    $alternate_struct = shell_exec('curl "'.$_GET['compare_to'].'"');
+                    $alternate_struct = shell_exec('curl --insecure "'.$_GET['compare_to'].'"');
                     if (strlen($alternate_struct) < 10000) {
                         # curl should not output any sensitive information.
                         # Let's return the error message.
