@@ -312,11 +312,9 @@ class WebService
             # NOTICE: We are including EXTERNAL OCDE libraries here! This
             # code does not belong to OKAPI!
 
-            if (Settings::get('OC_BRANCH') == 'oc.de')
+            if (Settings::get('OC_BRANCH') === 'oc.de')
             {
-                $opt['rootpath'] = $GLOBALS['rootpath'];
                 $opt['html_purifier'] = Settings::get('OCDE_HTML_PURIFIER_SETTINGS');
-                require_once $GLOBALS['rootpath'] . 'lib2/OcHTMLPurifier.class.php';
 
                 $purifier = new \OcHTMLPurifier($opt);
                 $formatted_comment = $purifier->purify($formatted_comment);

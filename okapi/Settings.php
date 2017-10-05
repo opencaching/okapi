@@ -235,7 +235,11 @@ final class Settings
             # We have to temporarily disable our default error handler.
 
             OkapiErrorHandler::disable();
-            require_once __DIR__ . '/../okapi_settings.php';
+            $okapiSettings = __DIR__ . '/../okapi_settings.php';
+            if (!file_exists($okapiSettings)) {
+                $okapiSettings = __DIR__ . '/../../../../okapi_settings.php';
+            }
+            require_once $okapiSettings;
             $ref = get_okapi_settings();
             OkapiErrorHandler::reenable();
 
@@ -328,7 +332,7 @@ final class Settings
         putenv("LC_ALL=$locale");
         setlocale(LC_ALL, $locale);
         setlocale(LC_NUMERIC, "POSIX"); # We don't want *this one* to get out of control.
-        bindtextdomain("okapi_messages", $GLOBALS['rootpath'].'okapi/locale');
+        bindtextdomain("okapi_messages", __DIR__ . '/locale');
         return $locale;
     }
 
