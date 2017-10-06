@@ -45,6 +45,13 @@ class WebService
 
         # User exists. Retrieving logs.
 
+        # See caches/geocaches/WebService.php for explanation.
+        if (Settings::get('OC_BRANCH') == 'oc.de') {
+            $logs_order_field_SQL = 'order_date';
+        } else {
+            $logs_order_field_SQL = 'date';
+        }
+
         $rs = Db::query("
             select cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
                 c.wp_oc as cache_code
@@ -54,7 +61,7 @@ class WebService
                 and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "cl.deleted = 0" : "true")."
                 and c.status in (1,2,3)
                 and cl.cache_id = c.cache_id
-            order by cl.date desc
+            order by cl.$logs_order_field_SQL desc, cl.date_created desc, cl.id desc
             limit $offset, $limit
         ");
         $results = array();
