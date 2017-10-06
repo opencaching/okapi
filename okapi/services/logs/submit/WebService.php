@@ -673,12 +673,19 @@ class WebService
 
         Db::execute("commit");
 
-        # We need to delete the copy of stats-picture for this user. Otherwise,
-        # the legacy OC code won't detect that the picture needs to be refreshed.
+        if (Settings::get('OC_BRANCH') == 'oc.pl'
+            && ($logtype == 'Found it' || $logtype == 'Attended'))
+        {
+            # We need to delete the copy of stats-picture for this user. Otherwise,
+            # the legacy OCPL code won't detect that the picture needs to be refreshed.
+            #
+            # OCDE code invalidates the statpic via database trigger. (And, by the way,
+            # has other statpic file names which include a language code).
 
-        $filepath = Okapi::get_var_dir().'/images/statpics/statpic'.$user['internal_id'].'.jpg';
-        if (file_exists($filepath)) {
-            unlink($filepath);
+            $filepath = Okapi::get_var_dir().'/images/statpics/statpic'.$user['internal_id'].'.jpg';
+            if (file_exists($filepath)) {
+                unlink($filepath);
+            }
         }
 
         # Success. Return the uuids.
