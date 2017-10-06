@@ -16,6 +16,20 @@
 
     -->
     <changes>
+        <change commit="1d66caac" version="1659" time="2017-10-06T15:10:53+0200" type="enhancement">
+            Added the <a href="https://github.com/opencaching/gpx-extension-v1">Opencaching
+            GPX extension</a>. Use <em>ns_oc=true</em> in <a href="services/caches/formatters/gpx.html">
+            services/caches/formatters/gpx</a> (or /ggz) to enable it.
+        </change>
+        <change commit="08a38000" version="1654" time="2017-10-05T02:10:01+0200" type="other">
+            OKAPI can now be deployed via PHP composer to OC sites. See the
+            <a href="https://github.com/OpencachingDeutschland/oc-server3">OCDE repository</a>
+            for a sample implementation.
+        </change>
+        <change commit="5e5cef42" version="1641" time="2017-10-02T23:10:01+0200" type="enhancement">
+            <a href="services/logs/images/add.html">services/logs/images/add</a> now returns
+            the URL of the added image.
+        </change>
         <change commit="5905f614" version="1623" time="2017-09-14T14:09:05+0200" type="enhancement">
             Added <a href="services/caches/edit.html">services/caches/edit</a>
             for changing geocaches' log passwords.
