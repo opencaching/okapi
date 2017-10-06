@@ -25,15 +25,26 @@
         order of preference in which language will be chosen for GPX entities.</p>
     </opt>
     <opt name='ns_ground' default='false'>
-        Boolean. If <b>true</b> then response will include
+        Boolean. If <b>true</b> then the response will include
         <a href='http://www.groundspeak.com/cache/1/0/1/cache.xsd'>Groundspeak's
         GPX extension</a>. This namespace declares an extra &lt;cache&gt; element
         used by <a href='https://www.geocaching.com/'>geocaching.com</a> and <b>many others</b>.
         This namespace was initially associatied with geocaching.com, but now seems to
         be used in every geocaching GPX file. You probably want to have it.
     </opt>
+    <opt name='ns_oc' default='false'>
+        <p>Boolean. If <b>true</b> then the response will include the
+        <a href='https://github.com/opencaching/gpx-extension-v1/blob/master/schema.xsd'>
+        Opencaching GPX extension</a>. The GPX files will contain an additional
+        &lt;oc:cache&gt; element for each geocache, which contains Opencaching-specific
+        information about the geocache. If <b>latest_logs</b> is set to <b>true</b>,
+        then it will also contain Opencaching-specific information about log entries.</p>
+
+        <p>The Opencaching GPX extension was introduced by OKAPI and is expected to
+        be included in most OC sites' native GPX files.</p>
+    </opt>
     <opt name='ns_gsak' default='false'>
-        <p>Boolean. If <b>true</b> then response will include
+        <p>Boolean. If <b>true</b> then the response will include
         <a href='http://www.gsak.net/xmlv1/5/gsak.xsd'>GSAK GPX extension</a>.
         This namespace declares an extra &lt;wptExtension&gt; element,
         which allows including "waypoint inheritance" information (parent-child relations)
@@ -45,7 +56,7 @@
         know, it became a "de facto" standard for expressing "alternate waypoints".</p>
     </opt>
     <opt name='ns_ox' default='false'>
-        <p>Boolean. If <b>true</b> then response will include Garmin's
+        <p>Boolean. If <b>true</b> then the response will include Garmin's
         <a href='https://github.com/opencaching/okapi/blob/master/etc/nsox.xsd'>OpenCaching.com
         GPX extension</a>. This namespace declares an extra &lt;opencaching&gt; element
         used by Garmin's (former) <b>OpenCaching.com</b> site.
@@ -170,7 +181,7 @@
         <p>Note: You need to use Level 3 Authentication in order to set it to anything else than "none".</p>
     </opt>
     <opt name='latest_logs' default='false'>
-        <p>Boolean. If <b>true</b> then response will include a couple of
+        <p>Boolean. If <b>true</b> then the response will include a couple of
         latest log entries for this cache (see also the <b>lpc</b> argument).</p>
         <p>You <b>must</b> set <b>ns_ground</b> argument to <b>true</b> if you want to use this.</p>
     </opt>

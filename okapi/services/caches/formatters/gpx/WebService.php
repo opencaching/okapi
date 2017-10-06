@@ -24,33 +24,33 @@ class WebService
         );
     }
 
-    /** Maps OKAPI cache type codes to Geocaching.com GPX cache types. */
-    public static $cache_GPX_types = array(
-        'Traditional' => 'Traditional Cache',
-        'Multi' => 'Multi-Cache',
-        'Quiz' => 'Unknown Cache',
-        'Event' => 'Event Cache',
-        'Virtual' => 'Virtual Cache',
-        'Webcam' => 'Webcam Cache',
-        'Moving' => 'Unknown Cache',
-        'Math/Physics' => 'Unknown Cache',
-        'Drive-In' => 'Traditional Cache',
-        'Podcast' => 'Unknown Cache',
-        'Own' => 'Unknown Cache',
-        'Other' => 'Unknown Cache'
-    );
+    /** Maps OKAPI cache type codes to GPX cache types. */
+    public static $cache_GPX_types = [
+        'Traditional'  => ['oc' => 'Traditional Cache', 'gc' => 'Traditional Cache' ],
+        'Multi'        => ['oc' => 'Multi-Cache',       'gc' => 'Multi-Cache'       ],
+        'Quiz'         => ['oc' => 'Quiz Cache',        'gc' => 'Unknown Cache'     ],
+        'Event'        => ['oc' => 'Event Cache',       'gc' => 'Event Cache'       ],
+        'Virtual'      => ['oc' => 'Virtual Cache',     'gc' => 'Virtual Cache'     ],
+        'Webcam'       => ['oc' => 'Webcam Cache',      'gc' => 'Webcam Cache'      ],
+        'Moving'       => ['oc' => 'Moving Cache',      'gc' => 'Unknown Cache'     ],
+        'Math/Physics' => ['oc' => 'Quiz Cache',        'gc' => 'Unknown Cache'     ],
+        'Drive-In'     => ['oc' => 'Traditional Cache', 'gc' => 'Traditional Cache' ],
+        'Podcast'      => ['oc' => 'Podcast Cache',     'gc' => 'Unknown Cache'     ],
+        'Own'          => ['oc' => 'Own Cache',         'gc' => 'Unknown Cache'     ],
+        'Other'        => ['oc' => 'Other Cache',       'gc' => 'Unknown Cache'     ],
+    ];
 
-    /** Maps OKAPI's 'size2' values to geocaching.com size codes. */
-    public static $cache_GPX_sizes = array(
-        'none' => 'Virtual',
-        'nano' => 'Micro',
-        'micro' => 'Micro',
-        'small' => 'Small',
-        'regular' => 'Regular',
-        'large' => 'Large',
-        'xlarge' => 'Large',
-        'other' => 'Other',
-    );
+    /** Maps OKAPI's 'size2' values to GPX size codes. */
+    public static $cache_GPX_sizes = [
+        'none'    => ['oc' => 'No container', 'gc' => 'Virtual' ],
+        'nano'    => ['oc' => 'Nano',         'gc' => 'Micro'   ],
+        'micro'   => ['oc' => 'Micro',        'gc' => 'Micro'   ],
+        'small'   => ['oc' => 'Small',        'gc' => 'Small'   ],
+        'regular' => ['oc' => 'Regular',      'gc' => 'Regular' ],
+        'large'   => ['oc' => 'Large',        'gc' => 'Large'   ],
+        'xlarge'  => ['oc' => 'Very large',   'gc' => 'Large'   ],
+        'other'   => ['oc' => 'Other',        'gc' => 'Other'   ],
+    ];
 
     /**
      * When used in create_gpx() method, enables GGZ index generation.
@@ -95,7 +95,7 @@ class WebService
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
         $langprefs = explode("|", $langpref);
-        foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'latest_logs', 'alt_wpts', 'mark_found') as $param)
+        foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'ns_oc', 'latest_logs', 'alt_wpts', 'mark_found') as $param)
         {
             $val = $request->get_parameter($param);
             if (!$val) $val = "false";
@@ -205,7 +205,7 @@ class WebService
 
         $fields = 'code|name|location|date_created|url|type|status|size|size2|oxsize'.
             '|difficulty|terrain|description|hint2|rating|owner|url|internal_id'.
-            '|protection_areas|short_description';
+            '|protection_areas|short_description|trip_time|trip_distance|req_passwd|gc_code';
         if ($vars['images'] != 'none')
             $fields .= "|images";
         if (count($vars['attrs']) > 0)
@@ -233,7 +233,7 @@ class WebService
                     'fields' => $fields,
                     'lpc' => $lpc,
                     'user_uuid' => $user_uuid,
-                    'log_fields' => 'uuid|date|user|type|comment|internal_id|was_recommended'
+                    'log_fields' => 'uuid|date|user|type|comment|oc_team_entry|internal_id|was_recommended'
                 )
             )
         );
@@ -467,7 +467,7 @@ class WebService
 
                 $ggz_entry['code'] = $cache_ref['code'];
                 $ggz_entry['name'] = isset($cache_ref['name_2']) ? $cache_ref['name_2'] : $cache_ref['name'];
-                $ggz_entry['type'] = $vars['cache_GPX_types'][$cache_ref['type']];
+                $ggz_entry['type'] = $vars['cache_GPX_types'][$cache_ref['type']]['gc'];
                 list($lat, $lon) = explode("|", $cache_ref['location']);
                 $ggz_entry['lat'] = $lat;
                 $ggz_entry['lon'] = $lon;
