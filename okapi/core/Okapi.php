@@ -1083,7 +1083,7 @@ class Okapi
     /**
      * "Fix" user-supplied HTML fetched from the OC database.
      */
-    public static function fix_oc_html($html, $object_type)
+    public static function fix_oc_html($html, $text_html)
     {
         /* There are thousands of relative URLs in cache descriptions. We will
          * attempt to find them and fix them. In theory, the "proper" way to do this
@@ -1098,11 +1098,11 @@ class Okapi
             $html
         );
 
-        if ($object_type == self::OBJECT_TYPE_CACHE_LOG
-            && Settings::get('OC_BRANCH') === 'oc.pl'
-        ) {
+        if (Settings::get('OC_BRANCH') === 'oc.pl' && $text_html == 1)
+        {
             # Decode special OCPL entity-encoding produced by logs/submit.
-            # See https://github.com/opencaching/okapi/issues/413.
+            # See https://github.com/opencaching/okapi/issues/413
+            # and https://github.com/opencaching/opencaching-pl/pull/1224.
             #
             # This might be restricted to log entries created by OKAPI (that are
             # recorded in okapi_submitted_objects). However, they may have been

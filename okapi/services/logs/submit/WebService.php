@@ -265,12 +265,14 @@ class WebService
 
         if ($comment_format == 'plaintext')
         {
-            # This code is identical to the plaintext processing in OC code,
-            # including a space handling bug: Multiple consecutive spaces will
-            # get semantically lost in the generated HTML.
+            # This encoding is identical to the plaintext processing in OCDE code.
+            # It is ok also for OCPL, which no longer allows to enter plaintext
+            # on the website.
 
             $formatted_comment = htmlspecialchars($comment, ENT_COMPAT);
             $formatted_comment = nl2br($formatted_comment);
+            $formatted_comment = str_replace('  ', '&nbsp; ', $formatted_comment);
+            $formatted_comment = str_replace('  ', '&nbsp; ', $formatted_comment);
 
             if (Settings::get('OC_BRANCH') == 'oc.de')
             {
@@ -285,8 +287,10 @@ class WebService
                 # an ID of the appropriate email thread:
                 #
                 # Message-ID: <22b643093838b151b300f969f699aa04@harrieklomp.be>
+                #
+                # Later changed to 2 due to https://github.com/opencaching/opencaching-pl/pull/1224.
 
-                $value_for_text_html_field = 1;
+                $value_for_text_html_field = 2;
             }
         }
         else
@@ -303,7 +307,6 @@ class WebService
             {
                 $formatted_comment = $comment;
             }
-            $value_for_text_html_field = 1;
 
             # For user-supplied HTML comments, OC sites require us to do
             # additional HTML purification prior to the insertion into the
@@ -318,29 +321,18 @@ class WebService
 
                 $purifier = new \OcHTMLPurifier($opt);
                 $formatted_comment = $purifier->purify($formatted_comment);
+
+                $value_for_text_html_field = 1;
             }
             else
             {
                 require_once $GLOBALS['rootpath'] . 'lib/class.inputfilter.php';
                 $myFilter = new \InputFilter($allowedtags, $allowedattr, 0, 0, 1);
                 $formatted_comment = $myFilter->process($formatted_comment);
+
+                # see https://github.com/opencaching/opencaching-pl/pull/1224
+                $value_for_text_html_field = 2;
             }
-        }
-
-        if (Settings::get('OC_BRANCH') == 'oc.pl')
-        {
-            # The HTML processing in OCPL code is broken. Effectively, it
-            # will decode &lt; &gt; and &amp; (and maybe other things?)
-            # before display so that text contents may be interpreted as HTML.
-            # We work around this by applying a double-encoding for & < >:
-
-            $formatted_comment = str_replace("&amp;", "&amp;#38;", $formatted_comment);
-            $formatted_comment = str_replace("&lt;", "&amp;#60;", $formatted_comment);
-            $formatted_comment = str_replace("&gt;", "&amp;#62;", $formatted_comment);
-
-            # Note: This problem also exists when submitting logs on OCPL websites.
-            # If you e.g. enter "<text>" in the editor, it will get lost.
-            # See https://github.com/opencaching/opencaching-pl/issues/469.
         }
 
         unset($comment);

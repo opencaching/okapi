@@ -71,7 +71,7 @@ class WebService
                 ".$teamentry_field." as oc_team_entry,
                 ".$needs_maintenance_SQL." as needs_maintenance2,
                 ".$listing_is_outdated_SQL." as listing_is_outdated,
-                unix_timestamp(cl.date) as date, cl.text,
+                unix_timestamp(cl.date) as date, cl.text, cl.text_html,
                 u.uuid as user_uuid, u.username, u.user_id,
                 if(cr.user_id is null, 0, 1) as was_recommended
                 ".$latlong_SQL."
@@ -114,7 +114,7 @@ class WebService
                 'needs_maintenance2' => $flag_options[$row['needs_maintenance2']],
                 'listing_is_outdated' => $flag_options[$row['listing_is_outdated']],
                 'oc_team_entry' => $row['oc_team_entry'] ? true : false,
-                'comment' => Okapi::fix_oc_html($row['text'], Okapi::OBJECT_TYPE_CACHE_LOG),
+                'comment' => Okapi::fix_oc_html($row['text'], $row['text_html']),
                 'location' => $row['latitude'] === null ? null : round($row['latitude'], 6)."|".round($row['longitude'], 6),
                 'images' => array(),
                 'internal_id' => $row['id'],
