@@ -23,6 +23,10 @@ class WebService
     {
         $user_uuid = $request->get_parameter('user_uuid');
         if (!$user_uuid) throw new ParamMissing('user_uuid');
+
+        $fields = $request->get_parameter('fields');
+        if (!$fields) $fields = "uuid|date|cache_code|type|comment";  // validation is done on call
+
         $limit = $request->get_parameter('limit');
         if (!$limit) $limit = "20";
         if (!is_numeric($limit))
@@ -30,6 +34,7 @@ class WebService
         $limit = intval($limit);
         if (($limit < 1) || ($limit > 1000))
             throw new InvalidParam('limit', "Has to be in range 1..1000.");
+
         $offset = $request->get_parameter('offset');
         if (!$offset) $offset = "0";
         if (!is_numeric($offset))
@@ -52,9 +57,23 @@ class WebService
             $logs_order_field_SQL = 'date';
         }
 
-        $rs = Db::query("
-            select cl.id, cl.uuid, cl.type, unix_timestamp(cl.date) as date, cl.text,
-                c.wp_oc as cache_code
+        # If the user only requests "basic fields" which can easily be handled,
+        # we will directly serve the request. Otherwise we call the more expensive
+        # logs/entries method.
+
+        $basic_fields = ['uuid', 'date', 'cache_code', 'type', 'comment', 'user', 'internal_id'];
+        $add_fields_SQL = ", unix_timestamp(cl.date) as date, c.wp_oc as cache_code, cl.type, cl.text, cl.id";
+
+        $fields_array = explode('|', $fields);
+        foreach ($fields_array as $field) {
+            if (!in_array($field, $basic_fields)) {
+                $add_fields_SQL = "";
+                break;
+            }
+        }
+
+        $query = "
+            select cl.uuid $add_fields_SQL
             from cache_logs cl, caches c
             where
                 cl.user_id = '".Db::escape_string($user['internal_id'])."'
@@ -63,17 +82,51 @@ class WebService
                 and cl.cache_id = c.cache_id
             order by cl.$logs_order_field_SQL desc, cl.date_created desc, cl.id desc
             limit $offset, $limit
-        ");
-        $results = array();
-        while ($row = Db::fetch_assoc($rs))
+        ";
+
+        if ($add_fields_SQL != "")
         {
-            $results[] = array(
-                'uuid' => $row['uuid'],
-                'date' => date('c', $row['date']),
-                'cache_code' => $row['cache_code'],
-                'type' => Okapi::logtypeid2name($row['type']),
-                'comment' => $row['text']
+            $rs = Db::query($query);
+            $results = [];
+            while ($row = Db::fetch_assoc($rs))
+            {
+                $results[] = array(
+                    'uuid' => $row['uuid'],
+                    'date' => date('c', $row['date']),
+                    'cache_code' => $row['cache_code'],
+                    'type' => Okapi::logtypeid2name($row['type']),
+                    'comment' => $row['text'],
+                    'internal_id' => $row['id'],
+                );
+            }
+
+            # Add user field, which probably noone will request.
+
+            if (in_array('user', $fields_array))
+                foreach ($results as &$result_ref)
+                    $result_ref['user'] = $user_uuid;
+
+            # Remove unwanted fields.
+
+            foreach ($basic_fields as $field)
+                if (!in_array($field, $fields_array))
+                    foreach ($results as &$result_ref)
+                        unset($result_ref[$field]);
+        }
+        else
+        {
+            $log_uuids = Db::select_column($query);
+            $logsRequest = new OkapiInternalRequest(
+                $request->consumer,
+                $request->token,
+                array(
+                    'log_uuids' => implode('|', $log_uuids),
+                    'fields' => $fields
+                )
             );
+            $logsRequest->skip_limits = true;
+            $logsResponse = OkapiServiceRunner::call("services/logs/entries", $logsRequest);
+            $results = array_values($logsResponse);
         }
 
         return Okapi::formatted_response($request, $results);
