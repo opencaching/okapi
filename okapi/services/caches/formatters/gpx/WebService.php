@@ -319,9 +319,11 @@ class WebService
                             #
                             # Groundspeak uses ID 1..65 (as of June, 2013), and OCDE makeshift
                             # IDs start at 106, so there is space for 40 new GS attributes.
+                            # OCDE 41 maps to GS 142 due to a typo in OCDE code.
 
                             $internal_id = $attr_dict[$acode]['internal_id'];
-                            $cache_ref['gc_attrs'][100 + $internal_id] = array(
+                            $gc_id = ($internal_id == 41 ? 142 : 100 + $internal_id);
+                            $cache_ref['gc_attrs'][$gc_id] = array(
                                 'inc' => 1,
                                 'name' => $ocde_attrnames[$internal_id][0]['name'],
                             );
