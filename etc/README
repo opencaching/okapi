@@ -1,7 +1,0 @@
-OKAPI /etc/ directory.
-
-This directory should be EXCLUDED from all OKAPI deployments.
-
-Our deployments scripts DO get rid of this directory prior the deployment.
-If you have this file in your Opencaching repository, then it means that
-OKAPI project was not properly merged with your Opencaching site.
