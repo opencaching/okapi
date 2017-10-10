@@ -60,6 +60,15 @@
         Pipe-separated list of log fields to include in the <b>latest_logs</b> field.
         For valid field names, see <b>logs/entry</b> method.
     </opt>
+    <opt name='user_logs_only' default='false'>
+        <p>Boolean. If <b>true</b> with Level 3 Authentication, only logs
+        of your user will be included in the <b>latest_logs</b> field. If
+        <b>true</b> with Level 1 or 2 Authentication, then the parameter
+        <b>user_uuid</b> must be supplied, and only logs of that user will be
+        included in the <b>latest_logs</b> field. You must include the
+        <b>latest_logs</b> field in <b>fields</b> in order to see the log
+        entries.</p>
+    </opt>
     <opt name='my_location'>
         <p>The reference point for cache distance and bearing calculation (typically - the user's location),
         in the "lat|lon" format. This parameter is required when accessing <b>distance</b> and/or <b>bearing</b>

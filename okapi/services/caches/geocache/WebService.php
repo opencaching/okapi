@@ -32,6 +32,8 @@ class WebService
         if (!$log_fields) $log_fields = "uuid|date|user|type|comment";
         $lpc = $request->get_parameter('lpc');
         if (!$lpc) $lpc = 10;
+        $user_logs_only = $request->get_parameter('user_logs_only');
+        if ($user_logs_only === null) $user_logs_only = 'false';
         $attribution_append = $request->get_parameter('attribution_append');
         if (!$attribution_append) $attribution_append = 'full';
         $params = array(
@@ -40,7 +42,8 @@ class WebService
             'fields' => $fields,
             'attribution_append' => $attribution_append,
             'lpc' => $lpc,
-            'log_fields' => $log_fields
+            'log_fields' => $log_fields,
+            'user_logs_only' => $user_logs_only,
         );
         $my_location = $request->get_parameter('my_location');
         if ($my_location)

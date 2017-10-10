@@ -95,15 +95,19 @@ class WebService
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
         $langprefs = explode("|", $langpref);
-        foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'ns_oc', 'latest_logs', 'alt_wpts', 'mark_found') as $param)
+        foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'ns_oc', 'alt_wpts', 'mark_found') as $param)
         {
             $val = $request->get_parameter($param);
-            if (!$val) $val = "false";
-            elseif (!in_array($val, array("true", "false")))
+            if (!$val) $val = 'false';
+            elseif (!in_array($val, array('true', 'false')))
                 throw new InvalidParam($param);
-            $vars[$param] = ($val == "true");
+            $vars[$param] = ($val == 'true');
         }
-        if ($vars['latest_logs'] && (!$vars['ns_ground']))
+
+        $vars['latest_logs'] = $request->get_parameter('latest_logs');
+        if (!in_array($vars['latest_logs'], array('true', 'user', 'false')))
+            throw new InvalidParam('latest_logs');
+        if ($vars['latest_logs'] !== 'false' && (!$vars['ns_ground']))
             throw new BadRequest("In order for 'latest_logs' to work you have to also include 'ns_ground' extensions.");
 
         $tmp = $request->get_parameter('my_notes');
@@ -220,7 +224,7 @@ class WebService
             $fields .= "|recommendations|founds";
         if (count($vars['my_notes']) > 0)
             $fields .= "|my_notes";
-        if ($vars['latest_logs'])
+        if ($vars['latest_logs'] != 'false')
             $fields .= "|latest_logs";
         if ($vars['mark_found'])
             $fields .= "|is_found";
@@ -232,6 +236,7 @@ class WebService
                     'langpref' => $langpref,
                     'fields' => $fields,
                     'lpc' => $lpc,
+                    'user_logs_only' => ($vars['latest_logs'] == 'user' ? 'true' : 'false'),
                     'user_uuid' => $user_uuid,
                     'log_fields' => 'uuid|date|user|type|comment|oc_team_entry|internal_id|was_recommended'
                 )
