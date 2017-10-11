@@ -95,6 +95,7 @@ class AttrHelper
             $attr = array(
                 'acode' => (string)$attrnode['acode'],
                 'gc_equivs' => array(),
+                'gc_ocde_equiv' => null,
                 'internal_id' => null,
                 'names' => array(),
                 'descriptions' => array(),
@@ -145,6 +146,18 @@ class AttrHelper
                     $innerxml = preg_replace("/(^[^>]+>)|(<[^<]+$)/us", "", $xml);
                     $attr['descriptions'][$lang] = self::cleanup_string($innerxml);
                 }
+            }
+            foreach ($attrnode->ocgs as $ocgsnode)
+            {
+                if (isset($attr['gc_ocde_equiv']))
+                    throw new Exception("Duplicate ocgs entries for ".$attr['acode']);
+                if (!isset($attr['names']['en']))
+                    throw new Exception("(English) name is missing for ".$attr['acode']." ocgs entry.");
+                $attr['gc_ocde_equiv'] = array(
+                    'id' => (int)$ocgsnode['id'],
+                    'inc' => in_array((string)$ocgsnode['inc'], array("true", "1")) ? 1 : 0,
+                    'name' => $attr['names']['en']
+                );
             }
             $cachedvalue['attr_dict'][$attr['acode']] = $attr;
         }

@@ -96,6 +96,29 @@
                 that one Geocaching.com ID may be present in many gc_equivs.</p>
             </li>
             <li>
+                <p><b>gc_ocde_equiv</b> - a Groundspeak-like attribute with ID &gt;
+                100, which may be included in GPX files if there is no <em>gc_equiv</em>
+                for the OC attribute; a dictionary of the following structure:</p>
+
+                <ul>
+                    <li><b>id</b> - Groundspeak-like ID of the attribute,</li>
+                    <li>
+                        <b>inc</b> - integer, either 1 or 0, to be included in GPX
+                        files,
+                    </li>
+                    <li>
+                        <b>name</b> - the name of the attribute, to be included in
+                        GPX files
+                    </li>
+                </ul>
+
+                <p>Note: We cannot guarantee that the ID of these Groundspeak-like
+                attributes will forever stay the same. If you need a unique attribute
+                ID, use the <b>acode</b> instead.</p>
+                <p>See <a href='%OKAPI:methodargref:services/caches/formatters/gpx%'>caches/formatters/gpx</a>
+                <em>attrs=gc_ocde:attrs</em> option for more explanation.</p>
+            </li>
+            <li>
                 <p><b>is_locally_used</b> - boolean, indicates if the attribute is <i>currently</i>
                 used by <i>this</i> Opencaching server. Or, to be more specific, <b>true</b>
                 means that the attribute can currently be included in the <b>attr_acodes</b> field

@@ -146,10 +146,7 @@ class WebService
             if ($elem == 'none') {
                 /* pass */
             } elseif (in_array($elem, array('desc:text', 'ox:tags', 'gc:attrs', 'gc_ocde:attrs'))) {
-                if ($elem == 'gc_ocde:attrs' && Settings::get('OC_BRANCH') != 'oc.de')
-                    $vars['attrs'][] = 'gc:attrs';
-                else
-                    $vars['attrs'][] = $elem;
+                $vars['attrs'][] = $elem;
             } else {
                 throw new InvalidParam('attrs', "Invalid list entry: '$elem'");
             }
@@ -270,7 +267,7 @@ class WebService
                     $request->consumer, $request->token, array(
                         'only_locally_used' => 'true',
                         'langpref' => $langpref,
-                        'fields' => 'name|gc_equivs'
+                        'fields' => 'name|gc_equivs|gc_ocde_equiv'
                     )
                 )
             );
@@ -281,20 +278,6 @@ class WebService
             $vars['gc_ocde_attrs'] = in_array('gc_ocde:attrs', $vars['attrs']);
             if ($vars['gc_attrs'] || $vars['gc_ocde_attrs'])
             {
-                if ($vars['gc_ocde_attrs'])
-                {
-                    # As this is an OCDE compatibility feature, we use the same Pseudo-GS
-                    # attribute names here as OCDE. Note that this code is specific to OCDE
-                    # database; OCPL stores attribute names in a different way and may use
-                    # different names for equivalent attributes.
-
-                    $ocde_attrnames = Db::select_group_by('id',"
-                        select id, name
-                        from cache_attrib
-                    ");
-                    $attr_dict = AttrHelper::get_attrdict();
-                }
-
                 foreach ($vars['caches'] as &$cache_ref)
                 {
                     $cache_ref['gc_attrs'] = array();
@@ -311,22 +294,16 @@ class WebService
                             $cache_ref['gc_attrs'][$gc['id']] = $gc;
                             $has_gc_equivs = true;
                         }
-                        if (!$has_gc_equivs && $vars['gc_ocde_attrs'])
+                        if (!$has_gc_equivs && $vars['gc_ocde_attrs']
+                            && $vars['attr_index'][$acode]['gc_ocde_equiv'] !== null)
                         {
-                            # Generate an OCDE pseudo-GS attribute;
-                            # see https://github.com/opencaching/okapi/issues/190 and
-                            # https://github.com/opencaching/okapi/issues/271.
-                            #
-                            # Groundspeak uses ID 1..65 (as of June, 2013), and OCDE makeshift
-                            # IDs start at 106, so there is space for 40 new GS attributes.
-                            # OCDE 41 maps to GS 142 due to a typo in OCDE code.
+                            # Generate an OC pseudo-GS attribute;
+                            # see https://github.com/opencaching/okapi/issues/190,
+                            # https://github.com/opencaching/okapi/issues/271 and
+                            # https://github.com/opencaching/okapi/issues/346.
 
-                            $internal_id = $attr_dict[$acode]['internal_id'];
-                            $gc_id = ($internal_id == 41 ? 142 : 100 + $internal_id);
-                            $cache_ref['gc_attrs'][$gc_id] = array(
-                                'inc' => 1,
-                                'name' => $ocde_attrnames[$internal_id][0]['name'],
-                            );
+                            $ocgs = $vars['attr_index'][$acode]['gc_ocde_equiv'];
+                            $cache_ref['gc_attrs'][$ocgs['id']] = $ocgs;
                         }
                     }
                     if ($cache_ref['needs_maintenance'])

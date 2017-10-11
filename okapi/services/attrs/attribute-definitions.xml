@@ -132,6 +132,12 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
 
 *** These are special attributes, not available to the regular user.
 
+For Opencaching attributes which have no Groundspeak equivalents, additional
+Pseudo-Groundspeak IDs ("ocgs" IDs) have been defined, which are used to
+store these attributes in GPX <groundspeak:attribute> elements.
+See OCDE htdocs/lib2/search/search.gpx.inc.php and OCPL lib/format.gpx.inc.php
+for the original implementations.
+
 -->
 
 <xml>
@@ -141,6 +147,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     -->
 
     <attr acode="A1" categories="de-listing">
+        <ocgs id="106" inc="true" />
         <opencaching schema="OCDE" id="6" />
         <opencaching schema="OCNL" id="6" />
         <opencaching schema="OCRO" id="6" />
@@ -199,6 +206,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A2" categories="de-cache-types">
+        <ocgs id="117" inc="true" />
         <opencaching schema="OCPL" id="54" />
         <opencaching schema="OCNL" id="54" />
         <opencaching schema="OCRO" id="54" />
@@ -237,6 +245,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A3" categories="de-cache-types">
+        <ocgs id="118" inc="true" />
         <opencaching schema="OCPL" id="55" />
         <opencaching schema="OCRO" id="55" />
         <lang id="en">
@@ -275,6 +284,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A4" categories="de-cache-types">
+        <ocgs id="108" inc="true" />
         <opencaching schema="OCDE" id="8" />
         <opencaching schema="OCPL" id="56" />
         <opencaching schema="OCNL" id="56" />
@@ -344,6 +354,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A5" categories="de-cache-types">
+        <ocgs id="112" inc="true" />
         <opencaching schema="OCPL" id="43" />
         <opencaching schema="OCRO" id="43" />
         <opencaching schema="OCNL" id="43" />
@@ -386,6 +397,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A6" categories="de-cache-types">
+        <ocgs id="149" inc="true" />
         <opencaching schema="OCPL" id="49" />
         <opencaching schema="OCRO" id="49" />
         <opencaching schema="OCNL" id="49" />
@@ -422,6 +434,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A7" categories="de-cache-types">
+        <ocgs id="114" inc="true" />
         <opencaching schema="OCPL" id="50" />
         <opencaching schema="OCRO" id="50" />
         <opencaching schema="OCNL" id="50" />
@@ -464,6 +477,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A8" categories="de-cache-types">
+        <ocgs id="115" inc="true" />
         <opencaching schema="OCPL" id="51" />
         <opencaching schema="OCRO" id="51" />
         <lang id="en">
@@ -541,6 +555,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A10" categories="de-cache-types">
+        <ocgs id="116" inc="true" />
         <opencaching schema="OCPL" id="53" />
         <opencaching schema="OCRO" id="53" />
         <opencaching schema="OCNL" id="53" />
@@ -590,6 +605,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A11" categories="de-cache-types">
+        <ocgs id="131" inc="true" />
         <opencaching schema="OCDE" id="31" />
         <opencaching schema="OCUK" id="31" />
         <lang id="en">
@@ -634,6 +650,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A12" categories="de-cache-types">
+        <ocgs id="132" inc="true" />
         <opencaching schema="OCDE" id="32" />
         <opencaching schema="OCUK" id="32" />
         <lang id="en">
@@ -677,6 +694,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A13" categories="de-cache-types">
+        <ocgs id="157" inc="true" />
         <opencaching schema="OCDE" id="57" />
         <opencaching schema="OCUK" id="57" />
         <lang id="en">
@@ -709,6 +727,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A14" categories="de-preconditions">
+        <ocgs id="154" inc="true" />
         <opencaching schema="OCDE" id="54" />
         <opencaching schema="OCUK" id="54" />
         <lang id="en">
@@ -778,6 +797,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A16" categories="de-preconditions">
+        <ocgs id="156" inc="true" />
         <opencaching schema="OCDE" id="56" />
         <opencaching schema="OCUK" id="56" />
         <lang id="en">
@@ -812,6 +832,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A17" categories="de-preconditions">
+        <ocgs id="158" inc="true" />
         <opencaching schema="OCDE" id="58" />
         <opencaching schema="OCUK" id="58" />
         <lang id="en">
@@ -914,6 +935,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A20" categories="de-accessibility">
+        <ocgs id="122" inc="true" />
         <opencaching schema="OCPL" id="84" />
         <opencaching schema="OCRO" id="84" />
         <opencaching schema="OCNL" id="84" />
@@ -1037,6 +1059,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A23" categories="de-accessibility">
+        <ocgs id="127" inc="true" />
         <opencaching schema="OCDE" id="27" />
         <opencaching schema="OCUK" id="27" />
         <lang id="en">
@@ -1215,6 +1238,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A28" categories="de-location">
+        <ocgs id="119" inc="true" />
         <opencaching schema="OCPL" id="60" />
         <opencaching schema="OCNL" id="60" />
         <opencaching schema="OCRO" id="60" />
@@ -1254,6 +1278,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A29" categories="de-location">
+        <ocgs id="120" inc="true" />
         <opencaching schema="OCPL" id="61" />
         <opencaching schema="OCNL" id="61" />
         <opencaching schema="OCRO" id="61" />
@@ -1295,6 +1320,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A30" categories="de-location">
+        <ocgs id="130" inc="true" />
         <opencaching schema="OCDE" id="30" />
         <opencaching schema="OCUK" id="30" />
         <lang id="en">
@@ -1348,6 +1374,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A31" categories="de-location">
+        <ocgs id="133" inc="true" />
         <opencaching schema="OCDE" id="33" />
         <opencaching schema="OCUK" id="33" />
         <lang id="en">
@@ -1381,6 +1408,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A32" categories="de-location">
+        <ocgs id="134" inc="true" />
         <opencaching schema="OCDE" id="34" />
         <opencaching schema="OCUK" id="34" />
         <lang id="en">
@@ -1606,6 +1634,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A38" categories="de-facilities">
+        <ocgs id="123" inc="true" />
         <opencaching schema="OCDE" id="23" />
         <opencaching schema="OCUK" id="23" />
         <lang id="en">
@@ -1920,6 +1949,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A46" categories="de-time-and-seasons">
+        <ocgs id="143" inc="true" />
         <opencaching schema="OCDE" id="43" />
         <opencaching schema="OCUK" id="43" />
         <lang id="en">
@@ -1999,6 +2029,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A48" categories="de-time-and-seasons">
+        <ocgs id="142" inc="true" /><!-- Yes! Not 141. -->
         <opencaching schema="OCDE" id="41" />
         <opencaching schema="OCUK" id="41" />
         <lang id="en">
@@ -2019,6 +2050,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A49" categories="de-tools">
+        <ocgs id="147" inc="true" />
         <opencaching schema="OCPL" id="47" />
         <opencaching schema="OCDE" id="47" />
         <opencaching schema="OCNL" id="47" />
@@ -2068,6 +2100,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A50" categories="de-tools">
+        <ocgs id="113" inc="true" />
         <opencaching schema="OCPL" id="48" />
         <opencaching schema="OCNL" id="48" />
         <opencaching schema="OCRO" id="48" />
@@ -2102,6 +2135,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A51" categories="de-tools">
+        <ocgs id="121" inc="true" />
         <opencaching schema="OCPL" id="81" />
         <opencaching schema="OCRO" id="81" />
         <opencaching schema="OCNL" id="81" />
@@ -2220,6 +2254,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A54" categories="de-tools">
+        <ocgs id="150" inc="true" />
         <opencaching schema="OCDE" id="50" />
         <opencaching schema="OCUK" id="50" />
         <lang id="en">
@@ -2424,6 +2459,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A58" categories="de-tools">
+        <ocgs id="135" inc="true" />
         <opencaching schema="OCDE" id="35" />
         <opencaching schema="OCUK" id="35" />
         <lang id="en">
@@ -2521,6 +2557,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A60" categories="de-dangers">
+        <ocgs id="110" inc="true" />
         <opencaching schema="OCDE" id="10" />
         <opencaching schema="OCUK" id="10" />
         <lang id="en">
@@ -2873,6 +2910,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A68" categories="de-rating">
+        <ocgs id="111" inc="true" />
         <opencaching schema="OCPL" id="40" />
         <opencaching schema="OCRO" id="40" />
         <opencaching schema="OCNL" id="40" />
@@ -2909,6 +2947,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A69" categories="de-rating">
+        <ocgs id="137" inc="true" />
         <opencaching schema="OCDE" id="37" />
         <opencaching schema="OCUK" id="37" />
         <lang id="en">
@@ -3035,6 +3074,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A72" categories="de-cache-types">
+        <ocgs id="161" inc="true" />
         <opencaching schema="OCDE" id="61" />
         <lang id="en">
             <name>Reverse Cache</name>
@@ -3124,6 +3164,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A75" categories="de-tools">
+        <ocgs id="153" inc="true" />
         <opencaching schema="OCDE" id="53" /><!-- deprecated -->
         <opencaching schema="OCUK" id="156" />
         <lang id="en">
@@ -3166,6 +3207,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A76" categories="de-accessibility">
+        <ocgs id="125" inc="true" />
         <opencaching schema="OCUK" id="157" />
         <lang id="en">
             <name>Rated on Handicaching.com</name>
@@ -3205,6 +3247,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A77" categories="de-cache-types">
+        <ocgs id="126" inc="true" />
         <opencaching schema="OCUK" id="158" />
         <lang id="en">
             <name>Contains a Munzee</name>
