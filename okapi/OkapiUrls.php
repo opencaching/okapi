@@ -12,6 +12,7 @@ class OkapiUrls
     public static $mapping = array(
         '^(services/.*)\.html$' => 'method_doc',
         '^(services/.*)$' => 'method_call',
+        '^count_geocache_view$' => 'count_geocache_view',
         '^introduction\.html$' => 'introduction',
         '^signup\.html$' => 'signup',
         '^examples\.html$' => 'examples',
@@ -25,6 +26,7 @@ class OkapiUrls
         '^update/?$' => 'update',
         '^cron5$' => 'cron5',
         '^devel/attrlist$' => 'devel/attrlist',
+        '^devel/counterreport$' => 'devel/counterreport',
         '^devel/dbstruct$' => 'devel/dbstruct',
         '^devel/cronreport$' => 'devel/cronreport',
         '^devel/tilereport$' => 'devel/tilereport',
