@@ -1686,6 +1686,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
         <groundspeak id="13" inc="false" name="Available at all times" />
         <opencaching schema="OCDE" id="39" />
         <opencaching schema="OCNL" id="39" />
+        <opencaching schema="OCRO" id="39" />
         <opencaching schema="OCUK" id="39" />
         <lang id="en">
             <name>Not available 24/7</name>
@@ -3123,6 +3124,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
     </attr>
 
     <attr acode="A75" categories="de-tools">
+        <opencaching schema="OCDE" id="53" /><!-- deprecated -->
         <opencaching schema="OCUK" id="156" />
         <lang id="en">
             <name>Aircraft required</name>
@@ -3216,6 +3218,12 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
                 Pamięć podręczna zawiera również munzee lub kryjówka jest bardzo blisko jeden.
             </desc>
         </lang>
+        <lang id="de">
+            <name>Enthält einen Munzee</name>
+            <desc>
+                Am Cache oder in der Nähe befindet sich auch ein Munzee.
+            </desc>
+        </lang>
         <lang id="nl">
             <name>Bevat een munzee</name>
             <desc>
@@ -3226,12 +3234,6 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
             <name>Conţine Munzee</name>
             <desc>
                 Geocutia conţine un Munzee sau există un Munzee în imediata apropiere a acesteia.
-            </desc>
-        </lang>
-        <lang id="de">
-            <name>Enthält einen Munzee</name>
-            <desc>
-                Der Cache enthält auch ein Munzee oder das Versteck ist sehr nah.
             </desc>
         </lang>
     </attr>
