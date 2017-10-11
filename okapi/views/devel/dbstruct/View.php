@@ -86,19 +86,15 @@ class View
             {
                 $response->body = '';
                 try {
-                    $alternate_struct = @file_get_contents($_GET['compare_to']);
+                    $context = [
+                        # see https://github.com/opencaching/okapi/issues/494
+                        'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]
+                    ];
+                    $alternate_struct = @file_get_contents($_GET['compare_to'], false, stream_context_create($context));
                 } catch (Exception $e) {
-                    # curl fallback;
-                    # see https://github.com/opencaching/okapi/issues/494.
-
-                    $alternate_struct = shell_exec('curl --insecure "'.$_GET['compare_to'].'"');
-                    if (strlen($alternate_struct) < 10000) {
-                        # curl should not output any sensitive information.
-                        # Let's return the error message.
-                        $errormsg = shell_exec('curl "'.$_GET['compare_to'].'" 2>&1 >/dev/null');
-                        throw new BadRequest("Failed to load ".$_GET['compare_to'].": ".$errormsg);
-                    }
-                    $response->body .= "-- [using fallback]\n\n";
+                    # The error message should not contain any sensitive information,
+                    # so let's return it.
+                    throw new BadRequest("Failed to load ".$_GET['compare_to'].": ".$e->getMessage());
                 }
                 $response->body .=
                     "-- Automatically generated database diff. Use with caution!\n".
