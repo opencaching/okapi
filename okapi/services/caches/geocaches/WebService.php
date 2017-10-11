@@ -240,13 +240,7 @@ class WebService
                     case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
                     case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
                     case 'needs_maintenance': $entry['needs_maintenance'] = $row['needs_maintenance'] > 0; break;
-                    case 'url':
-                        // str_replace is temporary - https://forum.opencaching.pl/viewtopic.php?f=6&t=7089&p=136968#p136968
-                        $entry['url'] = (
-                            str_replace("https://", "http://", Settings::get('SITE_URL')).
-                            "viewcache.php?wp=".$row['wp_oc']
-                        );
-                        break;
+                    case 'url': $entry['url'] = Settings::get('SITE_URL')."viewcache.php?wp=".$row['wp_oc']; break;
                     case 'owner':
                         $owner_ids[$row['wp_oc']] = $row['user_id'];
                         /* continued later */
@@ -632,7 +626,7 @@ class WebService
                 }
                 $image = array(
                     'uuid' => $row['uuid'],
-                    'url' => $row['url'],
+                    'url' => Okapi::use_current_site_url($row['url']),
                     'thumb_url' => Settings::get('SITE_URL') . 'thumbs.php?'.$object_type_param.'uuid=' . $row['uuid'],
                     'caption' => $row['title'],
                     'unique_caption' => self::get_unique_caption($row['title']),

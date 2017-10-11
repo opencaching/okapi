@@ -1080,10 +1080,24 @@ class Okapi
     }
 
     /**
+     * Replace outdated SITE_URLs by the current site URL. So far, this is only
+     * implemented for http <-> https translation; see
+     * https://github.com/opencaching/okapi/issues/508.
+     */
+    public static function use_current_site_url($s)
+    {
+        $site_url = Settings::get('SITE_URL');
+        $other_scheme_url = strtr($site_url, ['http:' => 'https:', 'https:' => 'http:']);
+        return str_replace($other_scheme_url, $site_url, $s);
+    }
+
+    /**
      * "Fix" user-supplied HTML fetched from the OC database.
      */
     public static function fix_oc_html($html, $text_html)
     {
+        $html = Okapi::use_current_site_url($html);
+
         /* There are thousands of relative URLs in cache descriptions. We will
          * attempt to find them and fix them. In theory, the "proper" way to do this
          * would be to parse the description into a DOM tree, but that would simply
@@ -1104,8 +1118,7 @@ class Okapi
             # and https://github.com/opencaching/opencaching-pl/pull/1224.
             #
             # This might be restricted to log entries created by OKAPI (that are
-            # recorded in okapi_submitted_objects). However, they may have been
-            # edited later, so we don't know who created the HTML encoding.
+            # recorded in okapi_submitted_objects).
 
             $html = preg_replace('/&amp;#(38|60|62);/', '&#$1;', $html);
         }
