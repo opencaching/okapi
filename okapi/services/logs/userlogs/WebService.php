@@ -50,26 +50,31 @@ class WebService
 
         # User exists. Retrieving logs.
 
+        # If the user only requests the default fields or other "basic fields" which
+        # can easily be handled, we will directly serve the request. Otherwise we call
+        # the more expensive logs/entries method.
+
+        $basic_fields = ['uuid', 'date', 'cache_code', 'type', 'comment', 'internal_id'];
+        $only_basic_fields = true;
+
+        $fields_array = explode('|', $fields);
+        foreach ($fields_array as $field) {
+            if (!in_array($field, $basic_fields)) {
+                $only_basic_fields = false;
+                break;
+            }
+        }
+
+        if ($only_basic_fields)
+            $add_fields_SQL = ", unix_timestamp(cl.date) as date, c.wp_oc as cache_code, cl.type, cl.text, cl.text_html, cl.id";
+        else
+            $add_fields_SQL = "";
+
         # See caches/geocaches/WebService.php for explanation.
         if (Settings::get('OC_BRANCH') == 'oc.de') {
             $logs_order_field_SQL = 'order_date';
         } else {
             $logs_order_field_SQL = 'date';
-        }
-
-        # If the user only requests "basic fields" which can easily be handled,
-        # we will directly serve the request. Otherwise we call the more expensive
-        # logs/entries method.
-
-        $basic_fields = ['uuid', 'date', 'cache_code', 'type', 'comment', 'user', 'internal_id'];
-        $add_fields_SQL = ", unix_timestamp(cl.date) as date, c.wp_oc as cache_code, cl.type, cl.text, cl.id";
-
-        $fields_array = explode('|', $fields);
-        foreach ($fields_array as $field) {
-            if (!in_array($field, $basic_fields)) {
-                $add_fields_SQL = "";
-                break;
-            }
         }
 
         $query = "
@@ -84,7 +89,7 @@ class WebService
             limit $offset, $limit
         ";
 
-        if ($add_fields_SQL != "")
+        if ($only_basic_fields)
         {
             $rs = Db::query($query);
             $results = [];
@@ -95,16 +100,11 @@ class WebService
                     'date' => date('c', $row['date']),
                     'cache_code' => $row['cache_code'],
                     'type' => Okapi::logtypeid2name($row['type']),
-                    'comment' => $row['text'],
+                    'comment' => Okapi::fix_oc_html($row['text'], $row['text_html']),
                     'internal_id' => $row['id'],
                 );
             }
-
-            # Add user field, which probably noone will request.
-
-            if (in_array('user', $fields_array))
-                foreach ($results as &$result_ref)
-                    $result_ref['user'] = $user_uuid;
+            Db::free_result($rs);
 
             # Remove unwanted fields.
 
