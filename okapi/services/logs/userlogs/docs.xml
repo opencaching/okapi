@@ -7,6 +7,11 @@
     <req name='user_uuid'>
         <p>ID of the user. (Use services/users/by_username to get it.)</p>
     </req>
+    <opt name='fields' default='uuid|date|cache_code|type|comment'>
+        Pipe-separated list of log fields to include in the response. For valid
+        field names, see the <a href='%OKAPI:methodargref:services/logs/entry%'>
+        services/logs/entry</a> method.
+    </opt>
     <opt name='limit' default='20'>
         <p>Integer N. If given, no more than N logs will be returned (the most recent ones).
         Maximum allowed value is 1000.</p>
@@ -19,27 +24,8 @@
     <common-format-params/>
     <returns>
         <p>A list of log entries, ordered by descending date. Each entry is a
-        dictionary of the following format:</p>
-
-        <ul>
-            <li><b>uuid</b> - ID of the log entry,</li>
-            <li>
-                <p><b>date</b> - date and time (ISO 8601) when the log entry was submitted.</p>
-                <p>Please note that log entries often contain dates only (with the times
-                truncated to midnight, as in the local timezone). In such cases, you may
-                want to avoid displaying the time. You may assume that if the <b>date</b>
-                value contains the "00:00:00" string, then it is date-only.</p>
-            </li>
-            <li><b>cache_code</b> - code of the geocache,</li>
-            <li>
-                <p><b>type</b> - string; log type. This could be <b>pretty much
-                everything</b>, but there are some primary types (see logs/entry
-                method for more info).</p>
-            </li>
-            <li>
-                <b>comment</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>, text entered
-                with the log entry.
-            </li>
-        </ul>
+        dictionary of the requested log fields. For a description of the field
+        values, see the <a href='%OKAPI:methodargref:services/logs/entry%'>
+        services/logs/entry</a> method.</p>
     </returns>
 </xml>
