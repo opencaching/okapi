@@ -37,4 +37,4 @@ class OkapiUrls
     );
 }
 
-# This line is used for commit-hooks testing: ...........>
+# This line is used for commit-hooks testing: ............>
