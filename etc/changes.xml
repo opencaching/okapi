@@ -16,9 +16,6 @@
 
     -->
     <changes>
-        <change commit="ec026000" version="1676" time="2017-10-12T22:10:37+0200" type="enhancement">
-            Added 'log_user_uuids' parameter to the geocache retrieval methods.
-        </change>
         <change commit="542352ec" version="1675" time="2017-10-12T22:10:29+0200" type="enhancement">
             Added 'fields' parameter to <a href="services/logs/userlogs.html">services/logs/userlogs</a>.
         </change>

@@ -180,7 +180,6 @@ class WebService
         $lpc = $request->get_parameter('lpc');
         if ($lpc === null) $lpc = 10; # will be checked in services/caches/geocaches call
 
-        $log_user_uuids = $request->get_parameter('log_user_uuids');
         $user_uuid = $request->get_parameter('user_uuid');
 
         # location_source (part 1 of 2)
@@ -234,8 +233,7 @@ class WebService
                     'fields' => $fields,
                     'lpc' => $lpc,
                     'user_uuid' => $user_uuid,
-                    'log_fields' => 'uuid|date|user|type|comment|oc_team_entry|internal_id|was_recommended',
-                    'log_user_uuids' => $log_user_uuids,
+                    'log_fields' => 'uuid|date|user|type|comment|oc_team_entry|internal_id|was_recommended'
                 )
             )
         );

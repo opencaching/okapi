@@ -190,10 +190,6 @@
         This should be an integer or a special "all" value. Please note, that the <b>ns_ground</b>
         and <b>latest_logs</b> arguments must be set to <b>true</b> in order for the logs to be included.
     </opt>
-    <opt name='log_user_uuids' default='(empty string)'>
-        Pipe-separated list of user IDs. If non-empty, only log entries of these users
-        will be included in the <b>latest_logs</b> field. Invalid IDs are ignored here.
-    </opt>
     <opt name='alt_wpts' default='false'>
         <p>Boolean. If <b>true</b> then we will include additional (alternate) waypoints in the response.
         These are all places associated with the cache.</p>

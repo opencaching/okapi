@@ -60,10 +60,6 @@
         Pipe-separated list of log fields to include in the <b>latest_logs</b> field.
         For valid field names, see <b>logs/entry</b> method.
     </opt>
-    <opt name='log_user_uuids' default='(empty string)'>
-        Pipe-separated list of user IDs. If non-empty, only log entries of these users
-        will be included in the <b>latest_logs</b> field. Invalid IDs are ignored here.
-    </opt>
     <opt name='my_location'>
         <p>The reference point for cache distance and bearing calculation (typically - the user's location),
         in the "lat|lon" format. This parameter is required when accessing <b>distance</b> and/or <b>bearing</b>

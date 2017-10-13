@@ -95,6 +95,9 @@ class WebService
         if (!in_array($attribution_append, array('none', 'static', 'full')))
             throw new InvalidParam('attribution_append');
 
+        $log_fields = $request->get_parameter('log_fields');
+        if (!$log_fields) $log_fields = "uuid|date|user|type|comment";  // validation is done on call
+
         $user_uuid = $request->get_parameter('user_uuid');
         if ($user_uuid != null)
         {
@@ -109,9 +112,6 @@ class WebService
         else
             $user_id = null;
 
-        $log_fields = $request->get_parameter('log_fields');
-        if (!$log_fields) $log_fields = "uuid|date|user|type|comment";  // validation is done on call
-
         $lpc = $request->get_parameter('lpc');
         if ($lpc === null) $lpc = 10;
         if ($lpc == 'all')
@@ -124,10 +124,6 @@ class WebService
             if ($lpc < 0)
                 throw new InvalidParam('lpc', "Must be a positive value.");
         }
-
-        $log_user_uuids = $request->get_parameter('log_user_uuids');
-        # Invalid UUIDs are intentionally ignored here. This MUST NOT be changed
-        # to stay backward compatible.
 
         if (in_array('distance', $fields) || in_array('bearing', $fields) || in_array('bearing2', $fields)
             || in_array('bearing3', $fields))
@@ -697,16 +693,6 @@ class WebService
 
         if (in_array('latest_logs', $fields))
         {
-            if ($log_user_uuids) {
-                $log_user_uuids = explode('|', $log_user_uuids);
-                $log_user_uuids_ecaped = array_map('\okapi\core\Db::escape_string', $log_user_uuids);
-                $add_from_sql = ", user";
-                $add_where_sql = " and user.user_id=cache_logs.user_id and user.uuid in ('".implode("','", $log_user_uuids_ecaped)."')";
-            } else {
-                $add_from_sql = "";
-                $add_where_sql = "";
-            }
-
             foreach ($results as &$result_ref)
                 $result_ref['latest_logs'] = array();
 
@@ -728,13 +714,12 @@ class WebService
             }
 
             $rs = Db::query("
-                select cache_id, cache_logs.uuid
-                from cache_logs".$add_from_sql."
+                select cache_id, uuid
+                from cache_logs
                 where
                     cache_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', array_keys($cacheid2wptcode)))."')
-                    and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true").
-                    $add_where_sql."
-                order by cache_id, ".$logs_order_field_SQL." desc, cache_logs.date_created desc, cache_logs.id desc
+                    and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
+                order by cache_id, ".$logs_order_field_SQL." desc, date_created desc, id desc
             ");
 
             $loguuids = array();
