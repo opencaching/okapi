@@ -1,0 +1,77 @@
+<xml>
+    <brief>Report a problem with a geocache</brief>
+    <issue-id>TODO</issue-id>
+    <desc>
+        <p>This method allows your user to report a problem with a geocache to
+        the Opencaching site's team.</p>
+        <!-- TODO: link the terms of use here. -->
+    </desc>
+    <req name='cache_code'>
+        <p>Code of the geocache.</p>
+    </req>
+    <req name='recipient'>
+        <p>The recipient of the report. Currently there is only one possible value:</p>
+        <ul>
+            <li>
+                <b>OC Team</b> - stores the report at the OC site. It will
+                eventually be processed by an OC team member. Only geocaches that
+                do not (or no longer) comply to the site's terms of use should be
+                reported to the team.
+                <!-- TODO: link the terms of user here -->
+            </li>
+        </ul>
+        <p>Please instruct your user to contact the geocache's owner first in
+        non-urgent cases, before reporting to the OC team. The owner currently
+        cannot be contacted via OKAPI but only through the OC website.
+        You may link to the owner's profile page as given
+        by <a href="%OKAPI:methodargref:services/users/user%">services/users/user</a>;
+        there is an email button.</p>
+    </req>
+    <req name='reason'>
+        <p>String - the reason for the report; any of the reason values as returned
+        by <a href="%OKAPI:methodargref:services/caches/reports/reasons%">services/caches/reports/reasons</a>.</p>
+        <p>It is recommended to let the user choose out of a list of all allowed
+        reasons for the OC site, and to display the corresponding explanation, as
+        returned by services/caches/reports/reasons, for the selected reason.</p>
+    </req>
+    <req name='comment'>
+        <p>Plain text comment to be submitted with the report, which explains
+        the problem of the geocache. Must not be empty.</p>
+        <p>Note that there may by further restrictions on what reports are
+        accepted. If the report is rejected, the <b>success</b> return value will
+        be <b>false</b>, and <b>message</b> will give the reason for rejection.</p>
+    </req>
+    <opt name='langpref' default='en'>
+        <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+        order of preference in which language will be chosen for success or error
+        messages.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>
+                <p><b>success</b> - true, if the report was submitted
+                successfully.</p>
+            </li>
+            <li>
+                <b>message</b> - plain-text string; a message for the user,
+                which acknowledges success or describes an error.
+            </li>
+            <li>
+              <b>report_uuid</b> - ID of the newly created report, or <b>null</b>
+              in case of an error.
+            </li>
+            <li>
+                <b>queue_position</b>:
+                <ul>
+                    <li>the 1-based number of the new report in the list of
+                    unprocessed reports, after successfully submitting to the OC
+                    team; e.g. 5 means that there are four reports waiting which
+                    probably will be processed first;</li>
+                    <li><b>null</b> in case of an error.</li>
+                </ul>
+            </li>
+        </ul>
+    </returns>
+</xml>

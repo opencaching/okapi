@@ -1,0 +1,32 @@
+<xml>
+    <brief>Get the list of allowed geocache report reasons</brief>
+    <issue-id>TODO</issue-id>
+    <desc>
+        <p>This method returns an installation-dependent list of the allowed values
+        for the <b>reason</b> parameter of
+        <a href="%OKAPI:methodargref:services/caches/reports/submit%">services/caches/reports/submit</a>.</p>
+    </desc>
+    <opt name='langpref' default='en'>
+        <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+        order of preference in which language will be chosen for the
+        <b>title</b> and <b>explanation</b> return values.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>An array of dictionaries, each describing an allowed geocache report reason and
+        having the following structure:</p>
+        <ul>
+            <li>
+                <b>reason</b> - the string to be inserted as <em>reason</em> parameter
+                to services/caches/reports/submit,
+            </li>
+            <li>
+                <b>title</b> - the localized, user-readable title of the reason,
+            </li>
+            <li>
+              <b>explanation</b> - a localized, comprehensive explanation of the reason.
+            </li>
+        </ul>
+        <p>The list of allowed reasons may change at any time.</p>
+    </returns>
+</xml>

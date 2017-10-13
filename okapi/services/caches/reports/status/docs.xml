@@ -1,0 +1,23 @@
+<xml>
+    <brief>Query the status of geocache reports</brief>
+    <issue-id>TODO</issue-id>
+    <desc>
+        <p>This method queries the status of one or more geocache reports that were
+        submitted trough <a href="%OKAPI:methodargref:services/caches/reports/submit%">services/caches/reports/submit</a>.</p>
+        <!-- TODO: link the terms of use here. -->
+    </desc>
+    <req name='report_uuids'>
+        <p>Pipe-separated list of report IDs.</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary. The report IDs that you provide will be mapped to dictionary
+        keys. Each value will be either <b>null</b> if there is no report with
+        this ID, or one of these strings:</p>
+        <ul>
+            <li><b>Open</b> - the report is either waiting to be processed,
+            or someone is working on it.</li>
+            <li><b>Closed</b> - the report has been closed.</li>
+        </ul>
+    </returns>
+</xml>
