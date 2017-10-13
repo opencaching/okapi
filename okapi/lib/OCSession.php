@@ -24,22 +24,30 @@ class OCSession
             return null;
         }
 
-        $binary_content = base64_decode($_COOKIE[$cookie_name]);
-        if ($binary_content === false) {
-            return null;
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+        {
+            $OC_sessionid = $_COOKIE[$cookie_name];
+        }
+        else
+        {
+            $binary_content = base64_decode($_COOKIE[$cookie_name]);
+            if ($binary_content === false) {
+                return null;
+            }
+
+            $OC_data = json_decode($binary_content, true);
+
+            if (!is_array($OC_data)) {
+                return null;
+            }
+
+            if (!isset($OC_data['sessionid'])) {
+                return null;
+            }
+
+            $OC_sessionid = $OC_data['sessionid'];
         }
 
-        $OC_data = json_decode($binary_content, true);
-
-        if (!is_array($OC_data)) {
-            return null;
-        }
-
-        if (!isset($OC_data['sessionid'])) {
-            return null;
-        }
-
-        $OC_sessionid = $OC_data['sessionid'];
         if (!$OC_sessionid) {
             return null;
         }
