@@ -107,7 +107,7 @@ class WebService
         $vars['latest_logs'] = $request->get_parameter('latest_logs');
         if (!in_array($vars['latest_logs'], array('true', 'user', 'false')))
             throw new InvalidParam('latest_logs');
-        if ($vars['latest_logs'] !== 'false' && (!$vars['ns_ground']))
+        if ($vars['latest_logs'] != 'false' && (!$vars['ns_ground']))
             throw new BadRequest("In order for 'latest_logs' to work you have to also include 'ns_ground' extensions.");
 
         $tmp = $request->get_parameter('my_notes');
