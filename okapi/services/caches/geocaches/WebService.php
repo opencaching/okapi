@@ -126,7 +126,9 @@ class WebService
         }
 
         $user_logs_only = $request->get_parameter('user_logs_only');
-        if (!in_array($user_logs_only, array('true', 'false')))
+        if ($user_logs_only === null)
+            $user_logs_only = 'false';
+        elseif (!in_array($user_logs_only, array('true', 'false')))
             throw new InvalidParam('user_logs_only', "Unknown option: '$user_logs_only'.");
 
         if (in_array('distance', $fields) || in_array('bearing', $fields) || in_array('bearing2', $fields)
