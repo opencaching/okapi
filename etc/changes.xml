@@ -16,8 +16,13 @@
 
     -->
     <changes>
+        <change commit="456d1b40" version="1680" time="2017-10-13T17:10:50+0200" type="enhancement">
+            Added the <em>user_logs_only</em> option the geocache retrieval methods,
+            and corresponding <em>latest_logs=user</em> option to the GPX download
+            methods.
+        </change>
         <change commit="542352ec" version="1675" time="2017-10-12T22:10:29+0200" type="enhancement">
-            Added 'fields' parameter to <a href="services/logs/userlogs.html">services/logs/userlogs</a>.
+            Added <em>fields</em> parameter to <a href="services/logs/userlogs.html">services/logs/userlogs</a>.
         </change>
         <change commit="1d66caac" version="1659" time="2017-10-06T15:10:53+0200" type="enhancement">
             Added the <a href="https://github.com/opencaching/gpx-extension-v1">Opencaching
