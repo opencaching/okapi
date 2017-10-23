@@ -3,6 +3,7 @@
 namespace okapi\views\devel\test;
 
 use Exception;
+use Okapi\Settings;
 use okapi\core\Cache;
 use okapi\core\Okapi;
 use okapi\core\Response\OkapiHttpResponse;
@@ -16,11 +17,10 @@ class View
         # This is a hidden page for OKAPI developers. It will perform some
         # diagnostic tasks.
 
-        # See https://github.com/opencaching/okapi/issues/506.
-        # If someone misuses this hidden feature, we may need to disable it.
-
         $body = '';
-        if (isset($_GET['adminmail'])) {
+
+        # See https://github.com/opencaching/okapi/issues/506.
+        if (isset($_GET['adminmail']) && Settings::get('DEBUG') == true) {
             Okapi::mail_admins(
                 $_GET['adminmail'],
                 "This is a manually generated test email for OKAPI admin notification.\n" .
@@ -46,7 +46,7 @@ class View
             }
         }
 
-        if (isset($_GET['exception']))
+        if (isset($_GET['exception']) && Settings::get('DEBUG') == true)
             throw new Exception("Testing OKAPI exception handling. " . $_GET['exception']);
 
         if (isset($_GET['cronjob']) && isset($_GET['key']))
