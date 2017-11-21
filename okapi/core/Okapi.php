@@ -1162,7 +1162,7 @@ class Okapi
     public static function require_developer_cookie() {
         if (
             (!isset($_COOKIE['okapi_devel_key']))
-            || (md5($_COOKIE['okapi_devel_key']) != '5753f318c1495c01637f7f6b7fc9c5db')
+            || (md5($_COOKIE['okapi_devel_key']) !== '5753f318c1495c01637f7f6b7fc9c5db')
         ) {
             header("Content-Type: text/plain; charset=utf-8");
             print "I need a cookie!";
