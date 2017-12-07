@@ -68,7 +68,7 @@ class AdminStatsSender extends Cron5Job
             if (mb_strlen($name) > 35)
                 $name = mb_substr($name, 0, 32)."...";
             print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
-            print str_pad(number_format($row['http_calls']), 8, " ", STR_PAD_LEFT);
+            print str_pad(number_format($row['http_calls']), 10, " ", STR_PAD_LEFT);
             print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)."s\n";
         }
         print "\n";
@@ -92,7 +92,7 @@ class AdminStatsSender extends Cron5Job
             if (mb_strlen($name) > 35)
                 $name = mb_substr($name, 0, 32)."...";
             print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
-            print str_pad(number_format($row['http_calls']), 8, " ", STR_PAD_LEFT);
+            print str_pad(number_format($row['http_calls']), 10, " ", STR_PAD_LEFT);
             print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)."s";
             print str_pad(sprintf("%01.4f", (
                 ($row['http_calls'] > 0) ? ($row['http_runtime'] / $row['http_calls']) : 0
