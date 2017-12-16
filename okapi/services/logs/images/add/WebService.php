@@ -272,14 +272,21 @@ class WebService
             # The PHP Exif module can read EXIF data only from files. To avoid
             # disk I/O overhead, we pipe the image string through a pseudo-file:
 
-            $exif_data = exif_read_data("data://image/jpeg;base64," . $base64_image);
-            if ($exif_data && isset($exif_data['Orientation'])) {
-                switch ($exif_data['Orientation'])
-                {
-                    case 3: $image = imagerotate($image, 180, 0); break;
-                    case 6: $image = imagerotate($image, -90, 0); break;
-                    case 8: $image = imagerotate($image, 90, 0); break;
+            try
+            {
+                $exif_data = exif_read_data("data://image/jpeg;base64," . $base64_image);
+                if ($exif_data && isset($exif_data['Orientation'])) {
+                    switch ($exif_data['Orientation'])
+                    {
+                        case 3: $image = imagerotate($image, 180, 0); break;
+                        case 6: $image = imagerotate($image, -90, 0); break;
+                        case 8: $image = imagerotate($image, 90, 0); break;
+                    }
                 }
+            }
+            catch (Excption $e)
+            {
+                # ignore bad EXIF data; it will be discarded anyway
             }
         }
 
