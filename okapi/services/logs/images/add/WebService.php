@@ -284,7 +284,7 @@ class WebService
                     }
                 }
             }
-            catch (Excption $e)
+            catch (Exception $e)
             {
                 # ignore bad EXIF data; it will be discarded anyway
             }
