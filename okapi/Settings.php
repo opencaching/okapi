@@ -271,7 +271,7 @@ final class Settings
         foreach ($boolean_keys as $key)
             if (!in_array($dict[$key], array(true, false)))
                 throw new Exception("Invalid value for $key.");
-        if (count($dict['ADMINS']) == 0)
+        if (!is_array($dict['ADMINS']) || count($dict['ADMINS']) == 0)
             throw new Exception("ADMINS array has to filled (e.g. array('root@localhost')).");
         if ($dict['DEBUG'] == false)
             foreach ($dict as $k => $v)
