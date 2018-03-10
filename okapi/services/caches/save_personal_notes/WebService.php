@@ -171,6 +171,16 @@ class WebService
                         NOW(), 0,
                         '".Db::escape_string($new_notes)."'
                     )
+
+                    # Workaround for https://github.com/opencaching/okapi/issues/530.
+                    # May be simplified by changing the whole OCPL implementation to an
+                    # 'insert ... on duplicate update', but this way we need not to rely
+                    # on the existence of indexes:
+
+                    on duplicate key update
+                        `desc` = '".Db::escape_string($new_notes)."',
+                        desc_html = 0,
+                        date = NOW()
                 ");
             } else {
                 Db::query("
