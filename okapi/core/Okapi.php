@@ -313,6 +313,7 @@ class Okapi
             case 'OCNL':
                 $urls = array(
                     "http://www.opencaching.nl/okapi/",
+                    "https://www.opencaching.nl/okapi/",
                 );
                 break;
             case 'OCRO':
