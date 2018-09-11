@@ -90,6 +90,9 @@
 
         <p><b>Note:</b> Not all OC servers use all of these. I.e. OCPL does not
         have 'nano' nor 'other' caches (but it might have them in the future).</p>
+
+        <p><b>Notice:</b> If you want to include all cache sizes <b>except</b>
+        the given ones, prepend your list with the "-" sign.</p>
     </opt>
     <opt name='rating' infotags="ocpl-specific">
         <p>A string "X-Y", where X and Y are integers

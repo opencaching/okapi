@@ -170,20 +170,23 @@ class SearchAssistant
                 $tmp = substr($tmp, 1);
                 $operator = "not in";
             }
-            $types = array();
+            $sizes  = array();
             foreach (explode("|", $tmp) as $name)
             {
                 try
                 {
                     $id = Okapi::cache_size2_to_sizeid($name);
-                    $types[] = $id;
+                    $sizes[] = $id;
                 }
                 catch (Exception $e)
                 {
                     throw new InvalidParam('size2', "'$name' is not a valid cache size.");
                 }
             }
-            $where_conds[] = "caches.size $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $types))."')";
+            if (count($sizes) > 0)
+                $where_conds[] = "caches.size $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $sizes))."')";
+            else if ($operator == "in")
+                $where_conds[] = "false";
         }
 
         #
@@ -227,10 +230,13 @@ class SearchAssistant
             {
                 throw new InvalidParam('owner_uuid', $e->whats_wrong_about_it);
             }
-            $user_ids = array();
-            foreach ($users as $user)
-                $user_ids[] = $user['internal_id'];
-            $where_conds[] = "caches.user_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $user_ids))."')";
+            if (count($users) > 0) {
+                $user_ids = array();
+                foreach ($users as $user)
+                    $user_ids[] = $user['internal_id'];
+                $where_conds[] = "caches.user_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $user_ids))."')";
+            } else if ($operator == "in")
+                $where_conds[] = "false";
         }
 
         #
@@ -382,7 +388,10 @@ class SearchAssistant
             {
                 $found_cache_ids = self::get_found_cache_ids(array($this->request->token->user_id));
                 $operator = ($tmp == 'found_only') ? "in" : "not in";
-                $where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
+                if (count($found_cache_ids) > 0)
+                    $where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
+                else if ($operator == 'in')
+                    $where_conds[] = "false";
             }
         }
 
