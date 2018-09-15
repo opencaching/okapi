@@ -21,7 +21,7 @@ class WebService
     public static function call(OkapiRequest $request)
     {
         $since = $request->get_parameter('since');
-        if ($since === null) throw new ParamMissing('since');
+        if (!$since) throw new ParamMissing('since');
         if ((int)$since != $since) throw new InvalidParam('since');
 
         # Let's check the $since parameter.
