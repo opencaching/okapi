@@ -53,7 +53,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
         <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
             <time><?= $c['date_created'] ?></time>
             <name><?= $c['code'] ?></name>
-            <desc><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?> <?= _("hidden by") ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= $c['difficulty'] ?>/<?= $c['terrain'] ?><?php if ($c['size'] !== null) { echo "/".$c['size']; } else { echo "/X"; } ?>/<?= $c['rating'] ?>)</desc>
+            <desc><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?> <?= _("hidden by") ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= Okapi::float2string($c['difficulty']) ?>/<?= Okapi::float2string($c['terrain']) ?><?php if ($c['size'] !== null) { echo "/".$c['size']; } else { echo "/X"; } ?>/<?= Okapi::float2string($c['rating']) ?>)</desc>
             <url><?= $c['url'] ?></url>
             <urlname><?= Okapi::xmlescape($c['name']) ?></urlname>
             <sym><?= ($vars['mark_found'] && $c['is_found']) ? "Geocache Found" : "Geocache" ?></sym>
@@ -77,8 +77,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                             ?>
                         </groundspeak:attributes>
                     <?php } ?>
-                    <groundspeak:difficulty><?= $c['difficulty'] ?></groundspeak:difficulty>
-                    <groundspeak:terrain><?= $c['terrain'] ?></groundspeak:terrain>
+                    <groundspeak:difficulty><?= Okapi::float2string($c['difficulty']) ?></groundspeak:difficulty>
+                    <groundspeak:terrain><?= Okapi::float2string($c['terrain']) ?></groundspeak:terrain>
                     <?php if ($c['short_description']) { ?>
                         <groundspeak:short_description html="False"><?= Okapi::xmlescape($c['short_description']) ?></groundspeak:short_description>
                     <?php } ?>
@@ -185,10 +185,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
             <?php if ($vars['ns_ox']) { /* Does user want us to include Garmin's <opencaching> element? */ ?>
                 <ox:opencaching>
                     <ox:ratings>
-                        <?php if ($c['rating'] !== null) { ?><ox:awesomeness><?= $c['rating'] ?></ox:awesomeness><?php } ?>
-                        <ox:difficulty><?= $c['difficulty'] ?></ox:difficulty>
-                        <?php if ($c['oxsize'] !== null) { ?><ox:size><?= $c['oxsize'] ?></ox:size><?php } ?>
-                        <ox:terrain><?= $c['terrain'] ?></ox:terrain>
+                        <?php if ($c['rating'] !== null) { ?><ox:awesomeness><?= Okapi::float2string($c['rating']) ?></ox:awesomeness><?php } ?>
+                        <ox:difficulty><?= Okapi::float2string($c['difficulty']) ?></ox:difficulty>
+                        <?php if ($c['oxsize'] !== null) { ?><ox:size><?= Okapi::float2string($c['oxsize']) ?></ox:size><?php } ?>
+                        <ox:terrain><?= Okapi::float2string($c['terrain']) ?></ox:terrain>
                     </ox:ratings>
                     <?php if (in_array('ox:tags', $vars['attrs']) && count($c['attrnames']) > 0) { /* Does user want us to include ox:tags? */ ?>
                         <ox:tags><ox:tag><?= implode("</ox:tag><ox:tag>", $c['attrnames']) ?></ox:tag></ox:tags>
@@ -212,10 +212,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                     <oc:type><?= $vars['cache_GPX_types'][$c['type']]['oc'] ?></oc:type>
                     <oc:size><?= $vars['cache_GPX_sizes'][$c['size2']]['oc'] ?></oc:size>
                     <?php if ($c['trip_time'] > 0) { ?>
-                        <oc:trip_time><?= $c['trip_time'] ?></oc:trip_time>
+                        <oc:trip_time><?= Okapi::float2string($c['trip_time']) ?></oc:trip_time>
                     <?php } ?>
                     <?php if ($c['trip_distance'] > 0) { ?>
-                        <oc:trip_distance><?= $c['trip_distance'] ?></oc:trip_distance>
+                        <oc:trip_distance><?= Okapi::float2string($c['trip_distance']) ?></oc:trip_distance>
                     <?php } ?>
                     <oc:requires_password><?= ($c['req_passwd'] ? "true" : "false") ?></oc:requires_password>
                     <?php if ($c['gc_code']) { ?>

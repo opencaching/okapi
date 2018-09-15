@@ -247,6 +247,10 @@ class SearchAssistant
         {
             if ($tmp = $this->request->get_parameter($param_name))
             {
+                # Note:
+                # If searching for float terrain or difficulty values is enabled (e.g. 2.5-4),
+                # $min and $max need to be passed through Db::escape_float; see issue #536.
+
                 if (!preg_match("/^[1-5]-[1-5](\|X)?$/", $tmp))
                     throw new InvalidParam($param_name, "'$tmp'");
                 list($min, $max) = explode("-", $tmp);
@@ -300,8 +304,8 @@ class SearchAssistant
                                 /* no extra condition necessary */
                             } else {
                                 $divisors = array(-999, -1.0, 0.1, 1.4, 2.2, 999);
-                                $min = $divisors[$min - 1];
-                                $max = $divisors[$max];
+                                $min = Db::escape_float($divisors[$min - 1]);
+                                $max = Db::escape_float($divisors[$max]);
                                 $where_conds[] = "($X_SCORE >= $min and $X_SCORE < $max and $X_VOTES >= 3)".
                                     ($allow_null ? " or ($X_VOTES < 3)" : "");
                             }
@@ -330,7 +334,7 @@ class SearchAssistant
                 if ($tmp > 100 || $tmp < 0)
                     throw new InvalidParam('min_rcmds', "'$tmp'");
                 $tmp = floatval($tmp) / 100.0;
-                $where_conds[] = "$X_TOPRATINGS >= $X_FOUNDS * '".Db::escape_string($tmp)."'";
+                $where_conds[] = "$X_TOPRATINGS >= $X_FOUNDS * '".Db::escape_float($tmp)."'";
                 $where_conds[] = "$X_FOUNDS > 0";
             }
             else

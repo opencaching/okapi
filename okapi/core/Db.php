@@ -182,6 +182,11 @@ class Db
         return substr(self::$dbh->quote($value), 1, -1);  // soo ugly!
     }
 
+    public static function escape_float($value)
+    {
+        return Okapi::float2string(floatval($value));
+    }
+
     /**
      * Execute a given *non-SELECT* SQL statement. Return number of affected
      * rows (that is, rows updated, inserted or deleted by the statement).
