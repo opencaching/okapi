@@ -87,7 +87,7 @@ class Okapi
         if ($number == floor($number))
             return "$number";
         else
-            return trim(number_format($number, 10, '.', ''), '0');
+            return rtrim(number_format($number, 10, '.', ''), '0');
     }
 
     /** Get a variable stored in okapi_vars. If variable not found, return $default. */
