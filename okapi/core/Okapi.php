@@ -84,8 +84,8 @@ class Okapi
      */
     public static function float2string($number)
     {
-        if (round($number, 8) == round($number,0))
-            return "$number";
+        if (round($number, 8) == round($number, 0))
+            return "" . round($number, 0);
         else
             return rtrim(number_format($number, 9, '.', ''), '0');
     }
