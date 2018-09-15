@@ -333,9 +333,12 @@ class SearchAssistant
                 $where_conds[] = "$X_TOPRATINGS >= $X_FOUNDS * '".Db::escape_string($tmp)."'";
                 $where_conds[] = "$X_FOUNDS > 0";
             }
-            if (!is_numeric($tmp))
-                throw new InvalidParam('min_rcmds', "'$tmp'");
-            $where_conds[] = "$X_TOPRATINGS >= '".Db::escape_string($tmp)."'";
+            else
+            {
+                if (!is_numeric($tmp))
+                    throw new InvalidParam('min_rcmds', "'$tmp'");
+                $where_conds[] = "$X_TOPRATINGS >= '".Db::escape_string($tmp)."'";
+            }
         }
 
         #
