@@ -79,15 +79,15 @@ class Okapi
      * Convert float to string independent from LC_NUMERIC setting, which is not
      * thread-safe. See issue #536.
      *
-     * 10 decimal places should exceed the precision of all Okapi float output:
+     * 8 decimal places should exceed the precision of all Okapi float output:
      * Coordinates, Terrain/Difficulty, Ratings, OX sizes etc.
      */
     public static function float2string($number)
     {
-        if ($number == floor($number))
+        if (round($number, 8) == round($number,0))
             return "$number";
         else
-            return rtrim(number_format($number, 10, '.', ''), '0');
+            return rtrim(number_format($number, 9, '.', ''), '0');
     }
 
     /** Get a variable stored in okapi_vars. If variable not found, return $default. */
