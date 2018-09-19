@@ -659,10 +659,10 @@ class Okapi
      */
     public static function get_distance_sql($lat1, $lon1, $lat2, $lon2)
     {
-        $lat1 = Db::escape_float($lat1);
-        $lon1 = Db::escape_float($lon1);
-        $lat2 = Db::escape_float($lat2);
-        $lon2 = Db::escape_float($lon2);
+        if (is_numeric($lat1)) $lat1 = Db::escape_float($lat1);
+        if (is_numeric($lon1)) $lon1 = Db::escape_float($lon1);
+        if (is_numeric($lat2)) $lat2 = Db::escape_float($lat2);
+        if (is_numeric($lon2)) $lon2 = Db::escape_float($lon2);
 
         $x1 = "(90-$lat1) * 3.14159 / 180";
         $x2 = "(90-$lat2) * 3.14159 / 180";
