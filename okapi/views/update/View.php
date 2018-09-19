@@ -781,4 +781,18 @@ class View
             ");
         }
     }
+
+    private static function ver120()
+    {
+        # table for evaluation of geocache view counter
+
+        Db::execute("
+            CREATE TABLE okapi_geocache_views (
+                cache_id int(10) NOT NULL,
+                anonymized_ip int(10) NOT NULL,
+                viewed_at datetime NOT NULL,
+                KEY (viewed_at)
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+        ");
+    }
 }

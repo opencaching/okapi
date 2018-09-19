@@ -556,6 +556,9 @@ class WebService
                             ).
                             "</em></p>";
                     }
+
+                    $tmp .= '<img src="'.Okapi::get_recommended_base_url().'count_geocache_view?code='.$cache_code.'"/>';
+
                     $results[$cache_code]['descriptions'][strtolower($row['language'])] = $tmp;
                 }
                 if ($row['short_desc'])
