@@ -6,8 +6,8 @@
     or site admins. If you are not sure if a change is stable, consider
     to wait some time before you add it here.
 
-    New entries are inserted at the top with EMPTY version number and date.
-    Then run update_changes.php to insert the version numbers and dates.
+    New entries are inserted at the top with EMPTY version and time.
+    Then run update_changes.php to insert the version numbers and times.
 
     Only one entry per commit. If multiple things were changed with one
     commit, put them into one entry. This helps to detect copy-and-paste
@@ -16,6 +16,10 @@
 
     -->
     <changes>
+        <change commit="e4fabb8e" version="1710" time="2018-09-20T15:09:28+0200" type="enhancement">
+            <a href="services/logs/submit.html">services/logs/submit</a> now
+            rejects 'Attended' logs that are earlier than the event date.
+        </change>
         <change commit="456d1b40" version="1680" time="2017-10-13T17:10:50+0200" type="enhancement">
             Added the <em>user_logs_only</em> option the geocache retrieval methods,
             and corresponding <em>latest_logs=user</em> option to the GPX download
