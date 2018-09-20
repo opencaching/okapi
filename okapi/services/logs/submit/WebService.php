@@ -217,7 +217,7 @@ class WebService
             }
             else if ($logtype == 'Attended' && $when < strtotime($cache['date_hidden'])) {
                 throw new CannotPublishException(_(
-                    'You cannot attend an event before it took place. '.
+                    'You cannot attend an event before it takes place. '.
                     'Please check the log type and date.'
                 ));
             }
