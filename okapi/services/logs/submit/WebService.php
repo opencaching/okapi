@@ -194,7 +194,7 @@ class WebService
             'services/caches/geocache',
             new OkapiInternalRequest($request->consumer, null, array(
                 'cache_code' => $cache_code,
-                'fields' => 'internal_id|status|owner|type|req_passwd'
+                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd'
             ))
         );
         $user = OkapiServiceRunner::call(
@@ -213,6 +213,12 @@ class WebService
                 throw new CannotPublishException(_(
                     'This cache is an Event cache. You cannot "Find" it (but '.
                     'you can attend it, or comment on it)!'
+                ));
+            }
+            else if ($logtype == 'Attended' && $when < strtotime($cache['date_hidden'])) {
+                throw new CannotPublishException(_(
+                    'You cannot attend an event before it took place. '.
+                    'Please check the log type and date.'
                 ));
             }
         }
