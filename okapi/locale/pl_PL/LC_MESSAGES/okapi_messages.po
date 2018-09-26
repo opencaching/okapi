@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 15:50+0200\n"
-"PO-Revision-Date: 2017-06-15 15:50+0200\n"
-"Last-Translator: Wojciech Rygielski <rygielski@mimuw.edu.pl>\n"
+"POT-Creation-Date: 2018-09-26 10:27+0200\n"
+"PO-Revision-Date: 2018-09-26 10:28+0200\n"
+"Last-Translator: following <following@online.de>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
@@ -15,11 +15,21 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural= n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 1.8.7\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 
-#: services/caches/formatters/gpx.php:409
+#: services/caches/edit/WebService.php:65
+#, php-format
+msgid "The password must not be longer than %d characters."
+msgstr ""
+
+#: services/caches/edit/WebService.php:78
+#, php-format
+msgid "%s does not allow log passwords for traditional caches."
+msgstr ""
+
+#: services/caches/formatters/gpx/WebService.php:427
 msgid ""
 "<b>Geocache coordinates have been changed.</b> They have been replaced with "
 "your own custom coordinates which you have provided for this geocache."
@@ -27,7 +37,7 @@ msgstr ""
 "<b>Współrzędne skrzynki zostały zmienione.</b> Zostały zastąpione Twoimi "
 "osobistymi współrzędnymi, które wprowadziłeś na stronie tej skrzynki."
 
-#: services/caches/formatters/gpx.php:415
+#: services/caches/formatters/gpx/WebService.php:433
 msgid ""
 "<b>Geocache coordinates have been changed.</b> Currently they point to one "
 "of the alternate waypoints originally described as:"
@@ -35,21 +45,21 @@ msgstr ""
 "<b>Współrzędne skrzynki zostały zmienione.</b> Aktualnie wskazują one na "
 "jeden z dodatkowych waypointów, oryginalnie opisanego jako:"
 
-#: services/caches/formatters/gpx.php:428
+#: services/caches/formatters/gpx/WebService.php:446
 msgid "Original geocache location"
 msgstr "Oryginalne współrzędne skrzynki"
 
-#: services/caches/formatters/gpx.php:430
+#: services/caches/formatters/gpx/WebService.php:448
 #, php-format
 msgid "Original (owner-supplied) location of the %s geocache"
 msgstr "Oryginalne współrzędne skrzynki %s (podane przez autora)"
 
-#: services/caches/formatters/gpxfile.tpl.php:52
-#: services/caches/formatters/gpxfile.tpl.php:87
+#: services/caches/formatters/gpx/gpxfile.tpl.php:56
+#: services/caches/formatters/gpx/gpxfile.tpl.php:91
 msgid "hidden by"
 msgstr "ukryta przez"
 
-#: services/caches/formatters/gpxfile.tpl.php:89
+#: services/caches/formatters/gpx/gpxfile.tpl.php:93
 #, php-format
 msgid "%d recommendation"
 msgid_plural "%d recommendations"
@@ -57,7 +67,7 @@ msgstr[0] "%d rekomendacja"
 msgstr[1] "%d rekomendacje"
 msgstr[2] "%d rekomendacji"
 
-#: services/caches/formatters/gpxfile.tpl.php:90
+#: services/caches/formatters/gpx/gpxfile.tpl.php:94
 #, php-format
 msgid "found %d time"
 msgid_plural "found %d times"
@@ -65,7 +75,7 @@ msgstr[0] "znaleziona %d raz"
 msgstr[1] "znaleziona %d razy"
 msgstr[2] "znaleziona %d razy"
 
-#: services/caches/formatters/gpxfile.tpl.php:93
+#: services/caches/formatters/gpx/gpxfile.tpl.php:97
 #, php-format
 msgid "%d trackable"
 msgid_plural "%d trackables"
@@ -73,69 +83,69 @@ msgstr[0] "%d GeoKret (lub TravelBug)"
 msgstr[1] "%d GeoKrety (lub TravelBugi)"
 msgstr[2] "%d GeoKretów (lub TravelBugów)"
 
-#: services/caches/formatters/gpxfile.tpl.php:97
+#: services/caches/formatters/gpx/gpxfile.tpl.php:101
 msgid "Personal notes"
 msgstr "Osobiste notatki"
 
-#: services/caches/formatters/gpxfile.tpl.php:101
+#: services/caches/formatters/gpx/gpxfile.tpl.php:105
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: services/caches/formatters/gpxfile.tpl.php:105
+#: services/caches/formatters/gpx/gpxfile.tpl.php:109
 msgid "Trackables"
 msgstr "Geokrety, Travelbugi itp."
 
-#: services/caches/formatters/gpxfile.tpl.php:115
-#: services/caches/formatters/gpxfile.tpl.php:131
+#: services/caches/formatters/gpx/gpxfile.tpl.php:119
+#: services/caches/formatters/gpx/gpxfile.tpl.php:135
 msgid "Images"
 msgstr "Obrazki"
 
-#: services/caches/formatters/gpxfile.tpl.php:138
+#: services/caches/formatters/gpx/gpxfile.tpl.php:142
 msgid "Spoilers"
 msgstr "Spoilery"
 
-#: services/caches/formatters/gpxfile.tpl.php:147
+#: services/caches/formatters/gpx/gpxfile.tpl.php:151
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 
-#: services/caches/formatters/gpxfile.tpl.php:155
+#: services/caches/formatters/gpx/gpxfile.tpl.php:159
 msgid "The cache probably is located in the following protection areas:"
 msgstr "Prawdopodobnie skrzynka znajduje się na terenie obszarów chronionych:"
 
-#: services/caches/geocaches.php:541
+#: services/caches/geocaches/WebService.php:541
 msgid "Parts of this geocache listing may be outdated."
 msgstr "Opis tej skrzynki (lub jego część) może nie być aktualny."
 
-#: services/caches/geocaches.php:543
+#: services/caches/geocaches/WebService.php:543
 msgid "See the log entries for more information."
 msgstr ""
 "Przejrzyj wpisy w dzienniku w celu uzyskania dokładniejszych informacji."
 
-#: services/caches/geocaches.php:1050
+#: services/caches/geocaches/WebService.php:1063
 msgid "Stage"
 msgstr "Etap"
 
-#: services/caches/geocaches.php:1094
+#: services/caches/geocaches/WebService.php:1107
 msgid "User location"
 msgstr "Współrzędne użytkownika"
 
-#: services/caches/geocaches.php:1097
+#: services/caches/geocaches/WebService.php:1110
 #, php-format
 msgid "Your own custom coordinates for the %s geocache"
 msgstr "Twoje osobiste współrzędne skrzynki %s"
 
-#: services/caches/geocaches.php:1256
+#: services/caches/geocaches/WebService.php:1274
 msgid "National Park / Landscape"
 msgstr "Park narodowy lub krajobrazowy"
 
-#: services/caches/geocaches.php:1435
+#: services/caches/geocaches/WebService.php:1452
 #, php-format
 msgid ""
 "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</"
 "a> site."
 msgstr "Opis <a href='%s'>skrzynki</a> pochodzi z serwisu <a href='%s'>%s</a>."
 
-#: services/caches/geocaches.php:1447
+#: services/caches/geocaches/WebService.php:1464
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
@@ -146,7 +156,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>, w "
 "dniu %s. Prawa autorskie wpisów do logów należą do ich autorów."
 
-#: services/caches/geocaches.php:1458
+#: services/caches/geocaches/WebService.php:1475
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
@@ -157,14 +167,15 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>. Prawa "
 "autorskie wpisów do logów należą do ich autorów."
 
-#: services/logs/images/add.php:81 services/logs/images/edit.php:55
+#: services/logs/images/add/WebService.php:78
+#: services/logs/images/edit/WebService.php:52
 #, php-format
 msgid "%s requires all images to have captions. Please provide one."
 msgstr ""
 "%s wymaga, aby wszystkie obrazki miały swoje tytuły. Tytuł nie może pozostać "
 "pusty."
 
-#: services/logs/images/add.php:106
+#: services/logs/images/add/WebService.php:103
 #, php-format
 msgid ""
 "Your image file is too large (%s.%s MB); %s accepts a maximum image size of "
@@ -173,18 +184,19 @@ msgstr ""
 "Twój plik z obrazkiem jest za duży (%s.%s MB). %s akceptuje pliki o "
 "maksymalnym rozmiarze %s.%s MB."
 
-#: services/logs/images/add.php:134 services/logs/images/add.php:159
+#: services/logs/images/add/WebService.php:131
+#: services/logs/images/add/WebService.php:156
 #, php-format
 msgid "%s reported an error when it tried to read your file."
 msgstr "Serwis %s zgłosił błąd podczas próby odczytu Twojego pliku."
 
-#: services/logs/images/add.php:138
+#: services/logs/images/add/WebService.php:135
 msgid ""
 "Make sure you are sending a file in an appropriate format (JPEG, PNG or GIF)."
 msgstr ""
 "Upewnij się, że wysyłasz plik w odpowiednim formacie (JPEG, PNG lub GIF)."
 
-#: services/logs/images/add.php:147
+#: services/logs/images/add/WebService.php:144
 #, php-format
 msgid ""
 "The image you have uploaded is too large (%s megapixels). Please use an "
@@ -196,15 +208,15 @@ msgstr ""
 "autorami aplikacji '%s' i poprosić ich, aby zmniejszali przesyłane obrazki "
 "automatycznie.)"
 
-#: services/logs/images/add.php:411
+#: services/logs/images/add/WebService.php:415
 msgid "Image has been successfully saved."
 msgstr "Obrazek został pomyślnie zapisany."
 
-#: services/logs/images/edit.php:215
+#: services/logs/images/edit/WebService.php:212
 msgid "Image properties have been successfully updated."
 msgstr "Właściwości obrazka został pomyślnie zaktualizowane."
 
-#: services/logs/submit.php:75
+#: services/logs/submit/WebService.php:74
 msgid ""
 "You are trying to publish a log entry with a date in future. Cache log "
 "entries are allowed to be published in the past, but NOT in the future."
@@ -212,7 +224,7 @@ msgstr ""
 "Próbujesz opublikować wpis do logbooka używając daty w przyszłości. Wpisy "
 "mogą być publikowane z datą w przeszłości, ale NIE w przyszłości."
 
-#: services/logs/submit.php:111
+#: services/logs/submit/WebService.php:110
 #, php-format
 msgid ""
 "However, your cache rating was ignored, because %s does not have a rating "
@@ -221,7 +233,7 @@ msgstr ""
 "Niestety Twoja ocena skrzynki nie została zapisana, ponieważ %s nie prowadzi "
 "oceny skrzynek."
 
-#: services/logs/submit.php:136
+#: services/logs/submit/WebService.php:135
 #, php-format
 msgid ""
 "However, your cache recommendation was ignored, because %s does not allow "
@@ -230,7 +242,7 @@ msgstr ""
 "Twoja rekomendacja skrzynki nie została zapisana, ponieważ %s nie pozwala na "
 "rekomendowanie skrzynek typu Wydarzenie."
 
-#: services/logs/submit.php:185
+#: services/logs/submit/WebService.php:184
 #, php-format
 msgid ""
 "However, your \"does not need maintenance\" flag was ignored, because %s "
@@ -239,7 +251,7 @@ msgstr ""
 "Niestety, wpis \"wykonano serwis\" został zignorowany, ponieważ %s nie "
 "wspiera (jeszcze) tej funkcjonalności."
 
-#: services/logs/submit.php:215
+#: services/logs/submit/WebService.php:214
 msgid ""
 "This cache is an Event cache. You cannot \"Find\" it (but you can attend it, "
 "or comment on it)!"
@@ -247,7 +259,15 @@ msgstr ""
 "Ta skrzynka jest Wydarzeniem. Nie możesz jej \"znaleźć\" (ale możesz w "
 "wydarzeniu uczestniczyć lub dodać komentarz)!"
 
-#: services/logs/submit.php:224
+#: services/logs/submit/WebService.php:220
+msgid ""
+"You cannot attend an event before it takes place. Please check the log type "
+"and date."
+msgstr ""
+"Nie możesz zalogować uczestnictwa w spotkaniu, zanim się ono odbędzie. "
+"Sprawdź typ logu i datę."
+
+#: services/logs/submit/WebService.php:229
 msgid ""
 "This cache is NOT an Event cache. You cannot \"Attend\" it (but you can find "
 "it, or comment on it)!"
@@ -255,23 +275,23 @@ msgstr ""
 "Ta skrzynka NIE jest Wydarzeniem. Nie możesz w niej \"uczestniczyć\" (ale "
 "możesz ją znaleźć lub dodać komentarz)!"
 
-#: services/logs/submit.php:234
+#: services/logs/submit/WebService.php:239
 msgid "Your have to supply some text for your comment."
 msgstr "Wpis typu \"Komentarz\" wymaga wpisania komentarza."
 
-#: services/logs/submit.php:250
+#: services/logs/submit/WebService.php:255
 msgid "This cache requires a password. You didn't provide one!"
 msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
 
-#: services/logs/submit.php:254
+#: services/logs/submit/WebService.php:259
 msgid "Invalid password!"
 msgstr "Niepoprawne hasło!"
 
-#: services/logs/submit.php:399
+#: services/logs/submit/WebService.php:396
 msgid "You have already submitted a log entry with exactly the same contents."
 msgstr "Już opublikowałeś wcześniej wpis z dokładnie taką samą treścią."
 
-#: services/logs/submit.php:426
+#: services/logs/submit/WebService.php:430
 msgid ""
 "You have already submitted a \"Found it\" log entry once. Now you may submit "
 "\"Comments\" only!"
@@ -279,50 +299,59 @@ msgstr ""
 "Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz "
 "możesz dodawać jedynie \"Komentarze\"!"
 
-#: services/logs/submit.php:432
+#: services/logs/submit/WebService.php:432
+#, fuzzy
+msgid ""
+"You have already submitted an \"Attended\" log entry once. Now you may "
+"submit \"Comments\" only!"
+msgstr ""
+"Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz "
+"możesz dodawać jedynie \"Komentarze\"!"
+
+#: services/logs/submit/WebService.php:442
 msgid "You are the owner of this cache. You may submit \"Comments\" only!"
 msgstr ""
 "Jesteś właścicielem tej skrzynki. Możesz przesyłać jedynie \"Komentarze\"."
 
-#: services/logs/submit.php:454
+#: services/logs/submit/WebService.php:464
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr "Już oceniłeś tę skrzynkę. Ocena nie może być zmieniona."
 
-#: services/logs/submit.php:475
+#: services/logs/submit/WebService.php:485
 msgid "You have already recommended this cache once."
 msgstr "Już raz zarekomendowałeś tę skrzynkę."
 
-#: services/logs/submit.php:491
+#: services/logs/submit/WebService.php:501
 msgid "You don't have any recommendations to give. Find more caches first!"
 msgstr ""
 "Aktualnie nie możesz wystawić kolejnej rekomendacji. Znajdź najpierw więcej "
 "skrzynek!"
 
-#: services/logs/submit.php:542
+#: services/logs/submit/WebService.php:552
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Skrzynki typu Wydarzenie nie mogą \"potrzebować serwisu\"."
 
-#: services/logs/submit.php:693
+#: services/logs/submit/WebService.php:710
 msgid "Your cache log entry was posted successfully."
 msgstr "Twój wpis do logbooka został opublikowany pomyślnie."
 
-#: views/apps/authorize.tpl.php:5
+#: views/apps/authorize/authorize.tpl.php:5
 msgid "Authorization Form"
 msgstr "Formularz autoryzacyjny"
 
-#: views/apps/authorize.tpl.php:46
+#: views/apps/authorize/authorize.tpl.php:46
 msgid "Expired request"
 msgstr "Przeterminowane żądanie"
 
-#: views/apps/authorize.tpl.php:47
+#: views/apps/authorize/authorize.tpl.php:47
 msgid "Unfortunately, the request has expired. Please try again."
 msgstr "Niestety upłynął termin ważności żądania. Prosimy sprobować ponownie."
 
-#: views/apps/authorize.tpl.php:49
+#: views/apps/authorize/authorize.tpl.php:49
 msgid "External application is requesting access..."
 msgstr "Aplikacja zewnętrzna prosi o dostęp..."
 
-#: views/apps/authorize.tpl.php:50
+#: views/apps/authorize/authorize.tpl.php:50
 #, php-format
 msgid ""
 "<b>%s</b> wants to access your <b>%s</b> account. Do you agree to grant "
@@ -331,15 +360,15 @@ msgstr ""
 "<b>%s</b> chce uzyskać dostęp do Twojego konta <b>%s</b>. Czy zgadzasz się "
 "na udzielenie dostępu tej aplikacji?"
 
-#: views/apps/authorize.tpl.php:53
+#: views/apps/authorize/authorize.tpl.php:53
 msgid "I agree"
 msgstr "Zgadzam się"
 
-#: views/apps/authorize.tpl.php:54
+#: views/apps/authorize/authorize.tpl.php:54
 msgid "Decline"
 msgstr "Odmawiam"
 
-#: views/apps/authorize.tpl.php:56
+#: views/apps/authorize/authorize.tpl.php:56
 #, php-format
 msgid ""
 "\n"
@@ -364,15 +393,15 @@ msgstr ""
 "będzie mogła umieszczać komentarze pod znajdowanymi przez Ciebie "
 "skrzynkami). Zgodę możesz wycofać w każdym momencie.</p>"
 
-#: views/apps/authorized.tpl.php:5
+#: views/apps/authorized/authorized.tpl.php:5
 msgid "Authorization Succeeded"
 msgstr "Autoryzacja powiodła się"
 
-#: views/apps/authorized.tpl.php:28
+#: views/apps/authorized/authorized.tpl.php:28
 msgid "Access successfully granted"
 msgstr "Pomyślnie dałeś dostęp"
 
-#: views/apps/authorized.tpl.php:29
+#: views/apps/authorized/authorized.tpl.php:29
 #, php-format
 msgid ""
 "\n"
@@ -387,15 +416,15 @@ msgstr ""
 "Aby zakończyć operację, wróć teraz do aplikacji %s i wpisz następujący kod "
 "PIN:</p>"
 
-#: views/apps/index.tpl.php:5
+#: views/apps/index/index.tpl.php:5
 msgid "My Apps"
 msgstr "Moje aplikacje"
 
-#: views/apps/index.tpl.php:29
+#: views/apps/index/index.tpl.php:29
 msgid "Your external applications"
 msgstr "Twoje zewnętrzne aplikacje"
 
-#: views/apps/index.tpl.php:31
+#: views/apps/index/index.tpl.php:31
 #, php-format
 msgid ""
 "\n"
@@ -415,11 +444,11 @@ msgstr ""
 "\"usuń\" aplikacja nie będzie już mogła wykonywać żadnych operacji w Twoim "
 "imieniu.</p>"
 
-#: views/apps/index.tpl.php:45
+#: views/apps/index/index.tpl.php:45
 msgid "remove"
 msgstr "usuń"
 
-#: views/apps/index.tpl.php:50
+#: views/apps/index/index.tpl.php:50
 #, php-format
 msgid ""
 "\n"
@@ -438,13 +467,6 @@ msgstr ""
 "na działania\n"
 "w Twoim imieniu. Gdy zaczniesz korzystać z zewnętrznych aplikacji, ich lista "
 "pojawi się tutaj.</p>"
-
-#~ msgid ""
-#~ "However, your \"needs maintenance\" flag was ignored, because %s does not "
-#~ "support this feature."
-#~ msgstr ""
-#~ "Niestety, wpis \"potrzebny serwis\" został zignorowany, ponieważ %s nie "
-#~ "wspiera tej funkcjonalności."
 
 #~ msgid ""
 #~ "\n"
@@ -472,13 +494,6 @@ msgstr ""
 
 #~ msgid "Recommending is allowed only for 'Found it' logtypes."
 #~ msgstr "Rekomendacje są dozwolone jedynie z wpisem \"Znaleziona\"."
-
-#~ msgid ""
-#~ "This cache is archived. Only admins and the owner are allowed to add a "
-#~ "log entry."
-#~ msgstr ""
-#~ "Ta skrzynka jest zarchiwizowana. Jedynie administratorzy oraz właściciel "
-#~ "mogą dodawać komentarze."
 
 #~ msgid "from among %d vote"
 #~ msgid_plural "from among %d votes"
