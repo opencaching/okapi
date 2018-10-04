@@ -755,7 +755,7 @@ class WebService
                     set
                         founds = founds + 1,
                         last_found = greatest(
-                            ifnull(last_found, 0),
+                            ifnull(last_found, '0000-00-00'),
                             from_unixtime('".Db::escape_string($when)."')
                         )
                     where cache_id = '".Db::escape_string($cache_internal_id)."'
