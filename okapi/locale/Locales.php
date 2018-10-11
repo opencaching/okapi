@@ -11,6 +11,7 @@ class Locales
         'de' => array('lang' => 'de', 'locale' => 'de_DE.utf8', 'name' => 'German'),
         'it' => array('lang' => 'it', 'locale' => 'it_IT.utf8', 'name' => 'Italian'),
         'ro' => array('lang' => 'ro', 'locale' => 'ro_RO.utf8', 'name' => 'Romanian'),
+        'fr' => array('lang' => 'fr', 'locale' => 'fr_FR.utf8', 'name' => 'French'),
     );
 
     /**
