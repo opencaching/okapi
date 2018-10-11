@@ -521,7 +521,6 @@ class WebService
                 select cache_id, language, `desc`, short_desc, hint
                 from cache_desc
                 where cache_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', array_keys($cacheid2wptcode)))."')
-                and cache_id <> 0   /* workaround for issue #540 */
             ");
             while ($row = Db::fetch_assoc($rs))
             {
