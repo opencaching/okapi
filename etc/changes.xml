@@ -16,6 +16,9 @@
 
     -->
     <changes>
+        <change commit="730f0256" version="1718" time="2018-10-11T14:10:51+0200" type="enhancement">
+            Added French translation for OKAPI user messages.
+        </change>
         <change commit="e4fabb8e" version="1710" time="2018-09-20T15:09:28+0200" type="enhancement">
             <a href="services/logs/submit.html">services/logs/submit</a> now
             rejects 'Attended' logs that are earlier than the event date.
