@@ -223,6 +223,16 @@ final class Settings
          */
         'JPEG_QUALITY' => 80,
 
+        /**
+         * It seems that different DBs handle on different way queries with condition like:
+         * SELECT... WHERE... col_id IN (<very-long-list-of-ids>)
+         * versus query with subquery, which generates <very-long-list-of-ids> above
+         * SELECT... WHERE... col_id IN (SELECT id FROM... WHERE...)
+         *
+         * For example mariaDb seems to prefere queries with subquery (second case here).
+         * This setting allow to decide which way should be used for local node.
+         */
+        'USE_SQL_SUBQUERIES' => false,
     );
 
     /**
