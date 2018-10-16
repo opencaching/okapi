@@ -33,7 +33,7 @@ class WebService
         $limit = $request->get_parameter('limit');
         if (!$limit) $limit = "none";
         if ($limit == "none") $limit = "999999999";
-        if ((((int)$limit) != $limit) || ((int)$limit) < 0)
+        if (!is_numeric($limit) || (((int)$limit) != $limit) || ((int)$limit) < 0)
             throw new InvalidParam('limit', "Expecting non-negative integer or 'none'.");
 
         # Check if code exists and retrieve cache ID (this will throw
