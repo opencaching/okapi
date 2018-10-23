@@ -394,8 +394,8 @@ class SearchAssistant
             if ($tmp != 'either')
             {
                 $operator = ($tmp == 'found_only') ? "in" : "not in";
-                if (Settings::get('USE_SQL_SUBQUERIES')){
-                    $found_cache_subquery = self::get_found_cache_ids_query(array($this->request->token->user_id));
+                if (Settings::get('USE_SQL_SUBQUERIES')) {
+                    $found_cache_subquery = self::get_found_cache_ids_sql(array($this->request->token->user_id));
                     $where_conds[] = "caches.cache_id $operator (".$found_cache_subquery.")";
                 } else {
                     $found_cache_ids = self::get_found_cache_ids(array($this->request->token->user_id));
@@ -421,8 +421,8 @@ class SearchAssistant
             }
 
             $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
-            if (Settings::get('USE_SQL_SUBQUERIES')){
-                $found_cache_subquery = self::get_found_cache_ids_query($internal_user_ids);
+            if (Settings::get('USE_SQL_SUBQUERIES')) {
+                $found_cache_subquery = self::get_found_cache_ids_sql($internal_user_ids);
                 $where_conds[] = "caches.cache_id in (".$found_cache_subquery.")";
             } else {
                 $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
@@ -444,8 +444,8 @@ class SearchAssistant
             }
 
             $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
-            if (Settings::get('USE_SQL_SUBQUERIES')){
-                $found_cache_subquery = self::get_found_cache_ids_query($internal_user_ids);
+            if (Settings::get('USE_SQL_SUBQUERIES')) {
+                $found_cache_subquery = self::get_found_cache_ids_sql($internal_user_ids);
                 $where_conds[] = "caches.cache_id not in (".$found_cache_subquery.")";
             } else {
                 $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
@@ -515,16 +515,16 @@ class SearchAssistant
             $where_conds[] = 'false';
         elseif ($ignored_status != 'either')
         {
-            $ignored_cache_ids_query = "
+            $ignored_cache_ids_sql = "
                 select cache_id
                 from cache_ignore
                 where user_id = '".Db::escape_string($this->request->token->user_id)."'";
 
             $not = ($ignored_status == 'notignored_only' ? 'not' : '');
-            if (Settings::get('USE_SQL_SUBQUERIES')){
-                $where_conds[] = "caches.cache_id ".$not." in (".$ignored_cache_ids_query.")";
+            if (Settings::get('USE_SQL_SUBQUERIES')) {
+                $where_conds[] = "caches.cache_id ".$not." in (".$ignored_cache_ids_sql.")";
             } else {
-                $ignored_cache_ids = Db::select_column($ignored_cache_ids_query);
+                $ignored_cache_ids = Db::select_column($ignored_cache_ids_sql);
                 $where_conds[] = "caches.cache_id ".$not." in ('".implode("','", array_map('\okapi\core\Db::escape_string', $ignored_cache_ids))."')";
             }
         }
@@ -888,14 +888,14 @@ class SearchAssistant
      */
     private static function get_found_cache_ids($internal_user_ids)
     {
-        return Db::select_column(self::get_found_cache_ids_query($internal_user_ids));
+        return Db::select_column(self::get_found_cache_ids_sql($internal_user_ids));
     }
 
     /**
      * Get the query which returns list of cache IDs which were found by given user.
      * Parameter needs to be *internal* user id, not uuid.
      */
-    private static function get_found_cache_ids_query($internal_user_ids)
+    private static function get_found_cache_ids_sql($internal_user_ids)
     {
         return "
             select cache_id

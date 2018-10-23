@@ -277,7 +277,7 @@ final class Settings
     {
         if (!in_array($dict['OC_BRANCH'], array('oc.pl', 'oc.de')))
             throw new Exception("Currently, OC_BRANCH has to be either 'oc.pl' or 'oc.de'. Hint: Whom did you get your code from?");
-        $boolean_keys = array('DEBUG', 'DEBUG_PREVENT_EMAILS', 'DEBUG_PREVENT_SEMAPHORES');
+        $boolean_keys = array('DEBUG', 'DEBUG_PREVENT_EMAILS', 'DEBUG_PREVENT_SEMAPHORES', 'USE_SQL_SUBQUERIES');
         foreach ($boolean_keys as $key)
             if (!in_array($dict[$key], array(true, false)))
                 throw new Exception("Invalid value for $key.");
