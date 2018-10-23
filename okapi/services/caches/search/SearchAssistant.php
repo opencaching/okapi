@@ -393,12 +393,17 @@ class SearchAssistant
                 throw new InvalidParam('found_status', "'$tmp'");
             if ($tmp != 'either')
             {
-                $found_cache_ids = self::get_found_cache_ids(array($this->request->token->user_id));
                 $operator = ($tmp == 'found_only') ? "in" : "not in";
-                if (count($found_cache_ids) > 0)
-                    $where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
-                else if ($operator == 'in')
-                    $where_conds[] = "false";
+                if (Settings::get('USE_SQL_SUBQUERIES')){
+                    $found_cache_subquery = self::get_found_cache_ids_query(array($this->request->token->user_id));
+                    $where_conds[] = "caches.cache_id $operator (".$found_cache_subquery.")";
+                } else {
+                    $found_cache_ids = self::get_found_cache_ids(array($this->request->token->user_id));
+                    if (count($found_cache_ids) > 0)
+                        $where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
+                    else if ($operator == 'in')
+                        $where_conds[] = "false";
+                }
             }
         }
 
@@ -414,9 +419,15 @@ class SearchAssistant
             } catch (InvalidParam $e) { # invalid uuid
                 throw new InvalidParam('found_by', $e->whats_wrong_about_it);
             }
+
             $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
-            $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
-            $where_conds[] = "caches.cache_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
+            if (Settings::get('USE_SQL_SUBQUERIES')){
+                $found_cache_subquery = self::get_found_cache_ids_query($internal_user_ids);
+                $where_conds[] = "caches.cache_id in (".$found_cache_subquery.")";
+            } else {
+                $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
+                $where_conds[] = "caches.cache_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
+            }
         }
 
         #
@@ -431,9 +442,15 @@ class SearchAssistant
             } catch (InvalidParam $e) { # invalid uuid
                 throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
             }
+
             $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
-            $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
-            $where_conds[] = "caches.cache_id not in ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
+            if (Settings::get('USE_SQL_SUBQUERIES')){
+                $found_cache_subquery = self::get_found_cache_ids_query($internal_user_ids);
+                $where_conds[] = "caches.cache_id not in (".$found_cache_subquery.")";
+            } else {
+                $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
+                $where_conds[] = "caches.cache_id not in ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
+            }
         }
 
         #
@@ -498,13 +515,18 @@ class SearchAssistant
             $where_conds[] = 'false';
         elseif ($ignored_status != 'either')
         {
-            $ignored_cache_ids = Db::select_column("
+            $ignored_cache_ids_query = "
                 select cache_id
                 from cache_ignore
-                where user_id = '".Db::escape_string($this->request->token->user_id)."'
-            ");
+                where user_id = '".Db::escape_string($this->request->token->user_id)."'";
+
             $not = ($ignored_status == 'notignored_only' ? 'not' : '');
-            $where_conds[] = "caches.cache_id ".$not." in ('".implode("','", array_map('\okapi\core\Db::escape_string', $ignored_cache_ids))."')";
+            if (Settings::get('USE_SQL_SUBQUERIES')){
+                $where_conds[] = "caches.cache_id ".$not." in (".$ignored_cache_ids_query.")";
+            } else {
+                $ignored_cache_ids = Db::select_column($ignored_cache_ids_query);
+                $where_conds[] = "caches.cache_id ".$not." in ('".implode("','", array_map('\okapi\core\Db::escape_string', $ignored_cache_ids))."')";
+            }
         }
 
         #
@@ -866,7 +888,16 @@ class SearchAssistant
      */
     private static function get_found_cache_ids($internal_user_ids)
     {
-        return Db::select_column("
+        return Db::select_column(self::get_found_cache_ids_query($internal_user_ids));
+    }
+
+    /**
+     * Get the query which returns list of cache IDs which were found by given user.
+     * Parameter needs to be *internal* user id, not uuid.
+     */
+    private static function get_found_cache_ids_query($internal_user_ids)
+    {
+        return "
             select cache_id
             from cache_logs
             where
@@ -876,6 +907,6 @@ class SearchAssistant
                     '".Db::escape_string(Okapi::logtypename2id("Attended"))."'
                 )
                 and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
-        ");
+        ";
     }
 }
