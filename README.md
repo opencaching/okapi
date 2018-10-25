@@ -1,6 +1,6 @@
 # The OKAPI Project #
 
-Quick download link: http://rygielski.net/r/okapi-latest
+Quick download link: [latest version](https://github.com/opencaching/okapi/archive/master.zip)
 
 
 ## Why are you here? ##
@@ -130,7 +130,7 @@ You can also read about how OKAPI tries to deal with branch differences
 ## Installation / Update Instructions ##
 
   1. Fetch the latest deployment package here:
-     http://rygielski.net/r/okapi-latest
+     [DOWNLOAD](https://github.com/opencaching/okapi/archive/master.zip)
   2. Make sure you have a working Opencaching installation. OKAPI is not a
      standalone application, it is a plugin.
   3. Patch your installation with OKAPI code. To put it plainly, **just copy
