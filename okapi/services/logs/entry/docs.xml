@@ -18,7 +18,10 @@
             <li><b>uuid</b> - unique ID of the log entry,</li>
             <li><b>cache_code</b> - code of the cache which the log entry refers to,</li>
             <li>
-                <p><b>date</b> - date and time (ISO 8601) when the log entry was submitted.</p>
+                <p><b>date</b> - date and time (ISO 8601) which was supplied with
+                the log. For logs that reflect field action, e.g. "Found it", this
+                usually is the date and time when that action took place. For other
+                logs, it usually is the the date and time when the log was submitted.</p>
                 <p>Please note that log entries often contain dates only (with the times
                 truncated to midnight, as in the local timezone). In such cases, you may
                 want to avoid displaying the time. You may assume that if the <b>date</b>

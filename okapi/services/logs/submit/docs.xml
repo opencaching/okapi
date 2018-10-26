@@ -47,7 +47,7 @@
         (and just submit a date in "yyyy-mm-dd" format) if the time is either unknown
         or your user doesn't want to disclose it.</p>
 
-        <p>Indicates when the cache was found. If given, the log will be published
+        <p>Indicates when the cache was searched. If given, the log will be published
         with the given date and time. If not, log will be published using the current
         date and time. If only the date is given, OKAPI will publish the log in a way
         which most closely resembles "no time given"
