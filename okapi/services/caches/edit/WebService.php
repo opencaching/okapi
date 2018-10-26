@@ -52,6 +52,23 @@ class WebService
         Okapi::gettext_domain_init($langprefs);
         try
         {
+            /**
+             * Note on attributes:
+             *
+             * At OCDE there is the feature to deprecate attributes. This means
+             * that they are still displayed in geocaches and are retained when
+             * editing, but can no longer be added to geocaches (and no longer
+             * be searched for).
+             *
+             * Currently there are two deprecated OCDE attribs: Aircraft required
+             * (A75) and External listing (no A-code yet). When editing attributes
+             * is implemented in Okapi, developers will need to know which
+             * attribs are deprecated; so this may need some "deprecated" flag
+             * in attribute-definitions.xml and services/attrs/attributes.
+             * Depending on the implementation, an A-code for "External listing"
+             * may be needed.
+             */
+
             # passwd
             $newpw = $request->get_parameter('passwd');
             if ($newpw !== null)

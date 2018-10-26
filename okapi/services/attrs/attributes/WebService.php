@@ -20,7 +20,7 @@ class WebService
     }
 
     private static $valid_field_names = array(
-        'acode', 'name', 'names', 'description', 'descriptions', 'gc_equivs',
+        'acode', 'name', 'names', 'description', 'descriptions', 'gc_equivs', 'gc_ocde_equiv',
         'is_locally_used', 'is_deprecated', 'local_icon_url', 'is_discontinued'
     );
 
