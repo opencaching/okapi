@@ -16,19 +16,25 @@
 
     -->
     <changes>
-        <change commit="730f0256" version="1718" time="2018-10-11T14:10:51+0200" type="enhancement">
+        <change commit="5b2c8b0d" version="1732" time="2018-10-26T12:10:35+0200" type="enhancement">
+            Enabled the <a href="services/caches/formatters/gpx.html">GPX</a>
+            <em>gc_ocde:attrs</em> option for all OC installations.
+            The pseudo-GS IDs of OC specific attributes now are also requestable
+            via the services/attrs methods.
+        </change>
+        <change commit="730f0256" version="1720" time="2018-10-11T14:10:51+0200" type="enhancement">
             Added French translation for OKAPI user messages.
         </change>
-        <change commit="e4fabb8e" version="1710" time="2018-09-20T15:09:28+0200" type="enhancement">
+        <change commit="e4fabb8e" version="1712" time="2018-09-20T15:09:28+0200" type="enhancement">
             <a href="services/logs/submit.html">services/logs/submit</a> now
             rejects 'Attended' logs that are earlier than the event date.
         </change>
-        <change commit="456d1b40" version="1680" time="2017-10-13T17:10:50+0200" type="enhancement">
+        <change commit="456d1b40" version="1682" time="2017-10-13T17:10:50+0200" type="enhancement">
             Added the <em>user_logs_only</em> option the geocache retrieval methods,
             and corresponding <em>latest_logs=user</em> option to the GPX download
             methods.
         </change>
-        <change commit="542352ec" version="1675" time="2017-10-12T22:10:29+0200" type="enhancement">
+        <change commit="542352ec" version="1677" time="2017-10-12T22:10:29+0200" type="enhancement">
             Added <em>fields</em> parameter to <a href="services/logs/userlogs.html">services/logs/userlogs</a>.
         </change>
         <change commit="1d66caac" version="1659" time="2017-10-06T15:10:53+0200" type="enhancement">
