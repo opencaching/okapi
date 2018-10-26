@@ -1127,7 +1127,7 @@ class Okapi
          */
 
         $html = preg_replace(
-            "~\b(src|href)=([\"'])(?![a-z0-9_-]+:)~",
+            "~\b(src|href)=([\"'])(?![a-z0-9_-]+:|//)~",
             "$1=$2".Settings::get("SITE_URL"),
             $html
         );
