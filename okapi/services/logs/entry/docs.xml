@@ -19,7 +19,7 @@
             <li><b>cache_code</b> - code of the cache which the log entry refers to,</li>
             <li>
                 <p><b>date</b> - date and time (ISO 8601) which was supplied with
-                the log. For logs that reflect field action, e.g. "Found it", this
+                the log entry. For logs that reflect field action, e.g. "Found it", this
                 usually is the date and time when that action took place. For other
                 logs, it usually is the the date and time when the log was submitted.</p>
                 <p>Please note that log entries often contain dates only (with the times
@@ -186,6 +186,15 @@
                 </ul>
             </li>
             <li>
+                <p><b>date_created</b> - date (ISO 8601, no time) indicating
+                when the log entry was submitted.</p>
+            </li>
+            <li>
+                <p><b>last_modified</b> - date (ISO 8601, no time) indicating
+                when the log entry was most recently edited. If the log was not
+                edited, the returned value is identical to <b>date_created</b>.</p>
+            </li>
+            <li>
                 <p><b>internal_id</b> - undocumented, you <u>should not</u> use
                 this unless you really know you need to. Internal IDs are
                 <b>not</b> unique across various OKAPI installations.
@@ -193,7 +202,7 @@
             </li>
         </ul>
 
-        <p>Note, that some fields can change in time (users can edit/delete
+        <p>Note that some fields can change in time (users can edit/delete
         their log entries).</p>
 
         <p>If given log entry does not exist, the method will
