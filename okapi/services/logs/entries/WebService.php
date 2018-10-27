@@ -21,7 +21,7 @@ class WebService
     private static $valid_field_names = array(
         'uuid', 'cache_code', 'date', 'user', 'type', 'was_recommended', 'comment',
         'images', 'internal_id', 'oc_team_entry', 'needs_maintenance2',
-        'listing_is_outdated', 'location',
+        'listing_is_outdated', 'location', 'date_created', 'last_modified',
     );
 
     public static function call(OkapiRequest $request)
@@ -55,6 +55,7 @@ class WebService
             $listing_is_outdated_SQL = 'cl.listing_outdated';
             $join_SQL = '';
             $latlong_SQL = ', null as latitude, null as longitude';
+            $last_modified_SQL = 'cl.entry_last_modified';
         }
         else
         {
@@ -64,6 +65,7 @@ class WebService
             $listing_is_outdated_SQL = '0';
             $join_SQL = 'left join cache_moved cm on cm.log_id=cl.id';
             $latlong_SQL = ', cm.latitude, cm.longitude';
+            $last_modified_SQL = 'cl.last_modified';
         }
         $rs = Db::query("
             select
@@ -72,6 +74,7 @@ class WebService
                 ".$needs_maintenance_SQL." as needs_maintenance2,
                 ".$listing_is_outdated_SQL." as listing_is_outdated,
                 unix_timestamp(cl.date) as date, cl.text, cl.text_html,
+                cl.date_created as date_created, ".$last_modified_SQL." as last_modified,
                 u.uuid as user_uuid, u.username, u.user_id,
                 if(cr.user_id is null, 0, 1) as was_recommended
                 ".$latlong_SQL."
@@ -117,6 +120,8 @@ class WebService
                 'comment' => Okapi::fix_oc_html($row['text'], $row['text_html']),
                 'location' => $row['latitude'] === null ? null : round($row['latitude'], 6)."|".round($row['longitude'], 6),
                 'images' => array(),
+                'date_created' => date("Y-m-d", strtotime($row['date_created'])),
+                'last_modified' => date("Y-m-d", strtotime($row['last_modified'])),
                 'internal_id' => $row['id'],
             );
             $log_id2uuid[$row['id']] = $row['uuid'];

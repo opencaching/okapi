@@ -19,7 +19,7 @@
             <li><b>cache_code</b> - code of the cache which the log entry refers to,</li>
             <li>
                 <p><b>date</b> - date and time (ISO 8601) which was supplied with
-                the log. For logs that reflect field action, e.g. "Found it", this
+                the log entry. For logs that reflect field action, e.g. "Found it", this
                 usually is the date and time when that action took place. For other
                 logs, it usually is the the date and time when the log was submitted.</p>
                 <p>Please note that log entries often contain dates only (with the times
@@ -184,6 +184,20 @@
                         a spoiler image and should not be displayed to the user unless
                         the user explicitly asks for it.</li>
                 </ul>
+            </li>
+            <li>
+                <p><b>date_created</b> - date and optionally time (ISO 8601)
+                indicating when the log entry was submitted. Depending on the
+                privacy policy of the OC installation, time may be included or not,
+                so your application must be ready to handle both cases.</p>
+            </li>
+            <li>
+                <p><b>last_modified</b> - date and optionally time (ISO 8601)
+                indicating when the log entry was most recently edited. If the
+                log was not edited, the returned value it is identical to
+                <b>date_created</b>. Depending on the privacy policy of the OC
+                installation, time may be included or not, so your application
+                must be ready to handle both cases.</p>
             </li>
             <li>
                 <p><b>internal_id</b> - undocumented, you <u>should not</u> use
