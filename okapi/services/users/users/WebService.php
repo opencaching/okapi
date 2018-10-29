@@ -40,7 +40,7 @@ class WebService
             if (!in_array($field, self::$valid_field_names))
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
         $rs = Db::query("
-            select user_id, uuid, username, admin, latitude, longitude, date_created
+            select user_id, uuid, username, latitude, longitude, date_created
             from user
             where uuid in ('".implode("','", array_map('\okapi\core\Db::escape_string', $user_uuids))."')
         ");
