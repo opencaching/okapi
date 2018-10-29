@@ -28,8 +28,9 @@
             <li><b>profile_url</b> - URL of the user's Opencaching profile page,</li>
             <li class='deprecated'>
                 <p><b>is_admin</b> - deprecated
-                (<a href='https://github.com/opencaching/okapi/issues/410'>why?</a>),
-                always <b>null</b>.</p>
+                (<a href='https://github.com/opencaching/okapi/issues/410'>why?</a>);
+                <b>false</b> when called with <b>Level 3</b> authentication for the
+                user of your access token, else <b>null</b>.</p>
             </li>
             <li>
                 <b>internal_id</b> - internal ID of the user (<b>DO NOT</b> use this!
