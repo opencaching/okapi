@@ -954,6 +954,12 @@ class Okapi
             "of non-primary type.");
     }
 
+    public static function is_known_cache_type($name)
+    {
+        return array_key_exists($name, self::$cache_types['oc.pl']) ||
+               array_key_exists($name, self::$cache_types['oc.de']);
+    }
+
     /** E.g. 2 => 'Traditional'. For unknown ids returns "Other". */
     public static function cache_type_id2name($id)
     {

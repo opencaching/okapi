@@ -112,12 +112,14 @@
             <li>
                 <p><b>type</b> - cache type. This might be <b>pretty much everything</b>,
                 but there are some predefined types that you might want to treat
-                in a special way (separate icons etc.). Primary types include:</p>
+                in a special way (separate icons etc.). Well-known types include:</p>
                 <ul>
                     <li><b>Traditional</b>,</li>
                     <li><b>Multi</b>,</li>
                     <li><b>Quiz</b>,</li>
+                    <li><b>Moving</b>,</li>
                     <li><b>Virtual</b>,</li>
+                    <li><b>Webcam</b>,</li>
                     <li><b>Event</b>,</li>
                     <li><i>(any other value is valid too)</i></li>
                 </ul>

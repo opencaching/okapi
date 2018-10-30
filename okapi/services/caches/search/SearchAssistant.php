@@ -149,7 +149,10 @@ class SearchAssistant
                 }
                 catch (Exception $e)
                 {
-                    throw new InvalidParam('type', "'$name' is not a valid cache type.");
+                    if (!Okapi::is_known_cache_type($name))
+                        throw new InvalidParam('type', "'$name' is not a valid cache type.");
+                    # Cache types not supported by THIS OC installation are accepted
+                    # but ignored here; see issue #220.
                 }
             }
             if (count($types) > 0)
