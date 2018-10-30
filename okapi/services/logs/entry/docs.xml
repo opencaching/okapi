@@ -186,18 +186,13 @@
                 </ul>
             </li>
             <li>
-                <p><b>date_created</b> - date and optionally time (ISO 8601)
-                indicating when the log entry was submitted. Depending on the
-                privacy policy of the OC installation, time may be included or not,
-                so your application must be ready to handle both cases.</p>
+                <p><b>date_created</b> - date (ISO 8601, no time) indicating
+                when the log entry was submitted.</p>
             </li>
             <li>
-                <p><b>last_modified</b> - date and optionally time (ISO 8601)
-                indicating when the log entry was most recently edited. If the
-                log was not edited, the returned value it is identical to
-                <b>date_created</b>. Depending on the privacy policy of the OC
-                installation, time may be included or not, so your application
-                must be ready to handle both cases.</p>
+                <p><b>last_modified</b> - date (ISO 8601, no time) indicating
+                when the log entry was most recently edited. If the log was not
+                edited, the returned value is identical to <b>date_created</b>.</p>
             </li>
             <li>
                 <p><b>internal_id</b> - undocumented, you <u>should not</u> use
@@ -207,7 +202,7 @@
             </li>
         </ul>
 
-        <p>Note, that some fields can change in time (users can edit/delete
+        <p>Note that some fields can change in time (users can edit/delete
         their log entries).</p>
 
         <p>If given log entry does not exist, the method will
