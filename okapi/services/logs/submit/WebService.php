@@ -47,7 +47,8 @@ class WebService
         $logtype = $request->get_parameter('logtype');
         if (!$logtype) throw new ParamMissing('logtype');
         if (!in_array($logtype, array(
-            'Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended'
+            'Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended',
+            'Available', 'Temporarily unavailable', 'Archived'
         ))) {
             throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
         }
@@ -209,7 +210,7 @@ class WebService
 
         if ($cache['type'] == 'Event')
         {
-            if (!in_array($logtype, array('Will attend', 'Attended', 'Comment'))) {
+            if (in_array($logtype, array('Found it', "Didn't find it"))) {
                 throw new CannotPublishException(_(
                     'This cache is an Event cache. You cannot "Find" it (but '.
                     'you can attend it, or comment on it)!'
@@ -230,14 +231,44 @@ class WebService
                     '(but you can find it, or comment on it)!'
                 ));
             }
-            else if (!in_array($logtype, array('Found it', "Didn't find it", 'Comment'))) {
-                throw new Exception("Unknown log entry - should be documented here.");
-            }
         }
         if ($logtype == 'Comment' && strlen(trim($comment)) == 0) {
             throw new CannotPublishException(_(
                 "Your have to supply some text for your comment."
             ));
+        }
+
+        if (in_array($logtype, array('Available', 'Temporarily unavailable', 'Archived')))
+        {
+            if ($user['uuid'] != $cache['owner']['uuid'])
+                throw new BadRequest("The status of a geocache can only be changed by the owner.");
+
+            if (Settings::get('OC_BRANCH') == 'oc.pl')
+            {
+                if ($logtype == $cache['status']) {
+                    # OCPL does not allow to confirm an existing geocache status.
+                    # We silently change the log to a comment.
+                    $logtype = 'Comment';
+                }
+                elseif ($cache['status'] == 'Archived') {
+                    throw new CannotPublishException(sprintf(_(
+                        "%s does not allow to unarchive geocaches."
+                    ), Okapi::get_normalized_site_name()));
+                }
+            }
+
+            # Geocaches must be in good shape before enabling them. At OCDE,
+            # enabling implies setting "cache is ok" (does not need maintenance).
+
+            if ($logtype == 'Available')
+            {
+                if ($needs_maintenance2 == 'true')
+                    throw new CannotPublishException(_(
+                        "The geocache must be maintained before it is enabled."
+                    ));
+                elseif ($needs_maintenance2 == 'null' && Settings::get('OC_BRANCH') == 'oc.de')
+                    $needs_maintenance2 = 'false';
+            }
         }
 
         # Password check.
@@ -541,6 +572,18 @@ class WebService
 
                 $second_logtype = 'Needs maintenance';
                 $second_formatted_comment = $formatted_comment;
+                $formatted_comment = "";
+            }
+            elseif (in_array($logtype, array(
+                'Available', 'Temporarily unavailable', 'Archived')))
+            {
+                # For status-changing logs, we'll issue two log entries, but this time
+                # we put the "Needs maintenance" first with empty comment, then the
+                # status-changing log with comment text.
+
+                $second_logtype = $logtype;
+                $second_formatted_comment = $formatted_comment;
+                $logtype = 'Needs maintenance';
                 $formatted_comment = "";
             }
             else if ($logtype == 'Will attend' || $logtype == 'Attended')
@@ -864,6 +907,28 @@ class WebService
                 '".Db::escape_string($consumer_key)."'
             );
         ");
+
+        # update geocache status
+
+        if (in_array($logtype, array('Available', 'Temporarily unavailable', 'Archived')))
+        {
+            if (Settings::get('OC_BRANCH') == 'oc.de') {
+                Db::execute("
+                    set @STATUS_CHANGE_USER_ID = '".Db::escape_string($user_internal_id)."'"
+                );
+                $set_last_modified_SQL = "";
+                # OCDE will update last_modified via trigger if status changes.
+                }
+            else
+                $set_last_modified_SQL = ", last_modified = NOW()";
+
+            $status_id = Okapi::cache_status_name2id($logtype);
+            DB::execute("
+                update caches
+                set status = '".Db::escape_string($status_id)."'".$set_last_modified_SQL."
+                where cache_id = '".Db::escape_string($cache_internal_id)."'
+            ");
+        }
 
         return $log_uuid;
     }
