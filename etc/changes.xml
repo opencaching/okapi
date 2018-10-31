@@ -16,10 +16,15 @@
 
     -->
     <changes>
+        <change commit="ac1a81e8" version="1743" time="2018-10-31T08:10:47+0100" type="enhancement">
+            Added the <em>date_created</em> and <em>last_modified</em> fields
+            to <a href="services/logs/entry.html">services/logs/entry</a>.
+        </change>
         <change commit="7baf830e" version="1736" time="2018-10-29T23:10:25+0100" type="other">
-            The <em>services/caches/user(s)</em> methods wil no longer return
-            <em>true</em> for the <em>is_admin</em> field in any case, because
-            OC installations no longer provide a singular admin flag.
+            The <a href="services/users/user.html">services/users</a>
+            methods will no longer return <em>true</em> for the <em>is_admin</em>
+            field in any case, because OC installations no longer provide a
+            singular admin flag.
         </change>
         <change commit="5b2c8b0d" version="1732" time="2018-10-26T12:10:35+0200" type="enhancement">
             Enabled the <a href="services/caches/formatters/gpx.html">GPX</a>
