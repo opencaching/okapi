@@ -1,0 +1,335 @@
+<?php
+
+/**
+ * Common code for submitting and editing logs
+ */
+
+namespace okapi\services\logs;
+
+use okapi\core\Db;
+use okapi\core\Exception\CannotPublishException;
+use okapi\core\Exception\InvalidParam;
+use okapi\core\Okapi;
+use okapi\Settings;
+
+class LogsCommon
+{
+    public static function validate_logtype_and_pw($request, $cache)
+    {
+        $logtype = $request->get_parameter('logtype');
+
+        if ($cache['type'] == 'Event')
+        {
+            if (in_array($logtype, array('Found it', "Didn't find it"))) {
+                throw new CannotPublishException(_(
+                    'This cache is an Event cache. You cannot "Find" it (but '.
+                    'you can attend it, or comment on it)!'
+                ));
+            }
+        }
+        else  # type != event
+        {
+            if (in_array($logtype, array('Will attend', 'Attended'))) {
+                throw new CannotPublishException(_(
+                    'This cache is NOT an Event cache. You cannot "Attend" it '.
+                    '(but you can find it, or comment on it)!'
+                ));
+            }
+        }
+
+        if (($logtype == 'Found it' || $logtype == 'Attended') && $cache['req_passwd'])
+        {
+            $valid_password = Db::select_value("
+                select logpw
+                from caches
+                where cache_id = '".Db::escape_string($cache['internal_id'])."'
+            ");
+            $supplied_password = $request->get_parameter('password');
+            if (!$supplied_password) {
+                throw new CannotPublishException(_(
+                    "This cache requires a password. You didn't provide one!"
+                ));
+            }
+            if (strtolower($supplied_password) != strtolower($valid_password)) {
+                throw new CannotPublishException(_("Invalid password!"));
+            }
+        }
+    }
+
+    public static function validate_comment($comment, $logtype)
+    {
+        if ($logtype == 'Comment' && strlen(trim($comment)) == 0) {
+            throw new CannotPublishException(_(
+                "Your have to supply some text for your comment."
+            ));
+        }
+    }
+
+    /*
+     * Convert the supplied ISO 8601 log date/time to a UNIX timestamp and
+     * validate it.
+     *
+     * We might also check for Found/DNF dates before date_hidden, but beware
+     * of wrong hide dates! Sometimes GC listings are copied to OC without
+     * the hide date, which then defaults to the OC listing date. Then owners
+     * become inactive. Logges will want to copy old GC logs to OC and may
+     * enter wrong log dates to bypass our validation.
+     */
+
+    public static function validate_when_and_convert_to_unixtime($when_iso8601, $logtype, $date_hidden)
+    {
+        $when = strtotime($when_iso8601);
+        if ($when < 1) {
+            throw new InvalidParam(
+                'when', "'$when_iso8601' is not in a valid format or is not a valid date."
+            );
+        }
+        if ($when > time() + 5*60) {
+            throw new CannotPublishException(_(
+                "You are trying to publish a log entry with a date in ".
+                "future. Cache log entries are allowed to be published in ".
+                "the past, but NOT in the future."
+            ));
+        }
+        if ($logtype == 'Attended' && $when < strtotime($date_hidden)) {
+            throw new CannotPublishException(_(
+                'You cannot attend an event before it takes place. '.
+                'Please check the log type and date.'
+            ));
+        }
+        return $when;
+    }
+
+    /*
+     * Prepare our comment to be inserted into the database. This may require
+     * some reformatting which depends on the current OC installation.
+     *
+     * OC sites store all comments in HTML format, while the 'text_html' field
+     * indicates their *original* format as delivered by the user. This
+     * allows processing the 'text' field contents without caring about the
+     * original format, while still being able to re-create the comment in
+     * its original form.
+     */
+
+    public static function process_comment($comment, $comment_format)
+    {
+        if ($comment_format == 'plaintext')
+        {
+            # This encoding is identical to the plaintext processing in OCDE code.
+            # It is ok also for OCPL, which no longer allows to enter plaintext
+            # on the website.
+
+            $formatted_comment = htmlspecialchars($comment, ENT_COMPAT);
+            $formatted_comment = nl2br($formatted_comment);
+            $formatted_comment = str_replace('  ', '&nbsp; ', $formatted_comment);
+            $formatted_comment = str_replace('  ', '&nbsp; ', $formatted_comment);
+
+            if (Settings::get('OC_BRANCH') == 'oc.de')
+            {
+                $value_for_text_html_field = 0;
+            }
+            else
+            {
+                # 'text_html' = 0 (false) is broken in OCPL code and has been
+                # deprecated; OCPL code was changed to always set it to 1 (true).
+                # For OKAPI, the value has been changed from 0 to 1 with commit
+                # cb7d222, after an email discussion with Harrie Klomp. This is
+                # an ID of the appropriate email thread:
+                #
+                # Message-ID: <22b643093838b151b300f969f699aa04@harrieklomp.be>
+                #
+                # Later changed to 2 due to https://github.com/opencaching/opencaching-pl/pull/1224.
+
+                $value_for_text_html_field = 2;
+            }
+        }
+        else
+        {
+            if ($comment_format == 'auto')
+            {
+                # 'Auto' is for backward compatibility. Before the "comment_format"
+                # was introduced, OKAPI used a weird format in between (it allowed
+                # HTML, but applied nl2br too).
+
+                $formatted_comment = nl2br($comment);
+            }
+            else
+            {
+                $formatted_comment = $comment;
+            }
+
+            # For user-supplied HTML comments, OC sites require us to do
+            # additional HTML purification prior to the insertion into the
+            # database.
+
+            # NOTICE: We are including EXTERNAL OCDE libraries here! This
+            # code does not belong to OKAPI!
+
+            if (Settings::get('OC_BRANCH') == 'oc.de')
+            {
+                $opt['html_purifier'] = Settings::get('OCDE_HTML_PURIFIER_SETTINGS');
+
+                $purifier = new \OcHTMLPurifier($opt);
+                $formatted_comment = $purifier->purify($formatted_comment);
+
+                $value_for_text_html_field = 1;
+            }
+            else
+            {
+                require_once $GLOBALS['rootpath'] . 'lib/class.inputfilter.php';
+                $myFilter = new \InputFilter($allowedtags, $allowedattr, 0, 0, 1);
+                $formatted_comment = $myFilter->process($formatted_comment);
+
+                # see https://github.com/opencaching/opencaching-pl/pull/1224
+                $value_for_text_html_field = 2;
+            }
+        }
+
+        return [$formatted_comment, $value_for_text_html_field];
+    }
+
+    public static function test_if_find_allowed($new_logtype, $cache, $user, $old_logtype="")
+    {
+        # Check if already found it (and make sure the user is not the owner).
+
+        if (Settings::get('OC_BRANCH') == 'oc.pl' &&
+            $new_logtype != $old_logtype &&
+            in_array($new_logtype, array('Found it', "Didn't find it", 'Attended')) &&
+            !($new_logtype == "Didn't find it" && $old_logtype == 'Found it')
+        ) {
+            # OCPL owners are allowed to attend their own events, but not to
+            # search their own caches:
+
+            if ($user['uuid'] == $cache['owner']['uuid'] && $new_logtype != 'Attended') {
+                throw new CannotPublishException(_(
+                    "You are the owner of this cache. You may submit ".
+                    "\"Comments\" and status logs only!"
+                ));
+            }
+
+            # OCPL forbids logging 'Found it', 'Attended' and "Didn't find" for an
+            # already found/attended cache, while OCDE allows all kinds of duplicate logs.
+            #
+            # Duplicate 'Will attend' logs are currently allowed by OCPL code, though
+            # this may be unintentional and change in the future.
+
+            $matching_logtype = ($new_logtype == "Didn't find it" ? 'Found it' : $new_logtype);
+            $has_already_found_it = Db::select_value("
+                select 1
+                from cache_logs
+                where
+                    user_id = '".Db::escape_string($user['internal_id'])."'
+                    and cache_id = '".Db::escape_string($cache['internal_id'])."'
+                    and type = '".Db::escape_string(Okapi::logtypename2id($matching_logtype))."'
+                    and deleted = 0
+                limit 1
+                /* there should be maximum 1 of these logs, but who knows ... */
+            ");
+            if ($has_already_found_it) {
+                throw new CannotPublishException(
+                    $matching_logtype == 'Found it'
+                    ? _("You have already submitted a \"Found it\" log entry once. ".
+                        "Now you may submit \"Comments\" only!")
+                    : _("You have already submitted an \"Attended\" log entry once. ".
+                        "Now you may submit \"Comments\" only!")
+                );
+            }
+        }
+    }
+
+    public static function update_cache_stats($cache_internal_id, $old_logtype, $new_logtype)
+    {
+        if (Settings::get('OC_BRANCH') == 'oc.de')
+        {
+            # OCDE handles cache stats updates using triggers. So, they are already
+            # incremented properly.
+        }
+        else
+        {
+            # OCPL doesn't use triggers for this. We need to update manually.
+
+            $deltaFound = 0;
+            $deltaDNF = 0;
+            $deltaComment = 0;
+
+            if ($old_logtype == 'Found it' || $old_logtype == 'Attended')
+                --$deltaFound;
+            elseif ($old_logtype == "Didn't find it" || $old_logtype == 'Will attend')
+                --$deltaDNF;
+            elseif ($old_logtype == 'Comment')
+                --$deltaComment;
+
+            if ($new_logtype == 'Found it' || $new_logtype == 'Attended')
+                ++$deltaFound;
+            elseif ($new_logtype == "Didn't find it" || $new_logtype == 'Will attend')
+                ++$deltaDNF;
+            elseif ($new_logtype == 'Comment')
+                ++$deltaComment;
+
+            # Other log types do not change the cache stats.
+
+            if ($deltaFound != 0) {
+                $last_found = Db::select_value("
+                    select max(`date`)
+                    from cache_logs
+                    where type in (1,7) and cache_id = '".Db::escape_string($cache_internal_id)."' and deleted = 0
+                ");
+                $set_lastfound_SQL = ", last_found='".Db::escape_string($last_found)."'";
+            } else {
+                $set_lastfound_SQL = "";
+            }
+
+            Db::execute("
+                update caches
+                set
+                    founds = greatest(0, '".Db::escape_string($deltaFound)."' + founds),
+                    notfounds = greatest(0, '".Db::escape_string($deltaDNF)."' + notfounds),
+                    notes = greatest(0, '".Db::escape_string($deltaComment)."' + notes)
+                    ".$set_lastfound_SQL."
+                where cache_id = '".Db::escape_string($cache_internal_id)."'
+            ");
+        }
+    }
+
+    public static function update_user_stats($user_internal_id, $old_logtype, $new_logtype)
+    {
+        if (Settings::get('OC_BRANCH') == 'oc.de')
+        {
+            # OCDE handles cache stats updates using triggers. So, they are already
+            # incremented properly.
+        }
+        else
+        {
+            # OCPL doesn't have triggers for this. We need to update manually.
+
+            $deltaFound = 0;
+            $deltaDNF = 0;
+            $deltaComment = 0;
+
+            if ($old_logtype == 'Found it')
+                --$deltaFound;
+            elseif ($old_logtype == "Didn't find it")
+                --$deltaDNF;
+            elseif ($old_logtype == 'Comment')
+                --$deltaComment;
+
+            if ($new_logtype == 'Found it')
+                ++$deltaFound;
+            elseif ($new_logtype == "Didn't find it")
+                ++$deltaDNF;
+            elseif ($new_logtype == 'Comment')
+                ++$deltaComment;
+
+            # Other log types do not change the cache stats.
+
+            Db::execute("
+                update user
+                set
+                    founds_count = greatest(0, '".Db::escape_string($deltaFound)."' + founds_count),
+                    notfounds_count = greatest(0, '".Db::escape_string($deltaDNF)."' + notfounds_count),
+                    log_notes_count = greatest(0, '".Db::escape_string($deltaComment)."' + log_notes_count)
+                where user_id = '".Db::escape_string($user_internal_id)."'
+            ");
+        }
+    }
+}

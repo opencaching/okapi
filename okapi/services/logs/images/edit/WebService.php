@@ -5,19 +5,12 @@ namespace okapi\services\logs\images\edit;
 use Exception;
 use okapi\core\Db;
 use okapi\core\Exception\BadRequest;
+use okapi\core\Exception\CannotPublishException;
 use okapi\core\Exception\InvalidParam;
 use okapi\core\Okapi;
 use okapi\core\Request\OkapiRequest;
 use okapi\services\logs\images\LogImagesCommon;
 use okapi\Settings;
-
-/**
- * This exception is thrown by WebService::_call method, when error is detected in
- * user-supplied data. It is not a BadRequest exception - it does not imply that
- * the Consumer did anything wrong (it's the user who did). This exception shouldn't
- * be used outside of this file.
- */
-class CannotPublishException extends Exception {}
 
 class WebService
 {

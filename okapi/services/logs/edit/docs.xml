@@ -1,0 +1,82 @@
+<xml>
+    <brief>Edit an existing log entry</brief>
+    <issue-id>TODO</issue-id>
+    <desc>
+        <p>This method allows your user to change the text contents and some
+        properties of own log entries. If you need to edit other log-related
+        data like e.g. recommendations, please let us know.</p>
+        <p>At least one of the optional parameters with new
+        log data must be supplied.</p>
+    </desc>
+    <req name='log_uuid'>
+        <p>ID of the log entry to be edited. The user of your Access Token
+        must be the author of the log entry.</p>
+    </req>
+    <opt name='logtype'>
+        <p>New type of the log entry. This may be one of:</p>
+        <ul>
+            <li>
+                <i>Will attend</i>, <i>Attended</i> or <i>Comment</i> for Event caches;
+            </li>
+            <li>
+                <i>Found it</i>, <i>Didn't find it</i> or <i>Comment</i> for all other
+                cache types.
+            </li>
+        </ul>
+        <p>For now, only the same five log types can be changed. If the log (before
+        editing) is of another type, e.g. <i>Available</i>, the response will be
+        success=false and an explanatory message. More log types may be editable
+        in the future, so you MUST NOT rely on a success=false response for
+        certain types.</p>
+
+        <p>If your user did recommend or rate the cache and the log type is
+        changed from "Found it" to something else, the recommendation and rating
+        will be withdrawn.</p>
+    </opt>
+    <opt name='password'>
+        <p>Some caches require a password in order to submit a "Found it" or
+        "Attended" log entry. It must be supplied here if the log type is
+        <em>changed to</em> "Found it" or "Attended". In all other cases,
+        <b>password</b> is ignored.</p>
+        <p>You may check if this cache requires a password with
+        <b>req_passwd</b> field of the services/caches/geocache method.</p>
+    </opt>
+    <opt name='comment'>
+        <p>New text to store with the log entry; will replace the existing text.
+        The <b>comment_format</b> must be supplied with the comment.</p>
+        <p>Note: Some OCPL-based sites support only BMP (Basic Multilingual Plane) Unicode
+        characters on some database fields. If you submit characters from outside of
+        the BMP plane (known as "supplementary planes", they include characters such
+        as smiley symbols), then keep in mind that your text might be saved garbled.</p>
+    </opt>
+    <opt name='comment_format'>
+        <p>Indicates the format of your <b>comment</b>, either <b>html</b> or
+        <b>plaintext</b>.</p>
+        <p><b>Important note:</b> The subset of allowed HTML elements is left undefined
+        and may change in the future. For future-compatibility, you should use only
+        basic formatting tags.</p>
+    </opt>
+    <opt name='when'>
+        <p>Same as in the <a href='%OKAPI:methodargref:services/logs/submit%'>services/logs/submit</a>
+        method, but without a default value.</p>
+    </opt>
+    <opt name='langpref' default='en'>
+        <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+        order of preference in which language will be chosen for error messages.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>
+                <p><b>success</b> - true, if all supplied data was saved
+                successfully, or false if none of the supplied data was saved,</p>
+            </li>
+            <li>
+                <p><b>message</b> - plain-text string, a message for the user,
+                which acknowledges success or describes an error (usually you
+                want to display this only when success is false),</p>
+            </li>
+        </ul>
+    </returns>
+</xml>
