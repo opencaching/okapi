@@ -103,6 +103,8 @@ class WebService
             $supported_extensions = array('jpg', 'jpeg', 'gif', 'png', 'bmp');
             foreach ($caches as $cache_code => $dict)
             {
+                if ($dict === null)
+                    continue;
                 $imgs = $dict['images'];
                 if (count($imgs) == 0)
                     continue;
