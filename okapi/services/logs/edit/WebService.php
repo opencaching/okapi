@@ -37,23 +37,8 @@ class WebService
 
         # handle log_uuid
 
-        $log_uuid = $request->get_parameter('log_uuid');
-        if (!$log_uuid) throw new ParamMissing('log_uuid');
-        $log = OkapiServiceRunner::call(
-            'services/logs/entry',
-            new OkapiInternalRequest($request->consumer, null, array(
-                'log_uuid' => $log_uuid,
-                'fields' => 'cache_code|type|user|internal_id'
-            ))
-        );
-        $log_author = OkapiServiceRunner::call(
-            'services/users/user',
-            new OkapiInternalRequest($request->consumer, null, array(
-                'user_uuid' => $log['user']['uuid'],
-                'fields' => 'internal_id|uuid'
-            ))
-        );
-        if ($request->token->user_id != $log_author['internal_id'])
+        $log = LogsCommon::process_log_uuid($request);
+        if ($log['user']['internal_id'] != $request->token->user_id)
             throw new BadRequest("Only own log entries may be edited.");
 
         # handle logtype and password
@@ -74,10 +59,10 @@ class WebService
                 'services/caches/geocache',
                 new OkapiInternalRequest($request->consumer, null, array(
                     'cache_code' => $log['cache_code'],
-                    'fields' => 'type|req_passwd|internal_id|owner'
+                    'fields' => 'internal_id|type|req_passwd|owner'
                 ))
             );
-            LogsCommon::validate_logtype_and_pw($request, $cache);
+            LogsCommon::test_if_logtype_and_pw_match_cache($request, $cache);
         }
 
         # handle comment
@@ -122,11 +107,10 @@ class WebService
         # See comment on transaction in services/logs/submit code.
 
         Db::execute("start transaction");
-
         $set_SQL = [];
 
         if ($logtype != $log['type']) {
-            LogsCommon::test_if_find_allowed($logtype, $cache, $log_author, $log['type']);
+            LogsCommon::test_if_find_allowed($logtype, $cache, $log['user'], $log['type']);
             $set_SQL[] =
                 "type = '".Db::escape_string(Okapi::logtypename2id($logtype))."'";
         }
@@ -149,83 +133,17 @@ class WebService
                 set ".implode(", ", $set_SQL)."
                 where id='".Db::escape_string($log['internal_id'])."'
             ");
-        } else if ($request->get_parameter('logtype') === null) {
+        } elseif ($request->get_parameter('logtype') === null) {
             throw new BadRequest(
                 "At least one parameter with new log data must be supplied."
             );
         }
 
-        if ($logtype != $log['type'])
-        {
-            LogsCommon::update_cache_stats($cache['internal_id'], $log['type'], $logtype);
-            LogsCommon::update_user_stats($request->token->user_id, $log['type'], $logtype);
+        # Finalize the transaction.
 
-            # Discard recommendation and rating, if log type changes from found/attended
-
-            if ($log['type'] == 'Found it' || $log['type'] == 'Attended')
-            {
-                $user_and_cache_condition_SQL = "
-                    user_id='".Db::escape_string($request->token->user_id)."'
-                    and cache_id='".Db::escape_string($cache['internal_id'])."'
-                ";
-
-                # OCDE allows multiple finds per cache. If one of those finds
-                # disappears, the cache can still be recommended by the user.
-                # We handle that in a most simple, non-optimized way (which btw
-                # also graciously handles any illegitimate duplicate finds in
-                # an OCPL database).
-
-                $last_found = Db::select_value("
-                    select max(`date`)
-                    from cache_logs
-                    where ".$user_and_cache_condition_SQL."
-                    and type in (1,7)
-                    ".(Settings::get('OC_BRANCH') == 'oc.pl' ? "and deleted = 0" : "") . "
-                ");
-
-                if (!$last_found) {
-                    Db::execute("
-                        delete from cache_rating
-                        where ".$user_and_cache_condition_SQL."
-                    ");
-                } elseif (Settings::get('OC_BRANCH') == 'oc.de') {
-                    Db::execute("
-                        update cache_rating
-                        set rating_date='".Db::escape_string($last_found)."'
-                        where ".$user_and_cache_condition_SQL."
-                    ");
-                }
-                unset($condition_SQL);
-
-                # If the user rated the cache, we need to remove that rating
-                # and recalculate the cache's rating stats.
-
-                if (Settings::get('OC_BRANCH') == 'oc.pl')
-                {
-                    $user_score = Db::select_value("
-                        select score
-                        from scores
-                        where ".$user_and_cache_condition_SQL."
-                    ");
-                    if ($user_score !== null)
-                    {
-                        Db::execute("
-                            delete from scores
-                        where ".$user_and_cache_condition_SQL."
-                        ");
-                        Db::execute("
-                            update caches
-                            set
-                                score = (score*votes - '".Db::escape_string($user_score)."') / greatest(1, votes - 1),
-                                votes = greatest(0, votes - 1)
-                            where cache_id='".Db::escape_string($cache['internal_id'])."'
-                        ");
-                    }
-                }
-            }
-        }
-
+        LogsCommon::update_statistics_after_change($logtype, $log);
         Db::execute("commit");
+        LogsCommon::update_statpic($logtype, $log['type'], $log['user']['internal_id']);
     }
 
     private static $success_message = null;
@@ -245,7 +163,7 @@ class WebService
         {
             # If appropriate, $success_message might be changed inside the _call.
             self::$success_message = _("Your log entry has been updated successfully.");
-            $log_uuids = self::_call($request);
+            self::_call($request);
             $result = array(
                 'success' => true,
                 'message' => self::$success_message,

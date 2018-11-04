@@ -6,15 +6,48 @@
 
 namespace okapi\services\logs;
 
+use Exception;
 use okapi\core\Db;
+use okapi\core\exception\BadRequest;
 use okapi\core\Exception\CannotPublishException;
 use okapi\core\Exception\InvalidParam;
+use okapi\core\Exception\ParamMissing;
 use okapi\core\Okapi;
+use okapi\core\OkapiServiceRunner;
+use okapi\core\Request\OkapiInternalRequest;
 use okapi\Settings;
 
 class LogsCommon
 {
-    public static function validate_logtype_and_pw($request, $cache)
+    public static function process_log_uuid($request)
+    {
+        $log_uuid = $request->get_parameter('log_uuid');
+        if (!$log_uuid)
+            throw new ParamMissing('log_uuid');
+        $log = OkapiServiceRunner::call(
+            'services/logs/entry',
+            new OkapiInternalRequest($request->consumer, null, array(
+                'log_uuid' => $log_uuid,
+                'fields' => 'cache_code|type|user|images|internal_id'
+            ))
+        );
+        $log_internal = Db::select_row("
+            select node, cache_id, user_id
+            from cache_logs
+            where uuid='".Db::escape_string($log_uuid)."'
+        ");
+        if ($log_internal['node'] != Settings::get('OC_NODE_ID')) {
+            throw new Exception(
+                "This site's database contains the log entry '$log_uuid' which has been"
+                . " imported from another OC node. OKAPI is not prepared for that."
+            );
+        }
+        $log['cache_internal_id'] = $log_internal['cache_id'];
+        $log['user']['internal_id'] = $log_internal['user_id'];
+        return $log;
+    }
+
+    public static function test_if_logtype_and_pw_match_cache($request, $cache)
     {
         $logtype = $request->get_parameter('logtype');
 
@@ -330,6 +363,103 @@ class LogsCommon
                     log_notes_count = greatest(0, '".Db::escape_string($deltaComment)."' + log_notes_count)
                 where user_id = '".Db::escape_string($user_internal_id)."'
             ");
+        }
+    }
+
+    public static function update_statistics_after_change($new_logtype, $log)
+    {
+        if ($new_logtype == $log['type'])
+            return;
+
+        LogsCommon::update_cache_stats($log['cache_internal_id'], $log['type'], $new_logtype);
+        LogsCommon::update_user_stats($log['user']['internal_id'], $log['type'], $new_logtype);
+
+        # TO DO: update OCPL "Merit Badges" (issue #552)
+
+        # Discard recommendation and rating, if log type changes from found/attended
+
+        if ($log['type'] == 'Found it' || $log['type'] == 'Attended')
+        {
+            $user_and_cache_condition_SQL = "
+                user_id='".Db::escape_string($log['user']['internal_id'])."'
+                and cache_id='".Db::escape_string($log['cache_internal_id'])."'
+            ";
+
+            # OCDE allows multiple finds per cache. If one of those finds
+            # disappears, the cache can still be recommended by the user.
+            # We handle that in a most simple, non-optimized way (which btw
+            # also graciously handles any illegitimate duplicate finds in
+            # an OCPL database).
+
+            $last_found = Db::select_value("
+                select max(`date`)
+                from cache_logs
+                where ".$user_and_cache_condition_SQL."
+                and type in (1,7)
+                ".(Settings::get('OC_BRANCH') == 'oc.pl' ? "and deleted = 0" : "") . "
+            ");
+            if (!$last_found) {
+                Db::execute("
+                    delete from cache_rating
+                    where ".$user_and_cache_condition_SQL."
+                ");
+            } elseif (Settings::get('OC_BRANCH') == 'oc.de') {
+                Db::execute("
+                    update cache_rating
+                    set rating_date='".Db::escape_string($last_found)."'
+                    where ".$user_and_cache_condition_SQL."
+                ");
+            }
+            unset($condition_SQL);
+
+            # If the user rated the cache, we need to remove that rating
+            # and recalculate the cache's rating stats.
+
+            if (Settings::get('OC_BRANCH') == 'oc.pl')
+            {
+                $user_score = Db::select_value("
+                    select score
+                    from scores
+                    where ".$user_and_cache_condition_SQL."
+                ");
+                if ($user_score !== null)
+                {
+                    Db::execute("
+                        delete from scores
+                        where ".$user_and_cache_condition_SQL."
+                    ");
+                    Db::execute("
+                        update caches
+                        set
+                            score = (score*votes - '".Db::escape_string($user_score)."') / greatest(1, votes - 1),
+                            votes = greatest(0, votes - 1)
+                        where cache_id='".Db::escape_string($log['cache_internal_id'])."'
+                    ");
+                }
+            }
+        }
+    }
+
+    public static function update_statpic($new_logtype, $old_logtype, $user_internal_id)
+    {
+        if ($new_logtype != $old_logtype
+            && ($new_logtype == 'Found it' || $new_logtype == 'Attended' ||
+                $old_logtype == 'Found it' || $old_logtype == 'Attended'))
+        {
+            # We need to delete the copy of stats-picture for this user. Otherwise,
+            # the legacy OCPL code won't detect that the picture needs to be refreshed.
+            #
+            # OCDE code invalidates the statpic via database trigger (though there
+            # is some buggy statpic deletion code in OCDE code, which effectively
+            # does nothing due to wrong file path).
+
+            if (Settings::get('OC_BRANCH') == 'oc.pl')
+            {
+                $filepath = Okapi::get_var_dir().'/images/statpics/statpic'.$user_internal_id.'.jpg';
+                if (file_exists($filepath)) {
+                    unlink($filepath);
+                }
+            }
         }
     }
 }

@@ -190,7 +190,7 @@ class WebService
 
         # Various integrity checks & check password
 
-        LogsCommon::validate_logtype_and_pw($request, $cache);
+        LogsCommon::test_if_logtype_and_pw_match_cache($request, $cache);
         LogsCommon::validate_comment($comment, $logtype);
 
         if ($recommend && $user['uuid'] == $cache['owner']['uuid'])
@@ -462,9 +462,11 @@ class WebService
                 # is only evaulated for OCDE! The 'null' is a dummy here, and the
                 # "needs maintenance" information is in $second_logtype.
             );
-            LogsCommon::update_cache_stats($cache['internal_id'], $when + 1, null, $second_logtype);
+            LogsCommon::update_cache_stats($cache['internal_id'], null, $second_logtype);
             LogsCommon::update_user_stats($user['internal_id'], null, $second_logtype);
         }
+
+        # TO DO: update OCPL "Merit Badges" (issue #552)
 
         # Save the rating.
 
@@ -541,21 +543,7 @@ class WebService
         # Finalize the transaction.
 
         Db::execute("commit");
-
-        if (Settings::get('OC_BRANCH') == 'oc.pl'
-            && ($logtype == 'Found it' || $logtype == 'Attended'))
-        {
-            # We need to delete the copy of stats-picture for this user. Otherwise,
-            # the legacy OCPL code won't detect that the picture needs to be refreshed.
-            #
-            # OCDE code invalidates the statpic via database trigger. (And, by the way,
-            # has other statpic file names which include a language code).
-
-            $filepath = Okapi::get_var_dir().'/images/statpics/statpic'.$user['internal_id'].'.jpg';
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
-        }
+        LogsCommon::update_statpic($logtype, "", $user['internal_id']);
 
         # Success. Return the uuids.
 

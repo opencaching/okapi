@@ -2,9 +2,9 @@
     <brief>Edit an existing log entry</brief>
     <issue-id>TODO</issue-id>
     <desc>
-        <p>This method allows your user to change the text contents and some
-        properties of own log entries. If you need to edit other log-related
-        data like e.g. recommendations, please let us know.</p>
+        <p>This method allows your user to change the text, type and date
+        of own log entries. If you need to edit other log-related data like
+        e.g. recommendations, please let us know.</p>
         <p>At least one of the optional parameters with new
         log data must be supplied.</p>
     </desc>
