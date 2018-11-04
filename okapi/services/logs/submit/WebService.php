@@ -238,6 +238,18 @@ class WebService
             ));
         }
 
+        if ($recommend && $user['uuid'] == $cache['owner']['uuid'])
+        {
+            # This is needed for OCDE, which allows to find own caches
+            # and to recommend events. Won't hurt to check it for all branches.
+
+            self::$success_message .= " "._(
+                "However, your cache recommendation was ignored, because ".
+                "you may not recommend your own caches."
+            );
+            $recommend = null;
+        }
+
         if (in_array($logtype, array('Available', 'Temporarily unavailable', 'Archived')))
         {
             if ($user['uuid'] != $cache['owner']['uuid'])
