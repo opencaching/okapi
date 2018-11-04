@@ -9,7 +9,7 @@
         <p>Code of the geocache.</p>
     </req>
     <req name='logtype'>
-        <p>Type of an entry. This may be one of:</p>
+        <p>Type of the log entry. This may be one of:</p>
         <ul>
             <li>
                 <i>Will attend</i>, <i>Attended</i> or <i>Comment</i> for Event caches;
@@ -45,6 +45,7 @@
         basic formatting tags.</p>
     </opt>
     <opt name='when'>
+        <p>Default value: The current date and time</p>
         <p>A date and time string. This should be in ISO 8601 format (currently any
         format acceptable by PHP's <a href='https://php.net/manual/function.strtotime.php'>strtotime</a>
         function also will do, but most of them don't handle time zones properly,
@@ -59,9 +60,9 @@
         (<a href="https://github.com/opencaching/okapi/issues/358">more info</a>).</p>
     </opt>
     <opt name='password'>
-        <p>Some caches require a password in order to submit a "Found it" log entry.
-        You may check if this cache requires password with <b>req_passwd</b> field
-        of the services/caches/geocache method.</p>
+        <p>Some caches require a password in order to submit a "Found it" or
+        "Attended" log entry. You may check if this cache requires a password with
+        <b>req_passwd</b> field of the services/caches/geocache method.</p>
     </opt>
     <opt name='langpref' default='en'>
         <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
@@ -85,7 +86,8 @@
     </opt>
     <opt name='rating' infotags="ocpl-specific">
         <p>An integer in range between 1 and 5 - user's optional rating of a found cache.</p>
-        <p>Important: <b>logtype</b> has to be "Found it" in order to use this argument.</p>
+        <p>Important: <b>logtype</b> has to be "Found it" or "Attended" in order to use
+        this argument.</p>
         <p>Note: You should allow your user to <b>not</b> rate a found cache.</p>
         <p>Note: Currently, OCDE-based installations do not support cache ratings. On such installations
         user's rating will be <b>ignored</b> (if you include the rating, log entry will be posted
