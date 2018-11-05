@@ -13,6 +13,9 @@ use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Request\OkapiRequest;
 use okapi\Settings;
 
+use Utils\Text\InputFilter; /* OCPL specific */
+
+
 /**
  * This exception is thrown by WebService::_call method, when error is detected in
  * user-supplied data. It is not a BadRequest exception - it does not imply that
@@ -375,9 +378,7 @@ class WebService
             }
             else
             {
-                require_once $GLOBALS['rootpath'] . 'lib/class.inputfilter.php';
-                $myFilter = new \InputFilter($allowedtags, $allowedattr, 0, 0, 1);
-                $formatted_comment = $myFilter->process($formatted_comment);
+                $formatted_comment = InputFilter::cleanupUserInput($formatted_comment);
 
                 # see https://github.com/opencaching/opencaching-pl/pull/1224
                 $value_for_text_html_field = 2;
