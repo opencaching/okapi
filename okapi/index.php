@@ -29,8 +29,6 @@ if (!isset($GLOBALS['rootpath'])) {
 
 require_once __DIR__ . '/autoload.php';
 
-OkapiErrorHandler::$treat_notices_as_errors = true;
-
 if (ob_list_handlers() === ['default output handler']) {
     # We will assume that this one comes from "output_buffering" being turned on
     # in PHP config. This is very common and probably is good for most other OC
@@ -38,14 +36,7 @@ if (ob_list_handlers() === ['default output handler']) {
     ob_end_clean();
 }
 
-# Setting handlers. Errors will now throw exceptions, and all exceptions
-# will be properly handled. (Unfortunately, only SOME errors can be caught
-# this way, PHP limitations...)
-
-set_exception_handler(array(OkapiExceptionHandler::class, 'handle'));
-set_error_handler(array(OkapiErrorHandler::class, 'handle'));
-register_shutdown_function(array(OkapiErrorHandler::class, 'handle_shutdown'));
-
+OkapiErrorHandler::init();
 Okapi::gettext_domain_init();
 OkapiScriptEntryPointController::dispatch_request($_SERVER['REQUEST_URI']);
 Okapi::gettext_domain_restore();

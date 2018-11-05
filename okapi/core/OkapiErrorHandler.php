@@ -8,7 +8,20 @@ use okapi\core\Exception\OkapiExceptionHandler;
 /** Container for error-handling functions. */
 class OkapiErrorHandler
 {
-    public static $treat_notices_as_errors = false;
+    private static $treat_notices_as_errors = false;
+
+    public static function init()
+    {
+        $treat_notices_as_errors = true;
+
+        # Setting handlers. Errors will now throw exceptions, and all exceptions
+        # will be properly handled. (Unfortunately, only SOME errors can be caught
+        # this way, PHP limitations...)
+
+        set_exception_handler(array(OkapiExceptionHandler::class, 'handle'));
+        set_error_handler(array(OkapiErrorHandler::class, 'handle'));
+        register_shutdown_function(array(OkapiErrorHandler::class, 'handle_shutdown'));
+    }
 
     /** Handle error encountered while executing OKAPI request. */
     public static function handle($severity, $message, $filename, $lineno)
