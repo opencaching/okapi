@@ -6,6 +6,10 @@ use okapi\Settings;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+$extAutoloader = Settings::get('EXTERNAL_AUTOLOADER');
+if($extAutoloader){
+    require_once $extAutoloader;
+}
 function get_admin_emails()
 {
     $emails = array();

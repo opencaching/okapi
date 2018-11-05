@@ -233,6 +233,12 @@ final class Settings
          * This setting allow to decide which way should be used for local node.
          */
         'USE_SQL_SUBQUERIES' => false,
+
+        /**
+         * Optional external, additional autoloader used to call classes from outside OKAPI.
+         * It should be just a path to the php external autoload script which can be  directly include.
+         */
+        'EXTERNAL_AUTOLOADER' => null,
     );
 
     /**

@@ -17,6 +17,9 @@ use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
 use okapi\Settings;
 
+use Utils\Text\UserInputFilter; // OCPL specific
+
+
 class LogsCommon
 {
     public static function process_log_uuid($request)
@@ -209,9 +212,8 @@ class LogsCommon
             }
             else
             {
-                require_once $GLOBALS['rootpath'] . 'lib/class.inputfilter.php';
-                $myFilter = new \InputFilter($allowedtags, $allowedattr, 0, 0, 1);
-                $formatted_comment = $myFilter->process($formatted_comment);
+                // UserInputFilter is called from external to OKAPI OCPL code
+                $formatted_comment = UserInputFilter::purifyHtmlString($formatted_comment);
 
                 # see https://github.com/opencaching/opencaching-pl/pull/1224
                 $value_for_text_html_field = 2;
