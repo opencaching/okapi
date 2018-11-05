@@ -2,6 +2,7 @@
 
 namespace okapi\services\caches\edit;
 
+use Exception;
 use okapi\core\Okapi;
 use okapi\core\Db;
 use okapi\core\Exception\BadRequest;
@@ -36,10 +37,16 @@ class WebService
             )
         );
         $internal_id_escaped = Db::escape_string($geocache['internal_id']);
-        $owner_id = Db::select_value(
-            "select user_id from caches where cache_id = '".$internal_id_escaped."'"
-        );
-        if ($owner_id != $request->token->user_id)
+        $geocache_internal = Db::select_row("
+            select node, user_id from caches where cache_id='".$internal_id_escaped."'
+        ");
+        if ($geocache_internal['node'] != Settings::get('OC_NODE_ID')) {
+            throw new Exception(
+                "This site's database contains the geocache '$cache_code' which has been"
+                . " imported from another OC node. OKAPI is not prepared for that."
+            );
+        }
+        if ($geocache_internal['user_id'] != $request->token->user_id)
             throw new BadRequest("Only own caches may be edited.");
 
         $problems = [];
