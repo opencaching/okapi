@@ -623,11 +623,21 @@ class WebService
         # Finally! Insert the rows into the log entries table. Update
         # cache stats and user stats.
 
+        if (Settings::get('OC_BRANCH') == 'oc.de') {
+            $value_for_text_htmledit_field = Db::select_value("
+                select if(no_htmledit_flag, 0, 1)
+                from user
+                where user_id='".Db::escape_string($user['internal_id'])."'
+            ");
+        } else {
+            $value_for_text_htmledit_field = 1;
+        }
+
         $log_uuids = array(
             self::insert_log_row(
                 $request->consumer->key, $cache['internal_id'], $user['internal_id'],
                 $logtype, $when, $formatted_comment, $value_for_text_html_field,
-                $needs_maintenance2
+                $value_for_text_htmledit_field, $needs_maintenance2
             )
         );
         self::increment_cache_stats($cache['internal_id'], $when, $logtype);
@@ -639,7 +649,7 @@ class WebService
             $log_uuids[] = self::insert_log_row(
                 $request->consumer->key, $cache['internal_id'], $user['internal_id'],
                 $second_logtype, $when + 1, $second_formatted_comment,
-                $value_for_text_html_field, 'null'
+                $value_for_text_html_field, $value_for_text_htmledit_field, 'null'
 
                 # Yes, the second log is the "needs maintenance" one. But this code
                 # is only called for OCPL, while the last parameter of insert_log_row()
@@ -869,7 +879,7 @@ class WebService
 
     private static function insert_log_row(
         $consumer_key, $cache_internal_id, $user_internal_id, $logtype, $when,
-        $formatted_comment, $text_html, $needs_maintenance2
+        $formatted_comment, $text_html, $text_htmledit, $needs_maintenance2
     )
     {
         if (Settings::get('OC_BRANCH') == 'oc.de') {
@@ -890,7 +900,7 @@ class WebService
 
         Db::execute("
             insert into cache_logs (
-                uuid, cache_id, user_id, type, date, text, text_html,
+                uuid, cache_id, user_id, type, date, text, text_html, text_htmledit,
                 last_modified, date_created, node".$needs_maintenance_field_SQL."
             ) values (
                 '".Db::escape_string($log_uuid)."',
@@ -900,6 +910,7 @@ class WebService
                 from_unixtime('".Db::escape_string($when)."'),
                 '".Db::escape_string($formatted_comment)."',
                 '".Db::escape_string($text_html)."',
+                '".Db::escape_string($text_htmledit)."',
                 now(),
                 now(),
                 '".Db::escape_string(Settings::get('OC_NODE_ID'))."'
