@@ -69,7 +69,7 @@ class WebService
         # or "attribution_note" field are included. That's a little ugly, but
         # helps performance and conforms to the DRY rule.
 
-        $fields_to_remove_later = array();
+        $fields_to_remove_later = array('empty_descriptions');
         if (
             in_array('description', $fields) || in_array('descriptions', $fields)
             || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
@@ -511,6 +511,7 @@ class WebService
             {
                 $result_ref['short_descriptions'] = new ArrayObject();
                 $result_ref['descriptions'] = new ArrayObject();
+                $result_ref['empty_descriptions'] = [];
                 $result_ref['hints'] = new ArrayObject();
                 $result_ref['hints2'] = new ArrayObject();
             }
@@ -525,17 +526,25 @@ class WebService
             while ($row = Db::fetch_assoc($rs))
             {
                 $cache_code = $cacheid2wptcode[$row['cache_id']];
+
+                # Owners may supply just one empty description. A "listing is outdated"
+                # note must always be returned; therefore we must process empty
+                # descriptions, too.
+
                 // strtolower - ISO 639-1 codes are lowercase
-                if ($row['desc'])
+                $listing_is_outdated = in_array($cache_code, $outdated_listings);
+                if ($row['desc'] || $listing_is_outdated)
                 {
                     /* Note, that the "owner" and "internal_id" fields are automatically included,
                      * whenever the cache description is included. */
 
                     $tmp = Okapi::fix_oc_html($row['desc'], 0);
 
-                    if (in_array($cache_code, $outdated_listings))
+                    if ($listing_is_outdated)
                     {
-                        Okapi::gettext_domain_init(array_merge(array($row['language']), $langprefs));
+                        Okapi::gettext_domain_init(
+                            array_merge([strtolower($row['language'])], $langprefs)
+                        );
                         $tmp = (
                             "<p style='color:#c00000'><strong>".
                             _('Parts of this geocache listing may be outdated.').
@@ -546,8 +555,7 @@ class WebService
                         );
                         Okapi::gettext_domain_restore();
                     }
-
-                    if ($attribution_append != 'none')
+                    if ($row['desc'] && $attribution_append != 'none')
                     {
                         $tmp .= "\n<p><em>".
                             self::get_cache_attribution_note(
@@ -557,6 +565,10 @@ class WebService
                             "</em></p>";
                     }
                     $results[$cache_code]['descriptions'][strtolower($row['language'])] = $tmp;
+                    if (!$row['desc'])
+                    {
+                        $results[$cache_code]['empty_descriptions'][] = strtolower($row['language']);
+                    }
                 }
                 if ($row['short_desc'])
                 {
@@ -569,8 +581,17 @@ class WebService
                         = htmlspecialchars_decode(mb_ereg_replace("<br />", "" , $row['hint']), ENT_COMPAT);
                 }
             }
+            unset($listing_is_outdated);
             foreach ($results as &$result_ref)
             {
+                # If the owner supplied at least one non-empty description, we discard
+                # all descriptions which contain only a "listing is outdated" note.
+
+                if (count($result_ref['descriptions']) > count($results[$cache_code]['empty_descriptions']))
+                {
+                    foreach ($results[$cache_code]['empty_descriptions'] as $tmp)
+                        unset($result_ref['descriptions'][$tmp]);
+                }
                 $result_ref['short_description'] = Okapi::pick_best_language($result_ref['short_descriptions'], $langprefs);
                 $result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langprefs);
                 $result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langprefs);
