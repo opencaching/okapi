@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-08 12:49+0100\n"
-"PO-Revision-Date: 2018-11-08 12:52+0100\n"
+"POT-Creation-Date: 2018-11-08 19:38+0100\n"
+"PO-Revision-Date: 2018-11-08 19:38+0100\n"
 "Last-Translator: following <following@online.de>\n"
 "Language-Team: following <following@online.de>\n"
 "Language: de\n"
@@ -18,12 +18,12 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 
-#: services/caches/edit/WebService.php:82
+#: services/caches/edit/WebService.php:89
 #, php-format
 msgid "The password must not be longer than %d characters."
 msgstr "Das Passwort darf nicht länger als %d Zeichen sein."
 
-#: services/caches/edit/WebService.php:95
+#: services/caches/edit/WebService.php:102
 #, php-format
 msgid "%s does not allow log passwords for traditional caches."
 msgstr "Tradis können bei %s keine Passwörter haben."
@@ -109,32 +109,32 @@ msgid "The cache probably is located in the following protection areas:"
 msgstr ""
 "Der Geocache befindet sich wahrscheinlich in den folgenden Schutzgebieten:"
 
-#: services/caches/geocaches/WebService.php:541
+#: services/caches/geocaches/WebService.php:550
 msgid "Parts of this geocache listing may be outdated."
 msgstr "Teile dieser Cachebeschreibung sind wahrscheinlich veraltet."
 
-#: services/caches/geocaches/WebService.php:543
+#: services/caches/geocaches/WebService.php:552
 msgid "See the log entries for more information."
 msgstr "Weitere Informationen dazu finden sich in den Logeinträgen."
 
-#: services/caches/geocaches/WebService.php:1063
+#: services/caches/geocaches/WebService.php:1084
 msgid "Stage"
 msgstr "Station"
 
-#: services/caches/geocaches/WebService.php:1107
+#: services/caches/geocaches/WebService.php:1128
 msgid "User location"
 msgstr "Benutzerkoordinaten"
 
-#: services/caches/geocaches/WebService.php:1110
+#: services/caches/geocaches/WebService.php:1131
 #, php-format
 msgid "Your own custom coordinates for the %s geocache"
 msgstr "Die Koordinaten für den Geocache %s aus deiner persönlichen Notiz"
 
-#: services/caches/geocaches/WebService.php:1274
+#: services/caches/geocaches/WebService.php:1295
 msgid "National Park / Landscape"
 msgstr "Nationalpark / Landschaft"
 
-#: services/caches/geocaches/WebService.php:1452
+#: services/caches/geocaches/WebService.php:1473
 #, php-format
 msgid ""
 "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</"
@@ -142,7 +142,7 @@ msgid ""
 msgstr ""
 "Diese <a href='%s'>Cache</a>-Beschreibung stammt von <a href='%s'>%s</a>."
 
-#: services/caches/geocaches/WebService.php:1464
+#: services/caches/geocaches/WebService.php:1485
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
@@ -153,7 +153,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/'>CC-BY-NC-ND</a>, Stand: %s; "
 "alle Logeinträge &copy; jeweiliger Autor"
 
-#: services/caches/geocaches/WebService.php:1475
+#: services/caches/geocaches/WebService.php:1496
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
@@ -233,6 +233,10 @@ msgid ""
 msgstr ""
 "Du hast dieses Event bereits als \"teilgenommen\" geloggt. Eine zweite "
 "Teilnahme ist nicht möglich, aber du kannst stattdessen einen Hinweis loggen."
+
+#: services/logs/delete/WebService.php:114
+msgid "Your log entry has been deleted."
+msgstr "Dein Logeintrag wurde gelöscht."
 
 #: services/logs/edit/WebService.php:165
 msgid "Your log entry has been updated successfully."

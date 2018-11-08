@@ -12,11 +12,21 @@
     <returns>
         <p>A dictionary of the following structure:</p>
         <ul>
-            <li><b>success</b> - <b>true</b>, if all went well.</li>
+            <li>
+                <p><b>success</b> - true, if the log entry was deleted;
+                false if it could not be deleted,</p>
+            </li>
+            <li>
+                <p><b>message</b> - plain-text string, a message for the user,
+                which acknowledges success or describes an error (usually you
+                want to display this only when success is false).</p>
+            </li>
         </ul>
-        <p>Please note, that this will <em>always</em> be true! Nothing can go
-        wrong as long as you pass your parameters in a right way (and if you
-        don't, you will get an HTTP 400 response). If you have received an HTTP
-        200 response, then you may assume that all went well.</p>
+        <p>Please note that <i>currently</i> you will always receive
+        sucess=true (if the call did not fail due to an invalid ID, which
+        will yield an HTTP 400 response). There are no restrictions on
+        deleting own log entries. But that may change in the future; e.g.
+        OC operators may decide that status-changing log entries cannot be
+        deleted. So be prepared to receive success=false.</p>
     </returns>
 </xml>

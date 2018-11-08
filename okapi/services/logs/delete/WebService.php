@@ -111,6 +111,7 @@ class WebService
         Okapi::update_user_activity($request);
         $result = array(
             'success' => true,
+            'message' => _("Your log entry has been deleted.")
         );
         return Okapi::formatted_response($request, $result);
     }
