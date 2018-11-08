@@ -446,7 +446,7 @@ class WebService
                 $needs_maintenance2
             )
         );
-        LogsCommon::update_cache_stats($cache['internal_id'], null, $logtype);
+        LogsCommon::update_cache_stats($cache['internal_id'], null, $logtype, null, $when);
         LogsCommon::update_user_stats($user['internal_id'], null, $logtype);
         if ($second_logtype != null)
         {
@@ -462,7 +462,7 @@ class WebService
                 # is only evaulated for OCDE! The 'null' is a dummy here, and the
                 # "needs maintenance" information is in $second_logtype.
             );
-            LogsCommon::update_cache_stats($cache['internal_id'], null, $second_logtype);
+            LogsCommon::update_cache_stats($cache['internal_id'], null, $second_logtype, null, $when + 1);
             LogsCommon::update_user_stats($user['internal_id'], null, $second_logtype);
         }
 

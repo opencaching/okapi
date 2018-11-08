@@ -28,7 +28,7 @@ class LogsCommon
             'services/logs/entry',
             new OkapiInternalRequest($request->consumer, null, array(
                 'log_uuid' => $log_uuid,
-                'fields' => 'cache_code|type|user|images|internal_id'
+                'fields' => 'cache_code|type|date|user|images|internal_id'
             ))
         );
         $log_internal = Db::select_row("
@@ -227,26 +227,33 @@ class LogsCommon
 
         if (Settings::get('OC_BRANCH') == 'oc.pl' &&
             $new_logtype != $old_logtype &&
-            in_array($new_logtype, array('Found it', "Didn't find it", 'Attended')) &&
-            !($new_logtype == "Didn't find it" && $old_logtype == 'Found it')
+            in_array($new_logtype, array('Found it', "Didn't find it", 'Attended', 'Will attend')) &&
+            !($new_logtype == "Didn't find it" && $old_logtype == 'Found it') &&
+            !($new_logtype == "Will attend" && $old_logtype == 'Attended')
         ) {
             # OCPL owners are allowed to attend their own events, but not to
             # search their own caches:
 
-            if ($user['uuid'] == $cache['owner']['uuid'] && $new_logtype != 'Attended') {
+            if ($user['uuid'] == $cache['owner']['uuid'] &&
+                !in_array($new_logtype, ['Attended', 'Will attend'])
+            ) {
                 throw new CannotPublishException(_(
                     "You are the owner of this cache. You may submit ".
                     "\"Comments\" and status logs only!"
                 ));
             }
 
-            # OCPL forbids logging 'Found it', 'Attended' and "Didn't find" for an
-            # already found/attended cache, while OCDE allows all kinds of duplicate logs.
-            #
-            # Duplicate 'Will attend' logs are currently allowed by OCPL code, though
-            # this may be unintentional and change in the future.
+            # OCPL forbids logging 'Found it', "Didn't find", 'Will attend' and 'Attended'
+            # for an already found/attended cache, while OCDE allows all kinds of duplicate
+            # logs.
 
-            $matching_logtype = ($new_logtype == "Didn't find it" ? 'Found it' : $new_logtype);
+            if ($new_logtype == "Didn't find it")
+                $matching_logtype = 'Found it';
+            elseif ($new_logtype == 'Will attend')
+                $matching_logtype = 'Attended';
+            else
+                $matching_logtype = $new_logtype;
+
             $has_already_found_it = Db::select_value("
                 select 1
                 from cache_logs
@@ -270,7 +277,7 @@ class LogsCommon
         }
     }
 
-    public static function update_cache_stats($cache_internal_id, $old_logtype, $new_logtype)
+    public static function update_cache_stats($cache_internal_id, $old_logtype, $new_logtype, $old_date, $when)
     {
         if (Settings::get('OC_BRANCH') == 'oc.de')
         {
@@ -292,7 +299,8 @@ class LogsCommon
             elseif ($old_logtype == 'Comment')
                 --$deltaComment;
 
-            if ($new_logtype == 'Found it' || $new_logtype == 'Attended')
+            $is_foundlog = ($new_logtype == 'Found it' || $new_logtype == 'Attended');
+            if ($is_foundlog)
                 ++$deltaFound;
             elseif ($new_logtype == "Didn't find it" || $new_logtype == 'Will attend')
                 ++$deltaDNF;
@@ -301,7 +309,14 @@ class LogsCommon
 
             # Other log types do not change the cache stats.
 
-            if ($deltaFound != 0) {
+            if ($deltaFound > 0 || ($deltaFound == 0 && $is_foundlog && $when > strtotime($old_date))) {
+                $set_lastfound_SQL = ",
+                    last_found = greatest(
+                        ifnull(last_found, '0000-00-00'),
+                        from_unixtime('".Db::escape_string($when)."')
+                    )
+                ";
+            } elseif ($deltaFound < 0 || ($is_foundlog && $when < strtotime($old_date))) {
                 $last_found = Db::select_value("
                     select max(`date`)
                     from cache_logs
@@ -366,12 +381,15 @@ class LogsCommon
         }
     }
 
-    public static function update_statistics_after_change($new_logtype, $log)
+    public static function update_statistics_after_change($new_logtype, $when, $log)
     {
-        if ($new_logtype == $log['type'])
+        if (!$when) {
+            $when = strtotime($log['date']);
+        }
+        LogsCommon::update_cache_stats($log['cache_internal_id'], $log['type'], $new_logtype, $log['date'], $when);
+        if ($new_logtype == $log['type']) {
             return;
-
-        LogsCommon::update_cache_stats($log['cache_internal_id'], $log['type'], $new_logtype);
+        }
         LogsCommon::update_user_stats($log['user']['internal_id'], $log['type'], $new_logtype);
 
         # TO DO: update OCPL "Merit Badges" (issue #552)

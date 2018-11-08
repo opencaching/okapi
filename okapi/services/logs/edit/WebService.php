@@ -141,7 +141,7 @@ class WebService
 
         # Finalize the transaction.
 
-        LogsCommon::update_statistics_after_change($logtype, $log);
+        LogsCommon::update_statistics_after_change($logtype, $when, $log);
         Db::execute("commit");
         LogsCommon::update_statpic($logtype, $log['type'], $log['user']['internal_id']);
     }

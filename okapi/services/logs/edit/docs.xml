@@ -75,7 +75,7 @@
             <li>
                 <p><b>message</b> - plain-text string, a message for the user,
                 which acknowledges success or describes an error (usually you
-                want to display this only when success is false),</p>
+                want to display this only when success is false).</p>
             </li>
         </ul>
     </returns>
