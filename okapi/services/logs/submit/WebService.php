@@ -5,21 +5,15 @@ namespace okapi\services\logs\submit;
 use Exception;
 use okapi\core\Db;
 use okapi\core\Exception\BadRequest;
+use okapi\core\Exception\CannotPublishException;
 use okapi\core\Exception\InvalidParam;
 use okapi\core\Exception\ParamMissing;
 use okapi\core\Okapi;
 use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Request\OkapiRequest;
+use okapi\services\logs\LogsCommon;
 use okapi\Settings;
-
-/**
- * This exception is thrown by WebService::_call method, when error is detected in
- * user-supplied data. It is not a BadRequest exception - it does not imply that
- * the Consumer did anything wrong (it's the user who did). This exception shouldn't
- * be used outside of this file.
- */
-class CannotPublishException extends Exception {}
 
 class WebService
 {
@@ -60,27 +54,6 @@ class WebService
         if (!$comment_format) $comment_format = "auto";
         if (!in_array($comment_format, array('auto', 'html', 'plaintext')))
             throw new InvalidParam('comment_format', $comment_format);
-
-        $tmp = $request->get_parameter('when');
-        if ($tmp)
-        {
-            $when = strtotime($tmp);
-            if ($when < 1) {
-                throw new InvalidParam(
-                    'when', "'$tmp' is not in a valid format or is not a valid date."
-                );
-            }
-            if ($when > time() + 5*60) {
-                throw new CannotPublishException(_(
-                    "You are trying to publish a log entry with a date in ".
-                    "future. Cache log entries are allowed to be published in ".
-                    "the past, but NOT in the future."
-                ));
-            }
-        }
-        else {
-            $when = time();
-        }
 
         $on_duplicate = $request->get_parameter('on_duplicate');
         if (!$on_duplicate) { $on_duplicate = "silent_success"; }
@@ -206,37 +179,19 @@ class WebService
             ))
         );
 
-        # Various integrity checks.
+        $when = $request->get_parameter('when');
+        if ($when) {
+            $when = LogsCommon::validate_when_and_convert_to_unixtime(
+                $when, $logtype, $cache['date_hidden']
+            );
+        }
+        else
+            $when = time();
 
-        if ($cache['type'] == 'Event')
-        {
-            if (in_array($logtype, array('Found it', "Didn't find it"))) {
-                throw new CannotPublishException(_(
-                    'This cache is an Event cache. You cannot "Find" it (but '.
-                    'you can attend it, or comment on it)!'
-                ));
-            }
-            else if ($logtype == 'Attended' && $when < strtotime($cache['date_hidden'])) {
-                throw new CannotPublishException(_(
-                    'You cannot attend an event before it takes place. '.
-                    'Please check the log type and date.'
-                ));
-            }
-        }
-        else  # type != event
-        {
-            if (in_array($logtype, array('Will attend', 'Attended'))) {
-                throw new CannotPublishException(_(
-                    'This cache is NOT an Event cache. You cannot "Attend" it '.
-                    '(but you can find it, or comment on it)!'
-                ));
-            }
-        }
-        if ($logtype == 'Comment' && strlen(trim($comment)) == 0) {
-            throw new CannotPublishException(_(
-                "Your have to supply some text for your comment."
-            ));
-        }
+        # Various integrity checks & check password
+
+        LogsCommon::test_if_logtype_and_pw_match_cache($request, $cache);
+        LogsCommon::validate_comment($comment, $logtype);
 
         if ($recommend && $user['uuid'] == $cache['owner']['uuid'])
         {
@@ -283,108 +238,12 @@ class WebService
             }
         }
 
-        # Password check.
+        # Prepare our comment to be inserted into the database.
 
-        if (($logtype == 'Found it' || $logtype == 'Attended') && $cache['req_passwd'])
-        {
-            $valid_password = Db::select_value("
-                select logpw
-                from caches
-                where cache_id = '".Db::escape_string($cache['internal_id'])."'
-            ");
-            $supplied_password = $request->get_parameter('password');
-            if (!$supplied_password) {
-                throw new CannotPublishException(_(
-                    "This cache requires a password. You didn't provide one!"
-                ));
-            }
-            if (strtolower($supplied_password) != strtolower($valid_password)) {
-                throw new CannotPublishException(_("Invalid password!"));
-            }
-        }
-
-        # Prepare our comment to be inserted into the database. This may require
-        # some reformatting which depends on the current OC installation.
-
-        # OC sites store all comments in HTML format, while the 'text_html' field
-        # indicates their *original* format as delivered by the user. This
-        # allows processing the 'text' field contents without caring about the
-        # original format, while still being able to re-create the comment in
-        # its original form.
-
-        if ($comment_format == 'plaintext')
-        {
-            # This encoding is identical to the plaintext processing in OCDE code.
-            # It is ok also for OCPL, which no longer allows to enter plaintext
-            # on the website.
-
-            $formatted_comment = htmlspecialchars($comment, ENT_COMPAT);
-            $formatted_comment = nl2br($formatted_comment);
-            $formatted_comment = str_replace('  ', '&nbsp; ', $formatted_comment);
-            $formatted_comment = str_replace('  ', '&nbsp; ', $formatted_comment);
-
-            if (Settings::get('OC_BRANCH') == 'oc.de')
-            {
-                $value_for_text_html_field = 0;
-            }
-            else
-            {
-                # 'text_html' = 0 (false) is broken in OCPL code and has been
-                # deprecated; OCPL code was changed to always set it to 1 (true).
-                # For OKAPI, the value has been changed from 0 to 1 with commit
-                # cb7d222, after an email discussion with Harrie Klomp. This is
-                # an ID of the appropriate email thread:
-                #
-                # Message-ID: <22b643093838b151b300f969f699aa04@harrieklomp.be>
-                #
-                # Later changed to 2 due to https://github.com/opencaching/opencaching-pl/pull/1224.
-
-                $value_for_text_html_field = 2;
-            }
-        }
-        else
-        {
-            if ($comment_format == 'auto')
-            {
-                # 'Auto' is for backward compatibility. Before the "comment_format"
-                # was introduced, OKAPI used a weird format in between (it allowed
-                # HTML, but applied nl2br too).
-
-                $formatted_comment = nl2br($comment);
-            }
-            else
-            {
-                $formatted_comment = $comment;
-            }
-
-            # For user-supplied HTML comments, OC sites require us to do
-            # additional HTML purification prior to the insertion into the
-            # database.
-
-            # NOTICE: We are including EXTERNAL OCDE libraries here! This
-            # code does not belong to OKAPI!
-
-            if (Settings::get('OC_BRANCH') == 'oc.de')
-            {
-                $opt['html_purifier'] = Settings::get('OCDE_HTML_PURIFIER_SETTINGS');
-
-                $purifier = new \OcHTMLPurifier($opt);
-                $formatted_comment = $purifier->purify($formatted_comment);
-
-                $value_for_text_html_field = 1;
-            }
-            else
-            {
-                require_once $GLOBALS['rootpath'] . 'lib/class.inputfilter.php';
-                $myFilter = new \InputFilter($allowedtags, $allowedattr, 0, 0, 1);
-                $formatted_comment = $myFilter->process($formatted_comment);
-
-                # see https://github.com/opencaching/opencaching-pl/pull/1224
-                $value_for_text_html_field = 2;
-            }
-        }
-
+        list($formatted_comment, $value_for_text_html_field)
+            = LogsCommon::process_comment($comment, $comment_format);
         unset($comment);
+        unset($comment_format);
 
         # Prevent bug #367. Start the transaction and lock all the rows of this
         # (user, cache) pair. In theory, we want to lock even smaller number of
@@ -443,50 +302,7 @@ class WebService
             }
         }
 
-        # Check if already found it (and make sure the user is not the owner).
-        #
-        # OCPL forbids logging 'Found it', 'Attended' and "Didn't find" for an
-        # already found/attended cache, while OCDE allows all kinds of duplicate logs.
-        #
-        # Duplicate 'Will attend' logs are currently allowed by OCPL code, though
-        # this may be unintentional and change in the future.
-
-        if (
-            Settings::get('OC_BRANCH') == 'oc.pl'
-            && in_array($logtype, ['Found it', 'Attended', "Didn't find it"])
-        ) {
-            $matching_logtype = ($logtype == "Didn't find it" ? 'Found it' : $logtype);
-            $has_already_found_it = Db::select_value("
-                select 1
-                from cache_logs
-                where
-                    user_id = '".Db::escape_string($user['internal_id'])."'
-                    and cache_id = '".Db::escape_string($cache['internal_id'])."'
-                    and type = '".Db::escape_string(Okapi::logtypename2id($matching_logtype))."'
-                    and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
-                limit 1
-                /* there should be maximum 1 of these logs, but who knows ... */
-            ");
-            if ($has_already_found_it) {
-                throw new CannotPublishException(
-                    $matching_logtype == 'Found it'
-                    ? _("You have already submitted a \"Found it\" log entry once. ".
-                        "Now you may submit \"Comments\" only!")
-                    : _("You have already submitted an \"Attended\" log entry once. ".
-                        "Now you may submit \"Comments\" only!")
-                );
-            }
-
-            # OCPL owners are allowed to attend their own events, but not to
-            # search their own caches.
-
-            if ($user['uuid'] == $cache['owner']['uuid'] && $logtype != 'Attended') {
-                throw new CannotPublishException(_(
-                    "You are the owner of this cache. You may submit ".
-                    "\"Comments\" only!"
-                ));
-            }
-        }
+        LogsCommon::test_if_find_allowed($logtype, $cache, $user);
 
         # Check if the user has already rated the cache. BTW: I don't get this one.
         # If we already know, that the cache was NOT found yet, then HOW could the
@@ -640,8 +456,8 @@ class WebService
                 $value_for_text_htmledit_field, $needs_maintenance2
             )
         );
-        self::increment_cache_stats($cache['internal_id'], $when, $logtype);
-        self::increment_user_stats($user['internal_id'], $logtype);
+        LogsCommon::update_cache_stats($cache['internal_id'], null, $logtype, null, $when);
+        LogsCommon::update_user_stats($user['internal_id'], null, $logtype);
         if ($second_logtype != null)
         {
             # Reminder: This will only be called for OCPL branch.
@@ -656,9 +472,11 @@ class WebService
                 # is only evaulated for OCDE! The 'null' is a dummy here, and the
                 # "needs maintenance" information is in $second_logtype.
             );
-            self::increment_cache_stats($cache['internal_id'], $when + 1, $second_logtype);
-            self::increment_user_stats($user['internal_id'], $second_logtype);
+            LogsCommon::update_cache_stats($cache['internal_id'], null, $second_logtype, null, $when + 1);
+            LogsCommon::update_user_stats($user['internal_id'], null, $second_logtype);
         }
+
+        # TO DO: update OCPL "Merit Badges" (issue #552)
 
         # Save the rating.
 
@@ -735,21 +553,7 @@ class WebService
         # Finalize the transaction.
 
         Db::execute("commit");
-
-        if (Settings::get('OC_BRANCH') == 'oc.pl'
-            && ($logtype == 'Found it' || $logtype == 'Attended'))
-        {
-            # We need to delete the copy of stats-picture for this user. Otherwise,
-            # the legacy OCPL code won't detect that the picture needs to be refreshed.
-            #
-            # OCDE code invalidates the statpic via database trigger. (And, by the way,
-            # has other statpic file names which include a language code).
-
-            $filepath = Okapi::get_var_dir().'/images/statpics/statpic'.$user['internal_id'].'.jpg';
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
-        }
+        LogsCommon::update_statpic($logtype, "", $user['internal_id']);
 
         # Success. Return the uuids.
 
@@ -800,81 +604,6 @@ class WebService
 
         Okapi::update_user_activity($request);
         return Okapi::formatted_response($request, $result);
-    }
-
-    private static function increment_cache_stats($cache_internal_id, $when, $logtype)
-    {
-        if (Settings::get('OC_BRANCH') == 'oc.de')
-        {
-            # OCDE handles cache stats updates using triggers. So, they are already
-            # incremented properly.
-        }
-        else
-        {
-            # OCPL doesn't use triggers for this. We need to update manually.
-
-            if ($logtype == 'Found it' || $logtype == 'Attended')
-            {
-                Db::execute("
-                    update caches
-                    set
-                        founds = founds + 1,
-                        last_found = greatest(
-                            ifnull(last_found, '0000-00-00'),
-                            from_unixtime('".Db::escape_string($when)."')
-                        )
-                    where cache_id = '".Db::escape_string($cache_internal_id)."'
-                ");
-            }
-            elseif ($logtype == "Didn't find it" || $logtype == 'Will attend')
-            {
-                Db::execute("
-                    update caches
-                    set notfounds = notfounds + 1
-                    where cache_id = '".Db::escape_string($cache_internal_id)."'
-                ");
-            }
-            elseif ($logtype == 'Comment')
-            {
-                Db::execute("
-                    update caches
-                    set notes = notes + 1
-                    where cache_id = '".Db::escape_string($cache_internal_id)."'
-                ");
-            }
-            else
-            {
-                # This log type is not represented in cache stats.
-            }
-        }
-    }
-
-    private static function increment_user_stats($user_internal_id, $logtype)
-    {
-        if (Settings::get('OC_BRANCH') == 'oc.de')
-        {
-            # OCDE handles cache stats updates using triggers. So, they are already
-            # incremented properly.
-        }
-        else
-        {
-            # OCPL doesn't have triggers for this. We need to update manually.
-
-            switch ($logtype)
-            {
-                case 'Found it': $field_to_increment = 'founds_count'; break;
-                case "Didn't find it": $field_to_increment = 'notfounds_count'; break;
-                case 'Comment': $field_to_increment = 'log_notes_count'; break;
-                default:
-                    # This log type is not represented in user stats.
-                    return;
-            }
-            Db::execute("
-                update user
-                set $field_to_increment = $field_to_increment + 1
-                where user_id = '".Db::escape_string($user_internal_id)."'
-            ");
-        }
     }
 
     private static function insert_log_row(

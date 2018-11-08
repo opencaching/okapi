@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Common code of add.php and edit.php
+ * Common code for adding and editing images
  */
 
 namespace okapi\services\logs\images;
