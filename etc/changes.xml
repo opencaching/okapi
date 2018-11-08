@@ -16,6 +16,11 @@
 
     -->
     <changes>
+        <change commit="51d7c9ae" version="1761" time="2018-11-08T13:11:06+0100" type="enhancement">
+            Added the <a href="services/logs/edit.html">services/logs/edit</a>
+            and <a href="services/logs/delete.html">services/logs/delete</a>
+            methods.
+        </change>
         <change commit="7a6c62ec" version="1745" time="2018-10-31T13:10:07+0100" type="enhancement">
             Added the status-changing log types <em>Available</em>,
             <em>Temporarily unavailable</em> and <em>Archived</em> to

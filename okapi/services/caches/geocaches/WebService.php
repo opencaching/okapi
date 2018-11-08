@@ -532,6 +532,8 @@ class WebService
                 # descriptions, too.
 
                 // strtolower - ISO 639-1 codes are lowercase
+                $language = strtolower($row['language']);
+
                 $listing_is_outdated = in_array($cache_code, $outdated_listings);
                 if ($row['desc'] || $listing_is_outdated)
                 {
@@ -543,7 +545,7 @@ class WebService
                     if ($listing_is_outdated)
                     {
                         Okapi::gettext_domain_init(
-                            array_merge([strtolower($row['language'])], $langprefs)
+                            array_merge([$language], $langprefs)
                         );
                         $tmp = (
                             "<p style='color:#c00000'><strong>".
@@ -559,37 +561,39 @@ class WebService
                     {
                         $tmp .= "\n<p><em>".
                             self::get_cache_attribution_note(
-                                $row['cache_id'], strtolower($row['language']), $langprefs,
+                                $row['cache_id'], $language, $langprefs,
                                 $results[$cache_code]['owner'], $attribution_append
                             ).
                             "</em></p>";
                     }
-                    $results[$cache_code]['descriptions'][strtolower($row['language'])] = $tmp;
+                    $results[$cache_code]['descriptions'][$language] = $tmp;
                     if (!$row['desc'])
                     {
-                        $results[$cache_code]['empty_descriptions'][] = strtolower($row['language']);
+                        $results[$cache_code]['empty_descriptions'][] = $language;
                     }
                 }
                 if ($row['short_desc'])
                 {
-                    $results[$cache_code]['short_descriptions'][strtolower($row['language'])] = $row['short_desc'];
+                    $results[$cache_code]['short_descriptions'][$language] = $row['short_desc'];
                 }
                 if ($row['hint'])
                 {
-                    $results[$cache_code]['hints'][strtolower($row['language'])] = $row['hint'];
-                    $results[$cache_code]['hints2'][strtolower($row['language'])]
+                    $results[$cache_code]['hints'][$language] = $row['hint'];
+                    $results[$cache_code]['hints2'][$language]
                         = htmlspecialchars_decode(mb_ereg_replace("<br />", "" , $row['hint']), ENT_COMPAT);
                 }
             }
             unset($listing_is_outdated);
+            unset($language);
+
             foreach ($results as &$result_ref)
             {
                 # If the owner supplied at least one non-empty description, we discard
                 # all descriptions which contain only a "listing is outdated" note.
 
-                if (count($result_ref['descriptions']) > count($results[$cache_code]['empty_descriptions']))
+                if (count($result_ref['descriptions']) > count($result_ref['empty_descriptions']))
                 {
-                    foreach ($results[$cache_code]['empty_descriptions'] as $tmp)
+                    foreach ($result_ref['empty_descriptions'] as $tmp)
                         unset($result_ref['descriptions'][$tmp]);
                 }
                 $result_ref['short_description'] = Okapi::pick_best_language($result_ref['short_descriptions'], $langprefs);
