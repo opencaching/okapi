@@ -1,6 +1,6 @@
 <xml>
     <brief>Delete a log entry</brief>
-    <issue-id>TODO</issue-id>
+    <issue-id>557</issue-id>
     <desc>
         <p>This method allows your user to delete own log entries.</p>
     </desc>

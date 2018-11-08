@@ -1,6 +1,6 @@
 <xml>
     <brief>Edit an existing log entry</brief>
-    <issue-id>TODO</issue-id>
+    <issue-id>556</issue-id>
     <desc>
         <p>This method allows your user to change the text, type and date
         of own log entries. If you need to edit other log-related data like
