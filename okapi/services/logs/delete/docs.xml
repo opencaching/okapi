@@ -22,11 +22,5 @@
                 want to display this only when success is false).</p>
             </li>
         </ul>
-        <p>Please note that <i>currently</i> you will always receive
-        sucess=true (if the call did not fail due to an invalid ID, which
-        will yield an HTTP 400 response). There are no restrictions on
-        deleting own log entries. But that may change in the future; e.g.
-        OC operators may decide that status-changing log entries cannot be
-        deleted. So be prepared to receive success=false.</p>
     </returns>
 </xml>

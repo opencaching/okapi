@@ -110,6 +110,10 @@ class WebService
 
         Okapi::update_user_activity($request);
         $result = array(
+            # Currently nothing can wrong - there are no restriction on deleting
+            # own logs. But that may change in the future, or we me add other
+            # deletion options that are restricted.
+
             'success' => true,
             'message' => _("Your log entry has been deleted.")
         );
