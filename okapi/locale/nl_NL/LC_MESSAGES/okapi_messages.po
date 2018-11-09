@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc-polish-code-translations\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-08 12:49+0100\n"
-"PO-Revision-Date: 2018-11-08 14:13+0100\n"
+"POT-Creation-Date: 2018-11-08 19:38+0100\n"
+"PO-Revision-Date: 2018-11-09 13:03+0100\n"
 "Last-Translator: Harrie Klomp <harrie@harrieklomp.be>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -21,12 +21,12 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 
-#: services/caches/edit/WebService.php:82
+#: services/caches/edit/WebService.php:89
 #, php-format
 msgid "The password must not be longer than %d characters."
 msgstr "Wachtwoord mag niet langer zijn dan %d tekens."
 
-#: services/caches/edit/WebService.php:95
+#: services/caches/edit/WebService.php:102
 #, php-format
 msgid "%s does not allow log passwords for traditional caches."
 msgstr "%s staat geen log wachtwoorden toe voor traditionele caches."
@@ -103,42 +103,42 @@ msgstr "Afbeelding omschrijving"
 msgid "The cache probably is located in the following protection areas:"
 msgstr "De cache is waarschijnlijk in een volgend beschermd gebied geplaatst:"
 
-#: services/caches/geocaches/WebService.php:541
+#: services/caches/geocaches/WebService.php:550
 msgid "Parts of this geocache listing may be outdated."
 msgstr "Delen van de cachebeschrijving zijn misschien verouderd."
 
-#: services/caches/geocaches/WebService.php:543
+#: services/caches/geocaches/WebService.php:552
 msgid "See the log entries for more information."
 msgstr "Zie de logs voor meer informatie."
 
-#: services/caches/geocaches/WebService.php:1063
+#: services/caches/geocaches/WebService.php:1084
 msgid "Stage"
 msgstr "WP nummer"
 
-#: services/caches/geocaches/WebService.php:1107
+#: services/caches/geocaches/WebService.php:1128
 msgid "User location"
 msgstr "Gebruikers locatie"
 
-#: services/caches/geocaches/WebService.php:1110
+#: services/caches/geocaches/WebService.php:1131
 #, php-format
 msgid "Your own custom coordinates for the %s geocache"
 msgstr "Eigen gecorrigeerde coördinaten voor %s geocache"
 
-#: services/caches/geocaches/WebService.php:1274
+#: services/caches/geocaches/WebService.php:1295
 msgid "National Park / Landscape"
 msgstr "Nationaal park / Landschap"
 
-#: services/caches/geocaches/WebService.php:1452
+#: services/caches/geocaches/WebService.php:1473
 #, php-format
 msgid "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</a> site."
 msgstr "Deze <a href='%s'>geocache</a> beschrijving komt van de <a href='%s'>%s</a> \"\"site."
 
-#: services/caches/geocaches/WebService.php:1464
+#: services/caches/geocaches/WebService.php:1485
 #, php-format
 msgid "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, as of %s; all log entries &copy; their authors"
 msgstr "&copy; <a href='%s'>%s</a> <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.nl'>CC-door-NC-ND</a>, van %s; alle vermelde logs &copy; hun auteurs"
 
-#: services/caches/geocaches/WebService.php:1475
+#: services/caches/geocaches/WebService.php:1496
 #, php-format
 msgid "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>; all log entries &copy; their authors"
 msgstr "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.nl'>CC-BY-NC-ND</a>; alle vermelde logs &copy; hun auteurs"
@@ -182,6 +182,10 @@ msgstr "Je hebt deze cache al als \"Gevonden\" gelogd. Je kunt nu wel een \"Noti
 #: services/logs/LogsCommon.php:273
 msgid "You have already submitted an \"Attended\" log entry once. Now you may submit \"Comments\" only!"
 msgstr "Je hebt al als \"Deelgenomen\" gelogd. Je kunt nu wel een \"Notitie\" plaatsen!"
+
+#: services/logs/delete/WebService.php:114
+msgid "Your log entry has been deleted."
+msgstr "Jouw log is verwijderd."
 
 #: services/logs/edit/WebService.php:165
 msgid "Your log entry has been updated successfully."
