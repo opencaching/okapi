@@ -36,11 +36,14 @@ class WebService
         if ($user_logs_only === null) $user_logs_only = 'false';
         $attribution_append = $request->get_parameter('attribution_append');
         if (!$attribution_append) $attribution_append = 'full';
+        $oc_team_annotation = $request->get_parameter('oc_team_annotation');
+        if (!$oc_team_annotation) $oc_team_annotation = 'description';
         $params = array(
             'cache_codes' => $cache_code,
             'langpref' => $langpref,
             'fields' => $fields,
             'attribution_append' => $attribution_append,
+            'oc_team_annotation' => $oc_team_annotation,
             'lpc' => $lpc,
             'log_fields' => $log_fields,
             'user_logs_only' => $user_logs_only,
