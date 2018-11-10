@@ -33,7 +33,8 @@ class WebService
         'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
         'is_ignored', 'willattends', 'country', 'state', 'preview_image',
         'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
-        'protection_areas', 'short_description', 'short_descriptions', 'needs_maintenance');
+        'protection_areas', 'short_description', 'short_descriptions', 'needs_maintenance',
+        'watchers');
 
     public static function call(OkapiRequest $request)
     {
@@ -174,6 +175,7 @@ class WebService
                     ifnull(sc.found, 0) as founds,
                     ifnull(sc.notfound, 0) as notfounds,
                     ifnull(sc.will_attend, 0) as willattends,
+                    ifnull(sc.watch, 0) as watchers,
                     sc.last_found,
                     0 as votes, 0 as score
                     -- SEE ALSO OC.PL BRANCH BELOW
@@ -206,6 +208,7 @@ class WebService
                     c.founds,
                     c.notfounds,
                     c.notfounds as willattends,
+                    c.watcher as watchers,
                     c.last_found,
                     c.votes, c.score
                     -- SEE ALSO OC.DE BRANCH ABOVE
@@ -285,6 +288,7 @@ class WebService
                             $entry['willattends'] = 0;
                         }
                         break;
+                    case 'watchers': $entry['watchers'] = $row['watchers'] + 0; break;
                     case 'size':
                         # Deprecated. Leave it for backward-compatibility. See issue 155.
                         switch (Okapi::cache_sizeid_to_size2($row['size']))

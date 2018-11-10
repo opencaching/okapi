@@ -243,6 +243,9 @@
                 be <b>zero</b> (not null, for <a href='https://github.com/opencaching/okapi/issues/233'>backward
                 compatibility</a>),</p>
             </li>
+            <li>
+                <p><b>watchers</b> - number of users who are watching this cache,</p>
+            </li>
             <li class='deprecated'>
                 <b>size</b> - deprecated
                 (<a href='https://github.com/opencaching/okapi/issues/155'>why?</a>),
