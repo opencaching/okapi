@@ -30,7 +30,12 @@ class WebService
         $result['mobile_registration_url'] = Settings::get('MOBILE_REGISTRATION_URL');
         $result['image_max_upload_size'] = Settings::get('IMAGE_MAX_UPLOAD_SIZE');
         $result['image_rcmd_max_pixels'] = Settings::get('IMAGE_MAX_PIXEL_COUNT');
-        $result['geocache_passwd_max_length'] = Db::field_length('caches', 'logpw');
+
+        # Version 1623 added the 'geocache_passwd_max_length' field. It turned out
+        # to have wrong data type (string) only at OCDE. services/caches/edit had
+        # not be used until then at least at OCPL sites, and the OCDE field was
+        # buggy. So we removed it and added a new 'password_max_length' field with
+        # services/caches/capabilities.
 
         return Okapi::formatted_response($request, $result);
     }

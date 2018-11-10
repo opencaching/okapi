@@ -299,6 +299,8 @@ class Db
                 table_schema='".self::escape_string(Settings::get('DB_NAME'))."'
                 and table_name='".self::escape_string($table)."'
                 and column_name='".self::escape_string($field)."'
-        ");
+        ") + 0;
+        /* OC.DE installation returned a string here, OC.PL an integer.
+         * Added type cast. */
     }
 }

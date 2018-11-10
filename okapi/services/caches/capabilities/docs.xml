@@ -1,0 +1,40 @@
+<xml>
+    <brief>Get information on available geocache properties</brief>
+    <issue-id>TODO</issue-id>
+    <desc>
+        <p>This method tells which geocache properties are available at this
+        OKAPI installation.</p>
+        
+        <p>Using this method is mostly optional. You never need to know about
+        differences between OKAPI installations when searching for or
+        retrieving geocaches. But this method may help to improve user
+        interfaces, e.g. by hiding unnecessary search options.</p>
+    </desc>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>
+                <p><b>types</b> - list of the cache types which are currently
+                available at this installation. See the
+                <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>
+                for more information on cache types.</p>
+            </li>
+            <li>
+                <p><b>sizes</b> - list of the cache sizes which are currently
+                available at this installation.</p>
+            </li>
+            <li>
+                <p><b>has_ratings</b> - boolean, <b>true</b> if this installation
+                can store geocache quality ratings. OKAPI provides methods to
+                submit and retrieve ratings, and to search for geocaches by
+                rating.</p>
+            </li>
+            <li>
+                <p><b>password_max_length</b> - the maximum length of
+                a password that will be accepted by
+                <a href='%OKAPI:methodargref:services/caches/edit%'>services/caches/edit</a>.</p>
+            </li>
+        </ul>
+    </returns>
+</xml>

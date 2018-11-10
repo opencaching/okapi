@@ -127,24 +127,36 @@
                 (<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),
             </li>
             <li>
-                <p><b>type</b> - cache type. This might be <b>pretty much everything</b>,
-                but there are some predefined types that you might want to treat
-                in a special way (separate icons etc.). Well-known types include:</p>
+                <p><b>type</b> - cache type, one of the type codes that are included
+                in the <b>types</b> field of
+                <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.
+                Currently there are eight types which are in use at all OKAPI
+                installations:</p>
                 <ul>
                     <li><b>Traditional</b>,</li>
                     <li><b>Multi</b>,</li>
-                    <li><b>Quiz</b>,</li>
-                    <li><b>Moving</b>,</li>
+                    <li><b>Quiz</b>, also known as "Mystery",</li>
+                    <li><b>Moving</b>, a geocache with changing coordinates,</li>
                     <li><b>Virtual</b>,</li>
                     <li><b>Webcam</b>,</li>
-                    <li><b>Event</b>,</li>
-                    <li><i>(any other value is valid too)</i></li>
+                    <li><b>Other</b>, also dubbed "unknown type"; allows OC users to
+                        create special caches which don't fit into the scheme of
+                        well-known types,</li>
+                    <li><b>Event</b>, a peculiar type of geocache which is NOT a geocache
+                at all, but it <b>is</b> stored as a geocache in OC database. Just keep
+                in mind, that in case of Event Caches, some fields may have a little
+                different meaning than you would tell by their name.</li>
                 </ul>
-                <p><b>Event</b> is a peculiar type of geocache which is NOT a geocache
-                at all, but it <b>is</b> stored as a geocache in OC database (this design
-                decision is as old as the OC network itself!). Just keep in mind, that
-                in case of Event Caches, some fields may have a little different meaning
-                than you would tell by their name.</p>
+                <p>More types are in use at some installations:</p>
+                <ul>
+                    <li><b>Own</b>, a moving geocache which is carried by the owner,</li>
+                    <li><b>Podcast</b>, a geocache with attached MP3 file(s). The MP3
+                    data so far is not accessible via OKAPI.</li>
+                </ul>
+                <p>There are even more types, but OKAPI maps them to common types
+                (and eventually some attributes), so you won't see them in OKAPI data.</p>
+                <p>OC sites and OKAPI may decide to add or remove types, so you MUST BE
+                prepared for any new type code.</p>
             </li>
             <li>
                 <p><b>status</b> - cache status. Valid cache status codes currently include:</p>
@@ -508,8 +520,8 @@
                 <p><b>Note:</b> This data is user-supplied and is not validated in
                 any way. Consider using external geocoding services instead. Also,
                 currently you have no way of knowing in which language it will appear
-                in (but it *may* start to vary on the value of your <b>langpref</b>
-                parameter in the future).</p>
+                in. Only some OKAPI installations will localize it by the
+                <b>langpref</b> parameter.</p>
             </li>
             <li>
                 <p><b>state</b> - name of the major subnational entity the cache
