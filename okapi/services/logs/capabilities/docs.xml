@@ -1,0 +1,85 @@
+<xml>
+    <brief>Get information on available logging features</brief>
+    <issue-id>TODO</issue-id>
+    <desc>
+        <p>This method tells which features are available for logging a
+        cache or editing a log. You may use it to dynamically disable or
+        hide nonfunctional options in a user interface.</p>
+
+        <p>Using this method is <i>always optional</i>. You never need to
+        know about differences between OKAPI installations or logging
+        preconditions. If a logging feature is not avaible, OKAPI will
+        return a user-friendly explanation.</p>
+    </desc>
+    <req name='reference_item'>
+        <p>One of these:</p>
+        <ul>
+            <li>
+                The code of the geocache to be logged. Available features
+                for <a href='%OKAPI:methodargref:services/logs/submit%'>services/logs/submit</a>
+                will be returned.
+            </li>
+            <li>
+                The UUID of the log entry to be edited. Available features
+                for <a href='%OKAPI:methodargref:services/logs/edit%'>services/logs/edit</a>
+                will be returned.
+            </li>
+        </ul>
+        <p>The returned values depend on the type and state of the
+        geocache, on previous logs and on the OC site. They can change
+        any time.</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>
+                <p><b>log_types</b> - a list of the log types your user
+                can currently submit for the geocache. Available types
+                depend on many parameters, like the cache type and state.</p>
+            </li>
+            <li>
+                <p><b>can_rate</b> - boolean, <b>true</b> if the user can rate
+                the geocache; <b>false</b> if a submitted rating will be ignored.
+                Ratings may be disabled for some cache types or for caches
+                that the user already rated or owns. Some OC installations do
+                not provide ratings.</p>
+            </li>
+            <li>
+                <p><b>can_recommend</b> - tells if the user can rate the geocache;
+                one of the following:</p>
+                <ul>
+                    <li>
+                        <b>true</b> if the user can add a recommendation for the
+                        geocache,
+                    </li>
+                    <li>
+                        <b>need_more_finds</b> if the user needs to find more
+                        caches to add a recommendation for the geocache. A
+                        submitted recommendation will be ignored,
+                    </li>
+                    <li>
+                        <b>false</b> if the user cannot recommend the cache
+                        for some other reason, e.g. the user owns or already
+                        recommended the cache. A submitted recommendation
+                        will be ignored.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p><b>can_set_needs_maintenance</b> - boolean, <b>true</b>
+                if the user can set a "needs maintenance" state of the cache by
+                submitting <i>needs_maintenance2=true</i>; <b>false</b> if
+                this argument will be ignored. This feature is not available
+                for all cache types.</p>
+            </li>
+            <li>
+                <p><b>can_reset_needs_maintenance</b> - boolean, <b>true</b>
+                if the user can reset a "needs maintenance" state of the cache by
+                submitting <i>needs_maintenance2=false</i>; <b>false</b> if
+                this argument will be ignored. This feature is not available
+                yet at some OC installations.</p>
+            </li>
+        </ul>
+    </returns>
+</xml>

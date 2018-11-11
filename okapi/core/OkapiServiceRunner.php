@@ -42,6 +42,7 @@ class OkapiServiceRunner
         'services/caches/formatters/garmin',
         'services/caches/formatters/ggz',
         'services/caches/map/tile',
+        'services/logs/capabilities',
         'services/logs/delete',
         'services/logs/edit',
         'services/logs/entries',
