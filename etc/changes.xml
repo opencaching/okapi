@@ -16,6 +16,10 @@
 
     -->
     <changes>
+        <change commit="2e248adc" version="1768" time="2018-11-10T13:11:28+0100" type="enhancement">
+            Added the <i>watchers</i> field to
+            <a href="services/caches/geocache.html">services/caches/geocache</a>(s).
+        </change>
         <change commit="51d7c9ae" version="1761" time="2018-11-08T13:11:06+0100" type="enhancement">
             Added the <a href="services/logs/edit.html">services/logs/edit</a>
             and <a href="services/logs/delete.html">services/logs/delete</a>

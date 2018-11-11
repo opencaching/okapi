@@ -213,26 +213,34 @@
     </opt>
     <opt name='powertrail_only' default='false' infotags="ocpl-specific">
         <p>Boolean. If set to <b>true</b>, only caches which belong to at
-        least one <b>active</b> Power Trail will be included.</p>
+        least one <b>active</b> geopath will be included.</p>
 
-        <p>Power Trails are sets of geocaches. Only some Opencaching sites
+        <p>Geopaths are sets of geocaches. Only some Opencaching sites
         implement this feature (OCPL-branch). If this site does not implement
         it, and you will set this parameter to <b>true</b>, then you will
         <b>always</b> receive an empty result.</p>
+
+        <p><b>Note:</b> The parameter name "powertrail_only" is historical.
+        Geopaths can be powertrails, but need not to be. Any caches of
+        active geopaths will be included that match the other search criteria.</p>
     </opt>
-    <opt name='powertrail_ids' infotags="ocpl-specific">
-        <p>Pipe-separated list of Power Trail IDs. If given, then only
-        the caches which belong to at least one of the referenced Power Trails
-        will be included. Only <b>active</b> Power Trails are taken into
-        consideration, IDs which reference inactive or nonexistent Power Trails
+    <opt name='powertrail_ids' infotags="ocpl-specific" class='deprecated'>
+        <p>Deprecated (<a href="https://github.com/opencaching/okapi/issues/560">why?</a>).</p>
+
+        <p>Pipe-separated list of internal geopath IDs. If given, then only
+        the caches which belong to at least one of the referenced geopaths
+        will be included. Only <b>active</b> geopaths are taken into
+        consideration; IDs which reference inactive or nonexistent geopaths
         will be ignored.</p>
 
-        <p>Power Trails are sets of geocaches. Only some Opencaching sites
+        <p>Geopaths are sets of geocaches. Only some Opencaching sites
         implement this feature. If this site does not implement it, then
         whenever you use this parameter, you will <b>always</b> receive an
-        empty result. Also, at the time of writing this, there is no method to
-        retrieve any Power Trails, or their IDs. So, this parameter is
-        primarily for internal use only.</p>
+        empty result.</p>
+
+        <p>Note that OKAPI does not and will not expose internal geopath
+        IDs. You should not use them. This parameter was implemented for
+        internal use.</p>
     </opt>
     <opt name='set_and'>
         <p>ID of a set previously created with the <b>search/save</b> method.
