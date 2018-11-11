@@ -34,7 +34,7 @@ class WebService
         'is_ignored', 'willattends', 'country', 'state', 'preview_image',
         'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
         'protection_areas', 'short_description', 'short_descriptions', 'needs_maintenance',
-        'watchers');
+        'watchers', 'is_rated', 'is_recommended');
 
     public static function call(OkapiRequest $request)
     {
@@ -273,6 +273,8 @@ class WebService
                     case 'is_not_found': /* handled separately */ break;
                     case 'is_watched': /* handled separately */ break;
                     case 'is_ignored': /* handled separately */ break;
+                    case 'is_rated': /* handled separately */ break;
+                    case 'is_recommended': /* handled separately */ break;
                     case 'founds': $entry['founds'] = $row['founds'] + 0; break;
                     case 'notfounds':
                         if ($row['type'] != 6) {  # non-event
@@ -499,6 +501,53 @@ class WebService
                 $tmp2[$cache_code] = true;
             foreach ($results as $cache_code => &$result_ref)
                 $result_ref['is_ignored'] = isset($tmp2[$cache_code]);
+        }
+
+        # is_rated
+
+        if (in_array('is_rated', $fields))
+        {
+            if ($request->token == null)
+                throw new BadRequest("Level 3 Authentication is required to access 'is_rated' field.");
+            $tmp2 = array();
+            if (Settings::get('OC_BRANCH') == 'oc.pl')
+            {
+                $tmp = Db::select_column("
+                    select c.wp_oc
+                    from
+                        caches c,
+                        scores s
+                    where
+                        c.cache_id = s.cache_id
+                        and s.user_id = '".Db::escape_string($request->token->user_id)."'
+                ");
+                foreach ($tmp as $cache_code)
+                    $tmp2[$cache_code] = true;
+            }
+            foreach ($results as $cache_code => &$result_ref)
+                $result_ref['is_rated'] = isset($tmp2[$cache_code]);
+        }
+
+        # is_recommended
+
+        if (in_array('is_recommended', $fields))
+        {
+            if ($user_id == null)
+                throw new BadRequest("Either 'user_uuid' parameter OR Level 3 Authentication is required to access 'is_recommended' field.");
+            $tmp = Db::select_column("
+                select c.wp_oc
+                from
+                    caches c,
+                    cache_rating cr
+                where
+                    c.cache_id = cr.cache_id
+                    and cr.user_id = '".Db::escape_string($user_id)."'
+            ");
+            $tmp2 = array();
+            foreach ($tmp as $cache_code)
+                $tmp2[$cache_code] = true;
+            foreach ($results as $cache_code => &$result_ref)
+                $result_ref['is_recommended'] = isset($tmp2[$cache_code]);
         }
 
         # Descriptions and hints.
