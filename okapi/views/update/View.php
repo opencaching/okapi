@@ -781,4 +781,22 @@ class View
             ");
         }
     }
+
+    private static function ver120()
+    {
+        # Table for temporary diagnostic information. Don't store any private
+        # or sensitive data in the 'comment' field!
+
+        Db::execute("
+            CREATE TABLE okapi_diagnostics (
+                recorded_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                expires timestamp NOT NULL,
+                action char(1) NOT NULL,
+                comment varchar(255) NOT NULL,
+                consumer_key varchar(20) charset ascii collate ascii_bin default NULL,
+                KEY by_action (action, recorded_at),
+                KEY by_expires (expires)
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+        ");
+    }
 }

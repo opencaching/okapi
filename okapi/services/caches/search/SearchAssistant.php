@@ -609,6 +609,9 @@ class SearchAssistant
         $powertrail_ids = $this->request->get_parameter('powertrail_ids');
         if ($powertrail_ids) {
             $join_powertrails = true;
+            if ($this->request->consumer->key != "facade") {  # temporary diagnostics
+                Okapi::log_diagnostics('P', $powertrail_ids, $this->request->consumer->key, 30, false);
+            }
         }
         if ($join_powertrails) {
             if (Settings::get('OC_BRANCH') == 'oc.pl') {

@@ -3,6 +3,7 @@
 namespace okapi\views\devel\test;
 
 use Exception;
+use Okapi\core\Db;
 use Okapi\Settings;
 use okapi\core\Cache;
 use okapi\core\Okapi;
@@ -51,6 +52,17 @@ class View
 
         if (isset($_GET['cronjob']) && isset($_GET['key']))
             CronJobController::reset_job_schedule($_GET['cronjob'], $_GET['key']);
+
+        if (isset($_GET['show_diagnostics']))
+        {
+            $diagdata = Db::select_column("
+                select concat(recorded_at, ' ', comment)
+                from okapi_diagnostics
+                where action='".Db::escape_string($_GET['show_diagnostics'])."'
+                order by recorded_at desc
+            ");
+            $body = implode("\n", $diagdata);
+        }
 
         $response = new OkapiHttpResponse();
         $response->content_type = "text/plain; charset=utf-8";

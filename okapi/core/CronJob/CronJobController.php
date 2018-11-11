@@ -33,6 +33,7 @@ class CronJobController
                 new SearchSetsCleanerJob(),
                 new TableOptimizerJob(),
                 new TokenRevokerJob(),
+                new DiagnosticsCleanerJob(),
             );
             foreach ($cache as $cronjob)
                 if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
