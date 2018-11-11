@@ -1238,7 +1238,19 @@ class Okapi
      */
     public static function log_diagnostics($action, $comment, $consumer_key, $expire_days, $include_duplicates)
     {
-        if ($include_duplicates || "$action|$comment|$consumer_key" != Cache::get('diagnostics/'.$action))
+        if ($include_duplicates) {
+            $log = true;
+        } else {
+            $last = Db::select_row("
+                select comment, consumer_key
+                from okapi_diagnostics
+                where action='".Db::escape_string($action)."'
+                order by recorded_at desc
+                limit 1
+            ");
+            $log = $last && ($comment != $last['comment'] || $consumer_key != $last['consumer_key']);
+        }
+        if ($log)
         {
             Db::execute("
                 insert into okapi_diagnostics (action, comment, consumer_key, expires)
@@ -1249,7 +1261,6 @@ class Okapi
                     now() + interval '".Db::escape_string($expire_days)."' day
                 )
             ");
-            Cache::set('diagnostics/'.$action, "$action|$comment|$consumer_key", 3600);
         }
     }
 
