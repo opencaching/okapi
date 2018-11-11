@@ -43,7 +43,16 @@
             <li><b>caches_found</b> - number of "Found it" and "Attended" log entries,</li>
             <li><b>caches_notfound</b> - number of "Didn't find it" log entries,</li>
             <li><b>caches_hidden</b> - number of caches owned,</li>
-            <li><b>rcmds_given</b> - number of recommendations given.</li>
+            <li><b>rcmds_given</b> - number of recommendations given,</li>
+            <li>
+                <b>rcmds_left</b> - number of additional recommendations the user may
+                give, or <b>null</b> if there is no limit. Can be &lt; 0 if found
+                logs of the user were deleted.
+            </li>
+            <li>
+                <p><b>rcmd_founds_needed</b> - number of additional finds and/or event
+                attendances the user needs in order to give another recomendation.</p>
+            </li>
             <li>
                 <p><b>home_location</b> - home location of the user in the "lat|lon" format
                 (lat and lon are in full degrees with a dot as a decimal point);

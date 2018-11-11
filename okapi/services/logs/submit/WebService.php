@@ -25,9 +25,16 @@ class WebService
     }
 
     /**
-     * Publish a new log entry and return log entry uuid. Throws
+     * Publish a new log entry and return log entry uuid(s). Throws
      * CannotPublishException or BadRequest on errors.
+     *
+     * IMPORTANT: The "logging policy" logic - which logs are allowed under
+     * which circumstances? - is redundantly implemented in
+     * services/logs/capabilities/WebService.php. Take care to keep both
+     * implementations synchronized! See capabilities/WebService.php for
+     * more explanation.
      */
+
     private static function _call(OkapiRequest $request)
     {
         # Developers! Please notice the fundamental difference between throwing
@@ -40,12 +47,8 @@ class WebService
 
         $logtype = $request->get_parameter('logtype');
         if (!$logtype) throw new ParamMissing('logtype');
-        if (!in_array($logtype, array(
-            'Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended',
-            'Ready to search', 'Temporarily unavailable', 'Archived'
-        ))) {
+        if (!in_array($logtype, Okapi::get_submittable_logtype_names()))
             throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
-        }
 
         $comment = $request->get_parameter('comment');
         if (!$comment) $comment = "";
@@ -166,16 +169,16 @@ class WebService
 
         $cache = OkapiServiceRunner::call(
             'services/caches/geocache',
-            new OkapiInternalRequest($request->consumer, null, array(
+            new OkapiInternalRequest($request->consumer, $request->token, array(
                 'cache_code' => $cache_code,
-                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd'
+                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd|is_recommended|my_rating'
             ))
         );
         $user = OkapiServiceRunner::call(
             'services/users/by_internal_id',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'internal_id' => $request->token->user_id,
-                'fields' => 'is_admin|uuid|internal_id|caches_found|rcmds_given'
+                'fields' => 'uuid|internal_id|rcmd_founds_needed'
             ))
         );
 
@@ -309,21 +312,11 @@ class WebService
         # user submit a rating for it? Anyway, I will stick to the procedure
         # found in log.php. On the bright side, it's fail-safe.
 
-        if ($rating)
-        {
-            $has_already_rated = Db::select_value("
-                select 1
-                from scores
-                where
-                    user_id = '".Db::escape_string($user['internal_id'])."'
-                    and cache_id = '".Db::escape_string($cache['internal_id'])."'
-            ");
-            if ($has_already_rated) {
-                throw new CannotPublishException(_(
-                    "You have already rated this cache once. Your rating ".
-                    "cannot be changed."
-                ));
-            }
+        if ($rating && $cache['my_rating'] !== null) {
+            throw new CannotPublishException(_(
+                "You have already rated this cache once. Your rating ".
+                "cannot be changed."
+            ));
         }
 
         # If user wants to recommend...
@@ -332,34 +325,30 @@ class WebService
         {
             # Do the same "fail-safety" check as we did for the rating.
 
-            $already_recommended = Db::select_value("
-                select 1
-                from cache_rating
-                where
-                    user_id = '".Db::escape_string($user['internal_id'])."'
-                    and cache_id = '".Db::escape_string($cache['internal_id'])."'
-            ");
-            if ($already_recommended) {
+            if ($cache['is_recommended']) {
                 throw new CannotPublishException(_(
                     "You have already recommended this cache once."
                 ));
             }
 
-            # Check the number of recommendations.
-
-            $founds = $user['caches_found'] + 1;  // +1, because he'll find THIS ONE in a moment
-
             # Note: caches_found includes the number of attended events (both on
             # OCDE and OCPL). OCPL does not allow recommending events, but the
-            # number of attended events influences $rcmds_left the same way a
+            # number of attended events influences 'rcmds_left' the same way a
             # normal "Fount it" log does.
 
-            $rcmds_left = floor($founds / 10.0) - $user['rcmds_given'];
-            if ($rcmds_left <= 0) {
-                throw new CannotPublishException(_(
-                    "You don't have any recommendations to give. Find more ".
-                    "caches first!"
-                ));
+            # If only 1 more found is needed and this is the users' first 'Found it'
+            # for the cache, then *this* 'Found it' allows to recommend it.
+            # Note that OCDE allows multiple founds per cache, and all of them
+            # count for the recommendations.
+
+            $founds_needed = $user['rcmd_founds_needed'] - 1;
+
+            if ($founds_needed > 0) {
+                throw new CannotPublishException(sprintf(ngettext(
+                    "You don't have any recommendations to give. Find one more cache first!",
+                    "You don't have any recommendations to give. Find %d more caches first!",
+                    $founds_needed
+                ), $founds_needed));
             }
         }
 

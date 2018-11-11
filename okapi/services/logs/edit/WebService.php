@@ -27,7 +27,14 @@ class WebService
     /**
      * Publish a new log entry and return log entry uuid. Throws
      * CannotPublishException or BadRequest on errors.
+     *
+     * IMPORTANT: The "logging policy" logic - which logs are allowed under
+     * which circumstances? - is redundantly implemented in
+     * services/logs/capabilities/WebService.php. Take care to keep both
+     * implementations synchronized! See capabilities/WebService.php for
+     * more explanation.
      */
+
     private static function _call(OkapiRequest $request)
     {
         # Developers! Please notice the fundamental difference between throwing
@@ -103,7 +110,17 @@ class WebService
             unset($cache_tmp);
         }
 
-        # Do final validations and store data.
+        # IMPORTANT note on the other log parameters (rating, recommendation,
+        # needs maintenance ...):
+        #
+        # We allow to confirm an existing log type, even if it is no longer
+        # allowed for newly submitted logs. But we must take care that no
+        # log properties will be *added* which are no longer allowed. E.g.
+        # when editing a 'Found it' that can no longer be sumitted, no
+        # recommendation may be *added* for the cache (but an existsing
+        # recommendation may be confirmed!).
+
+        # Now do final validations and store data.
         # See comment on transaction in services/logs/submit code.
 
         Db::execute("start transaction");

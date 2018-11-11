@@ -19,13 +19,19 @@
                 cache types;
             </li>
             <li>
-                <p><i>Ready to search</i>, <i>Temporarily unavailable</i> or <i>Archived</i>
-                for any caches owned by your user. This will set the corresponding
-                geocache status.</p>
+                <p><i>Ready to search</i>, <i>Temporarily unavailable</i> or
+                <i>Archived</i> for caches owned by your user. This will set the
+                corresponding geocache status.</p>
+                <p>Note that <i>Ready to search</i> is inconsistently named;
+                the corresponding geocache status is <i>Available</i>.</p>
             </li>
         </ul>
-        <p>Note: <i>Ready to search</i> is inconsistently named; the corresponding
-        geocache status is <i>Available</i>.</p>
+        <p>Depending on the geocache and user status, there can be additional
+        restrictions on what log types are currently available. If those
+        additional criteria are not met, OKAPI returns success=false and an
+        explanatory message. The <b>submittable_log_types</b> field of
+        <a href="%OKAPI:methodargref:services/logs/capabilities%">services/logs/capabilities</a>
+        tells which types are available.</p>
     </req>
     <opt name='comment'>
         <p>Text to be submitted with the log entry.</p>
@@ -91,9 +97,12 @@
         <p>Important: <b>logtype</b> has to be "Found it" or "Attended" in order to use
         this argument.</p>
         <p>Note: You should allow your user to <b>not</b> rate a found cache.</p>
-        <p>Note: Currently, OCDE-based installations do not support cache ratings. On such installations
-        user's rating will be <b>ignored</b> (if you include the rating, log entry will be posted
-        successfully, but rating will be ignored).</p>
+        <p>Note: Some OKAPI installations (OCDE codebase) currently do not support
+        cache ratings. On such installations user's rating will be <b>ignored</b>
+        (if you include the rating, log entry will be posted successfully, but
+        rating will be ignored). The <b>can_rate</b> field of
+        <a href="%OKAPI:methodargref:services/logs/capabilities%">services/logs/capabilities</a>
+        tells if <em>this</em> installation implements rating.</p>
     </opt>
     <opt name='recommend' default='false'>
         <p>Set to <b>true</b> if the user wants to recommend this cache.</p>
@@ -103,7 +112,9 @@
         successfully, but the recommendation will be <b>ignored</b>).</p>
         <p>Recommending may only succeed when the user meets certain criteria
         set on him by the OC site. If criteria are not met, the request will
-        end with user error (HTTP 200, success=false).</p>
+        end with user error (HTTP 200, success=false). The <b>can_recommend</b> field of
+        <a href="%OKAPI:methodargref:services/logs/capabilities%">services/logs/capabilities</a>
+        tells if those criteria are currently met.</p>
     </opt>
     <opt name='needs_maintenance' default='false' class='deprecated'>
         <p>Deprecated (<a href='https://github.com/opencaching/okapi/issues/373'>why?</a>).
@@ -136,13 +147,18 @@
                 <p>%OKAPI:infotag:ocde-specific% <b>false</b> - use this to indicate that
                 your user thinks that the cache's condition is fine.</p>
 
-                <p>Note: The <b>false</b> option is not evaluated by OCPL-based sites. They will
-                just ignore it.</p>
+                <p>Note: The <b>false</b> option currently is not evaluated by some
+                installation (OCPL-based sites). They will just ignore it.</p>
             </li>
         </ul>
 
         <p>Note: Currently, this is not allowed for Event Caches (you will get a HTTP 200
         "user friendly" response).</p>
+        <p>You may query the <b>can_set_needs_maintenance</b> and
+        <b>can_reset_needs_maintenance</b> fields of
+        <a href="%OKAPI:methodargref:services/logs/capabilities%">services/logs/capabilities</a>
+        to find out if all preconditions are met for submitting <b>true</b> or
+        <b>false</b>, i.e. if it will succeed or be ignored.</p>
     </opt>
     <common-format-params/>
     <returns>
