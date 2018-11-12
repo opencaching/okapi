@@ -16,9 +16,17 @@
 
     -->
     <changes>
-        <change commit="2e248adc" version="1768" time="2018-11-10T13:11:28+0100" type="enhancement">
-            Added the <i>watchers</i> field to
+        <change commit="34e67ab9" version="1776" time="2018-11-12T10:11:07+0100" type="enhancement">
+            Added the option and field <i>oc_team_annotation</i> to
             <a href="services/caches/geocache.html">services/caches/geocache</a>(s).
+            OC team annotations are also included in GPX cache descriptions.
+        </change>
+        <change commit="0d171bdd" version="1775" time="2018-11-12T09:11:34+0100" type="enhancement">
+            Added the search options <i>recommended_only</i> and <i>recommended_by</i>.
+        </change>
+        <change commit="1e3a8809" version="1774" time="2018-11-11T21:11:17+0100" type="enhancement">
+            Added the <i>watchers</i>, <i>is_rated</i> and <i>is_recommended</i> fields
+            to <a href="services/caches/geocache.html">services/caches/geocache</a>(s).
         </change>
         <change commit="51d7c9ae" version="1761" time="2018-11-08T13:11:06+0100" type="enhancement">
             Added the <a href="services/logs/edit.html">services/logs/edit</a>
