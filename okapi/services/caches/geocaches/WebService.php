@@ -642,7 +642,7 @@ class WebService
                             '<div class="ocTeamCommentSection">'.
                             "<b>"._("Annotations by the Opencaching team:")."</b><br />\n".
                             $formatted_team_annotation.
-                            "<span style='display: block; padding-top: 0.5em'>("._("End of annotations").")</span>".
+                            "<div style='display: block; padding-top: 0.5em'>("._("End of annotations").")</div>".
                             "<hr /></div>\n" .
                             $tmp
                         );
