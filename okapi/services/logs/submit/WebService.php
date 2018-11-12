@@ -166,16 +166,16 @@ class WebService
 
         $cache = OkapiServiceRunner::call(
             'services/caches/geocache',
-            new OkapiInternalRequest($request->consumer, null, array(
+            new OkapiInternalRequest($request->consumer, $request->token, array(
                 'cache_code' => $cache_code,
-                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd'
+                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd|is_recommended|my_rating'
             ))
         );
         $user = OkapiServiceRunner::call(
             'services/users/by_internal_id',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'internal_id' => $request->token->user_id,
-                'fields' => 'is_admin|uuid|internal_id|caches_found|rcmds_given'
+                'fields' => 'uuid|internal_id|rcmds_left|rcmd_founds_needed'
             ))
         );
 
@@ -309,21 +309,11 @@ class WebService
         # user submit a rating for it? Anyway, I will stick to the procedure
         # found in log.php. On the bright side, it's fail-safe.
 
-        if ($rating)
-        {
-            $has_already_rated = Db::select_value("
-                select 1
-                from scores
-                where
-                    user_id = '".Db::escape_string($user['internal_id'])."'
-                    and cache_id = '".Db::escape_string($cache['internal_id'])."'
-            ");
-            if ($has_already_rated) {
-                throw new CannotPublishException(_(
-                    "You have already rated this cache once. Your rating ".
-                    "cannot be changed."
-                ));
-            }
+        if ($rating && $cache['my_rating'] !== null) {
+            throw new CannotPublishException(_(
+                "You have already rated this cache once. Your rating ".
+                "cannot be changed."
+            ));
         }
 
         # If user wants to recommend...
@@ -332,14 +322,7 @@ class WebService
         {
             # Do the same "fail-safety" check as we did for the rating.
 
-            $already_recommended = Db::select_value("
-                select 1
-                from cache_rating
-                where
-                    user_id = '".Db::escape_string($user['internal_id'])."'
-                    and cache_id = '".Db::escape_string($cache['internal_id'])."'
-            ");
-            if ($already_recommended) {
+            if ($cache['is_recommended']) {
                 throw new CannotPublishException(_(
                     "You have already recommended this cache once."
                 ));
@@ -354,11 +337,11 @@ class WebService
             # number of attended events influences $rcmds_left the same way a
             # normal "Fount it" log does.
 
-            $rcmds_left = floor($founds / 10.0) - $user['rcmds_given'];
-            if ($rcmds_left <= 0) {
+            if ($user['rcmds_left'] <= 0) {
                 throw new CannotPublishException(_(
-                    "You don't have any recommendations to give. Find more ".
-                    "caches first!"
+                    "You don't have any recommendations to give. Find %s more ".
+                    "cache(s) first!",
+                    $user['rcmd_founds_needed']
                 ));
             }
         }

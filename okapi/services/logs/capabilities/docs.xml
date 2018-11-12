@@ -43,20 +43,20 @@
                 the geocache; <b>false</b> if a submitted rating will be ignored.
                 Ratings may be disabled for some cache types or for caches
                 that the user already rated or owns. Some OC installations do
-                not provide ratings.</p>
+                not provide ratings at all.</p>
             </li>
             <li>
-                <p><b>can_recommend</b> - tells if the user can rate the geocache;
-                one of the following:</p>
+                <p><b>can_recommend</b> - string, tells if the user can
+                recommend the geocache. One of the following:</p>
                 <ul>
                     <li>
-                        <b>true</b> if the user can add a recommendation for the
-                        geocache,
+                        <b>true</b> if the user can add a recommendation for
+                        the geocache,
                     </li>
                     <li>
-                        <b>need_more_finds</b> if the user needs to find more
-                        caches to add a recommendation for the geocache. A
-                        submitted recommendation will be ignored,
+                        <b>need_more_finds</b> if the user needs to
+                        find more caches to add a recommendation for the
+                        geocache,
                     </li>
                     <li>
                         <b>false</b> if the user cannot recommend the cache
@@ -65,6 +65,11 @@
                         will be ignored.
                     </li>
                 </ul>
+            </li>
+            <li>
+                <p><b>rcmd_founds_needed</b>, the number of additional caches
+                the user needs to find (or events to attend) to recommend this
+                cache; <b>null</b> if <b>can_recommend</b> is <b>false</b>.</p>
             </li>
             <li>
                 <p><b>can_set_needs_maintenance</b> - boolean, <b>true</b>
@@ -81,5 +86,8 @@
                 yet at some OC installations.</p>
             </li>
         </ul>
+        <p>All the <b>can_</b> fields currently are <b>false</b> if a
+        log UUID is supplied as <b>reference_item</b>. OKAPI so far does
+        not implement editing those log properties.</p>
     </returns>
 </xml>

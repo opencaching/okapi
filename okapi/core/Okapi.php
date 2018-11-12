@@ -1060,21 +1060,32 @@ class Okapi
         throw new \Exception("Method cache_size2_to_oxsize called with invalid size2 '$size2'.");
     }
 
+    /** Map submittable log type names to OC internal IDs **/
+    private static $log_types = [
+        'Found it' => 1,
+        "Didn't find it" => 2,
+        'Comment' => 3,
+        'Attended' => 7,
+        'Will attend' => 8,
+        'Archived' => 9,
+        'Ready to search' => 10,
+        'Temporarily unavailable' => 11,
+    ];
+
+    public static function get_submittable_logtype_names()
+    {
+        return array_keys(self::$log_types);
+    }
+
     /**
      * E.g. 'Found it' => 1. For unsupported names throws Exception.
      */
     public static function logtypename2id($name)
     {
-        if ($name == 'Found it') return 1;
-        if ($name == "Didn't find it") return 2;
-        if ($name == 'Comment') return 3;
-        if ($name == 'Attended') return 7;
-        if ($name == 'Will attend') return 8;
-        if ($name == 'Archived') return 9;
-        if ($name == 'Ready to search') return 10;
-        if ($name == 'Temporarily unavailable') return 11;
-        if (($name == 'Needs maintenance') && (Settings::get('OC_BRANCH') == 'oc.pl')) return 5;
-        throw new \Exception("logtype2id called with invalid log type argument: $name");
+        if (!isset(self::$log_types[$name]))
+            throw new \Exception("logtype2id called with invalid log type argument: $name");
+        else
+            return self::$log_types[$name];
     }
 
     /** E.g. 1 => 'Found it'. For unknown ids returns 'Comment'. */

@@ -21,7 +21,8 @@ class WebService
 
     private static $valid_field_names = array(
         'uuid', 'username', 'profile_url', 'internal_id', 'date_registered', 'is_admin',
-        'caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given', 'home_location'
+        'caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given', 'rcmds_left',
+        'rcmd_founds_needed', 'home_location'
     );
 
     public static function call(OkapiRequest $request)
@@ -77,6 +78,8 @@ class WebService
                     case 'caches_notfound': /* handled separately */ break;
                     case 'caches_hidden': /* handled separately */ break;
                     case 'rcmds_given': /* handled separately */ break;
+                    case 'rcmds_left': /* handled separately */ break;
+                    case 'rcmd_founds_needed': /* handled separately */ break;
                     case 'home_location':
                         if (!$request->token) {
                             $entry['home_location'] = null;
@@ -100,8 +103,10 @@ class WebService
 
         # caches_found, caches_notfound, caches_hidden
 
-        if (in_array('caches_found', $fields) || in_array('caches_notfound', $fields) || in_array('caches_hidden', $fields)
-            || in_array('rcmds_given', $fields))
+        if (array_intersect(
+            ['caches_found', 'caches_notfound', 'caches_hidden','rcmds_given', 'rcmds_left', 'rcmd_founds_needed'],
+            $fields
+        ))
         {
             # We will load all these stats together. Then we may remove these which
             # the user doesn't need.
@@ -146,7 +151,7 @@ class WebService
             }
             Db::free_result($rs);
 
-            if (in_array('rcmds_given', $fields))
+            if (array_intersect(['rcmds_given', 'rcmds_left', 'rcmd_founds_needed'], $fields))
             {
                 $rs = Db::query("
                     select user_id, count(*) as rcmds_given
@@ -160,12 +165,14 @@ class WebService
                 foreach ($extras as $user_id => &$extra_ref)
                 {
                     $extra_ref['rcmds_given'] = isset($rcmds_counts[$user_id]) ? 0 + $rcmds_counts[$user_id] : 0;
+                    $extra_ref['rcmds_left'] = floor($extra_ref['caches_found'] / 10.0) - $extra_ref['rcmds_given'];
+                    $extra_ref['rcmd_founds_needed'] = max(0, 10 * ($extra_ref['rcmds_given'] + 1) - $extra_ref['caches_found']);
                 }
             }
 
             # "Apply" only those fields which the consumer wanted.
 
-            foreach (array('caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given') as $field)
+            foreach (array('caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given', 'rcmds_left', 'rcmd_founds_needed') as $field)
             {
                 if (!in_array($field, $fields))
                     continue;
