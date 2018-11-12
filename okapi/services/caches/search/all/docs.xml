@@ -159,6 +159,17 @@
         <p>Pipe-separated list of user IDs. If given, the response will only include
         geocaches <b>not found by any</b> of the given users.</p>
     </opt>
+    <opt name='recommended_only' default='false'>
+        <p><b>Notice:</b> This parameter may be used only for requests signed
+        with an Access Token (you will need to use <b>Level 3</b>
+        Authentication).</p>
+        <p>Boolean. If set to <b>true</b>, only caches which the user has recommended
+        will be included in the result.</p>
+    </opt>
+    <opt name='recommended_by'>
+        <p>Pipe-separated list of user IDs. If given, the response will only include
+        geocaches recommended by at least one of the given users.</p>
+    </opt>
     <opt name='watched_only' default='false'>
         <p><b>Notice:</b> This parameter may be used only for requests signed
         with an Access Token (you will need to use <b>Level 3</b>

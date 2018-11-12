@@ -229,7 +229,7 @@ class SearchAssistant
                 $users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
                     $this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
             }
-            catch (InvalidParam $e) # invalid uuid
+            catch (InvalidParam $e) # too many uuids
             {
                 throw new InvalidParam('owner_uuid', $e->whats_wrong_about_it);
             }
@@ -398,7 +398,7 @@ class SearchAssistant
             {
                 $operator = ($tmp == 'found_only') ? "in" : "not in";
                 if (Settings::get('USE_SQL_SUBQUERIES')) {
-                    $found_cache_subquery = self::get_found_cache_ids_sql(array($this->request->token->user_id));
+                    $found_cache_subquery = self::get_found_cache_ids_subquery(array($this->request->token->user_id));
                     $where_conds[] = "caches.cache_id $operator (".$found_cache_subquery.")";
                 } else {
                     $found_cache_ids = self::get_found_cache_ids(array($this->request->token->user_id));
@@ -419,13 +419,13 @@ class SearchAssistant
             try {
                 $users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
                     $this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
-            } catch (InvalidParam $e) { # invalid uuid
+            } catch (InvalidParam $e) { # too many uuids
                 throw new InvalidParam('found_by', $e->whats_wrong_about_it);
             }
 
             $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
             if (Settings::get('USE_SQL_SUBQUERIES')) {
-                $found_cache_subquery = self::get_found_cache_ids_sql($internal_user_ids);
+                $found_cache_subquery = self::get_found_cache_ids_subquery($internal_user_ids);
                 $where_conds[] = "caches.cache_id in (".$found_cache_subquery.")";
             } else {
                 $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
@@ -442,18 +442,47 @@ class SearchAssistant
             try {
                 $users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
                     $this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
-            } catch (InvalidParam $e) { # invalid uuid
+            } catch (InvalidParam $e) { # too many uuids
                 throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
             }
 
             $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
             if (Settings::get('USE_SQL_SUBQUERIES')) {
-                $found_cache_subquery = self::get_found_cache_ids_sql($internal_user_ids);
+                $found_cache_subquery = self::get_found_cache_ids_subquery($internal_user_ids);
                 $where_conds[] = "caches.cache_id not in (".$found_cache_subquery.")";
             } else {
                 $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
                 $where_conds[] = "caches.cache_id not in ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
             }
+        }
+
+        #
+        # recommended_only
+        #
+
+        if ($tmp = $this->request->get_parameter('recommended_only'))
+        {
+            if ($this->request->token == null)
+                throw new InvalidParam('recommended_only', "Might be used only for requests signed with an Access Token.");
+            if (!in_array($tmp, array('true', 'false')))
+                throw new InvalidParam('recommended_only', "'$tmp'");
+            $where_conds[] = self::get_recommended_by_sql([$this->request->token->user_id]);
+        }
+
+        #
+        # recommended_by
+        #
+
+        if ($tmp = $this->request->get_parameter('recommended_by'))
+        {
+            try {
+                $users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
+                    $this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
+            } catch (InvalidParam $e) { # too many uuids
+                throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
+            }
+            $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
+            $where_conds[] = self::get_recommended_by_sql($internal_user_ids);
         }
 
         #
@@ -894,14 +923,14 @@ class SearchAssistant
      */
     private static function get_found_cache_ids($internal_user_ids)
     {
-        return Db::select_column(self::get_found_cache_ids_sql($internal_user_ids));
+        return Db::select_column(self::get_found_cache_ids_subquery($internal_user_ids));
     }
 
     /**
      * Get the query which returns list of cache IDs which were found by given user.
      * Parameter needs to be *internal* user id, not uuid.
      */
-    private static function get_found_cache_ids_sql($internal_user_ids)
+    private static function get_found_cache_ids_subquery($internal_user_ids)
     {
         return "
             select cache_id
@@ -914,5 +943,19 @@ class SearchAssistant
                 )
                 and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
         ";
+    }
+
+    private static function get_recommended_by_sql($internal_user_ids)
+    {
+        $recommended_cache_ids_subquery = "
+            select cache_id from cache_rating
+            where user_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', $internal_user_ids))."')
+        ";
+        if (Settings::get('USE_SQL_SUBQUERIES')) {
+            return "caches.cache_id in (".$recommended_cache_ids_subquery.")";
+        } else {
+            $recommended_cache_ids = Db::select_column($recommended_cache_ids_subquery);
+            return "caches.cache_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', $recommended_cache_ids))."')";
+        }
     }
 }
