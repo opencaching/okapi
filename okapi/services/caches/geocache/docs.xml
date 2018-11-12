@@ -51,6 +51,23 @@
             </li>
         </ul>
     </opt>
+    <opt name='oc_team_annotation' default='description' infotags='ocpl-specific'>
+        <p>Opencaching team members may directly annotate geocache listings.
+        This parameter controls how to retrieve those annotations:</p>
+        <ul>
+            <li><b>description</b> - inserts the OC team annotations into the
+            description texts,</li>
+            <li><b>separate</b> (recommended) - includes the <b>oc_team_annotation</b> field
+            instead.</li>
+        </ul>
+        <p>Please note that you are REQUIRED to display OC team annotations
+        alongside with the owner's cache listing. In this they differ from
+        <i>OC team
+        <a href="%OKAPI:methodargref:services/logs/entry%">log entries</a></i>,
+        which will only be visible when logs are displayed.</p>
+        <p>OC team annotations so far are only in use at OCPL-based sites.
+        OCDE installations will ignore this parameter.</p>
+    </opt>
     <opt name='lpc' default='10'>
         Log-entries per cache - the number of logs returned in the <b>latest_logs</b> field.
         This should be an integer or a special "all" value. Please note, that you must include
@@ -400,6 +417,16 @@
                 you can use these as a simple alternative. <b>attrnames</b> is an unordered list of
                 names of the attributes with which the cache was tagged; the language will be
                 selected based on the <b>langpref</b> parameter.
+            </li>
+            <li>
+                <p>%OKAPI:infotag:ocpl-specific% <b>oc_team_annotation</b> - HTML text containing OC team annotations
+                to the geocache listing. See the <b>oc_team_annotation</b> parameter for
+                more information.</p>
+                <p>Notices: The content of this field is not properly localized.
+                It will only partially respond to the <b>langpref</b> parameter and may
+                contain an arbitrary mixture of languages and differently localized data
+                (<a href='https://github.com/opencaching/okapi/issues/533'>why?</a>).
+                OCDE installations currently will always return an empty string.</p>
             </li>
             <li>
                 <p><b>attribution_note</b> - the proper attribution note for the cache listing according

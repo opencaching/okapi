@@ -34,7 +34,7 @@ class WebService
         'is_ignored', 'willattends', 'country', 'state', 'preview_image',
         'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
         'protection_areas', 'short_description', 'short_descriptions', 'needs_maintenance',
-        'watchers', 'is_rated', 'is_recommended');
+        'watchers', 'is_rated', 'is_recommended', 'oc_team_annotation');
 
     public static function call(OkapiRequest $request)
     {
@@ -66,17 +66,17 @@ class WebService
             if (!in_array($field, self::$valid_field_names))
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
 
-        # Some fields need to be temporarily included whenever the "description"
-        # or "attribution_note" field are included. That's a little ugly, but
-        # helps performance and conforms to the DRY rule.
+        # Some fields need to be temporarily included whenever a description-
+        # related field is included. That's a little ugly, but helps performance
+        # and conforms to the DRY rule.
 
-        $fields_to_remove_later = array('empty_descriptions');
+        $fields_to_remove_later = array();
         if (
             in_array('description', $fields) || in_array('descriptions', $fields)
             || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
             || in_array('hint', $fields) || in_array('hints', $fields)
             || in_array('hint2', $fields) || in_array('hints2', $fields)
-            || in_array('attribution_note', $fields)
+            || in_array('attribution_note', $fields) || in_array('oc_team_annotation', $fields)
         )
         {
             if (!in_array('owner', $fields))
@@ -95,6 +95,13 @@ class WebService
         if (!$attribution_append) $attribution_append = 'full';
         if (!in_array($attribution_append, array('none', 'static', 'full')))
             throw new InvalidParam('attribution_append');
+
+        $oc_team_annotation = $request->get_parameter('oc_team_annotation');
+        if (!$oc_team_annotation) $oc_team_annotation = 'description';
+        if (!in_array($oc_team_annotation, array('description', 'separate')))
+            throw new InvalidParam('oc_team_annotation');
+        if ($oc_team_annotation == 'separate' && !in_array('oc_team_annotation', $fields))
+            $fields[] = 'oc_team_annotation';
 
         $user_uuid = $request->get_parameter('user_uuid');
         if ($user_uuid != null)
@@ -350,6 +357,7 @@ class WebService
                     case 'alt_wpts': /* handled separately */ break;
                     case 'country': /* handled separately */ break;
                     case 'state': /* handled separately */ break;
+                    case 'oc_team_annotation': /* handled separately */ break;
                     case 'last_found': $entry['last_found'] = ($row['last_found'] > '1980') ? date('c', strtotime($row['last_found'])) : null; break;
                     case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
                     case 'date_created': $entry['date_created'] = date('c', strtotime($row['date_created'])); break;
@@ -555,7 +563,8 @@ class WebService
         if (in_array('description', $fields) || in_array('descriptions', $fields)
             || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
             || in_array('hint', $fields) || in_array('hints', $fields)
-            || in_array('hint2', $fields) || in_array('hints2', $fields))
+            || in_array('hint2', $fields) || in_array('hints2', $fields)
+            || in_array('oc_team_annotation', $fields))
         {
             # At first, we will fill all those fields, even if user requested just one
             # of them. We will chop off the unwanted ones at the end.
@@ -567,12 +576,21 @@ class WebService
                 $result_ref['empty_descriptions'] = [];
                 $result_ref['hints'] = new ArrayObject();
                 $result_ref['hints2'] = new ArrayObject();
+                $result_ref['oc_team_annotations'] = new ArrayObject();
             }
+            $fields_to_remove_later[] = 'empty_descriptions';
+            $fields_to_remove_later[] = 'oc_team_annotations';
 
             # Get cache descriptions and hints.
 
+            if (Settings::get('OC_BRANCH') == 'oc.pl')
+                $oc_team_annotation_SQL = 'rr_comment';
+            else
+                $oc_team_annotation_SQL = "null";
             $rs = Db::query("
-                select cache_id, language, `desc`, short_desc, hint
+                select
+                    cache_id, language, `desc`, short_desc, hint,
+                    ".$oc_team_annotation_SQL." as oc_team_annotation
                 from cache_desc
                 where cache_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', array_keys($cacheid2wptcode)))."')
             ");
@@ -588,7 +606,8 @@ class WebService
                 $language = strtolower($row['language']);
 
                 $listing_is_outdated = in_array($cache_code, $outdated_listings);
-                if ($row['desc'] || $listing_is_outdated)
+                $include_team_annotation = ($row['oc_team_annotation'] && $oc_team_annotation == 'description');
+                if ($row['desc'] || $listing_is_outdated || $include_team_annotation)
                 {
                     /* Note, that the "owner" and "internal_id" fields are automatically included,
                      * whenever the cache description is included. */
@@ -609,6 +628,24 @@ class WebService
                             $tmp
                         );
                         Okapi::gettext_domain_restore();
+                    }
+                    if ($include_team_annotation)
+                    {
+                        # Do some ugly hack so that annotations are readble without OC CSS:
+
+                        $formatted_team_annotation = str_replace(
+                            'class="ocTeamCommentHeader"',
+                            'class="ocTeamCommentHeader" style="display: block; padding-top: 0.5em;"',
+                            $row['oc_team_annotation']
+                        );
+                        $tmp = (
+                            '<div class="ocTeamCommentSection">'.
+                            "<b>"._("Annotations by the Opencaching team:")."</b><br />\n".
+                            $formatted_team_annotation.
+                            "<span style='display: block; padding-top: 0.5em'>("._("End of annotations").")</span>".
+                            "<hr /></div>\n" .
+                            $tmp
+                        );
                     }
                     if ($row['desc'] && $attribution_append != 'none')
                     {
@@ -635,9 +672,14 @@ class WebService
                     $results[$cache_code]['hints2'][$language]
                         = htmlspecialchars_decode(mb_ereg_replace("<br />", "" , $row['hint']), ENT_COMPAT);
                 }
+                if ($row['oc_team_annotation'])
+                {
+                    $results[$cache_code]['oc_team_annotations'][$language] = $row['oc_team_annotation'];
+                }
             }
             unset($listing_is_outdated);
             unset($language);
+            unset($include_team_annotation);
 
             foreach ($results as &$result_ref)
             {
@@ -653,13 +695,19 @@ class WebService
                 $result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langprefs);
                 $result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langprefs);
                 $result_ref['hint2'] = Okapi::pick_best_language($result_ref['hints2'], $langprefs);
+
+                # OCPL currently stores the same team comments redundantly in all
+                # descriptions of the geocache. We might pick any of them. Probably
+                # they will be moved to the 'caches' table later (see issue #533).
+
+                $result_ref['oc_team_annotation'] = Okapi::pick_best_language($result_ref['oc_team_annotations'], $langprefs);
             }
 
             # Remove unwanted fields.
 
             foreach (array(
                 'short_description', 'short_descriptions', 'description', 'descriptions',
-                'hint', 'hints', 'hint2', 'hints2'
+                'hint', 'hints', 'hint2', 'hints2', 'oc_team_annotation',
             ) as $field)
                 if (!in_array($field, $fields))
                     foreach ($results as &$result_ref)
