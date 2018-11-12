@@ -17,7 +17,7 @@
     -->
     <changes>
         <change commit="34e67ab9" version="1776" time="2018-11-12T10:11:07+0100" type="enhancement">
-            Added the option and field <i>oc_team_annotation</i> to
+            Added the <i>oc_team_annotation</i> option and field to
             <a href="services/caches/geocache.html">services/caches/geocache</a>(s).
             OC team annotations are also included in GPX cache descriptions.
         </change>

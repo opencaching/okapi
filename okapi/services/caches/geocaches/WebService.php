@@ -614,11 +614,11 @@ class WebService
 
                     $tmp = Okapi::fix_oc_html($row['desc'], 0);
 
+                    Okapi::gettext_domain_init(
+                        array_merge([$language], $langprefs)
+                    );
                     if ($listing_is_outdated)
                     {
-                        Okapi::gettext_domain_init(
-                            array_merge([$language], $langprefs)
-                        );
                         $tmp = (
                             "<p style='color:#c00000'><strong>".
                             _('Parts of this geocache listing may be outdated.').
@@ -627,7 +627,6 @@ class WebService
                             "</p>\n".
                             $tmp
                         );
-                        Okapi::gettext_domain_restore();
                     }
                     if ($include_team_annotation)
                     {
@@ -651,11 +650,13 @@ class WebService
                     {
                         $tmp .= "\n<p><em>".
                             self::get_cache_attribution_note(
-                                $row['cache_id'], $language, $langprefs,
+                                $row['cache_id'], null, [],
                                 $results[$cache_code]['owner'], $attribution_append
                             ).
                             "</em></p>";
                     }
+                    Okapi::gettext_domain_restore();
+
                     $results[$cache_code]['descriptions'][$language] = $tmp;
                     if (!$row['desc'])
                     {
@@ -1569,7 +1570,9 @@ class WebService
         $site_name = Okapi::get_normalized_site_name();
         $cache_url = $site_url."viewcache.php?cacheid=$cache_id";
 
-        Okapi::gettext_domain_init(array_merge(array($lang), $langprefs));
+        if ($lang !== null) {
+            Okapi::gettext_domain_init(array_merge(array($lang), $langprefs));
+        }
         if (Settings::get('OC_BRANCH') == 'oc.pl')
         {
             # This does not vary on $type (yet).
@@ -1607,7 +1610,9 @@ class WebService
             }
         }
 
-        Okapi::gettext_domain_restore();
+        if ($lang !== null) {
+            Okapi::gettext_domain_restore();
+        }
 
         return $note;
     }
