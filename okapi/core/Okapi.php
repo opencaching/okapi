@@ -1071,7 +1071,7 @@ class Okapi
         if ($name == 'Attended') return 7;
         if ($name == 'Will attend') return 8;
         if ($name == 'Archived') return 9;
-        if ($name == 'Available') return 10;
+        if ($name == 'Ready to search') return 10;
         if ($name == 'Temporarily unavailable') return 11;
         if (($name == 'Needs maintenance') && (Settings::get('OC_BRANCH') == 'oc.pl')) return 5;
         throw new \Exception("logtype2id called with invalid log type argument: $name");

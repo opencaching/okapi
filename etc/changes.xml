@@ -34,9 +34,11 @@
             methods.
         </change>
         <change commit="7a6c62ec" version="1745" time="2018-10-31T13:10:07+0100" type="enhancement">
-            Added the status-changing log types <em>Available</em>,
+            Added the status-changing log types <em style='text-decoration:line-through'>Available</em>
+            <em>Ready to search</em>,
             <em>Temporarily unavailable</em> and <em>Archived</em> to
             <a href="services/logs/submit.html">services/logs/submit</a>.
+            (Corrected <em>Available</em> => <em>Ready to search</em> on 2018-11-13.)
         </change>
         <change commit="ac1a81e8" version="1743" time="2018-10-31T08:10:47+0100" type="enhancement">
             Added the <em>date_created</em> and <em>last_modified</em> fields

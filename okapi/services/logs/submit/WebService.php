@@ -42,7 +42,7 @@ class WebService
         if (!$logtype) throw new ParamMissing('logtype');
         if (!in_array($logtype, array(
             'Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended',
-            'Available', 'Temporarily unavailable', 'Archived'
+            'Ready to search', 'Temporarily unavailable', 'Archived'
         ))) {
             throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
         }
@@ -205,14 +205,14 @@ class WebService
             $recommend = null;
         }
 
-        if (in_array($logtype, array('Available', 'Temporarily unavailable', 'Archived')))
+        if (in_array($logtype, array('Ready to search', 'Temporarily unavailable', 'Archived')))
         {
             if ($user['uuid'] != $cache['owner']['uuid'])
                 throw new BadRequest("The status of a geocache can only be changed by the owner.");
 
             if (Settings::get('OC_BRANCH') == 'oc.pl')
             {
-                if ($logtype == $cache['status']) {
+                if (preg_replace('/^Ready to search$/', 'Available', $logtype) == $cache['status']) {
                     # OCPL does not allow to confirm an existing geocache status.
                     # We silently change the log to a comment.
                     $logtype = 'Comment';
@@ -227,7 +227,7 @@ class WebService
             # Geocaches must be in good shape before enabling them. At OCDE,
             # enabling implies setting "cache is ok" (does not need maintenance).
 
-            if ($logtype == 'Available')
+            if ($logtype == 'Ready to search')
             {
                 if ($needs_maintenance2 == 'true')
                     throw new CannotPublishException(_(
@@ -403,7 +403,7 @@ class WebService
                 $formatted_comment = "";
             }
             elseif (in_array($logtype, array(
-                'Available', 'Temporarily unavailable', 'Archived')))
+                'Ready to search', 'Temporarily unavailable', 'Archived')))
             {
                 # For status-changing logs, we'll issue two log entries, but this time
                 # we put the "Needs maintenance" first with empty comment, then the
@@ -644,7 +644,7 @@ class WebService
 
         # update geocache status
 
-        if (in_array($logtype, array('Available', 'Temporarily unavailable', 'Archived')))
+        if (in_array($logtype, array('Ready to search', 'Temporarily unavailable', 'Archived')))
         {
             if (Settings::get('OC_BRANCH') == 'oc.de') {
                 Db::execute("
@@ -656,7 +656,7 @@ class WebService
             else
                 $set_last_modified_SQL = ", last_modified = NOW()";
 
-            $status_id = Okapi::cache_status_name2id($logtype);
+            $status_id = Okapi::cache_status_name2id(preg_replace('/^Ready to search$/', 'Available', $logtype));
             DB::execute("
                 update caches
                 set status = '".Db::escape_string($status_id)."'".$set_last_modified_SQL."

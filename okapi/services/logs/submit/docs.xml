@@ -19,11 +19,13 @@
                 cache types;
             </li>
             <li>
-                <i>Available</i>, <i>Temporarily unavailable</i> or <i>Archived</i> for
-                any caches owned by your user. This will set the corresponding geocache
-                status.
+                <p><i>Ready to search</i>, <i>Temporarily unavailable</i> or <i>Archived</i>
+                for any caches owned by your user. This will set the corresponding
+                geocache status.</p>
             </li>
         </ul>
+        <p>Note: <i>Ready to search</i> is inconsistently named; the corresponding
+        geocache status is <i>Available</i>.</p>
     </req>
     <opt name='comment'>
         <p>Text to be submitted with the log entry.</p>
