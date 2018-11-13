@@ -25,9 +25,16 @@ class WebService
     }
 
     /**
-     * Publish a new log entry and return log entry uuid. Throws
+     * Publish a new log entry and return log entry uuid(s). Throws
      * CannotPublishException or BadRequest on errors.
+     *
+     * IMPORTANT: The "logging policy" logic - which logs are allowed under
+     * which circumstances? - is redundantly implemented in
+     * services/logs/capabilities/WebService.php. Take care to keep both
+     * implementations synchronized! See capabilities/WebService.php for
+     * more explanation.
      */
+
     private static function _call(OkapiRequest $request)
     {
         # Developers! Please notice the fundamental difference between throwing
@@ -40,12 +47,8 @@ class WebService
 
         $logtype = $request->get_parameter('logtype');
         if (!$logtype) throw new ParamMissing('logtype');
-        if (!in_array($logtype, array(
-            'Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended',
-            'Ready to search', 'Temporarily unavailable', 'Archived'
-        ))) {
+        if (!in_array($logtype, Okapi::get_submittable_logtype_names()))
             throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
-        }
 
         $comment = $request->get_parameter('comment');
         if (!$comment) $comment = "";

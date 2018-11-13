@@ -11,24 +11,6 @@ use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Request\OkapiRequest;
 use okapi\Settings;
 
-/**
- * This method redundantly implements parts of logs/submit and logs/edit logic.
- * It's all logic that decides if a CannotPublishException is thrown.
- * This means:
- *
- *     1. To keep things simple and performant, we intentionally do
- *        somthing here which is deprecated: Implement redundant logic.
- *  
- *     2. With every change to CannotPublishException logic, developers
- *        MUST check if logs/capabilities needs an update.
- * 
- *     3. If developers fail to do so, it will not break anything. Either
- *        a new OKAPI feature may not be immediatly available to all apps,
- *        until we fix it here. Or a CannotPublishException may be thrown,
- *        informing users that a feature is not available. Therefore (1)
- *        seems acceptable.
- **/ 
-
 class WebService
 {
     public static function options()
@@ -37,6 +19,31 @@ class WebService
             'min_auth_level' => 3
         );
     }
+
+    /**
+     * This method redundantly implements parts of logs/submit and logs/edit logic.
+     * It's mostly logic that decides if a CannotPublishException is thrown;
+     * a few cases are about BadRequest (they are annotated below).
+     *
+     * This means:
+     *
+     *     1. To keep the code simple and readable, we intentionally do something
+     *        here which is deprecated: Implement redundant logic.
+     *
+     *     2. With every change to the allowed log paramters logic, OKAPI 
+     *        developers MUST check if logs/capabilities needs an update.
+     *
+     *     3. If developers fail to do so in 'CannotPublishException' cases,
+     *        it will not break anything. Either a new OKAPI feature may not be
+     *        immediatly available to all apps, until we fix it here. Or
+     *        a CannotPublishException may be thrown, informing users that a
+     *        feature is not available.
+     *
+     *     4. If we miss a 'BadRequest' case, we introduce a inconsistency
+     *        between the API specs and services/logs/capabilities. This could
+     *        result in buggy clients. So all the 'BadRequests' in logs/submit,
+     *        logs/edit and LogsCommons need special attention.
+     **/
 
     public static function call(OkapiRequest $request)
     {
@@ -67,7 +74,7 @@ class WebService
                 'services/caches/geocache',
                 new OkapiInternalRequest($request->consumer, $request->token, array(
                     'cache_code' => $cache_code,
-                    'fields' => 'type|status|owner|is_found|my_rating|is_recommended'
+                    'fields' => 'type|status|owner|is_found|is_recommended|my_rating'
                 ))
             );
         }
@@ -92,18 +99,17 @@ class WebService
         $is_owner = ($cache['owner']['uuid'] == $user['uuid']);
         $is_logger = $submit || ($log['user']['uuid'] == $user['uuid']);
         $event = ($cache['type'] == 'Event');
-        $status_logtypes = ['Available', 'Temporarily unavailable', 'Archived'];
 
         # calculate available logtypes
 
         if (!$is_logger)
         {
+            # The user must not edit other user's logs.
             $result['log_types'] = [];
         }
-        elseif ($edit && in_array($log['type'], $status_logtypes))
+        elseif ($edit && in_array($log['type'], ['Ready to search', 'Temporarily unavailable', 'Archived']))
         {
-            # Changing from status log types is not implemented in OKAPI.
-
+            # Changing a status-logtype is not implemented in OKAPI.
             $result['log_types'] = [$log['type']];
         }
         else
@@ -113,68 +119,88 @@ class WebService
             # Some log types are available only for certain cache types.
 
             if ($event) {
-                $disabled_logtypes[] = 'Found it';
-                $disabled_logtypes[] = "Didn't find it";
+                $disabled_logtypes['Found it'] = true;
+                $disabled_logtypes["Didn't find it"] = true;
             } else {
-                $disabled_logtypes[] = 'Attended';
-                $disabled_logtypes[] = 'Will attend';
+                $disabled_logtypes['Attended'] = true;
+                $disabled_logtypes['Will attend'] = true;
             }
 
             # So far OKAPI only implements cache status changes by the owner.
-            # Changing to status log types is not implemented in OKAPI.
+            # Changing to status log types also is not implemented in OKAPI.
 
-            if ($edit || !$is_owner) {
-                $disabled_logtypes = array_merge($disabled_logtypes, $status_logtypes);
+            if ($edit || !$is_owner) {   # will throw BadRequest
+                $disabled_logtypes['Ready to search'] = true;
+                $disabled_logtypes['Temporarily unavailable'] = true;
+                $disabled_logtypes['Archived'] = true;
             }
 
             # There are additional restrictions at OCPL sites.
 
             if ($ocpl)
             {
-                # OCPL owners may attend their own events, but not search their own caches.
-                # Also, they cannot log multiple founds or attendances.
+                # OCPL users cannot log multiple founds/attendances for the same cache.
 
-                if ($is_owner || $is_found) {
-                    $disabled_logtypes[] = 'Found it';
-                    $disabled_logtypes[] = "Didn't find it";
+                if ($cache['is_found']) {
+                    $disabled_logtypes['Found it'] = true;
+                    $disabled_logtypes["Didn't find it"] = true;
+                    $disabled_logtypes['Attended'] = true;
+                    $disabled_logtypes['Will attend'] = true;
+                }
+
+                # OCPL owners may attend their own events, but not search their own caches.
+
+                if ($is_owner && !$event) {
+                    $disabled_logtypes['Found it'] = true;
+                    $disabled_logtypes["Didn't find it"] = true;
                 }
 
                 # An OCPL cache status cannot be repeated / confirmed.
 
-                if (in_array($cache['status'], $status_logtypes)) {
-                    $disabled_logtypes[] = $cache['status'];
+                if ($cache['status'] == 'Available') {
+                    $disabled_logtypes['Ready to search'] = true;
+                } elseif (in_array($cache['status'], ['Temporarily unavailable', 'Archived'])) {
+                    $disabled_logtypes[$cache['status']] = true;
                 }
 
-                # OCPL owners cannot unarchive their caches
+                # OCPL owners cannot unarchive or publish their caches.
+                # (Nonpublic cache status are not yet implemented in OKAPI.)
 
-                if ($is_owner && $cache['status'] == 'Archived') {
-                    $disabled_logtypes[] = 'Temporarily unavailable';
-                    $disabled_logtypes[] = 'Available';
+                if ($is_owner && !in_array($cache['status'], ['Available', 'Temporarily unavailable'])) {
+                    $disabled_logtypes['Temporarily unavailable'] = true;
+                    $disabled_logtypes['Ready to search'] = true;
                 }
             }
 
-            # The old logtype can always be retained.
+            # There may be old logs which were allowed before a logging policy
+            # changed. services/logs/edit allows to confirm or even 'downgrade'
+            # the type of those logs, for best user experience.
 
             if ($edit) {
-                $disabled_logtypes = array_diff($disabled_logtypes, [$log['type']]);
+                unset($disabled_logtypes[$log['type']]);
+                if ($log['type'] == 'Found it')
+                    unset($disabled_logtypes["Didn't find it"]);
+                if ($log['type'] == 'Attended')
+                    unset($disabled_logtypes['Will attend']);
             }
 
-            $result['log_types'] = array_diff(
+            $result['log_types'] = array_values(array_diff(
                 Okapi::get_submittable_logtype_names(),
-                $disabled_logtypes
-            );
+                array_keys($disabled_logtypes)
+            ));
         }
 
         # calculate other results
-        #
-        # When these properties are added to services/logs/edit,
-        # the $submit operands must be replaced by $is_logger.
+
+        # Note: When these properties are added to services/logs/edit, the
+        # $submit operands must be replaced by $is_logger (= only own logs
+        # may be edited).
 
         $result['can_rate'] =
             $submit &&
             $ocpl &&
             !$is_owner &&
-            ($cache['my_rating'] == null);
+            ($cache['my_rating'] == null);   # Re-rating may be added to OKAPI, see issue 563. 
 
         $can_recommend = (
             $submit &&

@@ -1067,7 +1067,7 @@ class Okapi
         'Comment' => 3,
         'Attended' => 7,
         'Will attend' => 8,
-        'Archived' => 9,
+        'Archived' => 9,   # not implemented yet on OCPL website, but on the todo list
         'Ready to search' => 10,
         'Temporarily unavailable' => 11,
     ];

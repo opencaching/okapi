@@ -8,7 +8,6 @@ namespace okapi\services\logs;
 
 use Exception;
 use okapi\core\Db;
-use okapi\core\exception\BadRequest;
 use okapi\core\Exception\CannotPublishException;
 use okapi\core\Exception\InvalidParam;
 use okapi\core\Exception\ParamMissing;
@@ -16,6 +15,14 @@ use okapi\core\Okapi;
 use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
 use okapi\Settings;
+
+/**
+ * IMPORTANT: The "logging policy" logic - which logs are allowed under
+ * which circumstances? - is redundantly implemented in
+ * services/logs/capabilities/WebService.php. Take care to keep both
+ * implementations synchronized! See capabilities/WebService.php for
+ * more explanation.
+ */
 
 class LogsCommon
 {

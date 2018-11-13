@@ -34,9 +34,10 @@
         <p>A dictionary of the following structure:</p>
         <ul>
             <li>
-                <p><b>log_types</b> - a list of the log types your user
-                can currently submit for the geocache. Available types
-                depend on many parameters, like the cache type and state.</p>
+                <p><b>log_types</b> - a list of the log types your user can
+                currently submit for the geocache (or which can replace the type
+                of the log to be edited). Available types depend on many
+                conditions, like the cache type and state.</p>
             </li>
             <li>
                 <p><b>can_rate</b> - boolean, <b>true</b> if the user can rate
@@ -46,8 +47,8 @@
                 not provide ratings at all.</p>
             </li>
             <li>
-                <p><b>can_recommend</b> - string, tells if the user can
-                recommend the geocache. One of the following:</p>
+                <p><b>can_recommend</b> - tells if the user can recommend the
+                geocache. One of the following:</p>
                 <ul>
                     <li>
                         <b>true</b> if the user can add a recommendation for
@@ -73,17 +74,18 @@
             </li>
             <li>
                 <p><b>can_set_needs_maintenance</b> - boolean, <b>true</b>
-                if the user can set a "needs maintenance" state of the cache by
-                submitting <i>needs_maintenance2=true</i>; <b>false</b> if
-                this argument will be ignored. This feature is not available
-                for all cache types.</p>
+                if the user can set or confirm a "needs maintenance" status
+                of the cache by submitting <i>needs_maintenance2=true</i>;
+                <b>false</b> if this argument will be ignored. Logging
+                "needs maintenance" may not be available for all cache types.</p>
             </li>
             <li>
                 <p><b>can_reset_needs_maintenance</b> - boolean, <b>true</b>
-                if the user can reset a "needs maintenance" state of the cache by
-                submitting <i>needs_maintenance2=false</i>; <b>false</b> if
-                this argument will be ignored. This feature is not available
-                yet at some OC installations.</p>
+                if the user can reset a "needs maintenance" status of the cache
+                (or confirm that ist still is in good shape) by submitting
+                <i>needs_maintenance2=false</i>; <b>false</b> if this argument
+                will be ignored. This feature is not available yet at some OC
+                installations.</p>
             </li>
         </ul>
         <p>All the <b>can_</b> fields currently are <b>false</b> if a

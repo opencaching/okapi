@@ -164,6 +164,11 @@ class WebService
                     $rcmds_counts[$row['user_id']] = $row['rcmds_given'];
                 foreach ($extras as $user_id => &$extra_ref)
                 {
+                    # TODO: make the finds per recommendation configurable.
+                    #
+                    # - OCDE: $opt['logic']['rating']['findsPerRating']
+                    # - OCPL: 100 / GeoCacheCommon::RECOMENDATION_RATIO  (one M!)
+
                     $extra_ref['rcmds_given'] = isset($rcmds_counts[$user_id]) ? 0 + $rcmds_counts[$user_id] : 0;
                     $extra_ref['rcmds_left'] = floor($extra_ref['caches_found'] / 10.0) - $extra_ref['rcmds_given'];
                     $extra_ref['rcmd_founds_needed'] = max(0, 10 * ($extra_ref['rcmds_given'] + 1) - $extra_ref['caches_found']);
