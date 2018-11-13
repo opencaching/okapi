@@ -82,7 +82,7 @@ class WebService
         {
             throw new InvalidParam(
                 'reference_item',
-                "There is neither a geocache nor a log UUID '".$reference_item."'."
+                "There is no accessible geocache or log '".$reference_item."'."
             );
         }
 
@@ -150,7 +150,7 @@ class WebService
 
                 # OCPL owners may attend their own events, but not search their own caches.
 
-                if ($is_owner && !$event) {
+                if ($is_owner) {
                     $disabled_logtypes['Found it'] = true;
                     $disabled_logtypes["Didn't find it"] = true;
                 }
@@ -164,7 +164,7 @@ class WebService
                 }
 
                 # OCPL owners cannot unarchive or publish their caches.
-                # (Nonpublic cache status are not yet implemented in OKAPI.)
+                # (Nonpublic cache status are not implemented yet in OKAPI.)
 
                 if ($is_owner && !in_array($cache['status'], ['Available', 'Temporarily unavailable'])) {
                     $disabled_logtypes['Temporarily unavailable'] = true;
@@ -184,13 +184,13 @@ class WebService
                     unset($disabled_logtypes['Will attend']);
             }
 
-            $result['log_types'] = array_values(array_diff(
+            $result['submittable_logtypes'] = array_values(array_diff(
                 Okapi::get_submittable_logtype_names(),
                 array_keys($disabled_logtypes)
             ));
         }
 
-        # calculate other results
+        # calculate the other fields
 
         # Note: When these properties are added to services/logs/edit, the
         # $submit operands must be replaced by $is_logger (= only own logs
@@ -216,7 +216,7 @@ class WebService
             # recommendation the user must either submit a 'Found it' log, or
             # make (edit) a 'Found it' from another type of log. So the user
             # adds another found, which decreases the number of additional
-            # founds meeded for recommending:
+            # founds needed for recommending:
 
             $founds_needed = $user['rcmd_founds_needed'];
             if (!$cache['is_found']) --$founds_needed;

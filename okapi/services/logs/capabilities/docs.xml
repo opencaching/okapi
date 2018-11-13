@@ -3,8 +3,8 @@
     <issue-id>TODO</issue-id>
     <desc>
         <p>This method tells which features are available for logging a
-        cache or editing a log. You may use it to dynamically disable or
-        hide nonfunctional options in a user interface.</p>
+        cache or editing a log. You may use it to disable or hide nonfunctional
+        options in a user interface.</p>
 
         <p>Using this method is <i>always optional</i>. You never need to
         know about differences between OKAPI installations or logging
@@ -34,10 +34,10 @@
         <p>A dictionary of the following structure:</p>
         <ul>
             <li>
-                <p><b>log_types</b> - a list of the log types your user can
-                currently submit for the geocache (or which can replace the type
-                of the log to be edited). Available types depend on many
-                conditions, like the cache type and state.</p>
+                <p><b>submittable_logtypes</b> - a list of the log types your
+                user can currently submit for the geocache (or which can replace
+                the type of the log to be edited). Available types depend on
+                many conditions, like the cache type and state.</p>
             </li>
             <li>
                 <p><b>can_rate</b> - boolean, <b>true</b> if the user can rate
