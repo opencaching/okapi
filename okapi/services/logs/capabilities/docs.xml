@@ -55,7 +55,7 @@
                         the geocache,
                     </li>
                     <li>
-                        <b>need_more_finds</b> if the user needs to
+                        <b>need_more_founds</b> if the user needs to
                         find more caches to add a recommendation for the
                         geocache,
                     </li>

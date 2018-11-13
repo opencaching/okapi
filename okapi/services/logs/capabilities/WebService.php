@@ -92,7 +92,7 @@ class WebService
             'services/users/by_internal_id',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'internal_id' => $request->token->user_id,
-                'fields' => 'uuid|rcmds_left|rcmd_founds_needed'
+                'fields' => 'uuid|rcmd_founds_needed'
             ))
         );
         $ocpl = (Settings::get('OC_BRANCH') == 'oc.pl');
@@ -211,12 +211,23 @@ class WebService
         if (!$can_recommend) {
             $result['can_recommend'] = 'false';
             $result['rcmd_founds_needed'] = null;
-        } elseif ($user['rcmds_left'] <= 0 && $user['rcmds_left'] !== null) {
-            $result['can_recommend'] = 'need_more_finds';
-            $result['rcmd_founds_needed'] = $user['rcmd_founds_needed'];
         } else {
-            $result['can_recommend'] = 'true';
-            $result['rcmd_founds_needed'] = 0;
+            # If the user did not yet find this cache, then for adding a
+            # recommendation the user must either submit a 'Found it' log, or
+            # make (edit) a 'Found it' from another type of log. So the user
+            # adds another found, which decreases the number of additional
+            # founds meeded for recommending:
+
+            $founds_needed = $user['rcmd_founds_needed'];
+            if (!$cache['is_found']) --$founds_needed;
+
+            if ($founds_needed > 0) {
+                $result['can_recommend'] = 'need_more_founds';
+                $result['rcmd_founds_needed'] = $founds_needed;
+            } else {
+                $result['can_recommend'] = 'true';
+                $result['rcmd_founds_needed'] = 0;
+            }
         }
 
         $result['can_set_needs_maintenance'] =

@@ -171,14 +171,14 @@ class WebService
             'services/caches/geocache',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'cache_code' => $cache_code,
-                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd|is_recommended|my_rating'
+                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd|is_found|is_recommended|my_rating'
             ))
         );
         $user = OkapiServiceRunner::call(
             'services/users/by_internal_id',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'internal_id' => $request->token->user_id,
-                'fields' => 'uuid|internal_id|rcmds_left|rcmd_founds_needed'
+                'fields' => 'uuid|internal_id|rcmd_founds_needed'
             ))
         );
 
@@ -331,21 +331,25 @@ class WebService
                 ));
             }
 
-            # Check the number of recommendations.
-
-            $founds = $user['caches_found'] + 1;  // +1, because he'll find THIS ONE in a moment
-
             # Note: caches_found includes the number of attended events (both on
             # OCDE and OCPL). OCPL does not allow recommending events, but the
-            # number of attended events influences $rcmds_left the same way a
+            # number of attended events influences 'rcmds_left' the same way a
             # normal "Fount it" log does.
 
-            if ($user['rcmds_left'] <= 0) {
-                throw new CannotPublishException(_(
-                    "You don't have any recommendations to give. Find %s more ".
-                    "cache(s) first!",
-                    $user['rcmd_founds_needed']
-                ));
+            # If only 1 more found is needed and this is the users' first 'Found it'
+            # for the cache, then *this* 'Found it' allows to recommend it.
+            # (OCDE allows multiple founds per cache, but in the statistics they
+            # count only as *one* found cache.)
+
+            $founds_needed = $user['rcmd_founds_needed'];
+            if (!$cache['is_found']) --$founds_needed;
+
+            if ($founds_needed > 0) {
+                throw new CannotPublishException(sprintf(ngettext(
+                    "You don't have any recommendations to give. Find one more cache first!",
+                    "You don't have any recommendations to give. Find %d more caches first!",
+                    $founds_needed
+                ), $founds_needed));
             }
         }
 
