@@ -485,25 +485,7 @@ class WebService
             # This code will be called for OCPL branch only. Earlier, we made sure,
             # to set $rating to null, if we're running on OCDE.
 
-            # OCPL has a little strange way of storing cumulative rating. Instead
-            # of storing the sum of all ratings, OCPL stores the computed average
-            # and update it using multiple floating-point operations. Moreover,
-            # the "score" field in the database is on the -3..3 scale (NOT 1..5),
-            # and the translation made at retrieval time is DIFFERENT than the
-            # one made here (both of them are non-linear). Also, once submitted,
-            # the rating can never be changed. It surely feels quite inconsistent,
-            # but presumably has some deep logic into it. See also here (Polish):
-            # https://wiki.opencaching.pl/index.php/Oceny_skrzynek
-
-            switch ($rating)
-            {
-                case 1: $db_score = -2.0; break;
-                case 2: $db_score = -0.5; break;
-                case 3: $db_score = 0.7; break;
-                case 4: $db_score = 1.7; break;
-                case 5: $db_score = 3.0; break;
-                default: throw new Exception();
-            }
+            $db_score = Okapi::encode_geocache_rating($rating);
             Db::execute("
                 update caches
                 set

@@ -34,7 +34,7 @@ class WebService
         'is_ignored', 'willattends', 'country', 'state', 'preview_image',
         'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
         'protection_areas', 'short_description', 'short_descriptions', 'needs_maintenance',
-        'watchers', 'is_rated', 'is_recommended', 'oc_team_annotation');
+        'watchers', 'my_rating', 'is_recommended', 'oc_team_annotation');
 
     public static function call(OkapiRequest $request)
     {
@@ -280,7 +280,7 @@ class WebService
                     case 'is_not_found': /* handled separately */ break;
                     case 'is_watched': /* handled separately */ break;
                     case 'is_ignored': /* handled separately */ break;
-                    case 'is_rated': /* handled separately */ break;
+                    case 'my_rating': /* handled separately */ break;
                     case 'is_recommended': /* handled separately */ break;
                     case 'founds': $entry['founds'] = $row['founds'] + 0; break;
                     case 'notfounds':
@@ -328,12 +328,10 @@ class WebService
                         $entry['trip_distance'] = $row['trip_distance'] === null ? null : round($row['trip_distance'],3); break;
                         break;
                     case 'rating':
-                        if ($row['votes'] < 3) $entry['rating'] = null;
-                        elseif ($row['score'] >= 2.2) $entry['rating'] = 5.0;
-                        elseif ($row['score'] >= 1.4) $entry['rating'] = 4.0;
-                        elseif ($row['score'] >= 0.1) $entry['rating'] = 3.0;
-                        elseif ($row['score'] >= -1.0) $entry['rating'] = 2.0;
-                        else $entry['rating'] = 1.0;
+                        if ($row['votes'] < 3)
+                            $entry['rating'] = null;
+                        else
+                            $entry['rating'] = Okapi::decode_geocache_rating($row['score']);
                         break;
                     case 'rating_votes': $entry['rating_votes'] = $row['votes'] + 0; break;
                     case 'recommendations': $entry['recommendations'] = $row['topratings'] + 0; break;
@@ -511,17 +509,17 @@ class WebService
                 $result_ref['is_ignored'] = isset($tmp2[$cache_code]);
         }
 
-        # is_rated
+        # my_rating
 
-        if (in_array('is_rated', $fields))
+        if (in_array('my_rating', $fields))
         {
             if ($request->token == null)
-                throw new BadRequest("Level 3 Authentication is required to access 'is_rated' field.");
+                throw new BadRequest("Level 3 Authentication is required to access 'my_rating' field.");
             $tmp2 = array();
             if (Settings::get('OC_BRANCH') == 'oc.pl')
             {
-                $tmp = Db::select_column("
-                    select c.wp_oc
+                $tmp = Db::select_all("
+                    select c.wp_oc as cache_code, s.score
                     from
                         caches c,
                         scores s
@@ -529,11 +527,11 @@ class WebService
                         c.cache_id = s.cache_id
                         and s.user_id = '".Db::escape_string($request->token->user_id)."'
                 ");
-                foreach ($tmp as $cache_code)
-                    $tmp2[$cache_code] = true;
+                foreach ($tmp as $row)
+                    $tmp2[$row['cache_code']] = Okapi::decode_geocache_rating($row['score']);
             }
             foreach ($results as $cache_code => &$result_ref)
-                $result_ref['is_rated'] = isset($tmp2[$cache_code]);
+                $result_ref['my_rating'] = (isset($tmp2[$cache_code]) ? $tmp2[$cache_code] : null);
         }
 
         # is_recommended

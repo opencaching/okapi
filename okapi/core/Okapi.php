@@ -1110,6 +1110,61 @@ class Okapi
     }
 
     /**
+     * Encodes a geocache rating - as submitted  by the user - to the "score"
+     * number that will be stored in the OC database.
+     */
+    public static function encode_geocache_rating($rating)
+    {
+        # OCPL has a little strange way of storing cumulative rating. Instead
+        # of storing the sum of all ratings, OCPL stores the computed average
+        # and update it using multiple floating-point operations. Moreover,
+        # the "score" field in the database is on the -3..3 scale (NOT 1..5),
+        # and the translation made at retrieval time is DIFFERENT than the
+        # one made here (both of them are non-linear). Also, once submitted,
+        # there is no means to ever change the rating (but it may be added,
+        # see issue #563). It surely feels quite inconsistent, but presumably
+        # has some deep logic into it. See also here (Polish):
+        # https://wiki.opencaching.pl/index.php/Oceny_skrzynek
+
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+        {
+            switch ($rating)
+            {
+                case 1: return -2.0;
+                case 2: return -0.5;
+                case 3: return 0.7;
+                case 4: return 1.7;
+                case 5: return 3.0;
+               default: throw new Exception();
+            }
+        }
+        else
+        {
+            throw new Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
+        }
+    }
+
+    /**
+     * Decodes a geocache rating "score" - as stored in the OC database -
+     * to the rating number to be displayed.
+     */
+    public static function decode_geocache_rating($db_score)
+    {
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+        {
+            if ($db_score >= 2.2) return 5.0;
+            elseif ($db_score >= 1.4) return 4.0;
+            elseif ($db_score >= 0.1) return 3.0;
+            elseif ($db_score >= -1.0) return 2.0;
+            else return 1.0;
+        }
+        else
+        {
+            throw new Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
+        }
+    }
+
+    /**
      * Replace outdated SITE_URLs by the current site URL. So far, this is only
      * implemented for http <-> https translation; see
      * https://github.com/opencaching/okapi/issues/508.

@@ -298,22 +298,6 @@
                 <b>null</b> if unknown,</p>
             </li>
             <li>
-                <p>%OKAPI:infotag:ocpl-specific% <b>is_rated</b> - boolean, <b>true</b>
-                if the user rated this cache.</p>
-                <p>This is private data. You will need Level 3 Authentication to access
-                this field.</p>
-
-                <p><b>Notice:</b> Only OCPL-based Opencaching installations implement
-                ratings for their geocaches. On OCDE-based installations, this field
-                will always contain <b>false</b>.</p>
-            </li>
-            <li>
-                <p><b>is_recommended</b> - boolean, <b>true</b> if the user recommended this
-                cache.</p>
-                <p>This field requires you to use the <b>user_uuid</b> parameter
-                (or Level 3 Authentication).</p>
-            </li>
-            <li>
                 <p>%OKAPI:infotag:ocpl-specific% <b>rating</b> - float (between 1 and 5), an
                 overall rating of the cache, or <b>null</b> when the geocache does not have a
                 sufficient amount of votes to have a rating.</p>
@@ -335,7 +319,20 @@
                 their geocaches. On OCDE-based installations, this field will always contain
                 <b>0</b>.</p>
             </li>
+            <li>
+                <p>%OKAPI:infotag:ocpl-specific% <b>my_rating</b> - float (between 1 and 5),
+                the rating the user gave for this cache; <b>null</b> if the user did not rate.</p>
+                <p>This is private data. You will need Level 3 Authentication to access
+                this field.</p>
+                <p>See the notices on the <b>rating</b> field.</p>
+            </li>
             <li><b>recommendations</b> - number of recommendations for this cache,</li>
+            <li>
+                <p><b>is_recommended</b> - boolean, <b>true</b> if the user recommended this
+                cache.</p>
+                <p>This field requires you to use the <b>user_uuid</b> parameter
+                (or Level 3 Authentication).</p>
+            </li>
             <li>
                 <b>req_passwd</b> - boolean; states if this cache requires a password
                 in order to submit a "Found it" log entry,
