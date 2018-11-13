@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc-polish-code-translations\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-08 19:38+0100\n"
-"PO-Revision-Date: 2018-11-09 13:03+0100\n"
+"POT-Creation-Date: 2018-11-12 10:27+0100\n"
+"PO-Revision-Date: 2018-11-13 07:05+0100\n"
 "Last-Translator: Harrie Klomp <harrie@harrieklomp.be>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -103,42 +103,50 @@ msgstr "Afbeelding omschrijving"
 msgid "The cache probably is located in the following protection areas:"
 msgstr "De cache is waarschijnlijk in een volgend beschermd gebied geplaatst:"
 
-#: services/caches/geocaches/WebService.php:550
+#: services/caches/geocaches/WebService.php:624
 msgid "Parts of this geocache listing may be outdated."
 msgstr "Delen van de cachebeschrijving zijn misschien verouderd."
 
-#: services/caches/geocaches/WebService.php:552
+#: services/caches/geocaches/WebService.php:626
 msgid "See the log entries for more information."
 msgstr "Zie de logs voor meer informatie."
 
-#: services/caches/geocaches/WebService.php:1084
+#: services/caches/geocaches/WebService.php:643
+msgid "Annotations by the Opencaching team:"
+msgstr "Commentaar van het Opencaching team:"
+
+#: services/caches/geocaches/WebService.php:645
+msgid "End of annotations"
+msgstr "Einde van commentaar"
+
+#: services/caches/geocaches/WebService.php:1189
 msgid "Stage"
 msgstr "WP nummer"
 
-#: services/caches/geocaches/WebService.php:1128
+#: services/caches/geocaches/WebService.php:1233
 msgid "User location"
 msgstr "Gebruikers locatie"
 
-#: services/caches/geocaches/WebService.php:1131
+#: services/caches/geocaches/WebService.php:1236
 #, php-format
 msgid "Your own custom coordinates for the %s geocache"
 msgstr "Eigen gecorrigeerde coördinaten voor %s geocache"
 
-#: services/caches/geocaches/WebService.php:1295
+#: services/caches/geocaches/WebService.php:1400
 msgid "National Park / Landscape"
 msgstr "Nationaal park / Landschap"
 
-#: services/caches/geocaches/WebService.php:1473
+#: services/caches/geocaches/WebService.php:1578
 #, php-format
 msgid "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</a> site."
 msgstr "Deze <a href='%s'>geocache</a> beschrijving komt van de <a href='%s'>%s</a> \"\"site."
 
-#: services/caches/geocaches/WebService.php:1485
+#: services/caches/geocaches/WebService.php:1590
 #, php-format
 msgid "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, as of %s; all log entries &copy; their authors"
 msgstr "&copy; <a href='%s'>%s</a> <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.nl'>CC-door-NC-ND</a>, van %s; alle vermelde logs &copy; hun auteurs"
 
-#: services/caches/geocaches/WebService.php:1496
+#: services/caches/geocaches/WebService.php:1601
 #, php-format
 msgid "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>; all log entries &copy; their authors"
 msgstr "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.nl'>CC-BY-NC-ND</a>; alle vermelde logs &copy; hun auteurs"
@@ -183,7 +191,7 @@ msgstr "Je hebt deze cache al als \"Gevonden\" gelogd. Je kunt nu wel een \"Noti
 msgid "You have already submitted an \"Attended\" log entry once. Now you may submit \"Comments\" only!"
 msgstr "Je hebt al als \"Deelgenomen\" gelogd. Je kunt nu wel een \"Notitie\" plaatsen!"
 
-#: services/logs/delete/WebService.php:114
+#: services/logs/delete/WebService.php:118
 msgid "Your log entry has been deleted."
 msgstr "Jouw log is verwijderd."
 
