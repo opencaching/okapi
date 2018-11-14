@@ -64,6 +64,22 @@ class View
             $body = implode("\n", $diagdata);
         }
 
+        if (isset($_GET['service_usage']))
+        {
+            $first = Db::select_value("
+                select min(period_start) from okapi_stats_monthly
+                where service_name='".Db::escape_string($_GET['service_usage'])."'
+            ");
+            $last = Db::select_value("
+                select max(period_start) from okapi_stats_monthly
+                where service_name='".Db::escape_string($_GET['service_usage'])."'
+            ");
+            if ($first)
+                $body = "in use from ".substr($first, 0, 7)." to ".substr($last, 0, 7);
+            else
+                $body = "none";
+        }
+
         $response = new OkapiHttpResponse();
         $response->content_type = "text/plain; charset=utf-8";
         $response->body = $body;

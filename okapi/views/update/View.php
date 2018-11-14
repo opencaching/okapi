@@ -799,4 +799,12 @@ class View
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8
         ");
     }
+
+    private static function ver121()
+    {
+        Db::execute("
+            alter table okapi_stats_monthly
+            add index by_service (service_name, period_start)
+        ");
+    }
 }
