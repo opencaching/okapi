@@ -66,16 +66,29 @@ class View
 
         if (isset($_GET['service_usage']))
         {
-            $first = Db::select_value("
-                select min(period_start) from okapi_stats_monthly
-                where service_name='".Db::escape_string($_GET['service_usage'])."'
-            ");
-            $last = Db::select_value("
-                select max(period_start) from okapi_stats_monthly
-                where service_name='".Db::escape_string($_GET['service_usage'])."'
-            ");
+            $service_name_escaped = Db::escape_string($_GET['service_usage']);
+            $first = min(
+                Db::select_value("
+                    select min(period_start) from okapi_stats_monthly
+                    where service_name='".$service_name_escaped."'
+                "),
+                Db::select_value("
+                    select min(period_start) from okapi_stats_hourly
+                    where service_name='".$service_name_escaped."'
+                ")
+            );
+            $last = max(
+                Db::select_value("
+                    select max(period_start) from okapi_stats_monthly
+                    where service_name='".$service_name_escaped."'
+                "),
+                Db::select_value("
+                    select max(period_start) from okapi_stats_hourly
+                    where service_name='".$service_name_escaped."'
+                ")
+            );
             if ($first)
-                $body = "in use from ".substr($first, 0, 7)." to ".substr($last, 0, 7);
+                $body = "in use from ".substr($first, 0, 10)." to ".substr($last, 0, 10);
             else
                 $body = "none";
         }

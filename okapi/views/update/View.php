@@ -807,4 +807,12 @@ class View
             add index by_service (service_name, period_start)
         ");
     }
+
+    private static function ver122()
+    {
+        Db::execute("
+            alter table okapi_stats_hourly
+            add index by_service (service_name, period_start)
+        ");
+    }
 }
