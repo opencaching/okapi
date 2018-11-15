@@ -140,10 +140,14 @@
         One of the following values:</p>
         <ul>
             <li><b>none</b> - no trackables-data will be included,</li>
-            <li><b>desc:list</b> - trackables will be listed (in plain-text) within the cache description,</li>
-            <li><b>desc:count</b> - total number of trackables will be included (in plain-text) within the cache description.</li>
+            <li><b>desc:list</b> - trackables will be listed (in plain-text) within the
+                cache description,</li>
+            <li><b>desc:count</b> - total number of trackables will be included
+                (in plain-text) within the cache description,</li>
+            <li><b>gc:travelbugs</b> - trackables will be included as Groundspeak's
+                <i>groundspeak:travelbug</i> elements.</li>
         </ul>
-        <p>Note: When using "desc:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
+        <p>Note: When using "desc:" or "gc:" mode, remember to set <b>ns_ground</b> to <b>true</b>.</p>
     </opt>
     <opt name='recommendations' default='none'>
         <p>This argument controls whether information on recommendations is included and how it is included.

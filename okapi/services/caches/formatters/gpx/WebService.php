@@ -170,7 +170,7 @@ class WebService
 
         $tmp = $request->get_parameter('trackables');
         if (!$tmp) $tmp = 'none';
-        if (!in_array($tmp, array('none', 'desc:list', 'desc:count')))
+        if (!in_array($tmp, array('none', 'desc:list', 'desc:count', 'gc:travelbugs')))
             throw new InvalidParam('trackables', "'$tmp'");
         $vars['trackables'] = $tmp;
 
@@ -213,7 +213,7 @@ class WebService
             $fields .= "|images";
         if (count($vars['attrs']) > 0)
             $fields .= "|attrnames|attr_acodes|needs_maintenance";
-        if ($vars['trackables'] == 'desc:list')
+        if (in_array($vars['trackables'], ['desc:list', 'gc:travelbugs']))
             $fields .= "|trackables";
         elseif ($vars['trackables'] == 'desc:count')
             $fields .= "|trackables_count";
@@ -331,6 +331,17 @@ class WebService
                         );
                     }
                 }
+            }
+
+            # prepare geokret IDs
+            if ($vars['trackables'] == 'gc:travelbugs')
+            {
+                foreach ($vars['caches'] as &$cache_ref)
+                    foreach ($cache_ref['trackables'] as &$trackable_ref)
+                        if (!preg_match('/^GK([0-9A-F]{4,})$/', $trackable_ref['code'], $matches))
+                            throw Exception();
+                        else
+                            $trackable_ref['id'] = hexdec($matches[1]);
             }
 
             # As the 'needs maintenance' flag is usually transported as attribute in

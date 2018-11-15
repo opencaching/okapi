@@ -168,6 +168,15 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                     <?php if ((in_array('gc:personal_note', $vars['my_notes'])) && ($c['my_notes'] != null)) { /* Does user want us to include personal notes? -> Issue 294 */ ?>
                         <groundspeak:personal_note><?= Okapi::xmlescape($c['my_notes']) ?></groundspeak:personal_note>
                     <?php } ?>
+                    <?php if ($vars['trackables'] == 'gc:travelbugs') { /* Does user want us to geokrets as GC trackables? */ ?>
+                        <groundspeak:travelbugs>
+                            <?php foreach ($c['trackables'] as $trackable) { ?>
+                                <groundspeak:travelbug id="<?= $trackable['id'] ?>" ref="<?= $trackable['code'] ?>">
+                                    <groundspeak:name><?= Okapi::xmlescape($trackable['name']) ?></groundspeak:name>
+                                </groundspeak:travelbug>
+                            <?php } ?>
+                        </groundspeak:travelbugs>
+                    <?php } ?>
                     <?php if ($vars['latest_logs'] != 'false') { /* Does user want us to include latest log entries? */ ?>
                         <groundspeak:logs>
                             <?php foreach ($c['latest_logs'] as $log) { ?>
