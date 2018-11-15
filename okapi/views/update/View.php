@@ -815,4 +815,14 @@ class View
             add index by_service (service_name, period_start)
         ");
     }
+
+    private static function ver123()
+    {
+        # fixes issue 414
+        Db::execute("
+            update cache_logs
+            set okapi_syncbase = now()
+            where text regexp '&amp;#(38|60|62)'
+        ");
+    }
 }
