@@ -65,7 +65,9 @@ class WebService
             $listing_is_outdated_SQL = '0';
             $join_SQL = 'left join cache_moved cm on cm.log_id=cl.id';
             $latlong_SQL = ', cm.latitude, cm.longitude';
-            $last_modified_SQL = 'cl.last_modified';
+
+            # At 2012-08-23 00:32:52, all Opencaching.PL logs were touched.
+            $last_modified_SQL = 'IF(cl.last_modified <> "2012-08-23 00:32:52", cl.last_modified, cl.date_created)';
         }
         $rs = Db::query("
             select
