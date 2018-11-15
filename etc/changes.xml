@@ -16,6 +16,13 @@
 
     -->
     <changes>
+        <change commit="53608bfa" version="1789" time="2018-11-15T16:11:06+0100" type="enhancement">
+            Added new fields to replication: <i>short_descriptions</i>,
+            <i>oc_team_annotation</i>, <i>needs_maintenance</i> and <i>watchers</i>
+            for geocaches; <i>images</i>, <i>location</i>, <i>oc_team_entry</i>,
+            <i>needs_maintenance2</i>, <i>listing_is_outdated</i>,
+            <i>date_created</i> and <i>last_modified</i> for log entries.
+        </change>
         <change commit="34e67ab9" version="1776" time="2018-11-12T10:11:07+0100" type="enhancement">
             Added the <i>oc_team_annotation</i> option and field to
             <a href="services/caches/geocache.html">services/caches/geocache</a>(s).
