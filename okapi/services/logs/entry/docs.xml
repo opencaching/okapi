@@ -193,9 +193,6 @@
                 <p><b>last_modified</b> - date (ISO 8601, no time) indicating
                 when the log entry was most recently edited. If the log was not
                 edited, the returned value is identical to <b>date_created</b>.</p>
-                <p>Opencaching.PL note: For all logs prior to 2012-08-23,
-                there is no modification date available at Opencaching.PL.
-                <b>date_created</b> value will be returned instead.</p>
             </li>
             <li>
                 <p><b>internal_id</b> - undocumented, you <u>should not</u> use

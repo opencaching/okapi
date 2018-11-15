@@ -14,13 +14,13 @@ use okapi\Settings;
 class ReplicateCommon
 {
     private static $chunk_size = 50;
-    private static $logged_cache_fields = 'code|names|location|type|status|url|owner|founds|notfounds|size|size2|oxsize|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|descriptions|hints|images|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden|attr_acodes|willattends|country|state|preview_image|trip_time|trip_distance|gc_code|hints2|protection_areas';
+    private static $logged_cache_fields = 'code|names|location|type|status|url|owner|founds|notfounds|size|size2|oxsize|difficulty|terrain|rating|rating_votes|recommendations|req_passwd|descriptions|hints|images|attr_acodes|trackables_count|trackables|alt_wpts|last_found|last_modified|date_created|date_hidden|willattends|country|state|preview_image|trip_time|trip_distance|gc_code|hints2|protection_areas|short_descriptions|needs_maintenance|watchers|oc_team_annotation';
 
     # Consider https://github.com/opencaching/okapi/issues/382 before adding
     # any new field to $logged_log_entry_fields! Care must be taken that
     # changed values are reflected in cache_logs.okapi_syncbase.
 
-    private static $logged_log_entry_fields = 'uuid|cache_code|date|user|type|was_recommended|comment';
+    private static $logged_log_entry_fields = 'uuid|cache_code|date|user|type|oc_team_entry|was_recommended|needs_maintenance2|listing_is_outdated|comment|location|images|date_created|last_modified';
 
     /** Return current (greatest) changelog revision number. */
     public static function get_revision()
@@ -160,6 +160,10 @@ class ReplicateCommon
      * well as long as only log entry fields are replicated which update
      * some cache_logs column when changed (by OKAPI or OC code). See
      * https://github.com/opencaching/okapi/issues/382 for further discussion.
+     *
+     * Advantage of not verifying logs: We can add new log fields without
+     * producing gigabytes of unnecessary clog entries; see issue #559.
+     * Also, there could be performance problems; see issue #564.
      */
     public static function verify_clog_consistency(
         $force_all=false, $geocache_ignored_fields = null
