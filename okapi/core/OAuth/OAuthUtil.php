@@ -7,6 +7,10 @@ class OAuthUtil {
         if (is_array($input)) {
             return array_map(array('\okapi\core\OAuth\OAuthUtil', 'urlencode_rfc3986'), $input);
         } else if (is_scalar($input)) {
+            # rawurlencode() - unlike urlencode() - encodes spaces as %20,
+            # at least since PHP 5.3. So the '+' => ' ' replacement here
+            # is unnecessary, but failsafe. See issue #535.
+
             return str_replace(
                 '+',
                 ' ',
@@ -17,11 +21,8 @@ class OAuthUtil {
         }
     }
 
-
-    // This decode function isn't taking into consideration the above
-    // modifications to the encoding process. However, this method doesn't
-    // seem to be used anywhere so leaving it as is.
     public static function urldecode_rfc3986($string) {
+        # See issue #535.
         return urldecode($string);
     }
 
