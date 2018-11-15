@@ -818,11 +818,14 @@ class View
 
     private static function ver123()
     {
-        # fixes issue 414
-        Db::execute("
-            update cache_logs
-            set okapi_syncbase = now()
-            where text regexp '&amp;#(38|60|62)'
-        ");
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+        {
+            # fixes issue 414
+            Db::execute("
+                update cache_logs
+                set okapi_syncbase = now()
+                where text regexp '&amp;#(38|60|62)'
+            ");
+        }
     }
 }
