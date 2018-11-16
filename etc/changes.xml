@@ -16,6 +16,10 @@
 
     -->
     <changes>
+        <change commit="55c19d6a" version="1793" time="2018-11-16T12:11:31+0100" type="enhancement">
+            Added the GPX options <i>trackables=gc:travelbugs</i> and
+            <i>alt_wpts=desc:table</i>.
+        </change>
         <change commit="53608bfa" version="1789" time="2018-11-15T16:11:06+0100" type="enhancement">
             Added new fields to replication: <i>short_descriptions</i>,
             <i>oc_team_annotation</i>, <i>needs_maintenance</i> and <i>watchers</i>
