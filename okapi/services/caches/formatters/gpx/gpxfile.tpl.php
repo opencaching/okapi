@@ -114,6 +114,18 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                             &lt;/ul&gt;
                         <?php } ?>
                         <?= Okapi::xmlescape($c['description']) ?>
+                        <?php if ($vars['alt_wpts'] == 'desc:table' && count($c['alt_wpts']) > 0) { /* Does user want us to include an additional waypoints table? */ ?>
+                            &lt;p&gt;&lt;b&gt;<?= _("Additional waypoints") ?>:&lt;/b&gt;&lt;/p&gt;
+                            &lt;table class="okapi-alt-wpts" style="magin-top: 0.5em; border-collapse: collapse;"&gt;
+                            <?php foreach ($c['alt_wpts'] as $w) { ?>
+                                &lt;tr&gt;
+                                    &lt;td style="border: 1px solid black; padding: 0.5em"&gt;<?= $w['type_name'] ?>&lt;/td&gt;
+                                    &lt;td style="border: 1px solid black; padding: 0.5em"&gt;<?= implode('&lt;br /&gt;', Okapi::format_location($w['location'])) ?>&lt;/td&gt;
+                                    &lt;td style="border: 1px solid black; padding: 0.5em"&gt;<?= $w['description'] ?>&lt;/td&gt;
+                                &lt;/tr&gt;
+                            <?php } ?>
+                            &lt;/table&gt;
+                        <?php } ?>
                         <?php if ((strpos($vars['images'], "descrefs:") === 0) && count($c['images']) > 0) { /* Does user want us to include <img> references in cache descriptions? */
                             if ($vars['images'] == "descrefs:thumblinks") { ?>
                                 &lt;h2&gt;<?= _("Images") ?> (<?= count($c['images']) ?>)&lt;/h2&gt;
@@ -168,7 +180,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                     <?php if ((in_array('gc:personal_note', $vars['my_notes'])) && ($c['my_notes'] != null)) { /* Does user want us to include personal notes? -> Issue 294 */ ?>
                         <groundspeak:personal_note><?= Okapi::xmlescape($c['my_notes']) ?></groundspeak:personal_note>
                     <?php } ?>
-                    <?php if ($vars['trackables'] == 'gc:travelbugs') { /* Does user want us to geokrets as GC trackables? */ ?>
+                    <?php if ($vars['trackables'] == 'gc:travelbugs') { /* Does user want us to include geokrets as GC trackables? */ ?>
                         <groundspeak:travelbugs>
                             <?php foreach ($c['trackables'] as $trackable) { ?>
                                 <groundspeak:travelbug id="<?= $trackable['id'] ?>" ref="<?= $trackable['code'] ?>">
@@ -249,7 +261,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                 $cache_ref['ggz_entry']['file_len'] = ob_get_length() - $cache_ref['ggz_entry']['file_pos'];
             }
         ?>
-        <?php if ($vars['alt_wpts']) { ?>
+        <?php if ($vars['alt_wpts'] == 'true') { ?>
             <?php foreach ($cache_ref['alt_wpts'] as &$wpt_ref) { ?>
                 <?php
                     if (isset($wpt_ref['ggz_entry'])) {

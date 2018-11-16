@@ -201,11 +201,29 @@
         and <b>latest_logs</b> arguments must be set to <b>true</b> in order for the logs to be included.
     </opt>
     <opt name='alt_wpts' default='false'>
-        <p>Boolean. If <b>true</b> then we will include additional (alternate) waypoints in the response.
-        These are all places associated with the cache.</p>
-        <p>Combine this with <b>ns_gsak</b> if you want the result to include additional references between
-        waypoints and their geocaches. Please note that not many applications are currently able to
-        properly understand GSAK metadata.</p>
+        <p>This argument controls if additional (alternate) waypoints are included
+        in the response and how they are included. These are all places associated with
+        the cache.</p>
+        <ul>
+            <li>
+                <p><b>true</b> - include additional waypoints as &lt;wpt&gt; elements.
+                They will be handled like separate geocaches, but represented -
+                depending on the application - by special symbols or names.</p>
+                <p>Combine this with <b>ns_gsak</b> if you want them to be appear as
+                child waypoints of the geocache instead. Please note that some
+                applications do not properly understand (and will ignore) GSAK child
+                waypoint metadata,</p>
+            </li>
+            <li>
+                <b>desc:table</b> - additional waypoints will be listed as a table in
+                the cache description (<b>ns_ground</b> has to be <b>true</b>).
+                Developers  may customize the table's appearance by overriding CSS
+                styles for the <i>okapi-alt-wpts</i> class,
+            </li>
+            <li>
+                <p><b>false</b> - do not include additional waypoints.</p>
+            </li>
+        </ul>
     </opt>
     <opt name='mark_found' default='false'>
         <p>Boolean. If <b>true</b> then all caches which are already found, will be marked appropriately

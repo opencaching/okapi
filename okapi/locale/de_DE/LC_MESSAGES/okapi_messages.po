@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-12 10:27+0100\n"
-"PO-Revision-Date: 2018-11-12 10:27+0100\n"
+"POT-Creation-Date: 2018-11-16 11:54+0100\n"
+"PO-Revision-Date: 2018-11-16 11:54+0100\n"
 "Last-Translator: following <following@online.de>\n"
 "Language-Team: following <following@online.de>\n"
 "Language: de\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 
@@ -28,7 +28,7 @@ msgstr "Das Passwort darf nicht länger als %d Zeichen sein."
 msgid "%s does not allow log passwords for traditional caches."
 msgstr "Tradis können bei %s keine Passwörter haben."
 
-#: services/caches/formatters/gpx/WebService.php:404
+#: services/caches/formatters/gpx/WebService.php:423
 msgid ""
 "<b>Geocache coordinates have been changed.</b> They have been replaced with "
 "your own custom coordinates which you have provided for this geocache."
@@ -36,7 +36,7 @@ msgstr ""
 "<b>Die Koordinaten des Geocaches wurden geändert.</b> Sie wurden durch deine "
 "eigenen Koordinaten aus der persönlichen Notiz für diesen Cache ersetzt."
 
-#: services/caches/formatters/gpx/WebService.php:410
+#: services/caches/formatters/gpx/WebService.php:429
 msgid ""
 "<b>Geocache coordinates have been changed.</b> Currently they point to one "
 "of the alternate waypoints originally described as:"
@@ -44,11 +44,11 @@ msgstr ""
 "<b>Die Koordinaten des Geocaches wurden geändert.</b> Sie zeigen zurzeit auf "
 "einen der zusätzlichen Wegpunkte mit der ursprünglichen Beschreibung:"
 
-#: services/caches/formatters/gpx/WebService.php:423
+#: services/caches/formatters/gpx/WebService.php:442
 msgid "Original geocache location"
 msgstr "Originalposition des Caches"
 
-#: services/caches/formatters/gpx/WebService.php:425
+#: services/caches/formatters/gpx/WebService.php:444
 #, php-format
 msgid "Original (owner-supplied) location of the %s geocache"
 msgstr "Originale, vom Besitzer angegebene Position des Geocaches %s"
@@ -91,37 +91,41 @@ msgstr "Attribute"
 msgid "Trackables"
 msgstr "Geokrets"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:119
-#: services/caches/formatters/gpx/gpxfile.tpl.php:135
+#: services/caches/formatters/gpx/gpxfile.tpl.php:118
+msgid "Additional waypoints"
+msgstr "Zusätzliche Wegpunkte"
+
+#: services/caches/formatters/gpx/gpxfile.tpl.php:131
+#: services/caches/formatters/gpx/gpxfile.tpl.php:147
 msgid "Images"
 msgstr "Bilder"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:142
+#: services/caches/formatters/gpx/gpxfile.tpl.php:154
 msgid "Spoilers"
 msgstr "Spoiler"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:151
+#: services/caches/formatters/gpx/gpxfile.tpl.php:163
 msgid "Image descriptions"
 msgstr "Bildbeschreibungen"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:159
+#: services/caches/formatters/gpx/gpxfile.tpl.php:171
 msgid "The cache probably is located in the following protection areas:"
 msgstr ""
 "Der Geocache befindet sich wahrscheinlich in den folgenden Schutzgebieten:"
 
-#: services/caches/geocaches/WebService.php:624
+#: services/caches/geocaches/WebService.php:622
 msgid "Parts of this geocache listing may be outdated."
 msgstr "Teile dieser Cachebeschreibung sind wahrscheinlich veraltet."
 
-#: services/caches/geocaches/WebService.php:626
+#: services/caches/geocaches/WebService.php:624
 msgid "See the log entries for more information."
 msgstr "Weitere Informationen dazu finden sich in den Logeinträgen."
 
-#: services/caches/geocaches/WebService.php:643
+#: services/caches/geocaches/WebService.php:640
 msgid "Annotations by the Opencaching team:"
 msgstr "Anmerkungen des Opencaching-Teams:"
 
-#: services/caches/geocaches/WebService.php:645
+#: services/caches/geocaches/WebService.php:642
 msgid "End of annotations"
 msgstr "Ende der Anmerkungen"
 
@@ -142,7 +146,7 @@ msgstr "Die Koordinaten für den Geocache %s aus deiner persönlichen Notiz"
 msgid "National Park / Landscape"
 msgstr "Nationalpark / Landschaft"
 
-#: services/caches/geocaches/WebService.php:1578
+#: services/caches/geocaches/WebService.php:1580
 #, php-format
 msgid ""
 "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</"
@@ -150,7 +154,7 @@ msgid ""
 msgstr ""
 "Diese <a href='%s'>Cache</a>-Beschreibung stammt von <a href='%s'>%s</a>."
 
-#: services/caches/geocaches/WebService.php:1590
+#: services/caches/geocaches/WebService.php:1592
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
@@ -161,7 +165,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/'>CC-BY-NC-ND</a>, Stand: %s; "
 "alle Logeinträge &copy; jeweiliger Autor"
 
-#: services/caches/geocaches/WebService.php:1601
+#: services/caches/geocaches/WebService.php:1603
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
@@ -364,7 +368,7 @@ msgstr ""
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Event-Caches können keine \"Wartung benötigen\"."
 
-#: services/logs/submit/WebService.php:579
+#: services/logs/submit/WebService.php:561
 msgid "Your cache log entry was posted successfully."
 msgstr "Dein Log wurde veröffentlicht."
 

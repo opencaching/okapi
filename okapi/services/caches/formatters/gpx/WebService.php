@@ -95,7 +95,7 @@ class WebService
         $langpref = $request->get_parameter('langpref');
         if (!$langpref) $langpref = "en";
         $langprefs = explode("|", $langpref);
-        foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'ns_oc', 'alt_wpts', 'mark_found') as $param)
+        foreach (array('ns_ground', 'ns_gsak', 'ns_ox', 'ns_oc', 'mark_found') as $param)
         {
             $val = $request->get_parameter($param);
             if (!$val) $val = 'false';
@@ -104,10 +104,18 @@ class WebService
             $vars[$param] = ($val == 'true');
         }
 
+        $vars['alt_wpts'] = $request->get_parameter('alt_wpts');
+        if ($vars['alt_wpts'] === null)
+            $vars['alt_wpts'] = 'false';
+        elseif (!in_array($vars['alt_wpts'], array('true', 'desc:table', 'false')))
+            throw new InvalidParam('alt_wpts');
+        if ($vars['alt_wpts'] != 'false' && (!$vars['ns_ground']))
+            throw new BadRequest("In order for 'alt_wpts' to work you have to also include 'ns_ground' extensions.");
+
         $vars['latest_logs'] = $request->get_parameter('latest_logs');
         if ($vars['latest_logs'] === null)
             $vars['latest_logs'] = 'false';
-        else if (!in_array($vars['latest_logs'], array('true', 'user', 'false')))
+        elseif (!in_array($vars['latest_logs'], array('true', 'user', 'false')))
             throw new InvalidParam('latest_logs');
         if ($vars['latest_logs'] != 'false' && (!$vars['ns_ground']))
             throw new BadRequest("In order for 'latest_logs' to work you have to also include 'ns_ground' extensions.");
@@ -217,7 +225,7 @@ class WebService
             $fields .= "|trackables";
         elseif ($vars['trackables'] == 'desc:count')
             $fields .= "|trackables_count";
-        if ($vars['alt_wpts'] == 'true' || $location_source != 'default-coords')
+        if ($vars['alt_wpts'] != 'false' || $location_source != 'default-coords')
             $fields .= "|alt_wpts";
         if ($vars['recommendations'] != 'none')
             $fields .= "|recommendations|founds";
@@ -425,7 +433,7 @@ class WebService
                         # remove current alt waypoint
                         unset($cache_ref['alt_wpts'][$alt_wpt_key]);
                         # add original location as alternate
-                        if ($vars['alt_wpts'])
+                        if ($vars['alt_wpts'] != 'false')
                         {
                             $cache_ref['alt_wpts'][] = array(
                                 'name' => $cache_ref['code'].'-DEFAULT-COORDS',
@@ -489,7 +497,7 @@ class WebService
                 # Additional waypoints. Currently, we're not 100% sure if their entries should
                 # be included in the GGZ file (the format is undocumented).
 
-                if (isset($cache_ref['alt_wpts'])) {
+                if ($vars['alt_wpts'] == 'true') {
                     $idx = 1;
                     foreach ($cache_ref['alt_wpts'] as &$alt_wpt_ref) {
                         if (!isset($alt_wpt_ref['ggz_entry'])) {

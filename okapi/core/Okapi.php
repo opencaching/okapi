@@ -1220,7 +1220,8 @@ class Okapi
     /**
      * Convert strings such as "2M" or "50k" to bytes.
      */
-    public static function from_human_to_bytes($val) {
+    public static function from_human_to_bytes($val)
+    {
         $val = trim($val);
         $last = strtolower($val[strlen($val) - 1]);
         switch($last) {
@@ -1245,7 +1246,8 @@ class Okapi
      * that the requester is a developer. If he isn't, it die()s.
      * See also issue #524.
      */
-    public static function require_developer_cookie() {
+    public static function require_developer_cookie()
+    {
         if (
             (!isset($_COOKIE['okapi_devel_key']))
             || (md5($_COOKIE['okapi_devel_key']) !== '5753f318c1495c01637f7f6b7fc9c5db')
@@ -1262,7 +1264,8 @@ class Okapi
      * shouldn't be updated automatically on each Level 3 request (because some of these
      * requests are not necessarilly initiated by the user).
      */
-    public static function update_user_activity($request) {
+    public static function update_user_activity($request)
+    {
         if ($request && $request->token && $request->token->token_type == "access") {
             Db::execute("
                 update user set last_login=now()
@@ -1272,10 +1275,34 @@ class Okapi
     }
 
     /**
+     * Formate a "lat|lon" location in a user-readable way;
+     * returns array with latitude and longitude component.
+     */
+    public static function format_location($location)
+    {
+        if (!preg_match('/^([+-]?[0-9]+(\.[0-9]*)?)\|([+-]?[0-9]+(\.[0-9]*)?)$/', $location, $matches))
+            throw Exception("invalid location format");
+        return [
+            self::format_coordinate($matches[1], 'N', 'S'),
+            self::format_coordinate($matches[3], 'E', 'W')
+        ];
+    }
+
+    private static function format_coordinate($deg, $positive_direction, $negative_direction)
+    {
+        $direction = ($deg < 0 ? $negative_direction : $positive_direction);
+        $deg = abs($deg);
+        $degrees = floor($deg);
+        $minutes = ($deg - $degrees) * 60;
+        return sprintf("%s %d° %.3f'", $direction, $degrees, $minutes);
+    }
+
+    /**
      * Take a list of "infotags" (as defined in services/apiref/method), and format
      * them for being displayed in OKAPI public documentation pages.
      */
-    public static function format_infotags($infotags) {
+    public static function format_infotags($infotags)
+    {
         $chunks = [];
         $url = Settings::get('SITE_URL')."okapi/introduction.html#oc-branch-differences";
         foreach ($infotags as $infotag) {
