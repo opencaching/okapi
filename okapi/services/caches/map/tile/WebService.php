@@ -82,8 +82,8 @@ class WebService
             throw new InvalidParam('y', "Should be in 0..".((1<<$zoom) - 1).".");
 
         # user_uuid - the user who's map view is requested; see issue #496
+        $view_user_uuid = $request->get_parameter('view_user_uuid');
 
-        $view_user_uuid = $request->get_parameter('user_uuid');
         if ($view_user_uuid === null) {
             $view_user_internal_id = $request->token->user_id;
         } else {
@@ -91,7 +91,7 @@ class WebService
                 'services/users/user',
                 new OkapiInternalRequest(
                     $request->consumer, null,
-                    ['uuid' => $view_user_uuid, 'fields' => 'internal_id']
+                    ['user_uuid' => $view_user_uuid, 'fields' => 'internal_id']
                 )
             );
             $view_user_internal_id = $tmp['internal_id'];
