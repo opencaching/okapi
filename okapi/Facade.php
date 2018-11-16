@@ -42,21 +42,19 @@ use okapi\lib\OCSession;
 
 require_once __DIR__ . '/autoload.php';
 
+OkapiErrorHandler::init();
+Okapi::init_internals();
+
+$extAutoloader = Settings::get('EXTERNAL_AUTOLOADER');
+if ($extAutoloader) {
+    require_once $extAutoloader;
+}
+
 /**
  * Use this class to access OKAPI's services from external code (i.e. OC code).
  */
 class Facade
 {
-    static $initialized = false;
-    private function init()
-    {
-        if (!self::$initialized) {
-            OkapiErrorHandler::init();
-            Okapi::init_internals();
-            self::$initialized = true;
-        }
-    }
-
     /**
      * Perform OKAPI service call, signed by internal 'facade' consumer key, and return the result
      * (this will be PHP object or OkapiHttpResponse, depending on the method). Use this method
@@ -65,7 +63,6 @@ class Facade
      */
     public static function service_call($service_name, $user_id_or_null, $parameters)
     {
-        self::init();
         $request = new OkapiInternalRequest(
             new OkapiFacadeConsumer(),
             ($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,
@@ -83,7 +80,6 @@ class Facade
      */
     public static function service_display($service_name, $user_id_or_null, $parameters)
     {
-        self::init();
         $request = new OkapiInternalRequest(
             new OkapiFacadeConsumer(),
             ($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,
@@ -104,7 +100,6 @@ class Facade
      */
     public static function detect_user_id()
     {
-        self::init();
         return OCSession::get_user_id();
     }
 
@@ -121,7 +116,6 @@ class Facade
      */
     public static function import_search_set($temp_table, $min_store, $max_ref_age)
     {
-        self::init();
         $tables = array('caches', $temp_table);
         $where_conds = array(
             $temp_table.".cache_id = caches.cache_id",
@@ -142,7 +136,6 @@ class Facade
      */
     public static function schedule_geocache_check($cache_codes)
     {
-        self::init();
         if (!is_array($cache_codes))
             $cache_codes = array($cache_codes);
         Db::execute("
@@ -161,7 +154,6 @@ class Facade
      */
     public static function schedule_user_entries_check($cache_id, $user_id)
     {
-        self::init();
         Db::execute("
             update cache_logs
             set okapi_syncbase = now()
@@ -182,7 +174,6 @@ class Facade
      */
     public static function remove_user_tokens($user_id)
     {
-        self::init();
         Db::execute("
             delete from okapi_tokens
             where user_id = '".Db::escape_string($user_id)."'
@@ -195,7 +186,6 @@ class Facade
      */
     public static function database_update()
     {
-        self::init();
         views\update\View::call();
     }
 
@@ -246,14 +236,12 @@ class Facade
      */
     public static function cache_set($key, $value, $timeout)
     {
-        self::init();
         Cache::set("facade#".$key, $value, $timeout);
     }
 
     /** Same as `cache_set`, but works on many key->value pair at once. */
     public static function cache_set_many($dict, $timeout)
     {
-        self::init();
         $prefixed_dict = array();
         foreach ($dict as $key => &$value_ref) {
             $prefixed_dict["facade#".$key] = &$value_ref;
@@ -267,14 +255,12 @@ class Facade
      */
     public static function cache_get($key)
     {
-        self::init();
         return Cache::get("facade#".$key);
     }
 
     /** Same as `cache_get`, but it works on multiple keys at once. */
     public static function get_many($keys)
     {
-        self::init();
         $prefixed_keys = array();
         foreach ($keys as $key) {
             $prefixed_keys[] = "facade#".$key;
@@ -292,14 +278,12 @@ class Facade
      */
     public static function cache_delete($key)
     {
-        self::init();
         Cache::delete("facade#".$key);
     }
 
     /** Same as `cache_delete`, but works on many keys at once. */
     public static function cache_delete_many($keys)
     {
-        self::init();
         $prefixed_keys = array();
         foreach ($keys as $key) {
             $prefixed_keys[] = "facade#".$key;
