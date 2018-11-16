@@ -7,6 +7,7 @@ class OkapiFacadeAccessToken extends OkapiAccessToken
 {
     public function __construct($user_id)
     {
+        $user_id = intval($user_id);
         parent::__construct('facade-'.$user_id, null, 'facade', $user_id);
     }
 }
