@@ -516,10 +516,26 @@ class SearchAssistant
         }
 
         #
-        # exclude_ignored and ignored_status
+        # exclude_ignored, ignored_status and not_ignored_by
         #
 
+        # not_ignored_by is an experimental paramter for OCPL map.
+        # It accepts a single user UUID.
+        # See https://github.com/opencaching/okapi/issues/496.
+
         $ignored_status = 'either';
+        if (Settings::get('OC_BRANCH') == 'oc.pl'
+            && ($this->request->consumer == 'facade' || Settings::get('DEBUG'))
+        ) {
+            if ($tmp = $this->request->get_parameter('not_ignored_by')) {
+                $user  = OkapiServiceRunner::call("services/users/user", new OkapiInternalRequest(
+                    $this->request->consumer, null, array('user_uuid' => $tmp, 'fields' => 'internal_id')));
+                $user_internal_id = $user['internal_id'];
+                $ignored_status = 'notignored_only';
+                unset($user);
+            }
+        }
+
         if ($tmp = $this->request->get_parameter('exclude_ignored'))
         {
             if ($this->request->token == null)
@@ -528,6 +544,7 @@ class SearchAssistant
                 $ignored_status = 'notignored_only';
             elseif ($tmp != 'false')
                 throw new InvalidParam('exclude_ignored', "'$tmp'");
+            $user_internal_id = $this->request->token->user_id;
         }
         if ($tmp = $this->request->get_parameter('ignored_status'))
         {
@@ -541,6 +558,7 @@ class SearchAssistant
                 else
                     $ignored_status = $tmp;
                 }
+            $user_internal_id = $this->request->token->user_id;
         }
 
         if ($ignored_status == 'none')
@@ -550,7 +568,7 @@ class SearchAssistant
             $ignored_cache_ids_sql = "
                 select cache_id
                 from cache_ignore
-                where user_id = '".Db::escape_string($this->request->token->user_id)."'";
+                where user_id = '".Db::escape_string($user_internal_id)."'";
 
             $not = ($ignored_status == 'notignored_only' ? 'not' : '');
             if (Settings::get('USE_SQL_SUBQUERIES')) {
@@ -560,6 +578,7 @@ class SearchAssistant
                 $where_conds[] = "caches.cache_id ".$not." in ('".implode("','", array_map('\okapi\core\Db::escape_string', $ignored_cache_ids))."')";
             }
         }
+        unset($user_internal_id);
 
         #
         # exclude_my_own

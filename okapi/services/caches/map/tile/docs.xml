@@ -11,6 +11,13 @@
     <req name='z'>Zoom level (0..21).</req>
     <req name='x'>Tile number on the X axis.</req>
     <req name='y'>Tile number on the Y axis.</req>
+    <opt name='view_user_uuid' default='null'>
+        <p>ID of the user who's map view is requested. The current effect of
+        this parameter is that caches found or owned by the user will be marked
+        on the map. OCPL installations will also hide caches ignored by the user.
+        If <b>view_user_uuid</b> is omitted, the UUID will be extracted from the
+        access token.</p>
+    </opt>
     <import-params method="services/caches/search/save"/>
     <returns>
         The PNG image with the requested map tile.

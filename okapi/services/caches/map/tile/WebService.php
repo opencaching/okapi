@@ -60,8 +60,8 @@ class WebService
 
         # Make sure the request is internal.
 
-        if (in_array($request->consumer->key, array('internal', 'facade'))) {
-            /* Okay, these two consumers can always access it. */
+        if (in_array($request->consumer->key, array('internal', 'facade', 'debug'))) {
+            /* Okay, these three consumers can always access it. */
         } elseif ($request->consumer->hasFlag(OkapiConsumer::FLAG_MAPTILE_ACCESS)) {
             /* If the Consumer is aware that it is not backward-compatible, then
              * he may be granted permission to access it. */
@@ -80,6 +80,23 @@ class WebService
             throw new InvalidParam('x', "Should be in 0..".((1<<$zoom) - 1).".");
         if ($y >= 1<<$zoom)
             throw new InvalidParam('y', "Should be in 0..".((1<<$zoom) - 1).".");
+
+        # user_uuid - the user who's map view is requested; see issue #496
+
+        $view_user_uuid = $request->get_parameter('user_uuid');
+        if ($view_user_uuid === null) {
+            $view_user_internal_id = $request->token->user_id;
+        } else {
+            $tmp = OkapiServiceRunner::call(
+                'services/users/user',
+                new OkapiInternalRequest(
+                    $request->consumer, null,
+                    ['uuid' => $view_user_uuid, 'fields' => 'internal_id']
+                )
+            );
+            $view_user_internal_id = $tmp['internal_id'];
+        }
+        unset($view_user_uuid);
 
         # Now, we will create a search set (or use one previously created).
         # Instead of creating a new OkapiInternalRequest object, we will pass
@@ -116,22 +133,25 @@ class WebService
         {
             # Load user-related cache ids.
 
-            $cache_key = "tileuser/".$request->token->user_id;
+            $cache_key = "tileuser/".$view_user_internal_id;
             $user = self::$USE_OTHER_CACHE ? Cache::get($cache_key) : null;
             if ($user === null)
             {
                 $user = array();
 
-                # Ignored caches.
+                # Ignored caches. See issue #496.
 
-                $rs = Db::query("
-                    select cache_id
-                    from cache_ignore
-                    where user_id = '".Db::escape_string($request->token->user_id)."'
-                ");
-                $user['ignored'] = array();
-                while (list($cache_id) = Db::fetch_row($rs))
-                    $user['ignored'][$cache_id] = true;
+                if (Settings::get('OC_BRANCH') == 'oc.pl')
+                {
+                    $rs = Db::query("
+                        select cache_id
+                        from cache_ignore
+                        where user_id = '".Db::escape_string($view_user_internal_id)."'
+                    ");
+                    $user['ignored'] = array();
+                    while (list($cache_id) = Db::fetch_row($rs))
+                        $user['ignored'][$cache_id] = true;
+                }
 
                 # Found caches.
 
@@ -139,7 +159,7 @@ class WebService
                     select distinct cache_id
                     from cache_logs
                     where
-                        user_id = '".Db::escape_string($request->token->user_id)."'
+                        user_id = '".Db::escape_string($view_user_internal_id)."'
                         and type = 1
                         and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
                 ");
@@ -152,7 +172,7 @@ class WebService
                 $rs = Db::query("
                     select distinct cache_id
                     from caches
-                    where user_id = '".Db::escape_string($request->token->user_id)."'
+                    where user_id = '".Db::escape_string($view_user_internal_id)."'
                 ");
                 $user['own'] = array();
                 while (list($cache_id) = Db::fetch_row($rs))
