@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc-polish-code-translations\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-12 10:27+0100\n"
-"PO-Revision-Date: 2018-11-13 07:05+0100\n"
+"POT-Creation-Date: 2018-11-16 11:54+0100\n"
+"PO-Revision-Date: 2018-11-16 13:23+0100\n"
 "Last-Translator: Harrie Klomp <harrie@harrieklomp.be>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -31,19 +31,19 @@ msgstr "Wachtwoord mag niet langer zijn dan %d tekens."
 msgid "%s does not allow log passwords for traditional caches."
 msgstr "%s staat geen log wachtwoorden toe voor traditionele caches."
 
-#: services/caches/formatters/gpx/WebService.php:404
+#: services/caches/formatters/gpx/WebService.php:423
 msgid "<b>Geocache coordinates have been changed.</b> They have been replaced with your own custom coordinates which you have provided for this geocache."
 msgstr "Geocache coördinaten zijn veranderd.</b> Deze zijn aangepast door coördinaten die je zelf hebt gewijzigd voor deze geocache."
 
-#: services/caches/formatters/gpx/WebService.php:410
+#: services/caches/formatters/gpx/WebService.php:429
 msgid "<b>Geocache coordinates have been changed.</b> Currently they point to one of the alternate waypoints originally described as:"
 msgstr "Geocache coördinaten zijn veranderd.</b> Momenteel wijzen zij een van de alternatieve waypoints oorspronkelijk beschreven als:"
 
-#: services/caches/formatters/gpx/WebService.php:423
+#: services/caches/formatters/gpx/WebService.php:442
 msgid "Original geocache location"
 msgstr "Originele geocache locatie"
 
-#: services/caches/formatters/gpx/WebService.php:425
+#: services/caches/formatters/gpx/WebService.php:444
 #, php-format
 msgid "Original (owner-supplied) location of the %s geocache"
 msgstr "Originele (opgegeven door plaatser) locatie van de %s geocache"
@@ -86,36 +86,40 @@ msgstr "Attributen"
 msgid "Trackables"
 msgstr "GeoKrets (of TravelBugs)"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:119
-#: services/caches/formatters/gpx/gpxfile.tpl.php:135
+#: services/caches/formatters/gpx/gpxfile.tpl.php:118
+msgid "Additional waypoints"
+msgstr "Extra waypoints"
+
+#: services/caches/formatters/gpx/gpxfile.tpl.php:131
+#: services/caches/formatters/gpx/gpxfile.tpl.php:147
 msgid "Images"
 msgstr "Afbeeldingen"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:142
+#: services/caches/formatters/gpx/gpxfile.tpl.php:154
 msgid "Spoilers"
 msgstr "Spoilers"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:151
+#: services/caches/formatters/gpx/gpxfile.tpl.php:163
 msgid "Image descriptions"
 msgstr "Afbeelding omschrijving"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:159
+#: services/caches/formatters/gpx/gpxfile.tpl.php:171
 msgid "The cache probably is located in the following protection areas:"
 msgstr "De cache is waarschijnlijk in een volgend beschermd gebied geplaatst:"
 
-#: services/caches/geocaches/WebService.php:624
+#: services/caches/geocaches/WebService.php:622
 msgid "Parts of this geocache listing may be outdated."
 msgstr "Delen van de cachebeschrijving zijn misschien verouderd."
 
-#: services/caches/geocaches/WebService.php:626
+#: services/caches/geocaches/WebService.php:624
 msgid "See the log entries for more information."
 msgstr "Zie de logs voor meer informatie."
 
-#: services/caches/geocaches/WebService.php:643
+#: services/caches/geocaches/WebService.php:640
 msgid "Annotations by the Opencaching team:"
 msgstr "Commentaar van het Opencaching team:"
 
-#: services/caches/geocaches/WebService.php:645
+#: services/caches/geocaches/WebService.php:642
 msgid "End of annotations"
 msgstr "Einde van commentaar"
 
@@ -136,17 +140,17 @@ msgstr "Eigen gecorrigeerde coördinaten voor %s geocache"
 msgid "National Park / Landscape"
 msgstr "Nationaal park / Landschap"
 
-#: services/caches/geocaches/WebService.php:1578
+#: services/caches/geocaches/WebService.php:1580
 #, php-format
 msgid "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</a> site."
 msgstr "Deze <a href='%s'>geocache</a> beschrijving komt van de <a href='%s'>%s</a> \"\"site."
 
-#: services/caches/geocaches/WebService.php:1590
+#: services/caches/geocaches/WebService.php:1592
 #, php-format
 msgid "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>, as of %s; all log entries &copy; their authors"
 msgstr "&copy; <a href='%s'>%s</a> <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.nl'>CC-door-NC-ND</a>, van %s; alle vermelde logs &copy; hun auteurs"
 
-#: services/caches/geocaches/WebService.php:1601
+#: services/caches/geocaches/WebService.php:1603
 #, php-format
 msgid "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/de/deed.en'>CC-BY-NC-ND</a>; all log entries &copy; their authors"
 msgstr "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.nl'>CC-BY-NC-ND</a>; alle vermelde logs &copy; hun auteurs"
@@ -281,7 +285,7 @@ msgstr "Je kunt geen aanbeveling meer geven. Vind eerst meer caches!"
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Evenementen hebben geen \"onderhoud nodig\"."
 
-#: services/logs/submit/WebService.php:579
+#: services/logs/submit/WebService.php:561
 msgid "Your cache log entry was posted successfully."
 msgstr "De log is succesvol verzonden."
 
