@@ -16,6 +16,11 @@
 
     -->
     <changes>
+        <change commit="c288aa0f" version="1799" time="2018-11-17T15:11:10+0100" type="enhancement">
+            Added the <a href="services/logs/capabilities.html">services/logs/capabilities</a>
+            method. Also added the new fields <i>rcmds_left</i> and <i>rcmd_founds_needed</i>
+            to <a href="services/users/user.html">services/users/user</a>(s).
+        </change>
         <change commit="55c19d6a" version="1793" time="2018-11-16T12:11:31+0100" type="enhancement">
             Added the GPX options <i>trackables=gc:travelbugs</i> and
             <i>alt_wpts=desc:table</i>.

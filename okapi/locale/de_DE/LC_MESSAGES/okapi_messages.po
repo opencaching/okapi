@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-16 11:54+0100\n"
-"PO-Revision-Date: 2018-11-16 11:54+0100\n"
+"POT-Creation-Date: 2018-11-17 14:31+0100\n"
+"PO-Revision-Date: 2018-11-17 14:31+0100\n"
 "Last-Translator: following <following@online.de>\n"
 "Language-Team: following <following@online.de>\n"
 "Language: de\n"
@@ -176,7 +176,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/'>CC-BY-NC-ND</a>; alle "
 "Logeinträge &copy; jeweiliger Autor"
 
-#: services/logs/LogsCommon.php:58
+#: services/logs/LogsCommon.php:65
 msgid ""
 "This cache is an Event cache. You cannot \"Find\" it (but you can attend it, "
 "or comment on it)!"
@@ -184,7 +184,7 @@ msgstr ""
 "Dies ist ein Event-Cache. Du kannst ihn nicht \"finden\" (aber du kannst am "
 "Event teilnehmen oder einen Hinweis loggen)."
 
-#: services/logs/LogsCommon.php:67
+#: services/logs/LogsCommon.php:74
 msgid ""
 "This cache is NOT an Event cache. You cannot \"Attend\" it (but you can find "
 "it, or comment on it)!"
@@ -192,21 +192,21 @@ msgstr ""
 "Dies ist KEIN Event-Cache. Du kannst an ihm nicht \"teilnehmen\" (aber du "
 "kannst ihn finden oder kommentieren)."
 
-#: services/logs/LogsCommon.php:83
+#: services/logs/LogsCommon.php:90
 msgid "This cache requires a password. You didn't provide one!"
 msgstr ""
 "Dieser Cache kann nur mit Kennwort geloggt werden, aber du hast keines "
 "angegeben."
 
-#: services/logs/LogsCommon.php:87
+#: services/logs/LogsCommon.php:94
 msgid "Invalid password!"
 msgstr "Ungültiges Kennwort!"
 
-#: services/logs/LogsCommon.php:96
+#: services/logs/LogsCommon.php:103
 msgid "Your have to supply some text for your comment."
 msgstr "Du musst einen Text für dein Hinweislog eingeben!"
 
-#: services/logs/LogsCommon.php:122
+#: services/logs/LogsCommon.php:129
 msgid ""
 "You are trying to publish a log entry with a date in future. Cache log "
 "entries are allowed to be published in the past, but NOT in the future."
@@ -214,7 +214,7 @@ msgstr ""
 "Das Datum deines Logeintrags liegt in der Zukunft. Cache-Logs können nur für "
 "die Vergangenheit oder für heute eingetragen werden."
 
-#: services/logs/LogsCommon.php:129
+#: services/logs/LogsCommon.php:136
 msgid ""
 "You cannot attend an event before it takes place. Please check the log type "
 "and date."
@@ -222,7 +222,7 @@ msgstr ""
 "Du kannst ein Event nicht besuchen, bevor es stattfindet. Bitte überprüfe "
 "den Logtyp und das Logdatum."
 
-#: services/logs/LogsCommon.php:241
+#: services/logs/LogsCommon.php:248
 msgid ""
 "You are the owner of this cache. You may submit \"Comments\" and status logs "
 "only!"
@@ -230,7 +230,7 @@ msgstr ""
 "Als Besitzer des Caches kannst du nur Hinweise und den Cachestatus loggen, "
 "keine Funde oder Nichtfunde."
 
-#: services/logs/LogsCommon.php:271
+#: services/logs/LogsCommon.php:278
 msgid ""
 "You have already submitted a \"Found it\" log entry once. Now you may submit "
 "\"Comments\" only!"
@@ -238,7 +238,7 @@ msgstr ""
 "Du hast diesen Cache bereits als \"gefunden\" geloggt. Ein zweites Fundlog "
 "ist nicht möglich, aber du kannst stattdessen einen Hinweis loggen."
 
-#: services/logs/LogsCommon.php:273
+#: services/logs/LogsCommon.php:280
 msgid ""
 "You have already submitted an \"Attended\" log entry once. Now you may "
 "submit \"Comments\" only!"
@@ -250,7 +250,7 @@ msgstr ""
 msgid "Your log entry has been deleted."
 msgstr "Dein Logeintrag wurde gelöscht."
 
-#: services/logs/edit/WebService.php:165
+#: services/logs/edit/WebService.php:182
 msgid "Your log entry has been updated successfully."
 msgstr "Die Änderungen an deinem Log wurden gespeichert."
 
@@ -302,7 +302,7 @@ msgstr "Das Bild wurde erfolgreich gespeichert."
 msgid "Image properties have been successfully updated."
 msgstr "Die Bildeigenschaften wurden geändert."
 
-#: services/logs/submit/WebService.php:84
+#: services/logs/submit/WebService.php:87
 #, php-format
 msgid ""
 "However, your cache rating was ignored, because %s does not have a rating "
@@ -310,7 +310,7 @@ msgid ""
 msgstr ""
 "Deine Cachewertung wurde jedoch ignoriert, weil %s kein Bewertungssystem hat."
 
-#: services/logs/submit/WebService.php:109
+#: services/logs/submit/WebService.php:112
 #, php-format
 msgid ""
 "However, your cache recommendation was ignored, because %s does not allow "
@@ -319,7 +319,7 @@ msgstr ""
 "Deine Empfehlung wurde jedoch ignoriert, weil auf %s keine Event-Caches "
 "empfohlen werden können."
 
-#: services/logs/submit/WebService.php:158
+#: services/logs/submit/WebService.php:161
 #, php-format
 msgid ""
 "However, your \"does not need maintenance\" flag was ignored, because %s "
@@ -328,7 +328,7 @@ msgstr ""
 "Deine Angabe \"benötigt Wartung\" wurde jedoch ignoriert, weil es diese "
 "Funktion bei %s nicht gibt. "
 
-#: services/logs/submit/WebService.php:202
+#: services/logs/submit/WebService.php:205
 msgid ""
 "However, your cache recommendation was ignored, because you may not "
 "recommend your own caches."
@@ -336,39 +336,45 @@ msgstr ""
 "Deine Empfehlung wurde jedoch ignoriert, weil du keine eigenen Caches "
 "empfehlen kannst."
 
-#: services/logs/submit/WebService.php:222
+#: services/logs/submit/WebService.php:225
 #, php-format
 msgid "%s does not allow to unarchive geocaches."
 msgstr "%s erlaubt keine Reaktivierung archivierter Caches."
 
-#: services/logs/submit/WebService.php:234
+#: services/logs/submit/WebService.php:237
 msgid "The geocache must be maintained before it is enabled."
 msgstr "Der Geocache muss gewartet werden, bevor er aktiviert wird."
 
-#: services/logs/submit/WebService.php:298
+#: services/logs/submit/WebService.php:301
 msgid "You have already submitted a log entry with exactly the same contents."
 msgstr ""
 "Du hast bereits einen Logeintrag mit genau dem gleichen Inhalt gemacht."
 
-#: services/logs/submit/WebService.php:323
+#: services/logs/submit/WebService.php:317
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr ""
 "Du hast diesen Cache bereits bewertet. Deine Bewertung ist nicht änderbar."
 
-#: services/logs/submit/WebService.php:344
+#: services/logs/submit/WebService.php:330
 msgid "You have already recommended this cache once."
 msgstr "Du hast diesen Cache bereits empfohlen."
 
-#: services/logs/submit/WebService.php:360
-msgid "You don't have any recommendations to give. Find more caches first!"
-msgstr ""
-"Du musst mehr Caches finden, um eine weitere Bewertung abgeben zu können."
+#: services/logs/submit/WebService.php:349
+#, php-format
+msgid "You don't have any recommendations to give. Find one more cache first!"
+msgid_plural ""
+"You don't have any recommendations to give. Find %d more caches first!"
+msgstr[0] ""
+"Du musst noch einen Cache finden, um eine weitere Bewertung abgeben zu "
+"können."
+msgstr[1] ""
+"Du musst noch %d Caches finden, um eine weitere Bewertung abgeben zu können."
 
-#: services/logs/submit/WebService.php:423
+#: services/logs/submit/WebService.php:413
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Event-Caches können keine \"Wartung benötigen\"."
 
-#: services/logs/submit/WebService.php:561
+#: services/logs/submit/WebService.php:551
 msgid "Your cache log entry was posted successfully."
 msgstr "Dein Log wurde veröffentlicht."
 
