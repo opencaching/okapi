@@ -2,14 +2,14 @@
     <brief>Get information on available logging features</brief>
     <issue-id>TODO</issue-id>
     <desc>
-        <p>This method tells which features are available for logging a
-        cache or editing a log. You may use it to disable or hide nonfunctional
+        <p>This method tells which features are available for submitting
+        or editing a log entry. You may use it to disable nonfunctional
         options in a user interface.</p>
 
         <p>Using this method is <i>always optional</i>. You never need to
         know about differences between OKAPI installations or logging
         preconditions. If a logging feature is not avaible, OKAPI will
-        return a user-friendly explanation.</p>
+        accept the request and return a user-friendly explanation.</p>
     </desc>
     <req name='reference_item'>
         <p>One of these:</p>
@@ -40,13 +40,6 @@
                 many conditions, like the cache type and state.</p>
             </li>
             <li>
-                <p><b>can_rate</b> - boolean, <b>true</b> if the user can rate
-                the geocache; <b>false</b> if a submitted rating will be ignored.
-                Ratings may be disabled for some cache types or for caches
-                that the user already rated or owns. Some OC installations do
-                not provide ratings at all.</p>
-            </li>
-            <li>
                 <p><b>can_recommend</b> - tells if the user can recommend the
                 geocache. One of the following:</p>
                 <ul>
@@ -71,6 +64,13 @@
                 <p><b>rcmd_founds_needed</b>, the number of additional caches
                 the user needs to find (or events to attend) to recommend this
                 cache; <b>null</b> if <b>can_recommend</b> is <b>false</b>.</p>
+            </li>
+            <li>
+                <p><b>can_rate</b> - boolean, <b>true</b> if the user can rate
+                the geocache; <b>false</b> if a submitted rating will be ignored.
+                Ratings may be disabled for some cache types or for caches
+                that the user already rated or owns. Some OC installations do
+                not provide ratings at all.</p>
             </li>
             <li>
                 <p><b>can_set_needs_maintenance</b> - boolean, <b>true</b>

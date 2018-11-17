@@ -100,7 +100,9 @@ class WebService
         $is_logger = $submit || ($log['user']['uuid'] == $user['uuid']);
         $event = ($cache['type'] == 'Event');
 
-        # calculate available logtypes
+        # calculate the return values
+
+        # submittable_logtypes
 
         if (!$is_logger)
         {
@@ -190,17 +192,11 @@ class WebService
             ));
         }
 
-        # calculate the other fields
-
-        # Note: When these properties are added to services/logs/edit, the
-        # $submit operands must be replaced by $is_logger (= only own logs
+        # Note: When any of the following features is added to services/logs/edit,
+        # the $submit operands must be replaced by $is_logger (= only own logs
         # may be edited).
 
-        $result['can_rate'] =
-            $submit &&
-            $ocpl &&
-            !$is_owner &&
-            ($cache['my_rating'] == null);   # Re-rating may be added to OKAPI, see issue 563. 
+        # can_recommend and rcmd_founds_needed
 
         $can_recommend = (
             $submit &&
@@ -229,6 +225,14 @@ class WebService
                 $result['rcmd_founds_needed'] = 0;
             }
         }
+
+        # other return values
+
+        $result['can_rate'] =
+            $submit &&
+            $ocpl &&
+            !$is_owner &&
+            ($cache['my_rating'] == null);   # Re-rating may be added to OKAPI, see issue 563. 
 
         $result['can_set_needs_maintenance'] =
             $submit &&

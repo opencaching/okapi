@@ -1060,21 +1060,45 @@ class Okapi
         throw new \Exception("Method cache_size2_to_oxsize called with invalid size2 '$size2'.");
     }
 
-    /** Map submittable log type names to OC internal IDs **/
-    private static $log_types = [
+    /**
+      * Map log type names to OC internal IDs.
+      *
+      * Various OC sites use different English names, even for primary
+      * log types. OKAPI needs to have them the same across *all* OKAPI
+      * installations. That's why all known types are hardcoded here.
+      * These names are officially documented and may never change!
+      *
+      * Important: This set is not closed. Other types may be introduced
+      * in the future. Developers are advised to treat unknown types as
+      * 'Comment's.
+      */
+    private static $submittable_log_types = [   # accepted by services/logs/submit
         'Found it' => 1,
         "Didn't find it" => 2,
         'Comment' => 3,
         'Attended' => 7,
         'Will attend' => 8,
-        'Archived' => 9,   # not implemented yet on OCPL website, but on the todo list
+        'Archived' => 9,   # not submittable on OCPL website, but supported and on the todo list
         'Ready to search' => 10,
         'Temporarily unavailable' => 11,
+    ];
+    private static $nonsubmittable_log_types = [   # not implemented in services/logs/submit
+        # OCPL only
+        'Moved' => 4,
+        'Needs maintenance' => 5,
+        'Maintenance performed' => 6,   # see https://github.com/opencaching/okapi/issues/548
+        'OC Team comment' => 12,
+
+        # OCDE only
+        'Locked' => 13,
+        'Hidden' => 14,   # not submittable on OCPL website, where it is called 'Blocked'
+
+        # Note: Both type 13 and 14 were mapped to 'Locked' in earlier OKAPI versions.
     ];
 
     public static function get_submittable_logtype_names()
     {
-        return array_keys(self::$log_types);
+        return array_keys(self::$submittable_log_types);
     }
 
     /**
@@ -1082,41 +1106,31 @@ class Okapi
      */
     public static function logtypename2id($name)
     {
-        if (!isset(self::$log_types[$name]))
-            throw new \Exception("logtype2id called with invalid log type argument: $name");
-        else
-            return self::$log_types[$name];
+        if (isset(self::$submittable_log_types[$name]))
+            return self::$submittable_log_types[$name];
+        elseif (isset(self::$nonsubmittable_log_types[$name]))
+            return self::$nonsubmittable_log_types[$name];
+
+        throw new \Exception("logtypename2id called with invalid log type argument: $name");
     }
 
     /** E.g. 1 => 'Found it'. For unknown ids returns 'Comment'. */
     public static function logtypeid2name($id)
     {
-        # Various OC sites use different English names, even for primary
-        # log types. OKAPI needs to have them the same across *all* OKAPI
-        # installations. That's why all known types are hardcoded here.
-        # These names are officially documented and may never change!
+        static $reverted = null;
+        if (!$reverted) {
+            foreach (self::$submittable_log_types as $typename => $typeid)
+                $reverted[$typeid] = $typename;
+            foreach (self::$nonsubmittable_log_types as $typename => $typeid)
+                $reverted[$typeid] = $typename;
+        }
+        if (isset($reverted[$id]))
+            return $reverted[$id];
 
-        # Primary.
-        if ($id == 1) return "Found it";
-        if ($id == 2) return "Didn't find it";
-        if ($id == 3) return "Comment";
-        if ($id == 7) return "Attended";
-        if ($id == 8) return "Will attend";
-
-        # Other.
-        if ($id == 4) return "Moved";
-        if ($id == 5) return "Needs maintenance";
-        if ($id == 6) return "Maintenance performed";
-        if ($id == 9) return "Archived";
-        if ($id == 10) return "Ready to search";
-        if ($id == 11) return "Temporarily unavailable";
-        if ($id == 12) return "OC Team comment";
-        if ($id == 13 || $id == 14) return "Locked";
-
-        # Important: This set is not closed. Other types may be introduced
-        # in the future. This has to be documented in the public method
-        # description.
-
+        Okapi::mail_admins(
+            "Unhandled log type",
+            "There seems to be a cache_logs entry with type ".$id.". OKAPI is not prepared for that."
+        );
         return "Comment";
     }
 

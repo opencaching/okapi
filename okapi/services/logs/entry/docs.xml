@@ -50,7 +50,7 @@
                 </ul>
 
                 <p>Types which indicate a change of state of the geocache or confirm the
-                state at the given time (used only by some Opencaching installations):</p>
+                state at the given time:</p>
 
                 <ul>
                     <li>
@@ -74,12 +74,21 @@
                     </li>
                     <li>
                         "Locked" - the status of this cache was changed to "Locked" (similar to
-                        "Archived", but no more "Found it" log entries are allowed on "Locked"
-                        caches).
+                        "Archived", but no more log entries are allowed on locked caches,
+                        except by the owner and OC team members.) OKAPI currently does not
+                        expose locked caches, but the "Locked" log entry will become visible
+                        if the cache is unlocked.
+                    </li>
+                    <li>
+                        "Hidden" - the status of this cache was changed to "Hidden" by an OC
+                        team member, e.g. because the cache violates law. It is only visible
+                        and loggable for the Owner and OC team members. OKAPI currently does
+                        not expose locked caches, but the "Locked" log entry (if not deleted)
+                        will become visible if the cache is unlocked.
                     </li>
                 </ul>
 
-                <p>Other types (used only by some Opencaching installations):</p>
+                <p>Other types:</p>
 
                 <ul>
                     <li>"Needs maintenance" - the user stated that the cache was
