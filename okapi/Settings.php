@@ -266,7 +266,7 @@ final class Settings
             }
             require_once $okapiSettings;
             $ref = get_okapi_settings();
-            OkapiErrorHandler::reenable();
+            OkapiErrorHandler::enable();
 
         } catch (Exception $e) {
             throw new Exception("Could not import <rootpath>/okapi_settings.php:\n".$e->getMessage());

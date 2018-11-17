@@ -207,7 +207,7 @@ class Facade
     public static function reenable_error_handling()
     {
         if (self::$initialized)
-            OkapiErrorHandler::reenable();
+            OkapiErrorHandler::enable();
     }
 
     /**
