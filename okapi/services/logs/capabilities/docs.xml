@@ -11,24 +11,18 @@
         preconditions. If a logging feature is not avaible, OKAPI will
         accept the request and return a user-friendly explanation.</p>
     </desc>
-    <req name='reference_item'>
-        <p>One of these:</p>
-        <ul>
-            <li>
-                The code of the geocache to be logged. Available features
-                for <a href='%OKAPI:methodargref:services/logs/submit%'>services/logs/submit</a>
-                will be returned.
-            </li>
-            <li>
-                The UUID of the log entry to be edited. Available features
-                for <a href='%OKAPI:methodargref:services/logs/edit%'>services/logs/edit</a>
-                will be returned.
-            </li>
-        </ul>
-        <p>The returned values depend on the type and state of the
-        geocache, on previous logs and on the OC site. They can change
-        any time.</p>
-    </req>
+    <opt name='cache_code'>
+        <p>The code of the geocache to be logged. Available features for
+        <a href='%OKAPI:methodargref:services/logs/submit%'>services/logs/submit</a>
+        will be returned. Either this <i>or</i> the <b>log_uuid</b> argument
+        must be supplied.</p>
+    </opt>
+    <opt name='log_uuid'>
+        <p>The UUID of the log entry to be edited. Available features for
+        <a href='%OKAPI:methodargref:services/logs/edit%'>services/logs/edit</a>
+        will be returned. Either this <i>or</i> the <b>cache_code</b> argument
+        must be supplied.</p>
+    </opt>
     <common-format-params/>
     <returns>
         <p>A dictionary of the following structure:</p>
@@ -89,7 +83,7 @@
             </li>
         </ul>
         <p>All the <b>can_</b> fields currently are <b>false</b> if a
-        log UUID is supplied as <b>reference_item</b>. OKAPI so far does
-        not implement editing those log properties.</p>
+        log UUID is supplied. OKAPI so far does not implement editing those
+        log properties.</p>
     </returns>
 </xml>

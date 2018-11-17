@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 14:31+0100\n"
-"PO-Revision-Date: 2018-11-17 14:31+0100\n"
+"POT-Creation-Date: 2018-11-17 20:28+0100\n"
+"PO-Revision-Date: 2018-11-17 20:29+0100\n"
 "Last-Translator: following <following@online.de>\n"
 "Language-Team: following <following@online.de>\n"
 "Language: de\n"
@@ -336,30 +336,37 @@ msgstr ""
 "Deine Empfehlung wurde jedoch ignoriert, weil du keine eigenen Caches "
 "empfehlen kannst."
 
-#: services/logs/submit/WebService.php:225
+#: services/logs/submit/WebService.php:215
+msgid ""
+"You are not the owner of this cache. Only the owner may log status changes."
+msgstr ""
+"Du bist nicht der Besitzer dieses Caches. Nur der Besitzer kann "
+"Statusänderungen loggen."
+
+#: services/logs/submit/WebService.php:228
 #, php-format
 msgid "%s does not allow to unarchive geocaches."
 msgstr "%s erlaubt keine Reaktivierung archivierter Caches."
 
-#: services/logs/submit/WebService.php:237
+#: services/logs/submit/WebService.php:240
 msgid "The geocache must be maintained before it is enabled."
 msgstr "Der Geocache muss gewartet werden, bevor er aktiviert wird."
 
-#: services/logs/submit/WebService.php:301
+#: services/logs/submit/WebService.php:304
 msgid "You have already submitted a log entry with exactly the same contents."
 msgstr ""
 "Du hast bereits einen Logeintrag mit genau dem gleichen Inhalt gemacht."
 
-#: services/logs/submit/WebService.php:317
+#: services/logs/submit/WebService.php:320
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr ""
 "Du hast diesen Cache bereits bewertet. Deine Bewertung ist nicht änderbar."
 
-#: services/logs/submit/WebService.php:330
+#: services/logs/submit/WebService.php:333
 msgid "You have already recommended this cache once."
 msgstr "Du hast diesen Cache bereits empfohlen."
 
-#: services/logs/submit/WebService.php:349
+#: services/logs/submit/WebService.php:351
 #, php-format
 msgid "You don't have any recommendations to give. Find one more cache first!"
 msgid_plural ""
@@ -370,11 +377,11 @@ msgstr[0] ""
 msgstr[1] ""
 "Du musst noch %d Caches finden, um eine weitere Bewertung abgeben zu können."
 
-#: services/logs/submit/WebService.php:413
+#: services/logs/submit/WebService.php:415
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Event-Caches können keine \"Wartung benötigen\"."
 
-#: services/logs/submit/WebService.php:551
+#: services/logs/submit/WebService.php:553
 msgid "Your cache log entry was posted successfully."
 msgstr "Dein Log wurde veröffentlicht."
 

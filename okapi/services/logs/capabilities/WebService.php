@@ -3,8 +3,7 @@
 namespace okapi\services\logs\capabilities;
 
 use okapi\core\Db;
-use okapi\core\Exception\InvalidParam;
-use okapi\core\Exception\ParamMissing;
+use okapi\core\Exception\BadRequest;
 use okapi\core\Okapi;
 use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
@@ -22,8 +21,7 @@ class WebService
 
     /**
      * This method redundantly implements parts of logs/submit and logs/edit logic.
-     * It's mostly logic that decides if a CannotPublishException is thrown;
-     * a few cases are about BadRequest (they are annotated below).
+     * It's only logic that decides if a CannotPublishException is thrown.
      *
      * This means:
      *
@@ -33,58 +31,45 @@ class WebService
      *     2. With every change to the allowed log paramters logic, OKAPI 
      *        developers MUST check if logs/capabilities needs an update.
      *
-     *     3. If developers fail to do so in 'CannotPublishException' cases,
-     *        it will not break anything. Either a new OKAPI feature may not be
-     *        immediatly available to all apps, until we fix it here. Or
-     *        a CannotPublishException may be thrown, informing users that a
-     *        feature is not available.
-     *
-     *     4. If we miss a 'BadRequest' case, we introduce a inconsistency
-     *        between the API specs and services/logs/capabilities. This could
-     *        result in buggy clients. So all the 'BadRequests' in logs/submit,
-     *        logs/edit and LogsCommons need special attention.
+     *     3. If developers fail to do so, it will not break anything. Either
+     *        new OKAPI feature may not be immediatly available to all apps,
+     *        until we fix it here. Or a CannotPublishException may be thrown,
+     *        informing users that a feature is not available.
      **/
 
     public static function call(OkapiRequest $request)
     {
         $result = array();
 
-        # evaluate reference_item
+        # evaluate parameters
 
-        $reference_item = $request->get_parameter('reference_item');
-        if (!$reference_item) throw new ParamMissing('reference_item');
-        $submit = (strlen($reference_item) < 20);
-        $edit = !$submit;
+        $cache_code = $request->get_parameter('cache_code');
+        $log_uuid = $request->get_parameter('log_uuid');
+        $submit = ($cache_code != null);
+        $edit = ($log_uuid != null);
+        if (!($edit xor $submit)) {
+            throw new BadRequest(
+                "Either the 'cache_code' or the 'log_uuid' parameter must be supplied."
+            );
+        }
 
-        try
-        {
-            if ($submit) {
-                $cache_code = $reference_item;
-            } else {
-                $log = OkapiServiceRunner::call(
-                    'services/logs/entry',
-                    new OkapiInternalRequest($request->consumer, $request->token, array(
-                        'log_uuid' => $reference_item,
-                        'fields' => 'cache_code|user|type'
-                    ))
-                );
-                $cache_code = $log['cache_code'];
-            }
-            $cache = OkapiServiceRunner::call(
-                'services/caches/geocache',
+        if ($edit) {
+            $log = OkapiServiceRunner::call(
+                'services/logs/entry',
                 new OkapiInternalRequest($request->consumer, $request->token, array(
-                    'cache_code' => $cache_code,
-                    'fields' => 'type|status|owner|is_found|is_recommended|my_rating'
+                    'log_uuid' => $log_uuid,
+                    'fields' => 'cache_code|user|type'
                 ))
             );
+            $cache_code = $log['cache_code'];
         }
-        catch (InvalidParam $e)
-        {
-            throw new InvalidParam(
-                'reference_item',
-                "There is no accessible geocache or log '".$reference_item."'."
-            );
-        }
+        $cache = OkapiServiceRunner::call(
+            'services/caches/geocache',
+            new OkapiInternalRequest($request->consumer, $request->token, array(
+                'cache_code' => $cache_code,
+                'fields' => 'type|status|owner|is_found|is_recommended|my_rating'
+            ))
+        );
 
         # prepare some common variables
 
@@ -208,14 +193,15 @@ class WebService
             $result['can_recommend'] = 'false';
             $result['rcmd_founds_needed'] = null;
         } else {
-            # If the user did not yet find this cache, then for adding a
-            # recommendation the user must either submit a 'Found it' log, or
-            # make (edit) a 'Found it' from another type of log. So the user
-            # adds another found, which decreases the number of additional
-            # founds needed for recommending:
-
             $founds_needed = $user['rcmd_founds_needed'];
-            if (!$cache['is_found']) --$founds_needed;
+            if ($submit || $log['type'] != 'Found it')
+            {
+                # To add a recomendation, the user must either submit a new
+                # 'Found it' log, or change an existing log's type to 'Found it'.
+                # This additional 'Found it' counts for the recommendations:
+
+                --$founds_needed;
+            }
 
             if ($founds_needed > 0) {
                 $result['can_recommend'] = 'need_more_founds';

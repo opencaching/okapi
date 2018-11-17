@@ -210,8 +210,11 @@ class WebService
 
         if (in_array($logtype, array('Ready to search', 'Temporarily unavailable', 'Archived')))
         {
-            if ($user['uuid'] != $cache['owner']['uuid'])
-                throw new BadRequest("The status of a geocache can only be changed by the owner.");
+            if ($user['uuid'] != $cache['owner']['uuid']) {
+                throw new CannotPublishException(_(
+                    "You are not the owner of this cache. Only the owner may log status changes."
+                ));
+            }
 
             if (Settings::get('OC_BRANCH') == 'oc.pl')
             {

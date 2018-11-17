@@ -1085,7 +1085,7 @@ class Okapi
     private static $nonsubmittable_log_types = [   # not implemented in services/logs/submit
         # OCPL only
         'Moved' => 4,
-        'Needs maintenance' => 5,
+        'Needs maintenance' => 5,       # submittable by type=Comment&needs_maintenance2=true
         'Maintenance performed' => 6,   # see https://github.com/opencaching/okapi/issues/548
         'OC Team comment' => 12,
 
@@ -1128,7 +1128,7 @@ class Okapi
             return $reverted[$id];
 
         # There are lots of strange log types in OCPL databases.
-        # OCPL websites display and export them as 'Comment's.
+        # OCPL websites ignore them or treat them as 'Comment's.
 
         return "Comment";
     }

@@ -46,7 +46,7 @@
             <li><b>rcmds_given</b> - number of recommendations given,</li>
             <li>
                 <b>rcmds_left</b> - number of additional recommendations the user may
-                give, or <b>null</b> if there is no limit. Can be &lt; 0 if found
+                give, or <b>null</b> if there is no limit. Can be &lt; 0 if "Found it"
                 logs of the user were deleted.
             </li>
             <li>
