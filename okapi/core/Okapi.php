@@ -1127,10 +1127,9 @@ class Okapi
         if (isset($reverted[$id]))
             return $reverted[$id];
 
-        Okapi::mail_admins(
-            "Unhandled log type",
-            "There seems to be a cache_logs entry with type ".$id.". OKAPI is not prepared for that."
-        );
+        # There are lots of strange log types in OCPL databases.
+        # OCPL websites display and export them as 'Comment's.
+
         return "Comment";
     }
 
