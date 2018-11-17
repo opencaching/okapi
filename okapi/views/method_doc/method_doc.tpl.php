@@ -88,7 +88,7 @@ $m = $vars['method'];
                                     <?php } ?>
                                 </td>
                             </tr>
-                            <tr><td colspan='3' class='returns'>
+                            <tr><td colspan='3' class='returns' id='returns'>
                                 <p><b>Returned&nbsp;value:</b></p>
                                 <?= $m['returns'] ?>
                             </td></tr>

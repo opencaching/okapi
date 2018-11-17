@@ -16,16 +16,22 @@
 
     -->
     <changes>
-        <change commit="c288aa0f" version="1799" time="2018-11-17T15:11:10+0100" type="enhancement">
+        <change commit="3b2ebae1" version="1805" time="2018-11-18T12:11:37+0100" type="enhancement">
+            Added the <a href="services/caches/capabilities.html">services/caches/capabilities</a>
+            method, and <b>updated</b> the
+            <a href="https://local5.opencaching.de/okapi/services/caches/geocache.html#returns">cache
+            types documentation.</a>
+        </change>
+        <change commit="c288aa0f" version="1800" time="2018-11-17T15:11:10+0100" type="enhancement">
             Added the <a href="services/logs/capabilities.html">services/logs/capabilities</a>
             method. Also added the new fields <i>rcmds_left</i> and <i>rcmd_founds_needed</i>
             to <a href="services/users/user.html">services/users/user</a>(s).
         </change>
-        <change commit="55c19d6a" version="1793" time="2018-11-16T12:11:31+0100" type="enhancement">
+        <change commit="55c19d6a" version="1794" time="2018-11-16T12:11:31+0100" type="enhancement">
             Added the GPX options <i>trackables=gc:travelbugs</i> and
             <i>alt_wpts=desc:table</i>.
         </change>
-        <change commit="53608bfa" version="1789" time="2018-11-15T16:11:06+0100" type="enhancement">
+        <change commit="53608bfa" version="1790" time="2018-11-15T16:11:06+0100" type="enhancement">
             Added new fields to replication: <i>short_descriptions</i>,
             <i>oc_team_annotation</i>, <i>needs_maintenance</i> and <i>watchers</i>
             for geocaches; <i>images</i>, <i>location</i>, <i>oc_team_entry</i>,

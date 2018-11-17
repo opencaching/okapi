@@ -29,7 +29,7 @@
         <p>Depending on the geocache and user status, there can be additional
         restrictions on what log types are currently available. If those
         additional criteria are not met, OKAPI returns success=false and an
-        explanatory message. The <b>submittable_log_types</b> field of
+        explanatory message. The <b>submittable_logtypes</b> field of
         <a href="%OKAPI:methodargref:services/logs/capabilities%">services/logs/capabilities</a>
         tells which types are available.</p>
     </req>

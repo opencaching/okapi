@@ -116,7 +116,7 @@ class WebService
             # So far OKAPI only implements cache status changes by the owner.
             # Changing to status log types also is not implemented in OKAPI.
 
-            if ($edit || !$is_owner) {   # will throw BadRequest
+            if ($edit || !$is_owner) {
                 $disabled_logtypes['Ready to search'] = true;
                 $disabled_logtypes['Temporarily unavailable'] = true;
                 $disabled_logtypes['Archived'] = true;

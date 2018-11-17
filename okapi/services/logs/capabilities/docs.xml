@@ -1,6 +1,6 @@
 <xml>
     <brief>Get information on available logging features</brief>
-    <issue-id>TODO</issue-id>
+    <issue-id>567</issue-id>
     <desc>
         <p>This method tells which features are available for submitting
         or editing a log entry. You may use it to disable nonfunctional

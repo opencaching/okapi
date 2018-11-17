@@ -1,6 +1,6 @@
 <xml>
     <brief>Get information on available geocache properties</brief>
-    <issue-id>TODO</issue-id>
+    <issue-id>568</issue-id>
     <desc>
         <p>This method tells which geocache properties are available at this
         OKAPI installation.</p>
