@@ -142,25 +142,17 @@ class SearchAssistant
             $types = array();
             foreach (explode("|", $tmp) as $name)
             {
-                if ($name == 'Drive-In' || $name == 'Math/Physics')
-                    $types[] = -999;
-                else try
-                {
-                    $id = Okapi::cache_type_name2id($name);
-                    $types[] = $id;
-                }
-                catch (Exception $e)
-                {
-                    if (!Okapi::is_searchable_cache_type($name))
-                        throw new InvalidParam('type', "'$name' is not a valid cache type.");
-
+                if (!Okapi::is_local_cachetype($name)) {
                     # Cache types not supported by THIS OC installation are accepted,
                     # but will no match any caches. We translate them to a dummy ID.
 
                     $types[] = -999;
+                } else {
+                    $id = Okapi::cache_type_name2id($name);
+                    $types[] = $id;
                 }
-//                foreach (Okapi::reverse_map_cache_type($name) as $mapped_type)
-//                    $types[] = Okapi::cache_type_name2id($mapped_type);
+                foreach (Okapi::reverse_map_cache_type($name) as $mapped_type)
+                    $types[] = Okapi::cache_type_name2id($mapped_type);
             }
             if (count($types) > 0)
                 $where_conds[] = "caches.type $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $types))."')";

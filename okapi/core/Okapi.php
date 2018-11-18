@@ -164,12 +164,12 @@ class Okapi
             $counter = 0;
         $counter++;
         try {
-            Cache::set($cache_key, $counter, 3600);
+            Cache::set($cache_key, $counter, 1800);
         } catch (DbException $e) {
             # If `get` succeeded and `set` did not, then probably we're having
             # issue #156 scenario. We can ignore it here.
         }
-        if ($counter <= 5)
+        if ($counter <= 2)
         {
             # We're not spamming yet.
 
@@ -179,18 +179,18 @@ class Okapi
         {
             # We are spamming. Prevent sending more emails.
 
-            $content_cache_key_prefix = 'mail_admins_spam/'.(floor(time() / 3600) * 3600).'/';
+            $content_cache_key_prefix = 'mail_admins_spam/'.(floor(time() / 1800) * 1800).'/';
             $timeout = 86400;
-            if ($counter == 6)
+            if ($counter == 3)
             {
                 self::mail_from_okapi(\get_admin_emails(), "Anti-spam mode activated for '$subject'",
                     "OKAPI has activated an \"anti-spam\" mode for the following subject:\n\n".
                     "\"$subject\"\n\n".
-                    "Anti-spam mode is activiated when more than 5 messages with\n".
-                    "the same subject are sent within one hour.\n\n".
+                    "Anti-spam mode is activiated when more than 2 messages with\n".
+                    "the same subject are sent within half an hour.\n\n".
                     "Additional debug information:\n".
                     "- counter cache key: $cache_key\n".
-                    "- content prefix: $content_cache_key_prefix<n>\n".
+                    "- content prefix: $content_cache_key_prefix\n".
                     "- content timeout: $timeout\n"
                 );
             }
@@ -957,6 +957,11 @@ class Okapi
         return $local_types;
     }
 
+    public static function is_local_cachetype($name)
+    {
+        return isset(self::$cache_types[$name][Settings::get('OC_BRANCH')]);
+    }
+
     /** Cache types that can be searched for. **/
     public static function is_searchable_cache_type($name)
     {
@@ -1005,8 +1010,9 @@ class Okapi
         if (!$reversed)
         {
             $reversed = array();
+            $branch = Settings::get('OC_BRANCH');
             foreach (self::$cache_types as $name => $properties)
-                if (isset($properties['mapto']))
+                if (isset($properties[$branch]) && isset($properties['mapto']))
                     $reversed[$properties['mapto']['name']][] = $name;
         }
         if (isset($reversed[$mapto_type]))
