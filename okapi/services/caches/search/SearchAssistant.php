@@ -152,8 +152,10 @@ class SearchAssistant
                     if (!Okapi::is_searchable_cache_type($name))
                         throw new InvalidParam('type', "'$name' is not a valid cache type.");
 
-                    # Cache types not supported by THIS OC installation are accepted
-                    # but ignored here; see issue #220.
+                    # Cache types not supported by THIS OC installation are accepted,
+                    # but will no match any caches. We translate them to a dummy ID.
+
+                    $types[] = -999;
                 }
                 foreach (Okapi::reverse_map_cache_type($name) as $mapped_type)
                     $types[] = Okapi::cache_type_name2id($mapped_type);

@@ -20,7 +20,8 @@
         <p>Pipe-separated list of cache type codes. If given, the results will be
         limited to the given cache types. For a list of cache type codes, see
         <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>
-        <b>type</b> field.</p>
+        <b>type</b> field. If a type is removed from that list in a future OKAPI
+        version, you can still search for it (but no caches will be returned).</p>
 
         <p><b>Notice:</b> If you want to include all cache types <b>except</b>
         the given ones, prepend your list with the "-" sign.</p>

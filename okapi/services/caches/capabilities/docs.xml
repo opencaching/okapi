@@ -18,7 +18,7 @@
                 <p><b>types</b> - list of the cache types which are currently
                 available at this installation. See the
                 <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>
-                for more information on cache types.</p>
+                method for more information on cache types.</p>
             </li>
             <li>
                 <p><b>sizes</b> - list of the cache sizes which are currently
