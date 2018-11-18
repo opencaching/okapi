@@ -26,14 +26,26 @@ class WebService
     {
         # Determine our own domain.
 
-        static $host = null;
+        static $hosts = null;
         static $length = null;
-        if ($host == null)
+        if ($hosts == null)
         {
-            $host = parse_url(Settings::get('SITE_URL'), PHP_URL_HOST);
-            if (strpos($host, "www.") === 0)
-                $host = substr($host, 4);
-            $length = strlen($host);
+            $tmp = parse_url(Settings::get('SITE_URL'), PHP_URL_HOST);
+            if (strpos($tmp, "www.") === 0)
+                $tmp = substr($tmp, 4);
+            $hosts = [$tmp];
+
+            # We hardcode this list here, as it is not be useful for any
+            # other purpose and will change very rarely. Discontinued hostnames
+            # stay in the list, for backward-compatible search.
+
+            if (Okapi::get_oc_installation_code() == 'OCDE')
+            {
+                # It won't matter if we enable this for OCDE DEVELSITEs.
+                $hosts[] = 'opencaching.it';
+                $hosts[] = 'opencaching.fr';
+                $hosts[] = 'opencachingspain.es';
+            }
         }
 
         # Parse the URL
@@ -43,8 +55,15 @@ class WebService
             return null;
         if ((!isset($uri['scheme'])) || (!in_array($uri['scheme'], array('http', 'https'))))
             return null;
-        if ((!isset($uri['host'])) || (substr($uri['host'], -$length) != $host))
+
+        if (!isset($uri['host']))
             return null;
+        $tmp = $uri['host'];
+        if (strpos($tmp, "www.") === 0)
+            $tmp = substr($tmp,4);
+        if (!in_array($tmp, $hosts))
+            return null;
+
         if (!isset($uri['path']))
             return null;
         if (preg_match("#^/(O[A-Z][A-Z0-9]{4,5})$#", $uri['path'], $matches))
