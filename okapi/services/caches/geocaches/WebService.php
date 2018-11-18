@@ -253,7 +253,7 @@ class WebService
                     case 'name': $entry['name'] = $row['name']; break;
                     case 'names': $entry['names'] = array(Settings::get('SITELANG') => $row['name']); break; // for the future
                     case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
-                    case 'type': $entry['type'] = Okapi::cache_type_id2name($row['type']); break;
+                    case 'type': /* handled below */ break;
                     case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
                     case 'needs_maintenance': $entry['needs_maintenance'] = $row['needs_maintenance'] > 0; break;
                     case 'url': $entry['url'] = Settings::get('SITE_URL')."viewcache.php?wp=".$row['wp_oc']; break;
@@ -366,6 +366,19 @@ class WebService
                     default: throw new Exception("Missing field case: ".$field);
                 }
             }
+
+            # type
+
+            if (array_intersect(['type', 'attr_acodes', 'attrnames'], $fields))
+            {
+                $type_name = Okapi::cache_type_id2name($row['type']);
+                $mapto = Okapi::map_cache_type($type_name);
+                if (in_array('type', $fields))
+                    $entry['type'] = $mapto['name'];
+                if (in_array('attr_acodes', $fields) || in_array('attrnames', $fields))
+                    $entry['attr_acodes'] = $mapto['acodes'];
+            }
+
             $results[$row['wp_oc']] = $entry;
             if ($row['listing_outdated'] > 0)
                 $outdated_listings[] = $row['wp_oc'];
@@ -777,12 +790,14 @@ class WebService
             # Either case, we'll need acodes. If the user didn't want them,
             # remember to remove them later.
 
-            if (!in_array('attr_acodes', $fields))
-            {
+            if (!in_array('attr_acodes', $fields)) {
                 $fields_to_remove_later[] = 'attr_acodes';
             }
-            foreach ($results as &$result_ref)
-                $result_ref['attr_acodes'] = array();
+            foreach ($results as &$result_ref) {
+                # can have been initialized by type mapping
+                if (!isset($result_ref['attr_acodes']))
+                    $result_ref['attr_acodes'] = array();
+            }
 
             # Load internal_attr_id => acode mapping.
 
@@ -803,6 +818,12 @@ class WebService
                     continue;
                 }
                 $results[$cache_code]['attr_acodes'][] = $internal2acode[$attr_internal_id];
+            }
+
+            # Type mapping can have created duplicate acodes. Remove them.
+
+            foreach ($results as &$result_ref) {
+                $result_ref['attr_acodes'] = array_unique($result_ref['attr_acodes']);
             }
 
             # Now, each cache object has a list of its acodes. We can get

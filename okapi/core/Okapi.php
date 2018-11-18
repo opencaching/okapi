@@ -917,47 +917,59 @@ class Okapi
     private static $cache_types = array(
         #
         # OKAPI does not expose type IDs. Instead, it uses the following
-        # "code words". Only the "primary" cache types are documented.
-        # This means that all other types may (in theory) be altered.
-        # Cache type may become "primary" ONLY when *all* OC servers recognize
-        # that type.
+        # "code words".
+        #
+        # IMPORTANT: For backward compatibility, cache types must never be
+        # removed from this table! If a type is discarded, assign it to [].
         #
         # Changing this may introduce nasty bugs (e.g. in the replicate module).
         # CONTACT ME BEFORE YOU MODIFY THIS!
         #
-        'oc.pl' => array(
-            # Primary types (documented, cannot change)
-            'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
-            'Event' => 6,
-            # Additional types (may get changed)
-            'Other' => 1, 'Webcam' => 5,
-            'Moving' => 8, 'Podcast' => 9, 'Own' => 10,
-        ),
-        'oc.de' => array(
-            # Primary types (documented, cannot change)
-            'Traditional' => 2, 'Multi' => 3, 'Quiz' => 7, 'Virtual' => 4,
-            'Event' => 6,
-            # Additional types (might get changed)
-            'Other' => 1, 'Webcam' => 5,
-            'Math/Physics' => 8, 'Moving' => 9, 'Drive-In' => 10,
-        )
+
+        # common types of all OC sites
+        'Traditional'  => ['oc.de' => 2, 'oc.pl' => 2],
+        'Multi'        => ['oc.de' => 3, 'oc.pl' => 3],
+        'Quiz'         => ['oc.de' => 7, 'oc.pl' => 7],
+        'Virtual'      => ['oc.de' => 4, 'oc.pl' => 4],
+        'Event'        => ['oc.de' => 6, 'oc.pl' => 6],
+        'Webcam'       => ['oc.de' => 5, 'oc.pl' => 5],
+        'Moving'       => ['oc.de' => 9, 'oc.pl' => 8],
+        'Other'        => ['oc.de' => 1, 'oc.pl' => 1],
+
+        # local types
+        'Podcast'      => ['oc.pl' => 9],
+        'Own'          => ['oc.pl' => 10],
+        'Math/Physics' => ['oc.de' => 8, 'mapto' => ['name' => 'Quiz', 'acodes' => ['A16']]],
+        'Drive-In'     => ['oc.de' => 10, 'mapto' => ['name' => 'Traditional', 'acodes' => ['A19']]],
     );
+
+    /** Return all types of this OC site which are exposed by OKAPI. **/
+    public static function get_local_okapi_cache_types()
+    {
+        static $local_types = [];
+        if (!$local_types)
+        {
+            $branch = Settings::get('OC_BRANCH');
+            foreach (self::$cache_types as $cache_type => $properties)
+                if (isset($properties[$branch]) && !isset($properties['mapto']))
+                    $local_types[] = $cache_type;
+        }
+        return $local_types;
+    }
+
+    /** Cache types that can be searched for. **/
+    public static function is_searchable_cache_type($name)
+    {
+        return isset(self::$cache_types[$name]);
+    }
 
     /** E.g. 'Traditional' => 2. For unknown names throw an Exception. */
     public static function cache_type_name2id($name)
     {
-        $ref = &self::$cache_types[Settings::get('OC_BRANCH')];
-        if (isset($ref[$name]))
-            return $ref[$name];
+        if (isset(self::$cache_types[$name][Settings::get('OC_BRANCH')]))
+            return self::$cache_types[$name][Settings::get('OC_BRANCH')];
         throw new \Exception("Method cache_type_name2id called with unsupported cache ".
-            "type name '$name'. You should not allow users to submit caches ".
-            "of non-primary type.");
-    }
-
-    public static function is_known_cache_type($name)
-    {
-        return array_key_exists($name, self::$cache_types['oc.pl']) ||
-               array_key_exists($name, self::$cache_types['oc.de']);
+            "type name '$name'.");
     }
 
     /** E.g. 2 => 'Traditional'. For unknown ids returns "Other". */
@@ -967,12 +979,39 @@ class Okapi
         if ($reversed == null)
         {
             $reversed = array();
-            foreach (self::$cache_types[Settings::get('OC_BRANCH')] as $key => $value)
-                $reversed[$value] = $key;
+            $branch = Settings::get('OC_BRANCH');
+            foreach (self::$cache_types as $name => $properties)
+                if (isset($properties[$branch]))
+                    $reversed[$properties[$branch]] = $name;
         }
         if (isset($reversed[$id]))
             return $reversed[$id];
         return "Other";
+    }
+
+    /** Map cache types which is not exposed by OKAPI to a common types. **/
+    public static function map_cache_type($mapfrom_type)
+    {
+        if (isset(self::$cache_types[$mapfrom_type]['mapto']))
+            return self::$cache_types[$mapfrom_type]['mapto'];
+        else
+            return ['name' => $mapfrom_type, 'acodes' => []];
+    }
+
+    /** Returns an array of cache types which are mapped to the given type. **/
+    public static function reverse_map_cache_type($mapto_type)
+    {
+        static $reversed = null;
+        if (!$reversed)
+        {
+            $reversed = array();
+            foreach (self::$cache_types as $name => $properties)
+                if (isset($properties['mapto']))
+                    $reversed[$properties['mapto']['name']][] = $name;
+        }
+        if (isset($reversed[$mapto_type]))
+            return $reversed[$mapto_type];
+        return [];
     }
 
     private static $cache_statuses = array(
@@ -1012,6 +1051,22 @@ class Okapi
         'xlarge' => 6,
         'other' => 1,
     );
+
+    public static function get_local_cache_sizes()
+    {
+        # OCPL only knows a subset of sizes, which is defined in the
+        # GeoCacheCommons class. OCDE supports all sizes; they are listed
+        # in the 'cache_size' table.
+
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+        {
+            return ['none', 'micro', 'small', 'regular', 'large', 'xlarge'];
+        }
+        else
+        {
+            return array_keys(self::$cache_sizes);
+        }
+    }
 
     /** E.g. 'micro' => 2. For unknown names throw an Exception. */
     public static function cache_size2_to_sizeid($size2)
