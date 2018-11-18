@@ -159,8 +159,8 @@ class SearchAssistant
 
                     $types[] = -999;
                 }
-                foreach (Okapi::reverse_map_cache_type($name) as $mapped_type)
-                    $types[] = Okapi::cache_type_name2id($mapped_type);
+//                foreach (Okapi::reverse_map_cache_type($name) as $mapped_type)
+//                    $types[] = Okapi::cache_type_name2id($mapped_type);
             }
             if (count($types) > 0)
                 $where_conds[] = "caches.type $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $types))."')";
