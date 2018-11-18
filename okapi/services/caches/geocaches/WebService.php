@@ -1196,6 +1196,7 @@ class WebService
                 'physical-stage' => 'Physical Stage',
                 'virtual-stage' => 'Virtual Stage',
                 'final' => 'Final Location',
+                'poi' => 'Point of Interest',
                 # All other OKAPI types map to 'Reference Point'.
             ];
 
