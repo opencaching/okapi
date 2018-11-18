@@ -142,7 +142,9 @@ class SearchAssistant
             $types = array();
             foreach (explode("|", $tmp) as $name)
             {
-                try
+                if ($name == 'Drive-In' || $name == 'Math/Physics')
+                    $types[] = -999;
+                else try
                 {
                     $id = Okapi::cache_type_name2id($name);
                     $types[] = $id;
