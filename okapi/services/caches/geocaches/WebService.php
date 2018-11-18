@@ -1134,6 +1134,7 @@ class WebService
                             when 3 then 'Flag, Red'
                             when 4 then 'Circle with X'
                             when 5 then 'Parking Area'
+                            when 6 then 'Trail Head'
                             else 'Flag, Green'
                         end as sym,
                         case type
@@ -1142,13 +1143,14 @@ class WebService
                             when 3 then 'final'
                             when 4 then 'poi'
                             when 5 then 'parking'
+                            when 6 then 'trailhead'
                             else 'other'
                         end as okapi_type
                     from waypoints
                     where
                         cache_id in (".$cache_codes_escaped_and_imploded.")
                         and status = 1
-                    order by cache_id, stage, `desc`
+                    order by cache_id, stage, wp_id
                 ");
             }
             else
@@ -1166,7 +1168,7 @@ class WebService
                         subtype as internal_type_id,
                         case subtype
                             when 1 then 'Parking Area'
-                            when 3 then 'Flag, Blue'
+                            when 3 then 'Trail Head'
                             when 4 then 'Circle with X'
                             when 5 then 'Diamond, Green'
                             else 'Flag, Green'
@@ -1187,6 +1189,16 @@ class WebService
                 ");
             }
 
+            static $gc_wpt_type = [
+                'parking' => 'Parking Area',
+                'trailhead' => 'Trailhead',
+                'path' => 'Trailhead',
+                'physical-stage' => 'Physical Stage',
+                'virtual-stage' => 'Virtual Stage',
+                'final' => 'Final Location',
+                # All other OKAPI types map to 'Reference Point'.
+            ];
+
             foreach ($cacheid2waypoints as $cache_id => $waypoints)
             {
                 $cache_code = $cacheid2wptcode[$cache_id];
@@ -1206,6 +1218,7 @@ class WebService
                         'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
                         'type' => $row['okapi_type'],
                         'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langprefs),
+                        'gc_type' => isset($gc_wpt_type[$row['okapi_type']]) ? $gc_wpt_type[$row['okapi_type']] : 'Reference Point',
                         'sym' => $row['sym'],
                         'description' => ($row['stage'] ? _("Stage")." ".$row['stage'].": " : "").$row['desc'],
                     );

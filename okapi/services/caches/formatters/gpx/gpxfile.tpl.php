@@ -278,7 +278,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                     <url><?= $c['url'] ?></url>
                     <urlname><?= Okapi::xmlescape($c['name']) ?></urlname>
                     <sym><?= $wpt['sym'] ?></sym>
-                    <type>Waypoint|<?= $wpt['sym'] ?></type>
+                    <type>Waypoint|<?= $wpt['gc_type'] ?></type>
                     <?php if ($vars['ns_gsak']) { ?>
                         <gsak:wptExtension>
                             <gsak:Parent><?= $c['code'] ?></gsak:Parent>
