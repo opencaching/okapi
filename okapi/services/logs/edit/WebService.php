@@ -50,7 +50,7 @@ class WebService
 
         # handle logtype and password
 
-        $logtype = $request->get_parameter('logtype');
+        $logtype = $logtype_param = $request->get_parameter('logtype');
         if ($logtype === null)
             $logtype = $log['type'];
         elseif (!in_array($logtype, array(
@@ -61,14 +61,15 @@ class WebService
             'Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended'
         ))) {
             throw new CannotPublishException("Cannot change the type of this log");
-        } elseif ($logtype != $log['type']) {
-            $cache = OkapiServiceRunner::call(
-                'services/caches/geocache',
-                new OkapiInternalRequest($request->consumer, null, array(
-                    'cache_code' => $log['cache_code'],
-                    'fields' => 'internal_id|type|req_passwd|owner'
-                ))
-            );
+        }
+        $cache = OkapiServiceRunner::call(
+            'services/caches/geocache',
+            new OkapiInternalRequest($request->consumer, $request->token, array(
+                'cache_code' => $log['cache_code'],
+                'fields' => 'internal_id|type|req_passwd|owner|is_recommended'
+            ))
+        );
+        if ($logtype != $log['type']) {
             LogsCommon::test_if_logtype_and_pw_match_cache($request, $cache);
         }
 
@@ -110,15 +111,49 @@ class WebService
             unset($cache_tmp);
         }
 
-        # IMPORTANT note on the other log parameters (rating, recommendation,
-        # needs maintenance ...):
-        #
-        # We allow to confirm an existing log type, even if it is no longer
-        # allowed for newly submitted logs. But we must take care that no
-        # log properties will be *added* which are no longer allowed. E.g.
-        # when editing a 'Found it' that can no longer be sumitted, no
-        # recommendation may be *added* for the cache (but an existsing
-        # recommendation may be confirmed!).
+        # handle 'recommend'
+
+        $recommend = $recommend_param = $request->get_parameter('recommend');
+        if ($recommend === null)
+            $recommend = 'null';
+        elseif (!in_array($recommend, ['true', 'false']))
+            throw new InvalidParam('recommend');
+
+        if ($recommend == 'true' && !$cache['is_recommended'])
+        {
+            # The logic of recommend=true when editing differs intentionally
+            # from submitting: We allow to confirm an existing recommendation,
+            # instead of throwing a CannotPublishException(). This makes the
+            # services/logs/edit options consistent: All allow to confirm an
+            # existing value.
+
+            if (!in_array($logtype, ['Found it', 'Attended'])) {
+                throw new BadRequest(
+                    "Recommending is allowed only for 'Found it' and 'Attended' logs."
+                );
+            }
+            if ($cache['type'] == 'Event' && Settings::get('OC_BRANCH') == 'oc.pl') {
+                throw new CannotPublishException(sprintf(_(
+                    "%s does not allow recommending event caches."
+                ), Okapi::get_normalized_site_name()));
+            }
+            if ($log['user']['uuid'] == $cache['owner']['uuid']) {
+                throw new CannotPublishException(_("You may not recommend your own caches."));
+            }
+            $user = OkapiServiceRunner::call(
+                'services/users/user',
+                new OkapiInternalRequest($request->consumer, null, array(
+                    'user_uuid' => $log['user']['uuid'],
+                    'fields' => 'rcmd_founds_needed'
+                ))
+            );
+            LogsCommon::check_if_user_can_add_recommendation($user['rcmd_founds_needed']);
+            unset($user);
+        }
+        elseif ($recommend != 'false' || !$cache['is_recommended'])
+        {
+            $recommend = 'null';
+        }
 
         # Now do final validations and store data.
         # See comment on transaction in services/logs/submit code.
@@ -140,6 +175,23 @@ class WebService
             $set_SQL[] =
                 "date = from_unixtime('".Db::escape_string($when)."')";
         }
+        if ($recommend != 'null') {
+            if ($recommend == 'true') {
+                LogsCommon::save_recommendation(
+                    $log['user']['internal_id'],
+                    $log['cache_internal_id'],
+                    $when !== null ? $when : strtotime($log['date'])
+                );
+            } else {
+                Db::execute("
+                    delete from cache_rating
+                    where user_id='".Db::escape_string($log['user']['internal_id'])."'
+                    and cache_id='".Db::escape_string($log['cache_internal_id'])."'
+                ");
+            }
+            $set_SQL[] = 'node = node';   # dummy, triggers OCPL last_modified update
+        }
+
         if ($set_SQL) {
             if (Settings::get('OC_BRANCH') == 'oc.pl') {
                 $set_SQL[] = "last_modified = NOW()";
@@ -150,9 +202,10 @@ class WebService
                 set ".implode(", ", $set_SQL)."
                 where id='".Db::escape_string($log['internal_id'])."'
             ");
-        } elseif ($request->get_parameter('logtype') === null) {
+        }
+        elseif ($logtype_param === null && $recommend_param === null) {
             throw new BadRequest(
-                "At least one parameter with new log data must be supplied."
+                "At least one parameter with submitted log data must be supplied."
             );
         }
 

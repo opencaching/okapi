@@ -153,6 +153,11 @@ class WebService
 
             if (array_intersect(['rcmds_given', 'rcmds_left', 'rcmd_founds_needed'], $fields))
             {
+                # Note: caches_found includes the number of attended events (both on
+                # OCDE and OCPL). OCPL does not allow recommending events, but the
+                # number of attended events influences 'rcmds_left' the same way a
+                # normal "Fount it" log does.
+
                 $rs = Db::query("
                     select user_id, count(*) as rcmds_given
                     from cache_rating

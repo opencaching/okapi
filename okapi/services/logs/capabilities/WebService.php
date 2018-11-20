@@ -177,17 +177,17 @@ class WebService
             ));
         }
 
-        # Note: When any of the following features is added to services/logs/edit,
-        # the $submit operands must be replaced by $is_logger (= only own logs
-        # may be edited).
-
         # can_recommend and rcmd_founds_needed
 
+        # Note that this field is only about ADDING a recommendation, not about
+        # confirming an existing recommendation by 'services/logs/edit?recommend=true'.
+
         $can_recommend = (
-            $submit &&
+            $is_logger &&
             !$is_owner &&
             !$cache['is_recommended'] &&
-            !($ocpl && $event)
+            !($ocpl && $event) &&
+            !(isset($disabled_logtypes['Found it']) && isset($disabled_logtypes['Attended']))
         );
         if (!$can_recommend) {
             $result['can_recommend'] = 'false';
@@ -198,7 +198,9 @@ class WebService
             {
                 # To add a recomendation, the user must either submit a new
                 # 'Found it' log, or change an existing log's type to 'Found it'.
-                # This additional 'Found it' counts for the recommendations:
+                # This additional 'Found it' counts for the recommendations.
+                # (Note that OCDE users may submit multiple 'Found it' for the
+                # same cache, which all count for the recommendations.)
 
                 --$founds_needed;
             }
@@ -212,13 +214,18 @@ class WebService
             }
         }
 
+        # Note: When any of the following features is added to services/logs/edit,
+        # the $submit operands must be replaced by $is_logger (= only own logs
+        # may be edited).
+
         # other return values
 
         $result['can_rate'] =
             $submit &&
             $ocpl &&
             !$is_owner &&
-            ($cache['my_rating'] == null);   # Re-rating may be added to OKAPI, see issue 563. 
+            ($cache['my_rating'] == null) &&
+            !(isset($disabled_logtypes['Found it']) && isset($disabled_logtypes['Attended']));
 
         $result['can_set_needs_maintenance'] =
             $submit &&

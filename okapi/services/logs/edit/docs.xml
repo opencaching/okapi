@@ -2,10 +2,8 @@
     <brief>Edit an existing log entry</brief>
     <issue-id>556</issue-id>
     <desc>
-        <p>This method allows your user to change the text, type and date
-        of own log entries. If you need to edit other log-related data like
-        e.g. recommendations, please let us know.</p>
-        <p>At least one of the optional parameters with new
+        <p>This method allows your user to change the content of own log entries.</p>
+        <p>At least one of the optional parameters with submitted
         log data must be supplied.</p>
     </desc>
     <req name='log_uuid'>
@@ -59,6 +57,19 @@
     <opt name='when'>
         <p>Same as in the <a href='%OKAPI:methodargref:services/logs/submit%'>services/logs/submit</a>
         method, but without a default value.</p>
+    </opt>
+    <opt name='recommend' default='null'>
+        <p>Confirms or changes the user's recommendation for the cache; one of the
+        following:</p>
+        <ul>
+            <li><b>true</b> - add a recommendation for the cache, if the user
+            did not already recommend it. See the
+            <a href='%OKAPI:methodargref:services/logs/submit%#arg_recommend'>services/logs/submit</a>
+            method for more explanation,</li>
+            <li><b>false</b> - if the user recommended the cache, remove the
+            recommendation,</li>
+            <li><b>null</b> - no change of recommendation.</li>
+        </ul>
     </opt>
     <opt name='langpref' default='en'>
         <p>Pipe-separated list of ISO 639-1 language codes. This indicates the

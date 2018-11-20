@@ -34,28 +34,31 @@
                 many conditions, like the cache type and state.</p>
             </li>
             <li>
-                <p><b>can_recommend</b> - tells if the user can recommend the
-                geocache. One of the following:</p>
+                <p><b>can_recommend</b> - tells if the user can add a
+                recommendation for the geocache. One of the following:</p>
                 <ul>
                     <li>
-                        <b>true</b> if the user can add a recommendation for
+                        <b>true</b> - the user can add a recommendation for
                         the geocache,
                     </li>
                     <li>
-                        <b>need_more_founds</b> if the user needs to
+                        <b>need_more_founds</b> - the user needs to
                         find more caches to add a recommendation for the
                         geocache,
                     </li>
                     <li>
-                        <b>false</b> if the user cannot recommend the cache
+                        <b>false</b> - the user cannot recommend the cache
                         for some other reason, e.g. the user owns or already
                         recommended the cache. A submitted recommendation
                         will be ignored.
                     </li>
                 </ul>
+                <p>Please note that this field NOT about confirming an
+                <i>existing</i> recommendation by services/logs/edit, which
+                is always possible.</p>
             </li>
             <li>
-                <p><b>rcmd_founds_needed</b>, the number of additional caches
+                <p><b>rcmd_founds_needed</b> - the number of additional caches
                 the user needs to find (or events to attend) to recommend this
                 cache; <b>null</b> if <b>can_recommend</b> is <b>false</b>.</p>
             </li>
@@ -82,8 +85,8 @@
                 installations.</p>
             </li>
         </ul>
-        <p>All the <b>can_</b> fields currently are <b>false</b> if a
-        log UUID is supplied. OKAPI so far does not implement editing those
-        log properties.</p>
+        <p>The <b>can_rate</b> and <b>can_..._maintenance</b> fields currently
+        are always <b>false</b> if a log UUID is supplied. OKAPI so far does
+        not implement editing those log properties.</p>
     </returns>
 </xml>

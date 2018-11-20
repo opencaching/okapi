@@ -283,6 +283,24 @@ class LogsCommon
         }
     }
 
+    public static function check_if_user_can_add_recommendation($user_founds_needed)
+    {
+        # If only 1 more found is needed and this is the users' first 'Found it'
+        # for the cache, then *this* 'Found it' allows to recommend it.
+        # Note that OCDE allows multiple founds per cache, and all of them
+        # count for the recommendations.
+
+        $founds_needed = $user_founds_needed - 1;
+
+        if ($founds_needed > 0) {
+            throw new CannotPublishException(sprintf(ngettext(
+                "You don't have any recommendations to give. Find one more cache first!",
+                "You don't have any recommendations to give. Find %d more caches first!",
+                $founds_needed
+            ), $founds_needed));
+        }
+    }
+
     public static function update_cache_stats($cache_internal_id, $old_logtype, $new_logtype, $old_date, $when)
     {
         if (Settings::get('OC_BRANCH') == 'oc.de')
@@ -484,6 +502,31 @@ class LogsCommon
                     unlink($filepath);
                 }
             }
+        }
+    }
+
+    public static function save_recommendation($user_internal_id, $cache_internal_id, $when)
+    {
+        if (Db::field_exists('cache_rating', 'rating_date'))
+        {
+            Db::execute("
+                insert into cache_rating (user_id, cache_id, rating_date)
+                values (
+                    '".Db::escape_string($user_internal_id)."',
+                    '".Db::escape_string($cache_internal_id)."',
+                    from_unixtime('".Db::escape_string($when)."')
+                );
+            ");
+        }
+        else
+        {
+            Db::execute("
+                insert into cache_rating (user_id, cache_id)
+                values (
+                    '".Db::escape_string($user_internal_id)."',
+                    '".Db::escape_string($cache_internal_id)."'
+                );
+            ");
         }
     }
 }

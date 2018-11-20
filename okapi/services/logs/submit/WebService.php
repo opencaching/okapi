@@ -333,26 +333,7 @@ class WebService
                     "You have already recommended this cache once."
                 ));
             }
-
-            # Note: caches_found includes the number of attended events (both on
-            # OCDE and OCPL). OCPL does not allow recommending events, but the
-            # number of attended events influences 'rcmds_left' the same way a
-            # normal "Fount it" log does.
-
-            # If only 1 more found is needed and this is the users' first 'Found it'
-            # for the cache, then *this* 'Found it' allows to recommend it.
-            # Note that OCDE allows multiple founds per cache, and all of them
-            # count for the recommendations.
-
-            $founds_needed = $user['rcmd_founds_needed'] - 1;
-
-            if ($founds_needed > 0) {
-                throw new CannotPublishException(sprintf(ngettext(
-                    "You don't have any recommendations to give. Find one more cache first!",
-                    "You don't have any recommendations to give. Find %d more caches first!",
-                    $founds_needed
-                ), $founds_needed));
-            }
+            LogsCommon::check_if_user_can_add_recommendation($user['rcmd_founds_needed']);
         }
 
         # If user checked the "needs_maintenance(2)" flag for OCPL, we will shuffle things
@@ -500,29 +481,7 @@ class WebService
         # Save recommendation.
 
         if ($recommend)
-        {
-            if (Db::field_exists('cache_rating', 'rating_date'))
-            {
-                Db::execute("
-                    insert into cache_rating (user_id, cache_id, rating_date)
-                    values (
-                        '".Db::escape_string($user['internal_id'])."',
-                        '".Db::escape_string($cache['internal_id'])."',
-                        from_unixtime('".Db::escape_string($when)."')
-                    );
-                ");
-            }
-            else
-            {
-                Db::execute("
-                    insert into cache_rating (user_id, cache_id)
-                    values (
-                        '".Db::escape_string($user['internal_id'])."',
-                        '".Db::escape_string($cache['internal_id'])."'
-                    );
-                ");
-            }
-        }
+            LogsCommon::save_recommendation($user['internal_id'], $cache['internal_id'], $when);
 
         # Finalize the transaction.
 
