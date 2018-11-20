@@ -440,6 +440,7 @@ class WebService
                                 'location' => $original_location,
                                 'type' => 'default-coords',
                                 'type_name' => _("Original geocache location"),
+                                'gc_type' => 'Reference Point',
                                 'sym' => 'Block, Blue',
                                 'description' => sprintf(_("Original (owner-supplied) location of the %s geocache"), $cache_ref['code']),
                             );
