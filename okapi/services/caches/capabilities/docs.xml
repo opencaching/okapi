@@ -5,7 +5,7 @@
         <p>This method tells which geocache properties are available at this
         OKAPI installation.</p>
         
-        <p>Using this method is mostly optional. You never need to know about
+        <p>Using this method is mostly optional. You rarely need to know about
         differences between OKAPI installations when searching for or
         retrieving geocaches. But this method may help to improve user
         interfaces, e.g. by hiding unnecessary search options.</p>

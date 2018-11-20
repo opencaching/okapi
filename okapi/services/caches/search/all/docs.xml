@@ -18,12 +18,13 @@
     </desc>
     <opt name='type'>
         <p>Pipe-separated list of cache type codes. If given, the results will be
-        limited to the given cache types. For a list of cache type codes, see
-        <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>
-        <b>type</b> field. If a type is removed from that list in a future OKAPI
-        version, you can still search for it (but no caches will be returned).</p>
+        limited to the given cache types. For a list of available type codes,
+        see the <b>types</b> return field of
+        <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.
+        For more information on cache types, see
+        <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>.</p>
 
-        <p><b>Notice:</b> If you want to include all cache types <b>except</b>
+        <p><b>Note:</b> If you want to include all cache types <b>except</b>
         the given ones, prepend your list with the "-" sign.</p>
     </opt>
     <opt name='status' default='Available'>
@@ -36,9 +37,9 @@
         <p>Pipe-separated list of user IDs. If given, the list of returned caches
         will be limited to those owned by the given users.</p>
 
-        <p><b>Notice:</b> User ID and Username are two different things!</p>
+        <p><b>Note:</b> User ID and Username are two different things!</p>
 
-        <p><b>Notice:</b> If you want to include all caches <b>except</b> the ones
+        <p><b>Note:</b> If you want to include all caches <b>except</b> the ones
         owned by the given users, prepend your list with the "-" sign.</p>
     </opt>
     <opt name='name'>
@@ -61,7 +62,7 @@
             <li>"name=*tower_" will match "Water Towers" but will <b>not</b> match "Water Tower".</li>
         </ul>
 
-        <p><b>Notice:</b> Cache code and name are two different things - if you want to
+        <p><b>Note:</b> Cache code and name are two different things - if you want to
         find a cache by its code, use the services/caches/geocache method.</p>
     </opt>
     <opt name='terrain' default='1-5'>
@@ -81,7 +82,7 @@
         Only caches with size attribute between these numbers (inclusive) will be returned
         (1 - micro, 5 - very big).</p>
 
-        <p><b>Notice:</b> If you use this parameter, all caches which do not have a container
+        <p><b>Note:</b> If you use this parameter, all caches which do not have a container
         (like Event or Virtual caches) will be excluded from the results. If you want caches
         with no container included, append "|X" suffix to the value of this parameter
         (e.g. "3-5|X").</p>
@@ -97,7 +98,7 @@
         may also search for sizes which are unavailable here; then the result
         will be empty.</p>
 
-        <p><b>Notice:</b> If you want to include all cache sizes <b>except</b>
+        <p><b>Note:</b> If you want to include all cache sizes <b>except</b>
         the given ones, prepend your list with the "-" sign.</p>
     </opt>
     <opt name='rating' infotags="ocpl-specific">
@@ -107,12 +108,12 @@
         Only caches with an overall rating between these numbers (inclusive) will be returned
         (1 - poor, 5 - excellent).</p>
 
-        <p><b>Notice:</b> If you use this parameter, then caches with "not enough" votes will be
+        <p><b>Note:</b> If you use this parameter, then caches with "not enough" votes will be
         excluded from results. The definition of "not enough" may vary. If you want such
         "insufficiently rated" caches to be included, then append "|X" suffix
         to the value of this parameter (e.g. "3-5|X").</p>
 
-        <p><b>Notice:</b> Not all Opencaching installations provide ratings for their
+        <p><b>Note:</b> Not all Opencaching installations provide ratings for their
         geocaches. The <b>has_ratings</b> field of
         <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
         tells if ratings are available. If not, this parameter will be ignored.</p>
@@ -148,7 +149,7 @@
         "modified" when user makes a log entry.)</p>
     </opt>
     <opt name='found_status' default='either'>
-        <p><b>Notice:</b> This parameter may be used only for requests signed
+        <p><b>Note:</b> This parameter may be used only for requests signed
         with an Access Token (you will need to use <b>Level 3</b>
         Authentication).</p>
 
@@ -168,7 +169,7 @@
         geocaches <b>not found by any</b> of the given users.</p>
     </opt>
     <opt name='recommended_only' default='false'>
-        <p><b>Notice:</b> This parameter may be used only for requests signed
+        <p><b>Note:</b> This parameter may be used only for requests signed
         with an Access Token (you will need to use <b>Level 3</b>
         Authentication).</p>
         <p>Boolean. If set to <b>true</b>, only caches which the user has recommended
@@ -179,7 +180,7 @@
         geocaches recommended by at least one of the given users.</p>
     </opt>
     <opt name='watched_only' default='false'>
-        <p><b>Notice:</b> This parameter may be used only for requests signed
+        <p><b>Note:</b> This parameter may be used only for requests signed
         with an Access Token (you will need to use <b>Level 3</b>
         Authentication).</p>
 
@@ -191,13 +192,13 @@
         <p>Deprecated (<a href="https://github.com/opencaching/okapi/issues/349">why?</a>),
         please use <b>ignored_status</b> instead.</p>
 
-        <p><b>Notice:</b> This parameter may be used only for requests signed
+        <p><b>Note:</b> This parameter may be used only for requests signed
         with an Access Token (you will need to use <b>Level 3</b> Authentication).</p>
         <p>Boolean. If set to <b>true</b>, caches which the user has marked as ignored
         will not be included in the result.</p>
     </opt>
     <opt name='ignored_status' default='either'>
-        <p><b>Notice:</b> This parameter may be used only for requests signed
+        <p><b>Note:</b> This parameter may be used only for requests signed
         with an Access Token (you will need to use <b>Level 3</b>
         Authentication).</p>
 
@@ -215,7 +216,7 @@
         </ul>
     </opt>
     <opt name='exclude_my_own' default='false'>
-        <p><b>Notice:</b> This parameter may be used only for requests signed
+        <p><b>Note:</b> This parameter may be used only for requests signed
         with an Access Token (you will need to use <b>Level 3</b> Authentication).
         See <b>owner_uuid</b> parameter if you don't want to use OAuth.</p>
 

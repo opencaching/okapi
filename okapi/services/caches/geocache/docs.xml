@@ -275,7 +275,13 @@
                 compatibility</a>),</p>
             </li>
             <li>
-                <p><b>watchers</b> - number of users who are watching this cache,</p>
+                <p><b>watchers</b> - number of users who are watching this cache.</p>
+
+                <p>Note that many watchers are inactive users, especially at the
+                old sites Opencaching.DE and Opencaching.PL (founded 2005/2006).
+                Some of them won't receive watch notifications at all because of
+                obsolete email addresses. So the watchers' counts are somewhat
+                overstated.</p>
             </li>
             <li class='deprecated'>
                 <b>size</b> - deprecated
@@ -316,11 +322,11 @@
                 overall rating of the cache, or <b>null</b> when the geocache does not have a
                 sufficient amount of votes to have a rating.</p>
 
-                <p><b>Notice:</b> Only OCPL-based Opencaching installations provide ratings for
+                <p><b>Note:</b> Only OCPL-based Opencaching installations provide ratings for
                 their geocaches. On OCDE-based installations, this field will always contain
                 <b>null</b>.</p>
 
-                <p><b>Notice:</b> Currently OCPL exposes cache ratings as integers only.
+                <p><b>Note:</b> Currently OCPL exposes cache ratings as integers only.
                 OKAPI used floats here for forward-compatibility only. In other words, currently
                 you can get 4.0 or 5.0 here, but not 4.5. This may change in the future though,
                 without notice.</p>
@@ -329,7 +335,7 @@
                 <p>%OKAPI:infotag:ocpl-specific% <b>rating_votes</b> - number of votes submitted
                 for the rating of this cache.</p>
 
-                <p><b>Notice:</b> Only OCPL-based Opencaching installations provide ratings for
+                <p><b>Note:</b> Only OCPL-based Opencaching installations provide ratings for
                 their geocaches. On OCDE-based installations, this field will always contain
                 <b>0</b>.</p>
             </li>
@@ -448,7 +454,7 @@
                 <p><b>latest_logs</b> - a couple of latest log entries in the cache.
                 The format is the same as the one returned by the services/logs/logs method.</p>
 
-                <p>Notice: The number of logs returned can be set with the <b>lpc</b> option.</p>
+                <p>Note: The number of logs returned can be set with the <b>lpc</b> option.</p>
             </li>
             <li>
                 <p><b>my_notes</b> - user's notes on the cache, in plain-text, or <b>null</b>

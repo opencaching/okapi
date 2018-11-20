@@ -28,8 +28,8 @@
         certain types.</p>
 
         <p>If your user did recommend or rate the cache and the log type is
-        changed from "Found it" to something else, the recommendation and rating
-        will be withdrawn.</p>
+        changed from "Found it" or "Attended" to something else, the recommendation
+        and rating will be withdrawn.</p>
     </opt>
     <opt name='password'>
         <p>Some caches require a password in order to submit a "Found it" or

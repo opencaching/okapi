@@ -3,8 +3,8 @@
     <issue-id>567</issue-id>
     <desc>
         <p>This method tells which features will be available when the
-        user of the access submits or edits a log entry. You may use it
-        to disable nonfunctional options in a user interface.</p>
+        user of the access token submits or edits a log entry. You may
+        use it to disable nonfunctional options in a user interface.</p>
 
         <p>Using this method is <i>always optional</i>. You never need to
         know about differences between OKAPI installations or logging
