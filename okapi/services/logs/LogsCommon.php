@@ -25,6 +25,9 @@ use Utils\Text\UserInputFilter; // OCPL specific
  * more explanation.
  */
 
+# TODO: Evaluate if we can make this a common base class of logging methods,
+# instead of copying lots of data in and out.
+
 class LogsCommon
 {
     public static function process_log_uuid($request)
@@ -457,27 +460,36 @@ class LogsCommon
             # If the user rated the cache, we need to remove that rating
             # and recalculate the cache's rating stats.
 
-            if (Settings::get('OC_BRANCH') == 'oc.pl')
+            LogsCommon::withdraw_rating($log['user']['internal_id'], $log['cache_internal_id']);
+        }
+    }
+
+    public static function withdraw_rating($user_interal_id, $cache_internal_id)
+    {
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+        {
+            $user_and_cache_condition_SQL = "
+                user_id='".Db::escape_string($user_interal_id)."'
+                and cache_id='".Db::escape_string($cache_internal_id)."'
+            ";
+            $user_score = Db::select_value("
+                select score
+                from scores
+                where ".$user_and_cache_condition_SQL."
+            ");
+            if ($user_score !== null)
             {
-                $user_score = Db::select_value("
-                    select score
-                    from scores
+                Db::execute("
+                    delete from scores
                     where ".$user_and_cache_condition_SQL."
                 ");
-                if ($user_score !== null)
-                {
-                    Db::execute("
-                        delete from scores
-                        where ".$user_and_cache_condition_SQL."
-                    ");
-                    Db::execute("
-                        update caches
-                        set
-                            score = (score*votes - '".Db::escape_string($user_score)."') / greatest(1, votes - 1),
-                            votes = greatest(0, votes - 1)
-                        where cache_id='".Db::escape_string($log['cache_internal_id'])."'
-                    ");
-                }
+                Db::execute("
+                    update caches
+                    set
+                        score = (score*votes - '".Db::escape_string($user_score)."') / greatest(1, votes - 1),
+                        votes = greatest(0, votes - 1)
+                    where cache_id='".Db::escape_string($cache_internal_id)."'
+                ");
             }
         }
     }

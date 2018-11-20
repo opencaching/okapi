@@ -58,7 +58,7 @@
         <p>Same as in the <a href='%OKAPI:methodargref:services/logs/submit%'>services/logs/submit</a>
         method, but without a default value.</p>
     </opt>
-    <opt name='recommend' default='null'>
+    <opt name='recommend' default='unchanged'>
         <p>Confirms or changes the user's recommendation for the cache; one of the
         following:</p>
         <ul>
@@ -66,10 +66,15 @@
             did not already recommend it. See the
             <a href='%OKAPI:methodargref:services/logs/submit%#arg_recommend'>services/logs/submit</a>
             method for more explanation,</li>
-            <li><b>false</b> - if the user recommended the cache, remove the
+            <li><b>false</b> - if the user recommended the cache, withdraw the
             recommendation,</li>
-            <li><b>null</b> - no change of recommendation.</li>
+            <li><b>unchanged</b> - no change of recommendation.</li>
         </ul>
+    </opt>
+    <opt name='rating' default='unchanged' infotags="ocpl-specific">
+        <p>If the user rated the cache, the option <b>false</b> will withdraw
+        that rating. Otherwise, it will be ignored (which includes
+        installations that do not provide geocache ratings).</p>
     </opt>
     <opt name='langpref' default='en'>
         <p>Pipe-separated list of ISO 639-1 language codes. This indicates the

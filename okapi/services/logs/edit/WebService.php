@@ -42,13 +42,13 @@ class WebService
         # exceptions. You're reading the "_call" method now (see below for
         # "call").
 
-        # handle log_uuid
+        # log_uuid
 
         $log = LogsCommon::process_log_uuid($request);
         if ($log['user']['internal_id'] != $request->token->user_id)
             throw new BadRequest("Only own log entries may be edited.");
 
-        # handle logtype and password
+        # logtype and password
 
         $logtype = $logtype_param = $request->get_parameter('logtype');
         if ($logtype === null)
@@ -66,14 +66,14 @@ class WebService
             'services/caches/geocache',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'cache_code' => $log['cache_code'],
-                'fields' => 'internal_id|type|req_passwd|owner|is_recommended'
+                'fields' => 'internal_id|type|req_passwd|owner|is_recommended|my_rating'
             ))
         );
         if ($logtype != $log['type']) {
             LogsCommon::test_if_logtype_and_pw_match_cache($request, $cache);
         }
 
-        # handle comment
+        # comment
 
         $comment = $request->get_parameter('comment');
         if ($comment !== null)
@@ -93,7 +93,7 @@ class WebService
         unset($comment);
         unset($comment_format);
 
-        # handle 'when'
+        # 'when'
 
         $when = $request->get_parameter('when');
         if ($when !== null)
@@ -111,12 +111,12 @@ class WebService
             unset($cache_tmp);
         }
 
-        # handle 'recommend'
+        # recommend
 
         $recommend = $recommend_param = $request->get_parameter('recommend');
         if ($recommend === null)
-            $recommend = 'null';
-        elseif (!in_array($recommend, ['true', 'false']))
+            $recommend = 'unchanged';
+        elseif (!in_array($recommend, ['true', 'false', 'unchanged']))
             throw new InvalidParam('recommend');
 
         if ($recommend == 'true' && !$cache['is_recommended'])
@@ -150,9 +150,36 @@ class WebService
             LogsCommon::check_if_user_can_add_recommendation($user['rcmd_founds_needed']);
             unset($user);
         }
-        elseif ($recommend != 'false' || !$cache['is_recommended'])
+        elseif ($recommend == 'false' && $cache['is_recommended'])
         {
-            $recommend = 'null';
+            # For forward compatibility, we enforce the log type also for revocation.
+            if (!in_array($log['type'], ['Found it', 'Attended'])) {
+                throw new BadRequest(
+                    "Must be a 'Found it' or 'Attended' log entry to withdraw recommendation."
+                );
+            }
+        }
+        else
+        {
+            $recommend = 'unchanged';
+        }
+
+        # rating
+
+        $rating = $rating_param = $request->get_parameter('rating');
+        if ($rating === null)
+            $rating = 'unchanged';
+        elseif (!in_array($rating, ['false', 'unchanged']))
+            throw new InvalidParam('rating');
+
+        if ($rating == 'false' && $cache['my_rating'] == null)   # also catches OCDE
+            $rating = 'unchanged';
+
+        # For forward compatibility, we enforce the log type also for revocation.
+        if ($rating != 'unchanged' && !in_array($log['type'], ['Found it', 'Attended'])) {
+            throw new BadRequest(
+                "Must be a 'Found it' or 'Attended' log entry to withdraw rating."
+            );
         }
 
         # Now do final validations and store data.
@@ -175,7 +202,7 @@ class WebService
             $set_SQL[] =
                 "date = from_unixtime('".Db::escape_string($when)."')";
         }
-        if ($recommend != 'null') {
+        if ($recommend != 'unchanged') {
             if ($recommend == 'true') {
                 LogsCommon::save_recommendation(
                     $log['user']['internal_id'],
@@ -191,6 +218,19 @@ class WebService
             }
             $set_SQL[] = 'node = node';   # dummy, triggers OCPL last_modified update
         }
+        if ($rating == 'false') {
+            # Note that update_statistics_after_change() will redundantly call
+            # withdraw_rating(), if the user changes log type from "Found it" or
+            # "Attended" to something else. But it's failsafe this way - e.g.
+            # imagine an OC site that combines ratings with multiple found logs
+            # per cache ...
+
+            LogsCommon::withdraw_rating($log['user']['internal_id'], $log['cache_internal_id']);
+
+            # As ratings are private and thus neither displayed alongside logs
+            # nor included in OKAPI replication, cache_logs.last_modified is
+            # not updated.
+        }
 
         if ($set_SQL) {
             if (Settings::get('OC_BRANCH') == 'oc.pl') {
@@ -203,7 +243,7 @@ class WebService
                 where id='".Db::escape_string($log['internal_id'])."'
             ");
         }
-        elseif ($logtype_param === null && $recommend_param === null) {
+        elseif ($logtype_param === null && $recommend_param === null && $rating_param === null) {
             throw new BadRequest(
                 "At least one parameter with submitted log data must be supplied."
             );
