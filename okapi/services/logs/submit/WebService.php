@@ -296,7 +296,7 @@ class WebService
                 if ($on_duplicate == 'silent_success')
                 {
                     # Act as if the log has been submitted successfully.
-                    return $duplicate_uuid;
+                    return [$duplicate_uuid];
                 }
                 elseif ($on_duplicate == 'user_error')
                 {

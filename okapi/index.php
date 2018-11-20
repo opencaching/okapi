@@ -36,7 +36,14 @@ if (ob_list_handlers() === ['default output handler']) {
     ob_end_clean();
 }
 
+# Errorhandler should be initialized before calling any other OKAPI code
 OkapiErrorHandler::init();
+
+$extAutoloader = Settings::get('EXTERNAL_AUTOLOADER');
+if ($extAutoloader) {
+    require_once $extAutoloader;
+}
+
 Okapi::gettext_domain_init();
 OkapiScriptEntryPointController::dispatch_request($_SERVER['REQUEST_URI']);
 Okapi::gettext_domain_restore();

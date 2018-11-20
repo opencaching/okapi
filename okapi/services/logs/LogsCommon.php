@@ -15,6 +15,7 @@ use okapi\core\Okapi;
 use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
 use okapi\Settings;
+use Utils\Text\UserInputFilter; // OCPL specific
 
 /**
  * IMPORTANT: The "logging policy" logic - which logs are allowed under
@@ -202,8 +203,8 @@ class LogsCommon
             # additional HTML purification prior to the insertion into the
             # database.
 
-            # NOTICE: We are including EXTERNAL OCDE libraries here! This
-            # code does not belong to OKAPI!
+            # NOTICE: For both branches, we are including EXTERNAL OCDE
+            # libraries here! This code does not belong to OKAPI!
 
             if (Settings::get('OC_BRANCH') == 'oc.de')
             {
@@ -216,9 +217,7 @@ class LogsCommon
             }
             else
             {
-                require_once $GLOBALS['rootpath'] . 'lib/class.inputfilter.php';
-                $myFilter = new \InputFilter($allowedtags, $allowedattr, 0, 0, 1);
-                $formatted_comment = $myFilter->process($formatted_comment);
+                $formatted_comment = UserInputFilter::purifyHtmlString($formatted_comment);
 
                 # see https://github.com/opencaching/opencaching-pl/pull/1224
                 $value_for_text_html_field = 2;

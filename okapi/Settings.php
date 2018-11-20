@@ -233,6 +233,15 @@ final class Settings
          * This setting allow to decide which way should be used for local node.
          */
         'USE_SQL_SUBQUERIES' => false,
+
+        /**
+         * Optional external, additional autoloader used to call classes that reside outside
+         * of OKAPI. It should be a path to the php external autoload script which can be
+         * directly included
+         *
+         * Currently used for OCPL UserInputFilter.
+         */
+        'EXTERNAL_AUTOLOADER' => null,
     );
 
     /**
@@ -277,6 +286,8 @@ final class Settings
     {
         if (!in_array($dict['OC_BRANCH'], array('oc.pl', 'oc.de')))
             throw new Exception("Currently, OC_BRANCH has to be either 'oc.pl' or 'oc.de'. Hint: Whom did you get your code from?");
+        if ($dict['OC_BRANCH'] == 'oc.pl' && $dict['EXTERNAL_AUTOLOADER'] === null)
+            throw new Exception("OCPL autoloader is not configured");
         $boolean_keys = array('DEBUG', 'DEBUG_PREVENT_EMAILS', 'DEBUG_PREVENT_SEMAPHORES', 'USE_SQL_SUBQUERIES');
         foreach ($boolean_keys as $key)
             if (!in_array($dict[$key], array(true, false)))
