@@ -196,8 +196,7 @@ class Facade
      */
     public static function disable_error_handling()
     {
-        if (self::$initialized)
-            OkapiErrorHandler::disable();
+        OkapiErrorHandler::disable();
     }
 
     /**
@@ -206,8 +205,7 @@ class Facade
      */
     public static function reenable_error_handling()
     {
-        if (self::$initialized)
-            OkapiErrorHandler::enable();
+        OkapiErrorHandler::enable();
     }
 
     /**
