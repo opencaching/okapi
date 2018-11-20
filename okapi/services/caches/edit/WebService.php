@@ -19,7 +19,7 @@ class WebService
     public static function options()
     {
         return array(
-            'min_auth_level' => 3,
+            'min_auth_level' => 3
         );
     }
 
@@ -80,14 +80,14 @@ class WebService
             $newpw = $request->get_parameter('passwd');
             if ($newpw !== null)
             {
-                $installation = OkapiServiceRunner::call(
-                    'services/apisrv/installation',
+                $capabilities = OkapiServiceRunner::call(
+                    'services/caches/capabilities',
                     new OkapiInternalRequest($request->consumer, $request->token, [])
                 );
-                if (strlen($newpw) > $installation['geocache_passwd_max_length']) {
+                if (strlen($newpw) > $capabilities['password_max_length']) {
                     $problems['passwd'] = sprintf(
                         _('The password must not be longer than %d characters.'),
-                        $installation['geocache_passwd_max_length']
+                        $capabilities['password_max_length']
                     );
                 } elseif (
                     Settings::get('OC_BRANCH') == 'oc.pl' &&
