@@ -1266,6 +1266,7 @@ class WebService
                             'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
                             'type' => 'user-coords',
                             'type_name' => _("User location"),
+                            'gc_type' => 'Reference Point',
                             'sym' => 'Block, Green',
                             'description' => sprintf(
                                 _("Your own custom coordinates for the %s geocache"),

@@ -7,6 +7,7 @@ use okapi\core\Cache;
 use okapi\core\Db;
 use okapi\core\FileCache;
 use okapi\core\Okapi;
+use okapi\Settings;
 
 class TileRenderer
 {
@@ -356,8 +357,8 @@ class TileRenderer
 
             # Split the name into a couple of lines.
 
-            //$font = $GLOBALS['rootpath'].'util.sec/bt.ttf';
-            $font = __DIR__.'/../../../../okapi/static/tilemap/tahoma.ttf';
+            $font = Settings::get('TILEMAP_FONT_PATH');
+            if (!$font) $font = __DIR__.'/../../../../okapi/static/tilemap/tahoma.ttf';
             $size = 25;
             $lines = explode("\n", self::wordwrap($font, $size, 64*4 - 6*2, $name));
 

@@ -148,7 +148,7 @@ class Okapi
 
         # Make sure we're not spamming.
 
-        $cache_key = 'mail_admins_counter/'.(floor(time() / 3600) * 3600).'/'.md5($subject);
+        $cache_key = 'mail_admins_counter/'.(floor(time() / 1800) * 1800).'/'.md5($subject);
         try {
             $counter = Cache::get($cache_key);
         } catch (\Exception $e) {

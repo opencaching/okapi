@@ -182,6 +182,14 @@ final class Settings
         'SITE_LOGO' => null,
 
         /**
+         * Alternative file path of the font which is used for rendering maps.
+         * Setting introduced to fix map issue on develsite: imagettfbbox()
+         * cannot open font file on SMB-mounted path.
+         */
+
+        'TILEMAP_FONT_PATH' => null,
+
+        /**
          * Settings for the OCDE HTML purifier which is used by services/logs/submit.
          */
         'OCDE_HTML_PURIFIER_SETTINGS' => array(),
