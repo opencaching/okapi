@@ -108,7 +108,6 @@ class WebService
         Db::execute("commit");
         LogsCommon::update_statpic("", $log['type'], $log['user']['internal_id']);
 
-        Okapi::update_user_activity($request);
         $result = array(
             # Currently nothing can wrong - there are no restriction on deleting
             # own logs. But that may change in the future, or we me add other

@@ -79,7 +79,6 @@ class WebService
             unlink(Settings::get('IMAGES_DIR').'/'.$filename);
         }
 
-        Okapi::update_user_activity($request);
         $result = array(
             'success' => true,
         );

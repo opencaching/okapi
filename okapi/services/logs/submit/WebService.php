@@ -558,7 +558,6 @@ class WebService
             throw $e;
         }
 
-        Okapi::update_user_activity($request);
         return Okapi::formatted_response($request, $result);
     }
 

@@ -77,7 +77,6 @@ class WebService
                 ");
         }
 
-        Okapi::update_user_activity($request);
         $result = array(
             'success' => true,
         );
