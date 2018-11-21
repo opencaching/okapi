@@ -2,14 +2,15 @@
     <brief>Get information on available logging features</brief>
     <issue-id>567</issue-id>
     <desc>
-        <p>This method tells which features will be available when the
-        user of the access token submits or edits a log entry. You may
-        use it to disable nonfunctional options in a user interface.</p>
+        <p>This method tells which features are available when your user
+        will submit or edit a log entry.</p>
 
         <p>Using this method is <i>always optional</i>. You never need to
         know about differences between OKAPI installations or logging
         preconditions. If a logging feature is not avaible, OKAPI will
-        accept the request and return a user-friendly explanation.</p>
+        accept the request and return a user-friendly explanation.
+        But you may use this method to improve usability of your app,
+        e.g. by disabling nonfunctional options.</p>
     </desc>
     <opt name='cache_code'>
         <p>The code of the geocache to be logged. Available features for

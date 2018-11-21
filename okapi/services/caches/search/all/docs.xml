@@ -29,9 +29,13 @@
     </opt>
     <opt name='status' default='Available'>
         <p>Pipe-separated list of status codes. Only caches matching any of the given
-        statuses will included in the response. For a list of cache status codes, see
-        <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>
-        method.</p>
+        statuses will included in the response. The codes are:</p>
+        <ul>
+            <li><b>Available</b> - Cache is available and ready for search,</li>
+            <li><b>Temporarily unavailable</b> - Cache is unavailable (probably
+            cannot be found) but may be restored,</li>
+            <li><b>Archived</b> - Cache is permanently unavailable (moved to the archives).</li>
+        </ul>
     </opt>
     <opt name='owner_uuid'>
         <p>Pipe-separated list of user IDs. If given, the list of returned caches

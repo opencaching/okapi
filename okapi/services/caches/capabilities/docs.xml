@@ -5,10 +5,12 @@
         <p>This method tells which geocache properties are available at this
         OKAPI installation.</p>
         
-        <p>Using this method is mostly optional. You rarely need to know about
-        differences between OKAPI installations when searching for or
-        retrieving geocaches. But this method may help to improve user
-        interfaces, e.g. by hiding unnecessary search options.</p>
+        <p>You may need it when
+        <a href='%OKAPI:methodargref:services/caches/edit%'>editing</a> geocache
+        listings and when searching for caches by cache type. In all other
+        cases, you don't need to know about differences between OKAPI
+        installations. But still this method may help to improve usability
+        of your app, e.g. by hiding unnecessary search options.</p>
     </desc>
     <common-format-params/>
     <returns>

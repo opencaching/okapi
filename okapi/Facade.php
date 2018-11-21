@@ -61,8 +61,11 @@ class Facade
      * whenever you need to access OKAPI services from within OC code. If you want to simulate
      * Level 3 Authentication, you should supply user's internal ID (the second parameter).
      */
-    public static function service_call($service_name, $user_id_or_null, $parameters)
-    {
+    public static function service_call(
+        $service_name,
+        $user_id_or_null,  # ID of the logged-in user; noone else! See issues #496 and #439.
+        $parameters
+    ) {
         $request = new OkapiInternalRequest(
             new OkapiFacadeConsumer(),
             ($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,
@@ -78,8 +81,11 @@ class Facade
      * terms of caching), 2. It outputs the service response directly, instead
      * of returning it.
      */
-    public static function service_display($service_name, $user_id_or_null, $parameters)
-    {
+    public static function service_display(
+        $service_name,
+        $user_id_or_null,  # ID of the logged-in user; noone else! See issues #496 and #439.
+        $parameters
+    ) {
         $request = new OkapiInternalRequest(
             new OkapiFacadeConsumer(),
             ($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,
