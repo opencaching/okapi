@@ -1160,6 +1160,11 @@ class Okapi
         return array_keys(self::$submittable_log_types);
     }
 
+    public static function is_submittable_logtype($name)
+    {
+        return isset(self::$submittable_log_types[$name]);
+    }
+
     /**
      * E.g. 'Found it' => 1. For unsupported names throws Exception.
      */

@@ -4,6 +4,7 @@ namespace okapi\services\logs\capabilities;
 
 use okapi\core\Db;
 use okapi\core\Exception\BadRequest;
+use okapi\core\Exception\InvalidParam;
 use okapi\core\Okapi;
 use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
@@ -21,7 +22,8 @@ class WebService
 
     /**
      * This method redundantly implements parts of logs/submit and logs/edit logic.
-     * It's only logic that decides if a CannotPublishException is thrown.
+     * With exception of the allowed log types for recommending and rating, it's
+     * only logic that decides if a CannotPublishException is thrown.
      *
      * This means:
      *
@@ -31,10 +33,13 @@ class WebService
      *     2. With every change to the allowed log paramters logic, OKAPI 
      *        developers MUST check if logs/capabilities needs an update.
      *
-     *     3. If developers fail to do so, it will not break anything. Either
-     *        new OKAPI feature may not be immediatly available to all apps,
-     *        until we fix it here. Or a CannotPublishException may be thrown,
-     *        informing users that a feature is not available.
+     *     3. If developers fail to do so, it usually will not break anything.
+     *        Either new OKAPI feature may not be immediatly available to all
+     *        apps, until we fix it here. Or a CannotPublishException may be
+     *        thrown, informing users that a feature is not available. The only
+     *        exception are the few cases which would throw a BadRequest, if
+     *        developers rely on a buggy capability value that contradicts the
+     *        docs.
      **/
 
     public static function call(OkapiRequest $request)
@@ -70,6 +75,11 @@ class WebService
                 'fields' => 'type|status|owner|is_found|is_recommended|my_rating'
             ))
         );
+
+        $logtype = $request->get_parameter('logtype');
+        if ($logtype !== null && !Okapi::is_submittable_logtype($logtype)) {
+            throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
+        }
 
         # prepare some common variables
 
@@ -176,6 +186,7 @@ class WebService
                 array_keys($disabled_logtypes)
             ));
         }
+        $logtype_is_allowed = ($logtype === null || !isset($disabled_logtypes[$logtype]));
 
         # can_recommend and rcmd_founds_needed
 
@@ -183,18 +194,24 @@ class WebService
         # confirming an existing recommendation by 'services/logs/edit?recommend=true'.
 
         $can_recommend = (
+            $logtype_is_allowed &&
             $is_logger &&
             !$is_owner &&
-            !$cache['is_recommended'] &&
             !($ocpl && $event) &&
-            !(isset($disabled_logtypes['Found it']) && isset($disabled_logtypes['Attended']))
+            ($logtype === null || in_array($logtype, ['Found it', 'Attended'])) &&  # throws BadRequest
+            !$cache['is_recommended'] &&
+            !(
+                ($submit && isset($disabled_logtypes['Found it']) && isset($disabled_logtypes['Attended'])) ||
+                ($edit && $ocpl && $cache['is_found'] && !in_array($log['type'], ['Found it', 'Attended']))
+                # (Cannot add a second OCPL found log for the cache, so we must edit THE found log to add rcmd.)
+            )
         );
         if (!$can_recommend) {
             $result['can_recommend'] = 'false';
             $result['rcmd_founds_needed'] = null;
         } else {
             $founds_needed = $user['rcmd_founds_needed'];
-            if ($submit || $log['type'] != 'Found it')
+            if ($submit || !in_array($log['type'], ['Found it', 'Attended']))
             {
                 # To add a recomendation, the user must either submit a new
                 # 'Found it' log, or change an existing log's type to 'Found it'.
@@ -214,26 +231,37 @@ class WebService
             }
         }
 
-        # Note: When any of the following features is added to services/logs/edit,
+        # Note: If any of the following features is added to services/logs/edit,
         # the $submit operands must be replaced by $is_logger (= only own logs
         # may be edited).
 
         # other return values
 
         $result['can_rate'] =
+            $logtype_is_allowed &&
             $submit &&
             $ocpl &&
             !$is_owner &&
+            ($logtype === null || in_array($logtype, ['Found it', 'Attended'])) &&  # throws BadRequest
             ($cache['my_rating'] == null) &&
             !(isset($disabled_logtypes['Found it']) && isset($disabled_logtypes['Attended']));
 
         $result['can_set_needs_maintenance'] =
+            $logtype_is_allowed &&
             $submit &&
-            !($ocpl && $event);
+            !($ocpl && $event) &&
+            ($logtype === null || in_array(
+                $logtype, [
+                    'Found it', 'Comment', 'Temporarily unavailable',
+                    ($ocpl ? "Didn't find it" : 'Attended')
+                ]
+            ));
 
         $result['can_reset_needs_maintenance'] =
+            $logtype_is_allowed &&
             $submit &&
-            !$ocpl;
+            !$ocpl &&
+            ($logtype === null || !in_array($logtype, ["Didn't find it", 'Archived']));
 
         # Done. Return the results.
 

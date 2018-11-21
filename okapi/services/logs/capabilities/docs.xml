@@ -2,9 +2,9 @@
     <brief>Get information on available logging features</brief>
     <issue-id>567</issue-id>
     <desc>
-        <p>This method tells which features are available for submitting
-        or editing a log entry. You may use it to disable nonfunctional
-        options in a user interface.</p>
+        <p>This method tells which features will be available when the
+        user of the access submits or edits a log entry. You may use it
+        to disable nonfunctional options in a user interface.</p>
 
         <p>Using this method is <i>always optional</i>. You never need to
         know about differences between OKAPI installations or logging
@@ -23,6 +23,14 @@
         will be returned. Either this <i>or</i> the <b>cache_code</b> argument
         must be supplied.</p>
     </opt>
+    <opt name='logtype'>
+        <p>The type of log entry the user wants to submit; one of the
+        identifiers returned as <b>submittable_logtypes</b> by an earlier
+        call to this method. If given, all the <b>can_</b> fields will reflect
+        the capabilities for this type of log.  See the
+        <a href='%OKAPI:methodargref:services/logs/entry%'>services/logs/entry</a>
+        method for more information on log types.</p>
+    </opt>
     <common-format-params/>
     <returns>
         <p>A dictionary of the following structure:</p>
@@ -34,7 +42,7 @@
                 many conditions, like the cache type and state.</p>
             </li>
             <li>
-                <p><b>can_recommend</b> - tells if the user can add a
+                <p><b>can_recommend</b> - string, tells if the user can add a
                 recommendation for the geocache. One of the following:</p>
                 <ul>
                     <li>

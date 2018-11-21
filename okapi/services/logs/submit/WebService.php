@@ -230,17 +230,40 @@ class WebService
                 }
             }
 
-            # Geocaches must be in good shape before enabling them. At OCDE,
-            # enabling implies setting "cache is ok" (does not need maintenance).
-
-            if ($logtype == 'Ready to search')
+            if ($logtype == 'Archived' && $needs_maintenance2 != 'null')
             {
+                self::$success_message .= " "._(
+                    "However, your maintenance status tag was ignored, because ".
+                    "archived caches don't need maintenance."
+                );
+                $needs_maintenance2 = 'null';
+            }
+            elseif ($logtype == 'Ready to search')
+            {
+                # Geocaches must be in good shape before enabling them. At OCDE,
+                # enabling implies setting "cache is ok" (does not need maintenance).
+
                 if ($needs_maintenance2 == 'true')
                     throw new CannotPublishException(_(
                         "The geocache must be maintained before it is enabled."
                     ));
                 elseif ($needs_maintenance2 == 'null' && Settings::get('OC_BRANCH') == 'oc.de')
                     $needs_maintenance2 = 'false';
+            }
+        }
+
+        if ($logtype == "Didn't find it" && $needs_maintenance2 != 'null')
+        {
+            if ($needs_maintenance2 == 'false' || Settings::get('OC_BRANCH') == 'oc.de')
+            {
+                # OCDE doesn't allow to set NM with "Didn't find it", because users
+                # often overestimate their ability to find caches. Cache may be fine.
+                # (But the user may still submit an additional comment log with NM.)
+
+                self::$success_message .= " "._(
+                    "However, your maintenance status tag was ignored, because ".
+                    "you didn't find the cache."
+                );
             }
         }
 

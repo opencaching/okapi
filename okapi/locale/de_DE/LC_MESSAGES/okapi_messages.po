@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-20 20:01+0100\n"
-"PO-Revision-Date: 2018-11-20 20:03+0100\n"
+"POT-Creation-Date: 2018-11-21 14:33+0100\n"
+"PO-Revision-Date: 2018-11-21 14:39+0100\n"
 "Last-Translator: following <following@online.de>\n"
 "Language-Team: following <following@online.de>\n"
 "Language: de\n"
@@ -176,7 +176,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/'>CC-BY-NC-ND</a>; alle "
 "Logeinträge &copy; jeweiliger Autor"
 
-#: services/logs/LogsCommon.php:66
+#: services/logs/LogsCommon.php:69
 msgid ""
 "This cache is an Event cache. You cannot \"Find\" it (but you can attend it, "
 "or comment on it)!"
@@ -184,7 +184,7 @@ msgstr ""
 "Dies ist ein Event-Cache. Du kannst ihn nicht \"finden\" (aber du kannst am "
 "Event teilnehmen oder einen Hinweis loggen)."
 
-#: services/logs/LogsCommon.php:75
+#: services/logs/LogsCommon.php:78
 msgid ""
 "This cache is NOT an Event cache. You cannot \"Attend\" it (but you can find "
 "it, or comment on it)!"
@@ -192,21 +192,21 @@ msgstr ""
 "Dies ist KEIN Event-Cache. Du kannst an ihm nicht \"teilnehmen\" (aber du "
 "kannst ihn finden oder kommentieren)."
 
-#: services/logs/LogsCommon.php:91
+#: services/logs/LogsCommon.php:94
 msgid "This cache requires a password. You didn't provide one!"
 msgstr ""
 "Dieser Cache kann nur mit Kennwort geloggt werden, aber du hast keines "
 "angegeben."
 
-#: services/logs/LogsCommon.php:95
+#: services/logs/LogsCommon.php:98
 msgid "Invalid password!"
 msgstr "Ungültiges Kennwort!"
 
-#: services/logs/LogsCommon.php:104
+#: services/logs/LogsCommon.php:107
 msgid "Your have to supply some text for your comment."
 msgstr "Du musst einen Text für dein Hinweislog eingeben!"
 
-#: services/logs/LogsCommon.php:130
+#: services/logs/LogsCommon.php:133
 msgid ""
 "You are trying to publish a log entry with a date in future. Cache log "
 "entries are allowed to be published in the past, but NOT in the future."
@@ -214,7 +214,7 @@ msgstr ""
 "Das Datum deines Logeintrags liegt in der Zukunft. Cache-Logs können nur für "
 "die Vergangenheit oder für heute eingetragen werden."
 
-#: services/logs/LogsCommon.php:137
+#: services/logs/LogsCommon.php:140
 msgid ""
 "You cannot attend an event before it takes place. Please check the log type "
 "and date."
@@ -222,7 +222,7 @@ msgstr ""
 "Du kannst ein Event nicht besuchen, bevor es stattfindet. Bitte überprüfe "
 "den Logtyp und das Logdatum."
 
-#: services/logs/LogsCommon.php:247
+#: services/logs/LogsCommon.php:250
 msgid ""
 "You are the owner of this cache. You may submit \"Comments\" and status logs "
 "only!"
@@ -230,7 +230,7 @@ msgstr ""
 "Als Besitzer des Caches kannst du nur Hinweise und den Cachestatus loggen, "
 "keine Funde oder Nichtfunde."
 
-#: services/logs/LogsCommon.php:277
+#: services/logs/LogsCommon.php:280
 msgid ""
 "You have already submitted a \"Found it\" log entry once. Now you may submit "
 "\"Comments\" only!"
@@ -238,7 +238,7 @@ msgstr ""
 "Du hast diesen Cache bereits als \"gefunden\" geloggt. Ein zweites Fundlog "
 "ist nicht möglich, aber du kannst stattdessen einen Hinweis loggen."
 
-#: services/logs/LogsCommon.php:279
+#: services/logs/LogsCommon.php:282
 msgid ""
 "You have already submitted an \"Attended\" log entry once. Now you may "
 "submit \"Comments\" only!"
@@ -246,7 +246,7 @@ msgstr ""
 "Du hast dieses Event bereits als \"teilgenommen\" geloggt. Eine zweite "
 "Teilnahme ist nicht möglich, aber du kannst stattdessen einen Hinweis loggen."
 
-#: services/logs/LogsCommon.php:297
+#: services/logs/LogsCommon.php:300
 #, php-format
 msgid "You don't have any recommendations to give. Find one more cache first!"
 msgid_plural ""
@@ -270,7 +270,7 @@ msgstr "Auf %s können keine Event-Caches empfohlen werden."
 msgid "You may not recommend your own caches."
 msgstr "Du kannst keine eigenen Caches empfehlen."
 
-#: services/logs/edit/WebService.php:234
+#: services/logs/edit/WebService.php:277
 msgid "Your log entry has been updated successfully."
 msgstr "Die Änderungen an deinem Log wurden gespeichert."
 
@@ -368,29 +368,45 @@ msgstr ""
 msgid "%s does not allow to unarchive geocaches."
 msgstr "%s erlaubt keine Reaktivierung archivierter Caches."
 
-#: services/logs/submit/WebService.php:240
+#: services/logs/submit/WebService.php:236
+msgid ""
+"However, your maintenance status tag was ignored, because archived caches "
+"don't need maintenance."
+msgstr ""
+"Deine zusätzliche Angabe zum Cachezustand wurde jedoch ignoriert, weil "
+"archivierte Caches keine Wartung benötigen."
+
+#: services/logs/submit/WebService.php:248
 msgid "The geocache must be maintained before it is enabled."
 msgstr "Der Geocache muss gewartet werden, bevor er aktiviert wird."
 
-#: services/logs/submit/WebService.php:304
+#: services/logs/submit/WebService.php:264
+msgid ""
+"However, your maintenance status tag was ignored, because you didn't find "
+"the cache."
+msgstr ""
+"Deine zusätzliche Angabe zum Cachezustand wurde jedoch ignoriert, weil du "
+"den Cache nicht gefunden hast."
+
+#: services/logs/submit/WebService.php:327
 msgid "You have already submitted a log entry with exactly the same contents."
 msgstr ""
 "Du hast bereits einen Logeintrag mit genau dem gleichen Inhalt gemacht."
 
-#: services/logs/submit/WebService.php:320
+#: services/logs/submit/WebService.php:343
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr ""
 "Du hast diesen Cache bereits bewertet. Deine Bewertung ist nicht änderbar."
 
-#: services/logs/submit/WebService.php:333
+#: services/logs/submit/WebService.php:356
 msgid "You have already recommended this cache once."
 msgstr "Du hast diesen Cache bereits empfohlen."
 
-#: services/logs/submit/WebService.php:396
+#: services/logs/submit/WebService.php:419
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Event-Caches können keine \"Wartung benötigen\"."
 
-#: services/logs/submit/WebService.php:512
+#: services/logs/submit/WebService.php:535
 msgid "Your cache log entry was posted successfully."
 msgstr "Dein Log wurde veröffentlicht."
 
