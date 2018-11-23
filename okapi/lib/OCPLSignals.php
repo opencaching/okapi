@@ -24,13 +24,15 @@ class OCPLSignals
     /** update merit badges after cache was found, or 'found' log disappeared **/
     public static function update_merit_badges($cache_id, $user_id)
     {
-        self::create('log-merit-badges', ['cache_id' => $cache_id, 'user_id' => $user_id]);
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+            self::create('log-merit-badges', ['cache_id' => $cache_id, 'user_id' => $user_id]);
     }
 
     /** update cache altutude after coords have changed **/
     public static function cache_coords_changed($cache_id)
     {
-        self::create('cache-altitude', ['cache_id' => $cache_id]);
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+            self::create('cache-altitude', ['cache_id' => $cache_id]);
     }
 
     /** create a new signal **/
@@ -39,16 +41,14 @@ class OCPLSignals
         if (!isset(self::$signal_types[$signal_type])) {
             throw new Exception("tried to add signal of undefined type '".$signal_type."'");
         }
-        if (Settings::get('OC_BRANCH') == 'oc.pl') {
-            Db::execute("
-                insert into okapi_signals (type, payload, created_at)
-                values (
-                    ".self::$signal_types[$signal_type].",
-                    '".Db::escape_string(serialize($payload))."',
-                    now()
-                )
-            ");
-        }
+        Db::execute("
+            insert into okapi_signals (type, payload, created_at)
+            values (
+                ".self::$signal_types[$signal_type].",
+                '".Db::escape_string(serialize($payload))."',
+                now()
+            )
+        ");
     }
 
     /**
@@ -60,12 +60,20 @@ class OCPLSignals
         static $reverse_types = null;
 
         Db::execute("start transaction");
+
+        # The signal processing is designed to run concurrently, i.e. in
+        # multiple instances of the same OC cronjob. This can speed up jobs
+        # like the altitude calculation, which block on request of external
+        # data. The "... for update" locks the selected rows until commit
+        # and thus ensures that they cannot be fetched by a concurrent thread:
+
         $signals = Db::select_all("
             select id, type, payload
             from okapi_signals
             where fetched_at is null or timestampdiff(minute, fetched_at, now()) >= 60
             order by id
             limit ".($maxcount + 0)."
+            for update
         ");
         if ($signals)
         {

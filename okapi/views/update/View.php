@@ -842,4 +842,9 @@ class View
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8
         ");
     }
+
+    private static function ver125()
+    {
+        Db::execute("alter table okapi_signals engine=InnoDB");
+    }
 }
