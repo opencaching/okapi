@@ -509,7 +509,13 @@ class WebService
         # Finalize the transaction.
 
         Db::execute("commit");
-        LogsCommon::update_statpic($logtype, "", $user['internal_id']);
+        LogsCommon::update_statpics(
+            $request,
+            $logtype,
+            "",
+            $user['internal_id'],
+            $cache['owner']['uuid']
+        );
 
         # Success. Return the uuids.
 
