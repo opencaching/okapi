@@ -85,6 +85,7 @@ class OCPLSignals
                 $signal['payload'] = unserialize($signal['payload']);
             }
         }
+        Db::execute("commit");
         return $signals;
     }
 
