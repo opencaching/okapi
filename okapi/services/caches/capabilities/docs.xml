@@ -2,19 +2,27 @@
     <brief>Get information on available geocache properties</brief>
     <issue-id>568</issue-id>
     <desc>
-        <p>This method tells which geocache properties are available at this
+        <p>Returns information on available geocache properties at this
         OKAPI installation.</p>
         
-        <p>You may need it when
+        <p>You may need this method when
         <a href='%OKAPI:methodargref:services/caches/edit%'>editing</a> geocache
-        listings and when searching for caches by cache type. In all other
+        listings and when searching for caches by type. In all other
         cases, you don't need to know about differences between OKAPI
         installations. But still this method may help to improve usability
         of your app, e.g. by hiding unnecessary search options.</p>
     </desc>
+    <opt name='fields' default='types|sizes|statuses|has_ratings'>
+        <p>Pipe-separated list of field names which you are interested in.
+        Selected fields will be included in the response. See below for the
+        list of available fields.</p>
+        <p>(Why a fields option? Because fields like <i>countries</i> and
+        <i>languages</i> may be added, that return lots of data or are
+        expensive to calculate.)</p>
+    </opt>
     <common-format-params/>
     <returns>
-        <p>A dictionary of the following structure:</p>
+        <p>A dictionary of the fields you have selected. Currently available fields:</p>
         <ul>
             <li>
                 <p><b>types</b> - list of the cache types which are currently
@@ -27,10 +35,16 @@
                 available at this installation.</p>
             </li>
             <li>
+                <p><b>statuses</b> - list of the cache statuses which are
+                currently available at this installation. See the
+                <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>
+                method for more information on cache types.</p>
+            </li>
+            <li>
                 <p><b>has_ratings</b> - boolean, <b>true</b> if this installation
-                can store geocache quality ratings. OKAPI provides methods to
-                submit and retrieve ratings, and to search for geocaches by
-                rating.</p>
+                can store geocache quality ratings. Use the
+                <a href='%OKAPI:methodargref:services/logs/capabilities%'>services/logs/capabilities</a>
+                method to find out if a given geocache can be rated.</p>
             </li>
             <li>
                 <p><b>password_max_length</b> - the maximum length of

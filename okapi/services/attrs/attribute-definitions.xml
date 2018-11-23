@@ -908,13 +908,13 @@ for the original implementations.
         <opencaching schema="OCDE" id="24" />
         <opencaching schema="OCUK" id="24" />
         <lang id="en">
-            <name>Near the parking area</name>
+            <name>Park and grab</name>
             <desc>
                 The geocache is located close to a parking area, only a few steps away.
             </desc>
         </lang>
         <lang id="de">
-            <name>nahe beim Auto</name>
+            <name>Drive-In-Cache</name>
             <desc>
                 Der Parkplatz befindet sich in unmittelbarer Nähe zum Geocache.
                 Es sind nicht mehr als einige Schritte notwendig, um den Geocache zu finden.
@@ -3035,7 +3035,7 @@ for the original implementations.
         <opencaching schema="OCRO" id="59" />
         <opencaching schema="OCUK" id="59" />
         <lang id="en">
-            <name>Suitable for children</name>
+            <name>Suitable for children (10-12 years)</name>
             <desc>
                 This geocache is suitable for children. All challenges can be solved by
                 children around the age of 10-12 years and the terrain has no risks

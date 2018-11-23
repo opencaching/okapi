@@ -944,7 +944,7 @@ class Okapi
     );
 
     /** Return all types of this OC site which are exposed by OKAPI. **/
-    public static function get_local_okapi_cache_types()
+    public static function get_local_cachetypes()
     {
         static $local_types = [];
         if (!$local_types)
@@ -1024,6 +1024,12 @@ class Okapi
         'Available' => 1, 'Temporarily unavailable' => 2, 'Archived' => 3
     );
 
+    /** Get list of statuses available at this installation **/
+    public static function get_local_statuses()
+    {
+        return array_keys(self::$cache_statuses);
+    }
+
     /** E.g. 'Available' => 1. For unknown names throws an Exception. */
     public static function cache_status_name2id($name)
     {
@@ -1058,7 +1064,7 @@ class Okapi
         'other' => 1,
     );
 
-    public static function get_local_cache_sizes()
+    public static function get_local_cachesizes()
     {
         # OCPL only knows a subset of sizes, which is defined in the
         # GeoCacheCommons class. OCDE supports all sizes; they are listed
@@ -1225,12 +1231,12 @@ class Okapi
                 case 3: return 0.7;
                 case 4: return 1.7;
                 case 5: return 3.0;
-               default: throw new Exception();
+               default: throw new \Exception();
             }
         }
         else
         {
-            throw new Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
+            throw new \Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
         }
     }
 
@@ -1250,7 +1256,7 @@ class Okapi
         }
         else
         {
-            throw new Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
+            throw new \Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
         }
     }
 

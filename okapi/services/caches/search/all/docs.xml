@@ -29,13 +29,18 @@
     </opt>
     <opt name='status' default='Available'>
         <p>Pipe-separated list of status codes. Only caches matching any of the given
-        statuses will included in the response. The codes are:</p>
+        statuses will be included in the response. There are three primary status
+        codes:</p>
         <ul>
             <li><b>Available</b> - Cache is available and ready for search,</li>
             <li><b>Temporarily unavailable</b> - Cache is unavailable (probably
             cannot be found) but may be restored,</li>
             <li><b>Archived</b> - Cache is permanently unavailable (moved to the archives).</li>
         </ul>
+        <p>More statuses are in use at OC sites and may be implemented in future
+        OKAPI versions (see <a href="https://github.com/opencaching/okapi/issues/565">discussion</a>).
+        The <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
+        method returns a list of statuses that can be searched for.</p>
     </opt>
     <opt name='owner_uuid'>
         <p>Pipe-separated list of user IDs. If given, the list of returned caches
@@ -43,7 +48,7 @@
 
         <p><b>Note:</b> User ID and Username are two different things!</p>
 
-        <p><b>Note:</b> If you want to include all caches <b>except</b> the ones
+        <p><b>Note:</b> If you want to include all caches <i>except</i> the ones
         owned by the given users, prepend your list with the "-" sign.</p>
     </opt>
     <opt name='name'>

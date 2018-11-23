@@ -10,7 +10,7 @@
         <p>Code of the geocache.</p>
     </req>
     <opt name='passwd'>
-        <p>String - the new password for 'Found it' or 'Attended' log entries.
+        <p>The new password for 'Found it' or 'Attended' log entries.
         If you supply an empty string, the password will be cleared, i.e.
         the geocache will not require a log password.</p>
         <p>You may query the maximum accepted password length for the OC site by
