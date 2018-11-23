@@ -14,6 +14,7 @@ use okapi\core\Exception\ParamMissing;
 use okapi\core\Okapi;
 use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
+use okapi\lib\OCPLSignals;
 use okapi\Settings;
 use Utils\Text\UserInputFilter; // OCPL specific
 
@@ -494,55 +495,6 @@ class LogsCommon
         }
     }
 
-    public static function update_statpics($request, $new_logtype, $old_logtype, $user_internal_id, $owner_uuid)
-    {
-        # For OCPL we need to delete stats-pictures which are changed by the log.
-        # Otherwise, the legacy OCPL code won't detect that the picture needs to
-        # be refreshed.
-
-        # OCDE will detect the change on its own (though there is some buggy
-        # statpic deletion code in OCDE code, which effectively does nothing due
-        # to wrong file path. But that should be fixed in OCDE code, not worked
-        # around here.)
-
-        if ($new_logtype == $old_logtype || Settings::get('OC_BRANCH') != 'oc.pl')
-            return;
-
-        $update_user_ids = [];
-
-        if ($new_logtype == 'Found it' || $new_logtype == 'Attended' ||
-            $old_logtype == 'Found it' || $old_logtype == 'Attended')
-        {
-            $update_user_ids[] = $user_internal_id;
-        }
-
-        # OCPL only counts active caches in the statpic. We need to do the same
-        # thing for the owner's statpic, if the cache availability may have
-        # changed.
-
-        if (array_intersect(
-            [$new_logtype, $old_logtype],
-            ['Ready to search', 'Temporarily unavailable', 'Archived']
-        )) {
-            $owner = OkapiServiceRunner::call(
-                'services/users/user',
-                new OkapiInternalRequest($request->consumer, null, array(
-                    'user_uuid' => $owner_uuid,
-                    'fields' => 'internal_id'
-                ))
-            );
-            $update_user_ids[] = $owner['internal_id'];
-        }
-
-        foreach ($update_user_ids as $user_id)
-        {
-            $filepath = Okapi::get_var_dir().'/images/statpics/statpic'.$user_id.'.jpg';
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
-        }
-    }
-
     public static function save_recommendation($user_internal_id, $cache_internal_id, $when)
     {
         if (Db::field_exists('cache_rating', 'rating_date'))
@@ -567,4 +519,63 @@ class LogsCommon
             ");
         }
     }
+
+    public static function ocpl_housekeeping(
+        $request,
+        $new_logtype,
+        $old_logtype,
+        $user_internal_id,
+        $owner_uuid,
+        $cache_internal_id
+    ) {
+        # For OCPL we need to delete stats-pictures which are changed by the log.
+        # Otherwise, the legacy OCPL code won't detect that the picture needs to
+        # be refreshed.
+
+        # OCDE will detect the change on its own (though there is some buggy
+        # statpic deletion code in OCDE code, which effectively does nothing due
+        # to wrong file path. But that should be fixed in OCDE code, not worked
+        # around here.)
+
+        if ($new_logtype == $old_logtype || Settings::get('OC_BRANCH') != 'oc.pl')
+            return;
+
+        $update_user_ids = [];
+
+        if ($new_logtype == 'Found it' || $new_logtype == 'Attended' ||
+            $old_logtype == 'Found it' || $old_logtype == 'Attended')
+        {
+            $update_user_ids[] = $user_internal_id;
+
+            # Also trigger an OCPL "merit badges" update.
+            OCPLSignals::update_merit_badges($cache_internal_id, $user_internal_id);
+        }
+
+        # OCPL only counts active caches in the statpic. We need to do the same
+        # thing for the owner's statpic, if the cache availability may have
+        # changed.
+
+        if ($owner_uuid !== null && array_intersect(
+            [$new_logtype, $old_logtype],
+            ['Ready to search', 'Temporarily unavailable', 'Archived']
+        )) {
+            $owner = OkapiServiceRunner::call(
+                'services/users/user',
+                new OkapiInternalRequest($request->consumer, null, array(
+                    'user_uuid' => $owner_uuid,
+                    'fields' => 'internal_id'
+                ))
+            );
+            $update_user_ids[] = $owner['internal_id'];
+        }
+
+        foreach ($update_user_ids as $user_id)
+        {
+            $filepath = Okapi::get_var_dir().'/images/statpics/statpic'.$user_id.'.jpg';
+            if (file_exists($filepath)) {
+                unlink($filepath);
+            }
+        }
+    }
+
 }

@@ -10,6 +10,7 @@ use okapi\core\OkapiErrorHandler;
 use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Token\OkapiFacadeAccessToken;
+use okapi\lib\OCPLSignals;
 use okapi\lib\OCSession;
 
 # OKAPI Framework -- Wojciech Rygielski <rygielski@mimuw.edu.pl>
@@ -294,6 +295,19 @@ class Facade
         }
         Cache::delete_many($prefixed_keys);
     }
-}
 
-# (This comment is added here simply to debug OKAPI deployment.........)
+    /**
+     * Signalling system for complex OC database consistency updates;
+     * see class OCPLSignals for more explanation.
+     */
+
+    public static function fetch_signals($maxcount)
+    {
+        return OCPLSignals::fetch($maxcount);
+    }
+
+    public static function signals_done($signals)
+    {
+        return OCPLSignals::delete($signals);
+    }
+}

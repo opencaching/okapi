@@ -472,8 +472,6 @@ class WebService
             LogsCommon::update_user_stats($user['internal_id'], null, $second_logtype);
         }
 
-        # TO DO: update OCPL "Merit Badges" (issue #552)
-
         # Save the rating.
 
         if ($rating)
@@ -509,12 +507,14 @@ class WebService
         # Finalize the transaction.
 
         Db::execute("commit");
-        LogsCommon::update_statpics(
+
+        LogsCommon::ocpl_housekeeping(
             $request,
             $logtype,
             "",
             $user['internal_id'],
-            $cache['owner']['uuid']
+            $cache['owner']['uuid'],
+            $cache['internal_id']
         );
 
         # Success. Return the uuids.

@@ -106,7 +106,15 @@ class WebService
 
         LogsCommon::update_statistics_after_change("", null, $log);
         Db::execute("commit");
-        LogsCommon::update_statpic("", $log['type'], $log['user']['internal_id']);
+
+        LogsCommon::ocpl_housekeeping(
+            $request,
+            "",
+            $log['type'],
+            $log['user']['internal_id'],
+            null,   # cache owner not needed when deleting a log; status cannot change
+            $log['cache_internal_id']
+        );
 
         $result = array(
             # Currently nothing can wrong - there are no restriction on deleting

@@ -828,4 +828,18 @@ class View
             ");
         }
     }
+
+    private static function ver124()
+    {
+        Db::execute("
+            CREATE TABLE okapi_signals (
+                id int(10) not null auto_increment,
+                type tinyint(2) not null,
+                payload blob not null,
+                created_at datetime not null,
+                fetched_at datetime default null,
+                PRIMARY KEY (id)
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+        ");
+    }
 }

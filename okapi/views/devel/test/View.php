@@ -10,6 +10,7 @@ use okapi\core\Okapi;
 use okapi\core\Response\OkapiHttpResponse;
 use okapi\core\CronJob\CronJobController;
 use okapi\services\replicate\ReplicateCommon;
+use okapi\lib\OCPLSignals;
 
 class View
 {
@@ -52,6 +53,9 @@ class View
 
         if (isset($_GET['cronjob']) && isset($_GET['key']))
             CronJobController::reset_job_schedule($_GET['cronjob'], $_GET['key']);
+
+        if (isset($_GET['dump_signals']))
+            $body = OCPLSignals::dump();
 
         if (isset($_GET['show_diagnostics']))
         {
