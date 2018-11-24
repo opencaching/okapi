@@ -93,6 +93,11 @@
                 will be ignored. This feature is not available yet at some OC
                 installations.</p>
             </li>
+            <li>
+                <p><b>has_image_positions</b> - boolean, <b>true</b> if this
+                installations supports arbitrary log image ordering (see the
+                <b>position</b> argument of the logs/images services).</p>
+            </li>
         </ul>
         <p>The <b>can_rate</b> and <b>can_..._maintenance</b> fields currently
         are always <b>false</b> if a log UUID is supplied. OKAPI so far does

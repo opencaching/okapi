@@ -49,8 +49,10 @@
         value (e.g. greater than the number of images), then OKAPI will try to
         use the its best guess (e.g. append the image to the end).</p>
 
-        <p>Note: OCPL-based installations will ignore this option and always append
-        new images to the end of the list.</p>
+        <p>Note: Some installations will ignore this option and always append
+        new images to the end of the list. The
+        <a href='%OKAPI:methodargref:services/logs/capabilities%'>services/logs/capabilities</a>
+        method tells if image positioning is available.</p>
     </opt>
     <opt name='langpref' default='en'>
         <p>Pipe-separated list of ISO 639-1 language codes. This indicates the

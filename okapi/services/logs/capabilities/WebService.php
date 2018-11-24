@@ -263,6 +263,9 @@ class WebService
             !$ocpl &&
             ($logtype === null || !in_array($logtype, ["Didn't find it", 'Archived']));
 
+        $result['has_image_positions'] =
+            Settings::get('OC_BRANCH') == 'oc.de';
+
         # Done. Return the results.
 
         return Okapi::formatted_response($request, $result);

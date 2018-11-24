@@ -43,11 +43,10 @@
         to change the order). This parameter takes the same 0-based value as
         described in the <b>add</b> method.</p>
 
-        <p>Please note, that only OCDE-based Opencaching installations allow
-        for the order of log images to be changed. OCPL-based installations
-        will ignore this parameter (you can check the <b>position</b> field in
-        the response to verify if the order has actually been changed or
-        not).</p>
+        <p>Please note that some Opencaching installations don't implement
+        image positioning; they will ignore this parameter. The
+        <a href='%OKAPI:methodargref:services/logs/capabilities%'>services/logs/capabilities</a>
+        method tells if image positioning is available.</p>
     </opt>
     <opt name='langpref' default='en'>
         <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
