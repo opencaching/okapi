@@ -22,7 +22,7 @@ class WebService
     private static $valid_field_names = array(
         'uuid', 'username', 'profile_url', 'internal_id', 'date_registered', 'is_admin',
         'caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given', 'rcmds_left',
-        'rcmd_founds_needed', 'home_location', 'description'
+        'rcmd_founds_needed', 'home_location'
     );
 
     public static function call(OkapiRequest $request)
@@ -41,7 +41,7 @@ class WebService
             if (!in_array($field, self::$valid_field_names))
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
         $rs = Db::query("
-            select user_id, uuid, username, latitude, longitude, date_created, description
+            select user_id, uuid, username, latitude, longitude, date_created
             from user
             where uuid in ('".implode("','", array_map('\okapi\core\Db::escape_string', $user_uuids))."')
         ");
@@ -60,13 +60,6 @@ class WebService
                     case 'uuid': $entry['uuid'] = $row['uuid']; break;
                     case 'username': $entry['username'] = $row['username']; break;
                     case 'profile_url': $entry['profile_url'] = Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']; break;
-                    case 'description':
-                        if (Settings::get('OC_BRANCH') == 'oc.de') {
-                            $entry['description'] = Okapi::fix_oc_html($row['description'], 1);
-                        } else {
-                            $entry['description'] = nl2br($row['description']);
-                        }
-                        break;
                     case 'is_admin':
                         # see issue 546
                         if (!$request->token) {

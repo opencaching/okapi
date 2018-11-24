@@ -16,10 +16,6 @@
 
     -->
     <changes>
-        <change commit="8c35d979" version="1835" time="2018-11-24T20:11:10+0100" type="enhancement">
-            Added the <i>description</i> field to
-            <a href="services/users/user.html">services/users/user</a>(s).
-        </change>
         <change commit="3b2ebae1" version="1807" time="2018-11-18T12:11:37+0100" type="enhancement">
             Added the <a href="services/caches/capabilities.html">services/caches/capabilities</a>
             method, and <b>updated</b> the
