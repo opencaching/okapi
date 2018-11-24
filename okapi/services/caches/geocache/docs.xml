@@ -58,15 +58,16 @@
             <li><b>description</b> - inserts the OC team annotations into the
             description texts,</li>
             <li><b>separate</b> (recommended) - includes the <b>oc_team_annotation</b> field
-            instead.</li>
+            instead. You are REQUIRED to display its contents alongside with
+            the owner's cache listing.</li>
         </ul>
-        <p>Please note that you are REQUIRED to display OC team annotations
-        alongside with the owner's cache listing. In this they differ from
-        <i>OC team
-        <a href="%OKAPI:methodargref:services/logs/entry%">log entries</a></i>,
-        which will only be visible when logs are displayed.</p>
-        <p>OC team annotations so far are only in use at OCPL-based sites.
-        OCDE installations will ignore this parameter.</p>
+        <p>OC team annotations are not to be confused with "OC Team comment"
+        <a href='%OKAPI:methodargref:services/logs/entry%'>log entries</a>,
+        which have a similar purpose, but need not to be visible with the cache
+        description. OC team annotations will be deleted when obsolete, while
+        the log entries usually will stay.</p>
+        <p>Note that some OC installations do not implement team annotations. They will
+        ignore this parameter.</p>
     </opt>
     <opt name='lpc' default='10'>
         Log-entries per cache - the number of logs returned in the <b>latest_logs</b> field.
@@ -153,7 +154,8 @@
                 <ul>
                     <li><b>Own</b>, a moving geocache which is carried by the owner,</li>
                     <li><b>Podcast</b>, a geocache with attached MP3 file(s). The MP3
-                    data is not accessible via OKAPI.</li>
+                        data is not accessible via OKAPI. This type is only in use
+                        at Opencaching.US.</li>
                     <li>(Types may be added or removed. Your application MUST be
                         prepared for any new types and may handle them as "Other".)</li>
                 </ul>
@@ -174,8 +176,8 @@
                 known to be in poor condition, e.g. damaged. Usually there will be further
                 explanations in the log entries.</p>
 
-                <p>Please note that only OCDE-based Opencaching installations provide this
-                information. ODPL-based sites will always return <b>false</b> here.</p>
+                <p>Please note that some Opencaching installations don't provide
+                this information; they will always return <b>false</b>.</p>
             </li>
             <li><b>url</b> - URL of the cache's web page,</li>
             <li>
@@ -322,11 +324,13 @@
                 overall rating of the cache, or <b>null</b> when the geocache does not have a
                 sufficient amount of votes to have a rating.</p>
 
-                <p><b>Note:</b> Only OCPL-based Opencaching installations provide ratings for
-                their geocaches. On OCDE-based installations, this field will always contain
-                <b>null</b>.</p>
+                <p><b>Note:</b> Some installations don't provide ratings for
+                their geocaches; they will always return <b>null</b> for this
+                field. The <b>has_ratings</b> field of
+                <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
+                tells if ratings are available.</p>
 
-                <p><b>Note:</b> Currently OCPL exposes cache ratings as integers only.
+                <p><b>Note:</b> Currently OC sites expose cache ratings as integers only.
                 OKAPI used floats here for forward-compatibility only. In other words, currently
                 you can get 4.0 or 5.0 here, but not 4.5. This may change in the future though,
                 without notice.</p>
@@ -335,16 +339,17 @@
                 <p>%OKAPI:infotag:ocpl-specific% <b>rating_votes</b> - number of votes submitted
                 for the rating of this cache.</p>
 
-                <p><b>Note:</b> Only OCPL-based Opencaching installations provide ratings for
-                their geocaches. On OCDE-based installations, this field will always contain
-                <b>0</b>.</p>
+                <p><b>Note:</b> Some installations don't provide ratings for their geocaches;
+                they will always return <b>0</b> for this field. The <b>has_ratings</b> field of
+                <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
+                tells if ratings are available.</p>
             </li>
             <li>
                 <p>%OKAPI:infotag:ocpl-specific% <b>my_rating</b> - float (between 1 and 5),
                 the rating the user gave for this cache; <b>null</b> if the user did not rate.</p>
                 <p>This is private data. You will need Level 3 Authentication to access
                 this field.</p>
-                <p>See the notices on the <b>rating</b> field.</p>
+                <p>See the notes on the <b>rating</b> field.</p>
             </li>
             <li><b>recommendations</b> - number of recommendations for this cache,</li>
             <li>
@@ -414,10 +419,10 @@
                 </ul>
             </li>
             <li>
-                <p>%OKAPI:infotag:ocde-specific% <b>preview_image</b> - On OCDE-based
+                <p>%OKAPI:infotag:ocde-specific% <b>preview_image</b> - On some
                 installations, owners may select one of the <b>images</b>
                 (see above) as a preview image. You are encouraged to display it as a 'teaser'
-                for this cache. On OCPL-based installations this functionality is disabled and you
+                for this cache. On other installations this functionality is disabled and you
                 will always get the <b>null</b> value here.</p>
 
                 <p>The value of <b>preview_image</b> is either <b>null</b> or a dictionary describing
@@ -443,7 +448,8 @@
                 It will only partially respond to the <b>langpref</b> parameter and may
                 contain an arbitrary mixture of languages and differently localized data
                 (<a href='https://github.com/opencaching/okapi/issues/533'>why?</a>).
-                OCDE installations currently will always return an empty string.</p>
+                Some installations don't implement OC team annotations; they currently
+                always return an empty string for this field.</p>
             </li>
             <li>
                 <p><b>attribution_note</b> - the proper attribution note for the cache listing according
@@ -581,7 +587,7 @@
             <li>
                 <b>date_created</b> - date and time (ISO 8601) when the
                 geocache was listed at the Opencaching site. For OCDE-based installations
-                this is the date when it was published, while for ODPL installations it is the
+                this is the date when it was published, while for OCPL installations it is the
                 date when it was originally submitted. These dates differ if the
                 geocache is prepared and then published later.
             </li>

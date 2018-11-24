@@ -20,7 +20,7 @@ body.api { background: #f5f1eb; }
 
 .infotag {
     display: inline-block;
-    background: #d9534f;
+    background: #5486b2;
     color: #fff !important;
     font-weight: normal;
     font-size: 68%;
@@ -63,6 +63,7 @@ a.infotag:hover {
 .article h1 .subh1 { font-size: 18px; font-weight: normal; color: #888; }
 .article h1 .subh1 b { font-weight: normal; color: #944; }
 .article h2 { clear: both; margin: 50px 0 10px 0; padding-top: 20px; font-weight: bold; font-style: italic; font-size: 22px; border-top: 2px dotted #aaf; }
+.article h3 { clear: both; margin: 20px 0 6px 0; font-weight: bold; font-style: italic; font-size: 18px }
 .article p { margin-bottom: 15px; }
 .article pre { margin-bottom: 15px; }
 .article ul { margin-bottom: 15px; margin-left: 35px; }

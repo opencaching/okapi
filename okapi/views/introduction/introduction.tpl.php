@@ -475,40 +475,78 @@ rather use <code>if ("z" in reason_stack) { ... }</code>.</p>
 <div class='issue-comments' issue_id='117'></div>
 
 
-<h2 id='oc-branch-differences'>Differences between OCPL and OCDE branches</h2>
+<h2>Differences between Opencaching installations</h2>
 
-<p>Client developers should be aware that the are two primary Opencaching
-codebase branches. Some Opencaching installations are running the OCPL branch,
-some other are running the OCDE branch. (You can read more about this
-<a href='https://github.com/opencaching/opencaching-pl/wiki#brief-introduction-in-english'>here</a>.)</p>
+<p>Client developers should be aware that Opencaching sites provide different
+sets of features. E.g. Opencaching.US currently does not support OKAPI log
+image upload, and there is no geocache rating system at Opencaching.DE.
+OKAPI implements several mechanisms that either hide those differences -
+you don't need to care about them - or allows your application to automatically
+adjust to the Opencaching site's capabilities.</p>
 
-<p>In general, <b>OKAPI supports both of these branches via exactly the same
-API interface</b>, so you don't have to worry about the internal differences.
-However, you should be aware of the fact, that some things work a bit different
-on one branch, than they on the other. (Like, for example, OCDE doesn't have a
-cache rating system, so whenever you ask for the <b>rating</b> field of a
-geocache, you will get <b>null</b>.)</p>
+<h3>OKAPI versions</h3>
 
-<p>In order for you to easily notice methods, parameters and fields which are
-specific to only a single of these branches, we display the following "tags" in
-many places:</p>
+<p>Now and then, new features are added to OKAPI. They will be listed in the
+<a href="changelog.html">Changelog</a>, including version numbers. By comparing
+those numbers to the installation's current OKAPI version number, as returned by the 
+<a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>
+method, applications can detect if a new feature is available.</p>
+
+<h3 id='site-capabilities'>Site capabilities</h3>
+
+<p>OKAPI methods generally are designed to abstract from differences between OC
+installations. E.g. if some geocache or log property is not implemented, OKAPI
+will return <i>null</i> or <i>false</i> (as explained in the method docs).
+When submitting data, unsupported options are mostly ignored (as documented),
+or OKAPI will return an HTTP 200 result with the <i>success</i>=<i>false</i>
+field and a user-friendly explanation (as documented).</p>
+
+<p>However, when searching for caches or submitting content, there are a few
+exceptions where this can't be done. The docs then will refer to one of the
+following methods, that your application can call to find out what features
+are available:</p>
 
 <ul>
-    <li><span class='infotag infotag-ocpl-specific'>OCPL</span> - indicates
-    that a certain method, parameter or field was designed specificly for
-    OCPL-based Opencaching sites,</li>
-
-    <li><span class='infotag infotag-ocde-specific'>OCDE</span> - indicates
-    that a certain method, parameter or field was designed specificly for
-    OCDE-based Opencaching sites.</li>
+    <li><a href='services/attrs/attribute_index.html'>services/attrs/attribute_index</a>
+        - list of available cache attributes,</li>
+    <li><a href='services/caches/capabilities.html'>services/caches/capabilities</a>
+        - geocache capabilities,</li>
+    <li><a href='services/logs/capabilities.html'>services/logs/capabilities</a>
+        - logging capabilities, including the submission of cache
+        recommendations and ratings.</li>
 </ul>
 
-<p>Please note, that <b>you still MAY use all such "marked" methods, parameters
-and fields on ALL OKAPI sites.</b> Our methods are designed in such a way that,
-even if they are not supported by the underlying Opencaching site, they still
-won't throw errors, etc. At worst, they will "fail silently", or return empty
-results. All these differences should be described in detail in the
-documentation of the affected methods, parameters and fields.</p>
+<p>This methods also return additional information, that allows to hide
+nonfunctional features from user interfaces. E.g. you may want to disable
+searching for geocaches by rating, if OKAPI will ignore the user's input
+(because the OC site does not implement rating).</p>
+
+<h3></h3>
+
+<h3 id='oc-branch-differences'>Branch tags</h3>
+
+<p>Throughout the OKAPI documentation, you will encounter options and fields
+that are tagged as "OCPL" or "OCDE". These tags have the following meaning:</p>
+
+<ul>
+    <li>
+        <span class='infotag infotag-ocde-specific'>OCDE</span> - This feature
+        currently is only in use at Opencaching sites that are based on the
+        OCDE software branch (currently Opencaching.DE/IT/FR). If your
+        application is NOT intended to be used with those sites, you may want
+        to skip this feature and not implement it.
+    </li>
+    <li>
+        <span class='infotag infotag-ocpl-specific'>OCPL</span> - This feature
+        currently is only in use at Opencaching sites that are based on the
+        OCPL software branch (currently Opencaching.PL, NL, US, UK, RO). If
+        your application is NOT intended to be used with those sites, you
+        may want to skip this feature and not implement it.
+    </li>
+</ul>
+
+<p>In all other cases, you are recommended to ignore the branch tags. See above
+for more information on differences between Opencaching sites.</p>
 
 <p>If you have any questions about this, then ask them
 <a href="https://github.com/opencaching/okapi/issues/463">here</a>.</p>

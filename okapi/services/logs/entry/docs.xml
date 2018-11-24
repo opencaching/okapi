@@ -157,7 +157,8 @@
                         state of the geocache listing.
                     </li>
                 </ul>
-                <p>Please note that OCPL-based installations will always return <b>null</b> here.</p>
+                <p>Please note that some OC installations do not implement this
+                flag and will always return <b>null</b>.</p>
             </li>
             <li><b>comment</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>, text entered
                 with the log entry,

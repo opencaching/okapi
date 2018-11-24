@@ -95,14 +95,18 @@
     <opt name='rating' infotags="ocpl-specific">
         <p>An integer in range between 1 and 5 - user's optional rating of a found cache.</p>
         <p>Important: <b>logtype</b> has to be "Found it" or "Attended" in order to use
-        this argument.</p>
-        <p>Note: You should allow your user to <b>not</b> rate a found cache.</p>
-        <p>Note: Some OKAPI installations (OCDE codebase) currently do not support
-        cache ratings. On such installations user's rating will be <b>ignored</b>
-        (if you include the rating, log entry will be posted successfully, but
-        rating will be ignored). The <b>can_rate</b> field of
+        this argument. The rating may be rejected if the user already rated
+        this cache. You may consult the <b>can_rate</b> field of
         <a href="%OKAPI:methodargref:services/logs/capabilities%">services/logs/capabilities</a>
-        tells if <em>this</em> installation implements rating.</p>
+        to find out if the rating will be accepted.</p>
+
+        <p>Note: You should allow your user to <b>not</b> rate a found cache.</p>
+        <p>Note: Some OKAPI installations do not support cache ratings. On such
+        installations user's rating will always be <i>ignored</i> (if you include
+        the rating, log entry will be posted successfully, but rating will be
+        ignored). The <b>has_ratings</b> field of
+        <a href="%OKAPI:methodargref:services/caches/capabilities%">services/caches/capabilities</a>
+        tells if ratings are avaialble at this installation.</p>
     </opt>
     <opt name='recommend' default='false'>
         <p>Set to <b>true</b> if the user wants to recommend this cache.</p>
@@ -148,7 +152,7 @@
                 your user thinks that the cache's condition is fine.</p>
 
                 <p>Note: The <b>false</b> option currently is not evaluated by some
-                installation (OCPL-based sites). They will just ignore it.</p>
+                installations. They will just ignore it.</p>
             </li>
         </ul>
 
