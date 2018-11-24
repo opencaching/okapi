@@ -26,6 +26,10 @@
             <li><b>uuid</b> - ID of the user,</li>
             <li><b>username</b> - username (login) of the user,</li>
             <li><b>profile_url</b> - URL of the user's Opencaching profile page,</li>
+            <li>
+                <p><b>description</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>,
+                the user's self-description as shown on the Opencaching profile page,</p>
+            </li>
             <li class='deprecated'>
                 <p><b>is_admin</b> - deprecated
                 (<a href='https://github.com/opencaching/okapi/issues/410'>why?</a>);
