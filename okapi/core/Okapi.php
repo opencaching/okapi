@@ -1043,11 +1043,7 @@ class Okapi
     {
         static $reversed = null;
         if ($reversed == null)
-        {
-            $reversed = array();
-            foreach (self::$cache_statuses as $key => $value)
-                $reversed[$value] = $key;
-        }
+            $reversed = array_flip(self::$cache_statuses);
         if (isset($reversed[$id]))
             return $reversed[$id];
         return 'Archived';
@@ -1093,11 +1089,7 @@ class Okapi
     {
         static $reversed = null;
         if ($reversed == null)
-        {
-            $reversed = array();
-            foreach (self::$cache_sizes as $key => $value)
-                $reversed[$value] = $key;
-        }
+            $reversed = array_flip(self::$cache_sizes);
         if (isset($reversed[$id]))
             return $reversed[$id];
         return "other";

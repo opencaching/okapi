@@ -2,7 +2,6 @@
 
 namespace okapi\services\logs\capabilities;
 
-use okapi\core\Db;
 use okapi\core\Exception\BadRequest;
 use okapi\core\Exception\InvalidParam;
 use okapi\core\Okapi;

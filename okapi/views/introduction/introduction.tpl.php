@@ -475,12 +475,12 @@ rather use <code>if ("z" in reason_stack) { ... }</code>.</p>
 <div class='issue-comments' issue_id='117'></div>
 
 
-<h2>Differences between Opencaching installations</h2>
+<h2 id='site-differences'>Differences between Opencaching sites</h2>
 
 <p>Client developers should be aware that Opencaching sites provide different
 sets of features. E.g. Opencaching.US currently does not support OKAPI log
-image upload, and there is no geocache rating system at Opencaching.DE.
-OKAPI implements several mechanisms that either hide those differences -
+image upload, but is the only site that provides "podcast geocaches".
+OKAPI implements several mechanisms that either level those differences -
 you don't need to care about them - or allows your application to automatically
 adjust to the Opencaching site's capabilities.</p>
 
@@ -488,11 +488,12 @@ adjust to the Opencaching site's capabilities.</p>
 
 <p>Now and then, new features are added to OKAPI. They will be listed in the
 <a href="changelog.html">Changelog</a>, including version numbers. By comparing
-those numbers to the installation's current OKAPI version number, as returned by the 
+those numbers to the installation's current OKAPI version number, as returned
+by the site's
 <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>
 method, applications can detect if a new feature is available.</p>
 
-<h3 id='site-capabilities'>Site capabilities</h3>
+<h3>Site capabilities</h3>
 
 <p>OKAPI methods generally are designed to abstract from differences between OC
 installations. E.g. if some geocache or log property is not implemented, OKAPI
@@ -502,9 +503,9 @@ or OKAPI will return an HTTP 200 result with the <i>success</i>=<i>false</i>
 field and a user-friendly explanation (as documented).</p>
 
 <p>However, when searching for caches or submitting content, there are a few
-exceptions where this can't be done. The docs then will refer to one of the
-following methods, that your application can call to find out what features
-are available:</p>
+exceptions where developers need to know about the site's capabilities. The
+docs then will refer to one of the following methods, that your application
+can call to find out what features are available:</p>
 
 <ul>
     <li><a href='services/attrs/attribute_index.html'>services/attrs/attribute_index</a>
@@ -517,9 +518,9 @@ are available:</p>
 </ul>
 
 <p>This methods also return additional information, that allows to hide
-nonfunctional features from user interfaces. E.g. you may want to disable
-searching for geocaches by rating, if OKAPI will ignore the user's input
-(because the OC site does not implement rating).</p>
+nonfunctional options from user interfaces. E.g. you may want to disable
+searching for geocaches by rating, if OKAPI would ignore the user's input
+(because the OC site does not implement ratings).</p>
 
 <h3></h3>
 
@@ -545,8 +546,8 @@ that are tagged as "OCPL" or "OCDE". These tags have the following meaning:</p>
     </li>
 </ul>
 
-<p>In all other cases, you are recommended to ignore the branch tags. See above
-for more information on differences between Opencaching sites.</p>
+<p>In all other us cases, you are recommended to ignore the branch tags. See
+above for more information on differences between Opencaching sites.</p>
 
 <p>If you have any questions about this, then ask them
 <a href="https://github.com/opencaching/okapi/issues/463">here</a>.</p>
