@@ -71,8 +71,8 @@ class View
         $calls_left = $total_calls;
         $runtime_left = $total_runtime;
 
-        $perc = function($a, $b) { return ($b > 0) ? sprintf("%.1f", 100 * $a / $b)."%" : "(?)"; };
-        $avg = function($a, $b) { return ($b > 0) ? sprintf("%.4f", $a / $b)."s" : "(?)"; };
+        $perc = function($a, $b) { return ($b > 0) ? number_format(100 * $a / $b, 1)."%" : "(?)"; };
+        $avg = function($a, $b) { return ($b > 0) ? number_format($a / $b, 4)."s" : "(?)"; };
         $get_stats = function() use (&$calls_left, &$runtime_left, &$total_calls, &$total_runtime, &$perc)
         {
             return (
@@ -83,7 +83,7 @@ class View
 
         print "%CALLS  %TIME  Description\n";
         print "====== ======  ======================================================================\n";
-        print $get_stats()."  $total_calls responses served. Total runtime: ".sprintf("%.2f", $total_runtime)."s\n";
+        print $get_stats()."  $total_calls responses served. Total runtime: ".number_format($total_runtime, 2)."s\n";
         print "\n";
         print "               All of these requests needed a TileTree build/lookup. The average runtime of\n";
         print "               these lookups was ".$avg($runtime['A'], $total_calls).". ".$perc($runtime['A'], $total_runtime)." of total runtime was spent here.\n";

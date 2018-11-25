@@ -39,7 +39,9 @@ class AdminStatsSender extends Cron5Job
         ");
         print "Hello! This is your weekly summary of OKAPI usage.\n\n";
         print "Apps active this week: ".$active_apps_count." out of ".$apisrv_stats['apps_count'].".\n";
-        print "Total of ".$weekly_stats['total_http_calls']." requests were made (".sprintf("%01.1f", $weekly_stats['total_http_runtime'])." seconds).\n\n";
+        print
+            "Total of ".number_format($weekly_stats['total_http_calls'])." requests were made".
+            " (".number_format($weekly_stats['total_http_runtime'], 1)." seconds).\n\n";
         $consumers = Db::select_all("
             select
                 s.consumer_key,
@@ -56,8 +58,8 @@ class AdminStatsSender extends Cron5Job
             order by sum(s.http_calls) desc
         ");
         print "== Consumers ==\n\n";
-        print "Consumer name                         Calls     Runtime\n";
-        print "----------------------------------- ------- -----------\n";
+        print "Consumer name                           Calls      Runtime\n";
+        print "----------------------------------- --------- ------------\n";
         foreach ($consumers as $row)
         {
             $name = $row['name'];
@@ -69,7 +71,7 @@ class AdminStatsSender extends Cron5Job
                 $name = mb_substr($name, 0, 32)."...";
             print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
             print str_pad(number_format($row['http_calls']), 10, " ", STR_PAD_LEFT);
-            print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)."s\n";
+            print str_pad(number_format($row['http_runtime'], 2), 12, " ", STR_PAD_LEFT)."s\n";
         }
         print "\n";
         $methods = Db::select_all("
@@ -84,8 +86,8 @@ class AdminStatsSender extends Cron5Job
             order by sum(s.http_calls) desc
         ");
         print "== Methods ==\n\n";
-        print "Service name                          Calls     Runtime      Avg\n";
-        print "----------------------------------- ------- ----------- --------\n";
+        print "Service name                            Calls      Runtime      Avg\n";
+        print "----------------------------------- --------- ------------ --------\n";
         foreach ($methods as $row)
         {
             $name = $row['service_name'];
@@ -93,10 +95,11 @@ class AdminStatsSender extends Cron5Job
                 $name = mb_substr($name, 0, 32)."...";
             print self::mb_str_pad($name, 35, " ", STR_PAD_RIGHT);
             print str_pad(number_format($row['http_calls']), 10, " ", STR_PAD_LEFT);
-            print str_pad(sprintf("%01.2f", $row['http_runtime']), 11, " ", STR_PAD_LEFT)."s";
-            print str_pad(sprintf("%01.4f", (
-                ($row['http_calls'] > 0) ? ($row['http_runtime'] / $row['http_calls']) : 0
-                )), 8, " ", STR_PAD_LEFT)."s\n";
+            print str_pad(number_format($row['http_runtime'], 2), 12, " ", STR_PAD_LEFT)."s";
+            print str_pad(number_format(
+                ($row['http_calls'] > 0) ? ($row['http_runtime'] / $row['http_calls']) : 0,
+                4
+            ), 8, " ", STR_PAD_LEFT)."s\n";
         }
         print "\n";
         $oauth_users = Db::select_all("

@@ -120,7 +120,7 @@ class CronJobController
     {
         foreach (self::get_enabled_cronjobs() as $cronjob)
         {
-            if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\CronJob\\".$job_name))
+            if (($cronjob->get_name() == $job_name) || ($cronjob->get_name() == "okapi\\core\\CronJob\\".$job_name))
             {
                 $cronjob->execute();
                 return;

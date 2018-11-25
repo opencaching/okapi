@@ -1366,7 +1366,8 @@ class Okapi
         $deg = abs($deg);
         $degrees = floor($deg);
         $minutes = ($deg - $degrees) * 60;
-        return sprintf("%s %d° %.3f'", $direction, $degrees, $minutes);
+        # Use number_format for the float because of issue #536.
+        return sprintf("%s %d° ", $direction, $degrees).number_format($minutes,3)."'";
     }
 
     /**
