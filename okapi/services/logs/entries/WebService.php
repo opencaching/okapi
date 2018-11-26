@@ -120,7 +120,7 @@ class WebService
                 'listing_is_outdated' => $flag_options[$row['listing_is_outdated']],
                 'oc_team_entry' => $row['oc_team_entry'] ? true : false,
                 'comment' => Okapi::fix_oc_html($row['text'], $row['text_html']),
-                'location' => $row['latitude'] === null ? null : round($row['latitude'], 6)."|".round($row['longitude'], 6),
+                'location' => $row['latitude'] === null ? null : Okapi::coords2latlon($row['latitude'], $row['longitude']),
                 'images' => array(),
                 'date_created' => date("Y-m-d", strtotime($row['date_created'])),
                 'last_modified' => date("Y-m-d", strtotime($row['last_modified'])),

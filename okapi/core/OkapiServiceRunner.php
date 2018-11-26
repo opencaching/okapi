@@ -201,7 +201,7 @@ class OkapiServiceRunner
                 '".Db::escape_string($user_id)."',
                 '".Db::escape_string($service_name)."',
                 '".Db::escape_string($calltype)."',
-                '".Db::escape_string($runtime)."'
+                ".Db::float_sql($runtime)."
             );
         ");
     }

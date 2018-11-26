@@ -484,7 +484,7 @@ class WebService
                 update caches
                 set
                     score = (
-                        score*votes + '".Db::escape_string($db_score)."'
+                        score*votes + ".Db::float_sql($db_score)."
                     ) / (votes + 1),
                     votes = votes + 1
                 where cache_id = '".Db::escape_string($cache['internal_id'])."'
@@ -494,7 +494,7 @@ class WebService
                 values (
                     '".Db::escape_string($user['internal_id'])."',
                     '".Db::escape_string($cache['internal_id'])."',
-                    '".Db::escape_string($db_score)."'
+                    ".Db::float_sql($db_score)."
                 );
             ");
         }

@@ -182,7 +182,12 @@ class Db
         return substr(self::$dbh->quote($value), 1, -1);  // soo ugly!
     }
 
-    public static function escape_float($value)
+    /**
+     * Formats number in a locale-independent way. Note that PHP locale is
+     * not tread-safe; see issue #536. The result does NOT need quotes
+     * when embedded into an SQL statement.
+     */
+    public static function float_sql($value)
     {
         return Okapi::float2string(floatval($value));
     }

@@ -59,15 +59,15 @@ class WebService
         $lat = $search_assistant->get_latitude_expr();
         $lon = $search_assistant->get_longitude_expr();
         $where_conds[] = "(
-            $lat >= '".Db::escape_float($bbsouth)."'
-            and $lat < '".Db::escape_float($bbnorth)."'
+            $lat >= ".Db::float_sql($bbsouth)."
+            and $lat < ".Db::float_sql($bbnorth)."
         )";
         if ($bbeast > $bbwest)
         {
             # Easy one.
             $where_conds[] = "(
-                $lon >= '".Db::escape_float($bbwest)."'
-                and $lon < '".Db::escape_float($bbeast)."'
+                $lon >= ".Db::float_sql($bbwest)."
+                and $lon < ".Db::float_sql($bbeast)."
             )";
         }
         else
@@ -75,8 +75,8 @@ class WebService
             # We'll have to assume that this bbox goes through the 180-degree meridian.
             # For example, $bbwest = 179 and $bbeast = -179.
             $where_conds[] = "(
-                $lon >= '".Db::escape_float($bbwest)."'
-                or $lon < '".Db::escape_float($bbeast)."'
+                $lon >= ".Db::float_sql($bbwest)."
+                or $lon < ".Db::float_sql($bbeast)."
             )";
         }
 

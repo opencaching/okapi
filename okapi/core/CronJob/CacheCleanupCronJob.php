@@ -31,7 +31,7 @@ class CacheCleanupCronJob extends Cron24Job
 
         Db::execute("
             update okapi_cache
-            set score = score * '".Db::escape_string($multiplier)."'
+            set score = score * ".Db::float_sql($multiplier)."
             where score is not null
         ");
         Db::execute("
@@ -56,7 +56,7 @@ class CacheCleanupCronJob extends Cron24Job
             delete from okapi_cache
             where
                 score is not null
-                and score < '".Db::escape_string($limit)."'
+                and score < ".Db::float_sql($limit)."
         ");
         Db::query("optimize table okapi_cache");
 

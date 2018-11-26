@@ -144,7 +144,9 @@ class View
         ");
         while (list($log2, $count, $size) = Db::fetch_row($rs))
         {
-            print $count." elements ($size bytes) with score between ".pow(2, $log2)." and ".pow(2, $log2 + 1).".\n";
+            print
+                $count." elements ($size bytes) with score between ".Okapi::float2string(pow(2, $log2)).
+                " and ".Okapi::float2string(pow(2, $log2 + 1)).".\n";
         }
 
         $response->body = ob_get_clean();

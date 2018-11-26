@@ -659,10 +659,10 @@ class Okapi
      */
     public static function get_distance_sql($lat1, $lon1, $lat2, $lon2)
     {
-        if (is_numeric($lat1)) $lat1 = Db::escape_float($lat1);
-        if (is_numeric($lon1)) $lon1 = Db::escape_float($lon1);
-        if (is_numeric($lat2)) $lat2 = Db::escape_float($lat2);
-        if (is_numeric($lon2)) $lon2 = Db::escape_float($lon2);
+        if (is_numeric($lat1)) $lat1 = Db::float_sql($lat1);
+        if (is_numeric($lon1)) $lon1 = Db::float_sql($lon1);
+        if (is_numeric($lat2)) $lat2 = Db::float_sql($lat2);
+        if (is_numeric($lon2)) $lon2 = Db::float_sql($lon2);
 
         $x1 = "(90-$lat1) * 3.14159 / 180";
         $x2 = "(90-$lat2) * 3.14159 / 180";
@@ -1346,11 +1346,20 @@ class Okapi
         }
     }
 
+    /** Coordinates => "lat|lon" **/
+    public static function coords2latlon($latitude, $longitude)
+    {
+        return
+            self::float2string(round($latitude, 6)).
+            "|".
+            self::float2string(round($longitude, 6));
+    }
+
     /**
-     * Formate a "lat|lon" location in a user-readable way;
+     * Format a "lat|lon" location in a user-readable way;
      * returns array with latitude and longitude component.
      */
-    public static function format_location($location)
+    public static function format_location_readable($location)
     {
         if (!preg_match('/^([+-]?[0-9]+(\.[0-9]*)?)\|([+-]?[0-9]+(\.[0-9]*)?)$/', $location, $matches))
             throw Exception("invalid location format");

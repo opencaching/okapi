@@ -487,7 +487,7 @@ class LogsCommon
                 Db::execute("
                     update caches
                     set
-                        score = (score*votes - '".Db::escape_string($user_score)."') / greatest(1, votes - 1),
+                        score = (score*votes - ".Db::float_sql($user_score).") / greatest(1, votes - 1),
                         votes = greatest(0, votes - 1)
                     where cache_id='".Db::escape_string($cache_internal_id)."'
                 ");

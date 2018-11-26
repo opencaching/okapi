@@ -252,7 +252,7 @@ class WebService
                         break;
                     case 'name': $entry['name'] = $row['name']; break;
                     case 'names': $entry['names'] = array(Settings::get('SITELANG') => $row['name']); break; // for the future
-                    case 'location': $entry['location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6); break;
+                    case 'location': $entry['location'] = Okapi::coords2latlon($row['latitude'], $row['longitude']); break;
                     case 'type': /* handled below */ break;
                     case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
                     case 'needs_maintenance': $entry['needs_maintenance'] = $row['needs_maintenance'] > 0; break;
@@ -1216,7 +1216,7 @@ class WebService
                     $index++;
                     $results[$cache_code]['alt_wpts'][] = array(
                         'name' => sprintf($wpt_format, $index),
-                        'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+                        'location' => Okapi::coords2latlon($row['latitude'], $row['longitude']),
                         'type' => $row['okapi_type'],
                         'type_name' => Okapi::pick_best_language($internal_wpt_type_id2names[$row['internal_type_id']], $langprefs),
                         'gc_type' => isset($gc_wpt_type[$row['okapi_type']]) ? $gc_wpt_type[$row['okapi_type']] : 'Reference Point',

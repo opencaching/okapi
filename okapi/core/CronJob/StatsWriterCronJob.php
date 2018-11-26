@@ -39,16 +39,16 @@ class StatsWriterCronJob extends PrerequestCronJob
                         '".Db::escape_string($row['service_name'])."',
                         '".Db::escape_string($row['calls'])."',
                         '".Db::escape_string(($row['calltype'] == 'http') ? $row['calls'] : 0)."',
-                        '".Db::escape_string($row['runtime'])."',
+                        ".Db::float_sql($row['runtime']).",
                         '".Db::escape_string(($row['calltype'] == 'http') ? $row['runtime'] : 0)."'
                     )
                     on duplicate key update
                         ".(($row['calltype'] == 'http') ? "
                             http_calls = http_calls + '".Db::escape_string($row['calls'])."',
-                            http_runtime = http_runtime + '".Db::escape_string($row['runtime'])."',
+                            http_runtime = http_runtime + ".Db::float_sql($row['runtime']).",
                         " : "")."
                         total_calls = total_calls + '".Db::escape_string($row['calls'])."',
-                        total_runtime = total_runtime + '".Db::escape_string($row['runtime'])."'
+                        total_runtime = total_runtime + ".Db::float_sql($row['runtime'])."
                 ");
             }
             Db::execute("delete from okapi_stats_temp;");
