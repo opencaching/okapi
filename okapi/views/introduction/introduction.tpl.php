@@ -475,7 +475,7 @@ rather use <code>if ("z" in reason_stack) { ... }</code>.</p>
 <div class='issue-comments' issue_id='117'></div>
 
 
-<h2 id='site-differences'>Differences between Opencaching sites</h2>
+<h2 id='oc-site-differences'>Differences between Opencaching sites</h2>
 
 <p>Client developers should be aware that Opencaching sites provide different
 sets of features. E.g. Opencaching.US currently does not support OKAPI log
