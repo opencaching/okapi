@@ -484,6 +484,13 @@ class LogsCommon
                     delete from scores
                     where ".$user_and_cache_condition_SQL."
                 ");
+
+                # Note that the 'rating' field is defined as float(2,1), so this
+                # calculation - which is inverts the log.php algorithm of OCPL
+                # code - can produce rounding errors, which - in rare cases -
+                # accumuluate to a wrong overall rating. This problem is
+                # neglectable, as the ratings are just fuzzy estimates.
+
                 Db::execute("
                     update caches
                     set

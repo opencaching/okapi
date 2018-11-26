@@ -479,6 +479,12 @@ class WebService
             # This code will be called for OCPL branch only. Earlier, we made sure,
             # to set $rating to null, if we're running on OCDE.
 
+            # Note that the 'rating' field is defined as float(2,1), so this
+            # calculation - which is copied from OCPL code - can produce
+            # rounding errors, which - in rare cases - accumuluate to a wrong
+            # overall rating. This problem is neglectable, as the ratings are
+            # just fuzzy estimates.
+
             $db_score = Okapi::encode_geocache_rating($rating);
             Db::execute("
                 update caches
