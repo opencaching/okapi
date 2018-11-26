@@ -71,7 +71,18 @@ foreach ($changes as &$line)
             $repo_version = $OKAPI_GIT_VERSION_BASE + count($repo_commits) - $repo_commits[$commit]['position'];
             $repo_time = date('Y-m-d\TH:m:s', $repo_commits[$commit]['time']) . $repo_commits[$commit]['timezone'];
 
-            if ($version != $repo_version) {
+            # Note: We will NOT re-calculate existing version numbers, which
+            # would shift if an older commit is merged. The re-calculation
+            # could cause erroneous behaviour of clients, that determine
+            # the availability of new features by changelog version number.
+            #
+            # (Developer refers to current API docs e.g. at OC.PL and tests
+            # for availability of a feature, which will *seem* unavailable
+            # at an out-of-date OKAPI installation, because the shifted version
+            # number mismatches the apisrv/installation version number of the
+            # out-of-date installation.)
+
+            if ($version == 0) {
                 $version = $repo_version;
                 echo $commit . ' version = ' . $version . "\n";
             }
