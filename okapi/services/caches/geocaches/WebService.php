@@ -641,15 +641,29 @@ class WebService
                     }
                     if ($include_team_annotation)
                     {
-                        # Do some ugly hack so that annotations are readble without OC CSS:
+                        # Some ugly hacks so that team annotations are readble without OC CSS;
+                        # see issue #533.
 
-                        $formatted_team_annotation = str_replace(
+                        # First replace <span> by <div>, because some HTML renderers ignore
+                        # "display:block" etc. for spans. Then add explicit style for the
+                        # div, so that it works without defining the "ocTeamCommentHeader"
+                        # CSS class.
+
+                        $formatted_team_annotation = mb_ereg_replace(
+                            '<span class="ocTeamCommentHeader"(.+?)</span>',
+                            '<div class="ocTeamCommentHeader"\1</div>',
+                            $row['oc_team_annotation'])
+                        ;
+                        $formatted_team_annotation = mb_ereg_replace(
                             'class="ocTeamCommentHeader"',
                             'class="ocTeamCommentHeader" style="display: block; padding-top: 0.5em;"',
-                            $row['oc_team_annotation']
+                            $formatted_team_annotation
                         );
                         $tmp = (
-                            '<div class="ocTeamCommentSection">'.
+                            # Add a margin-top, because some clients (e.g. c:geo) show the
+                            # description directly below the short description.
+
+                            '<div class="ocTeamCommentSection" style="margin-top: 1em">'.
                             "<b>"._("Annotations by the Opencaching team:")."</b><br />\n".
                             $formatted_team_annotation.
                             "<div style='display: block; padding-top: 0.5em'>("._("End of annotations").")</div>".
