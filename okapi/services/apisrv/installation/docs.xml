@@ -93,6 +93,10 @@
                 site to fit this restriction. Larger images may have been
                 uploaded in the past, or by other means than OKAPI.</p>
             </li>
+            <li>
+                <p><b>has_image_positions</b> - boolean, <b>true</b> if this
+                installations supports arbitrary ordering of uploaded images.</p>
+            </li>
         </ul>
     </returns>
 </xml>

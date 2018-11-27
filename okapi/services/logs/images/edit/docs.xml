@@ -45,7 +45,7 @@
 
         <p>Please note that some Opencaching installations don't implement
         image positioning; they will ignore this parameter. The
-        <a href='%OKAPI:methodargref:services/logs/capabilities%'>services/logs/capabilities</a>
+        <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>
         method tells if image positioning is available.</p>
     </opt>
     <opt name='langpref' default='en'>

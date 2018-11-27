@@ -30,6 +30,7 @@ class WebService
         $result['mobile_registration_url'] = Settings::get('MOBILE_REGISTRATION_URL');
         $result['image_max_upload_size'] = Settings::get('IMAGE_MAX_UPLOAD_SIZE');
         $result['image_rcmd_max_pixels'] = Settings::get('IMAGE_MAX_PIXEL_COUNT');
+        $result['has_image_positions'] = Settings::get('OC_BRANCH') == 'oc.de';
 
         # 'geocache_passwd_max_length' was replaced by 'password_max_length'
         # in the new services/caches/capabilities method. It had never been

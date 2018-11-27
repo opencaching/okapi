@@ -51,7 +51,7 @@
 
         <p>Note: Some installations will ignore this option and always append
         new images to the end of the list. The
-        <a href='%OKAPI:methodargref:services/logs/capabilities%'>services/logs/capabilities</a>
+        <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>
         method tells if image positioning is available.</p>
     </opt>
     <opt name='langpref' default='en'>
