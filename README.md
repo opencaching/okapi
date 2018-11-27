@@ -26,8 +26,9 @@ See a live installation here: https://opencaching.pl/okapi/
 
 ### Who's using OKAPI? ###
 
-OKAPI Project started in August 2011. Currently it is being used by the
-following Opencaching sites:
+OKAPI Project started in August 2011 and has become the standard API for
+national Opencaching sites. Currently it is being used by the
+following sites:
 
   * https://www.opencaching.pl/okapi/
   * https://www.opencaching.de/okapi/ (+.it +.fr)
@@ -36,25 +37,11 @@ following Opencaching sites:
   * http://www.opencaching.ro/okapi/
   * https://www.opencache.uk/okapi/
 
-The API itself is also being used by numerous geocaching clients (e.g. c:geo).
-The OKAPI project is aiming to become a standard API for all National
-Opencaching.XX sites.
+There is one site where OKAPI is not available yet:
 
-
-### Who CAN use OKAPI? ###
-
-We believe this plugin is capable of working with most of the following
-National Opencaching sites:
-
-  * http://www.opencaching.pl/ (DEPLOYED)
-  * http://www.opencaching.us/ (DEPLOYED)
-  * http://www.opencaching.de/ (DEPLOYED)
   * http://www.opencaching.cz/
-  * http://www.opencaching.it/ (DEPLOYED)
-  * http://www.opencaching.nl/ (DEPLOYED)
-  * http://www.opencaching.ro/ (DEPLOYED)
-  * http://www.opencaching.fr/ (DEPLOYED)
-  * http://www.opencache.uk/ (DEPLOYED)
+
+The API itself is also being used by numerous geocaching clients (e.g. c:geo).
 
 
 ### Who is developing OKAPI? ###
@@ -129,17 +116,22 @@ You can also read about how OKAPI tries to deal with OC site and branch differen
 
 ## Installation / Update Instructions ##
 
-  1. Fetch the latest deployment package here:
-     [DOWNLOAD](https://github.com/opencaching/okapi/archive/master.zip)
-  2. Make sure you have a working Opencaching installation. OKAPI is not a
-     standalone application, it is a plugin.
-  3. Patch your installation with OKAPI code. To put it plainly, **just copy
-     and replace the files**. If you're using SVN/GIT, then you will probably
-     also want to view and commit the changes to your local repository.
-  4. Create `<rootpath>/okapi_settings.php` file.
-     [See an example here](https://github.com/opencaching/opencaching-pl/blob/master/okapi_settings.php)
-     (from OCPL). See `okapi/settings.php` for the full list of available settings.
-  5. Make sure Apache allows OKAPI's `.htaccess` to override stuff. On some
+An OKAPI installation is bundled with both active Opencaching code distributions,
+namely the OCDE code branch (that you can obtain from the
+[OCDE repository](https://github.com/OpencachingDeutschland/oc-server3/tree/stable))
+and the OCDE code branch (available in the
+[OCPL repository](https://github.com/opencaching/opencaching-pl)). The OCDE
+installation will fetch current OKAPI code via Composer, while it is directly
+included in the OCPL distribution.
+
+After setting up the OC installation, take these steps to enable OKAPI:
+
+  1. Verify the settings that are passed to OKAPI through the
+     `<rootpath>/okapi_settings.php` file. They are configured in the
+     `settings.inc.php` file, which resides in the `<rootpath>/lib`
+     directory for an OCPL installation, and in the `<rootpath>/config2`
+     directory for an OCDE installation.
+  2. Make sure Apache allows OKAPI's `.htaccess` to override stuff. On some
      servers you don't need to do anything. On others, you need to add
      something like this to your Apache config:
 
@@ -150,9 +142,9 @@ You can also read about how OKAPI tries to deal with OC site and branch differen
 </Directory>
 ```
 
-  6. Update OKAPI database (visit `http(s)://yoursite/okapi/update`),
-  7. Check your email. OKAPI should send you email messages with further
-     installation steps.
+  3. Update OKAPI database (visit `http(s)://yoursite/okapi/update`),
+  4. Check your email. OKAPI should send you email messages with further
+     installation steps like installation the OKAPI cronjob.
 
 **Important:** Some OC installations use automatic updates via a post-commit
 script. This means that every change commited to OKAPI will be immediatelly

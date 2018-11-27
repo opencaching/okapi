@@ -57,13 +57,9 @@ Here is the list of other OKAPI installations:</p>
         OKAPI Project Homepage -
         <a href='https://github.com/opencaching/okapi/'>https://github.com/opencaching/okapi/</a>
     </li>
-    <li>
-        OKAPI News blog (rarely updated, but still) -
-        <a href='https://opencaching-api.blogspot.com/'>https://opencaching-api.blogspot.com/</a>
-    </li>
 </ul>
 
-<p>* - Opencaching.DE includes other sites - Opencaching.IT and Opencaching.FR
+<p>* Opencaching.DE includes other sites - Opencaching.IT and Opencaching.FR
 - which are in fact the one site visible on multiple domains.
 All three share one database, so you can access all their data through
 Opencaching.DE OKAPI installation.</p>
@@ -477,8 +473,8 @@ rather use <code>if ("z" in reason_stack) { ... }</code>.</p>
 
 <h2 id='oc-site-differences'>Differences between Opencaching sites</h2>
 
-<p>Client developers should be aware that Opencaching sites provide different
-sets of features. E.g. Opencaching.US currently does not support OKAPI log
+<p>Client developers should be aware that there are some differences between
+Opencaching sites. E.g. Opencaching.US currently does not support OKAPI log
 image upload, but is the only site that provides "podcast geocaches".
 OKAPI implements several mechanisms that either level those differences -
 you don't need to care about them - or allows your application to automatically
@@ -487,24 +483,25 @@ adjust to the Opencaching site's capabilities.</p>
 <h3>OKAPI versions</h3>
 
 <p>Now and then, new features are added to OKAPI. They will be listed in the
-<a href="changelog.html">Changelog</a>, including version numbers. By comparing
-those numbers to the installation's current OKAPI version number, as returned
-by the site's
+<a href="changelog.html">Changelog</a>, including version numbers. Applications
+may compare those numbers to the installation's current OKAPI version number,
+as returned by the site's
 <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>
-method, applications can detect if a new feature is available.</p>
+method, to detect if a new feature is available.</p>
 
 <h3>Site capabilities</h3>
 
 <p>OKAPI methods generally are designed to abstract from differences between OC
 installations. E.g. if some geocache or log property is not implemented, OKAPI
-will return <i>null</i> or <i>false</i> (as explained in the method docs).
-When submitting data, unsupported options are mostly ignored (as documented),
-or OKAPI will return an HTTP 200 result with the <i>success</i>=<i>false</i>
-field and a user-friendly explanation (as documented).</p>
+still allows to request it, but will return <i>null</i> or <i>false</i> (as
+explained in the method docs). When submitting data, unsupported options are
+mostly ignored (as documented), or OKAPI will return an HTTP 200 result with
+the <i>success</i>=<i>false</i> field and a user-friendly explanation (as
+documented).</p>
 
-<p>However, when searching for caches or submitting content, there are a few
-exceptions where developers need to know about the site's capabilities. The
-docs then will refer to one of the following methods, that your application
+<p>However, when searching for caches or submitting content, there are some
+exceptions where developers may need to know about the site's capabilities.
+The docs then will refer to one of the following methods, that your application
 can call to find out what features are available:</p>
 
 <ul>
@@ -513,14 +510,13 @@ can call to find out what features are available:</p>
     <li><a href='services/caches/capabilities.html'>services/caches/capabilities</a>
         - geocache capabilities,</li>
     <li><a href='services/logs/capabilities.html'>services/logs/capabilities</a>
-        - logging capabilities, including the submission of cache
-        recommendations and ratings.</li>
+        - logging capabilitie.</li>
 </ul>
 
-<p>This methods also return additional information, that allows to hide
-nonfunctional options from user interfaces. E.g. you may want to disable
-searching for geocaches by rating, if OKAPI would ignore the user's input
-(because the OC site does not implement ratings).</p>
+<p>These methods also return information that allows to hide nonfunctional
+options from user interfaces. E.g. you may want to disable searching for
+geocaches by rating, if OKAPI would ignore the user's input (because the OC
+site does not implement ratings).</p>
 
 <h3></h3>
 

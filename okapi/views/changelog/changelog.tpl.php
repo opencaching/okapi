@@ -47,7 +47,7 @@
                         foreach ($vars['changes'] as $type => $changes) {
                             if (count($changes)) {
                                 if ($type == 'unavailable') {
-                                    echo "<p>The following changes are not available yet at " . $vars['site_name'] . ":</p>";
+                                    echo "<p>The following changes are <em>not</em> available yet at " . $vars['site_name'] . ":</p>";
                                     $br = '<br />';
                                 } else {
                                     echo "<p>".$br."The following changes are available at " . $vars['site_name'] . ":</p>";
@@ -74,7 +74,10 @@
                         <p>This list shows only changes that are considered to be
                         relevant for developers and site admins. Please consult the
                         <a href="https://github.com/opencaching/okapi/commits/master">Git log</a>
-                        for a complete history, including older changes.</p>
+                        for a complete history, including older changes. There also
+                        is a (discontinued)
+                        <a href='https://opencaching-api.blogspot.com/'>OKAPI Blog</a>,
+                        that documents changes from 2012 to 2015.</p>
 
                         <p>OKAPI was started in August 2011 at the OCPL code branch,
                         and it was deployed to the OCDE branch in April 2013.</p>
