@@ -1168,7 +1168,9 @@ class WebService
 
                 $cacheid2waypoints = Db::select_group_by("cache_id", "
                     select
-                        cache_id, stage, latitude, longitude, `desc`,
+                        cache_id, stage, `desc`,
+                        if (status=1, latitude, 0) as latitude,
+                        if (status=1, longitude, 0) as longitude,
                         type as internal_type_id,
                         case type
                             when 3 then 'Flag, Red'
@@ -1189,7 +1191,7 @@ class WebService
                     from waypoints
                     where
                         cache_id in (".$cache_codes_escaped_and_imploded.")
-                        and status = 1
+                        and status in (1,2)
                     order by cache_id, stage, wp_id
                 ");
             }

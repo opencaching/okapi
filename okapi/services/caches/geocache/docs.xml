@@ -490,8 +490,13 @@
                 with this geocache. Each item is a dictionary of the following structure:</p>
                 <ul>
                     <li><b>name</b> - plain-text, short, unique "codename" for the waypoint,</li>
-                    <li><b>location</b> - location of the waypoint in the "lat|lon" format
-                        (<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),</li>
+                    <li>
+                        <p><b>location</b> - location of the waypoint in the "lat|lon" format
+                        (<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point).</p>
+                        <p>Note: For waypoints with hidden location, "0|0" is returned. It is
+                        recommended to hide those coordinates or show a placeholder like
+                        "---". Public waypoints coordinates are never "0|0".</p>
+                    </li>
                     <li>
                         <p><b>type</b> - string, unique identifier for the type of waypoint;
                         one of the following:</p>

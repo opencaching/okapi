@@ -120,7 +120,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                             <?php foreach ($c['alt_wpts'] as $w) { ?>
                                 &lt;tr&gt;
                                     &lt;td style="border: 1px solid black; padding: 0.5em"&gt;<?= $w['type_name'] ?>&lt;/td&gt;
-                                    &lt;td style="border: 1px solid black; padding: 0.5em"&gt;<?= implode('&lt;br /&gt;', Okapi::format_location_readable($w['location'])) ?>&lt;/td&gt;
+                                    &lt;td style="border: 1px solid black; padding: 0.5em"&gt;<?= $w['location'] == '0|0' ? '---' : implode('&lt;br /&gt;', Okapi::format_location_readable($w['location'])) ?>&lt;/td&gt;
                                     &lt;td style="border: 1px solid black; padding: 0.5em"&gt;<?= $w['description'] ?>&lt;/td&gt;
                                 &lt;/tr&gt;
                             <?php } ?>
