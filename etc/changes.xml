@@ -23,6 +23,10 @@
 
     -->
     <changes>
+        <change commit="9c7fc14a" version="1853" time="2018-11-28T15:11:08+0100" type="bugfix">
+            Geocaches' <i>alt_wpts</i> field now fully responds to the
+            <i>langpref</i> option.
+        </change>
         <change commit="dce40e16" version="1850" time="2018-11-28T12:11:40+0100" type="enhancement">
             <p>Added new fields <i>country2</i> and <i>region</i> to
             <a href="services/caches/geocache.html">services/caches/geocache</a>.
@@ -78,6 +82,9 @@
             and <a href="services/logs/delete.html">services/logs/delete</a>
             methods.
         </change>
+        <change commit="cae4e1e8" version="1754" time="2018-11-04T17:11:34+0100" type="bugfix">
+            Also OCDE owners are not allowed to not recommend their own caches.
+        </change>
         <change commit="7a6c62ec" version="1745" time="2018-10-31T13:10:07+0100" type="enhancement">
             Added the status-changing log types <em style='text-decoration:line-through'>Available</em>
             <em>Ready to search</em>,
@@ -94,6 +101,9 @@
             methods will no longer return <em>true</em> for the <em>is_admin</em>
             field in any case, because OC installations no longer provide a
             singular admin flag.
+        </change>
+        <change commit="e7a5904e" version="1733" time="2018-10-26T13:10:04+0200" type="bugfix">
+            Do not mangle protocol-relative links in cache descriptions and logs.
         </change>
         <change commit="5b2c8b0d" version="1732" time="2018-10-26T12:10:35+0200" type="enhancement">
             Enabled the <a href="services/caches/formatters/gpx.html">GPX</a>
