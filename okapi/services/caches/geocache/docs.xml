@@ -372,7 +372,10 @@
             </li>
             <li>
                 <b>description</b> - <a href='%OKAPI:docurl:html%'>HTML string</a>,
-                description of the cache,
+                description of the cache; may include additional notices that
+                are prepended or appended to the text, some of them depending on
+                the <b>oc_team_annotation</b> and <b>attribution_append</b>
+                options,
             </li>
             <li>
                 <b>descriptions</b> - a dictionary (language code =&gt;
@@ -532,26 +535,35 @@
                     <li><b>description</b> - plain-text longer description of the waypoint.</li>
                 </ul>
             </li>
+            <li class='deprecated'>
+                <p><b>country</b> - deprecated; same as <b>country2</b>, but on
+                some installations the language of the returned country name is
+                undefined (it will not respond to the <b>langpref</b> parameter);
+                also, on some installations the same country can have different
+                names for different caches, and for some caches <b>null</b> will
+                be returned.</p>
+            </li>
             <li>
-                <p><b>country</b> - name of the country the cache is placed in;
+                <p><b>country2</b> - name of the country the cache is placed in;
                 may be empty ("") if the country is unknown.</p>
 
                 <p><b>Note:</b> This data is user-supplied and is not validated in
-                any way. Consider using external geocoding services instead. Also,
-                currently you have no way of knowing in which language it will appear
-                in. Only some OKAPI installations will localize it by the
-                <b>langpref</b> parameter.</p>
+                any way. Consider using external geocoding services instead.</p>
+            </li>
+            <li class='deprecated'>
+                <p><b>state</b> - deprecated; same as <b>region</b>, but <b>null</b>
+                may be returned instead of an empty string if the region is unknown.</p>
             </li>
             <li>
-                <p><b>state</b> - name of the major subnational entity the cache
+                <p><b>region</b> - name of the major subnational entity the cache
                 is placed in; may be empty ("") if the entity is unknown. This may
-                be a state, a region or whatever is the country's most relevant
-                administrative entity below national level.</p>
+                be a (federal) state, a province, a region or whatever is the
+                country's most relevant administrative entity below national level.</p>
 
                 <p><b>Note:</b> On some installations this data is user-supplied and
                 is not validated in any way. Other installations calculate it from
                 cache coordinates but may have problems in border regions. Different
-                OC sites may return different "states" for the same geocache.
+                OC sites may return different regions for the same geocache.
                 Consider using external geocoding services instead. Also,
                 currently you have no way of knowing in which language it will appear
                 in (but it *may* start to vary on the value of your <b>langpref</b>

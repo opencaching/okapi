@@ -31,8 +31,9 @@ class WebService
         'descriptions', 'hint', 'hints', 'images', 'attr_acodes', 'attrnames', 'latest_logs',
         'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
         'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
-        'is_ignored', 'willattends', 'country', 'state', 'preview_image',
-        'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
+        'is_ignored', 'willattends',
+        'country', 'country2', 'state', 'region',
+        'preview_image', 'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
         'protection_areas', 'short_description', 'short_descriptions', 'needs_maintenance',
         'watchers', 'my_rating', 'is_recommended', 'oc_team_annotation');
 
@@ -73,6 +74,7 @@ class WebService
         $fields_to_remove_later = array();
         if (
             in_array('description', $fields) || in_array('descriptions', $fields)
+            || in_array('editable_description', $fields) || in_array('editable_descriptions', $fields)
             || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
             || in_array('hint', $fields) || in_array('hints', $fields)
             || in_array('hint2', $fields) || in_array('hints2', $fields)
@@ -340,6 +342,8 @@ class WebService
                     case 'short_descriptions': /* handled separately */ break;
                     case 'description': /* handled separately */ break;
                     case 'descriptions': /* handled separately */ break;
+                    case 'editable_description': /* handled separately */ break;
+                    case 'editable_descriptions': /* handled separately */ break;
                     case 'hint': /* handled separately */ break;
                     case 'hints': /* handled separately */ break;
                     case 'hint2': /* handled separately */ break;
@@ -354,7 +358,11 @@ class WebService
                     case 'trackables': /* handled separately */ break;
                     case 'alt_wpts': /* handled separately */ break;
                     case 'country': /* handled separately */ break;
+                    case 'country2': /* handled separately */ break;
+                    case 'country_code': /* handled separately */ break;
                     case 'state': /* handled separately */ break;
+                    case 'region': /* handled separately */ break;
+                    case 'region_code': /* handled separately */ break;
                     case 'oc_team_annotation': /* handled separately */ break;
                     case 'last_found': $entry['last_found'] = ($row['last_found'] > '1980') ? date('c', strtotime($row['last_found'])) : null; break;
                     case 'last_modified': $entry['last_modified'] = date('c', strtotime($row['last_modified'])); break;
@@ -572,6 +580,7 @@ class WebService
         # Descriptions and hints.
 
         if (in_array('description', $fields) || in_array('descriptions', $fields)
+            || in_array('editable_description', $fields) || in_array('editable_descriptions', $fields)
             || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
             || in_array('hint', $fields) || in_array('hints', $fields)
             || in_array('hint2', $fields) || in_array('hints2', $fields)
@@ -584,6 +593,7 @@ class WebService
             {
                 $result_ref['short_descriptions'] = new ArrayObject();
                 $result_ref['descriptions'] = new ArrayObject();
+                $result_ref['editable_descriptions'] = new ArrayObject();
                 $result_ref['empty_descriptions'] = [];
                 $result_ref['hints'] = new ArrayObject();
                 $result_ref['hints2'] = new ArrayObject();
@@ -624,6 +634,17 @@ class WebService
                      * whenever the cache description is included. */
 
                     $tmp = Okapi::fix_oc_html($row['desc'], 0);
+
+                    if ($request->token != null && $request->token->user_id == $owner_ids[$cache_code])
+                    {
+                        # Though this is no private data, we expose it only to the
+                        # cache owner, because the "naked" descriptions should not be
+                        # published.
+
+                        $results[$cache_code]['editable_descriptions'][$language] = $tmp;
+                    }
+                    else
+                        $results[$cache_code]['editable_descriptions'][$language] = null;
 
                     Okapi::gettext_domain_init(
                         array_merge([$language], $langprefs)
@@ -719,6 +740,10 @@ class WebService
                 }
                 $result_ref['short_description'] = Okapi::pick_best_language($result_ref['short_descriptions'], $langprefs);
                 $result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langprefs);
+                $result_ref['editable_description'] = Okapi::pick_best_language($result_ref['editable_descriptions'], $langprefs);
+                if ($result_ref['editable_description'] === null) {
+                    $result_ref['editable_descriptions'] = null;
+                }
                 $result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langprefs);
                 $result_ref['hint2'] = Okapi::pick_best_language($result_ref['hints2'], $langprefs);
 
@@ -733,6 +758,7 @@ class WebService
 
             foreach (array(
                 'short_description', 'short_descriptions', 'description', 'descriptions',
+                'editable_description', 'editable_descriptions',
                 'hint', 'hints', 'hint2', 'hints2', 'oc_team_annotation',
             ) as $field)
                 if (!in_array($field, $fields))
@@ -1292,12 +1318,31 @@ class WebService
             }
         }
 
-        # Country and/or state.
+        # Country and/or region
 
-        if (in_array('country', $fields) || in_array('state', $fields))
-        {
+        if (array_intersect(
+            ['country', 'country2', 'country_code', 'state', 'region', 'region_code'],
+            $fields)
+        ) {
+            # The 'state' field for many years had an OCPL bug, returning null
+            # instead of "" if the region was undefined. We have kept it like
+            # this for backward compatibility, documented it with version XXX
+            # and deprecated the field. (~ 600 OC.PL caches had undefined
+            # region as of April 2018.)
+
+            # The OCPL 'country' field had the same bug; there are a few
+            # OC.PL caches with bad country data that return null. As there
+            # also was a language problem, we deprecated this field, too, and
+            # introduced country2.
+
             $countries = array();
+            $countries2 = array();
+            $country_codes = array();
             $states = array();
+            $regions = array();
+            $region_codes = array();
+
+            # To be on the safe site, we fully validate country and region codes.
 
             if (Settings::get('OC_BRANCH') == 'oc.de')
             {
@@ -1305,9 +1350,9 @@ class WebService
                 #  - cache_location entries are created by a cronjob *after* listing the
                 #      caches and may not yet exist.
                 #  - The adm1 ... adm4 fields represent country and NUTS levels 1 to 3.
-                #      We either pick level 1 or 2 for "state", whatever is the best match
+                #      We either pick level 1 or 2 for 'region', whatever is the best match
                 #      (see Github issue #498).
-                #  - The "state" (or similar entity) is in adm1 or adm2 field.
+                #  - The 'region' (or similar entity) is in adm2 or adm3 field.
                 #  - caches.country overrides cache_location.code1/adm1. If both differ,
                 #      cache_location.adm2 to adm4 are invalid and the state unknown.
                 #  - OCDE databases may contain caches with invalid country code.
@@ -1323,7 +1368,7 @@ class WebService
                         stt.`text`
                     from
                         caches c
-                        inner join countries on countries.short=c.country
+                        inner join countries on countries.short = c.country
                         inner join sys_trans_text stt on stt.trans_id = countries.trans_id
                     where
                         c.wp_oc in ('".implode("','", array_map('\okapi\core\Db::escape_string', $cache_codes))."')
@@ -1333,27 +1378,24 @@ class WebService
                     $country_codes2names[$row['country']][$row['language']] = $row['text'];
                 Db::free_result($rs);
 
-                # get geocache countries and states
+                # get geocache countries and regions
                 $rs = Db::query("
                     select
                         c.wp_oc as cache_code,
-                        c.country as country_code,
-                        ifnull(if(c.country<>cl.code1,'',if(c.country in ('DE','UK'),cl.adm2,cl.adm3)),'') as state
-                    from                                 /* see issue #498 on adm2 vs. adm3 */
+                        ifnull(cl.adm1,'') as country_in_default_language,
+                        if(c.country<>cl.code1,'',ifnull(if(co.adm_display2=2,cl.adm2,if(co.adm_display2=4,adm4,adm3)),'')) as state,
+                        if(c.country<>cl.code1,'',ifnull(if(co.adm_display2=2,cl.adm2,if(co.adm_display2=4,adm4,adm3)),'')) as region,
+                        co.short as validated_country_code,    /* see issue #498 on adm2 vs. adm3 */
+                        if(left(nc.code,2) = co.short, nc.code, null) as validated_region_code
+                    from
                         caches c
                         left join cache_location cl on c.cache_id = cl.cache_id
+                        left join countries co on co.short = c.country
+                        left join nuts_codes nc on nc.code = if(co.adm_display2=2,cl.code2,if(co.adm_display2=4,code4,code3))
                     where
                         c.wp_oc in ('".implode("','", array_map('\okapi\core\Db::escape_string', $cache_codes))."')
                 ");
-                while ($row = Db::fetch_assoc($rs))
-                {
-                    if (!isset($country_codes2names[$row['country_code']]))
-                        $countries[$row['cache_code']] = '';
-                    else
-                        $countries[$row['cache_code']] = Okapi::pick_best_language($country_codes2names[$row['country_code']], $langprefs);
-                    $states[$row['cache_code']] = $row['state'];
-                }
-                Db::free_result($rs);
+                $broken_okapi_country_field = false;
             }
             else
             {
@@ -1361,41 +1403,96 @@ class WebService
                 #  - cache_location data is entered by the user.
                 #  - Only country (adm1) and NUTS level 2 (adm3) is available for geocaches.
                 #      So we always return the NUTS 2 entity as "state", which is wrong for Germany.
-                #  - The state is in adm3 field.
+                #  - The region is in adm3 field.
+                #  - There are some broken code3/adm3 entries which do not match code1/adm1.
 
-                # get geocache countries and states
+                # build country code translation table
+                $rs = Db::query("
+                    select distinct
+                        c.country, en, pl, nl
+                    from
+                        caches c
+                        inner join countries on countries.short = c.country
+                    where
+                        c.wp_oc in ('".implode("','", array_map('\okapi\core\Db::escape_string', $cache_codes))."')
+                ");
+                $country_codes2names = array();
+                while ($row = Db::fetch_assoc($rs)) {
+                    foreach (['en', 'pl', 'nl'] as $lang)
+                        $country_codes2names[$row['country']][$lang] = $row[$lang];
+                }
+                Db::free_result($rs);
+
+                # get geocache countries and regions
                 $rs = Db::query("
                     select
                         c.wp_oc as cache_code,
-                        cl.adm1 as country,
-                        cl.adm3 as state
+                        cl.adm1 as country_in_default_language,  /* can be null */
+                        if(cl.code3 is null or left(cl.code3,2)<>cl.code1, null, cl.adm3) as state,
+                        if(cl.adm3 is null or cl.code3 is null or left(cl.code3,2)<>cl.code1,'',cl.adm3) as region,
+                        countries.short as validated_country_code,
+                        if(left(nc.code,2)=countries.short, nc.code, null) as validated_region_code
                     from
-                        caches c,
-                        cache_location cl
+                        caches c
+                        left join cache_location cl on c.cache_id = cl.cache_id
+                        left join countries on countries.short = cl.code1
+                        left join nuts_codes nc on nc.code = cl.code3
                     where
                         c.wp_oc in ('".implode("','", array_map('\okapi\core\Db::escape_string', $cache_codes))."')
-                        and c.cache_id = cl.cache_id
                 ");
-                while ($row = Db::fetch_assoc($rs))
-                {
-                    $countries[$row['cache_code']] = $row['country'];
-                    $states[$row['cache_code']] = $row['state'];
-                }
-                Db::free_result($rs);
+                $broken_okapi_country_field = true;
             }
 
-            if (in_array('country', $fields))
+            while ($row = Db::fetch_assoc($rs))
             {
+                if (!isset($country_codes2names[$row['validated_country_code']]))
+                    $countries2[$row['cache_code']] = ($row['country_in_default_language'] === null ? '' : $row['country_in_default_language']);
+                else
+                    $countries2[$row['cache_code']] = Okapi::pick_best_language($country_codes2names[$row['validated_country_code']], $langprefs);
+
+                if ($broken_okapi_country_field)
+                    $countries[$row['cache_code']] = $row['country_in_default_language'];
+                else
+                    $countries[$row['cache_code']] = $countries2[$row['cache_code']];
+
+                $states[$row['cache_code']] = $row['state'];
+                $regions[$row['cache_code']] = $row['region'];
+                $country_codes[$row['cache_code']] = $row['validated_country_code'];
+                $region_codes[$row['cache_code']] = $row['validated_region_code'];
+            }
+            Db::free_result($rs);
+
+            if (in_array('country', $fields)) {
                 foreach ($results as $cache_code => &$row_ref)
                     $row_ref['country'] = isset($countries[$cache_code]) ? $countries[$cache_code] : null;
             }
-            if (in_array('state', $fields))
-            {
+            if (in_array('country2', $fields)) {
+                foreach ($results as $cache_code => &$row_ref)
+                    $row_ref['country2'] = isset($countries2[$cache_code]) ? $countries2[$cache_code] : '';
+            }
+            if (in_array('country_code', $fields)) {
+                foreach ($results as $cache_code => &$row_ref)
+                    $row_ref['country_code'] = isset($country_codes[$cache_code]) ? $country_codes[$cache_code] : null;
+            }
+            if (in_array('state', $fields)) {
                 foreach ($results as $cache_code => &$row_ref)
                     $row_ref['state'] = isset($states[$cache_code]) ? $states[$cache_code] : null;
             }
+            if (in_array('region', $fields)) {
+                foreach ($results as $cache_code => &$row_ref)
+                    $row_ref['region'] = isset($regions[$cache_code]) ? $regions[$cache_code] : '';
+            }
+            if (in_array('region_code', $fields)) {
+                foreach ($results as $cache_code => &$row_ref)
+                    $row_ref['region_code'] = isset($region_codes[$cache_code]) ? $region_codes[$cache_code] : null;
+            }
             unset($countries);
+            unset($country_codes);
             unset($states);
+            unset($regions);
+            unset($region_codes);
+            unset($country_codes2names);
+            unset($broken_okapi_country_field);
         }
 
         # Attribution note
@@ -1532,7 +1629,8 @@ class WebService
                 in_array('location', $fields)
                 && (count(array_intersect(array(
                     'hint', 'hints', 'hint2', 'hints2',
-                    'description', 'descriptions'
+                    'description', 'descriptions',
+                    'editable_description', 'editable_descriptions',
                 ), $fields)) > 0)
             ) {
                 \okapi\lib\OCPLAccessLogs::log_geocache_access($request, $cache_ids);
