@@ -23,6 +23,21 @@
 
     -->
     <changes>
+        <change commit="dce40e16" version="1850" time="2018-11-28T12:11:40+0100" type="enhancement">
+            <p>Added new fields <i>country2</i> and <i>region</i> to
+            <a href="services/caches/geocache.html">services/caches/geocache</a>.
+            They replace the <i>country</i> and <i>state</i> fields, which have
+            been <b>deprecated</b> due to some issues (see the method docs).
+            <i>country2</i> - unlike <i>country</i> - responds to the
+            <i>langpref</i> parameter.<br /></p>
+            <p>Also improved formal (not geographical!) verification of country
+            and region data. For some caches with broken data, an empty country
+            and/or region will now be returned.</p>
+        </change>
+        <change commit="d847f6fa" version="1837" time="2018-11-24T16:11:02+0100" type="docs">
+            Rewritten the <a href='introduction.html#oc-site-differences'>explanations</a>
+            and <b>advice</b> on differences between Opencaching sites.
+        </change>
         <change commit="3b2ebae1" version="1807" time="2018-11-18T12:11:37+0100" type="enhancement">
             Added the <a href="services/caches/capabilities.html">services/caches/capabilities</a>
             method, and <b>updated</b> the
@@ -48,7 +63,8 @@
         <change commit="34e67ab9" version="1777" time="2018-11-12T10:11:07+0100" type="enhancement">
             Added the <i>oc_team_annotation</i> option and field to
             <a href="services/caches/geocache.html">services/caches/geocache</a>(s).
-            OC team annotations are also included in GPX cache descriptions.
+            OC team annotations now are included by default in cache
+            descriptions.
         </change>
         <change commit="0d171bdd" version="1776" time="2018-11-12T09:11:34+0100" type="enhancement">
             Added the search options <i>recommended_only</i> and <i>recommended_by</i>.

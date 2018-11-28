@@ -552,7 +552,9 @@
             </li>
             <li class='deprecated'>
                 <p><b>state</b> - deprecated; same as <b>region</b>, but <b>null</b>
-                may be returned instead of an empty string if the region is unknown.</p>
+                may be returned instead of an empty string if the region is unknown.
+                For some caches, the returned region will not match the country
+                where the cache is placed.</p>
             </li>
             <li>
                 <p><b>region</b> - name of the major subnational entity the cache

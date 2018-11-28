@@ -1326,7 +1326,7 @@ class WebService
         ) {
             # The 'state' field for many years had an OCPL bug, returning null
             # instead of "" if the region was undefined. We have kept it like
-            # this for backward compatibility, documented it with version XXX
+            # this for backward compatibility, documented it with version 1850
             # and deprecated the field. (~ 600 OC.PL caches had undefined
             # region as of April 2018.)
 

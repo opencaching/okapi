@@ -47,10 +47,15 @@ simplexml_load_file(__DIR__ . '/changes.xml');
 # SimpleXML iterators are read-only, so we process the plain text file.
 $changes = file(__DIR__ . '/changes.xml');
 $changelog_commits = array();
+$content_section = false;
 
 foreach ($changes as &$line)
 {
-    if (preg_match('/^\s*<change /', $line))
+    if (strpos($line, '<changes>') !== false)
+    {
+        $content_section = true;
+    }
+    elseif ($content_section && preg_match('/^\s*<change /', $line))
     {
         if (preg_match(
             '/^\s*<change\s+commit="(.+?)"\s+version="(.*?)"\s+time="(.*?)"\s+type="(.+?)"\s*>$/',

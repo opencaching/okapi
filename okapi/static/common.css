@@ -48,6 +48,7 @@ a.infotag:hover {
 .changelog { border: 1px solid #bbb; }
 .changelog th { background: #e1d7d8; }
 .changelog td { background: #eee9e9; padding: 8px 16px; }
+.changelog td p { margin: 0 0 6px 0; }
 
 .apimenu { vertical-align: top; width: 225px; font-size: 15px; padding: 0 20px 0 32px; }
 .apimenu .revision { float: right; font-size: 11px; color: #888; position: relative; top: -30px; }
