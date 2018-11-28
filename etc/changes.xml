@@ -23,6 +23,12 @@
 
     -->
     <changes>
+        <change commit="21c0d2ef" version="1855" time="2018-11-28T19:11:31+0100" type="enhancement">
+            The geocaches' <i>alt_wpts</i> field now includes OCPL hidden-coordinate
+            waypoints. These waypoints are returned with location "0|0".
+            Developers are <b>recommended</b> to hide those null coordinates or
+            show a placeholder like "---".
+        </change>
         <change commit="9c7fc14a" version="1853" time="2018-11-28T15:11:08+0100" type="bugfix">
             Geocaches' <i>alt_wpts</i> field now fully responds to the
             <i>langpref</i> option.
@@ -31,10 +37,8 @@
             <p>Added new fields <i>country2</i> and <i>region</i> to
             <a href="services/caches/geocache.html">services/caches/geocache</a>.
             They replace the <i>country</i> and <i>state</i> fields, which have
-            been <b>deprecated</b> due to some issues (see the method docs).
-            <i>country2</i> - unlike <i>country</i> - responds to the
-            <i>langpref</i> parameter.<br /></p>
-            <p>Also improved formal (not geographical!) verification of country
+            been <b>deprecated</b> due to some issues (see the method docs).</p>
+            <p>Also added formal (not geographical!) verification of country
             and region data. For some caches with broken data, an empty country
             and/or region will now be returned.</p>
         </change>
@@ -44,7 +48,7 @@
         </change>
         <change commit="3b2ebae1" version="1807" time="2018-11-18T12:11:37+0100" type="enhancement">
             Added the <a href="services/caches/capabilities.html">services/caches/capabilities</a>
-            method, and <b>updated</b> the
+            method, and updated the
             <a href="https://local5.opencaching.de/okapi/services/caches/geocache.html#returns">cache
             types documentation.</a>
         </change>

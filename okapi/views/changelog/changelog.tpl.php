@@ -1,3 +1,8 @@
+<?php
+
+use okapi\core\Okapi;
+
+?>
 <!doctype html>
 <html lang='en'>
     <head>
@@ -40,7 +45,9 @@
                         You need not to update your applications after any change.
                         But there may be new <b>recommendations</b> or
                         <b>clarifications</b> (indicated by bold text) on how to use
-                        OKAPI methods.</p>
+                        OKAPI methods. Changes referring to OCDE or OCPL only affect
+                        one of both Opencaching
+                        <a href="introduction.html#oc-branch-differences">code branches</a>.</p>
 
                         <?php
                         $br = '';
@@ -63,7 +70,14 @@
                                     <tr id="v<?= $change['version'] ?>">
                                         <td><a href="https://github.com/opencaching/okapi/commit/<?= $change['commit'] ?>"><?= $change['version'] ?></a></td>
                                         <td><?= substr($change['time'], 0, 10) ?></td>
-                                        <td><?= ($change['type'] == 'bugfix' ? 'Fixed: ' : '') . $change['comment'] ?></td>
+                                        <td>
+                                            <?php if (count($change['infotags']) > 0) { ?>
+                                                <div style='float: right'>
+                                                    <?= Okapi::format_infotags($change['infotags']) ?>
+                                                </div>
+                                            <?php } ?>
+                                            <?= ($change['type'] == 'bugfix' ? 'Fixed: ' : '') . $change['comment'] ?>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                 </table>

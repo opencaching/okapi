@@ -92,6 +92,7 @@ class ChangelogHelper
                     'version' => (string)$change['version'],
                     'time' => (string)$change['time'],
                     'type' => (string)$change['type'],
+                    'infotags' => explode(" ", (string)$change['infotags']),
                     'comment' => trim(self::get_inner_xml($change)),
                 );
                 if (strlen($change['commit']) != 8

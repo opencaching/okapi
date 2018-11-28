@@ -58,11 +58,11 @@ foreach ($changes as &$line)
     elseif ($content_section && preg_match('/^\s*<change /', $line))
     {
         if (preg_match(
-            '/^\s*<change\s+commit="(.+?)"\s+version="(.*?)"\s+time="(.*?)"\s+type="(.+?)"\s*>$/',
+            '/^\s*<change\s+commit="(.+?)"\s+version="(.*?)"\s+time="(.*?)"\s+type="(.+?)"(\s+infotags="(.*?)")?\s*>$/',
             $line,
             $matches
         )) {
-            list(, $commit, $version, $time, $type) = $matches;
+            list(, $commit, $version, $time, $type, , $infotags) = $matches;
 
             if (strlen($commit) != 8)
                 die("error: commit ID $commit is not 8 chars long\n");
@@ -96,7 +96,11 @@ foreach ($changes as &$line)
                 echo $commit . ' time = ' . $time . "\n";
             }
 
-            $line = '        <change commit="'.$commit.'" version="'.$version.'" time="'.$time.'" type="'.$type."\">\n";
+            $line = '        <change commit="'.$commit.'" version="'.$version.'" time="'.$time.'" type="'.$type.'"';
+            if ($infotags) {
+                  $line .= ' infotags="'.$infotags.'"';
+            }
+            $line .= ">\n";
 
             $changelog_commits[$commit] = true;
         }
