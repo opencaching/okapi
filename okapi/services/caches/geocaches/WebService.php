@@ -1303,7 +1303,7 @@ class WebService
                         # there should be only one user waypoint per cache...
                         $results[$cache_code]['alt_wpts'][] = array(
                             'name' => $cache_code.'-USER-COORDS',
-                            'location' => round($row['latitude'], 6)."|".round($row['longitude'], 6),
+                            'location' => Okapi::coords2latlon($row['latitude'], $row['longitude']),
                             'type' => 'user-coords',
                             'type_name' => _("User location"),
                             'gc_type' => 'Reference Point',

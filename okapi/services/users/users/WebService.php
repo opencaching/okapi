@@ -91,7 +91,7 @@ class WebService
                             # does not make sense.
                             $entry['home_location'] = null;
                         } else {
-                            $entry['home_location'] = round($row['latitude'], 6)."|".round($row['longitude'], 6);
+                            $entry['home_location'] = Okapi::coords2latlon($row['latitude'], $row['longitude']);
                         }
                         break;
                     default: throw new Exception("Missing field case: ".$field);
