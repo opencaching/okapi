@@ -493,9 +493,9 @@
                     <li>
                         <p><b>location</b> - location of the waypoint in the "lat|lon" format
                         (<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point).</p>
-                        <p>Note: For waypoints with hidden location, "0|0" is returned. It is
-                        recommended to hide those coordinates or show a placeholder like
-                        "---". Public waypoints coordinates are never "0|0".</p>
+                        <p>Note: For waypoints with nonpublic location, "0|0" is returned. It
+                        is recommended to hide those null coordinates or show a placeholder
+                        like "---". Public waypoints coordinates are never "0|0".</p>
                     </li>
                     <li>
                         <p><b>type</b> - string, unique identifier for the type of waypoint;
@@ -543,10 +543,9 @@
             <li class='deprecated'>
                 <p><b>country</b> - deprecated; same as <b>country2</b>, but on
                 some installations the language of the returned country name is
-                undefined (it will not respond to the <b>langpref</b> parameter);
-                also, on some installations the same country can have different
-                names for different caches, and for some caches <b>null</b> will
-                be returned.</p>
+                undefined (it will not respond to the <b>langpref</b> parameter).
+                Also, <b>null</b> may be returned instead of an empty string
+                if the country is unknown.</p>
             </li>
             <li>
                 <p><b>country2</b> - name of the country the cache is placed in;
