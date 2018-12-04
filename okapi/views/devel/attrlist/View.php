@@ -2,6 +2,7 @@
 
 namespace okapi\views\devel\attrlist;
 
+use Exception;
 use okapi\core\Db;
 use okapi\core\Response\OkapiHttpResponse;
 use okapi\services\attrs\AttrHelper;
@@ -144,7 +145,7 @@ class View
             $table = $table_ocde;
         }
         if (!in_array($table, ['cache_type', 'cache_size', 'log_types', 'waypoint_type', 'coordinates_type'])) {
-            throw Exception('invalid table name');
+            throw new Exception('invalid table name');
         }
 
         if (Settings::get('OC_BRANCH') == 'oc.pl')

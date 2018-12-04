@@ -2,6 +2,7 @@
 
 namespace okapi\core;
 
+use Exception;
 use okapi\core\Consumer\OkapiConsumer;
 use okapi\core\CronJob\CronJobController;
 use okapi\core\Exception\BadRequest;
@@ -224,7 +225,7 @@ class Okapi
         $dir = Settings::get('VAR_DIR');
         if ($dir != null)
             return rtrim($dir, "/");
-        throw new \Exception("You need to set a valid VAR_DIR.");
+        throw new Exception("You need to set a valid VAR_DIR.");
     }
 
     /** Returns something like "Opencaching.PL" or "Opencaching.DE". */
@@ -779,7 +780,7 @@ class Okapi
         else
         {
             # Should not happen (as we do a proper check above).
-            throw new \Exception();
+            throw new Exception();
         }
     }
 
@@ -838,7 +839,7 @@ class Okapi
         else
         {
             # That's a bug.
-            throw new \Exception("Cannot encode as xmlmap: " . print_r($obj, true));
+            throw new Exception("Cannot encode as xmlmap: " . print_r($obj, true));
         }
     }
 
@@ -894,7 +895,7 @@ class Okapi
         else
         {
             # That's a bug.
-            throw new \Exception("Cannot encode as xmlmap2: " . print_r($obj, true));
+            throw new Exception("Cannot encode as xmlmap2: " . print_r($obj, true));
         }
     }
 
@@ -973,7 +974,7 @@ class Okapi
     {
         if (isset(self::$cache_types[$name][Settings::get('OC_BRANCH')]))
             return self::$cache_types[$name][Settings::get('OC_BRANCH')];
-        throw new \Exception("Method cache_type_name2id called with unsupported cache ".
+        throw new Exception("Method cache_type_name2id called with unsupported cache ".
             "type name '$name'.");
     }
 
@@ -1035,7 +1036,7 @@ class Okapi
     {
         if (isset(self::$cache_statuses[$name]))
             return self::$cache_statuses[$name];
-        throw new \Exception("Method cache_status_name2id called with invalid name '$name'.");
+        throw new Exception("Method cache_status_name2id called with invalid name '$name'.");
     }
 
     /** E.g. 1 => 'Available'. For unknown ids returns 'Archived'. */
@@ -1081,7 +1082,7 @@ class Okapi
     {
         if (isset(self::$cache_sizes[$size2]))
             return self::$cache_sizes[$size2];
-        throw new \Exception("Method cache_size2_to_sizeid called with invalid size2 '$size2'.");
+        throw new Exception("Method cache_size2_to_sizeid called with invalid size2 '$size2'.");
     }
 
     /** E.g. 2 => 'micro'. For unknown ids returns "other". */
@@ -1116,7 +1117,7 @@ class Okapi
     {
         if (array_key_exists($size2, self::$cache_OX_sizes))
             return self::$cache_OX_sizes[$size2];
-        throw new \Exception("Method cache_size2_to_oxsize called with invalid size2 '$size2'.");
+        throw new Exception("Method cache_size2_to_oxsize called with invalid size2 '$size2'.");
     }
 
     /**
@@ -1173,7 +1174,7 @@ class Okapi
         elseif (isset(self::$nonsubmittable_log_types[$name]))
             return self::$nonsubmittable_log_types[$name];
 
-        throw new \Exception("logtypename2id called with invalid log type argument: $name");
+        throw new Exception("logtypename2id called with invalid log type argument: $name");
     }
 
     /** E.g. 1 => 'Found it'. For unknown ids returns 'Comment'. */
@@ -1223,12 +1224,12 @@ class Okapi
                 case 3: return 0.7;
                 case 4: return 1.7;
                 case 5: return 3.0;
-               default: throw new \Exception();
+               default: throw new Exception();
             }
         }
         else
         {
-            throw new \Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
+            throw new Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
         }
     }
 
@@ -1248,7 +1249,7 @@ class Okapi
         }
         else
         {
-            throw new \Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
+            throw new Exception("Rating is not implemented for ".Settings::get('OC_BRANCH'));
         }
     }
 
@@ -1321,7 +1322,7 @@ class Okapi
                 return substr($val, 0, strlen($val) - 1) * 1024;
             default:
                 if (($last < '0') || ($last > '9')) {
-                    throw new \Exception("Unknown suffix");
+                    throw new Exception("Unknown suffix");
                 }
 
                 return $val;
@@ -1362,7 +1363,7 @@ class Okapi
     public static function format_location_readable($location)
     {
         if (!preg_match('/^([+-]?[0-9]+(\.[0-9]*)?)\|([+-]?[0-9]+(\.[0-9]*)?)$/', $location, $matches))
-            throw Exception("invalid location format");
+            throw new Exception("invalid location format");
         return [
             self::format_coordinate($matches[1], 'N', 'S'),
             self::format_coordinate($matches[3], 'E', 'W')

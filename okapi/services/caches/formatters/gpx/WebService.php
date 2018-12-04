@@ -347,7 +347,7 @@ class WebService
                 foreach ($vars['caches'] as &$cache_ref)
                     foreach ($cache_ref['trackables'] as &$trackable_ref)
                         if (!preg_match('/^GK([0-9A-F]{4,})$/', $trackable_ref['code'], $matches))
-                            throw Exception();
+                            throw new Exception();
                         else
                             $trackable_ref['id'] = hexdec($matches[1]);
             }
