@@ -34,7 +34,7 @@
             </li>
             <li>
                 <p><b>user</b> - a dictionary of user fields that are selected by the
-                user_fields option.</p>
+                <b>user_fields</b> option.</p>
             </li>
             <li>
                 <p><b>type</b> - string; log type. One of the values documented

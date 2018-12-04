@@ -171,7 +171,8 @@ class WebService
             'services/caches/geocache',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'cache_code' => $cache_code,
-                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd|is_recommended|my_rating'
+                'fields' => 'internal_id|status|owner|type|date_hidden|req_passwd|is_recommended|my_rating',
+                'owner_fields' => 'uuid|internal_id'
             ))
         );
         $user = OkapiServiceRunner::call(
@@ -515,11 +516,10 @@ class WebService
         Db::execute("commit");
 
         LogsCommon::ocpl_housekeeping(
-            $request,
             $logtype,
             "",
             $user['internal_id'],
-            $cache['owner']['uuid'],
+            $cache['owner']['internal_id'],
             $cache['internal_id']
         );
 

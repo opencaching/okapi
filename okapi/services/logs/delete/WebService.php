@@ -108,7 +108,6 @@ class WebService
         Db::execute("commit");
 
         LogsCommon::ocpl_housekeeping(
-            $request,
             "",
             $log['type'],
             $log['user']['internal_id'],

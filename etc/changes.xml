@@ -23,6 +23,10 @@
 
     -->
     <changes>
+        <change commit="b21cc2d2" version="1859" time="2018-12-04T14:12:13+0100" type="enhancement">
+            Added options to geocache and log retrieval methods, which allow
+            to select the subfields of <i>owner</i> and <i>user</i> fields.
+        </change>
         <change commit="21c0d2ef" version="1855" time="2018-11-28T19:11:31+0100" type="enhancement">
             The geocaches' <i>alt_wpts</i> field now includes OCPL hidden-coordinate
             waypoints. These waypoints are returned with location "0|0".

@@ -528,11 +528,10 @@ class LogsCommon
     }
 
     public static function ocpl_housekeeping(
-        $request,
         $new_logtype,
         $old_logtype,
-        $user_internal_id,
-        $owner_uuid,
+        $logger_internal_id,
+        $owner_internal_id,
         $cache_internal_id
     ) {
         # For OCPL we need to delete stats-pictures which are changed by the log.
@@ -552,28 +551,21 @@ class LogsCommon
         if ($new_logtype == 'Found it' || $new_logtype == 'Attended' ||
             $old_logtype == 'Found it' || $old_logtype == 'Attended')
         {
-            $update_user_ids[] = $user_internal_id;
+            $update_user_ids[] = $logger_internal_id;
 
             # Also trigger an OCPL "merit badges" update.
-            OCPLSignals::update_merit_badges($cache_internal_id, $user_internal_id);
+            OCPLSignals::update_merit_badges($cache_internal_id, $logger_internal_id);
         }
 
         # OCPL only counts active caches in the statpic. We need to do the same
         # thing for the owner's statpic, if the cache availability may have
         # changed.
 
-        if ($owner_uuid !== null && array_intersect(
+        if ($owner_internal_id !== null && array_intersect(
             [$new_logtype, $old_logtype],
             ['Ready to search', 'Temporarily unavailable', 'Archived']
         )) {
-            $owner = OkapiServiceRunner::call(
-                'services/users/user',
-                new OkapiInternalRequest($request->consumer, null, array(
-                    'user_uuid' => $owner_uuid,
-                    'fields' => 'internal_id'
-                ))
-            );
-            $update_user_ids[] = $owner['internal_id'];
+            $update_user_ids[] = $owner_internal_id;
         }
 
         foreach ($update_user_ids as $user_id)

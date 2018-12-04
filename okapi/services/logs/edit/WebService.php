@@ -66,7 +66,8 @@ class WebService
             'services/caches/geocache',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'cache_code' => $log['cache_code'],
-                'fields' => 'internal_id|type|req_passwd|owner|is_recommended|my_rating'
+                'fields' => 'internal_id|type|req_passwd|owner|is_recommended|my_rating',
+                'owner_fields' => 'uuid|internal_id'
             ))
         );
         if ($logtype != $log['type']) {
@@ -255,11 +256,10 @@ class WebService
         Db::execute("commit");
 
         LogsCommon::ocpl_housekeeping(
-            $request,
             $logtype,
             $log['type'],
             $log['user']['internal_id'],
-            $cache['owner']['uuid'],
+            $cache['owner']['internal_id'],
             $log['cache_internal_id']
         );
     }
