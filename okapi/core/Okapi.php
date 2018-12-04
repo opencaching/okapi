@@ -1241,6 +1241,7 @@ class Okapi
     {
         if (Settings::get('OC_BRANCH') == 'oc.pl')
         {
+            # see also SearchAssistant::prepare_common_search_params() / 'rating'
             if ($db_score >= 2.2) return 5.0;
             elseif ($db_score >= 1.4) return 4.0;
             elseif ($db_score >= 0.1) return 3.0;

@@ -16,9 +16,11 @@
         See services/logs/entry method for a list of available values.</p>
     </opt>
     <opt name='user_fields' default='uuid|username|profile_url'>
-        Pipe-separated list of user fields to include in the <b>user</b> field.
-        For valid field names, see the
-        <a href='%OKAPI:methodargref:services/users/user%'>services/users/user</a> method.
+        <p>Same as in the services/logs/entry method. Pipe-separated list
+        of user fields to include in the <b>user</b> field. For valid
+        field names, see the
+        <a href='%OKAPI:methodargref:services/users/user%'>services/users/user</a>
+        method.</p>
     </opt>
     <opt name='offset' default='0'>
         <p>Number of entries to skip at the beginning. Use this along the <b>limit</b> parameter

@@ -305,6 +305,7 @@ class SearchAssistant
                             if (($min == 1) && ($max == 5) && $allow_null) {
                                 /* no extra condition necessary */
                             } else {
+                                # See also Okapi::decode_geocache_rating()
                                 $divisors = array(-999, -1.0, 0.1, 1.4, 2.2, 999);
                                 $min = Db::float_sql($divisors[$min - 1]);
                                 $max = Db::float_sql($divisors[$max]);
