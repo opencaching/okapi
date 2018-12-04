@@ -24,10 +24,16 @@ class WebService
         if (!$log_uuid) throw new ParamMissing('log_uuid');
         $fields = $request->get_parameter('fields');
         if (!$fields) $fields = "date|user|type|comment";
+        $user_fields = $request->get_parameter('user_fields');
+        if (!$user_fields) $user_fields = "uuid|username|profile_url";
 
         $results = OkapiServiceRunner::call('services/logs/entries', new OkapiInternalRequest(
-            $request->consumer, $request->token, array('log_uuids' => $log_uuid,
-            'fields' => $fields)));
+            $request->consumer, $request->token, array(
+                'log_uuids' => $log_uuid,
+                'fields' => $fields,
+                'user_fields' => $user_fields,
+            )
+        ));
         $result = $results[$log_uuid];
         if ($result == null)
             throw new InvalidParam('log_uuid', "This log entry does not exist.");

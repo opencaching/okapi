@@ -25,6 +25,8 @@ class WebService
         if (!$cache_code) throw new ParamMissing('cache_code');
         $fields = $request->get_parameter('fields');
         if (!$fields) $fields = "uuid|date|user|type|comment";
+        $user_fields = $request->get_parameter('user_fields');
+        if (!$user_fields) $user_fields = "uuid|username|profile_url";
 
         $offset = $request->get_parameter('offset');
         if (!$offset) $offset = "0";
@@ -57,8 +59,12 @@ class WebService
         # Getting the logs themselves. Formatting as an ordered list.
 
         $internal_request = new OkapiInternalRequest(
-            $request->consumer, $request->token, array('log_uuids' => implode("|", $log_uuids),
-            'fields' => $fields));
+            $request->consumer, $request->token, array(
+                'log_uuids' => implode("|", $log_uuids),
+                'fields' => $fields,
+                'user_fields' => $user_fields,
+            )
+        );
         $internal_request->skip_limits = true;
         $logs = OkapiServiceRunner::call('services/logs/entries', $internal_request);
         $results = array();

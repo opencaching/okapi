@@ -121,6 +121,10 @@ class WebService
 
         $log_fields = $request->get_parameter('log_fields');
         if (!$log_fields) $log_fields = "uuid|date|user|type|comment";  // validation is done on call
+        $log_user_fields = $request->get_parameter('log_user_fields');
+        if (!$log_user_fields) $log_user_fields = "uuid|username|profile_url";  // validation is done on call
+        $owner_fields = $request->get_parameter('owner_fields');
+        if (!$owner_fields) $owner_fields = "uuid|username|profile_url";  // validation is done on call
 
         $lpc = $request->get_parameter('lpc');
         if ($lpc === null) $lpc = 10;
@@ -395,25 +399,77 @@ class WebService
 
         # owner
 
-        if (in_array('owner', $fields) && (count($results) > 0))
+        if (in_array('owner', $fields) && count($results) > 0)
         {
-            $rs = Db::query("
-                select user_id, uuid, username
-                from user
-                where user_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', array_values($owner_ids)))."')
-            ");
-            $tmp = array();
-            while ($row = Db::fetch_assoc($rs))
-                $tmp[$row['user_id']] = $row;
-            foreach ($results as $cache_code => &$result_ref)
+            # If the user only requests default fields or other "basic fields"
+            # which can easily be handled, we will directly serve the request.
+            # Otherwise we call the more expensive users/by_internal_ids method.
+
+            $basic_owner_fields = ['uuid', 'username', 'profile_url', 'internal_id'];
+            $owner_fields_exploded = explode('|', $owner_fields);
+
+            if (count(array_diff($owner_fields_exploded, $basic_owner_fields)) == 0)
             {
-                $row = $tmp[$owner_ids[$cache_code]];
-                $result_ref['owner'] = array(
-                    'uuid' => $row['uuid'],
-                    'username' => $row['username'],
-                    'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id']
-                );
+                $rs = Db::query("
+                    select user_id, uuid, username
+                    from user
+                    where user_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', array_values($owner_ids)))."')
+                ");
+                $tmp = array();
+                while ($row = Db::fetch_assoc($rs))
+                    $tmp[$row['user_id']] = $row;
+                Db::free_result($rs);
+
+                foreach ($results as $cache_code => &$result_ref)
+                {
+                    $row = $tmp[$owner_ids[$cache_code]];
+                    $tmp = [];
+                    foreach ($owner_fields_exploded as $field)
+                    {
+                        if ($field == 'uuid')
+                            $tmp['uuid'] = $row['uuid'];
+                        elseif ($field == 'username')
+                            $tmp['username'] = $row['username'];
+                        elseif ($field == 'profile_url')
+                            $tmp['profile_url'] = Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id'];
+                        elseif ($field == 'internal_id')
+                            $tmp['internal_id'] = $row['user_id'];
+                    }
+                    $result_ref['owner'] = $tmp;
+                }
             }
+            else
+            {
+                $ownersRequest = new OkapiInternalRequest(
+                    $request->consumer,
+                    $request->token,
+                    array(
+                        'internal_ids' => implode('|', $owner_ids),
+                        'fields' => $owner_fields
+                    )
+                );
+                $ownersRequest->skip_limits = true;
+                try
+                {
+                    $tmp = OkapiServiceRunner::call("services/users/by_internal_ids", $ownersRequest);
+                }
+                catch (Exception $e)
+                {
+                    if (($e instanceof InvalidParam) && ($e->paramName == 'fields')) {
+                        throw new InvalidParam('owner_fields', $e->whats_wrong_about_it);
+                    }
+                    else {
+                        /* Something is wrong with OUR code. */
+                        throw new Exception($e);
+                    }
+                }
+                foreach ($results as $cache_code => &$result_ref) {
+                    $result_ref['owner'] = $tmp[$owner_ids[$cache_code]];
+                }
+                unset($ownersRequest);
+            }
+            unset($owner_fields_exploded);
+            unset($basic_owner_fields);
         }
 
         # is_found
@@ -969,7 +1025,8 @@ class WebService
                         new OkapiInternalRequest(
                             $request->consumer, $request->token, array(
                                 'log_uuids' => implode("|", $subset),
-                                'fields' => $log_fields
+                                'fields' => $log_fields,
+                                'user_fields' => $log_user_fields,
                             )
                         )
                     );
@@ -985,6 +1042,10 @@ class WebService
                 if (($e instanceof InvalidParam) && ($e->paramName == 'fields'))
                 {
                     throw new InvalidParam('log_fields', $e->whats_wrong_about_it);
+                }
+                elseif (($e instanceof InvalidParam) && ($e->paramName == 'user_fields'))
+                {
+                    throw new InvalidParam('log_user_fields', $e->whats_wrong_about_it);
                 }
                 else
                 {

@@ -2,10 +2,13 @@
 
 namespace okapi\services\logs\entries;
 
+use Exception;
 use okapi\core\Db;
 use okapi\core\Exception\InvalidParam;
 use okapi\core\Exception\ParamMissing;
 use okapi\core\Okapi;
+use okapi\core\OkapiServiceRunner;
+use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Request\OkapiRequest;
 use okapi\Settings;
 
@@ -46,6 +49,22 @@ class WebService
         foreach ($fields as $field)
             if (!in_array($field, self::$valid_field_names))
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
+
+        if (!in_array('user', $fields))
+            $user_fields = false;
+        else
+        {
+            $user_fields = $request->get_parameter('user_fields');   // validation is done on call
+            if (!$user_fields) {
+                $user_fields = ['uuid', 'username', 'profile_url'];
+                $only_basic_user_fields = true;
+            } else {
+                $user_fields = explode('|', $user_fields);
+                $only_basic_user_fields = count(array_diff(
+                    $user_fields, ['uuid', 'username', 'profile_url', 'internal_id']
+                )) == 0;
+            }
+        }
 
         if (Settings::get('OC_BRANCH') == 'oc.de')
         {
@@ -102,6 +121,7 @@ class WebService
         ");
         $results = array();
         $log_id2uuid = array(); /* Maps logs' internal_ids to uuids */
+        $log_user_ids = array();
         $flag_options = array('null', 'false', 'true');
         while ($row = Db::fetch_assoc($rs))
         {
@@ -109,11 +129,6 @@ class WebService
                 'uuid' => $row['uuid'],
                 'cache_code' => $row['cache_code'],
                 'date' => date('c', $row['date']),
-                'user' => array(
-                    'uuid' => $row['user_uuid'],
-                    'username' => $row['username'],
-                    'profile_url' => Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id'],
-                ),
                 'type' => Okapi::logtypeid2name($row['type']),
                 'was_recommended' => $row['was_recommended'] ? true : false,
                 'needs_maintenance2' => $flag_options[$row['needs_maintenance2']],
@@ -126,7 +141,23 @@ class WebService
                 'last_modified' => date("Y-m-d", strtotime($row['last_modified'])),
                 'internal_id' => $row['id'],
             );
+            if ($user_fields && $only_basic_user_fields) {
+                $tmp = [];
+                foreach ($user_fields as $field)
+                {
+                    if ($field == 'uuid')
+                        $tmp['uuid'] = $row['user_uuid'];
+                    elseif ($field == 'username')
+                        $tmp['username'] = $row['username'];
+                    elseif ($field == 'profile_url')
+                        $tmp['profile_url'] = Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id'];
+                    elseif ($field == 'internal_id')
+                        $tmp['internal_id'] = $row['user_id'];
+                }
+                $results[$row['uuid']]['user'] = $tmp;
+            }
             $log_id2uuid[$row['id']] = $row['uuid'];
+            $log_uuid2user_uuid[$row['uuid']] = $row['user_uuid'];
         }
         Db::free_result($rs);
 
@@ -164,6 +195,39 @@ class WebService
                     );
             }
             Db::free_result($rs);
+        }
+
+        # fetch users, if non-default user fields are selected
+
+        if ($user_fields && !$only_basic_user_fields)
+        {
+            $usersRequest = new OkapiInternalRequest(
+                $request->consumer,
+                $request->token,
+                array(
+                    'user_uuids' => implode('|', array_values($log_uuid2user_uuid)),
+                    'fields' => implode('|', $user_fields)
+                )
+            );
+            $usersRequest->skip_limits = true;
+            try
+            {
+                $tmp = OkapiServiceRunner::call("services/users/users", $usersRequest);
+            }
+            catch (Exception $e)
+            {
+                if (($e instanceof InvalidParam) && ($e->paramName == 'fields')) {
+                    throw new InvalidParam('user_fields', $e->whats_wrong_about_it);
+                }
+                else {
+                    /* Something is wrong with OUR code. */
+                    throw new Exception($e);
+                }
+            }
+            foreach ($results as $uuid => &$result_ref) {
+                $result_ref['user'] = $tmp[$log_uuid2user_uuid[$uuid]];
+            }
+            unset($usersRequest);
         }
 
         # Check which UUIDs were not found and mark them with null.

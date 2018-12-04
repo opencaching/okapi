@@ -10,6 +10,11 @@
         Selected fields will be included in the response. See below fot the list
         of available fields.</p>
     </opt>
+    <opt name='user_fields' default='uuid|username|profile_url'>
+        Pipe-separated list of user fields to include in the <b>user</b> field.
+        For valid field names, see the
+        <a href='%OKAPI:methodargref:services/users/user%'>services/users/user</a> method.
+    </opt>
     <common-format-params/>
     <returns>
         <p>A dictionary of fields you have selected. Currently available fields:</p>
@@ -28,12 +33,8 @@
                 value contains the "00:00:00" string, then it is date-only.</p>
             </li>
             <li>
-                <p><b>user</b> - a dictionary:</p>
-                <ul>
-                    <li><b>uuid</b> - ID of the user (author of the log entry),</li>
-                    <li><b>username</b> - name of the user (who submitted the log entry),</li>
-                    <li><b>profile_url</b> - URL of the profile page of the user,</li>
-                </ul>
+                <p><b>user</b> - a dictionary of user fields that are selected by the
+                user_fields option.</p>
             </li>
             <li>
                 <p><b>type</b> - string; log type. One of the values documented
@@ -198,10 +199,9 @@
                 edited, the returned value is identical to <b>date_created</b>.</p>
             </li>
             <li>
-                <p><b>internal_id</b> - undocumented, you <u>should not</u> use
-                this unless you really know you need to. Internal IDs are
-                <b>not</b> unique across various OKAPI installations.
-                Try to use UUIDs instead.</p>
+                <p><b>internal_id</b> - you <u>should not</u> use this unless you
+                really know you need to. Internal IDs are <b>not</b> unique across
+                various OKAPI installations. Try to use UUIDs instead.</p>
             </li>
         </ul>
 

@@ -69,6 +69,11 @@
         <p>Note that some OC installations do not implement team annotations. They will
         ignore this parameter.</p>
     </opt>
+    <opt name='owner_fields' default='uuid|username|profile_url'>
+        Pipe-separated list of user fields to include in the <b>owner</b> field.
+        For valid field names, see
+        <a href='%OKAPI:methodargref:services/users/user%'>services/users/user</a> method.
+    </opt>
     <opt name='lpc' default='10'>
         Log-entries per cache - the number of logs returned in the <b>latest_logs</b> field.
         This should be an integer or a special "all" value. Please note, that you must include
@@ -76,7 +81,13 @@
     </opt>
     <opt name='log_fields' default='uuid|date|user|type|comment'>
         Pipe-separated list of log fields to include in the <b>latest_logs</b> field.
-        For valid field names, see <b>logs/entry</b> method.
+        For valid field names, see the
+        <a href='%OKAPI:methodargref:services/logs/entry%'>logs/entry</a> method.
+    </opt>
+    <opt name='log_user_fields' default='uuid|username|profile_url'>
+        Pipe-separated list of user fields to include in the <b>user</b> subfield
+        of the <b>latest_logs</b> field. For valid field names, see the
+        <a href='%OKAPI:methodargref:services/users/user%'>services/users/user</a> method.
     </opt>
     <opt name='user_logs_only' default='false'>
         <p>Boolean. If <b>true</b> with Level 3 Authentication, only logs
@@ -97,7 +108,7 @@
         western hemispheres accordingly). These are full degrees with a dot
         as a decimal point (ex. "54.3|22.3").</p>
     </opt>
-    <opt name="user_uuid">
+    <opt name='user_uuid'>
         <p>User'd ID. Required to access fields like <b>is_found</b> using <b>Level 1</b> Authentication.</p>
 
         <p>Please note that if you want to access private fields (like <b>my_notes</b>), then
@@ -181,12 +192,8 @@
             </li>
             <li><b>url</b> - URL of the cache's web page,</li>
             <li>
-                <p><b>owner</b> - dictionary of:</p>
-                <ul>
-                    <li><b>uuid</b> - geocache owner's user ID,</li>
-                    <li><b>username</b> - name of the user,</li>
-                    <li><b>profile_url</b> - URL of the user profile page,</li>
-                </ul>
+                <p><b>owner</b> - dictionary of user fields that are selected by the
+                <b>owner_fields</b> option.</p>
             </li>
             <li>
                 <p><b>gc_code</b> - Geocaching.com code (GC code) of the geocache
@@ -463,7 +470,8 @@
                 <p><b>latest_logs</b> - a couple of latest log entries in the cache.
                 The format is the same as the one returned by the services/logs/logs method.</p>
 
-                <p>Note: The number of logs returned can be set with the <b>lpc</b> option.</p>
+                <p>Note: The number of logs returned can be set with the <b>lpc</b> option,
+                and the fields to return can be selected by the <b>log_fields</b> option.</p>
             </li>
             <li>
                 <p><b>my_notes</b> - user's notes on the cache, in plain-text, or <b>null</b>

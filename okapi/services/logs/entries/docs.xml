@@ -13,8 +13,14 @@
     </req>
     <opt name='fields' default='date|user|type|comment'>
         <p>Same as in the services/logs/entry method. Pipe-separated list
-        of field names which you are interested with.
+        of field names which you are interested in.
         See services/logs/entry method for a list of available values.</p>
+    </opt>
+    <opt name='user_fields' default='uuid|username|profile_url'>
+        Same as in the services/logs/entry method. Pipe-separated list
+        of user fields to include in the <b>user</b> field. For valid
+        field names, see the
+        <a href='%OKAPI:methodargref:services/users/user%'>services/users/user</a> method.
     </opt>
     <common-format-params/>
     <returns>

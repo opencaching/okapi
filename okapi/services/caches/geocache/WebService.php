@@ -28,8 +28,12 @@ class WebService
         if (!$langpref) $langpref = "en";
         $fields = $request->get_parameter('fields');
         if (!$fields) $fields = "code|name|location|type|status";
+        $owner_fields = $request->get_parameter('owner_fields');
+        if (!$owner_fields) $owner_fields = "uuid|username|profile_url";
         $log_fields = $request->get_parameter('log_fields');
         if (!$log_fields) $log_fields = "uuid|date|user|type|comment";
+        $log_user_fields = $request->get_parameter('log_user_fields');
+        if (!$log_user_fields) $log_user_fields = "uuid|username|profile_url";
         $lpc = $request->get_parameter('lpc');
         if (!$lpc) $lpc = 10;
         $user_logs_only = $request->get_parameter('user_logs_only');
@@ -42,10 +46,12 @@ class WebService
             'cache_codes' => $cache_code,
             'langpref' => $langpref,
             'fields' => $fields,
+            'owner_fields' => $owner_fields,
             'attribution_append' => $attribution_append,
             'oc_team_annotation' => $oc_team_annotation,
             'lpc' => $lpc,
             'log_fields' => $log_fields,
+            'log_user_fields' => $log_user_fields,
             'user_logs_only' => $user_logs_only,
         );
         $my_location = $request->get_parameter('my_location');
