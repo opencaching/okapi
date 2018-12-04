@@ -2,6 +2,7 @@
 
 namespace okapi\services\caches\formatters\gpx;
 
+use Exception;
 use okapi\core\Consumer\OkapiInternalConsumer;
 use okapi\core\Db;
 use okapi\core\Exception\BadRequest;

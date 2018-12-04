@@ -423,20 +423,21 @@ class WebService
                 foreach ($results as $cache_code => &$result_ref)
                 {
                     $row = $tmp[$owner_ids[$cache_code]];
-                    $tmp = [];
+                    $owner = [];
                     foreach ($owner_fields_exploded as $field)
                     {
                         if ($field == 'uuid')
-                            $tmp['uuid'] = $row['uuid'];
+                            $owner['uuid'] = $row['uuid'];
                         elseif ($field == 'username')
-                            $tmp['username'] = $row['username'];
+                            $owner['username'] = $row['username'];
                         elseif ($field == 'profile_url')
-                            $tmp['profile_url'] = Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id'];
+                            $owner['profile_url'] = Settings::get('SITE_URL')."viewprofile.php?userid=".$row['user_id'];
                         elseif ($field == 'internal_id')
-                            $tmp['internal_id'] = $row['user_id'];
+                            $owner['internal_id'] = $row['user_id'];
                     }
-                    $result_ref['owner'] = $tmp;
+                    $result_ref['owner'] = $owner;
                 }
+                unset($owner);
             }
             else
             {
