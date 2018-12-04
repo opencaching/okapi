@@ -19,6 +19,12 @@
         <p>Pipe-separated list of field names which you are interested with.
         Selected fields will be included in the response. See below for the
         list of available fields.</p>
+        <p>Alternatively, the phrase <b>for editing</b> (instead of a field
+        list) will include all fields that are editable by
+        <a href='%OKAPI:methodargref:services/caches/edit%'>services/caches/edit</a>.
+        It will also adjust the contents of the <b>descriptions</b> field
+        to be editable. Note the <b>for editing</b> is only available
+        through Level 3 Authentication for the owner of the cache,</p>
     </opt>
     <opt name='attribution_append' default='full'>
         <p>By default, OKAPI appends the value of <b>attribution_note</b> field to all the
@@ -386,7 +392,10 @@
             </li>
             <li>
                 <b>descriptions</b> - a dictionary (language code =&gt;
-                <a href='%OKAPI:docurl:html%'>HTML string</a>) of cache descriptions,
+                <a href='%OKAPI:docurl:html%'>HTML string</a>) of cache descriptions.
+                They will include the same additional notices as the <b>description</b>
+                field, unless the option <b>fields</b>=<b>for editing</b> is supplied,
+                which will <i>exclude</i> any additional notices,
             </li>
             <li class="deprecated">
                 <b>hint</b> - <a href='%OKAPI:docurl:html%'>HTML-encoded</a>
@@ -562,6 +571,15 @@
                 <p><b>Note:</b> This data is user-supplied and is not validated in
                 any way. Consider using external geocoding services instead.</p>
             </li>
+            <li>
+                <p><b>country_code</b> - an identifier of the country the cache is
+                placed in, or <b>null</b> if the country is unknown. The country
+                code  is provided only for
+                <a href='%OKAPI:methodargref:services/caches/edit%'>editing</a>
+                the cache's country, and it is only valid on the OC installation
+                that returned it (other installations may use other codes for
+                the same country.)</p>
+            </li>
             <li class='deprecated'>
                 <p><b>state</b> - deprecated; same as <b>region</b>, but <b>null</b>
                 may be returned instead of an empty string if the region is unknown.
@@ -582,6 +600,15 @@
                 currently you have no way of knowing in which language it will appear
                 in (but it *may* start to vary on the value of your <b>langpref</b>
                 parameter in the future).</p>
+            </li>
+            <li>
+                <p><b>region_code</b> - an identifier of the major subnational entity
+                the cache is placed in, or <b>null</b> if the entitiy is unknown.
+                The region code is provided only for
+                <a href='%OKAPI:methodargref:services/caches/edit%'>editing</a> the
+                cache's region, and it is only valid for the OC installation that
+                returned it (other installations may use other codes for the same
+                region).</p>
             </li>
             <li>
                 <p><b>protection_areas</b> - list of dictionaries, each representing a

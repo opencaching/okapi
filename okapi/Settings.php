@@ -52,6 +52,12 @@ final class Settings
         'SITELANG' => "en",
 
         /**
+         * Some sites have even a list of language preferences, e.g. to
+         * initialize the language selection list when creating a new cache.
+         */
+        'SITELANGS' => null,
+
+        /**
          * If set, it will be passed to date_default_timezone_set.
          *
          * If your system is configured properly, then you are not required to
@@ -329,6 +335,8 @@ final class Settings
             $dict['SITE_LOGO'] = $dict['SITE_URL'] . 'okapi/static/oc_logo.png';
         if ($dict['JPEG_QUALITY'] < 50 || $dict['JPEG_QUALITY'] > 100)
             throw new Exception('JPEG_QUALITY must be between 50 and 100.');
+        if ($dict['SITELANGS'] === null)
+            $dict['SITELANGS'] = array($dict['SITELANG']);
 
         # The OKAPI code is only compatible with utf8 and utf8mb4 charsets.
         if (!in_array($dict['DB_CHARSET'], array('utf8', 'utf8mb4'))) {

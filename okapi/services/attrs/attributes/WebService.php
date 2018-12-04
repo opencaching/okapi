@@ -21,7 +21,8 @@ class WebService
 
     private static $valid_field_names = array(
         'acode', 'name', 'names', 'description', 'descriptions', 'gc_equivs', 'gc_ocde_equiv',
-        'is_locally_used', 'is_deprecated', 'local_icon_url', 'is_discontinued'
+        'is_locally_used', 'is_deprecated', 'local_icon_url', 'is_addable', 'is_discontinued',
+        'incompatible_acodes',
     );
 
     public static function call(OkapiRequest $request)
@@ -83,7 +84,7 @@ class WebService
             # Fill some other fields (not kept in the cached attrdict).
 
             $attr['is_locally_used'] = ($attr['internal_id'] !== null);
-            $attr['is_deprecated'] = $attr['is_discontinued'];  // deprecated and undocumetned field, see issue 70
+            $attr['is_deprecated'] = $attr['is_discontinued'];  // deprecated and undocumented field, see issue 70
 
             # Add to results.
 

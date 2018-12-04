@@ -57,6 +57,17 @@ class WebService
             );
             $results = OkapiServiceRunner::call('services/attrs/attributes',
                 new OkapiInternalRequest($request->consumer, $request->token, $params));
+
+            if ($only_locally_used && in_array('incompatible_acodes', explode('|', $fields)))
+            {
+                foreach ($results as $acode => &$attr_ref) {
+                    $incompatible_local = [];
+                    foreach ($attr_ref['incompatible_acodes'] as &$acode)
+                        if ($attrdict[$acode]['internal_id'] !== null)
+                            $incompatible_local[] = $acode;
+                    $attr_ref['incompatible_acodes'] = $incompatible_local;
+                }
+            }
         } else {
             $results = new ArrayObject();
         }

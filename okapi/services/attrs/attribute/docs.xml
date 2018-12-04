@@ -123,10 +123,20 @@
                 <em>attrs=gc_ocde:attrs</em> option for more explanation.</p>
             </li>
             <li>
+                <p><b>incompatible_acodes</b> - list of A-codes which logically
+                contradict this attribute; e.g. A33 (parking area nearby) contradicts
+                A21 (long walk).</p>
+
+                <p>Note: The <b>attr_acodes</b> field of the services/caches/geocache
+                method may contain any combination of contradicting A-codes, because
+                OC sites do not (fully) validate them on input. Also, we cannot
+                guarantee that the provided list of incompatible A-codes is complete.</p>
+            </li>
+            <li>
                 <p><b>is_locally_used</b> - boolean, indicates if the attribute is <i>currently</i>
                 used by <i>this</i> Opencaching server. Or, to be more specific, <b>true</b>
                 means that the attribute can currently be included in the <b>attr_acodes</b> field
-                of the <b>geocache</b> method in this OKAPI installation.</p>
+                of the services/caches/geocache method in this OKAPI installation.</p>
 
                 <p>Note that this flag can change in time. Some attributes may get
                 introduced into other installations, whereas other attributes may
@@ -144,6 +154,11 @@
                 attributes. All these images come in various sizes and can change over time.
                 In other words, if you want to use this attribute, then you must always be
                 prepared to receive <b>null</b>, or an image of unexpected dimensions.</p>
+            </li>
+            <li>
+                <p><b>is_addable</b> - boolean, indicates if the attribute can be added to
+                geocaches; <b>false</b> if the attribute has been deprecated, i.e. it still
+                may be in use, but can no longer be added to caches.</p>
             </li>
             <li>
                 <p><b>is_discontinued</b> - boolean, indicates if the attribute is discontinued.

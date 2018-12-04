@@ -29,7 +29,7 @@ class OCPLSignals
     }
 
     /** update cache altutude after coords have changed **/
-    public static function cache_coords_changed($cache_id)
+    public static function cache_location_changed($cache_id)
     {
         if (Settings::get('OC_BRANCH') == 'oc.pl')
             self::create('cache-altitude', ['cache_id' => $cache_id]);

@@ -436,15 +436,8 @@ class WebService
         # Finally! Insert the rows into the log entries table. Update
         # cache stats and user stats.
 
-        if (Settings::get('OC_BRANCH') == 'oc.de') {
-            $value_for_text_htmledit_field = Db::select_value("
-                select if(no_htmledit_flag, 0, 1)
-                from user
-                where user_id='".Db::escape_string($user['internal_id'])."'
-            ");
-        } else {
-            $value_for_text_htmledit_field = 1;
-        }
+        $value_for_text_htmledit_field
+            = Okapi::get_default_value_for_text_htmledit($user['internal_id']);
 
         $log_uuids = array(
             self::insert_log_row(

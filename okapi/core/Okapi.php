@@ -15,6 +15,7 @@ use okapi\core\Request\OkapiInternalRequest;
 use okapi\core\Request\OkapiRequest;
 use okapi\core\Response\OkapiHttpResponse;
 use okapi\Settings;
+use Utils\Text\UserInputFilter; // OCPL specific
 
 /** Container for various OKAPI functions. */
 class Okapi
@@ -927,21 +928,21 @@ class Okapi
         # CONTACT ME BEFORE YOU MODIFY THIS!
         #
 
-        # common types of all OC sites
-        'Traditional'  => ['oc.de' => 2, 'oc.pl' => 2],
-        'Multi'        => ['oc.de' => 3, 'oc.pl' => 3],
-        'Quiz'         => ['oc.de' => 7, 'oc.pl' => 7],
-        'Virtual'      => ['oc.de' => 4, 'oc.pl' => 4],
-        'Event'        => ['oc.de' => 6, 'oc.pl' => 6],
-        'Webcam'       => ['oc.de' => 5, 'oc.pl' => 5],
-        'Moving'       => ['oc.de' => 9, 'oc.pl' => 8],
-        'Other'        => ['oc.de' => 1, 'oc.pl' => 1],
+        # common types of all OC sites        v------- container -------v
+        'Traditional'  => ['oc.de' => [2, 'optional'], 'oc.pl' => [2, 'yes'     ]],
+        'Multi'        => ['oc.de' => [3, 'optional'], 'oc.pl' => [3, 'yes'     ]],
+        'Quiz'         => ['oc.de' => [7, 'optional'], 'oc.pl' => [7, 'yes'     ]],
+        'Virtual'      => ['oc.de' => [4, 'no'      ], 'oc.pl' => [4, 'no'      ]],
+        'Event'        => ['oc.de' => [6, 'no'      ], 'oc.pl' => [6, 'no'      ]],
+        'Webcam'       => ['oc.de' => [5, 'no'      ], 'oc.pl' => [5, 'no'      ]],
+        'Moving'       => ['oc.de' => [9, 'optional'], 'oc.pl' => [8, 'yes'     ]],
+        'Other'        => ['oc.de' => [1, 'optional'], 'oc.pl' => [1, 'optional']],
 
         # local types
-        'Podcast'      => ['oc.pl' => 9],
-        'Own'          => ['oc.pl' => 10],
-        'Math/Physics' => ['oc.de' => 8, 'mapto' => ['name' => 'Quiz', 'acodes' => ['A16']]],
-        'Drive-In'     => ['oc.de' => 10, 'mapto' => ['name' => 'Traditional', 'acodes' => ['A19']]],
+        'Podcast'      => ['oc.pl' => [9, 'yes'     ]],
+        'Own'          => ['oc.pl' => [10,'yes'     ]],
+        'Math/Physics' => ['oc.de' => [8, 'optional'], 'mapto' => ['name' => 'Quiz', 'acodes' => ['A16']]],
+        'Drive-In'     => ['oc.de' => [10,'optional'], 'mapto' => ['name' => 'Traditional', 'acodes' => ['A19']]],
     );
 
     /** Return all types of this OC site which are exposed by OKAPI. **/
@@ -974,8 +975,9 @@ class Okapi
     {
         if (isset(self::$cache_types[$name][Settings::get('OC_BRANCH')]))
             return self::$cache_types[$name][Settings::get('OC_BRANCH')];
-        throw new Exception("Method cache_type_name2id called with unsupported cache ".
-            "type name '$name'.");
+        throw new Exception(
+            "Method cache_type_name2id called with unsupported cache type name '$name'."
+        );
     }
 
     /** E.g. 2 => 'Traditional'. For unknown ids returns "Other". */
@@ -988,7 +990,7 @@ class Okapi
             $branch = Settings::get('OC_BRANCH');
             foreach (self::$cache_types as $name => $properties)
                 if (isset($properties[$branch]))
-                    $reversed[$properties[$branch]] = $name;
+                    $reversed[$properties[$branch][0]] = $name;
         }
         if (isset($reversed[$id]))
             return $reversed[$id];
@@ -1050,6 +1052,33 @@ class Okapi
         return 'Archived';
     }
 
+    /**
+     * Get list of cache sizes available at this installation
+     * [for a given cache type].
+     */
+    public static function get_local_cachesizes($cache_type = null)
+    {
+        $branch = Settings::get('OC_BRANCH');
+
+        if ($cache_type !== null) {
+            if (!isset(self::$cache_types[$cache_type][$branch]))
+                throw new Exception("invalid cache type passed to get_local_cachesizes");
+            $container = self::$cache_types[$cache_type][$branch][1];
+            if ($container == 'no')
+                return ['none'];
+        } else
+            $container = 'optional';
+
+        if ($branch == 'oc.pl')
+            $sizes = ['micro', 'small', 'regular', 'large', 'xlarge'];
+        else
+            $sizes = ['nano', 'micro', 'small', 'regular', 'large', 'xlarge', 'other'];
+        if ($container == 'optional')
+            $sizes[] = 'none';
+
+        return $sizes;
+    }
+
     private static $cache_sizes = array(
         'none' => 7,
         'nano' => 8,
@@ -1060,22 +1089,6 @@ class Okapi
         'xlarge' => 6,
         'other' => 1,
     );
-
-    public static function get_local_cachesizes()
-    {
-        # OCPL only knows a subset of sizes, which is defined in the
-        # GeoCacheCommons class. OCDE supports all sizes; they are listed
-        # in the 'cache_size' table.
-
-        if (Settings::get('OC_BRANCH') == 'oc.pl')
-        {
-            return ['none', 'micro', 'small', 'regular', 'large', 'xlarge'];
-        }
-        else
-        {
-            return array_keys(self::$cache_sizes);
-        }
-    }
 
     /** E.g. 'micro' => 2. For unknown names throw an Exception. */
     public static function cache_size2_to_sizeid($size2)
@@ -1307,6 +1320,50 @@ class Okapi
     }
 
     /**
+     * Prepare HTML content for insertion into the OC database.
+     * See LogsCommon::process_comment() on the text_html field.
+     */
+    public static function purify_html($html_text)
+    {
+        # NOTICE: For both branches, we are including EXTERNAL OCDE
+        # libraries here! This code does not belong to OKAPI!
+
+        if (Settings::get('OC_BRANCH') == 'oc.de')
+        {
+            $opt['html_purifier'] = Settings::get('OCDE_HTML_PURIFIER_SETTINGS');
+
+            $purifier = new \OcHTMLPurifier($opt);
+            $html_text = $purifier->purify($html_text);
+            $value_for_text_html_field = 1;
+        }
+        else
+        {
+            $html_text = UserInputFilter::purifyHtmlString($html_text);
+
+            # see https://github.com/opencaching/opencaching-pl/pull/1224
+            $value_for_text_html_field = 2;
+        }
+        return [$html_text, $value_for_text_html_field];
+    }
+
+    /**
+     * The text_htmledit field controls which editor is used on the OC website.
+     * 1 = WYSIWYG editor, 0 = simple <textarea>. OLCPL dropped the latter one.
+     **/
+    static public function get_default_value_for_text_htmledit($user_internal_id)
+    {
+        if (Settings::get('OC_BRANCH') == 'oc.de') {
+            return Db::select_value("
+                select if(no_htmledit_flag, 0, 1)
+                from user
+                where user_id='".Db::escape_string($user_internal_id)."'
+            ");
+        } else {
+            return 1;
+        }
+    }
+
+    /**
      * Convert strings such as "2M" or "50k" to bytes.
      */
     public static function from_human_to_bytes($val)
@@ -1357,16 +1414,28 @@ class Okapi
     }
 
     /**
-     * Format a "lat|lon" location in a user-readable way;
+     * Parses a "lat|lon" location into a [lat, lon] array of floats
+     */
+    public static function parse_location($location)
+    {
+        if (!preg_match('/^([+-]?[0-9]+(\.[0-9]*)?)\|([+-]?[0-9]+(\.[0-9]*)?)$/', $location, $matches)) {
+            return null;
+        }
+        return [floatval($matches[1]), floatval($matches[3])];
+    }
+
+    /**
+     * Formate a "lat|lon" location in a user-readable way;
      * returns array with latitude and longitude component.
      */
     public static function format_location_readable($location)
     {
-        if (!preg_match('/^([+-]?[0-9]+(\.[0-9]*)?)\|([+-]?[0-9]+(\.[0-9]*)?)$/', $location, $matches))
+        $coord = self::parse_location($location);
+        if ($coord === null)
             throw new Exception("invalid location format");
         return [
-            self::format_coordinate($matches[1], 'N', 'S'),
-            self::format_coordinate($matches[3], 'E', 'W')
+            self::format_coordinate($coord[0], 'N', 'S'),
+            self::format_coordinate($coord[1], 'E', 'W')
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace okapi\services\caches\geocache;
 
+use Exception;
 use okapi\core\Db;
 use okapi\core\Exception\InvalidParam;
 use okapi\core\Exception\ParamMissing;
@@ -64,8 +65,21 @@ class WebService
         # There's no need to validate the fields/lpc parameters as the 'geocaches'
         # method does this (it will raise a proper exception on invalid values).
 
-        $results = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
-            $request->consumer, $request->token, $params));
+        try
+        {
+            $results = OkapiServiceRunner::call('services/caches/geocaches', new OkapiInternalRequest(
+                $request->consumer, $request->token, $params));
+        }
+        catch (Exception $e)
+        {
+            if (($e instanceof InvalidParam) && ($e->paramName == 'cache_codes')) {
+                throw new InvalidParam('cache_code', $e->whats_wrong_about_it);
+            } else {
+                /* Something is wrong with OUR code. */
+                throw new Exception($e);
+            }
+        }
+
         $result = $results[$cache_code];
         if ($result === null)
         {

@@ -32,7 +32,7 @@ class WebService
         'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
         'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
         'is_ignored', 'willattends',
-        'country', 'country2', 'state', 'region',
+        'country', 'country2', 'country_code', 'state', 'region', 'region_code',
         'preview_image', 'trip_time', 'trip_distance', 'attribution_note','gc_code', 'hint2', 'hints2',
         'protection_areas', 'short_description', 'short_descriptions', 'needs_maintenance',
         'watchers', 'my_rating', 'is_recommended', 'oc_team_annotation');
@@ -63,9 +63,32 @@ class WebService
         $fields = $request->get_parameter('fields');
         if (!$fields) $fields = "code|name|location|type|status";
         $fields = explode("|", $fields);
-        foreach ($fields as $field)
-            if (!in_array($field, self::$valid_field_names))
-                throw new InvalidParam('fields', "'$field' is not a valid field code.");
+        $for_editing = in_array('for editing', $fields);
+        if ($for_editing) {
+            if ($request->token === null)
+                throw new InvalidParam('fields', "'fields=for editing' requires Level 3 Authentication.");
+            if (count($fields) > 1)
+                throw new InvalidParam('fields', "'for editing' cannot be combined with any field names.");
+            $fields = [
+                'names', 'type', 'size2', 'difficulty', 'terrain',  'trip_time', 'trip_distance',
+                'attr_acodes', 'descriptions', 'short_descriptions', 'hints2', 'gc_code', 'passwd'
+            ];
+            if (Settings::get('OC_BRANCH') == 'oc.de') {
+                $fields[] = 'location';
+                $fields[] = 'country_code';
+            }
+        } else {
+            foreach ($fields as $field) {
+                if (!in_array($field, self::$valid_field_names))
+                    throw new InvalidParam('fields', "'$field' is not a valid field code.");
+            }
+            if (in_array('passwd', $fields)) {
+                throw new InvalidParam(
+                    'fields',
+                    "The 'passwd' field can only be requsted with 'fields=for editing'."
+                );
+            }
+        }
 
         # Some fields need to be temporarily included whenever a description-
         # related field is included. That's a little ugly, but helps performance
@@ -74,7 +97,6 @@ class WebService
         $fields_to_remove_later = array();
         if (
             in_array('description', $fields) || in_array('descriptions', $fields)
-            || in_array('editable_description', $fields) || in_array('editable_descriptions', $fields)
             || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
             || in_array('hint', $fields) || in_array('hints', $fields)
             || in_array('hint2', $fields) || in_array('hints2', $fields)
@@ -239,6 +261,12 @@ class WebService
         $outdated_listings = array();
         while ($row = Db::fetch_assoc($rs))
         {
+            if ($for_editing && $row['user_id'] != $request->token->user_id) {
+                throw new InvalidParam(
+                    'cache_codes',
+                    $row['wp_oc']." can be retrieved 'for editing' only be the cache owner."
+                );
+            }
             $entry = array();
             $cacheid2wptcode[$row['cache_id']] = $row['wp_oc'];
             foreach ($fields as $field)
@@ -346,8 +374,6 @@ class WebService
                     case 'short_descriptions': /* handled separately */ break;
                     case 'description': /* handled separately */ break;
                     case 'descriptions': /* handled separately */ break;
-                    case 'editable_description': /* handled separately */ break;
-                    case 'editable_descriptions': /* handled separately */ break;
                     case 'hint': /* handled separately */ break;
                     case 'hints': /* handled separately */ break;
                     case 'hint2': /* handled separately */ break;
@@ -375,6 +401,10 @@ class WebService
                     case 'internal_id': $entry['internal_id'] = $row['cache_id']; break;
                     case 'attribution_note': /* handled separately */ break;
                     case 'protection_areas': /* handled separately */ break;
+                    case 'passwd':
+                        if ($for_editing)  // failsafe
+                            $entry['passwd'] = $row['logpw'];
+                        break;
                     default: throw new Exception("Missing field case: ".$field);
                 }
             }
@@ -637,7 +667,6 @@ class WebService
         # Descriptions and hints.
 
         if (in_array('description', $fields) || in_array('descriptions', $fields)
-            || in_array('editable_description', $fields) || in_array('editable_descriptions', $fields)
             || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
             || in_array('hint', $fields) || in_array('hints', $fields)
             || in_array('hint2', $fields) || in_array('hints2', $fields)
@@ -650,7 +679,6 @@ class WebService
             {
                 $result_ref['short_descriptions'] = new ArrayObject();
                 $result_ref['descriptions'] = new ArrayObject();
-                $result_ref['editable_descriptions'] = new ArrayObject();
                 $result_ref['empty_descriptions'] = [];
                 $result_ref['hints'] = new ArrayObject();
                 $result_ref['hints2'] = new ArrayObject();
@@ -685,23 +713,17 @@ class WebService
 
                 $listing_is_outdated = in_array($cache_code, $outdated_listings);
                 $include_team_annotation = ($row['oc_team_annotation'] && $oc_team_annotation == 'description');
-                if ($row['desc'] || $listing_is_outdated || $include_team_annotation)
+                if ($row['desc'] && $for_editing)
+                {
+                    $results[$cache_code]['descriptions'][$language] =
+                        Okapi::fix_oc_html($row['desc'], 0);
+                }
+                elseif ($row['desc'] || $listing_is_outdated || $include_team_annotation)
                 {
                     /* Note, that the "owner" and "internal_id" fields are automatically included,
                      * whenever the cache description is included. */
 
                     $tmp = Okapi::fix_oc_html($row['desc'], 0);
-
-                    if ($request->token != null && $request->token->user_id == $owner_ids[$cache_code])
-                    {
-                        # Though this is no private data, we expose it only to the
-                        # cache owner, because the "naked" descriptions should not be
-                        # published.
-
-                        $results[$cache_code]['editable_descriptions'][$language] = $tmp;
-                    }
-                    else
-                        $results[$cache_code]['editable_descriptions'][$language] = null;
 
                     Okapi::gettext_domain_init(
                         array_merge([$language], $langprefs)
@@ -797,10 +819,6 @@ class WebService
                 }
                 $result_ref['short_description'] = Okapi::pick_best_language($result_ref['short_descriptions'], $langprefs);
                 $result_ref['description'] = Okapi::pick_best_language($result_ref['descriptions'], $langprefs);
-                $result_ref['editable_description'] = Okapi::pick_best_language($result_ref['editable_descriptions'], $langprefs);
-                if ($result_ref['editable_description'] === null) {
-                    $result_ref['editable_descriptions'] = null;
-                }
                 $result_ref['hint'] = Okapi::pick_best_language($result_ref['hints'], $langprefs);
                 $result_ref['hint2'] = Okapi::pick_best_language($result_ref['hints2'], $langprefs);
 
@@ -815,7 +833,6 @@ class WebService
 
             foreach (array(
                 'short_description', 'short_descriptions', 'description', 'descriptions',
-                'editable_description', 'editable_descriptions',
                 'hint', 'hints', 'hint2', 'hints2', 'oc_team_annotation',
             ) as $field)
                 if (!in_array($field, $fields))
@@ -1555,6 +1572,14 @@ class WebService
                 foreach ($results as $cache_code => &$row_ref)
                     $row_ref['region_code'] = isset($region_codes[$cache_code]) ? $region_codes[$cache_code] : null;
             }
+            if (in_array('region', $fields)) {
+                foreach ($results as $cache_code => &$row_ref)
+                    $row_ref['region'] = isset($regions[$cache_code]) ? $regions[$cache_code] : '';
+            }
+            if (in_array('region_code', $fields)) {
+                foreach ($results as $cache_code => &$row_ref)
+                    $row_ref['region_code'] = isset($region_codes[$cache_code]) ? $region_codes[$cache_code] : null;
+            }
             unset($countries);
             unset($country_codes);
             unset($states);
@@ -1699,7 +1724,6 @@ class WebService
                 && (count(array_intersect(array(
                     'hint', 'hints', 'hint2', 'hints2',
                     'description', 'descriptions',
-                    'editable_description', 'editable_descriptions',
                 ), $fields)) > 0)
             ) {
                 \okapi\lib\OCPLAccessLogs::log_geocache_access($request, $cache_ids);

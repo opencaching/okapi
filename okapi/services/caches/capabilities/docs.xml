@@ -16,9 +16,19 @@
         <p>Pipe-separated list of field names which you are interested in.
         Selected fields will be included in the response. See below for the
         list of available fields.</p>
-        <p>(Why a fields option? Because fields like <i>countries</i> and
-        <i>languages</i> may be added, that return lots of data or are
-        expensive to calculate.)</p>
+    </opt>
+    <opt name='langpref' default='en'>
+        <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
+        order of preference in which language will be chosen for the names in
+        fields <b>languages</b> and <b>countries</b>. Note that this option is
+        <i>ignored</i> for the <b>regions</b> field, which will always return
+        names in local language.</p>
+    </opt>
+    <opt name='cache_type'>
+        <p>One of the cache type indentifiers returned in the <b>types</b>
+        field by an earlier call to this method. If supplied, the
+        <b>sizes</b> and <b>password_max_length</b> return values will
+        reflect the capabilities for this type of cache.</p>
     </opt>
     <common-format-params/>
     <returns>
@@ -31,14 +41,17 @@
                 method for more information on cache types.</p>
             </li>
             <li>
-                <p><b>sizes</b> - list of the cache sizes which are currently
-                available at this installation.</p>
+                <p><b>sizes</b> - list of the  cache sizes which are currently
+                available at this installation [for the given <b>cache_type</b>].
+                Note that the returned identifiers correspond the <b>size2</b>
+                field of <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>,
+                not the deprecated <span class='deprecated'><b>size</b></span> field.</p>
             </li>
             <li>
                 <p><b>statuses</b> - list of the cache statuses which are
                 currently available at this installation. See the
                 <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>
-                method for more information on cache types.</p>
+                method for more information on cache statuses.</p>
             </li>
             <li>
                 <p><b>has_ratings</b> - boolean, <b>true</b> if this installation
@@ -47,9 +60,49 @@
                 method to find out if a given geocache can be rated.</p>
             </li>
             <li>
+                <p><b>languages</b> - a dictionary (language code => name) of
+                available languages for geocache descriptions and hints.</p>
+            </li>
+            <li>
+                <p><b>primary_languages</b> - a list of codes of the preferred or
+                mostly used languages at this OC site, ordered descending by
+                relevance.  You may suggest this set of languages first when your
+                user edits cache descriptions (we recommend to present them in
+                alphabetical order).</p>
+            </li>
+            <li>
+                <p><b>countries</b> - a dictionary (country code => name) of
+                countries that can be assigned to geocache listings.</p>
+            </li>
+            <!-- li>
+                <p><b>primary_countries</b> - a list of codes of the countries
+                that are primarily served by this installation, ordered
+                descending by relevance. You may suggest this set of countries
+                first when your user edits cache descriptions (we recommend to
+                present them in alphabetical order).</p>
+            </li -->
+            <li>
+                <p><b>regions</b> - a dictionary (country code => region) of
+                countries, each containing a dictionary (region code => name)
+                of regions that can be assigned to geocache listings. If
+                <b>can_set_region</b> is <b>false</b>, then the return value
+                currently is <b>null</b>, but this may change. Also, the
+                length of the codes (which currently is always 4 characters)
+                may change.</p>
+            </li>
+            <li>
+                <p><b>can_set_region</b> - boolean, <b>true</b> if
+                <a href='%OKAPI:methodargref:services/caches/edit%'>services/caches/edit</a>
+                will accept the <b>region</b> parameter. If <b>false</b>,
+                then this installation will automatically calculate regions
+                from the cache location.</p>
+            </li>
+            <li>
                 <p><b>password_max_length</b> - the maximum length of
                 a password that will be accepted by
-                <a href='%OKAPI:methodargref:services/caches/edit%'>services/caches/edit</a>.</p>
+                <a href='%OKAPI:methodargref:services/caches/edit%'>services/caches/edit</a>
+                [for the given <b>cache_type</b>]. The value <b>0</b> indicates
+                that no password can be set.</p>
             </li>
         </ul>
     </returns>

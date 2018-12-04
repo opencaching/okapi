@@ -90,16 +90,19 @@ class AttrHelper
         # Build cache attributes dictionary
 
         $all_internal_ids = array();
+        $branch = Settings::get('OC_BRANCH');
         foreach ($doc->attr as $attrnode)
         {
             $attr = array(
                 'acode' => (string)$attrnode['acode'],
+                'incompatible_acodes' => array(),
                 'gc_equivs' => array(),
                 'gc_ocde_equiv' => null,
                 'internal_id' => null,
                 'names' => array(),
                 'descriptions' => array(),
-                'is_discontinued' => true
+                'is_addable' => !($branch == 'oc.de' && $attrnode['acode'] == 'A75'),
+                'is_discontinued' => true,
             );
             foreach ($attrnode->groundspeak as $gsnode)
             {
@@ -160,6 +163,28 @@ class AttrHelper
                 );
             }
             $cachedvalue['attr_dict'][$attr['acode']] = $attr;
+        }
+
+        # Contradicting A-Codes
+
+        foreach ([
+            'A10' => ['A4', 'A5'],           # dead drop cannot contain things
+            'A11' => ['A3', 'A10'],          # caches that cannot move
+            'A18' => ['A22', 'A24', 'A25', 'A51', 'A53', 'A54', 'A55', 'A57', 'A75'],
+                                             # not wheelchair-accessible
+            'A21' => ['A19', 'A33', 'A68'],  # things that contradict a "long walk"
+            'A39' => ['A40', 'A43', 'A73'],  # 24/7 mismatch
+            'A41' => ['A42', 'A43'],         # night recommendation mismatch
+            'A44' => ['A45', 'A46'],         # seasons mismatch
+            'A68' => ['A15', 'A16', 'A54', 'A55', 'A57', 'A69', 'A75'],  # not a "Quick Cache"
+            'A70' => ['A53', 'A54', 'A55', 'A59', 'A60', 'A66', 'A67'],  # not suited for children
+            'A71' => ['A53', 'A54', 'A55', 'A59', 'A60', 'A66', 'A67'],  # not suited for children
+        ] as $acode => $incompatible_acodes)
+        {
+            foreach ($incompatible_acodes as $incompatible_acode) {
+                $cachedvalue['attr_dict'][$acode]['incompatible_acodes'][] = $incompatible_acode;
+                $cachedvalue['attr_dict'][$incompatible_acode]['incompatible_acodes'][] = $acode;
+            }
         }
 
         $cache_key = "attrhelper/dict#".Okapi::getGitRevision().self::cache_key_suffix();
@@ -262,6 +287,15 @@ class AttrHelper
             Cache::set($cache_key, $mapping, self::ttl());
         }
         return $mapping;
+    }
+
+    /**
+     * Get the mapping table between internal attribute id => OKAPI A-code.
+     * The result is cached!
+     */
+    public static function get_acode_to_internal_id_mapping()
+    {
+        return array_flip(self::get_internal_id_to_acode_mapping());
     }
 
     /**

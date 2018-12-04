@@ -1,16 +1,148 @@
 <xml>
-    <brief>Change the properties of a geocache</brief>
+    <brief>Edit an existing geocache listing</brief>
     <issue-id>510</issue-id>
     <desc>
-        <p>This method allows your users to change properties of an owned
-        geocache. Currently, only the log password can be changed.
-        Let us know if you need to edit other geocache properties.</p>
+        <p>This method allows your user to change the contents of an owned
+        geocache listing. Please note that you won't be able to use this
+        method until you learn to handle OAuth.</p>
+
+        <p>Note: Some OCPL-based sites support only BMP (Basic Multilingual Plane) Unicode
+        characters for textual content. If you submit characters from outside of
+        the BMP plane (known as "supplementary planes", they include characters such
+        as smiley symbols), then keep in mind that texts might be saved garbled.</p>
     </desc>
     <req name='cache_code'>
         <p>Code of the geocache.</p>
     </req>
+    <opt name='name'>
+        <p>New name of the cache. The old name to be replaced must be supplied
+        as <b>old_name</b>.</p>
+    </opt>
+    <opt name='old_name'>
+        <p>The old cache name to be replaced.</p>
+        <p><b>Note</b>: This argument is needed for forward compatibility with
+        multilanguage cache names. If the supplied string does not match any
+        existing name of the cache, you will receive an HTTP 400 error response.</p>
+    </opt>
+    <opt name='location'>
+        <p>New coordinates of the cache in the "lat|lon" format (<i>lat</i> and
+        <i>lon</i> are in full degrees with a dot as a decimal point).</p>
+
+        <p><b>Note:</b> If you allow your user to freely edit the cache
+        location, then you MUST also allow to edit the country and region
+        (see below).</p>
+
+        <p><b>Note:</b> Most OC installations calculate additional information
+        from the cache coordinates, like altitude or region. These calculations
+        will usually be done some minutes after the location change (by
+        cronjob).</p>
+    </opt>
+    <opt name='country_code'>
+        <p>The country where the cache is located; one of the country codes
+        listed in the <b>countries</b> field of
+        <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.</p>
+    </opt>
+    <opt name='region_code' infotags='ocpl-specific'>
+        <p>The region where the cache is located; one of the region codes
+        of the cache's country that are listed in the <b>regions</b> field of
+        <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
+        (if any), or <b>null</b> for "no region specified".</p>
+        <p><b>Note:</b> Some installations will automatically calculate the
+        region frome cache coordinates (usually with some minutes delay).
+        These installations will <i>ignore</i> the <b>region_code</b> parameter.
+        You can detect those installations by the <b>can_set_region</b>
+        field of
+        <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
+        being <b>false</b>.</p>
+    </opt>
+    <opt name='type'>
+        <p>New type of the cache; one of the identifiers listed in the <b>types</b>
+        field of <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.</p>
+    </opt>
+    <opt name='size2'>
+        <p>New size of the cache; one of the identifiers listed in the <b>sizes</b>
+        field of <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.</p>
+    </opt>
+    <opt name='difficulty'>
+        <p>New difficulty estimation for the cache; a multiple of 0.5 in the
+        range from <b>1</b> to <b>5</b>.</p>
+    </opt>
+    <opt name='terrain'>
+        <p>New terrain estimation for the cache; a multiple of 0.5 in the
+        range from <b>1</b> to <b>5</b>.</p>
+    </opt>
+    <opt name='trip_time'>
+        <p>New estimation for the total time needed to find the cache, in hours
+        (&gt;= 1 minute); this will usually include the time to reach the cache
+        location <i>and</i> go back (from/to a parking spot, etc.); or <b>null</b>
+        for "unspecified".</p>
+    </opt>
+    <opt name='trip_distance'>
+        <p>New estimation for the total distance needed to find the cache, in
+        kilometers (&gt;= 0.01); this will usually include the time to reach the
+        cache location <i>and</i> go back (from/to a parking spot, etc.); or
+        <b>null</b> for "unspecified".</p>
+    </opt>
+    <opt name='attr_acodes'>
+        <p>A pipe-separated list of A-codes to be added to or removed from
+        the cache's attribute set. A-codes with a prepended minus (-)
+        will be removed instead of added. If you try to add and remove the
+        same attribute, you will receive an HTTP 400 error response.</p>
+        <p>Call the
+        <a href='%OKAPI:methodargref:services/attrs/attribute_index%'>services/attrs/attribute_index</a>
+        method with <b>only_locally_used</b>=<b>true</b> to obtain a list of
+        available A-codes. You may want to request the <b>incompatible_acodes</b>
+        field and avoid to submit conflicting A-codes. (They would yield a
+        <b>success</b>=<b>false</b> response.)</p>
+    </opt>
+    <opt name='description'>
+        <p>HTML string, new description ("long description") of the cache.
+        The language of the description must be supplied as <b>language</b>
+        argument. If a description for this language already exists, it will
+        be replaced; else a new description will be added.</p>
+
+        <p><b>Note:</b> If you want to "remove a language" from the cache,
+        submit an empty <b>description</b> <i>and</i> <b>short_description</b>
+        <i>and</i> <b>hint2</b> for that language.</p>
+    </opt>
+    <opt name='short_description'>
+        <p>A plaintext string with a new single line (very short) description
+        of the cache (kind of a "tagline text"). The language of the short
+        description must be supplied as <b>language</b> argument. If a short
+        description for this language already exists, it will be replaced;
+        else a new short description will be added.</p>
+
+        <p><b>Note:</b> When submitting a short description in a completely
+        new language (there is no long description, short description or
+        hint in that language for this cache), while a long description
+        exists in another language, then the same request should also include
+        a non-empty <b>description</b>. This prevents that OC website users
+        of the new language won't notice that there also is a long description.
+        If the <b>description</b> text is missing in this case, OKAPI will
+        return <b>success</b>=<b>false</b> and a message that prompts the user
+        to also provide a translation of the full description.</p>
+    </opt>
+    <opt name='hint2'>
+        <p>A plaintext, optional multiline string of cache hints/spoilers;
+        will usually be ROT13-encoded for display. The language of the hint
+        must be supplied as <b>language</b> argument. If a hint for this
+        language already exists, it will be replaced; else a new hint will
+        be added.</p>
+        <p>See the note for <b>short_description</b>; it's the same for the
+        hint.</p>
+    </opt>
+    <opt name='language'>
+        <p>The language of the given <b>short_description</b>, <b>description</b>
+        and <b>hint2</b> texts; one of the language codes as returned in the
+        <b>languages</b> field of
+        <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.</p>
+
+        <p><b>Note:</b> If you need to edit descriptions, short descriptions
+        or hints in multiple languages, then you will have to call this method
+        multiple times, once for each language.</p>
+    </opt>
     <opt name='passwd'>
-        <p>The new password for 'Found it' or 'Attended' log entries.
+        <p>A new password for 'Found it' or 'Attended' log entries.
         If you supply an empty string, the password will be cleared, i.e.
         the geocache will not require a log password.</p>
         <p>You may query the maximum accepted password length for the OC site by
@@ -18,6 +150,10 @@
         There may also be installation-dependent restrictions on which
         geocaches may have passwords. <b>success</b> will be <b>false</b> and
         an explanation message will be returned if a password is rejected.</p>
+    </opt>
+    <opt name='gc_code'>
+        <p>A Geocaching.com code (GC code) to be assigned with this OC
+        listing, or <b>null</b> for "unspecified".</p>
     </opt>
     <opt name='langpref' default='en'>
         <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
@@ -33,18 +169,25 @@
                 <ul>
                     <li><b>true</b> if all of the supplied geocache properties
                     were saved successfully or if no property to be changed was
-                    supplied. The geocache's <b>last_modified</b> date has been
-                    updated if any property was changed,</li>
+                    supplied,</li>
+
                     <li><b>false</b> if nothing was saved, which means that at
-                    least one of the supplied parameters was not acceptable.</li>
+                    least one of the supplied parameters was logically invalid.
+                    E.g. the size "micro" was supplied for a type of cache
+                    which does not have a container.</li>
                 </ul>
             </li>
             <li>
-                <p><b>messages</b> - a dictionary of the supplied parameters
-                that were not acceptable, each entry giving a plain-text string
-                that explains the reason of rejection. The dictionary is empty
-                in case of success.</p>
+                <p><b>messages</b> - a dictionary (name => message) of the
+                supplied parameters that were not acceptable, each entry
+                giving a plain-text string that explains the reason of
+                rejection. Each of the strings may be multiline, separated
+                with newlines (\n). The dictionary is empty in case of
+                success.</p>
             </li>
         </ul>
+        <p>The method responds with an HTTP 400 error if parameters were
+        formally invalid, e.g. an undefinied attribute ID or cache size
+        was submitted.</p>
     </returns>
 </xml>
