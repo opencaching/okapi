@@ -62,7 +62,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                 <groundspeak:cache archived="<?= ($c['status'] == 'Archived') ? "True" : "False" ?>" available="<?= ($c['status'] == 'Available') ? "True" : "False" ?>" id="<?= $c['internal_id'] ?>">
                     <groundspeak:name><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?></groundspeak:name>
                     <groundspeak:placed_by><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:placed_by>
-                    <groundspeak:owner id="<?= $vars['user_uuid_to_internal_id'][$c['owner']['uuid']] ?>"><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:owner>
+                    <groundspeak:owner id="<?= $c['owner']['internal_id'] ?>"><?= Okapi::xmlescape($c['owner']['username']) ?></groundspeak:owner>
                     <groundspeak:type><?= $vars['cache_GPX_types'][$c['type']]['gc'] ?></groundspeak:type>
                     <groundspeak:container><?= $vars['cache_GPX_sizes'][$c['size2']]['gc'] ?></groundspeak:container>
                     <?php if ($vars['gc_attrs'] || $vars['gc_ocde_attrs']) { /* Does user want us to include groundspeak:attributes? */ ?>
@@ -195,7 +195,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                                 <groundspeak:log id="<?= $log['internal_id'] ?>">
                                     <groundspeak:date><?= $log['date'] ?></groundspeak:date>
                                     <groundspeak:type><?= $log['type'] ?></groundspeak:type>
-                                    <groundspeak:finder id="<?= $vars['user_uuid_to_internal_id'][$log['user']['uuid']] ?>"><?= Okapi::xmlescape($log['user']['username']) ?></groundspeak:finder>
+                                    <groundspeak:finder id="<?= $log['user']['internal_id'] ?>"><?= Okapi::xmlescape($log['user']['username']) ?></groundspeak:finder>
                                     <groundspeak:text encoded="False"><?= $log['was_recommended'] ? "(*) ": "" ?><?= Okapi::xmlescape($log['comment']) ?></groundspeak:text>
                                 </groundspeak:log>
                             <?php } ?>

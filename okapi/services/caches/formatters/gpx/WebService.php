@@ -243,13 +243,22 @@ class WebService
                     'cache_codes' => $cache_codes,
                     'langpref' => $langpref,
                     'fields' => $fields,
+                    'owner_fields' => 'username|profile_url|internal_id',
                     'lpc' => $lpc,
                     'user_logs_only' => ($vars['latest_logs'] == 'user' ? 'true' : 'false'),
                     'user_uuid' => $user_uuid,
-                    'log_fields' => 'uuid|date|user|type|comment|oc_team_entry|internal_id|was_recommended'
+                    'log_fields' => 'uuid|date|user|type|comment|oc_team_entry|internal_id|was_recommended',
+                    'log_user_fields' => 'username|internal_id',
                 )
             )
         );
+
+        /* Note:
+         * OC sites always used internal user_ids in their generated GPX files.
+         * This might be considered an error in itself (Groundspeak's XML namespace
+         * doesn't allow that), but it very common (Garmin's OpenCaching.COM
+         * also did that). Therefore, for backward-compatibility reasons, OKAPI
+         * will do it the same way. See issue 174. */
 
         # Get rid of invalid cache references.
 
@@ -367,34 +376,6 @@ class WebService
             $vars['gc_attrs'] = null;
             $vars['gc_ocde_attrs'] = null;
         }
-
-        /* OC sites always used internal user_ids in their generated GPX files.
-         * This might be considered an error in itself (Groundspeak's XML namespace
-         * doesn't allow that), but it very common (Garmin's OpenCaching.COM
-         * also does that). Therefore, for backward-compatibility reasons, OKAPI
-         * will do it the same way. See issue 174.
-         *
-         * Currently, the caches method does not expose "owner.internal_id" and
-         * "latest_logs.user.internal_id" fields, we will read them manually
-         * from the database here. */
-
-        $dict = array();
-        foreach ($vars['caches'] as &$cache_ref)
-        {
-            $dict[$cache_ref['owner']['uuid']] = true;
-            if (isset($cache_ref['latest_logs']))
-                foreach ($cache_ref['latest_logs'] as &$log_ref)
-                    $dict[$log_ref['user']['uuid']] = true;
-        }
-        $rs = Db::query("
-            select uuid, user_id
-            from user
-            where uuid in ('".implode("','", array_map('\okapi\core\Db::escape_string', array_keys($dict)))."')
-        ");
-        while ($row = Db::fetch_assoc($rs))
-            $dict[$row['uuid']] = $row['user_id'];
-        $vars['user_uuid_to_internal_id'] = &$dict;
-        unset($dict);
 
         # location_source (part 2 of 2)
 
