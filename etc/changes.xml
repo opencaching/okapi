@@ -50,42 +50,42 @@
             Rewritten the <a href='introduction.html#oc-site-differences'>explanations</a>
             and <b>advice</b> on differences between Opencaching sites.
         </change>
-        <change commit="3b2ebae1" version="1807" time="2018-11-18T12:11:37+0100" type="enhancement">
+        <change commit="3b2ebae1" version="1810" time="2018-11-18T12:11:37+0100" type="enhancement">
             Added the <a href="services/caches/capabilities.html">services/caches/capabilities</a>
             method, and updated the
             <a href="https://local5.opencaching.de/okapi/services/caches/geocache.html#returns">cache
             types documentation.</a>
         </change>
-        <change commit="c288aa0f" version="1802" time="2018-11-17T15:11:10+0100" type="enhancement">
+        <change commit="c288aa0f" version="1805" time="2018-11-17T15:11:10+0100" type="enhancement">
             Added the <a href="services/logs/capabilities.html">services/logs/capabilities</a>
             method. Also added the new fields <i>rcmds_left</i> and <i>rcmd_founds_needed</i>
             to <a href="services/users/user.html">services/users/user</a>(s).
         </change>
-        <change commit="55c19d6a" version="1795" time="2018-11-16T12:11:31+0100" type="enhancement">
+        <change commit="55c19d6a" version="1798" time="2018-11-16T12:11:31+0100" type="enhancement">
             Added the GPX options <i>trackables=gc:travelbugs</i> and
             <i>alt_wpts=desc:table</i>.
         </change>
-        <change commit="53608bfa" version="1791" time="2018-11-15T16:11:06+0100" type="enhancement">
+        <change commit="53608bfa" version="1794" time="2018-11-15T16:11:06+0100" type="enhancement">
             Added new fields to replication: <i>short_descriptions</i>,
             <i>oc_team_annotation</i>, <i>needs_maintenance</i> and <i>watchers</i>
             for geocaches; <i>images</i>, <i>location</i>, <i>oc_team_entry</i>,
             <i>needs_maintenance2</i>, <i>listing_is_outdated</i>,
             <i>date_created</i> and <i>last_modified</i> for log entries.
         </change>
-        <change commit="34e67ab9" version="1777" time="2018-11-12T10:11:07+0100" type="enhancement">
+        <change commit="34e67ab9" version="1780" time="2018-11-12T10:11:07+0100" type="enhancement">
             Added the <i>oc_team_annotation</i> option and field to
             <a href="services/caches/geocache.html">services/caches/geocache</a>(s).
             OC team annotations now are included by default in cache
             descriptions.
         </change>
-        <change commit="0d171bdd" version="1776" time="2018-11-12T09:11:34+0100" type="enhancement">
+        <change commit="0d171bdd" version="1779" time="2018-11-12T09:11:34+0100" type="enhancement">
             Added the search options <i>recommended_only</i> and <i>recommended_by</i>.
         </change>
-        <change commit="1e3a8809" version="1775" time="2018-11-11T21:11:17+0100" type="enhancement">
+        <change commit="1e3a8809" version="1778" time="2018-11-11T21:11:17+0100" type="enhancement">
             Added the <i>watchers</i>, <i>my_rating</i> and <i>is_recommended</i> fields
             to <a href="services/caches/geocache.html">services/caches/geocache</a>(s).
         </change>
-        <change commit="51d7c9ae" version="1761" time="2018-11-08T13:11:06+0100" type="enhancement">
+        <change commit="51d7c9ae" version="1764" time="2018-11-08T13:11:06+0100" type="enhancement">
             Added the <a href="services/logs/edit.html">services/logs/edit</a>
             and <a href="services/logs/delete.html">services/logs/delete</a>
             methods.
@@ -93,36 +93,36 @@
         <change commit="cae4e1e8" version="1754" time="2018-11-04T17:11:34+0100" type="bugfix">
             Also OCDE owners are not allowed to not recommend their own caches.
         </change>
-        <change commit="7a6c62ec" version="1745" time="2018-10-31T13:10:07+0100" type="enhancement">
+        <change commit="7a6c62ec" version="1748" time="2018-10-31T13:10:07+0100" type="enhancement">
             Added the status-changing log types <em style='text-decoration:line-through'>Available</em>
             <em>Ready to search</em>,
             <em>Temporarily unavailable</em> and <em>Archived</em> to
             <a href="services/logs/submit.html">services/logs/submit</a>.
             (Corrected <em>Available</em> => <em>Ready to search</em> on 2018-11-13.)
         </change>
-        <change commit="ac1a81e8" version="1743" time="2018-10-31T08:10:47+0100" type="enhancement">
+        <change commit="ac1a81e8" version="1746" time="2018-10-31T08:10:47+0100" type="enhancement">
             Added the <em>date_created</em> and <em>last_modified</em> fields
             to <a href="services/logs/entry.html">services/logs/entry</a>.
         </change>
-        <change commit="7baf830e" version="1736" time="2018-10-29T23:10:25+0100" type="other">
+        <change commit="7baf830e" version="1739" time="2018-10-29T23:10:25+0100" type="other">
             The <a href="services/users/user.html">services/users</a>
             methods will no longer return <em>true</em> for the <em>is_admin</em>
             field in any case, because OC installations no longer provide a
             singular admin flag.
         </change>
-        <change commit="e7a5904e" version="1733" time="2018-10-26T13:10:04+0200" type="bugfix">
+        <change commit="e7a5904e" version="1736" time="2018-10-26T13:10:04+0200" type="bugfix">
             Do not mangle protocol-relative links in cache descriptions and logs.
         </change>
-        <change commit="5b2c8b0d" version="1732" time="2018-10-26T12:10:35+0200" type="enhancement">
+        <change commit="5b2c8b0d" version="1735" time="2018-10-26T12:10:35+0200" type="enhancement">
             Enabled the <a href="services/caches/formatters/gpx.html">GPX</a>
             <em>gc_ocde:attrs</em> option for all OC installations.
             The pseudo-GS IDs of OC specific attributes now are also requestable
             via the services/attrs methods.
         </change>
-        <change commit="730f0256" version="1720" time="2018-10-11T14:10:51+0200" type="enhancement">
+        <change commit="730f0256" version="1723" time="2018-10-11T14:10:51+0200" type="enhancement">
             Added French translation for OKAPI user messages.
         </change>
-        <change commit="e4fabb8e" version="1712" time="2018-09-20T15:09:28+0200" type="enhancement">
+        <change commit="e4fabb8e" version="1715" time="2018-09-20T15:09:28+0200" type="enhancement">
             <a href="services/logs/submit.html">services/logs/submit</a> now
             rejects 'Attended' logs that are earlier than the event date.
         </change>
