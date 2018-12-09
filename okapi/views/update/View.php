@@ -843,8 +843,6 @@ class View
         ");
     }
 
-    private static function ver125()
-    {
-        Db::execute("alter table okapi_signals engine=InnoDB");
-    }
+    private static function ver125() { Db::execute("alter table okapi_signals engine=InnoDB"); }
+    private static function ver126() { Db::execute("truncate table okapi_signals"); }
 }
