@@ -310,4 +310,16 @@ class Facade
     {
         return OCPLSignals::delete($signals);
     }
+
+    /**
+     * Return list of tables whose *content* does not need to be backed up.
+     */
+    public static function get_temporary_tables()
+    {
+        return [
+            'okapi_cache', 'okapi_cache_reads',
+            'okapi_tile_caches', 'okapi_tile_status',
+            'okapi_nonces',
+        ];
+    }
 }
