@@ -67,6 +67,7 @@ class Facade
         $user_id_or_null,  # ID of the logged-in user; noone else! See issues #496 and #439.
         $parameters
     ) {
+        self::reenable_error_handling();
         $request = new OkapiInternalRequest(
             new OkapiFacadeConsumer(),
             ($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,
@@ -87,6 +88,7 @@ class Facade
         $user_id_or_null,  # ID of the logged-in user; noone else! See issues #496 and #439.
         $parameters
     ) {
+        self::reenable_error_handling();
         $request = new OkapiInternalRequest(
             new OkapiFacadeConsumer(),
             ($user_id_or_null !== null) ? new OkapiFacadeAccessToken($user_id_or_null) : null,
@@ -107,6 +109,7 @@ class Facade
      */
     public static function detect_user_id()
     {
+        self::reenable_error_handling();
         return OCSession::get_user_id();
     }
 
@@ -123,6 +126,7 @@ class Facade
      */
     public static function import_search_set($temp_table, $min_store, $max_ref_age)
     {
+        self::reenable_error_handling();
         $tables = array('caches', $temp_table);
         $where_conds = array(
             $temp_table.".cache_id = caches.cache_id",
@@ -143,6 +147,7 @@ class Facade
      */
     public static function schedule_geocache_check($cache_codes)
     {
+        self::reenable_error_handling();
         if (!is_array($cache_codes))
             $cache_codes = array($cache_codes);
         Db::execute("
@@ -161,6 +166,7 @@ class Facade
      */
     public static function schedule_user_entries_check($cache_id, $user_id)
     {
+        self::reenable_error_handling();
         Db::execute("
             update cache_logs
             set okapi_syncbase = now()
@@ -181,6 +187,7 @@ class Facade
      */
     public static function remove_user_tokens($user_id)
     {
+        self::reenable_error_handling();
         Db::execute("
             delete from okapi_tokens
             where user_id = '".Db::escape_string($user_id)."'
@@ -193,13 +200,14 @@ class Facade
      */
     public static function database_update()
     {
+        self::reenable_error_handling();
         views\update\View::call();
     }
 
     /**
      * You will probably want to call that with FALSE when using Facade
      * in buggy, legacy OC code. This will disable OKAPI's default behavior
-     * of treating NOTICEs as errors.
+     * of treating NOTICEs as errors. Redundant calls will be ignored.
      */
     public static function disable_error_handling()
     {
@@ -208,7 +216,7 @@ class Facade
 
     /**
      * If you disabled OKAPI's error handling with disable_error_handling,
-     * you may reenable it with this method.
+     * you may reenable it with this method. Redundant calls will be ignored.
      */
     public static function reenable_error_handling()
     {
@@ -241,12 +249,14 @@ class Facade
      */
     public static function cache_set($key, $value, $timeout)
     {
+        self::reenable_error_handling();
         Cache::set("facade#".$key, $value, $timeout);
     }
 
     /** Same as `cache_set`, but works on many key->value pair at once. */
     public static function cache_set_many($dict, $timeout)
     {
+        self::reenable_error_handling();
         $prefixed_dict = array();
         foreach ($dict as $key => &$value_ref) {
             $prefixed_dict["facade#".$key] = &$value_ref;
@@ -260,12 +270,14 @@ class Facade
      */
     public static function cache_get($key)
     {
+        self::reenable_error_handling();
         return Cache::get("facade#".$key);
     }
 
     /** Same as `cache_get`, but it works on multiple keys at once. */
     public static function get_many($keys)
     {
+        self::reenable_error_handling();
         $prefixed_keys = array();
         foreach ($keys as $key) {
             $prefixed_keys[] = "facade#".$key;
@@ -283,12 +295,14 @@ class Facade
      */
     public static function cache_delete($key)
     {
+        self::reenable_error_handling();
         Cache::delete("facade#".$key);
     }
 
     /** Same as `cache_delete`, but works on many keys at once. */
     public static function cache_delete_many($keys)
     {
+        self::reenable_error_handling();
         $prefixed_keys = array();
         foreach ($keys as $key) {
             $prefixed_keys[] = "facade#".$key;
@@ -303,18 +317,20 @@ class Facade
 
     public static function fetch_signals($maxcount)
     {
+        self::reenable_error_handling();
         return OCPLSignals::fetch($maxcount);
     }
 
     public static function signals_done($signals)
     {
+        self::reenable_error_handling();
         return OCPLSignals::delete($signals);
     }
 
     /**
      * Return list of tables whose *content* does not need to be backed up.
      */
-    public static function get_temporary_tables()
+    public static function get_temporary_table_names()
     {
         return [
             'okapi_cache', 'okapi_cache_reads',
