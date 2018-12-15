@@ -75,7 +75,7 @@ class DbStructUpdater
         //ignores default part in cases like (var)char NOT NULL default '' upon the comparison
         $this->config['varcharDefaultIgnore'] = true;
         //the same for int NOT NULL default 0
-        $this->config['intDefaultIgnore'] = true;
+        $this->config['numberDefaultIgnore'] = true;
         //ignores table autoincrement field value, also remove AUTO_INCREMENT value from the create query if exists
         $this->config['ignoreIncrement'] = true;
         //add 'IF NOT EXIST' to each CREATE TABLE query
@@ -486,14 +486,17 @@ class DbStructUpdater
         {
             $line = preg_replace("/(var)?char\(([0-9]+)\)\s+NOT\s+NULL\s+default\s+''/i", '$1char($2) NOT NULL', $line);
         }
-        if (!empty($options['intDefaultIgnore']))
+        // some DB versions quote numeric default values
+        $line = preg_replace('/(\s(int|tinyint|smallint|bigint|float|double)(\([0-9]+(,[0-9]+)?\))?(\s+unsigned)?(\s+zerofill)?(\s+not null)?\s+default\s+)\'(\d+\.\d+|\d+)\'/i', '$1$8', $line);
+        if (!empty($options['numberDefaultIgnore']))
         {
-            $line = preg_replace("/((?:big)|(?:tiny))?int\(([0-9]+)\)\s+NOT\s+NULL\s+default\s+'0'/i", '$1int($2) NOT NULL', $line);
+            $line = preg_replace('/((int|tinyint|bigint|float|double)(\([0-9]+(,[0-9]+)?\)(\sunsigned)?(\szerofill)?)\s+NOT\s+NULL)?\s+default\s+(0.0|0)/i', '$1', $line);
         }
         if (!empty($options['ignoreIncrement']))
         {
             $line = preg_replace("/ AUTO_INCREMENT=[0-9]+/i", '', $line);
         }
+        $line = preg_replace('/current_timestamp\(\)/i', "CURRENT_TIMESTAMP", $line);
         $result['key'] = $this->normalizeString($key);
         $result['line']= $line;
         return $result;
