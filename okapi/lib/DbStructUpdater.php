@@ -76,6 +76,8 @@ class DbStructUpdater
         $this->config['varcharDefaultIgnore'] = true;
         //the same for int NOT NULL default 0
         $this->config['numberDefaultIgnore'] = true;
+        //ignores the optional 'DEFAULT NULL' phrase, which is omitted by some servers
+        $this->config['DefaultNullIgnore'] = true;
         //ignores table autoincrement field value, also remove AUTO_INCREMENT value from the create query if exists
         $this->config['ignoreIncrement'] = true;
         //add 'IF NOT EXIST' to each CREATE TABLE query
@@ -491,6 +493,10 @@ class DbStructUpdater
         if (!empty($options['numberDefaultIgnore']))
         {
             $line = preg_replace('/((int|tinyint|bigint|float|double)(\([0-9]+(,[0-9]+)?\)(\sunsigned)?(\szerofill)?)\s+NOT\s+NULL)?\s+default\s+(0.0|0)/i', '$1', $line);
+        }
+        if (!empty($options['DefaultNullIgnore']))
+        {
+            $line = preg_replace('/\s+default null(,?(\s+comment\s+\'.*\')?)$/i', '$1', $line);
         }
         if (!empty($options['ignoreIncrement']))
         {

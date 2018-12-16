@@ -851,12 +851,9 @@ class View
         # Adjust things that were locally modified (or not updated) on OC sites.
 
         Db::execute("alter table okapi_cache engine=MyISAM"); // DE, NL
-        Db::execute("alter table okapi_cache modify column value mediumblob"); // PL, UK
-        Db::execute("alter table okapi_clog modify column data mediumblob"); // PL, UK
         Db::execute("alter table okapi_search_results row_format=compact"); // PL
         Db::execute("alter table okapi_tile_caches engine=InnoDB"); // DE
         Db::execute("alter table okapi_tile_status engine=InnoDB"); // DE
-        Db::execute("alter table okapi_vars modify column value text"); // PL, UK
         try {
             Db::execute("alter table okapi_stats_monthly add index by_service (service_name, period_start)"); // DE
         }
