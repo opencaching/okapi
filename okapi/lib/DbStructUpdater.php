@@ -487,7 +487,7 @@ class DbStructUpdater
             $line = preg_replace("/(var)?char\(([0-9]+)\)\s+NOT\s+NULL\s+default\s+''/i", '$1char($2) NOT NULL', $line);
         }
         // some DB versions quote numeric default values
-        $line = preg_replace('/(\s(int|tinyint|smallint|bigint|float|double)(\([0-9]+(,[0-9]+)?\))?(\s+unsigned)?(\s+zerofill)?(\s+not null)?\s+default\s+)\'(\d+\.\d+|\d+)\'/i', '$1$8', $line);
+        $line = preg_replace('/(\s(int|tinyint|smallint|bigint|float|double)(\([0-9]+(,[0-9]+)?\))?(\s+unsigned)?(\s+zerofill)?(\s+not null)?\s+default\s+)\'(-?\d+\.\d+|-?\d+)\'/i', '$1$8', $line);
         if (!empty($options['numberDefaultIgnore']))
         {
             $line = preg_replace('/((int|tinyint|bigint|float|double)(\([0-9]+(,[0-9]+)?\)(\sunsigned)?(\szerofill)?)\s+NOT\s+NULL)?\s+default\s+(0.0|0)/i', '$1', $line);
