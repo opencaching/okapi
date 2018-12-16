@@ -496,7 +496,7 @@ class DbStructUpdater
         }
         if (!empty($options['DefaultNullIgnore']))
         {
-            $line = preg_replace('/\s+default null(,?(\s+comment\s+\'.*\')?)$/i', '$1', $line);
+            $line = preg_replace('/\s+default null((\s+comment\s+\'.*\')?,?)$/i', '$1', $line);
         }
         if (!empty($options['ignoreIncrement']))
         {
