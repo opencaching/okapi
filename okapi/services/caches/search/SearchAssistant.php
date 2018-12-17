@@ -524,9 +524,7 @@ class SearchAssistant
         # See https://github.com/opencaching/okapi/issues/496.
 
         $ignored_status = 'either';
-        if (Settings::get('OC_BRANCH') == 'oc.pl'
-            && ($this->request->consumer == 'facade' || Settings::get('DEBUG'))
-        ) {
+        if (Settings::get('OC_BRANCH') == 'oc.pl' && $this->request->consumer->key == 'facade') {
             if ($tmp = $this->request->get_parameter('not_ignored_by')) {
                 $user  = OkapiServiceRunner::call("services/users/user", new OkapiInternalRequest(
                     $this->request->consumer, null, array('user_uuid' => $tmp, 'fields' => 'internal_id')));
