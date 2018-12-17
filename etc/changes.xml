@@ -23,6 +23,10 @@
 
     -->
     <changes>
+        <change commit="ee3d4739" version="1873" time="2018-12-17T20:12:38+0100" type="bugfix">
+            Changed the &lt;time&gt; field of geocaches in GPX files from
+            listing date to hide/event date, consistent with GC and native OC GPX.
+        </change>
         <change commit="b21cc2d2" version="1859" time="2018-12-04T14:12:13+0100" type="enhancement">
             Added options to geocache and log retrieval methods, which allow
             to choose the subfields of <i>owner</i> and <i>user</i> fields.
@@ -34,7 +38,7 @@
             show a placeholder like "---".
         </change>
         <change commit="9c7fc14a" version="1853" time="2018-11-28T15:11:08+0100" type="bugfix">
-            Geocaches' <i>alt_wpts</i> field now fully responds to the
+            Geocaches' <i>alt_wpts</i> field now better responds to the
             <i>langpref</i> option.
         </change>
         <change commit="dce40e16" version="1850" time="2018-11-28T12:11:40+0100" type="enhancement">
