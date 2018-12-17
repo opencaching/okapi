@@ -215,7 +215,7 @@ class WebService
 
         # Which fields of the services/caches/geocaches method do we need?
 
-        $fields = 'code|name|location|date_created|url|type|status|size|size2|oxsize'.
+        $fields = 'code|name|location|date_hidden|url|type|status|size|size2|oxsize'.
             '|difficulty|terrain|description|hint2|rating|owner|url|internal_id'.
             '|protection_areas|short_description|trip_time|trip_distance|req_passwd|gc_code';
         if ($vars['images'] != 'none')

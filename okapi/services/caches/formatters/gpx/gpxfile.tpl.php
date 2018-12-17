@@ -51,7 +51,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
             list($lat, $lon) = explode("|", $c['location']);
         ?>
         <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
-            <time><?= $c['date_created'] ?></time>
+            <time><?= $c['date_hidden'] ?></time>
             <name><?= $c['code'] ?></name>
             <desc><?= Okapi::xmlescape(isset($c['name_2']) ? $c['name_2'] : $c['name']) ?> <?= _("hidden by") ?> <?= Okapi::xmlescape($c['owner']['username']) ?> :: <?= ucfirst($c['type']) ?> Cache (<?= Okapi::float2string($c['difficulty']) ?>/<?= Okapi::float2string($c['terrain']) ?><?php if ($c['size'] !== null) { echo "/".$c['size']; } else { echo "/X"; } ?>/<?= Okapi::float2string($c['rating']) ?>)</desc>
             <url><?= $c['url'] ?></url>
@@ -271,7 +271,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
                     list($lat, $lon) = explode("|", $wpt['location']);
                 ?>
                 <wpt lat="<?= $lat ?>" lon="<?= $lon ?>">
-                    <time><?= $c['date_created'] ?></time>
+                    <time><?= $c['date_hidden'] ?></time>
                     <name><?= Okapi::xmlescape($wpt['name']) ?></name>
                     <cmt><?= Okapi::xmlescape($wpt['description']) ?></cmt>
                     <desc><?= Okapi::xmlescape($wpt['type_name']) ?></desc>
