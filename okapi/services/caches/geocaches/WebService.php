@@ -67,32 +67,6 @@ class WebService
             if (!in_array($field, self::$valid_field_names))
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
 
-        # Some fields need to be temporarily included whenever a description-
-        # related field is included. That's a little ugly, but helps performance
-        # and conforms to the DRY rule.
-
-        $fields_to_remove_later = array();
-        if (
-            in_array('description', $fields) || in_array('descriptions', $fields)
-            || in_array('editable_description', $fields) || in_array('editable_descriptions', $fields)
-            || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
-            || in_array('hint', $fields) || in_array('hints', $fields)
-            || in_array('hint2', $fields) || in_array('hints2', $fields)
-            || in_array('attribution_note', $fields) || in_array('oc_team_annotation', $fields)
-        )
-        {
-            if (!in_array('owner', $fields))
-            {
-                $fields[] = "owner";
-                $fields_to_remove_later[] = "owner";
-            }
-            if (!in_array('internal_id', $fields))
-            {
-                $fields[] = "internal_id";
-                $fields_to_remove_later[] = "internal_id";
-            }
-        }
-
         $attribution_append = $request->get_parameter('attribution_append');
         if (!$attribution_append) $attribution_append = 'full';
         if (!in_array($attribution_append, array('none', 'static', 'full')))
@@ -125,6 +99,44 @@ class WebService
         if (!$log_user_fields) $log_user_fields = "uuid|username|profile_url";  // validation is done on call
         $owner_fields = $request->get_parameter('owner_fields');
         if (!$owner_fields) $owner_fields = "uuid|username|profile_url";  // validation is done on call
+        $owner_fields = explode('|', $owner_fields);
+
+        # Some fields need to be temporarily included whenever a description-
+        # related field is included. That's a little ugly, but helps performance
+        # and conforms to the DRY rule.
+
+        $fields_to_remove_later = array();
+        $owner_fields_to_remove_later = array();
+        if (
+            in_array('description', $fields) || in_array('descriptions', $fields)
+            || in_array('editable_description', $fields) || in_array('editable_descriptions', $fields)
+            || in_array('short_description', $fields) || in_array('short_descriptions', $fields)
+            || in_array('hint', $fields) || in_array('hints', $fields)
+            || in_array('hint2', $fields) || in_array('hints2', $fields)
+            || in_array('attribution_note', $fields) || in_array('oc_team_annotation', $fields)
+        )
+        {
+            if (!in_array('internal_id', $fields))
+            {
+                $fields[] = "internal_id";
+                $fields_to_remove_later[] = "internal_id";
+            }
+            if (!in_array('owner', $fields))
+            {
+                $fields[] = "owner";
+                $fields_to_remove_later[] = "owner";
+            }
+            if (!in_array('username', $owner_fields))
+            {
+                $owner_fields[] = "username";
+                $owner_fields_to_remove_later[] = "username";
+            }
+            if (!in_array('profile_url', $owner_fields))
+            {
+                $owner_fields[] = "profile_url";
+                $owner_fields_to_remove_later[] = "profile_url";
+            }
+        }
 
         $lpc = $request->get_parameter('lpc');
         if ($lpc === null) $lpc = 10;
@@ -406,9 +418,8 @@ class WebService
             # Otherwise we call the more expensive users/by_internal_ids method.
 
             $basic_owner_fields = ['uuid', 'username', 'profile_url', 'internal_id'];
-            $owner_fields_exploded = explode('|', $owner_fields);
 
-            if (count(array_diff($owner_fields_exploded, $basic_owner_fields)) == 0)
+            if (count(array_diff($owner_fields, $basic_owner_fields)) == 0)
             {
                 $rs = Db::query("
                     select user_id, uuid, username
@@ -424,7 +435,7 @@ class WebService
                 {
                     $row = $tmp[$owner_ids[$cache_code]];
                     $owner = [];
-                    foreach ($owner_fields_exploded as $field)
+                    foreach ($owner_fields as $field)
                     {
                         if ($field == 'uuid')
                             $owner['uuid'] = $row['uuid'];
@@ -446,7 +457,7 @@ class WebService
                     $request->token,
                     array(
                         'internal_ids' => implode('|', $owner_ids),
-                        'fields' => $owner_fields
+                        'fields' => implode('|', $owner_fields),
                     )
                 );
                 $ownersRequest->skip_limits = true;
@@ -1669,9 +1680,12 @@ class WebService
             # Some of the fields in $results were added only temporarily
             # (the Consumer did not ask for them). We will remove these fields now.
 
-            foreach ($results as &$result_ref)
+            foreach ($results as &$result_ref) {
+                foreach ($owner_fields_to_remove_later as $field)
+                    unset($result_ref['owner'][$field]);
                 foreach ($fields_to_remove_later as $field)
                     unset($result_ref[$field]);
+            }
         }
 
         # Order the results in the same order as the input codes were given.
