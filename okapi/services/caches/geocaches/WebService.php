@@ -67,36 +67,6 @@ class WebService
             if (!in_array($field, self::$valid_field_names))
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
 
-        $attribution_append = $request->get_parameter('attribution_append');
-        if (!$attribution_append) $attribution_append = 'full';
-        if (!in_array($attribution_append, array('none', 'static', 'full')))
-            throw new InvalidParam('attribution_append');
-
-        $oc_team_annotation = $request->get_parameter('oc_team_annotation');
-        if (!$oc_team_annotation) $oc_team_annotation = 'description';
-        if (!in_array($oc_team_annotation, array('description', 'separate')))
-            throw new InvalidParam('oc_team_annotation');
-        if ($oc_team_annotation == 'separate' && !in_array('oc_team_annotation', $fields))
-            $fields[] = 'oc_team_annotation';
-
-        $user_uuid = $request->get_parameter('user_uuid');
-        if ($user_uuid != null)
-        {
-            $user_id = Db::select_value("select user_id from user where uuid='".Db::escape_string($user_uuid)."'");
-            if ($user_id == null)
-                throw new InvalidParam('user_uuid', "User not found.");
-            if (($request->token != null) && ($request->token->user_id != $user_id))
-                throw new InvalidParam('user_uuid', "User does not match the Access Token used.");
-        }
-        elseif (($user_uuid == null) && ($request->token != null))
-            $user_id = $request->token->user_id;
-        else
-            $user_id = null;
-
-        $log_fields = $request->get_parameter('log_fields');
-        if (!$log_fields) $log_fields = "uuid|date|user|type|comment";  // validation is done on call
-        $log_user_fields = $request->get_parameter('log_user_fields');
-        if (!$log_user_fields) $log_user_fields = "uuid|username|profile_url";  // validation is done on call
         $owner_fields = $request->get_parameter('owner_fields');
         if (!$owner_fields) $owner_fields = "uuid|username|profile_url";  // validation is done on call
         $owner_fields = explode('|', $owner_fields);
@@ -137,6 +107,37 @@ class WebService
                 $owner_fields_to_remove_later[] = "profile_url";
             }
         }
+
+        $attribution_append = $request->get_parameter('attribution_append');
+        if (!$attribution_append) $attribution_append = 'full';
+        if (!in_array($attribution_append, array('none', 'static', 'full')))
+            throw new InvalidParam('attribution_append');
+
+        $oc_team_annotation = $request->get_parameter('oc_team_annotation');
+        if (!$oc_team_annotation) $oc_team_annotation = 'description';
+        if (!in_array($oc_team_annotation, array('description', 'separate')))
+            throw new InvalidParam('oc_team_annotation');
+        if ($oc_team_annotation == 'separate' && !in_array('oc_team_annotation', $fields))
+            $fields[] = 'oc_team_annotation';
+
+        $user_uuid = $request->get_parameter('user_uuid');
+        if ($user_uuid != null)
+        {
+            $user_id = Db::select_value("select user_id from user where uuid='".Db::escape_string($user_uuid)."'");
+            if ($user_id == null)
+                throw new InvalidParam('user_uuid', "User not found.");
+            if (($request->token != null) && ($request->token->user_id != $user_id))
+                throw new InvalidParam('user_uuid', "User does not match the Access Token used.");
+        }
+        elseif (($user_uuid == null) && ($request->token != null))
+            $user_id = $request->token->user_id;
+        else
+            $user_id = null;
+
+        $log_fields = $request->get_parameter('log_fields');
+        if (!$log_fields) $log_fields = "uuid|date|user|type|comment";  // validation is done on call
+        $log_user_fields = $request->get_parameter('log_user_fields');
+        if (!$log_user_fields) $log_user_fields = "uuid|username|profile_url";  // validation is done on call
 
         $lpc = $request->get_parameter('lpc');
         if ($lpc === null) $lpc = 10;
@@ -1499,7 +1500,8 @@ class WebService
                 $country_codes2names = array();
                 while ($row = Db::fetch_assoc($rs)) {
                     foreach (['en', 'pl', 'nl'] as $lang)
-                        $country_codes2names[$row['country']][$lang] = $row[$lang];
+                        if ($row[$lang] != '')
+                            $country_codes2names[$row['country']][$lang] = $row[$lang];
                 }
                 Db::free_result($rs);
 
