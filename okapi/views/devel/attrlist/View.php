@@ -17,23 +17,32 @@ class View
 
         ob_start();
 
-        print "Cache Types:\n\n";
-        foreach (self::get_elements('cache_type') as $id => $name)
-            print "$id: $name\n";
+        $show_all_translations = isset($_REQUEST['all_translations']);
+        if (!$show_all_translations)
+            print "Add argument '?all_translations' to show all translations.\n\n";
 
-        print "\nCache Sizes:\n\n";
-        foreach (self::get_elements('cache_size') as $id => $name)
-            print "$id: $name\n";
+        foreach ([
+            'Cache Types' => 'cache_type',
+            'Cache Sizes' => 'cache_size',
+            'Cache Statuses' => 'cache_status',
+            'Log Types' => 'log_types',
+            'Waypoint Types' => Settings::get('OC_BRANCH') == 'oc.pl' ? 'waypoint_type' : 'coordinates_type',
+        ] as $entity => $table_name)
+        {
+            print $entity.":\n\n";
+            foreach (self::get_elements($table_name) as $id => $dict) {
+                print "$id: ".$dict['en']."\n";
+                if ($show_all_translations) {
+                    foreach ($dict as $lang => $name)
+                        if ($lang != 'en')
+                            print "    ".$lang.": ".$name."\n";
+                    print "\n";
+                }
+            }
+            print "\n";
+        }
 
-        print "\nLog Types:\n\n";
-        foreach (self::get_elements('log_types') as $id => $name)
-            print "$id: $name\n";
-
-        print "\nWaypoint Types:\n\n";
-        foreach (self::get_elements('waypoint_type', 'coordinates_type') as $id => $name)
-            print "$id: $name\n";
-
-        print "\nAttributes:\n\n";
+        print "Attributes:\n\n";
         $internal2acode = AttrHelper::get_internal_id_to_acode_mapping();
         $dict = self::get_all_attribute_names();
         foreach ($dict as $internal_id => $langs)
@@ -139,21 +148,23 @@ class View
      * Get an array of all site-specific types/sizes (id => name in English).
      */
 
-    private static function get_elements($table, $table_ocde = false)
+    private static function get_elements($table)
     {
-        if  (Settings::get('OC_BRANCH') == 'oc.de' && $table_ocde !== false) {
-            $table = $table_ocde;
-        }
-        if (!in_array($table, ['cache_type', 'cache_size', 'log_types', 'waypoint_type', 'coordinates_type'])) {
-            throw new Exception('invalid table name');
-        }
+        $dict = [];
 
         if (Settings::get('OC_BRANCH') == 'oc.pl')
         {
             # OCPL branch does store elements in at least three languages (pl, en, nl),
             # which are columns of the definition table.
 
-            $rs = Db::query("select id, en from ".$table." order by id");
+            $rs = Db::query("select * from ".$table." order by id");
+            while ($row = Db::fetch_assoc($rs)) {
+                $tmp = [];
+                foreach ($row as $column => $value)
+                    if (strlen($column) == 2 && $column != 'id')
+                        $tmp[$column] = $value;
+                $dict[$row['id']] = $tmp;
+            }
         }
         else
         {
@@ -162,20 +173,18 @@ class View
             $rs = Db::query("
                 select
                     elements.id,
-                    stt.text as en
+                    stt.lang,
+                    stt.text
                 from
                     ".$table." elements
                     left join sys_trans_text stt
                         on elements.trans_id = stt.trans_id
-                        and stt.lang = 'EN'
-                order by elements.id
+                order by elements.id, stt.lang
             ");
+            while ($row = Db::fetch_assoc($rs))
+                $dict[$row['id']][strtolower($row['lang'])] = $row['text'];
         }
 
-        $dict = array();
-        while ($row = Db::fetch_assoc($rs)) {
-            $dict[$row['id']] = $row['en'];
-        }
         return $dict;
     }
 }
