@@ -37,7 +37,7 @@ class View
 
         ini_set('memory_limit', '16M');
         $password_escaped = str_replace('"', '\"', $password);
-        $shell_arguments = "mysqldump --no-data -h'$dbserver' -u'$user' -p\"".$password_escaped."\" '$dbname'";
+        $shell_arguments = "mysqldump --no-data --triggers --routines -h'$dbserver' -u'$user' -p\"".$password_escaped."\" '$dbname'";
         if (!strpos($shell_arguments,"--no-data"))
             throw new Exception("wrong database dump arguments");
         $struct = shell_exec($shell_arguments);
