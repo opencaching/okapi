@@ -102,6 +102,7 @@ class View
                     "-- Note: The following script has some limitations. It will render database\n".
                     "-- structure compatible, but not necessarilly EXACTLY the same. It might be\n".
                     "-- better to use manual diff instead.\n\n";
+
                 $updater = new DbStructUpdater();
                 if (isset($_GET['reverse']) && ($_GET['reverse'] == 'true'))
                 {
@@ -109,7 +110,9 @@ class View
                         "-- REVERSE MODE. The following will alter [2], so that it has the structure of [1].\n".
                         "-- 1. ".Settings::get('SITE_URL')."okapi/devel/dbstruct (".md5($struct).")\n".
                         "-- 2. ".$_GET['compare_to']." (".md5($alternate_struct).")\n\n";
-                    $alters = $updater->getUpdates($alternate_struct, $struct);
+                    $tmp = $struct;
+                    $struct = $alternate_struct;
+                    $alternate_struct = $tmp;
                 }
                 else
                 {
@@ -117,8 +120,12 @@ class View
                         "-- The following will alter [1], so that it has the structure of [2].\n".
                         "-- 1. ".Settings::get('SITE_URL')."okapi/devel/dbstruct (".md5($struct).")\n".
                         "-- 2. ".$_GET['compare_to']." (".md5($alternate_struct).")\n\n";
-                    $alters = $updater->getUpdates($struct, $alternate_struct);
                 }
+                $alters = array_merge(
+                    $updater->getUpdates($struct, $alternate_struct),
+                    self::getTriggerUpdates($struct, $alternate_struct)
+                );
+
                 # Add semicolons
                 foreach ($alters as &$alter_ref)
                     $alter_ref .= ";";
@@ -179,5 +186,54 @@ class View
             "Please use one of the following:\n".
             "\"".implode("\",\n\"", $allowed)."\"."
         );
+    }
+
+    /**
+     * Return an array of SQL statements, which change the triggers
+     * of $dest_struct so that they match $source_struct.
+     */
+    private static function getTriggerUpdates($dest_struct, $source_struct)
+    {
+        $dest_triggers = self::extractTriggers($dest_struct);
+        $source_triggers = self::extractTriggers($source_struct);
+        $updates = [];
+
+        foreach ($source_triggers as $name => $def)
+        {
+            if (!isset($dest_triggers[$name])
+                || self::normalize_trigger($dest_triggers[$name]) != self::normalize_trigger($def)
+            ) {
+                if (isset($dest_triggers[$name]))
+                    $updates[] = "DROP TRIGGER `".$name."`;";
+                $updates[] = "CREATE TRIGGER `".$name."` ".$def.";";
+            }
+        }
+        foreach ($dest_triggers as $name => $def)
+        {
+            if (!isset($source_triggers[$name]))
+                $updates[] = "DROP TRIGGER `".$name."`;";
+        }
+        if ($updates) {
+            $updates = array_merge(["DELIMITER ;"], $updates, ["DELIMITER "]);
+        }
+        return $updates;
+    }
+
+    private static function extractTriggers($struct)
+    {
+        $triggers = [];
+        if (preg_match_all('~/\*!50003 TRIGGER `?([a-z_]+)`? ([BA].+?END) \*/;;~is', $struct, $matches))
+        {
+            for ($n = 0; $n < count($matches[1]); ++$n)
+                $triggers[$matches[1][$n]] = str_replace("\r", "", $matches[2][$n]);
+        }
+        return $triggers;
+    }
+
+    private static function normalize_trigger($trigger)
+    {
+        $trigger = preg_replace('~[ \t\r\n]+~', ' ', $trigger);
+        $trigger = preg_replace('~`([A-Za-z0-9_]+)`~', '$1', $trigger);
+        return trim($trigger);
     }
 }
