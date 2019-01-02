@@ -434,7 +434,14 @@ class WebService
 
                 foreach ($results as $cache_code => &$result_ref)
                 {
-                    $row = $tmp[$owner_ids[$cache_code]];
+                    if (isset($tmp[$owner_ids[$cache_code]])) {
+                        $row = $tmp[$owner_ids[$cache_code]];
+                    } else {
+                        # broken OC database - invalid owner ID or missing 'user' table entry
+                        throw new Exception(
+                            "Unknown owner ID ".$owner_ids[$cache_code]." for ".$cache_code
+                        );
+                    }
                     $owner = [];
                     foreach ($owner_fields as $field)
                     {
