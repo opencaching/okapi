@@ -27,12 +27,6 @@ use okapi\lib\OCSession;
 # method that has not been exposed through the Facade class, contact
 # OKAPI developers, we will add it here.
 
-# The first Facade function call will initialize OKAPI Framework with its
-# default exception and error handlers. OKAPI is strict about PHP warnings
-# and notices, so you might need to temporarily disable the error handler
-# in order to get it to work with your code. Just call this after you
-# include the Facade file: Facade::disable_error_handling().
-
 # EXAMPLE OF USAGE:
 
 # require_once $rootpath.'okapi/Facade.php';
@@ -40,6 +34,8 @@ use okapi\lib\OCSession;
 # \okapi\Facade::disable_error_handling();
 
 # --------------------
+
+# This initialization code is executed by PHP upon first call of a Facade method:
 
 require_once __DIR__ . '/autoload.php';
 
@@ -142,6 +138,65 @@ class Facade
         );
         self::disable_error_handling();
         return $result;
+    }
+
+    /**
+     * Creates a search set from a file, each line containing a cache code.
+     */
+    public static function import_search_set_file($search_data_id, $filepath)
+    {
+        // We need to transform OC's "searchdata" into OKAPI's "search set".
+        // First, we need to determine if we ALREADY did that.
+        // Note, that this is not exactly thread-efficient. Multiple threads may
+        // do this transformation in the same time. However, this is done only once
+        // for each searchdata, so we will ignore it.
+
+        self::reenable_error_handling();
+        if (!preg_match('/^[a-z0-9_]+$/i', $search_data_id)) {
+            throw new \Exception("bad search data id: '".$search_data_id."'");
+        }
+
+        $cache_key = "OC_searchdata_" . $search_data_id;
+        $set_id = self::cache_get($cache_key);
+
+        if ($set_id === null) {
+            // Read the searchdata file into a temporary table.
+
+            if (file_exists($filepath)) {
+                $temp_table = "temp_" . $search_data_id;
+                Db::execute("
+                    create temporary table " . $temp_table . " (
+                    cache_id integer primary key
+                    ) engine=memory
+                ");
+                Db::execute("
+                    load data local infile '".$filepath."'
+                    into table " . $temp_table . "
+                    fields terminated by ' '
+                    lines terminated by '\\n'
+                    (cache_id)
+                ");
+            } else {
+                throw new \Exception("File missing: " . $filepath);
+            }
+
+            // Tell OKAPI to import the table into its own internal structures.
+            // Cache it for two hours.
+
+            $tables = array('caches', $temp_table);
+            $where_conds = array(
+                $temp_table.".cache_id = caches.cache_id",
+                'caches.status in (1,2,3)',
+            );
+            $set_info = \okapi\services\caches\search\save\WebService::get_set(
+                $tables, array() /* joins */, $where_conds, 7200, 7200
+            );
+            $set_id = $set_info['set_id'];
+            self::cache_set($cache_key, $set_id, 7200);
+        }
+
+        self::disable_error_handling();
+        return $set_id;
     }
 
     /**
