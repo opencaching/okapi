@@ -80,7 +80,7 @@ final class Settings
          * own gettext initialization function/method. See default_gettext_init
          * function below for details.
          */
-        'GETTEXT_INIT' => array('\okapi\Settings', 'default_gettext_init'),
+        'GETTEXT_INIT' => array(__CLASS__, 'default_gettext_init'),
 
         /**
          * By default, OKAPI uses "okapi_messages" domain file for translations.
@@ -263,22 +263,13 @@ final class Settings
      */
     private static function load_settings()
     {
-        try {
-            # This is an external code and it MAY generate E_NOTICEs.
-            # We have to temporarily disable our default error handler.
-
-            OkapiErrorHandler::disable();
-            $okapiSettings = __DIR__ . '/../okapi_settings.php';
-            if (!file_exists($okapiSettings)) {
-                $okapiSettings = __DIR__ . '/../../../../okapi_settings.php';
-            }
-            require_once $okapiSettings;
-            $ref = get_okapi_settings();
-            OkapiErrorHandler::enable();
-
-        } catch (Exception $e) {
-            throw new Exception("Could not import <rootpath>/okapi_settings.php:\n".$e->getMessage());
+        $okapiSettings = __DIR__ . '/../okapi_settings.php';
+        if (!file_exists($okapiSettings)) {
+            $okapiSettings = __DIR__ . '/../../../../okapi_settings.php';
         }
+        require_once $okapiSettings;
+        $ref = get_okapi_settings();
+
         self::$SETTINGS = self::$DEFAULT_SETTINGS;
         foreach (self::$SETTINGS as $key => $_)
         {
@@ -341,8 +332,30 @@ final class Settings
      */
     public static function get($key)
     {
+        static $settingsError = false;
+
+        if ($settingsError && $key == 'DEBUG' && empty(self::$SETTINGS['DEBUG'])) {
+            # Enable debug messages on devel sites.
+            return isset($_SERVER['SERVER_NAME']) && substr($_SERVER['SERVER_NAME'], 0, 5) == 'local';
+        }
+
         if (self::$SETTINGS == null)
-            self::load_settings();
+        {
+            if ($settingsError) {
+                # Error recursion - error handler called this method.
+                return null;
+            }
+            try {
+                self::load_settings();
+            } catch (Exception $e) {
+                # The settings are in an undefined state now, probably a mixture of
+                # default values and of (potentially broken) configured values.
+                # Our exception handler is aware of that.
+
+                $settingsError = true;
+                throw $e;
+            }
+        }
 
         if (!array_key_exists($key, self::$SETTINGS))
             throw new Exception("Tried to access an invalid settings key: '$key'");

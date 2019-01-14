@@ -86,13 +86,15 @@ class OkapiExceptionHandler
 
             $exception_info = self::get_exception_info($e);
 
-            if (class_exists(Settings::class) && (Settings::get('DEBUG')))
+            # ATTN: Settings may be broken. Refer to Settings::get() for more information.
+
+            if (class_exists(Settings::class) && Settings::get('DEBUG'))
             {
                 print "\n\nBUT! Since the DEBUG flag is on, then you probably ARE a developer yourself.\n";
                 print "Let's cut to the chase then:";
                 print "\n\n".$exception_info;
             }
-            if (class_exists(Settings::class) && (Settings::get('DEBUG_PREVENT_EMAILS')))
+            if (class_exists(Settings::class) && Settings::get('DEBUG_PREVENT_EMAILS'))
             {
                 # Sending emails was blocked on admin's demand.
                 # This is possible only on development environment.
@@ -134,7 +136,10 @@ class OkapiExceptionHandler
                     @touch($lock_file);
 
                     $admin_email = implode(", ", \get_admin_emails());
-                    $sender_email = class_exists(Settings::class) ? Settings::get('FROM_FIELD') : 'root@localhost';
+                    $sender_email =
+                        class_exists(Settings::class) && Settings::get('FROM_FIELD')
+                        ? Settings::get('FROM_FIELD')
+                        : 'root@localhost';
                     $subject = "Fatal error mode: ".$subject;
                     $message = "Fatal error mode: OKAPI will send at most ONE message per minute.\n\n".$message;
                     $headers = (
@@ -150,6 +155,10 @@ class OkapiExceptionHandler
 
     public static function removeSensitiveData($message)
     {
+        # Note: If settings are broken, then this is no Db error, and the
+        # message does not contain sensitive data. Settings::get() may
+        # return NULL in this case, which will not be str_replace()d.
+
         return str_replace(
             array(
                 Settings::get('DB_PASSWORD'),
