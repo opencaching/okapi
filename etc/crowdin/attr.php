@@ -13,11 +13,14 @@ $lang_filepath = __DIR__ . '/attr-' . $lang . '.json';
 $attrdefs_raw = file_get_contents($attr_filepath);
 $attrdefs = simplexml_load_string($attrdefs_raw);
 
-function get_desc($descnode)
+if (!function_exists('get_desc'))   # hack for crowdin transfer; FTODO: refactor this
 {
-    $desc = $descnode->asxml();
-    $innerxml = preg_replace("/(^[^>]+>)|(<[^<]+$)/us", "", $desc);
-    return preg_replace('/(^\s+)|(\s+$)/us', "", preg_replace('/\s+/us', " ", $innerxml));
+    function get_desc($descnode)
+    {
+        $desc = $descnode->asxml();
+        $innerxml = preg_replace("/(^[^>]+>)|(<[^<]+$)/us", "", $desc);
+        return preg_replace('/(^\s+)|(\s+$)/us', "", preg_replace('/\s+/us', " ", $innerxml));
+    }
 }
 
 if ($action == 'export')
@@ -36,7 +39,7 @@ elseif ($action == 'import')
 {
     $translation = json_decode(file_get_contents($lang_filepath), true);
     ob_start();
-    $changed = 0;
+    $changes = 0;
 
     # copy file header
 
@@ -68,13 +71,16 @@ elseif ($action == 'import')
 
         # add / overwrite-with new translation strings
 
-        if (!empty($translation[$acode.'-name']) && $translation[$acode.'-name'] != $texts[$lang]['name']) {
-            $texts[$lang]['name'] = $translation[$acode.'-name'];
-            ++$changed;
-        }
-        if (!empty($translation[$acode.'-desc']) && $translation[$acode.'-desc'] != $texts[$lang]['desc']) {
-            $texts[$lang]['desc'] = $translation[$acode.'-desc'];
-            ++$changed;
+        # Crowdin sends English texts for any untranslated text, which would
+        # kill Okapi langprefs. Ignore translations that are identical to
+        # the English source.
+
+        foreach (['name', 'desc'] as $var) {
+            $trans = @$translation[$acode.'-'.$var];
+            if ($trans && $trans != $texts[$lang][$var] && $trans != @$texts['en'][$var]) {
+                $texts[$lang][$var] = $trans;
+                ++$changes;
+            }
         }
 
         # write translation strings
@@ -125,7 +131,7 @@ elseif ($action == 'import')
     print "</xml>\n";
 
     $new_attrdefs_raw = ob_get_clean();
-    file_put_contents($attr_filepath, $new_attrdefs_raw);
-
-    echo "Imported ".$changed." new translations.\n";
+    if ($changes > 0)
+        file_put_contents($attr_filepath, $new_attrdefs_raw);
+    echo "Imported ".$changes." new translations.\n";
 }
