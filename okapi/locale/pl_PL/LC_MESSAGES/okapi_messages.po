@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 10:27+0200\n"
-"PO-Revision-Date: 2018-09-26 10:28+0200\n"
+"POT-Creation-Date: 2019-01-15 14:44+0100\n"
+"PO-Revision-Date: 2019-01-15 14:49+0100\n"
 "Last-Translator: following <following@online.de>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -15,21 +15,21 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural= n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 
-#: services/caches/edit/WebService.php:65
+#: services/caches/edit/WebService.php:89
 #, php-format
 msgid "The password must not be longer than %d characters."
-msgstr ""
+msgstr "Hasło nie może być dłuższe niż %d znaków."
 
-#: services/caches/edit/WebService.php:78
+#: services/caches/edit/WebService.php:102
 #, php-format
 msgid "%s does not allow log passwords for traditional caches."
-msgstr ""
+msgstr "Serwis %s nie pozwala użycie haseł w keszach tradycyjnych."
 
-#: services/caches/formatters/gpx/WebService.php:427
+#: services/caches/formatters/gpx/WebService.php:405
 msgid ""
 "<b>Geocache coordinates have been changed.</b> They have been replaced with "
 "your own custom coordinates which you have provided for this geocache."
@@ -37,7 +37,7 @@ msgstr ""
 "<b>Współrzędne skrzynki zostały zmienione.</b> Zostały zastąpione Twoimi "
 "osobistymi współrzędnymi, które wprowadziłeś na stronie tej skrzynki."
 
-#: services/caches/formatters/gpx/WebService.php:433
+#: services/caches/formatters/gpx/WebService.php:411
 msgid ""
 "<b>Geocache coordinates have been changed.</b> Currently they point to one "
 "of the alternate waypoints originally described as:"
@@ -45,11 +45,11 @@ msgstr ""
 "<b>Współrzędne skrzynki zostały zmienione.</b> Aktualnie wskazują one na "
 "jeden z dodatkowych waypointów, oryginalnie opisanego jako:"
 
-#: services/caches/formatters/gpx/WebService.php:446
+#: services/caches/formatters/gpx/WebService.php:424
 msgid "Original geocache location"
-msgstr "Oryginalne współrzędne skrzynki"
+msgstr "Oryginalna lokalizacja kesza"
 
-#: services/caches/formatters/gpx/WebService.php:448
+#: services/caches/formatters/gpx/WebService.php:427
 #, php-format
 msgid "Original (owner-supplied) location of the %s geocache"
 msgstr "Oryginalne współrzędne skrzynki %s (podane przez autora)"
@@ -85,7 +85,7 @@ msgstr[2] "%d GeoKretów (lub TravelBugów)"
 
 #: services/caches/formatters/gpx/gpxfile.tpl.php:101
 msgid "Personal notes"
-msgstr "Osobiste notatki"
+msgstr "Notatki osobiste"
 
 #: services/caches/formatters/gpx/gpxfile.tpl.php:105
 msgid "Attributes"
@@ -93,59 +93,71 @@ msgstr "Atrybuty"
 
 #: services/caches/formatters/gpx/gpxfile.tpl.php:109
 msgid "Trackables"
-msgstr "Geokrety, Travelbugi itp."
+msgstr "Przedmioty podróżne"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:119
-#: services/caches/formatters/gpx/gpxfile.tpl.php:135
+#: services/caches/formatters/gpx/gpxfile.tpl.php:118
+msgid "Additional waypoints"
+msgstr "Dodatkowe waypointy"
+
+#: services/caches/formatters/gpx/gpxfile.tpl.php:131
+#: services/caches/formatters/gpx/gpxfile.tpl.php:147
 msgid "Images"
 msgstr "Obrazki"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:142
+#: services/caches/formatters/gpx/gpxfile.tpl.php:154
 msgid "Spoilers"
 msgstr "Spoilery"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:151
+#: services/caches/formatters/gpx/gpxfile.tpl.php:163
 msgid "Image descriptions"
 msgstr "Opisy obrazków"
 
-#: services/caches/formatters/gpx/gpxfile.tpl.php:159
+#: services/caches/formatters/gpx/gpxfile.tpl.php:171
 msgid "The cache probably is located in the following protection areas:"
 msgstr "Prawdopodobnie skrzynka znajduje się na terenie obszarów chronionych:"
 
-#: services/caches/geocaches/WebService.php:541
+#: services/caches/geocaches/WebService.php:732
 msgid "Parts of this geocache listing may be outdated."
 msgstr "Opis tej skrzynki (lub jego część) może nie być aktualny."
 
-#: services/caches/geocaches/WebService.php:543
+#: services/caches/geocaches/WebService.php:734
 msgid "See the log entries for more information."
 msgstr ""
 "Przejrzyj wpisy w dzienniku w celu uzyskania dokładniejszych informacji."
 
-#: services/caches/geocaches/WebService.php:1063
+#: services/caches/geocaches/WebService.php:764
+msgid "Annotations by the Opencaching team:"
+msgstr "Adnotacje Centrum Obsługi Geocachera:"
+
+#: services/caches/geocaches/WebService.php:766
+msgid "End of annotations"
+msgstr ""
+
+#: services/caches/geocaches/WebService.php:1350
 msgid "Stage"
 msgstr "Etap"
 
-#: services/caches/geocaches/WebService.php:1107
+#: services/caches/geocaches/WebService.php:1394
 msgid "User location"
 msgstr "Współrzędne użytkownika"
 
-#: services/caches/geocaches/WebService.php:1110
+#: services/caches/geocaches/WebService.php:1398
 #, php-format
 msgid "Your own custom coordinates for the %s geocache"
 msgstr "Twoje osobiste współrzędne skrzynki %s"
 
-#: services/caches/geocaches/WebService.php:1274
+#: services/caches/geocaches/WebService.php:1636
 msgid "National Park / Landscape"
 msgstr "Park narodowy lub krajobrazowy"
 
-#: services/caches/geocaches/WebService.php:1452
+#: services/caches/geocaches/WebService.php:1820
 #, php-format
 msgid ""
 "This <a href='%s'>geocache</a> description comes from the <a href='%s'>%s</"
 "a> site."
 msgstr "Opis <a href='%s'>skrzynki</a> pochodzi z serwisu <a href='%s'>%s</a>."
 
-#: services/caches/geocaches/WebService.php:1464
+#: services/caches/geocaches/WebService.php:1832
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
@@ -156,7 +168,7 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>, w "
 "dniu %s. Prawa autorskie wpisów do logów należą do ich autorów."
 
-#: services/caches/geocaches/WebService.php:1475
+#: services/caches/geocaches/WebService.php:1843
 #, php-format
 msgid ""
 "&copy; <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
@@ -167,15 +179,108 @@ msgstr ""
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>. Prawa "
 "autorskie wpisów do logów należą do ich autorów."
 
-#: services/logs/images/add/WebService.php:78
-#: services/logs/images/edit/WebService.php:52
+#: services/logs/LogsCommon.php:70
+msgid ""
+"This cache is an Event cache. You cannot \"Find\" it (but you can attend it, "
+"or comment on it)!"
+msgstr ""
+"Ta skrzynka jest Wydarzeniem. Nie możesz jej \"znaleźć\" (ale możesz w "
+"wydarzeniu uczestniczyć lub dodać komentarz)!"
+
+#: services/logs/LogsCommon.php:79
+msgid ""
+"This cache is NOT an Event cache. You cannot \"Attend\" it (but you can find "
+"it, or comment on it)!"
+msgstr ""
+"Ta skrzynka NIE jest Wydarzeniem. Nie możesz w niej \"uczestniczyć\" (ale "
+"możesz ją znaleźć lub dodać komentarz)!"
+
+#: services/logs/LogsCommon.php:95
+msgid "This cache requires a password. You didn't provide one!"
+msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
+
+#: services/logs/LogsCommon.php:99
+msgid "Invalid password!"
+msgstr "Niepoprawne hasło!"
+
+#: services/logs/LogsCommon.php:108
+msgid "Your have to supply some text for your comment."
+msgstr "Wpis typu \"Komentarz\" wymaga wpisania komentarza."
+
+#: services/logs/LogsCommon.php:134
+msgid ""
+"You are trying to publish a log entry with a date in future. Cache log "
+"entries are allowed to be published in the past, but NOT in the future."
+msgstr ""
+"Próbujesz opublikować wpis do logbooka używając daty w przyszłości. Wpisy "
+"mogą być publikowane z datą w przeszłości, ale NIE w przyszłości."
+
+#: services/logs/LogsCommon.php:141
+msgid ""
+"You cannot attend an event before it takes place. Please check the log type "
+"and date."
+msgstr ""
+"Nie możesz zalogować uczestnictwa w spotkaniu, zanim się ono odbędzie. "
+"Sprawdź typ logu i datę."
+
+#: services/logs/LogsCommon.php:251
+msgid ""
+"You are the owner of this cache. You may submit \"Comments\" and status logs "
+"only!"
+msgstr ""
+
+#: services/logs/LogsCommon.php:281
+msgid ""
+"You have already submitted a \"Found it\" log entry once. Now you may submit "
+"\"Comments\" only!"
+msgstr ""
+"Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz "
+"możesz dodawać jedynie \"Komentarze\"!"
+
+#: services/logs/LogsCommon.php:283
+#, fuzzy
+msgid ""
+"You have already submitted an \"Attended\" log entry once. Now you may "
+"submit \"Comments\" only!"
+msgstr ""
+"Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz "
+"możesz dodawać jedynie \"Komentarze\"!"
+
+#: services/logs/LogsCommon.php:301
+#, php-format
+msgid "You don't have any recommendations to give. Find one more cache first!"
+msgid_plural ""
+"You don't have any recommendations to give. Find %d more caches first!"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: services/logs/delete/WebService.php:124
+msgid "Your log entry has been deleted."
+msgstr "Twój log został usunięty."
+
+#: services/logs/edit/WebService.php:138
+#, php-format
+msgid "%s does not allow recommending event caches."
+msgstr ""
+
+#: services/logs/edit/WebService.php:142
+msgid "You may not recommend your own caches."
+msgstr "Nie możesz rekomendować swoich własnych keszy."
+
+#: services/logs/edit/WebService.php:283
+msgid "Your log entry has been updated successfully."
+msgstr ""
+
+#: services/logs/images/add/WebService.php:71
+#: services/logs/images/edit/WebService.php:45
 #, php-format
 msgid "%s requires all images to have captions. Please provide one."
 msgstr ""
 "%s wymaga, aby wszystkie obrazki miały swoje tytuły. Tytuł nie może pozostać "
 "pusty."
 
-#: services/logs/images/add/WebService.php:103
+#: services/logs/images/add/WebService.php:96
 #, php-format
 msgid ""
 "Your image file is too large (%s.%s MB); %s accepts a maximum image size of "
@@ -184,19 +289,19 @@ msgstr ""
 "Twój plik z obrazkiem jest za duży (%s.%s MB). %s akceptuje pliki o "
 "maksymalnym rozmiarze %s.%s MB."
 
-#: services/logs/images/add/WebService.php:131
-#: services/logs/images/add/WebService.php:156
+#: services/logs/images/add/WebService.php:124
+#: services/logs/images/add/WebService.php:149
 #, php-format
 msgid "%s reported an error when it tried to read your file."
 msgstr "Serwis %s zgłosił błąd podczas próby odczytu Twojego pliku."
 
-#: services/logs/images/add/WebService.php:135
+#: services/logs/images/add/WebService.php:128
 msgid ""
 "Make sure you are sending a file in an appropriate format (JPEG, PNG or GIF)."
 msgstr ""
 "Upewnij się, że wysyłasz plik w odpowiednim formacie (JPEG, PNG lub GIF)."
 
-#: services/logs/images/add/WebService.php:144
+#: services/logs/images/add/WebService.php:137
 #, php-format
 msgid ""
 "The image you have uploaded is too large (%s megapixels). Please use an "
@@ -208,23 +313,15 @@ msgstr ""
 "autorami aplikacji '%s' i poprosić ich, aby zmniejszali przesyłane obrazki "
 "automatycznie.)"
 
-#: services/logs/images/add/WebService.php:415
+#: services/logs/images/add/WebService.php:408
 msgid "Image has been successfully saved."
-msgstr "Obrazek został pomyślnie zapisany."
+msgstr "Obrazek został zapisany."
 
-#: services/logs/images/edit/WebService.php:212
+#: services/logs/images/edit/WebService.php:205
 msgid "Image properties have been successfully updated."
-msgstr "Właściwości obrazka został pomyślnie zaktualizowane."
+msgstr "Właściwości obrazu zostały pomyślnie zaktualizowane."
 
-#: services/logs/submit/WebService.php:74
-msgid ""
-"You are trying to publish a log entry with a date in future. Cache log "
-"entries are allowed to be published in the past, but NOT in the future."
-msgstr ""
-"Próbujesz opublikować wpis do logbooka używając daty w przyszłości. Wpisy "
-"mogą być publikowane z datą w przeszłości, ale NIE w przyszłości."
-
-#: services/logs/submit/WebService.php:110
+#: services/logs/submit/WebService.php:87
 #, php-format
 msgid ""
 "However, your cache rating was ignored, because %s does not have a rating "
@@ -233,7 +330,7 @@ msgstr ""
 "Niestety Twoja ocena skrzynki nie została zapisana, ponieważ %s nie prowadzi "
 "oceny skrzynek."
 
-#: services/logs/submit/WebService.php:135
+#: services/logs/submit/WebService.php:112
 #, php-format
 msgid ""
 "However, your cache recommendation was ignored, because %s does not allow "
@@ -242,7 +339,7 @@ msgstr ""
 "Twoja rekomendacja skrzynki nie została zapisana, ponieważ %s nie pozwala na "
 "rekomendowanie skrzynek typu Wydarzenie."
 
-#: services/logs/submit/WebService.php:184
+#: services/logs/submit/WebService.php:161
 #, php-format
 msgid ""
 "However, your \"does not need maintenance\" flag was ignored, because %s "
@@ -251,87 +348,55 @@ msgstr ""
 "Niestety, wpis \"wykonano serwis\" został zignorowany, ponieważ %s nie "
 "wspiera (jeszcze) tej funkcjonalności."
 
-#: services/logs/submit/WebService.php:214
+#: services/logs/submit/WebService.php:206
 msgid ""
-"This cache is an Event cache. You cannot \"Find\" it (but you can attend it, "
-"or comment on it)!"
+"However, your cache recommendation was ignored, because you may not "
+"recommend your own caches."
 msgstr ""
-"Ta skrzynka jest Wydarzeniem. Nie możesz jej \"znaleźć\" (ale możesz w "
-"wydarzeniu uczestniczyć lub dodać komentarz)!"
 
-#: services/logs/submit/WebService.php:220
+#: services/logs/submit/WebService.php:216
 msgid ""
-"You cannot attend an event before it takes place. Please check the log type "
-"and date."
+"You are not the owner of this cache. Only the owner may log status changes."
 msgstr ""
-"Nie możesz zalogować uczestnictwa w spotkaniu, zanim się ono odbędzie. "
-"Sprawdź typ logu i datę."
 
 #: services/logs/submit/WebService.php:229
-msgid ""
-"This cache is NOT an Event cache. You cannot \"Attend\" it (but you can find "
-"it, or comment on it)!"
+#, php-format
+msgid "%s does not allow to unarchive geocaches."
 msgstr ""
-"Ta skrzynka NIE jest Wydarzeniem. Nie możesz w niej \"uczestniczyć\" (ale "
-"możesz ją znaleźć lub dodać komentarz)!"
 
-#: services/logs/submit/WebService.php:239
-msgid "Your have to supply some text for your comment."
-msgstr "Wpis typu \"Komentarz\" wymaga wpisania komentarza."
+#: services/logs/submit/WebService.php:237
+msgid ""
+"However, your maintenance status tag was ignored, because archived caches "
+"don't need maintenance."
+msgstr ""
 
-#: services/logs/submit/WebService.php:255
-msgid "This cache requires a password. You didn't provide one!"
-msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
+#: services/logs/submit/WebService.php:249
+msgid "The geocache must be maintained before it is enabled."
+msgstr ""
 
-#: services/logs/submit/WebService.php:259
-msgid "Invalid password!"
-msgstr "Niepoprawne hasło!"
+#: services/logs/submit/WebService.php:265
+msgid ""
+"However, your maintenance status tag was ignored, because you didn't find "
+"the cache."
+msgstr ""
 
-#: services/logs/submit/WebService.php:396
+#: services/logs/submit/WebService.php:328
 msgid "You have already submitted a log entry with exactly the same contents."
 msgstr "Już opublikowałeś wcześniej wpis z dokładnie taką samą treścią."
 
-#: services/logs/submit/WebService.php:430
-msgid ""
-"You have already submitted a \"Found it\" log entry once. Now you may submit "
-"\"Comments\" only!"
-msgstr ""
-"Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz "
-"możesz dodawać jedynie \"Komentarze\"!"
-
-#: services/logs/submit/WebService.php:432
-#, fuzzy
-msgid ""
-"You have already submitted an \"Attended\" log entry once. Now you may "
-"submit \"Comments\" only!"
-msgstr ""
-"Już opublikowałeś jeden wpis typu \"Znaleziona\" dla tej skrzynki. Teraz "
-"możesz dodawać jedynie \"Komentarze\"!"
-
-#: services/logs/submit/WebService.php:442
-msgid "You are the owner of this cache. You may submit \"Comments\" only!"
-msgstr ""
-"Jesteś właścicielem tej skrzynki. Możesz przesyłać jedynie \"Komentarze\"."
-
-#: services/logs/submit/WebService.php:464
+#: services/logs/submit/WebService.php:344
 msgid "You have already rated this cache once. Your rating cannot be changed."
 msgstr "Już oceniłeś tę skrzynkę. Ocena nie może być zmieniona."
 
-#: services/logs/submit/WebService.php:485
+#: services/logs/submit/WebService.php:357
 msgid "You have already recommended this cache once."
 msgstr "Już raz zarekomendowałeś tę skrzynkę."
 
-#: services/logs/submit/WebService.php:501
-msgid "You don't have any recommendations to give. Find more caches first!"
-msgstr ""
-"Aktualnie nie możesz wystawić kolejnej rekomendacji. Znajdź najpierw więcej "
-"skrzynek!"
-
-#: services/logs/submit/WebService.php:552
+#: services/logs/submit/WebService.php:420
 msgid "Event caches cannot \"need maintenance\"."
 msgstr "Skrzynki typu Wydarzenie nie mogą \"potrzebować serwisu\"."
 
-#: services/logs/submit/WebService.php:710
+#: services/logs/submit/WebService.php:547
 msgid "Your cache log entry was posted successfully."
 msgstr "Twój wpis do logbooka został opublikowany pomyślnie."
 
@@ -467,6 +532,15 @@ msgstr ""
 "na działania\n"
 "w Twoim imieniu. Gdy zaczniesz korzystać z zewnętrznych aplikacji, ich lista "
 "pojawi się tutaj.</p>"
+
+#~ msgid "You are the owner of this cache. You may submit \"Comments\" only!"
+#~ msgstr ""
+#~ "Jesteś właścicielem tej skrzynki. Możesz przesyłać jedynie \"Komentarze\"."
+
+#~ msgid "You don't have any recommendations to give. Find more caches first!"
+#~ msgstr ""
+#~ "Aktualnie nie możesz wystawić kolejnej rekomendacji. Znajdź najpierw "
+#~ "więcej skrzynek!"
 
 #~ msgid ""
 #~ "\n"
