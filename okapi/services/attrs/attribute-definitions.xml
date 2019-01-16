@@ -284,6 +284,9 @@ for the original implementations.
                 compatibilă şi jucat.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Wherigo cache</name>
+        </lang>
     </attr>
 
     <attr acode="A4" categories="de-cache-types">
@@ -738,6 +741,9 @@ for the original implementations.
                 inusuali.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Ander cachesoort</name>
+        </lang>
     </attr>
 
     <attr acode="A14" categories="de-preconditions">
@@ -812,6 +818,9 @@ for the original implementations.
             <desc>
                 Rezolvarea se poate găsi numai vizitând locul.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Puzzel / Mysterie</name>
         </lang>
     </attr>
 
@@ -2253,6 +2262,12 @@ for the original implementations.
                 Ai nevoie de o lanternă.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Zaklamp nodig</name>
+            <desc>
+                Je hebt een zaklamp nodig om de cache te vinden.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A53" categories="de-tools">
@@ -2292,6 +2307,14 @@ for the original implementations.
                 Per questa cache, avrete bisogno di materiale da arrampicata e di
                 saperlo usare correttamente. Se sei un principiante, non farlo da
                 solo, ma utilizza il sostegno di uno scalatore esperto o un alpinista.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Klimuitrusting nodig</name>
+            <desc>
+                Voor deze cache is klimuitrusting nodig en de benodigde kennis om te
+                klimmen. Indien men geen ervaring heeft is het raadzaam om niet alleen
+                te gaan, maar hulp te vragen aan iemand met klimervaring.
             </desc>
         </lang>
     </attr>
@@ -2392,6 +2415,15 @@ for the original implementations.
                 insegnante di sub.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Duikuitrusting nodig</name>
+            <desc>
+                Om deze cache te vinden heeft men een duikuitrusting nodig. Op welke
+                diepte de cache ligt staat beschreven in de beschrijving. Denk er wel
+                aan dat duiken niet zonder ervaring gedaan kan worden, of ga als groep
+                of met een instructeur zoeken.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A56" categories="de-tools">
@@ -2444,6 +2476,9 @@ for the original implementations.
             <desc>
                 Ai nevoie de unelte sau echipament specializat.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Speciale gereedschappen nodig</name>
         </lang>
     </attr>
 
@@ -2537,6 +2572,9 @@ for the original implementations.
                 Questa cache puo essere trovata senza un dispositivo GPS. Non sono
                 utilizzate coordinate addizionali oltre alle coordinate iniziali.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Geen GPS nodig</name>
         </lang>
     </attr>
 
