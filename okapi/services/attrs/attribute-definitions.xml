@@ -232,9 +232,10 @@ for the original implementations.
             </desc>
         </lang>
         <lang id="nl">
-            <name>Meetpunt</name>
+            <name>Vlak bij een meetpunt</name>
             <desc>
-                Deze cache heeft te maken met een meetpunt of geodetisch punt.
+                Deze cache ie verstopt vlakbij een meetpunt (ook bekend als geodetisch
+                punt).
             </desc>
         </lang>
         <lang id="ro">
@@ -331,7 +332,7 @@ for the original implementations.
         <lang id="nl">
             <name>Letterbox (een stempel nodig)</name>
             <desc>
-                Er bevind sich een stempel in de cache waarmee je een in een eigen
+                Er bevind zich een stempel in de cache waarmee je een in een eigen
                 logboek kan stempelen. Met een eigen stempel kun je het logboek in de
                 cache stempelen. Let op om niet per ongeluk de stempels te
                 verwisselen!
@@ -394,8 +395,8 @@ for the original implementations.
         <lang id="nl">
             <name>GeoHotel</name>
             <desc>
-                Deze cache is speciaal voor reizende items zoals: GeoKrets, TravelBugs
-                enz.
+                Deze cache is speciaal voor reizende items te ruilen (TravelBugs,
+                GeoKrets, etc.).
             </desc>
         </lang>
         <lang id="ro">
@@ -431,9 +432,9 @@ for the original implementations.
             </desc>
         </lang>
         <lang id="nl">
-            <name>Bevestigd met magneet</name>
+            <name>Magnetische cache</name>
             <desc>
-                Deze cache is met een magneet bevestigt.
+                Deze geocache is bevestigd met een magneet.
             </desc>
         </lang>
         <lang id="ro">
@@ -555,7 +556,8 @@ for the original implementations.
         <lang id="nl">
             <name>Beacon - Garmin chirp</name>
             <desc>
-                Deze cache is gemaakt met 1 of meer Garmins chirp draadloze zenders.
+                Deze cache is gemaakt met 1 of meer Garmins Chirp™ draadloze
+                zenders.
             </desc>
         </lang>
         <lang id="ro">
@@ -604,8 +606,6 @@ for the original implementations.
                 Deze cache bestaat uit een vast gemonteerde USB stick, zoals in een
                 muur of paal enz. Deze bevat een readme.txt bestand met de cache
                 beschrijving en een logboek.txt bestand om je bezoek te kunnen loggen.
-                <a href="https://wiki.opencaching.nl/index.php/Dead_Drop_Caches">Voor
-                informatie</a>.
             </desc>
         </lang>
         <lang id="ro">
@@ -1563,6 +1563,9 @@ for the original implementations.
                 trasporto pubblico nelle vicinanze.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Openbaar vervoer</name>
+        </lang>
     </attr>
 
     <attr acode="A35" categories="de-facilities">
@@ -2140,6 +2143,9 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Kompas nodig</name>
+            <desc>
+                Een kompas is noodzakelijk.
+            </desc>
         </lang>
         <lang id="ro">
             <name>Busolă</name>
@@ -2173,7 +2179,10 @@ for the original implementations.
             </desc>
         </lang>
         <lang id="nl">
-            <name>Neem iets mee om te schrijven</name>
+            <name>Breng eigen pen mee</name>
+            <desc>
+                Er is geen pen in deze cache. Neem iets mee om te schrijven.
+            </desc>
         </lang>
         <lang id="ro">
             <name>Creion</name>
@@ -2212,6 +2221,12 @@ for the original implementations.
             <name>Lopată</name>
             <desc>
                 Ai nevoie de o lopată.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Mogelijk een schep nodig</name>
+            <desc>
+                De cache is begraven. Een schep zou handig zijn.
             </desc>
         </lang>
     </attr>
@@ -2265,7 +2280,7 @@ for the original implementations.
         <lang id="nl">
             <name>Zaklamp nodig</name>
             <desc>
-                Je hebt een zaklamp nodig om de cache te vinden.
+                Je hebt een zaklamp nodig om deze cache te vinden.
             </desc>
         </lang>
     </attr>
@@ -2478,7 +2493,7 @@ for the original implementations.
             </desc>
         </lang>
         <lang id="nl">
-            <name>Speciale gereedschappen nodig</name>
+            <name>Special gereedschap nodig</name>
         </lang>
     </attr>
 
@@ -2701,9 +2716,9 @@ for the original implementations.
                 In der Nähe des Caches gibt es Klippen oder Felsen. Unterhalb von
                 Felsen sollte man auf Steinschlag achten, von der Oberseite der
                 Klippen sollte man sich entsprechend vorsichtig nähern (insbesondere
-                mit Kindern oder Mountainbikes). Besonders gefährlich - und nicht
-                immer erkennbar - ist es, sich über einen Steilhang von oben an eine
-                Klippe zu nähern.
+                mit Kindern oder Mountainbikes). Besonders gefährlich – und nicht
+                immer erkennbar – ist es, sich über einen Steilhang von oben an
+                eine Klippe zu nähern.
             </desc>
         </lang>
         <lang id="es">
@@ -2930,6 +2945,9 @@ for the original implementations.
                 oggetto di conservazione storica.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Verlaten mijnen</name>
+        </lang>
     </attr>
 
     <attr acode="A66" categories="de-dangers">
@@ -2964,6 +2982,9 @@ for the original implementations.
                 Ci sono piante velenose nelle vicinanze. Fate attenzione e controllate
                 che bambini o cani non le tocchino o le ingoino.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Giftige planten</name>
         </lang>
     </attr>
 
@@ -3334,15 +3355,15 @@ for the original implementations.
         <lang id="de">
             <name>Bewertung auf Handicaching.com</name>
             <desc>
-                Bewertet auf Handycaching.com - Dies bedeutet nicht, dass der Cache
-                Ist rollstuhlgerecht. Siehe die Bewertung auf Handycaching.com für
+                Bewertet auf Handycaching.com – dies bedeutet NICHT, dass der Cache
+                rollstuhlgerecht ist. Siehe Bewertung auf Handycaching.com für
                 Details.
             </desc>
         </lang>
         <lang id="nl">
             <name>Beoordeeld op Handicaching.com</name>
             <desc>
-                Beoordeeld op Handycaching.com - Dit betekent niet dat de cache is
+                Beoordeeld op Handycaching.com - Dit betekent NIET dat de cache is
                 toegankelijk voor rolstoelgebruikers. Zie de rating op
                 Handycaching.com voor meer informatie.
             </desc>
@@ -3382,8 +3403,8 @@ for the original implementations.
         <lang id="nl">
             <name>Bevat een munzee</name>
             <desc>
-                De cache bevat ook een munzee of de schuilplaats is erg in de buurt
-                van één.
+                De cache bevat ook een munzee of de schuilplaats is er vlak in de
+                buurt.
             </desc>
         </lang>
         <lang id="ro">
