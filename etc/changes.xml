@@ -23,6 +23,13 @@
 
     -->
     <changes>
+        <change commit="62413e1e" version="1887" time="2019-01-17T15:01:10+0100" type="enhancement">
+            Added the <i>has_ratings</i> field to
+            <a href="services/apisrv/installation.html">services/apisrv/installation</a>,
+            and <b>removed</b> the services/caches/capabilities method
+            (<a href="https://github.com/opencaching/okapi/issues/578">why?</a>).
+            This method was not in use yet by any application.
+        </change>
         <change commit="ee3d4739" version="1873" time="2018-12-17T20:12:38+0100" type="bugfix">
             Changed the &lt;time&gt; field of geocaches in GPX files from
             listing date to hide/event date, consistent with GC and native OC GPX.
