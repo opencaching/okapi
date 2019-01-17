@@ -31,20 +31,8 @@ class WebService
         $result['image_max_upload_size'] = Settings::get('IMAGE_MAX_UPLOAD_SIZE');
         $result['image_rcmd_max_pixels'] = Settings::get('IMAGE_MAX_PIXEL_COUNT');
         $result['has_image_positions'] = Settings::get('OC_BRANCH') == 'oc.de';
-
-        # 'geocache_passwd_max_length' was replaced by 'password_max_length'
-        # in the new services/caches/capabilities method. It had never been
-        # in use at OCPL sites (services/caches/edit was never called).
-        # We leave it here as undocumented OCDE field, until we can verify
-        # if it was in use there. If no - drop it. If yes - document it as a
-        # deprecated OCDE-only field.
-
-        # Note that for backward compatibility with a former Db::field_length()
-        # bug, the OCDE field is of type string, while the OCPL field was
-        # (as intended) numeric.
-
-        if (Settings::get('OC_BRANCH') == 'oc.de')
-            $result['geocache_passwd_max_length'] = (string)Db::field_length('caches', 'logpw');
+        $result['has_ratings'] = Settings::get('OC_BRANCH') == 'oc.pl';
+        $result['geocache_passwd_max_length'] = Db::field_length('caches', 'logpw');
 
         return Okapi::formatted_response($request, $result);
     }

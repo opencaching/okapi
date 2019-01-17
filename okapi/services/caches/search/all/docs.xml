@@ -18,11 +18,9 @@
     </desc>
     <opt name='type'>
         <p>Pipe-separated list of cache type codes. If given, the results will be
-        limited to the given cache types. For a list of available type codes,
-        see the <b>types</b> return field of
-        <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.
-        For more information on cache types, see
-        <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>.</p>
+        limited to the given cache types. For a list of known types, see the
+        <a href='%OKAPI:methodargref:services/caches/geocache%'>services/caches/geocache</a>
+        <b>type</b> field.</p>
 
         <p><b>Note:</b> If you want to include all cache types <b>except</b>
         the given ones, prepend your list with the "-" sign.</p>
@@ -38,9 +36,7 @@
             <li><b>Archived</b> - Cache is permanently unavailable (moved to the archives).</li>
         </ul>
         <p>More statuses are in use at OC sites and may be implemented in future
-        OKAPI versions (see <a href="https://github.com/opencaching/okapi/issues/565">discussion</a>).
-        The <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
-        method returns a list of statuses that can be searched for.</p>
+        OKAPI versions (see <a href="https://github.com/opencaching/okapi/issues/565">discussion</a>).</p>
     </opt>
     <opt name='owner_uuid'>
         <p>Pipe-separated list of user IDs. If given, the list of returned caches
@@ -101,12 +97,6 @@
         included. The codes are: 'none', 'nano', 'micro', 'small', 'regular',
         'large', 'xlarge', 'other'.</p>
 
-        <p><b>Note:</b> Not all OC servers use all of these. The <b>sizes</b>
-        field of <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
-        tells which types are currently available at this installation. You
-        may also search for sizes which are unavailable here; then the result
-        will be empty.</p>
-
         <p><b>Note:</b> If you want to include all cache sizes <b>except</b>
         the given ones, prepend your list with the "-" sign.</p>
     </opt>
@@ -124,7 +114,7 @@
 
         <p><b>Note:</b> Not all Opencaching installations provide ratings for their
         geocaches. The <b>has_ratings</b> field of
-        <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
+        <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>
         tells if ratings are available. If not, this parameter will be ignored.</p>
     </opt>
     <opt name='min_rcmds'>

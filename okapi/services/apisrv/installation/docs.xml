@@ -97,6 +97,16 @@
                 <p><b>has_image_positions</b> - boolean, <b>true</b> if this
                 installations supports arbitrary ordering of uploaded images.</p>
             </li>
+            <li>
+                <p><b>has_ratings</b> - boolean, <b>true</b> if this installation
+                can store geocache quality ratings. Use the
+                <a href='%OKAPI:methodargref:services/logs/capabilities%'>services/logs/capabilities</a>
+                method to find out if a given geocache can be rated.</p>
+            </li>
+            <li>
+                <p><b>geocache_passwd_max_length</b> - the maximum length
+                of geocache log passwords.</p>
+            </li>
         </ul>
     </returns>
 </xml>

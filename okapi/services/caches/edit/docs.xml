@@ -14,7 +14,7 @@
         If you supply an empty string, the password will be cleared, i.e.
         the geocache will not require a log password.</p>
         <p>You may query the maximum accepted password length for the OC site by
-        <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.
+        <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>.
         There may also be installation-dependent restrictions on which
         geocaches may have passwords. <b>success</b> will be <b>false</b> and
         an explanation message will be returned if a password is rejected.</p>
