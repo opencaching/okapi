@@ -27,6 +27,8 @@ class View
             'Cache Statuses' => 'cache_status',
             'Log Types' => 'log_types',
             'Waypoint Types' => Settings::get('OC_BRANCH') == 'oc.pl' ? 'waypoint_type' : 'coordinates_type',
+            'Languages' => 'languages',
+            'Countries' => 'countries',
         ] as $entity => $table_name)
         {
             print $entity.":\n\n";
@@ -150,6 +152,7 @@ class View
 
     private static function get_elements($table)
     {
+        $idcolumn = (in_array($table, ['countries', 'languages']) ? 'short' : 'id');
         $dict = [];
 
         if (Settings::get('OC_BRANCH') == 'oc.pl')
@@ -157,13 +160,13 @@ class View
             # OCPL branch does store elements in at least three languages (pl, en, nl),
             # which are columns of the definition table.
 
-            $rs = Db::query("select * from ".$table." order by id");
+            $rs = Db::query("select * from ".$table." order by ".$idcolumn);
             while ($row = Db::fetch_assoc($rs)) {
                 $tmp = [];
                 foreach ($row as $column => $value)
                     if (strlen($column) == 2 && $column != 'id')
                         $tmp[$column] = $value;
-                $dict[$row['id']] = $tmp;
+                $dict[$row[$idcolumn]] = $tmp;
             }
         }
         else
@@ -172,17 +175,17 @@ class View
 
             $rs = Db::query("
                 select
-                    elements.id,
+                    elements.".$idcolumn.",
                     stt.lang,
                     stt.text
                 from
                     ".$table." elements
                     left join sys_trans_text stt
                         on elements.trans_id = stt.trans_id
-                order by elements.id, stt.lang
+                order by elements.".$idcolumn.", stt.lang
             ");
             while ($row = Db::fetch_assoc($rs))
-                $dict[$row['id']][strtolower($row['lang'])] = $row['text'];
+                $dict[$row[$idcolumn]][strtolower($row['lang'])] = $row['text'];
         }
 
         return $dict;
