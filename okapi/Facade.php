@@ -115,33 +115,10 @@ class Facade
     }
 
     /**
-     * Create a search set from a temporary table. This is very similar to
-     * the "services/caches/search/save" method, but allows OC server to
-     * include its own result instead of using OKAPI's search options. The
-     * $temp_table should be a valid name of a temporary table with the
-     * following (or similar) structure:
-     *
-     *   create temporary table temp_12345 (
-     *     cache_id integer primary key
-     *   ) engine=memory;
-     */
-    public static function import_search_set($temp_table, $min_store, $max_ref_age)
-    {
-        self::reenable_error_handling();
-        $tables = array('caches', $temp_table);
-        $where_conds = array(
-            $temp_table.".cache_id = caches.cache_id",
-            'caches.status in (1,2,3)',
-        );
-        $result = \okapi\services\caches\search\save\WebService::get_set(
-            $tables, array() /* joins */, $where_conds, $min_store, $max_ref_age
-        );
-        self::disable_error_handling();
-        return $result;
-    }
-
-    /**
      * Creates a search set from a file, each line containing a cache code.
+     * This is very similar to the "services/caches/search/save" method, but
+     * allows OC server to include its own result instead of using OKAPI's
+     * search options.
      */
     public static function import_search_set_file($search_data_id, $filepath)
     {
@@ -399,7 +376,7 @@ class Facade
     /**
      * Switch from Okapi to external error handling
      */
-    public static function disable_error_handling()
+    private static function disable_error_handling()
     {
         OkapiErrorHandler::disable();
     }
@@ -407,7 +384,7 @@ class Facade
     /**
      * Switch from external to Okapi error handling
      */
-    public static function reenable_error_handling()
+    private static function reenable_error_handling()
     {
         OkapiErrorHandler::enable();
     }
