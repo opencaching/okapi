@@ -146,12 +146,6 @@ final class Settings
         'SITE_URL' => null,
 
         /**
-         * Deprecated. For details, see here:
-         * https://github.com/opencaching/okapi/issues/417
-         */
-        'ORIGIN_URL' => null,
-
-        /**
          * Node ID. This is the value OKAPI should put into `node_id` columns
          * in OC tables when it inserts new rows into tables with this column.
          */
