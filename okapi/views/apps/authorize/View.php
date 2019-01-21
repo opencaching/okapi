@@ -17,6 +17,7 @@ class View
         $token_key = isset($_GET['oauth_token']) ? $_GET['oauth_token'] : '';
         $langpref = isset($_GET['langpref']) ? $_GET['langpref'] : Settings::get('SITELANG');
         $langprefs = explode("|", $langpref);
+        $login_langpref = (isset($_GET['langpref']) ? $langprefs[0] : null);
         $locales = array();
         foreach (Locales::$languages as $lang => $attrs) {
             $locales[$attrs['locale']] = $attrs;
@@ -72,6 +73,12 @@ class View
             return $response;
         }
 
+        $after_login = (
+            "okapi/apps/authorize?oauth_token=$token_key".
+            (($langpref != Settings::get('SITELANG')) ? "&langpref=" . $langpref : "")
+        );
+        $login_url = Okapi::oc_login_url($after_login, $login_langpref);
+
         # Determine which user is logged in to OC.
 
         $OC_user_id = OCSession::get_user_id();
@@ -83,8 +90,6 @@ class View
             # TODO: confirm_user should first ask the user if he's "the proper one",
             # and then offer to sign in as a different user.
 
-            $login_page = 'login.php?';
-
             if ($OC_user_id !== null)
             {
                 if (Settings::get('OC_BRANCH') == 'oc.de')
@@ -94,7 +99,7 @@ class View
                     # login and then redirect to the target after logging in -
                     # that's exactly the relogin that we want.
 
-                    $login_page .= 'action=logout&';
+                    $login_url .= '&action=logout';
                 }
                 else
                 {
@@ -121,13 +126,6 @@ class View
                     # We should be logged out now. Let's login again.
                 }
             }
-
-            $after_login = (
-                "okapi/apps/authorize?oauth_token=$token_key".
-                (($langpref != Settings::get('SITELANG')) ? "&langpref=" . $langpref : "")
-            );
-            $login_url = Settings::get('SITE_URL').$login_page."target=".urlencode($after_login)
-                ."&langpref=".$langpref;
 
             return new OkapiRedirectResponse($login_url);
         }

@@ -15,6 +15,7 @@ class View
     {
         $langpref = isset($_GET['langpref']) ? $_GET['langpref'] : Settings::get('SITELANG');
         $langprefs = explode("|", $langpref);
+        $login_langpref = (isset($_GET['langpref']) ? $langprefs[0] : null);
 
         # Determine which user is logged in to OC.
 
@@ -23,7 +24,7 @@ class View
         if ($OC_user_id == null)
         {
             $after_login = "okapi/apps/".(($langpref != Settings::get('SITELANG'))?"?langpref=".$langpref:"");
-            $login_url = Settings::get('SITE_URL')."login.php?target=".urlencode($after_login);
+            $login_url = Okapi::oc_login_url($after_login, $login_langpref);
             return new OkapiRedirectResponse($login_url);
         }
 

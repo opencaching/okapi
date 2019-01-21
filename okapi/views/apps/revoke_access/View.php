@@ -3,6 +3,7 @@
 namespace okapi\views\apps\revoke_access;
 
 use okapi\core\Db;
+use okapi\core\Okapi;
 use okapi\core\Response\OkapiRedirectResponse;
 use okapi\lib\OCSession;
 use okapi\Settings;
@@ -20,7 +21,7 @@ class View
         if ($OC_user_id == null)
         {
             $after_login = "okapi/apps/"; # it is correct, if you're wondering
-            $login_url = Settings::get('SITE_URL')."login.php?target=".urlencode($after_login);
+            $login_url = Okapi::oc_login_url($after_login, null);
             return new OkapiRedirectResponse($login_url);
         }
 

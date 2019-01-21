@@ -1267,6 +1267,35 @@ class Okapi
     }
 
     /**
+     * Returns the URL for logging in at the site.
+     * $after_login is the page to display after sufcessful login.
+     * $langpref is the user-supplied 'langpref' param or NULL if not supplied.
+     */
+    public static function oc_login_url($after_login, $langpref)
+    {
+        $login_url =
+            Settings::get('SITE_URL') . 'login.php?' .
+            'mobileView=1&' .
+            'target=' . urlencode($after_login);
+
+        if ($langpref != null) {
+            # OCPL will show an error page when passing an unsupported language.
+            # To be on the safe side, we pass only languages that always are available.
+            # TODO: Add settings for that.
+
+            if (Settings::get('OC_BRANCH') == 'oc.de') {
+                if (in_array($langpref, ['en', 'de', 'it', 'es', 'fr']))
+                    $login_url .= '&locale=' . strtoupper($langpref);
+            } else {
+                if (in_array($langpref, ['en', 'pl', 'nl']))
+                    $login_url .= '&lang=' . $langpref;
+            }
+        }
+
+        return $login_url;
+    }
+
+    /**
      * "Fix" user-supplied HTML fetched from the OC database.
      */
     public static function fix_oc_html($html, $text_html)
