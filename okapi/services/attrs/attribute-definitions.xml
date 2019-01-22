@@ -995,7 +995,6 @@ for the original implementations.
             </desc>
         </lang>
         <lang id="pl">
-            <name></name>
             <desc>
                 Skrzynka znajduje się w pobliżu parkingu, tylko kilka kroków dalej.
             </desc>
@@ -1210,6 +1209,9 @@ for the original implementations.
                 arrampicata. Prestare molta attenzione durante la stagione delle
                 piogge o prima dei temporali!
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Nieco wspinaczki (nie potrzebne oprzyrządowanie)</name>
         </lang>
     </attr>
 
@@ -1505,6 +1507,13 @@ for the original implementations.
                 edificio, di una grotta o simili.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Ukryte wewnątrz pomieszczenia (jaskinia, budynek itd.)</name>
+            <desc>
+                Skrzynka nie jest ukryta na zewnątrz, ale w budynku, jaskini lub
+                podobnie.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A32" categories="de-location">
@@ -1726,6 +1735,9 @@ for the original implementations.
         <lang id="nl">
             <name>Toilet beschikbaar in de buurt</name>
         </lang>
+        <lang id="pl">
+            <name>Toalety publiczne w pobliżu</name>
+        </lang>
     </attr>
 
     <attr acode="A37" categories="de-facilities">
@@ -1761,6 +1773,9 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Openbare telefoon in de buurt</name>
+        </lang>
+        <lang id="pl">
+            <name>Telefon w pobliżu</name>
         </lang>
     </attr>
 
@@ -1846,6 +1861,9 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Dostępne 24/7</name>
+            <desc>
+                Tę skrzynkę można znaleźć o dowolnej porze dnia i tygodnia.
+            </desc>
         </lang>
     </attr>
 
@@ -1942,6 +1960,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Nie zaleca się szukania w nocy</name>
+            <desc>
+                Szukanie tej skrzynki nie jest zalecane nocą. To może być
+                niebezpieczne lub skrzynka jest ukryta w obszarze, gdzie światło
+                latarki może przyciągnąć uwagę osób postronnych.
+            </desc>
         </lang>
     </attr>
 
@@ -2029,6 +2052,9 @@ for the original implementations.
         <lang id="nl">
             <name>Alleen 's nachts</name>
         </lang>
+        <lang id="pl">
+            <name>Tylko nocą</name>
+        </lang>
     </attr>
 
     <attr acode="A44" categories="de-time-and-seasons">
@@ -2066,6 +2092,13 @@ for the original implementations.
         <lang id="nl">
             <name>Alle seizoenen</name>
         </lang>
+        <lang id="pl">
+            <name>Dostępna przez cały rok</name>
+            <desc>
+                Ta skrzynka jest możliwa do znalezienia przez cały rok, a trudność
+                może zależeć od pory roku.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A45" categories="de-time-and-seasons">
@@ -2098,6 +2131,9 @@ for the original implementations.
                 Questa cache puo essere cercata solo in certe stagioni - vedi la
                 descrizione per ulteriori informazioni.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Dostępna tylko w określonych porach roku</name>
         </lang>
     </attr>
 
@@ -3300,7 +3336,7 @@ for the original implementations.
             </desc>
         </lang>
         <lang id="pl">
-            <name></name>
+            <name>Odpowiedni dla dzieci (10-12 lat)</name>
             <desc>
                 Ta skrzynka nadaje się dla dzieci. Wszystkie wyzwania mogą być
                 rozwiązana przez dzieci w wieku około 10-12 lat, teren nie posiada
