@@ -1290,6 +1290,9 @@ for the original implementations.
         <lang id="pl">
             <name>Opłata za wejście lub parking</name>
         </lang>
+        <lang id="nl">
+            <name>Toegang of parkeerkosten</name>
+        </lang>
     </attr>
 
     <attr acode="A27" categories="de-accessibility">
@@ -1540,6 +1543,9 @@ for the original implementations.
         <lang id="pl">
             <name>Ukryte pod wodą</name>
         </lang>
+        <lang id="nl">
+            <name>Verborgen onder water</name>
+        </lang>
     </attr>
 
     <attr acode="A33" categories="de-facilities">
@@ -1682,6 +1688,9 @@ for the original implementations.
         <lang id="pl">
             <name>Woda pitna w pobliżu</name>
         </lang>
+        <lang id="nl">
+            <name>Drinkwater in de buurt</name>
+        </lang>
     </attr>
 
     <attr acode="A36" categories="de-facilities">
@@ -1713,6 +1722,9 @@ for the original implementations.
             <desc>
                 Ci sono WC pubblici lungo la strada o nelle vicinanze della cache.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Toilet beschikbaar in de buurt</name>
         </lang>
     </attr>
 
@@ -1747,6 +1759,9 @@ for the original implementations.
                 cache.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Openbare telefoon in de buurt</name>
+        </lang>
     </attr>
 
     <attr acode="A38" categories="de-facilities">
@@ -1780,6 +1795,9 @@ for the original implementations.
                 C'e un pronto soccorso, un telefono per chiamate di soccorso, un
                 centro di soccorso alpino o simili nelle vicinanze della cache.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Eerste hulp beschikbaar</name>
         </lang>
     </attr>
 
@@ -1964,6 +1982,9 @@ for the original implementations.
                 sunt vizibile distinct ziua.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Bij voorkeur in het donker te doen</name>
+        </lang>
     </attr>
 
     <attr acode="A43" categories="de-time-and-seasons">
@@ -2005,6 +2026,9 @@ for the original implementations.
                 di caching notturno.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Alleen 's nachts</name>
+        </lang>
     </attr>
 
     <attr acode="A44" categories="de-time-and-seasons">
@@ -2038,6 +2062,9 @@ for the original implementations.
                 Questa cache si trova tutto l'anno, mentre la difficolta puo dipendere
                 dalle stagioni.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Alle seizoenen</name>
         </lang>
     </attr>
 
