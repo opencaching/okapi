@@ -91,7 +91,9 @@ elseif ($action == 'import')
             # OKAPI does not escape anything inside XML tags. Attribute names
             # must not contain '<', and attribute descs must be valid HTML.
 
-            print "            <name>".$trans['name']."</name>\n";
+            if ($trans['name'] != '')
+                print "            <name>".$trans['name']."</name>\n";
+
             $desc = $trans['desc'];
             if ($desc != "")
             {
