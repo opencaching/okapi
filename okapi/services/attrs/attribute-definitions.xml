@@ -744,6 +744,9 @@ for the original implementations.
         <lang id="nl">
             <name>Ander cachesoort</name>
         </lang>
+        <lang id="pl">
+            <name>Inny typ skrzynki</name>
+        </lang>
     </attr>
 
     <attr acode="A14" categories="de-preconditions">
@@ -822,6 +825,14 @@ for the original implementations.
         <lang id="nl">
             <name>Puzzel / Mysterie</name>
         </lang>
+        <lang id="pl">
+            <name>Quiz / Zagadka</name>
+            <desc>
+                Ten quiz lub zagadka musi być rozwiązana (przynajmniej częściowo)
+                w terenie, odwiedzając punkt początkowy lub dodatkowe miejsca
+                wymienione w opisie.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A16" categories="de-preconditions">
@@ -857,6 +868,14 @@ for the original implementations.
                 problemi matematici piu difficili di semplici calcoli base.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Problem matematyczny</name>
+            <desc>
+                Przed lub w trakcie poszukiwania tego kesza trzeba będzie rozwiązać
+                zadania matematyczne, które wykraczają poza podstawowe działania
+                arytmetyczne.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A17" categories="de-preconditions">
@@ -888,6 +907,14 @@ for the original implementations.
             <name>Ask owner for start conditions</name>
             <desc>
                 Chiedere al proprietario per le condizioni di partenza
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Poproś właściciela o koordynaty startowe</name>
+            <desc>
+                Przed szukaniem tej skrzynki poproś właściciela o koordynaty
+                startowe. Np. kesz może być linkowany do ustalonych zdarzeń w
+                różnych terminach.
             </desc>
         </lang>
     </attr>
@@ -965,6 +992,11 @@ for the original implementations.
             <desc>
                 La geocache e posta vicino ad un'area di parcheggio, solo poco
                 distante.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <desc>
+                Skrzynka znajduje się w pobliżu parkingu, tylko kilka kroków dalej.
             </desc>
         </lang>
     </attr>
@@ -1053,6 +1085,14 @@ for the original implementations.
                 încălţăminte şi echipament adecvat, după caz.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Długi spacer</name>
+            <desc>
+                Ta skrzynka wymaga długiego spaceru - więcej niż 5 km w obie
+                strony. W górach i innych stromych obszarach odległość spaceru
+                może być krótsza. Zalecane są odpowiednie buty, odzież i sprzęt.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A22" categories="de-accessibility">
@@ -1091,6 +1131,9 @@ for the original implementations.
                 terreno puo essere molto impegnativo o non praticabile a tutti.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Błoto, bagno lub brodzenie</name>
+        </lang>
     </attr>
 
     <attr acode="A23" categories="de-accessibility">
@@ -1121,6 +1164,9 @@ for the original implementations.
             <desc>
                 Una o piu salite si trovano tra voi e la cache.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Okolica górzysta</name>
         </lang>
     </attr>
 
@@ -1164,6 +1210,9 @@ for the original implementations.
                 piogge o prima dei temporali!
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Nieco wspinaczki (nie potrzebne oprzyrządowanie)</name>
+        </lang>
     </attr>
 
     <attr acode="A25" categories="de-accessibility">
@@ -1205,6 +1254,9 @@ for the original implementations.
                 nuotatore medio.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Wymagane pływanie</name>
+        </lang>
     </attr>
 
     <attr acode="A26" categories="de-accessibility">
@@ -1236,6 +1288,12 @@ for the original implementations.
                 Devi pagare un accesso o parcheggio a pagamento per accedere a questa
                 cache.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Opłata za wejście lub parking</name>
+        </lang>
+        <lang id="nl">
+            <name>Toegang of parkeerkosten</name>
         </lang>
     </attr>
 
@@ -1412,6 +1470,9 @@ for the original implementations.
                 dacă nu ar fi o geocutie în apropiere.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Ciekawe miejsce</name>
+        </lang>
     </attr>
 
     <attr acode="A31" categories="de-location">
@@ -1444,6 +1505,13 @@ for the original implementations.
             <desc>
                 Questa geocache non e nascosta all'aria aperta ma all'interno di un
                 edificio, di una grotta o simili.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Ukryte wewnątrz pomieszczenia (jaskinia, budynek itd.)</name>
+            <desc>
+                Skrzynka nie jest ukryta na zewnątrz, ale w budynku, jaskini lub
+                podobnie.
             </desc>
         </lang>
     </attr>
@@ -1480,6 +1548,12 @@ for the original implementations.
                 Questa cache o uno dei suoi stadi sono posizionati sott'acqua. Devi
                 entrare in acqua, nuotare o fare una immersione.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Ukryte pod wodą</name>
+        </lang>
+        <lang id="nl">
+            <name>Verborgen onder water</name>
         </lang>
     </attr>
 
@@ -1529,6 +1603,9 @@ for the original implementations.
                 În apropierea geocutiei există loc de parcare.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Parking w pobliżu</name>
+        </lang>
     </attr>
 
     <attr acode="A34" categories="de-facilities">
@@ -1565,6 +1642,9 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Openbaar vervoer</name>
+        </lang>
+        <lang id="pl">
+            <name>Transport publiczny</name>
         </lang>
     </attr>
 
@@ -1614,6 +1694,12 @@ for the original implementations.
                 potabilă, de ex. un izvor.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Woda pitna w pobliżu</name>
+        </lang>
+        <lang id="nl">
+            <name>Drinkwater in de buurt</name>
+        </lang>
     </attr>
 
     <attr acode="A36" categories="de-facilities">
@@ -1645,6 +1731,12 @@ for the original implementations.
             <desc>
                 Ci sono WC pubblici lungo la strada o nelle vicinanze della cache.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Toilet beschikbaar in de buurt</name>
+        </lang>
+        <lang id="pl">
+            <name>Toalety publiczne w pobliżu</name>
         </lang>
     </attr>
 
@@ -1679,6 +1771,12 @@ for the original implementations.
                 cache.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Openbare telefoon in de buurt</name>
+        </lang>
+        <lang id="pl">
+            <name>Telefon w pobliżu</name>
+        </lang>
     </attr>
 
     <attr acode="A38" categories="de-facilities">
@@ -1712,6 +1810,9 @@ for the original implementations.
                 C'e un pronto soccorso, un telefono per chiamate di soccorso, un
                 centro di soccorso alpino o simili nelle vicinanze della cache.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Eerste hulp beschikbaar</name>
         </lang>
     </attr>
 
@@ -1756,6 +1857,12 @@ for the original implementations.
             <name>Disponibile 24 ore</name>
             <desc>
                 Questa cache puo essere trovata sia di giorno che di notte.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Dostępne 24/7</name>
+            <desc>
+                Tę skrzynkę można znaleźć o dowolnej porze dnia i tygodnia.
             </desc>
         </lang>
     </attr>
@@ -1851,6 +1958,14 @@ for the original implementations.
                 perché risulterebbe sospetto all'interno di una zona residenziale.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Nie zaleca się szukania w nocy</name>
+            <desc>
+                Szukanie tej skrzynki nie jest zalecane nocą. To może być
+                niebezpieczne lub skrzynka jest ukryta w obszarze, gdzie światło
+                latarki może przyciągnąć uwagę osób postronnych.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A42" categories="de-time-and-seasons">
@@ -1889,6 +2004,9 @@ for the original implementations.
                 de o lanternă pentru a indentifica indicii reflectorizante care nu
                 sunt vizibile distinct ziua.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Bij voorkeur in het donker te doen</name>
         </lang>
     </attr>
 
@@ -1931,6 +2049,12 @@ for the original implementations.
                 di caching notturno.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Alleen 's nachts</name>
+        </lang>
+        <lang id="pl">
+            <name>Tylko nocą</name>
+        </lang>
     </attr>
 
     <attr acode="A44" categories="de-time-and-seasons">
@@ -1965,6 +2089,16 @@ for the original implementations.
                 dalle stagioni.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Alle seizoenen</name>
+        </lang>
+        <lang id="pl">
+            <name>Dostępna przez cały rok</name>
+            <desc>
+                Ta skrzynka jest możliwa do znalezienia przez cały rok, a trudność
+                może zależeć od pory roku.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A45" categories="de-time-and-seasons">
@@ -1997,6 +2131,9 @@ for the original implementations.
                 Questa cache puo essere cercata solo in certe stagioni - vedi la
                 descrizione per ulteriori informazioni.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Dostępna tylko w określonych porach roku</name>
         </lang>
     </attr>
 
@@ -2591,6 +2728,9 @@ for the original implementations.
         <lang id="nl">
             <name>Geen GPS nodig</name>
         </lang>
+        <lang id="pl">
+            <name>GPS nie jest wymagany</name>
+        </lang>
     </attr>
 
     <attr acode="A59" categories="de-dangers">
@@ -2948,6 +3088,9 @@ for the original implementations.
         <lang id="nl">
             <name>Verlaten mijnen</name>
         </lang>
+        <lang id="pl">
+            <name>Opuszczona kopalnia</name>
+        </lang>
     </attr>
 
     <attr acode="A66" categories="de-dangers">
@@ -2986,6 +3129,9 @@ for the original implementations.
         <lang id="nl">
             <name>Giftige planten</name>
         </lang>
+        <lang id="pl">
+            <name>Trujące rośliny</name>
+        </lang>
     </attr>
 
     <attr acode="A67" categories="de-dangers">
@@ -3020,6 +3166,9 @@ for the original implementations.
                 Quest area e frequentata da animali potenzialmente pericolosi, ad es.
                 volpi rabide, serpenti velenosi, scorpioni, orsi.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Niebezpieczne zwierzęta</name>
         </lang>
     </attr>
 
@@ -3184,6 +3333,16 @@ for the original implementations.
                 essere portati a termine da bambini tra 10 e 12 anni e il terreno non
                 presenta rischi (come autostrade, abissi). C'e un grande contenitore
                 finale con oggetti di scambio e i compiti sono interessanti.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Odpowiedni dla dzieci (10-12 lat)</name>
+            <desc>
+                Ta skrzynka nadaje się dla dzieci. Wszystkie wyzwania mogą być
+                rozwiązana przez dzieci w wieku około 10-12 lat, teren nie posiada
+                żadnych zagrożeń (np. autostrady, urwiska). Powinien być duży
+                pojemnik z gadżetami do wymiany wewnątrz a wyzwanie powinno być
+                ciekawe, zabawne, edukacyjne.
             </desc>
         </lang>
     </attr>
