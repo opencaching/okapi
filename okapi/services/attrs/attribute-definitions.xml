@@ -287,6 +287,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Wherigo cache</name>
+            <desc>
+                De cachebeschrijving bevat een bestand - de Whereigo cartridge. Om de
+                cache te kunnen vinden moet dit bestand gedownload worden op een
+                ondersteunend apparaat.
+            </desc>
         </lang>
     </attr>
 
@@ -661,6 +666,9 @@ for the original implementations.
                 descrizione della cache dopo ogni mossa.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Heeft een bewegend doel</name>
+        </lang>
     </attr>
 
     <attr acode="A12" categories="de-cache-types">
@@ -705,6 +713,9 @@ for the original implementations.
                 geocaching sulla foto. L'indirizzo della webcam e incluso nella
                 descrizione della cache.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>een webcam is betrokken</name>
         </lang>
     </attr>
 
@@ -779,6 +790,9 @@ for the original implementations.
                 E necessario trovare ulteriori informazioni prima di poter cercare
                 questa cache.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Onderzoek vereist</name>
         </lang>
     </attr>
 
@@ -876,6 +890,9 @@ for the original implementations.
                 arytmetyczne.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Wiskundig probleem</name>
+        </lang>
     </attr>
 
     <attr acode="A17" categories="de-preconditions">
@@ -916,6 +933,9 @@ for the original implementations.
                 startowe. Np. kesz może być linkowany do ustalonych zdarzeń w
                 różnych terminach.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Vraag eigenaar om startvoorwaarden</name>
         </lang>
     </attr>
 
@@ -999,6 +1019,9 @@ for the original implementations.
                 Skrzynka znajduje się w pobliżu parkingu, tylko kilka kroków dalej.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Parkeer en log</name>
+        </lang>
     </attr>
 
     <attr acode="A20" categories="de-accessibility">
@@ -1029,6 +1052,9 @@ for the original implementations.
             <desc>
                 Geocutia este accesibilă doar mergând pe jos.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Alleen te voet toegankelijk</name>
         </lang>
     </attr>
 
@@ -1134,6 +1160,14 @@ for the original implementations.
         <lang id="pl">
             <name>Błoto, bagno lub brodzenie</name>
         </lang>
+        <lang id="nl">
+            <name>Moeras, drasland of waden</name>
+            <desc>
+                Deze cache vereist waden door moerassige grond, drassig of ondiep
+                water. Draag de juiste kleding. Na regenval kan het terrein mogelijk
+                zeer veeleisend of zelfs niet niet begaanbaar zijn.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A23" categories="de-accessibility">
@@ -1167,6 +1201,12 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Okolica górzysta</name>
+        </lang>
+        <lang id="nl">
+            <name>Heuvelachtig gebied</name>
+            <desc>
+                Een of meer beklimmingen liggen tussen jou en de cache.
+            </desc>
         </lang>
     </attr>
 
@@ -1213,6 +1253,9 @@ for the original implementations.
         <lang id="pl">
             <name>Nieco wspinaczki (nie potrzebne oprzyrządowanie)</name>
         </lang>
+        <lang id="nl">
+            <name>Beetje klimmen (geen uitrusting nodig)</name>
+        </lang>
     </attr>
 
     <attr acode="A25" categories="de-accessibility">
@@ -1256,6 +1299,9 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Wymagane pływanie</name>
+        </lang>
+        <lang id="nl">
+            <name>Zwemmen vereist</name>
         </lang>
     </attr>
 
@@ -1966,6 +2012,9 @@ for the original implementations.
                 latarki może przyciągnąć uwagę osób postronnych.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Niet aanbevolen in het donker</name>
+        </lang>
     </attr>
 
     <attr acode="A42" categories="de-time-and-seasons">
@@ -2216,6 +2265,9 @@ for the original implementations.
                 da veicoli spalaneve.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Beschikbaar in de winter</name>
+        </lang>
     </attr>
 
     <attr acode="A48" categories="de-time-and-seasons">
@@ -2236,6 +2288,9 @@ for the original implementations.
                 bei Ebbe gesucht werden. Bei Hochwasser oder Flut ist er
                 unzugänglich.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Niet beschikbaar tijdens hoog tij</name>
         </lang>
     </attr>
 
@@ -2690,6 +2745,9 @@ for the original implementations.
                 recomandă înotul sau nu este fezabil.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Boot benodigd</name>
+        </lang>
     </attr>
 
     <attr acode="A58" categories="de-tools">
@@ -2797,6 +2855,9 @@ for the original implementations.
                 grupuri sau în condiţii meteo nefavorabile.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Gevaarlijk gebied</name>
+        </lang>
     </attr>
 
     <attr acode="A60" categories="de-dangers">
@@ -2832,6 +2893,13 @@ for the original implementations.
                 Ci sono ferrovie attive nelle vicinanze. Per favore usate cautela,
                 tenendo una distanza di sicurezza e attraversando le rotaie solo ai
                 passaggi a livello ecc.!
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Actieve spoorweg in de buurt</name>
+            <desc>
+                Er zijn spoorlijnen dichtbij. Wees voorzichtig, blijf op veilige
+                afstand van het spoor en steek over op de daarvoor bestemde plaatsen!
             </desc>
         </lang>
     </attr>
@@ -2883,6 +2951,16 @@ for the original implementations.
                 termina e inizia l'altra.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Kliffen / rotsen</name>
+            <desc>
+                Er zijn rotsen of gevaarlijke rotsen in de buurt. Pas op voor vallende
+                stenen aan de onderkant, en wees voorzichtig aan de bovenzijde van de
+                kliffen vooral met kinderen of mountainbikes. Het kan erg gevaarlijk
+                zijn als er een afdaling is en zeker wanneer er niet op tijd een
+                afgrond zichtbaar is.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A62" categories="de-dangers">
@@ -2927,6 +3005,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Let op: jachtgebied</name>
+            <desc>
+                De cache is geplaatst in jachtgebied. In schemering of nacht is een
+                zaklamp of hoofdlamp noodzakelijk voor de veiligheid. Wees er van
+                bewust dan men jagers tegen kan komen.
+            </desc>
         </lang>
         <lang id="ro">
             <name>Teren de vânătoare</name>
@@ -3170,6 +3253,9 @@ for the original implementations.
         <lang id="pl">
             <name>Niebezpieczne zwierzęta</name>
         </lang>
+        <lang id="nl">
+            <name>Gevaarlijke dieren</name>
+        </lang>
     </attr>
 
     <attr acode="A68" categories="de-rating">
@@ -3248,6 +3334,9 @@ for the original implementations.
                 necessario il pernottamento. Il tempo di preparazione non e incluso in
                 questo calcolo, ma solo il tempo sul sito.
             </desc>
+        </lang>
+        <lang id="nl">
+            <name>Overnachting nodig</name>
         </lang>
     </attr>
 
