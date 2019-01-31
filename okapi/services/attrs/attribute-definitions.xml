@@ -590,10 +590,10 @@ for the original implementations.
             <name>Dead Drop USB skrzynka</name>
             <desc>
                 Skrzynka typu USB Dead Drop. Pen-drive przymocowany lub wmurowany w
-                ścianę, budynek, krawiężnik itp. Aby zalogować znalezienie,
+                ścianę, budynek, krawężnik itp. Aby zalogować znalezienie,
                 należy wpisać się do pliku logbook.txt znajdującego się w
                 pamięci urządzenia.
-                <a href="https://wiki.opencaching.pl/index.php/Skrzynka_Dead_Drop">Wiecej
+                <a href="https://wiki.opencaching.pl/index.php/Skrzynka_Dead_Drop">Więcej
                 informacji</a>.
             </desc>
         </lang>
@@ -669,6 +669,14 @@ for the original implementations.
         <lang id="nl">
             <name>Heeft een bewegend doel</name>
         </lang>
+        <lang id="pl">
+            <name>Posiada ruchomy cel</name>
+            <desc>
+                Ta skrzynka się przemieszcza. Np. właściciel może regularnie
+                przenosić ją z jednego miejsca w inne lub znalazcy przenoszą ją w
+                nowe miejsce uaktualniając jej koordynaty.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A12" categories="de-cache-types">
@@ -717,6 +725,15 @@ for the original implementations.
         <lang id="nl">
             <name>een webcam is betrokken</name>
         </lang>
+        <lang id="pl">
+            <name>z użyciem kamerki internetowej</name>
+            <desc>
+                W lokalizacji wskazywanej przez skrzynkę jest kamerka internetowa.
+                Należy z niej pozyskać zdjęcie, które jako dowód załącza się w
+                logu internetowym dokumentującym znalezienie. Więcej szczegółów
+                można znaleźć w opisie skrzynki.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A13" categories="de-cache-types">
@@ -757,6 +774,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Inny typ skrzynki</name>
+            <desc>
+                Typ skrzynki nie pasuje do tych zdefiniowanych. Użyj tego atrybutu do
+                specjalnych, nietypowych skrzynek.
+            </desc>
         </lang>
     </attr>
 
@@ -793,6 +814,12 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Onderzoek vereist</name>
+        </lang>
+        <lang id="pl">
+            <name>Wymagane śledztwo</name>
+            <desc>
+                Przestudiuj dodatkowe informacje zanim wyruszysz na poszukiwania.
+            </desc>
         </lang>
     </attr>
 
@@ -930,7 +957,7 @@ for the original implementations.
             <name>Poproś właściciela o koordynaty startowe</name>
             <desc>
                 Przed szukaniem tej skrzynki poproś właściciela o koordynaty
-                startowe. Np. kesz może być linkowany do ustalonych zdarzeń w
+                startowe. Np. skrzynka może być linkowany do ustalonych zdarzeń w
                 różnych terminach.
             </desc>
         </lang>
@@ -1015,6 +1042,7 @@ for the original implementations.
             </desc>
         </lang>
         <lang id="pl">
+            <name>Zaparkuj i znajdź</name>
             <desc>
                 Skrzynka znajduje się w pobliżu parkingu, tylko kilka kroków dalej.
             </desc>
@@ -1159,6 +1187,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Błoto, bagno lub brodzenie</name>
+            <desc>
+                Ta skrzynka wymaga pokonywania terenów podmokłych lub bagiennych.
+                Zabierz odpowiednie ubrania. Po większych opadach dostęp może być
+                szczególnie trudny lub niemożliwy.
+            </desc>
         </lang>
         <lang id="nl">
             <name>Moeras, drasland of waden</name>
@@ -1201,6 +1234,9 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Okolica górzysta</name>
+            <desc>
+                Konieczne pokonanie kilku wzniesień po drodze.
+            </desc>
         </lang>
         <lang id="nl">
             <name>Heuvelachtig gebied</name>
@@ -1252,6 +1288,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Nieco wspinaczki (nie potrzebne oprzyrządowanie)</name>
+            <desc>
+                Skrzynka wymaga wspięcia się, ale powinno udać się to bez
+                dodatkowego sprzętu. Jednakże może to oznaczać niebezpieczeństwo
+                w razie niesprzyjającej pogody!
+            </desc>
         </lang>
         <lang id="nl">
             <name>Beetje klimmen (geen uitrusting nodig)</name>
@@ -1299,6 +1340,9 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Wymagane pływanie</name>
+            <desc>
+                Skrzynka wymaga przekroczenia rzeki lub strumienia.
+            </desc>
         </lang>
         <lang id="nl">
             <name>Zwemmen vereist</name>
@@ -1337,6 +1381,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Opłata za wejście lub parking</name>
+            <desc>
+                Podjęcie skrzynki może wymagać opłaty za dostęp do terenu lub
+                parkowanie.
+            </desc>
         </lang>
         <lang id="nl">
             <name>Toegang of parkeerkosten</name>
@@ -1518,6 +1566,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Ciekawe miejsce</name>
+            <desc>
+                Okolica skrzynki jest ciekawa sama w sobie np. ze względu na unikalny
+                widok. Miejsce jest warte odwiedzenia, nawet gdyby nie było w nim
+                skrzynki.
+            </desc>
         </lang>
     </attr>
 
@@ -1597,6 +1650,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Ukryte pod wodą</name>
+            <desc>
+                Skrzynka lub jeden z etapów jest pod wodą - podjęcie może
+                oznaczać ryzyko zmoczenia.
+            </desc>
         </lang>
         <lang id="nl">
             <name>Verborgen onder water</name>
@@ -1651,6 +1708,9 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Parking w pobliżu</name>
+            <desc>
+                Parking dogodny dla rozpoczęcia poszukiwań.
+            </desc>
         </lang>
     </attr>
 
@@ -1742,6 +1802,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Woda pitna w pobliżu</name>
+            <desc>
+                Po drodze lub w okolicy skrzynki jest źródło wody zdatnej do picia.
+                Informacja może być przydatna zwłaszcza podczas wydarzeń
+                geokeszerskich, dłuższych wycieczek lub wyjątkowo trudnego terenu.
+            </desc>
         </lang>
         <lang id="nl">
             <name>Drinkwater in de buurt</name>
@@ -1783,6 +1848,9 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Toalety publiczne w pobliżu</name>
+            <desc>
+                Publiczna toaleta jest dostępna w okolicy skrzynki.
+            </desc>
         </lang>
     </attr>
 
@@ -1822,6 +1890,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Telefon w pobliżu</name>
+            <desc>
+                W okolicy skrzynki jest publicznie dostępny telefon (lub budka
+                telefoniczna).
+            </desc>
         </lang>
     </attr>
 
@@ -1859,6 +1931,9 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Eerste hulp beschikbaar</name>
+        </lang>
+        <lang id="pl">
+            <name>Dostępna pierwsza pomoc</name>
         </lang>
     </attr>
 
@@ -2183,6 +2258,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Dostępna tylko w określonych porach roku</name>
+            <desc>
+                Skrzynka może być podjęta jedynie w pewnych okresach - więcej
+                szczegółów w opisie.
+            </desc>
         </lang>
     </attr>
 
@@ -2224,6 +2303,9 @@ for the original implementations.
                 essere evitato. Prestate anche attenzione alle condizioni o ai
                 cartelli riguardo il rispetto della natura.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Rezerwat</name>
         </lang>
     </attr>
 
@@ -2268,6 +2350,9 @@ for the original implementations.
         <lang id="nl">
             <name>Beschikbaar in de winter</name>
         </lang>
+        <lang id="pl">
+            <name>Dostępna zimą</name>
+        </lang>
     </attr>
 
     <attr acode="A48" categories="de-time-and-seasons">
@@ -2291,6 +2376,9 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Niet beschikbaar tijdens hoog tij</name>
+        </lang>
+        <lang id="pl">
+            <name>Niedostępna podczas przypływu</name>
         </lang>
     </attr>
 
@@ -2524,6 +2612,9 @@ for the original implementations.
                 te gaan, maar hulp te vragen aan iemand met klimervaring.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Konieczny sprzęt wspinaczkowy</name>
+        </lang>
     </attr>
 
     <attr acode="A54" categories="de-tools">
@@ -2575,6 +2666,9 @@ for the original implementations.
                 natura protetta, ad esempio dei luoghi dove i pipistrelli non devono
                 essere disturbati.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Konieczny sprzęt speleologiczny</name>
         </lang>
     </attr>
 
@@ -2630,6 +2724,9 @@ for the original implementations.
                 aan dat duiken niet zonder ervaring gedaan kan worden, of ga als groep
                 of met een instructeur zoeken.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Wymagany sprzęt nurkowy</name>
         </lang>
     </attr>
 
@@ -2902,6 +2999,9 @@ for the original implementations.
                 afstand van het spoor en steek over op de daarvoor bestemde plaatsen!
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Uwaga na kolej</name>
+        </lang>
     </attr>
 
     <attr acode="A61" categories="de-dangers">
@@ -2959,6 +3059,14 @@ for the original implementations.
                 kliffen vooral met kinderen of mountainbikes. Het kan erg gevaarlijk
                 zijn als er een afdaling is en zeker wanneer er niet op tijd een
                 afgrond zichtbaar is.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Klify / Skały</name>
+            <desc>
+                W pobliżu skrzynki są niebezpieczne skały lub klify. Wymagana jest
+                ostrożność, szczególnie jeżeli w poszukiwaniach uczestniczą
+                dzieci.
             </desc>
         </lang>
     </attr>
@@ -3019,6 +3127,9 @@ for the original implementations.
                 să ai lanternă dacă se face seară. Respectă vânătorii.
             </desc>
         </lang>
+        <lang id="pl">
+            <name>Tereny łowieckie</name>
+        </lang>
     </attr>
 
     <attr acode="A63" categories="de-dangers">
@@ -3062,6 +3173,13 @@ for the original implementations.
             <name>Spini</name>
             <desc>
                 Atenţie, spini!
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Uwaga na kolce</name>
+            <desc>
+                W okolicy skrzynki występują kolczaste rośliny. Wskazany odpowiedni
+                strój.
             </desc>
         </lang>
     </attr>
@@ -3122,6 +3240,9 @@ for the original implementations.
                 Atenţie, căpuşe! Poartă pantaloni lungi şi verifică-te de
                 căpuşe după ce te întorci de la căutat.
             </desc>
+        </lang>
+        <lang id="pl">
+            <name>Uwaga na kleszcze</name>
         </lang>
     </attr>
 
@@ -3338,6 +3459,9 @@ for the original implementations.
         <lang id="nl">
             <name>Overnachting nodig</name>
         </lang>
+        <lang id="pl">
+            <name>Konieczność nocowania</name>
+        </lang>
     </attr>
 
     <attr acode="A70" categories="de-rating">
@@ -3533,6 +3657,13 @@ for the original implementations.
             <desc>
                 Fii discret în timp ce cauţi. Încearcă să eviţi să atragi
                 atenţia asupra ta.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Wskazane użycie "czapki niewidki"</name>
+            <desc>
+                Skrzynka jest ukryta w miejscu dobrze widocznym dla nie-keszerów.
+                Wymagana jest szczególna ostrożność przy podejmowaniu.
             </desc>
         </lang>
     </attr>
