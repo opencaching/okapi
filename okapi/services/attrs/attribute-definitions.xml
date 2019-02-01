@@ -1751,6 +1751,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Transport publiczny</name>
+            <desc>
+                Ta skrzynka znajduje się poza obszarem miejskim i znajduje się w
+                pobliżu przystanku/stacji transportu publicznego.
+            </desc>
         </lang>
     </attr>
 
@@ -1934,6 +1938,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Dostępna pierwsza pomoc</name>
+            <desc>
+                W pobliżu skrzynki znajduje się sprzęt do pierwszej pomocy,
+                defibrylator, budka telefoniczna, GOPR lub podobne.
+            </desc>
         </lang>
     </attr>
 
@@ -2178,6 +2186,12 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Tylko nocą</name>
+            <desc>
+                Tą skrzynkę można znaleźć tylko w nocy - to tzw. nocna skrzynka.
+                Mogą występować odblaski, które muszą być doświetlone i będą
+                prowadziły do kryjówki, lub inne specjalne mechanizmy działające w
+                nocy.
+            </desc>
         </lang>
     </attr>
 
@@ -2306,6 +2320,12 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Rezerwat</name>
+            <desc>
+                Może znajdować się wewnątrz obszaru rezerwatu przyrody, więc
+                zwróć uwagę na lokalne warunki i znaki dotyczące ochrony przyrody.
+                Nie szukaj tej skrzynki np. w sezonie rozmnażania, zimowania
+                zwierząt! Sprawdź w opisie skrzynki, jakich pór należy unikać.
+            </desc>
         </lang>
     </attr>
 
@@ -2352,6 +2372,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Dostępna zimą</name>
+            <desc>
+                Tą skrzynkę można znaleźć nawet w głębokim śniegu. Wszystkie
+                etapy i skrzynka są ukryte w sposób bezpieczny: nie będą pokryte
+                śniegiem, lodem itp.
+            </desc>
         </lang>
     </attr>
 
@@ -2379,6 +2404,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Niedostępna podczas przypływu</name>
+            <desc>
+                Ta skrzynka może być znaleziona tylko przy niskim lub normalnym
+                poziomie wody. Jest niedostępna podczas przypływu.
+            </desc>
         </lang>
     </attr>
 
@@ -2614,6 +2643,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Konieczny sprzęt wspinaczkowy</name>
+            <desc>
+                Do tej skrzynki potrzebny będzie sprzęt wspinaczkowy i wiedza, jak
+                go właściwie używać. Jeśli jesteś początkującym, nie rób tego
+                sam, ale korzystaj z pomocy doświadczonego wspinacza lub alpinisty.
+            </desc>
         </lang>
     </attr>
 
@@ -2669,6 +2703,15 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Konieczny sprzęt speleologiczny</name>
+            <desc>
+                Ta skrzynka jest ukryta w jaskini i powinieneś użyć odpowiedniego
+                sprzętu, aby uzyskać do niej dostęp. Uwaga: nawet małe jaskinie
+                mogą być źródłem nieprzewidzianych problemów i
+                niebezpieczeństw, takim jak burze (woda!) lub skręcona kostka.
+                Skorzystaj najpierw z doświadczeń eksploratorów jaskiń! Zadbaj
+                także o ochronę przyrody; na przykład miejsca zimowania nietoperzy
+                nie mogą być odwiedzane.
+            </desc>
         </lang>
     </attr>
 
@@ -3001,6 +3044,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Uwaga na kolej</name>
+            <desc>
+                W pobliżu znajduje się czynna linia kolejowa. Zachowaj
+                ostrożność, bezpieczną odległość, przez tory przechodź tylko w
+                wyznaczonych miejscach itp.!
+            </desc>
         </lang>
     </attr>
 
@@ -3129,6 +3177,12 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Tereny łowieckie</name>
+            <desc>
+                Skrzynka jest umieszczona na terenie łowieckim. O zmierzchu i w
+                ciemności, ze względów bezpieczeństwa należy zawsze używać
+                latarki lub innego źródła światła. Bądź ostrożny, gdy
+                spotykasz się z myśliwymi.
+            </desc>
         </lang>
     </attr>
 
@@ -3243,6 +3297,12 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Uwaga na kleszcze</name>
+            <desc>
+                W tej okolicy sezonowo występuje wiele kleszczy. Zaleca się, aby
+                nosić długie spodnie i obejrzeć się w poszukiwaniu kleszczy po
+                keszowaniu. W internecie istnieją mapy regionalne zagrożenia dla
+                <i>kleszczowego zapalenia mózgu</i>.
+            </desc>
         </lang>
     </attr>
 
@@ -3373,6 +3433,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Niebezpieczne zwierzęta</name>
+            <desc>
+                Na terenie mogą występować potencjalnie niebezpieczne zwierzęta,
+                np. obszar wścieklizny, jadowite węże, dziki i niedźwiedzie.
+            </desc>
         </lang>
         <lang id="nl">
             <name>Gevaarlijke dieren</name>
