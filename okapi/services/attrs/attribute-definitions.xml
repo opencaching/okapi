@@ -2643,6 +2643,11 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Konieczny sprzęt wspinaczkowy</name>
+            <desc>
+                Do tej skrzynki potrzebny będzie sprzęt wspinaczkowy i wiedza, jak
+                go właściwie używać. Jeśli jesteś początkującym, nie rób tego
+                sam, ale korzystaj z pomocy doświadczonego wspinacza lub alpinisty.
+            </desc>
         </lang>
     </attr>
 
@@ -2698,6 +2703,15 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Konieczny sprzęt speleologiczny</name>
+            <desc>
+                Ta skrzynka jest ukryta w jaskini i powinieneś użyć odpowiedniego
+                sprzętu, aby uzyskać do niej dostęp. Uwaga: nawet małe jaskinie
+                mogą być źródłem nieprzewidzianych problemów i
+                niebezpieczeństw, takim jak burze (woda!) lub skręcona kostka.
+                Skorzystaj najpierw z doświadczeń eksploratorów jaskiń! Zadbaj
+                także o ochronę przyrody; na przykład miejsca zimowania nietoperzy
+                nie mogą być odwiedzane.
+            </desc>
         </lang>
     </attr>
 
