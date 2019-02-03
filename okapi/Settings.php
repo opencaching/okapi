@@ -319,6 +319,19 @@ final class Settings
         if (!in_array($dict['DB_CHARSET'], array('utf8', 'utf8mb4'))) {
             throw new exception("DB_CHARSET must be utf8 or utf8mb4.");
         }
+
+        # SITELANG setting in OCPL okapi-settings.php is broken. We maintain
+        # an own OCPL language directory to work around that.
+        # See https://wiki.opencaching.eu/index.php?title=Node_IDs
+
+        if ($dict['OC_BRANCH'] == 'oc.pl') {
+            switch ($dict['OC_NODE_ID']) {
+                case 2: $dict['SITELANG'] = 'pl'; break;
+                case 3: $dict['SITELANG'] = 'cs'; break;
+                case 14: $dict['SITELANG'] = 'nl'; break;
+                case 16: $dict['SITELANG'] = 'ro'; break;
+            }
+        }
     }
 
     /**
