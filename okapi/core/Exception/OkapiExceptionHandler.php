@@ -102,9 +102,18 @@ class OkapiExceptionHandler
             else
             {
                 $requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'cli-execution';
-                $subject = 'OKAPI Method Error - '.substr(
-                        $requestUri, 0, strpos($requestUri.'?', '?')
-                    );
+                $requestUri = ltrim($requestUri, '/');
+
+                $service = substr($requestUri, 0, strpos($requestUri.'?', '?'));
+                if (strpos($service, 'okapi/') === false)
+                {
+                    # This is a Facade call. Params may be separated by slashes.
+                    # (See issue #582.)
+
+                    $service = substr($service, 0, strpos($service.'/', '/'));
+                }
+
+                $subject = 'OKAPI Method Error - '.$service;
 
                 $message = (
                     "OKAPI caught the following exception while executing API method request.\n".
