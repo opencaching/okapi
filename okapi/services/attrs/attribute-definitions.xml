@@ -2770,6 +2770,13 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Wymagany sprzęt nurkowy</name>
+            <desc>
+                Aby znaleźć tą skrzynkę będziesz potrzebować sprzętu do
+                nurkowania. Głębokość wody w miejscu lokalizacji skrzynki jest
+                określona w opisie. Należy pamiętać, że bezpieczne nurkowanie
+                wymaga specjalnego przeszkolenia. Bez doświadczenia w nurkowaniu
+                szukaj tej skrzynki w towarzystwie nauczyciela nurkowania.
+            </desc>
         </lang>
     </attr>
 
@@ -2928,6 +2935,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>GPS nie jest wymagany</name>
+            <desc>
+                Tą skrzynkę można znaleźć bez urządzenia GPS. Dodatkowe
+                współrzędne poza początkowymi nie są używane.
+            </desc>
         </lang>
     </attr>
 
@@ -3354,6 +3365,13 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Opuszczona kopalnia</name>
+            <desc>
+                Ta skrzynka znajduje się w (byłym) obszarze kopalnianym. Mogą
+                wystąpić zagrożenia ze strony kopalni lub może być konieczne
+                wejście do sztolni Zachowaj ostrożność i korzystaj z odpowiedniego
+                sprzętu, szczególnie w ciemności. Stare kopalnie mogą być objęte
+                ochroną historyczną.
+            </desc>
         </lang>
     </attr>
 
@@ -3395,6 +3413,10 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Trujące rośliny</name>
+            <desc>
+                W pobliżu skrzynki mogą znajdować się trujące rośliny. Uważaj i
+                chroń dzieci.
+            </desc>
         </lang>
     </attr>
 
@@ -3525,6 +3547,13 @@ for the original implementations.
         </lang>
         <lang id="pl">
             <name>Konieczność nocowania</name>
+            <desc>
+                Odnalezienie tej skrzynki nie jest możliwe w ciągu jednego dnia lub
+                jednej nocy. Trzeba będzie odwiedzić lokalizację więcej niż jeden
+                raz lub trzeba spędzić tam noc. Czas przygotowań lub nocowania nie
+                znajduje odzwierciedlenia w obliczeniach, tylko czas ewentualnych
+                poszukiwań.
+            </desc>
         </lang>
     </attr>
 
@@ -3646,6 +3675,17 @@ for the original implementations.
                 sodass man sie nach einiger Zeit wieder besuchen kann. Es gibt keinen
                 Behälter und kein Logbuch, sondern der Fund ist mit einem Foto und
                 den Koordinaten des Ortes zu dokumentieren.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Skrzynka bez lokalizacji</name>
+            <desc>
+                Tą skrzynkę można znaleźć w różnych miejscach. Miejsca do
+                przeszukania są wyjaśnione w opisie skrzynki. Muszą znajdować się
+                "poza pomieszczeniem" i istnieje przez znaczny okres czasu, tak aby
+                można było ponownie ją odwiedzić później. Nie posiada pojemnika
+                i logbooka. Zamiast tego znalezienie musi być udokumentowane przez
+                fotografię i zanotowanie współrzędnych.
             </desc>
         </lang>
     </attr>
