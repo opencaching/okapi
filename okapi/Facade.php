@@ -42,9 +42,10 @@ require_once __DIR__ . '/autoload.php';
 OkapiErrorHandler::init();
 Okapi::init_internals();
 
-$extAutoloader = Settings::get('EXTERNAL_AUTOLOADER');
-if ($extAutoloader) {
-    require_once $extAutoloader;
+# OCPL autoloader is needed to load OCPL settings and for accessing HTML purifier.
+$ocplAutoloaderPath = __DIR__.'/../lib/ClassPathDictionary.php';
+if (file_exists($ocplAutoloaderPath)) {
+    require_once $ocplAutoloaderPath;
 }
 
 /**

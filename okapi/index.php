@@ -39,9 +39,10 @@ if (ob_list_handlers() === ['default output handler']) {
 # Errorhandler should be initialized before calling any other OKAPI code
 OkapiErrorHandler::init();
 
-$extAutoloader = Settings::get('EXTERNAL_AUTOLOADER');
-if ($extAutoloader) {
-    require_once $extAutoloader;
+# OCPL autoloader is needed to load OCPL settings and for accessing HTML purifier.
+$ocplAutoloaderPath = __DIR__.'/../lib/ClassPathDictionary.php';
+if (file_exists($ocplAutoloaderPath)) {
+    require_once $ocplAutoloaderPath;
 }
 
 Okapi::gettext_domain_init();
