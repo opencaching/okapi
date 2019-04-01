@@ -939,7 +939,7 @@ class WebService
             # Type mapping can have created duplicate acodes. Remove them.
 
             foreach ($results as &$result_ref) {
-                $result_ref['attr_acodes'] = array_unique($result_ref['attr_acodes']);
+                $result_ref['attr_acodes'] = array_values(array_unique($result_ref['attr_acodes']));
             }
 
             # Now, each cache object has a list of its acodes. We can get
