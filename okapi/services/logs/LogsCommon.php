@@ -16,7 +16,7 @@ use okapi\core\OkapiServiceRunner;
 use okapi\core\Request\OkapiInternalRequest;
 use okapi\lib\OCPLSignals;
 use okapi\Settings;
-use Utils\Text\UserInputFilter; // OCPL specific
+use src\Utils\Text\UserInputFilter; // OCPL specific
 
 /**
  * IMPORTANT: The "logging policy" logic - which logs are allowed under
