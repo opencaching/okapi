@@ -531,6 +531,13 @@ for the original implementations.
                 Winkels (Azimut).
             </desc>
         </lang>
+        <lang id="nl">
+            <desc>
+                Een specifiek soort van een MultiCache. De coördinaten wijzen op een
+                beginpunt. De beschrijving bevat eenvoudige instructies om te volgen
+                zodra je op het startpunt bent (meestal, een azimut en een afstand).
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A9" categories="de-cache-types">
@@ -668,6 +675,13 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Heeft een bewegend doel</name>
+            <desc>
+                Deze cache verplaatst zich. Bijvoorbeeld, de eigenaar kan de cache
+                regelmatig verplaatsen van de ene naar de andere plaats, of de vinders
+                zullen deze taak uitvoeren en nieuwe coördinaten plaatsen bij hun
+                log. De eigenaar moet coördinaten in de cachebeschrijving bijwerken
+                na elke verplaatsing.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Posiada ruchomy cel</name>
@@ -724,6 +738,13 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>een webcam is betrokken</name>
+            <desc>
+                Op de opgegeven locatie is een webcam en om te loggen dient een opname
+                uit die webcam waar men dan op staat te krijgen om te bewijzen dat men
+                daar daadwerkelijk was. Sommige webcam-caches vragen wat extra's zoals
+                een banner te tonen. Het webadres dient aangegeven te worden in de
+                beschrijving.
+            </desc>
         </lang>
         <lang id="pl">
             <name>z użyciem kamerki internetowej</name>
@@ -771,6 +792,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Ander cachesoort</name>
+            <desc>
+                Dit is geen standaard, vooraf gedefinieerde cachesoort. Gebruik dit
+                attribuut voor speciale, ongebruikelijke caches.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Inny typ skrzynki</name>
@@ -814,6 +839,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Onderzoek vereist</name>
+            <desc>
+                Je moet aanvullende informatie zoeken voordat je deze cache kunt
+                vinden.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Wymagane śledztwo</name>
@@ -865,6 +894,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Puzzel / Mysterie</name>
+            <desc>
+                Deze puzzel of mysterie moet worden opgelost (ten minste gedeeltelijk)
+                in het veld, door de start coördinaten of de plaatsen te bezoeken die
+                in de beschrijving worden genoemd.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Quiz / Zagadka</name>
@@ -919,6 +953,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Wiskundig probleem</name>
+            <desc>
+                Voor of tijdens het zoeken naar deze cache moet je een aantal
+                wiskundige problemen oplossen die verder gaan dan de basisrekenkundige
+                berekeningen.
+            </desc>
         </lang>
     </attr>
 
@@ -963,6 +1002,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Vraag eigenaar om startvoorwaarden</name>
+            <desc>
+                Voordat je deze cache doet, moet je de eigenaar vragen voor de
+                startvoorwaarden. Bijvoorbeeld. De cache kan worden gekoppeld aan
+                bepaalde gebeurtenissen op verschillende datums.
+            </desc>
         </lang>
     </attr>
 
@@ -1049,6 +1093,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Parkeer en log</name>
+            <desc>
+                De cache is dicht bij een parkeerplaats, maar een paar stappen
+                verwijderd.
+            </desc>
         </lang>
     </attr>
 
@@ -1083,6 +1131,9 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Alleen te voet toegankelijk</name>
+            <desc>
+                De cache is alleen te voet toegankelijk.
+            </desc>
         </lang>
     </attr>
 
@@ -1129,6 +1180,12 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Lange wandeling</name>
+            <desc>
+                Deze cache vereist een lange wandeling - meer dan 5 km rondreis. In de
+                bergen en andere heuvel gebieden kan de afstand voor een 'lange
+                wandeling' korter zijn. Wandelschoenen en geschikte uitrusting worden
+                aanbevolen.
+            </desc>
         </lang>
         <lang id="ro">
             <name>Excursie</name>
@@ -1296,6 +1353,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Beetje klimmen (geen uitrusting nodig)</name>
+            <desc>
+                Deze cache vereist wat klimmen en je zou misschien je handen moeten
+                gebruiken, maar je hebt geen klimuitrusting nodig. Wees erg
+                voorzichtig tijdens regen of voor onweer!
+            </desc>
         </lang>
     </attr>
 
@@ -1346,6 +1408,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Zwemmen vereist</name>
+            <desc>
+                Deze cache vereist een rivier of een meer over te steken. Het water
+                kan diep zijn.
+            </desc>
         </lang>
     </attr>
 
@@ -1388,6 +1454,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Toegang of parkeerkosten</name>
+            <desc>
+                Je moet toegang of parkeergeld betalen om toegang te krijgen tot deze
+                cache.
+            </desc>
         </lang>
     </attr>
 
@@ -1611,6 +1681,13 @@ for the original implementations.
             <desc>
                 Skrzynka nie jest ukryta na zewnątrz, ale w budynku, jaskini lub
                 podobnie.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Verborgen in ingesloten ruimten (grotten, gebouwen enz.)</name>
+            <desc>
+                Deze cache in niet geplaatst in open ruimte, maar in een gebouw, een
+                grot of iets dergelijks.
             </desc>
         </lang>
     </attr>
