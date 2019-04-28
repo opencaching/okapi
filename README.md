@@ -119,7 +119,7 @@ You can also read about how OKAPI tries to deal with OC site and branch differen
 An OKAPI installation is bundled with both active Opencaching code distributions,
 namely the OCDE code branch (that you can obtain from the
 [OCDE repository](https://github.com/OpencachingDeutschland/oc-server3/tree/stable))
-and the OCDE code branch (available in the
+and the OCPL code branch (available in the
 [OCPL repository](https://github.com/opencaching/opencaching-pl)). The OCDE
 installation will fetch current OKAPI code via Composer, while it is directly
 included in the OCPL distribution.
