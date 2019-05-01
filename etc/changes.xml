@@ -23,7 +23,10 @@
 
     -->
     <changes>
-        <change commit="62413e1e" version="1887" time="2019-01-17T15:01:10+0100" type="enhancement">
+        <change commit="e79c12fc" version="1920" time="2019-05-01T23:05:50+0200" type="bugfix">
+            <i>attr_acodes</i> output for some OCDE 'Drive-in' and 'Math/Physics' geocaches
+        </change>
+        <change commit="72e03f71" version="1887" time="2019-01-17T15:01:37+0100" type="enhancement">
             Added the <i>has_ratings</i> field to
             <a href="services/apisrv/installation.html">services/apisrv/installation</a>,
             and <b>removed</b> the services/caches/capabilities method
