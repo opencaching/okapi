@@ -1734,6 +1734,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Verborgen onder water</name>
+            <desc>
+                Deze cache of één van de punten is geplaatst onder water. Men dient
+                te water te gaan om deze cache te doen.
+            </desc>
         </lang>
     </attr>
 
@@ -1825,6 +1829,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Openbaar vervoer</name>
+            <desc>
+                Deze cache ligt buiten de stedelijke gebieden en er bevind zich een
+                openbare vervoersstation in de buurt.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Transport publiczny</name>
@@ -1891,6 +1899,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Drinkwater in de buurt</name>
+            <desc>
+                Er is drinkwater beschikbaar op de route of bij de cache. Dit kan
+                handig zijn bij een evenement of langere wandelingen waar geen
+                drinkbaar water te vinden is.
+            </desc>
         </lang>
     </attr>
 
@@ -1926,6 +1939,9 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Toilet beschikbaar in de buurt</name>
+            <desc>
+                Er zijn openbare toiletten onderweg of in de buurt van de cache.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Toalety publiczne w pobliżu</name>
@@ -1968,6 +1984,9 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Openbare telefoon in de buurt</name>
+            <desc>
+                Er is een openbare telefoon onderweg of dichtbij de cache.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Telefon w pobliżu</name>
@@ -2012,6 +2031,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Eerste hulp beschikbaar</name>
+            <desc>
+                Er is een eerste hulpstation, oproepbox, bergredding of soortgelijke
+                voorziening in de buurt van de cache.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Dostępna pierwsza pomoc</name>
@@ -2174,6 +2197,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Niet aanbevolen in het donker</name>
+            <desc>
+                Het zoeken naar deze cache wordt niet 's nachts aanbevolen. Het kan
+                gevaarlijk zijn, of de cache kan verborgen zijn in een gebied waar
+                zaklampen ongewenste aandacht kunnen trekken.
+            </desc>
         </lang>
     </attr>
 
@@ -2216,6 +2244,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Bij voorkeur in het donker te doen</name>
+            <desc>
+                Het is aanbevolen om deze cache 's nachts te zoeken. Er kunnen
+                bijvoorbeeld reflectoren geplaatst zijn die overdag normaal niet te
+                zien zijn.
+            </desc>
         </lang>
     </attr>
 
@@ -2260,6 +2293,12 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Alleen 's nachts</name>
+            <desc>
+                Deze cache kan alleen 's nachts worden gevonden. Dit is een zogenaamde
+                nachtcache. Er kunnen reflectoren zijn die te zien zijn met een
+                zaklamp en je naar het eindpunt voeren, of een andere speciale
+                nachtcache onderdeel.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Tylko nocą</name>
@@ -2306,6 +2345,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Alle seizoenen</name>
+            <desc>
+                Deze cache kan de hele jaar worden gevonden, terwijl de moeilijkheid
+                kan afhangen van seizoenen.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Dostępna przez cały rok</name>
@@ -2352,6 +2395,13 @@ for the original implementations.
             <desc>
                 Skrzynka może być podjęta jedynie w pewnych okresach - więcej
                 szczegółów w opisie.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Alleen beschikbaar tijdens bepaalde seizoenen</name>
+            <desc>
+                Deze cache kan alleen in bepaalde seizoenen worden gedaan. Zie de
+                cache beschrijving voor meer details.
             </desc>
         </lang>
     </attr>
@@ -2404,6 +2454,15 @@ for the original implementations.
                 zwierząt! Sprawdź w opisie skrzynki, jakich pór należy unikać.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Natuurreservaat / Broedseizoen</name>
+            <desc>
+                Kan zich in een natuurgebied bevinden, dus let op de lokale geboden en
+                borden met betrekking tot natuurbescherming. Zoek deze cache niet
+                tijdens het broedseizoen! Zie de cache omschrijving om te zien welke
+                tijden er niet gezocht kan worden.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A47" categories="de-time-and-seasons">
@@ -2446,6 +2505,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Beschikbaar in de winter</name>
+            <desc>
+                Deze cache kan gevonden worden ook na hevige sneeuwval. Alle
+                tussenpunten zouden op een veilige manier te vinden zijn na veel
+                sneeuw of vrieskou.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Dostępna zimą</name>
@@ -2478,6 +2542,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Niet beschikbaar tijdens hoog tij</name>
+            <desc>
+                Deze cache kan alleen worden gedaan bij laag of normaal waterniveau.
+                Het is niet toegankelijk tijdens hoge getijden.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Niedostępna podczas przypływu</name>
@@ -2790,6 +2858,18 @@ for the original implementations.
                 nie mogą być odwiedzane.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Grotuitrusting nodig</name>
+            <desc>
+                Deze cache is geplaatst in een grot, en het is raadzaam om de
+                benodigde zaken mee te nemen. Pas op: Zelfs de kleinste grotten kunnen
+                gevaren met zich meebrengen zoals bij hevige regenval buiten zou het
+                water de grot in kunnen stromen of men kan gewond raken. Vraag
+                eventueel aan een deskundige om advies. Denk ook aan de natuur, zoals
+                beschermde dieren (vleermuizen) en mogen dan ook niet verstoord
+                worden.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A55" categories="de-tools">
@@ -2910,6 +2990,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Special gereedschap nodig</name>
+            <desc>
+                Je hebt speciale uitrusting nodig die niet zijn aangegeven door andere
+                attributen. Zie de cache beschrijving voor de benodigde
+                gereedschappen.
+            </desc>
         </lang>
     </attr>
 
@@ -2971,6 +3056,11 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Boot benodigd</name>
+            <desc>
+                Deze cache kan gwoonlijk gevonden worden met behulp van een boot. Door
+                de afstand is het niet mogelijk om de cache zwemmend te benaderen. Zie
+                de cachebeschrijving voor meer gegevens.
+            </desc>
         </lang>
     </attr>
 
@@ -3009,6 +3099,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Geen GPS nodig</name>
+            <desc>
+                Deze cache kan gevonden worden zonder GPS. Behalve de
+                startcoördinaten heeft men geen andere coördinaten nodig.
+            </desc>
         </lang>
         <lang id="pl">
             <name>GPS nie jest wymagany</name>
