@@ -3664,6 +3664,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Een snelle oppikker</name>
+            <desc>
+                Het moet niet meer dan 15 minuten duren om deze cache te vinden. Ook
+                moet er een parkeerplaats in de buurt zijn.
+            </desc>
         </lang>
         <lang id="ro">
             <name>Găseşti imediat</name>
@@ -3715,6 +3719,12 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Overnachting nodig</name>
+            <desc>
+                Deze cache kan niet in één dag of nacht gedaan worden. De locatie
+                zal verschillende keren bezocht moeten worden of moeten overnachten.
+                Voorbereidingstijd is niet berekend, alleen de tijd tijdens het
+                cachen.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Konieczność nocowania</name>
@@ -3820,6 +3830,16 @@ for the original implementations.
                 żadnych zagrożeń (np. autostrady, urwiska). Powinien być duży
                 pojemnik z gadżetami do wymiany wewnątrz a wyzwanie powinno być
                 ciekawe, zabawne, edukacyjne.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Geschikt voor kinderen (10-12 jaar)</name>
+            <desc>
+                Deze cache is geschikt voor kinderen. Alle uitdagingen kunnen worden
+                opgelost door kinderen rond de leeftijd van 10 tot 12 jaar en het
+                terrein heeft geen risico's (zoals snelwegen, afgronden). Er zou een
+                grote geocache container moeten zijn met leuke voorwerpen en de
+                uitdagingen moeten interessant, speelbaar en educatief zijn.
             </desc>
         </lang>
     </attr>
