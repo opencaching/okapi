@@ -4070,7 +4070,6 @@ store these attributes in GPX <groundspeak:attribute> elements.
 
     <attr acode="A82" categories="de-cache-types">
         <ocgs id="107" inc="true" />
-        <opencaching schema="OCDE" id="7" />
         <lang id="en">
             <name>www link</name>
             <desc>
