@@ -57,11 +57,19 @@ Legend and field usage:
             (use <groundspeak ... name="NAME" .../>)
 
 Notes: 
-- In opencaching-pl implementation all attributes are either ON or OFF.
+- All OC implementations have attributes either ON or OFF.
   Inverse meaning is handled by a different attribute.
-- In OCDE implementation attributes have same ID and use:
+- GPX exports retain Groundspeak compatibility by providing a properly set `inc` flag
+  for all attributes, including OC attributes that have the inverse meaning of another.
+- each OC implementation provides two types of GPX exports: 
+  * one via OKAPI
+  * one via OC implementation's own code
+- OCDE implements internally the `inc` flag (in the database) for GS compatibility 
+  of it's own GPX exports (for the representation of the inverse meaning of an attribute):
   YES <=> inc=1  
-  ON  <=> inc=0
+  NO  <=> inc=0
+- OCPL generates the `inc` innternally in the code for GS compatibility of 
+  it's own GPX exports.
 
 Groundspeak attributes:
 ---------------------------------------------------------------------------
@@ -144,7 +152,7 @@ https://gist.github.com/DieBatzen/5814dc7368c1034470c8/
 and based on:
 https://forums.geocaching.com/GC/index.php?/topic/282652-groundspeak-gpx/&tab=comments#comment-4855718
 
-**  This attribute is not user editable, instead used as maintenante flag.
+**  This attribute is not user editable, instead used as maintenance flag.
 *** These are special attributes, not available to the regular user.
 
 For Opencaching attributes which have no Groundspeak equivalents, additional
@@ -4069,16 +4077,6 @@ store these attributes in GPX <groundspeak:attribute> elements.
     </attr>
 
     <attr acode="A82" categories="de-cache-types">
-        <ocgs id="107" inc="true" />
-        <lang id="en">
-            <name>www link</name>
-            <desc>
-                Hyperlink to another caching portal only.
-            </desc>
-        </lang>
-    </attr>
-
-    <attr acode="A83" categories="de-cache-types">
         <groundspeak id="54" inc="true" name="Abandoned structure" />
         <opencaching schema="OCRO" id="54" />
         <lang id="en">
@@ -4089,7 +4087,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
-    <attr acode="A84" categories="de-cache-types">
+    <attr acode="A83" categories="de-cache-types">
         <groundspeak id="48" inc="true" name="UV Light Required" />
         <opencaching schema="OCRO" id="48" />
         <lang id="en">
@@ -4100,7 +4098,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
-    <attr acode="A85" categories="de-cache-types">
+    <attr acode="A84" categories="de-cache-types">
         <groundspeak id="15" inc="false" name="Available during winter" />
         <opencaching schema="OCUS" id="9015" />
         <lang id="en">
@@ -4111,7 +4109,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
-    <attr acode="A86" categories="de-cache-types">
+    <attr acode="A85" categories="de-cache-types">
         <groundspeak id="1" inc="false" name="Dogs" />
         <opencaching schema="OCNL" id="9001" />
         <lang id="en">
@@ -4122,7 +4120,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
-    <attr acode="A87" categories="de-cache-types">
+    <attr acode="A86" categories="de-cache-types">
         <groundspeak id="46" inc="true" name="Truck Driver/RV" />
         <opencaching schema="OCUS" id="46" />
         <lang id="en">
@@ -4133,7 +4131,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
-    <attr acode="A88" categories="de-cache-types">
+    <attr acode="A87" categories="de-cache-types">
         <ocgs id="220" inc="true" />
         <opencaching schema="OCRO" id="220" />
         <lang id="en">
@@ -4144,7 +4142,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
-    <attr acode="A89" categories="de-cache-types">
+    <attr acode="A88" categories="de-cache-types">
         <groundspeak id="64" inc="true" name="Tree Climbing" />
         <opencaching schema="OCRO" id="64" />
         <opencaching schema="OCUK" id="64" />
