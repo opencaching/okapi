@@ -940,6 +940,7 @@ class Okapi
 
         # local types
         'Math/Physics' => ['oc.de' => 8, 'mapto' => ['name' => 'Quiz', 'acodes' => ['A16']]],
+        'Podcast'      => [],
         'Drive-In'     => ['oc.de' => 10, 'mapto' => ['name' => 'Traditional', 'acodes' => ['A19']]],
         'Own'          => ['oc.pl' => 11],
         'BIT Cache'    => ['oc.pl' => 12],
