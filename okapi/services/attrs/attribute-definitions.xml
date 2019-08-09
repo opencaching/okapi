@@ -3540,6 +3540,13 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Verlaten mijnen</name>
+            <desc>
+                Deze cache leidt tot een (voormalig) mijnbouwgebied. Er kunnen gevaren
+                zijn door het instorten van een schacht, of je moet misschien
+                schachten binnengaan. Wees voorzichtig en gebruik passende uitrusting,
+                vooral in het donker. Oude mijnen kunnen worden beschermt door
+                monumentenzorg.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Opuszczona kopalnia</name>
@@ -3588,6 +3595,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Giftige planten</name>
+            <desc>
+                Er zijn giftige planten in de buurt van de cache. Zorg ervoor en
+                voorkom dat kinderen en honden ze niet aanraken of eten.
+            </desc>
         </lang>
         <lang id="pl">
             <name>Trujące rośliny</name>
@@ -3640,6 +3651,10 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Gevaarlijke dieren</name>
+            <desc>
+                Het gebied wordt bewoond door mogelijk gevaarlijke dieren, zoals
+                giftige slangen, schorpioenen of beren.
+            </desc>
         </lang>
     </attr>
 
@@ -3886,6 +3901,17 @@ for the original implementations.
                 fotografię i zanotowanie współrzędnych.
             </desc>
         </lang>
+        <lang id="nl">
+            <name>Reverse cache</name>
+            <desc>
+                Deze cache kan op verschillende plaatsen worden gevonden. De locaties
+                waarop gezocht moet worden, worden uitgelegd in de cachebeschrijving.
+                Ze moeten "van huis af" liggen en bestaan voor een lange periode,
+                zodat het later opnieuw kan worden bezocht. Er is geen container en
+                geen logboek; de gevonden moet worden gedocumenteerd door een foto en
+                de coördinaten moeten worden geregistreerd.
+            </desc>
+        </lang>
     </attr>
 
     <attr acode="A73" categories="de-time-and-seasons">
@@ -3925,6 +3951,16 @@ for the original implementations.
                 Geocutia se află într-un loc accesibil doar între anumite ore. Este
                 posibil să fie necesară plata unei taxe de intrare. De exemplu în
                 incinta unui muzeu. Mai multe informaţii în descriere.
+            </desc>
+        </lang>
+        <lang id="nl">
+            <name>Beschikbaar op aangegeven tijden (toegangsvergoeding mogelijk)</name>
+            <desc>
+                Deze cache kan alleen op bepaalde dagen of week worden gedaan - zie de
+                cache beschrijving voor meer details. Bijvoorbeeld, de cache kan
+                worden geplaatst in een gebied met beperkte openingstijden. Ook kan
+                een vergoeding gevraagd worden om binnen te mogen - zie de
+                cachebeschrijving voor details.
             </desc>
         </lang>
     </attr>
