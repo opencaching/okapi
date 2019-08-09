@@ -3179,6 +3179,13 @@ for the original implementations.
         </lang>
         <lang id="nl">
             <name>Gevaarlijk gebied</name>
+            <desc>
+                De cache is geplaatst in een gevaarlijk gebied, en de gevaren zijn
+                misschien niet duidelijk, bijvoorbeeld bij verkeerswegen, afgronden of
+                vallende gesteente. Veiligheidsmaatregelen moeten worden genomen,
+                vooral wanneer gecached wordt met kinderen, grote groepen mensen of
+                tijdens slechte weersomstandigheden.
+            </desc>
         </lang>
     </attr>
 
