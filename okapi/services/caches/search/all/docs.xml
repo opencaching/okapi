@@ -262,6 +262,21 @@
         IDs. You should not use them. This parameter was implemented for
         internal use.</p>
     </opt>
+    <opt name='awarded_status' default='either'>
+        <p>Includes information about a "cache of the week/month etc." award
+        granted or not in the search criteria. Only some Opencaching sites
+        implement this feature. If you set the parameter to one of the following
+        values and this site does not implement it, it will not affect the
+        search result.</p>
+
+        <p>Should be one of the following:</p>
+        <ul>
+            <li><b>awarded_only</b> - only awarded caches will be returned,</li>
+            <li><b>notawarded_only</b> - only <b>not</b> awarded caches will be
+                returned,</li>
+            <li><b>either</b> - all caches will be returned.</li>
+        </ul>
+    </opt>
     <opt name='set_and'>
         <p>ID of a set previously created with the <b>search/save</b> method.
         If given, the results are
