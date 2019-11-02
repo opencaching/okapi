@@ -678,20 +678,36 @@ class SearchAssistant
         unset($powertrail_ids, $join_powertrails);
 
         #
-        # awarded_status
-        # (uses cache_titled table existing in OCPL only)
+        # awarded
         #
 
-        if ($tmp = $this->request->get_parameter('awarded_status'))
+        if ($tmp = $this->request->get_parameter('awarded'))
         {
-            if (!in_array($tmp, array('awarded_only', 'notawarded_only', 'either')))
-                throw new InvalidParam('awarded_status', "'$tmp'");
-            if (Settings::get('OC_BRANCH') == 'oc.pl') {
-                if ($tmp == "awarded_only") {
-                    $extra_joins[] = "join cache_titled on caches.cache_id = cache_titled.cache_id";
-                } elseif ($tmp == "notawarded_only") {
-                    $extra_joins[] = "left join cache_titled on caches.cache_id = cache_titled.cache_id";
-                    $where_conds[] = "cache_titled.cache_id is null";
+            $awarded_param = explode('|', $this->request->get_parameter('awarded'));
+            foreach ($awarded_param as $field)
+            {
+                $awarded = true;
+                if ($field[0] == '-')
+                {
+                    $awarded = false;
+                    $field = substr($field, 1);
+                }
+                elseif ($field[0] == '+')
+                    $field = substr($field, 1); # ignore leading "+"
+
+                # reimplement this if as f.ex. 'switch' in case of another awards
+                if ($field == 'cotp') {
+                    # works only in oc.pl branch
+                    if(Settings::get('OC_BRANCH') == 'oc.pl') {
+                        if ($awarded) {
+                            $extra_joins[] = "join cache_titled on caches.cache_id = cache_titled.cache_id";
+                        } else {
+                            $extra_joins[] = "left join cache_titled on caches.cache_id = cache_titled.cache_id";
+                            $where_conds[] = "cache_titled.cache_id is null";
+                        }
+                    }
+                } else {
+                    throw new InvalidParam('awarded', "Unsupported field '$field'");
                 }
             }
         }

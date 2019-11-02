@@ -262,19 +262,20 @@
         IDs. You should not use them. This parameter was implemented for
         internal use.</p>
     </opt>
-    <opt name='awarded_status' default='either'>
-        <p>Includes information about a "cache of the week/month etc." award
-        granted or not in the search criteria. Only some Opencaching sites
-        implement this feature. If you set the parameter to one of the following
-        values and this site does not implement it, it will not affect the
-        search result.</p>
+    <opt name='awarded'>
+        <p>Pipe separated list of award types. If given and not empty, an award
+        of selected type is added to filter constraints if it is applicable to
+        current Opencaching site. If a '-' character precedes the award type,
+        only caches <b>not granted</b> corresponding award will be included
+        in the resulting set. If a '+' character precedes the award type or
+        there is no preceding character, only caches <b>granted</b>
+        corresponding award will be included in the resulting set.</p>
 
-        <p>Should be one of the following:</p>
+        <p>The following award types are supported:</p>
         <ul>
-            <li><b>awarded_only</b> - only awarded caches will be returned,</li>
-            <li><b>notawarded_only</b> - only <b>not</b> awarded caches will be
-                returned,</li>
-            <li><b>either</b> - all caches will be returned.</li>
+            <li><b>cotp</b> - the Cache of the Period (week/month etc.) award.
+            Only some Opencaching sites implement this award and the period
+            depends on the particular site settings.</li>
         </ul>
     </opt>
     <opt name='set_and'>
