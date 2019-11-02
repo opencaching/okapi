@@ -267,9 +267,8 @@
         of selected type is added to filter constraints if it is applicable to
         current Opencaching site. If a '-' character precedes the award type,
         only caches <b>not granted</b> corresponding award will be included
-        in the resulting set. If a '+' character precedes the award type or
-        there is no preceding character, only caches <b>granted</b>
-        corresponding award will be included in the resulting set.</p>
+        in the resulting set, otherwise only caches <b>granted</b> corresponding
+        award will be included in the resulting set.</p>
 
         <p>The following award types are supported:</p>
         <ul>

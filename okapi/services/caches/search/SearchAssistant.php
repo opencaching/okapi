@@ -692,8 +692,6 @@ class SearchAssistant
                     $awarded = false;
                     $field = substr($field, 1);
                 }
-                elseif ($field[0] == '+')
-                    $field = substr($field, 1); # ignore leading "+"
 
                 # reimplement this if as f.ex. 'switch' in case of another awards
                 if ($field == 'cotp') {
