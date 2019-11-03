@@ -684,6 +684,7 @@ class SearchAssistant
         if ($tmp = $this->request->get_parameter('awarded'))
         {
             $awarded_param = explode('|', $this->request->get_parameter('awarded'));
+            $used_fields = [];
             foreach ($awarded_param as $field)
             {
                 $awarded = true;
@@ -693,21 +694,27 @@ class SearchAssistant
                     $field = substr($field, 1);
                 }
 
-                # reimplement this if as f.ex. 'switch' in case of another awards
-                if ($field == 'cotp') {
-                    # works only in oc.pl branch
-                    if(Settings::get('OC_BRANCH') == 'oc.pl') {
-                        if ($awarded) {
-                            $extra_joins[] = "join cache_titled on caches.cache_id = cache_titled.cache_id";
-                        } else {
-                            $extra_joins[] = "left join cache_titled on caches.cache_id = cache_titled.cache_id";
-                            $where_conds[] = "cache_titled.cache_id is null";
+                if (!in_array($field, $used_fields))
+                {
+                    $used_fields[] = $field;
+
+                    # reimplement this if as f.ex. 'switch' in case of another awards
+                    if ($field == 'cotp') {
+                        # works only in oc.pl branch
+                        if(Settings::get('OC_BRANCH') == 'oc.pl') {
+                            if ($awarded) {
+                                $extra_joins[] = "join cache_titled on caches.cache_id = cache_titled.cache_id";
+                            } else {
+                                $extra_joins[] = "left join cache_titled on caches.cache_id = cache_titled.cache_id";
+                                $where_conds[] = "cache_titled.cache_id is null";
+                            }
                         }
+                    } else {
+                        throw new InvalidParam('awarded', "Unsupported field '$field'");
                     }
-                } else {
-                    throw new InvalidParam('awarded', "Unsupported field '$field'");
                 }
             }
+            unset($used_fields);
         }
 
         #
