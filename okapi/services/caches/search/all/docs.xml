@@ -263,17 +263,16 @@
         internal use.</p>
     </opt>
     <opt name='awarded'>
-        <p>Pipe separated list of award types. If given and not empty, an award
-        of selected type is added to filter constraints if it is applicable to
-        current Opencaching site. If a '-' character precedes the award type,
-        only caches <b>not granted</b> corresponding award will be included
-        in the resulting set, otherwise only caches <b>granted</b> corresponding
-        award will be included in the resulting set.</p>
+        <p>Pipe-separated list of award types. If given and not empty,
+        by default only caches will be included in the response which were
+        granted all of the specified awards. If a '-' character precedes an
+        award type, only caches that <b>not</b> received this award will be
+        included.</p>
 
         <p>The following award types are supported:</p>
         <ul>
             <li><b>cotp</b> - the Cache of the Period (week/month etc.) award.
-            Only some Opencaching sites implement this award and the period
+            Only some Opencaching sites implement this award, and the period
             depends on the particular site settings.</li>
         </ul>
     </opt>
@@ -298,7 +297,7 @@
         Have a peek at the <b>replicate</b> module if you need all the caches.</p>
     </opt>
     <opt name='order_by'>
-        <p>Pipe separated list of fields to order the results by. Prefix the field name with
+        <p>Pipe-separated list of fields to order the results by. Prefix the field name with
         a '-' sign to indicate a descending order.</p>
 
         <p>Currently, fields which you can order by include: <b>code</b>, <b>name</b>,
