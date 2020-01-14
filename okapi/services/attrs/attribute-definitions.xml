@@ -789,7 +789,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
-    <attr acode="A13" categories="de-cache-types">
+    <attr acode="A13" categories="de-listing">
         <ocgs id="157" inc="true" />
         <opencaching schema="OCDE" id="57" />
         <lang id="en">
@@ -1045,6 +1045,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         <opencaching schema="OCRO" id="24" />
         <opencaching schema="OCUK" id="24" />
         <opencaching schema="OCUS" id="24" />
+        <opencaching schema="OCDE" id="63" />
         <lang id="en">
             <name>Wheelchair accessible</name>
             <desc>
@@ -1062,9 +1063,9 @@ store these attributes in GPX <groundspeak:attribute> elements.
             </desc>
         </lang>
         <lang id="de">
-            <name>rollstuhltauglich</name>
+            <name>Handicap: Rollstuhl</name>
             <desc>
-                Der Cache ist so versteckt, dass er mit dem Rollstuhl erreichbar ist.
+                Der Cache ist mit Rollstuhl/Rollator/Kiderwagen erreichbar.
             </desc>
         </lang>
         <lang id="nl">
@@ -3792,7 +3793,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         <ocgs id="161" inc="true" />
         <opencaching schema="OCDE" id="61" />
         <lang id="en">
-            <name>Reverse Cache</name>
+            <name>Safari Cache</name>
             <desc>
                 This geocache can be found at different places. The places to look for
                 are explained in the cache description. They must be located "away
@@ -4150,6 +4151,23 @@ store these attributes in GPX <groundspeak:attribute> elements.
             <name>Treeclimbing</name>
             <desc>
                 Tree climbing required.
+            </desc>
+        </lang>
+    </attr>
+
+    <attr acode="A89" categories="de-cache-types">
+        <ocgs id="162" inc="true" />
+        <opencaching schema="OCDE" id="62" />
+        <lang id="en">
+            <name>Handicap: Blind</name>
+            <desc>
+                This Cache can be found by blind people.
+            </desc>
+        </lang>
+        <lang id="de">
+            <name>Handicap: Blind</name>
+            <desc>
+                Dieser Cache kann von Menschen mit Sehbehinderung gefunden werden.
             </desc>
         </lang>
     </attr>
