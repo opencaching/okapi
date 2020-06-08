@@ -235,6 +235,14 @@ final class Settings
          * This setting allow to decide which way should be used for local node.
          */
         'USE_SQL_SUBQUERIES' => false,
+
+        /**
+         * List of OKAPI cron jobs class names which are skipped by CronJobController.
+         * This can be helpful for debug problems on production env..
+         * This list should be empty in ordinary case.
+         */
+        'CRON_JOBS_BLACKLIST' => [],
+
     );
 
     /**
