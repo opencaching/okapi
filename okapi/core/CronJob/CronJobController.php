@@ -2,6 +2,7 @@
 
 namespace okapi\core\CronJob;
 
+use okapi\Settings;
 use okapi\core\Cache;
 use okapi\core\Exception\JobsAlreadyInProgress;
 use okapi\core\Exception\OkapiExceptionHandler;
@@ -35,9 +36,17 @@ class CronJobController
                 new TokenRevokerJob(),
                 new DiagnosticsCleanerJob(),
             );
-            foreach ($cache as $cronjob)
+
+            $jobsBlackList = Settings::get('CRON_JOBS_BLACKLIST');
+            foreach ($cache as $key => $cronjob) {
+                if (!empty($jobsBlackList) && in_array((new \ReflectionClass($cronjob))->getShortName(), $jobsBlackList)) {
+                    # this job is on the blacklist
+                    unset($cache[$key]);
+                }
+
                 if (!in_array($cronjob->get_type(), array('pre-request', 'cron-5')))
                     throw new \Exception("Cronjob '".$cronjob->get_name()."' has an invalid (unsupported) type.");
+            }
         }
         return $cache;
     }
