@@ -41,7 +41,7 @@ class CheckCronTab2 extends PrerequestCronJob
         {
             Okapi::mail_admins(
                 "Crontab not working.",
-                "Hello. OKAPI detected, that it's crontab is not working properly.\n".
+                "Hello. OKAPI detected, that its crontab is not working properly.\n".
                 "Please check your configuration or contact OKAPI developers.\n\n".
                 "This line should be present among your crontab entries:\n\n".
                 "*/5 * * * * wget -O - -q -t 1 ".Settings::get('SITE_URL')."okapi/cron5\n\n".
