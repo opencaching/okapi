@@ -49,7 +49,7 @@ abstract class OAuthSignatureMethod {
         $result = 0;
         $signatureLength = strlen($signature);
         for ($i = 0; $i < $signatureLength; $i++) {
-            $result |= ord($built{$i}) ^ ord($signature{$i});
+            $result |= ord($built[$i]) ^ ord($signature[$i]);
         }
 
         return $result == 0;
