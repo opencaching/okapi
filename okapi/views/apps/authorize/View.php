@@ -46,8 +46,6 @@ class View
                 and t.user_id is null
         ");
 
-        $callback_concat_char = (strpos($token['callback'], '?') === false) ? "?" : "&";
-
         if (!$token)
         {
             # Probably Request Token has expired. This will be usually viewed
@@ -72,6 +70,8 @@ class View
 
             return $response;
         }
+
+        $callback_concat_char = (strpos($token['callback'], '?') === false) ? "?" : "&";
 
         $after_login = (
             "okapi/apps/authorize?oauth_token=$token_key".
