@@ -21,7 +21,7 @@
         <script>
             $(function() {
                 $('#langpref').change(function() {
-                    document.location = "?oauth_token=<?= $vars['token']['key'] ?>&langpref=" + $('#langpref').attr('value');
+                    document.location = "?oauth_token=<?= isset($vars['token']['key']) ? $vars['token']['key'] : '' ?>&langpref=" + $('#langpref').attr('value');
                 });
             });
         </script>
