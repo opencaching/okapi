@@ -297,6 +297,10 @@ class TileRenderer
      */
     private static function wordwrap($font, $size, $maxWidth, $text)
     {
+        if (!is_string($text)) {
+            // Failsafe. In general, this should not happen.
+            $text = print_r($text, true);
+        }
         $words = explode(" ", $text);
         $lines = array();
         $line = "";
@@ -307,7 +311,12 @@ class TileRenderer
                 $word = $nextBonus." ".$word;
             $nextBonus = "";
             while (true) {
-                $bbox = imagettfbbox($size, 0, $font, $line.$word);
+                try {
+                    $bbox = imagettfbbox($size, 0, $font, $line.$word);
+                } catch (ErrorException $e) {
+                    // Failsafe. In general, this should not happen.
+                    return "error";
+                }
                 $width = $bbox[2]-$bbox[0];
                 if ($width <= $maxWidth) {
                     $line .= $word." ";
