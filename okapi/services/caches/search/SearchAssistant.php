@@ -234,8 +234,12 @@ class SearchAssistant
             }
             if (count($users) > 0) {
                 $user_ids = array();
-                foreach ($users as $user)
+                foreach ($users as $user) {
+                    if (!is_array($user)) {
+                        continue;
+                    }
                     $user_ids[] = $user['internal_id'];
+                }
                 $where_conds[] = "caches.user_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $user_ids))."')";
             } else if ($operator == "in")
                 $where_conds[] = "false";
