@@ -680,14 +680,18 @@ class WebService
 
             # Get cache descriptions and hints.
 
-            if (Settings::get('OC_BRANCH') == 'oc.pl')
+            if (Settings::get('OC_BRANCH') == 'oc.pl') {
                 $oc_team_annotation_SQL = 'rr_comment';
-            else
+                $reactivation_rule_SQL = 'reactivation_rule';
+            } else {
                 $oc_team_annotation_SQL = "null";
+                $reactivation_rule_SQL = "null";
+            }
             $rs = Db::query("
                 select
                     cache_id, language, `desc`, short_desc, hint,
-                    ".$oc_team_annotation_SQL." as oc_team_annotation
+                    ".$oc_team_annotation_SQL." as oc_team_annotation,
+                    ".$reactivation_rule_SQL." as reactivation_rule
                 from cache_desc
                 where cache_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', array_keys($cacheid2wptcode)))."')
             ");
@@ -704,6 +708,7 @@ class WebService
 
                 $listing_is_outdated = in_array($cache_code, $outdated_listings);
                 $include_team_annotation = ($row['oc_team_annotation'] && $oc_team_annotation == 'description');
+                $include_reactivation_rule = !empty($row['reactivation_rule']);
                 if ($row['desc'] || $listing_is_outdated || $include_team_annotation)
                 {
                     /* Note, that the "owner" and "internal_id" fields are automatically included,
@@ -736,6 +741,16 @@ class WebService
                             $tmp
                         );
                     }
+
+                    if ($include_reactivation_rule)
+                    {
+                        # Append the description with reactivation rules if needed
+                        $tmp .= '<div class="reactivationRules">'.
+                            "<b>"._("Reactivation rules:")."</b><br />\n".
+                            $row['reactivation_rule'].
+                            "</div>";
+                    }
+
                     if ($include_team_annotation)
                     {
                         # Some ugly hacks so that team annotations are readble without OC CSS;
@@ -777,6 +792,7 @@ class WebService
                             ).
                             "</em></p>";
                     }
+
                     Okapi::gettext_domain_restore();
 
                     $results[$cache_code]['descriptions'][$language] = $tmp;
