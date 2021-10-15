@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OKAPI\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-25 21:21+0200\n"
-"PO-Revision-Date: 2021-09-25 21:21+0200\n"
+"POT-Creation-Date: 2021-10-15 11:38+0200\n"
+"PO-Revision-Date: 2021-10-15 12:03+0200\n"
 "Last-Translator: following <following@online.de>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -127,7 +127,7 @@ msgstr ""
 
 #: services/caches/geocaches/WebService.php:749
 msgid "Reactivation rules:"
-msgstr ""
+msgstr "Zasady reaktywacji:"
 
 #: services/caches/geocaches/WebService.php:779
 msgid "Annotations by the Opencaching team:"
@@ -135,7 +135,7 @@ msgstr "Adnotacje Centrum Obsługi Geocachera:"
 
 #: services/caches/geocaches/WebService.php:781
 msgid "End of annotations"
-msgstr ""
+msgstr "Koniec adnotacji"
 
 #: services/caches/geocaches/WebService.php:1366
 msgid "Stage"
@@ -170,7 +170,7 @@ msgid ""
 msgstr ""
 "Prawa autorskie: <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>, w "
-"dniu %s. Prawa autorskie wpisów do logów należą do ich autorów."
+"dniu %s. Prawa autorskie wpisów do logów należą do ich autorów"
 
 #: services/caches/geocaches/WebService.php:1859
 #, php-format
@@ -181,7 +181,7 @@ msgid ""
 msgstr ""
 "Prawa autorskie: <a href='%s'>%s</a>, <a href='%s'>%s</a>, <a href='https://"
 "creativecommons.org/licenses/by-nc-nd/3.0/de/deed.pl'>CC-BY-NC-ND</a>. Prawa "
-"autorskie wpisów do logów należą do ich autorów."
+"autorskie wpisów do logów należą do ich autorów"
 
 #: services/logs/LogsCommon.php:70
 msgid ""
@@ -201,7 +201,7 @@ msgstr ""
 
 #: services/logs/LogsCommon.php:95
 msgid "This cache requires a password. You didn't provide one!"
-msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go."
+msgstr "Ta skrzynka wymaga podania hasła. Nie wpisałeś go!"
 
 #: services/logs/LogsCommon.php:99
 msgid "Invalid password!"
@@ -232,6 +232,8 @@ msgid ""
 "You are the owner of this cache. You may submit \"Comments\" and status logs "
 "only!"
 msgstr ""
+"Jesteś właścicielem tej skrzynki. Możesz jedynie dodawać logi typu "
+"\"komentarz\" lub opisujące status skrzynki!"
 
 #: services/logs/LogsCommon.php:281
 msgid ""
@@ -256,8 +258,12 @@ msgid "You don't have any recommendations to give. Find one more cache first!"
 msgid_plural ""
 "You don't have any recommendations to give. Find %d more caches first!"
 msgstr[0] ""
+"Nie masz żadnych rekomendacji do przyznania. Najpierw znajdź jeszcze jedną "
+"skrzynkę!"
 msgstr[1] ""
+"Nie masz żadnych rekomendacji do przyznania. Najpierw znajdź %d skrzynek!"
 msgstr[2] ""
+"Nie masz żadnych rekomendacji do przyznania. Najpierw znajdź %d skrzynek!"
 
 #: services/logs/delete/WebService.php:124
 msgid "Your log entry has been deleted."
@@ -266,7 +272,7 @@ msgstr "Twój log został usunięty."
 #: services/logs/edit/WebService.php:138
 #, php-format
 msgid "%s does not allow recommending event caches."
-msgstr ""
+msgstr "%s nie pozwala na rekomendowanie skrzynek spotkaniowych."
 
 #: services/logs/edit/WebService.php:142
 msgid "You may not recommend your own caches."
@@ -274,7 +280,7 @@ msgstr "Nie możesz rekomendować swoich własnych keszy."
 
 #: services/logs/edit/WebService.php:283
 msgid "Your log entry has been updated successfully."
-msgstr ""
+msgstr "Twój wpis do logu został pomyślnie zaktualizowany."
 
 #: services/logs/images/add/WebService.php:71
 #: services/logs/images/edit/WebService.php:45
@@ -357,32 +363,41 @@ msgid ""
 "However, your cache recommendation was ignored, because you may not "
 "recommend your own caches."
 msgstr ""
+"Jednakże twoja rekomendacja została zignorowana, ponieważ nie możesz "
+"rekomendować własnych skrzynek."
 
 #: services/logs/submit/WebService.php:216
 msgid ""
 "You are not the owner of this cache. Only the owner may log status changes."
 msgstr ""
+"Nie jesteś właścicielem tej skrzynki. Tylko właściciel może zalogować wpis "
+"zmieniający status skrzynki."
 
 #: services/logs/submit/WebService.php:229
 #, php-format
 msgid "%s does not allow to unarchive geocaches."
-msgstr ""
+msgstr "%s nie pozwala na \"odarchiwizowanie\" skrzynki. "
 
 #: services/logs/submit/WebService.php:237
 msgid ""
 "However, your maintenance status tag was ignored, because archived caches "
 "don't need maintenance."
 msgstr ""
+"Jednakże twój wpis o serwisie został zignorowany ponieważ zarchiwizowane "
+"skrzynki nie mogą być serwisowane."
 
 #: services/logs/submit/WebService.php:249
+#, fuzzy
 msgid "The geocache must be maintained before it is enabled."
-msgstr ""
+msgstr "Skrzynka musi być serwisowana zanim zostanie aktywowana."
 
 #: services/logs/submit/WebService.php:265
 msgid ""
 "However, your maintenance status tag was ignored, because you didn't find "
 "the cache."
 msgstr ""
+"Jednakże twój wpis dot. serwisu został zignorowany, ponieważ nie znalazłeś "
+"tej skrzynki."
 
 #: services/logs/submit/WebService.php:328
 msgid "You have already submitted a log entry with exactly the same contents."
