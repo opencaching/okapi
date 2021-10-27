@@ -598,7 +598,7 @@ class ReplicateCommon
         $dumpfile_tarname = "okapi-dump.tar";
         $dumpfilename = $dumpfile_tarname.($use_bzip2 ? ".bz2" : ".gz");
         self::execute(
-            "tar --directory $dir -c".($use_bzip2 ? "j" : "z")."f $dir/$dumpfilename index.json ".implode(" ", $json_files),
+            "tar --directory $dir -c".($use_bzip2 ? "j" : "z")."f $dir/$dumpfilename --exclude=$dumpfilename .",
             $shell_output
         );
 
