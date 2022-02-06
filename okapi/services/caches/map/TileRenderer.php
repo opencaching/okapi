@@ -115,13 +115,13 @@ class TileRenderer
             try
             {
                 $cache_key = "tilesrc/".Okapi::getGitRevision()."/".self::$VERSION."/".$key;
-                $gd2_path = self::$USE_STATIC_IMAGE_CACHE
+                $img_path = self::$USE_STATIC_IMAGE_CACHE
                     ? FileCache::get_file_path($cache_key) : null;
-                if ($gd2_path === null)
+                if ($img_path === null)
                     throw new Exception("Not in cache");
                 # File cache hit. GD2 files are much faster to read than PNGs.
                 # This can throw an Exception (see bug#160).
-                $locmem_cache[$key] = imagecreatefrompng($gd2_path);
+                $locmem_cache[$key] = imagecreatefrompng($img_path);
             }
             catch (Exception $e)
             {
@@ -153,8 +153,8 @@ class TileRenderer
                 ob_start();
                 imagesavealpha($locmem_cache[$key], true);
                 imagepng($locmem_cache[$key]);
-                $gd2 = ob_get_clean();
-                FileCache::set($cache_key, $gd2);
+                $png_img = ob_get_clean();
+                FileCache::set($cache_key, $png_img);
             }
         }
         return $locmem_cache[$key];
@@ -328,8 +328,8 @@ class TileRenderer
         # Check cache.
 
         $cache_key = "tilecaption/".self::$VERSION."/".$cache_id."/".$name_crc;
-        $gd2 = self::$USE_CAPTIONS_CACHE ? Cache::get($cache_key) : null;
-        if ($gd2 === null)
+        $caption_png = self::$USE_CAPTIONS_CACHE ? Cache::get($cache_key) : null;
+        if ($caption_png === null)
         {
             # We'll work with 16x bigger image to get smoother interpolation.
 
@@ -404,11 +404,11 @@ class TileRenderer
             ob_start();
             imagesavealpha($small, true);
             imagepng($small);
-            $gd2 = ob_get_clean();
-            Cache::set_scored($cache_key, $gd2);
+            $caption_png = ob_get_clean();
+            Cache::set_scored($cache_key, $caption_png);
         }
 
-        return imagecreatefromstring($gd2);
+        return imagecreatefromstring($caption_png);
     }
 
     private function draw_cache_medium(&$cache_struct)
