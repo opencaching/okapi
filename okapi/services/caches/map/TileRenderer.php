@@ -15,7 +15,7 @@ class TileRenderer
      * Changing this will affect all generated hashes. You should increment it
      * whenever you alter anything in the drawing algorithm.
      */
-    private static $VERSION = 61;
+    private static $VERSION = 62;
 
     /**
      * Should be always true. You may temporarily set it to false, when you're
@@ -121,7 +121,7 @@ class TileRenderer
                     throw new Exception("Not in cache");
                 # File cache hit. GD2 files are much faster to read than PNGs.
                 # This can throw an Exception (see bug#160).
-                $locmem_cache[$key] = imagecreatefromgd2($gd2_path);
+                $locmem_cache[$key] = imagecreatefrompng($gd2_path);
             }
             catch (Exception $e)
             {
@@ -132,7 +132,12 @@ class TileRenderer
                 # Apply all wanted effects.
 
                 if ($opacity != 1)
-                    self::change_opacity($locmem_cache[$key], $opacity);
+                {
+                    imagealphablending($locmem_cache[$key], false);
+                    imagesavealpha($locmem_cache[$key], true);
+                    imagefilter($locmem_cache[$key], IMG_FILTER_COLORIZE, 0,0,0,127*$opacity);
+                    imagealphablending($locmem_cache[$key], true);
+                }
                 if ($contrast != 0)
                     imagefilter($locmem_cache[$key], IMG_FILTER_CONTRAST, $contrast);
                 if ($brightness != 0)
@@ -146,35 +151,13 @@ class TileRenderer
                 # Cache the result.
 
                 ob_start();
-                imagegd2($locmem_cache[$key]);
+                imagesavealpha($locmem_cache[$key], true);
+                imagepng($locmem_cache[$key]);
                 $gd2 = ob_get_clean();
                 FileCache::set($cache_key, $gd2);
             }
         }
         return $locmem_cache[$key];
-    }
-
-    /**
-     * Extremely slow! Remember to cache the result!
-     */
-    private static function change_opacity($im, $ratio)
-    {
-        imagealphablending($im, false);
-
-        $w = imagesx($im);
-        $h = imagesy($im);
-
-        for($x = 0; $x < $w; $x++)
-        {
-            for($y = 0; $y < $h; $y++)
-            {
-                $color = imagecolorat($im, $x, $y);
-                $new_color = ((max(0, floor(127 - ((127 - (($color >> 24) & 0x7f)) * $ratio))) & 0x7f) << 24) | ($color & 0x80ffffff);
-                imagesetpixel($im, $x, $y, $new_color);
-            }
-        }
-
-        imagealphablending($im, true);
     }
 
     private function draw_cache(&$cache_struct)
@@ -419,7 +402,8 @@ class TileRenderer
             # Cache it!
 
             ob_start();
-            imagegd2($small);
+            imagesavealpha($small, true);
+            imagepng($small);
             $gd2 = ob_get_clean();
             Cache::set_scored($cache_key, $gd2);
         }
@@ -564,8 +548,7 @@ class TileRenderer
 
         if (($status != 1) && ($count == 1))
         {
-            $icon = self::get_image(($status == 2) ? "status_unavailable"
-                : "status_archived");
+            $icon = self::get_image(($status == 2) ? "status_unavailable" : "status_archived");
             imagecopy($this->im, $icon, $px - ($center_x - $markercenter_x) - 6,
                 $py - ($center_y - $markercenter_y) - 8, 0, 0, 16, 16);
         }
