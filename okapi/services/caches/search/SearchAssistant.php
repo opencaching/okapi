@@ -427,7 +427,7 @@ class SearchAssistant
                 throw new InvalidParam('found_by', $e->whats_wrong_about_it);
             }
 
-            $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
+            $internal_user_ids = array_map(function ($user) { return $user["internal_id"]; }, $users);
             if (Settings::get('USE_SQL_SUBQUERIES')) {
                 $found_cache_subquery = self::get_found_cache_ids_subquery($internal_user_ids);
                 $where_conds[] = "caches.cache_id in (".$found_cache_subquery.")";
@@ -450,7 +450,7 @@ class SearchAssistant
                 throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
             }
 
-            $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
+            $internal_user_ids = array_map(function ($user) { return $user["internal_id"]; }, $users);
             if (Settings::get('USE_SQL_SUBQUERIES')) {
                 $found_cache_subquery = self::get_found_cache_ids_subquery($internal_user_ids);
                 $where_conds[] = "caches.cache_id not in (".$found_cache_subquery.")";
@@ -485,7 +485,7 @@ class SearchAssistant
             } catch (InvalidParam $e) { # too many uuids
                 throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
             }
-            $internal_user_ids = array_map(create_function('$user', 'return $user["internal_id"];'), $users);
+            $internal_user_ids = array_map(function ($user) { return $user["internal_id"]; }, $users);
             $where_conds[] = self::get_recommended_by_sql($internal_user_ids);
         }
 
