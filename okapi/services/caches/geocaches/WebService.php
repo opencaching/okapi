@@ -1117,7 +1117,7 @@ class WebService
                 # OCDE uses coordinates table (with type == 2) to store notes (this is somewhat weird).
 
                 $rs = Db::query("
-                    select cache_id, null as date, group_concat(description) as `desc`
+                    select cache_id, null as date, description as `desc`
                     from coordinates
                     where
                         type = 2  -- personal note
