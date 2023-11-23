@@ -51,58 +51,94 @@ class WebService
         );
         $cache_id = $geocache['internal_id'];
 
-        self::update_notes($cache_id, $request->token->user_id, $latitude, $longitude);
-
-	$ret_value = 'ok';
+        self::update_coordinates($cache_id, $request->token->user_id, $latitude, $longitude);
 
         $result = array(
-            'status' => $ret_value
+            'success' => true
         );
         return Okapi::formatted_response($request, $result);
     }
 
-    private static function update_notes($cache_id, $user_id, $latitude, $longitude)
+    private static function update_coordinates($cache_id, $user_id, $latitude, $longitude)
     {
-        /* See:
-         *
-         * - https://github.com/OpencachingDeutschland/oc-server3/tree/development/htdocs/src/Oc/Libse/CacheNote
-         * - https://www.opencaching.de/okapi/devel/dbstruct
-         */
+        if (Settings::get('OC_BRANCH') == 'oc.de')
+        {
 
-        $rs = Db::query("
-            select max(id) as id
-            from coordinates
-            where
-                type = 2  -- personal note
-                and cache_id = '".Db::escape_string($cache_id)."'
-                and user_id = '".Db::escape_string($user_id)."'
-        ");
-        $id = null;
-        if($row = Db::fetch_assoc($rs)) {
-            $id = $row['id'];
-        }
-        if ($id == null) {
-            Db::query("
-                insert into coordinates (
-                    type, latitude, longitude, cache_id, user_id
-                ) values (
-                    2,
-                    '".Db::escape_string($latitude)."',
-                    '".Db::escape_string($longitude)."',
-                    '".Db::escape_string($cache_id)."',
-                    '".Db::escape_string($user_id)."'
-                )
-            ");
-        } else {
-            Db::query("
-                update coordinates
-                set latitude  = '".Db::escape_string($latitude)."',
-                    longitude = '".Db::escape_string($longitude)."',
+            /* See:
+             *
+             * - https://github.com/OpencachingDeutschland/oc-server3/tree/development/htdocs/src/Oc/Libse/CacheNote
+             * - https://www.opencaching.de/okapi/devel/dbstruct
+             */
+
+            $rs = Db::query("
+                select max(id) as id
+                from coordinates
                 where
-                    id = '".Db::escape_string($id)."'
-                    and type = 2
+                    type = 2  -- personal note
+                    and cache_id = '".Db::escape_string($cache_id)."'
+                    and user_id = '".Db::escape_string($user_id)."'
             ");
+            $id = null;
+            if($row = Db::fetch_assoc($rs)) {
+                $id = $row['id'];
+            }
+            if ($id == null) {
+                Db::query("
+                    insert into coordinates (
+                        type, latitude, longitude, cache_id, user_id, description
+                    ) values (
+                        2,
+                        '".Db::escape_string($latitude)."',
+                        '".Db::escape_string($longitude)."',
+                        '".Db::escape_string($cache_id)."',
+                        '".Db::escape_string($user_id)."',
+                        '".Db::escape_string("")."'
+                    )
+                ");
+            } else {
+                Db::query("
+                    update coordinates
+                    set latitude  = '".Db::escape_string($latitude)."',
+                        longitude = '".Db::escape_string($longitude)."'
+                    where
+                        id = '".Db::escape_string($id)."'
+                        and type = 2
+                ");
+            }
+        }
+        else # oc.pl branch
+        {
+            $rs = Db::query("
+                select max(id) as id
+                from cache_mod_cords
+                where
+                    cache_id    = '".Db::escape_string($cache_id)."'
+                    and user_id = '".Db::escape_string($user_id)."'
+            ");
+            $id = null;
+            if($row = Db::fetch_assoc($rs)) {
+                $id = $row['id'];
+            }
+            if ($id == null) {
+                Db::query("
+                    insert into cache_mod_cords (
+                        cache_id, user_id, latitude, longitude
+                    ) values (
+                        '".Db::escape_string($cache_id)."',
+                        '".Db::escape_string($user_id)."',
+                        '".Db::escape_string($latitude)."',
+                        '".Db::escape_string($longitude)."'
+                    )
+                ");
+            } else {
+                Db::query("
+                    update cache_mod_cords
+                    set latitude  = '".Db::escape_string($latitude)."',
+                        longitude = '".Db::escape_string($longitude)."'
+                    where
+                        id = '".Db::escape_string($id)."'
+                ");
+            }
         }
     }
-
 }

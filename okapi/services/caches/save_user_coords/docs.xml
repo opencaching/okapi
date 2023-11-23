@@ -23,7 +23,7 @@
     <returns>
         <p>A dictionary of the following structure:</p>
         <ul>
-            <li>status - ok</li>
+            <li>success - true</li>
         </ul>
     </returns>
 </xml>
