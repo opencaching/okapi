@@ -1,0 +1,23 @@
+<xml>
+    <brief>Add Caches To List</brief>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>This method is used to add geocaches to an existing list.</p>
+    </desc>
+    <req name="list_id">
+        <p>The id of a list. List IDs can be obtained by ::service/lists/query</p>
+    </req>
+    <req name="cache_codes">
+    <p>A pipe separated list of cache_codes to be added to the list.</p>
+    <p>Up to 500 geoaches can be added to the list by one request to
+    this method</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>success - true</li>
+            <li>added_count - number of geocaches added to the list</li>
+        </ul>
+    </returns>
+</xml>
