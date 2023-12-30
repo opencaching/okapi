@@ -1,0 +1,46 @@
+<xml>
+    <brief>Create Cache List</brief>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>This method creates a list for adding geocaches to. Only the list is created,
+        no geocaches are added to it during the create. For adding and removing geocaches
+        to/from the list use specific methods within the ::services/lists namespace
+        </p>
+    </desc>
+    <req name="list_name">
+    <p>A string, defining the human readable name of the list</p>
+    </req>
+    <opt name="list_description">
+        <p>A string via which a description of the list's purpose and
+        potentially content can be defined.</p>
+    </opt>
+    <opt name="list_status">
+        <p>This parameter can take the following values:
+        <ul>
+            <li><b>0</b> - The list is private</li>
+            <li><b>2</b> - The list is public</li>
+            <li><b>3</b> - The list is public and is visible in cache listings</li>
+        </ul>
+        </p>
+    </opt>
+    <opt name="list_password">
+        <p>This parameter allows to add a password to a private list. The password
+        has no meaning if the list is public. The first 16 alphanumeric characters
+        are used as a password. No encryption is performed in the password, instead
+        it is stored in the database in plain text.</p>
+        </opt>
+    <opt name="list_watch">
+        <p>A boolean, either 0, 1, false, true. If set to 1 or true
+        a user wants to get a notification if the content of the list
+        changes.</p>
+        </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>success - true</li>
+            <li>message - Cache list created successfully</li>
+            <li>list_id - The id of the list by which it can be referenced</li>
+        </ul>
+    </returns>
+</xml>

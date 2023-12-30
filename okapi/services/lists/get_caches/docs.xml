@@ -1,0 +1,19 @@
+<xml>
+    <brief>Get Caches On A List</brief>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>This method is used to get the geocache codes for the caches that are on the list.</p>
+    </desc>
+    <req name="list_id">
+        <p>The id of a list. List IDs can be obtained by ::service/lists/query</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>success - true</li>
+            <li>cache_codes - A pipe separated string of cache_codes that are on the list</li>
+            <li>cache_count - the number of geocaches on the list</li>
+        </ul>
+    </returns>
+</xml>

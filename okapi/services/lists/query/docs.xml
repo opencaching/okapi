@@ -1,0 +1,40 @@
+<xml>
+    <brief>Query Cache Lists</brief>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>This method is used to query the metadata of all user owned cache lists.
+        Such a query ist typically performed by a client application that wants to render
+        a list of geocache lists at the UI. The metadata of the list is necessary and sufficient
+        for this purpose. Please note, an <i>id</i> is also part of the returned meta data.
+        Using this id as a reference code, specific operations can be performed on selected lists
+        for instance adding geocaches to the list, removing them, updating the metadata of the
+        referenced list or deleting the referenced list entirely. Typically such entities as
+        geocaches, logs, or lists, are referenced by a <i>referenceCode</i>, for instance
+        for geocaches, there would be a <i>cache_code</i> in the namespace <i>OCxxxxx</i> where
+        cache_code would be interpreted as a <i>referenceCode</i> for geocaches. Unfortunately lists
+        do not yet have such a <i>referenceCode</i>. They can be referenced only by their internal id,
+        which is named <i>id</i> in the returned objects for this method. This id is used as the
+        <i>list_id</i> parameter in all subsequent methods dealing with lists.
+        </p>
+    </desc>
+    <common-format-params/>
+    <returns>
+        <p>An array of the following structure:</p>
+        <pre>
+[
+    {
+        "id": 13,
+        "name": "This is my list",
+        "date_created": "2023-11-28 09:29:34",
+        "last_modified": "2023-11-28 09:49:16",
+        "last_added": "2023-11-28 09:40:18",
+        "description": "Just a list for testing",
+        "is_public": 0,
+        "caches_count": 4,
+        "watches_count": 1
+    },
+    { .... }
+]
+        </pre>
+    </returns>
+</xml>
