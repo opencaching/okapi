@@ -553,7 +553,7 @@ above for more information on differences between Opencaching sites.</p>
 
 <p>OKAPI is Open Source and everyone is welcome to participate in the development.</p>
 
-<p>We have our <a href='https://github.com/opencaching/okapi/issues/'>Issue tracker</a>.
+<p>We have our <a href='https://github.com/opencaching/okapi/issues/'>issue tracker</a>.
 You can use it to contact us!<br>You may also contact some of
 <a href='https://github.com/opencaching/okapi/graphs/contributors'>the developers</a>
 directly, if you want.</p>
