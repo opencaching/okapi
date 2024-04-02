@@ -1,6 +1,6 @@
 # The OKAPI Project #
 
-Quick download link: [latest version](https://github.com/opencaching/okapi/archive/master.zip)
+Quick download link: [latest version](https://github.com/opencaching/okapi/archive/master.zip).
 
 
 ## Why are you here? ##
