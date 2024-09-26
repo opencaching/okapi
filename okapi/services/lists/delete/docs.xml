@@ -1,0 +1,20 @@
+<xml>
+    <brief>Delete Cache List</brief>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>This method is used to delete a geocache list. The geocache objects
+        that were on the list will not be touched in any way.</p>
+    </desc>
+    <req name="list_id">
+        <p>The id of the list to be removed. IDs can be obtained by
+         the service ::services/lists/query</p>
+        </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>success - true</li>
+            <li>message - cache list deleted successfully</li>
+        </ul>
+    </returns>
+</xml>

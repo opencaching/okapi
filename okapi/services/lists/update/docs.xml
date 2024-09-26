@@ -1,0 +1,50 @@
+<xml>
+    <brief>Update Cache List</brief>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>This method is is used to update the meta data of an existing cache list.</p>
+    </desc>
+    <req name="list_id">
+        <p>The <i>list_id</i> uniquely references the
+        list for which the metadata should be updated. The <i>list_id</i> can be obtained
+        by <b>::services/lists/query</b></p>
+    </req>
+    <opt name="list_name">
+        <p>The new name of the list. The current name can be obtained by
+        <b>::services/lists/query</b></p>
+    </opt>
+    <opt name="list_description">
+        <p>The new description of the list. The current description can be obtained by
+        <b>::services/lists/query</b></p>
+    </opt>
+    <opt name="list_status">
+        <p>The new status of the list. The current status can be obtained by
+        <b>::services/lists/query</b></p>
+        <p>Status is defined as follows:
+        <ul>
+            <li>0  - indicates a private list</li>
+            <li>2  - indicates a public list</li>
+            <li>3  - indicates a public list, visible for all users in cache listings</li>
+          </ul>
+        </p>
+    </opt>
+    <opt name="list_password">
+        <p>The password for the list. Passwords only have a meaning if the list status is set to
+        private. The parameter is silently ignored otherwise. If the list is private, the first
+        16 alphanumeric charactes are taken as a password. No encryption is performed on the
+        password, instead it is stored as plain text in the database.</p>
+    </opt>
+    <opt name="list_watch">
+        <p>A boolean, either 0, 1, false, true. If set to 1 or true
+        a user wants to get a notification if the content of the list
+        changes.</p>
+        </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>success - true</li>
+            <li>message - Cache list updated sucessfully</li>
+        </ul>
+    </returns>
+</xml>
