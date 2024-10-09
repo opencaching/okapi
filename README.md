@@ -15,10 +15,11 @@ to help implement OKAPI backend.
 
 **OKAPI** is a plugin for National **Opencaching.XX** sites.
 
-  * It provides your site with a set of useful RESTful API methods,
-  * Allows external developers to easily access **public** Opencaching data,
-  * Allows access to **private** (user-related) data through **OAuth** 3-legged
-    authorization.
+  * It provides the Opencaching site with a set of useful, well-documented
+    API methods,
+  * It allows external developers to easily **read public** Opencaching data,
+  * It allows external developers to **read and write private** (user-related)
+    data, using OAuth 1.0a Authentication.
   * Sends **email notifications** to site admins in case something goes wrong.
 
 See a live installation here: https://opencaching.pl/okapi/
@@ -37,9 +38,9 @@ following sites:
   * http://www.opencaching.ro/okapi/
   * https://www.opencache.uk/okapi/
 
-There is one site where OKAPI is not available yet:
+There's only one OC site where OKAPI is not available yet:
 
-  * http://www.opencaching.cz/
+  * https://www.opencaching.cz/
 
 The API itself is also being used by numerous geocaching clients (e.g. c:geo).
 
@@ -49,7 +50,7 @@ The API itself is also being used by numerous geocaching clients (e.g. c:geo).
 Like the rest of Opencaching, OKAPI is an open project. Every developer is
 welcome to submit their pull requests. If you are an application developer and
 you need a method which does not yet exist, maybe you'd care enough to write
-one? ;)
+one?
 
 If you want to develop a new OKAPI method, you are welcome to start a new Issue
 for your work. Let others know what you're doing! Issue page is a great place
@@ -85,16 +86,16 @@ OC servers to download.
 In other words, if you want to change something, you have to do this in such
 way, that the same change will also work on all other OC sites:
 
-  * Every OKAPI developer will TRY to develop new methods in such a way, that
+  * All OKAPI developers will TRY to develop new methods in such a way, that
     they will instantly work on all other OC sites.
-  * If the developer cannot do such a thing, he will contact other developers
-    to help him.
-  * If the thing the developer is trying to achieve is **impossible** to
-    achieve in other OC installations, then he MAY add a method/field which
-    works only on his own installation, but he HAS TO include the public
-    documentation for this method which will say "this method works only on
-    some OC installations, if it doesn't work, it will return null" (or
-    something similar).
+  * If developers are unable to do achieve this requirement, they will reach
+    other developers for help.
+  * If the feature which developers are trying to achieve is **impossible** to
+    achieve in some OC installations, then they MAY add a method/field which
+    works only on some installations, but they still HAVE TO include the public
+    documentation for this method (which will likely say something like "this
+    method works only on some OC installations, if it doesn't work, it will
+    return null").
   * We (the current developers) WILL also act according to these rules. Once
     you have OKAPI installed, we will make every effort for future versions of
     OKAPIs to be compatible with your site.
@@ -110,19 +111,19 @@ You can also read about how OKAPI tries to deal with OC site and branch differen
 
 ## Requirements ##
 
-  * PHP 5.6
+  * Recent version of PHP.
   * A working Opencaching site.
 
 
 ## Installation / Update Instructions ##
 
-An OKAPI installation is bundled with both active Opencaching code distributions,
+OKAPI installations are bundled with both active Opencaching code distributions,
 namely the OCDE code branch (that you can obtain from the
 [OCDE repository](https://github.com/OpencachingDeutschland/oc-server3/tree/stable))
 and the OCPL code branch (available in the
 [OCPL repository](https://github.com/opencaching/opencaching-pl)). The OCDE
-installation will fetch current OKAPI code via Composer, while it is directly
-included in the OCPL distribution.
+installation will fetch current OKAPI code via Composer. The OCPL installation
+includes a direct copy of OKAPI code.
 
 After setting up the OC installation, take these steps to enable OKAPI:
 
@@ -150,6 +151,7 @@ After setting up the OC installation, take these steps to enable OKAPI:
 script. This means that every change commited to OKAPI will be immediatelly
 installed on production servers (after about 30 seconds of delay). If you'd
 like your installation to be updated in a similar manner, email us.
+
 
 ### Additional development settings ###
 

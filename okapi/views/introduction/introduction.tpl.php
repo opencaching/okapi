@@ -31,9 +31,18 @@
 for "National Opencaching" sites.</p>
 
 <ul>
-    <li>It provides OC site with a set of useful well-documented API methods,</li>
-    <li>Allows external developers to easily <b>read public</b> Opencaching data,</li>
-    <li>Allows <b>read and write private</b> (user-related) data with OAuth Authentication.</li>
+    <li>
+        It provides the Opencaching site with a set of useful, well-documented
+        API methods,
+    </li>
+    <li>
+        It allows external developers to easily <b>read public</b> Opencaching
+        data,
+    </li>
+    <li>
+        It allows external developers to <b>read and write private</b>
+        (user-related) data, using OAuth 1.0a Authentication.
+    </li>
 </ul>
 
 <p>The project has grown to become a standard and common API for all National
@@ -59,20 +68,21 @@ Here is the list of other OKAPI installations:</p>
     </li>
 </ul>
 
-<p>* Opencaching.DE includes other sites - Opencaching.IT and Opencaching.FR
+<p>* - Opencaching.DE includes other sites - Opencaching.IT and Opencaching.FR
 - which are in fact the one site visible on multiple domains.
 All three share one database, so you can access all their data through
 Opencaching.DE OKAPI installation.</p>
 
 <div class='issue-comments' issue_id='28'></div>
 
+
 <h2 id='howto'>How can I use OKAPI?</h2>
 
 <p>We assume that you're a software developer and you know the basics.</p>
 
-<p>OKAPI is a set of simple web services. Basicly, you make a proper HTTP
-request, and you receive a JSON-formatted response, that you may parse and use
-within your application.</p>
+<p>OKAPI is a set of simple web services. Basicly, you make a
+<a href='#http_methods'>proper</a> HTTP request, and you receive a
+JSON-formatted response, that you can parse and use within your application.</p>
 
 <p><b>Example.</b> Click the following link to run a method that prints out the
 list of all available methods:</p>
@@ -156,35 +166,41 @@ applications you won't have learn OAuth.</p>
 <div class='issue-comments' issue_id='38'></div>
 
 
-<h2 id='http_methods'>GET or POST?</h2>
+<h2 id='http_methods'>GET or POST? Encoding your requests</h2>
 
-<p>Whichever you want. OKAPI will treat GET and POST requests equally. You may
-also use the HTTP <code>Authorization</code> header for passing OAuth
-arguments. OKAPI does not support other HTTP request types (such as PUT or
-DELETE).</p>
+<p>OKAPI treats GET and POST requests equally, so you may use whichever you
+want. Servers limit the sizes of GET requests though, so POST is recommended.
+OKAPI does not support any other HTTP request types (such as PUT or DELETE). All
+CRUD operations are handled with GET and POST.</p>
 
+<p>Method parameters are passed using the
+<a href='https://en.wikipedia.org/wiki/Query_string'>web forms encoding</a>.
+(So, for example, in case of POST requests, you need to encode your body using
+<code>application/x-www-form-urlencoded</code> type, not as JSON.)</p>
+
+<p>Note: You may also use the HTTP <code>Authorization</code> header for passing
+OAuth arguments.</p>
 
 <h2 id='html'>A warning about HTML fields</h2>
 
-<p>Many of the fields returned in OKAPI responses are formatted in HTML.
-However, most of these fields come directly from the underlying Opencaching
-database. Currently, these fields are <b>not validated by OKAPI</b>. They
-<b>should</b> be validated by the Opencaching site itself (prior to inserting
-it to the database), but we cannot guarantee that they will be. And you
-shouldn't count on it too.</p>
+<p>Many fields returned in OKAPI responses are formatted with HTML. However,
+most of these fields come directly from the underlying Opencaching database.
+These fields are <b>not validated by OKAPI</b>. In theory, they should be
+validated by the Opencaching site itself (prior to inserting it to the
+database), but in practice they're not (at least in some sites).</p>
 
-<p>You must assume that our HTML content may contain anything, including
-invalid HTML markup, tracking images (pixels), or even
+<p>Therefore, you <b>must</b> assume that our HTML content may contain anything,
+including invalid HTML markup, tracking images (pixels), or even
 <a href='https://en.wikipedia.org/wiki/Cross-site_scripting'>XSS vectors</a>.
 This also applies to the descriptions included in the GPX files.</p>
 
 
 <h2 id='common-formatting'>Common formatting parameters</h2>
 
-<p>Most of the methods return simple objects, such as lists and dictionaries of
-strings and integers. We may format such objects for you in several ways. If
-you want to change the default (JSON) then you should include <i>common
-formatting parameters</i> in your request:</p>
+<p>Most of the methods return nested entities, such as lists and dictionaries of
+strings, integers and/or other entities. OKAPI may format such nested entities
+in several ways. That's JSON by default, but you can override that by adding
+<i>common formatting parameters</i> in your request:</p>
 
 <ul>
     <li>
@@ -221,12 +237,12 @@ JPEG or GPX file. Such methods do not accept <i>common formatting
 parameters</i>.</p>
 
 <p><b><u>Important:</u></b> Almost all of the returned data types are
-<b>extendible</b>. This means, that (in future) they <b>may contain data that
-currently they don't</b>. Such data will be included in backward-compatible
-manner, but still you should remember about it in some cases (i.e. when
-iterating over attributes of an object). This additional data may appear as
-extra elements in GPX files or extra keys in JSON responses. Your software
-<b>must ignore</b> such occurrences if it doesn't understand them!</p>
+<b>extendible</b>. This means, that (in the future) they <b>may contain data
+that currently they do not</b>. Such data will be included in
+backward-compatible manner, but still, you should remember about it in some
+cases (i.e. when iterating over attributes of an object). This additional data
+may appear as extra elements in GPX files or extra keys in JSON responses. Your
+software <b>must ignore</b> such occurrences if it doesn't understand them!</p>
 
 <div class='issue-comments' issue_id='30'></div>
 
@@ -238,7 +254,7 @@ extra elements in GPX files or extra keys in JSON responses. Your software
 an Access Token).</p>
 
 <p>The three OAuth request URLs defined in the
-<a href='https://oauth.net/core/1.0a/'>OAuth specification</a> are:</p>
+<a href='https://oauth.net/core/1.0a/'>OAuth 1.0a specification</a> are:</p>
 
 <ul>
     <li>
@@ -289,6 +305,7 @@ an Access Token).</p>
 </ul>
 
 <div class='issue-comments' issue_id='29'></div>
+
 
 <h2 id='errors'>Advanced error handling</h2>
 
@@ -365,15 +382,14 @@ dictionary may contain additional keys. Currently possible values of the
                 <ul>
                     <li><b>parameter</b> - the name of the parameter,</li>
                     <li>
-                        <b>whats_wrong_about_it</b> - a string, pretty
-                        self-explanatory,
+                        <b>whats_wrong_about_it</b> - a string,
                     </li>
                 </ul>
             </li>
         </ul>
     </li>
     <li>
-        <p><b>["invalid_oauth_request"]</b> - you've tried to use OAuth, but
+        <p><b>["invalid_oauth_request"]</b> - you tried using OAuth, but
         your request was invalid.</p>
 
         <p>Subclasses:</p>
@@ -395,7 +411,7 @@ dictionary may contain additional keys. Currently possible values of the
             <li>
                 <p><b>[ "invalid_oauth_request", "unsupported_signature_method"]</b>
                 - you tried to use an unsupported OAuth signature method (OKAPI
-                requires HMAC-SHA1).</p>
+                requires HMAC-SHA1 or PLAINTEXT).</p>
             </li>
             <li>
                 <p><b>[ "invalid_oauth_request", "invalid_consumer"]</b> - your
@@ -491,18 +507,18 @@ method, to detect if a new feature is available.</p>
 
 <h3>Site capabilities</h3>
 
-<p>OKAPI methods generally are designed to abstract from differences between OC
+<p>OKAPI methods are designed to "abstract away" most differences between OC
 installations. E.g. if some geocache or log property is not implemented, OKAPI
 still allows to request it, but will return <i>null</i> or <i>false</i> (as
 explained in the method docs). When submitting data, unsupported options are
-mostly ignored (as documented), or OKAPI will return an HTTP 200 result with
-the <i>success</i>=<i>false</i> field and a user-friendly explanation (as
-documented).</p>
+mostly ignored (as documented in the method), or OKAPI will return an HTTP 200
+result with the <i>success</i>=<i>false</i> field and a user-friendly
+explanation (as documented in the method).</p>
 
-<p>However, when searching for caches or submitting content, there are some
-exceptions where developers may need to know about the site's capabilities.
-The docs then will refer to one of the following methods, that your application
-can call to find out what features are available:</p>
+<p>However, when searching for caches or submitting content, it's sometimes
+useful to understand the exact differences each site's capabilities. Your
+application may use the following methods to find out what features are
+available:</p>
 
 <ul>
     <li><a href='services/attrs/attribute_index.html'>services/attrs/attribute_index</a>
@@ -510,15 +526,14 @@ can call to find out what features are available:</p>
     <li><a href='services/caches/capabilities.html'>services/caches/capabilities</a>
         - geocache capabilities,</li>
     <li><a href='services/logs/capabilities.html'>services/logs/capabilities</a>
-        - logging capabilitie.</li>
+        - logging capabilities.</li>
 </ul>
 
-<p>These methods also return information that allows to hide nonfunctional
-options from user interfaces. E.g. you may want to disable searching for
-geocaches by rating, if OKAPI would ignore the user's input (because the OC
-site does not implement ratings).</p>
+<p>Among other things, this information will allow you to hide nonfunctional
+options from your user interfaces. E.g. you may want to disable searching for
+geocaches by rating, if OKAPI would ignore the user's input (because some OC
+sites do not implement ratings).</p>
 
-<h3></h3>
 
 <h3 id='oc-branch-differences'>Branch tags</h3>
 

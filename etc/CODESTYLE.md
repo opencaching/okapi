@@ -1,5 +1,11 @@
 # A brief OKAPI coding style guide
 
+## General
+
+- When not sure, always keep existing styles and patterns.
+
+## Syntax
+
 - Indent with 4 spaces, no tabs.
 - Classes: CamelCase, `{` in new line.
 - Methods: lowercase_with_underlines, `{` in new line.
