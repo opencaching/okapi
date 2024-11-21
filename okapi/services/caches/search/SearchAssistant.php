@@ -423,28 +423,26 @@ class SearchAssistant
             try {
                 $users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
                     $this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
-	            if (empty($users) || !is_array($users)) {
-		            throw new InvalidParam('found_by', "No valid users found for the given parameter.");
-	            }
             } catch (InvalidParam $e) { # too many uuids
                 throw new InvalidParam('found_by', $e->whats_wrong_about_it);
             }
 
-	        $user_uuids = explode("|", $tmp);
+            if (empty($users) || !is_array($users)) {
+                throw new InvalidParam('found_by', "No valid users found for the given parameter.");
+            }
 
-	        $invalid_uuids = [];
-	        foreach ($user_uuids as $uuid) {
-		        if (!isset($users[$uuid])) {
-			        $invalid_uuids[] = $uuid;
-		        }
-	        }
+            $user_uuids = explode("|", $tmp);
 
-	        if (!empty($invalid_uuids)) {
-		        throw new InvalidParam(
-			        'found_by',
-			        "The following UUID(s) are invalid or not found: " . implode(", ", $invalid_uuids)
-		        );
-	        }
+            $invalid_uuids = [];
+            foreach ($user_uuids as $uuid) {
+                if (!isset($users[$uuid])) {
+                    $invalid_uuids[] = $uuid;
+                }
+            }
+
+            if (!empty($invalid_uuids)) {
+                throw new InvalidParam('found_by', "The following UUID(s) are invalid or not found: " . implode(", ", $invalid_uuids));
+            }
 
             $internal_user_ids = array_map(function ($user) { return $user["internal_id"]; }, $users);
             if (Settings::get('USE_SQL_SUBQUERIES')) {
