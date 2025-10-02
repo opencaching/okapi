@@ -467,6 +467,23 @@ class SearchAssistant
                 throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
             }
 
+	        if (empty($users) || !is_array($users)) {
+		        throw new InvalidParam('not_found_by', "No valid users found for the given parameter.");
+	        }
+
+	        $user_uuids = explode("|", $tmp);
+
+	        $invalid_uuids = [];
+	        foreach ($user_uuids as $uuid) {
+		        if (!isset($users[$uuid])) {
+			        $invalid_uuids[] = $uuid;
+		        }
+	        }
+
+	        if (!empty($invalid_uuids)) {
+		        throw new InvalidParam('not_found_by', "The following UUID(s) are invalid or not found: " . implode(", ", $invalid_uuids));
+	        }
+
             $internal_user_ids = array_map(function ($user) { return $user["internal_id"]; }, $users);
             if (Settings::get('USE_SQL_SUBQUERIES')) {
                 $found_cache_subquery = self::get_found_cache_ids_subquery($internal_user_ids);
