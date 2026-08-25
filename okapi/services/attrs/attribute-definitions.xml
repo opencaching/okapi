@@ -141,6 +141,10 @@ ID  YES NO  IMAGE               NAME
 65  YES NO  frontyard           Front Yard (Private Residence)
 66  YES NO  teamwork            Teamwork Required
 67  YES     geotour             GeoTour ***
+69  YES     bonuscache          Bonus cache
+70  YES     powertrail          Power trail
+71  YES     challengecache      Challenge cache
+72  YES     hqsolutionchecker   Geocaching.com solution checker     
 
 References:
 ***********
@@ -1088,15 +1092,16 @@ store these attributes in GPX <groundspeak:attribute> elements.
         <groundspeak id="53" inc="true" name="Park and grab" />
         <opencaching schema="OCDE" id="24" />
         <opencaching schema="OCUK" id="53" />
+        <opencaching schema="OCPL" id="53" />
         <lang id="en">
             <name>Park and grab</name>
             <desc>
                 The geocache is located close to a parking area, only a few steps
-                away.
+                away. Also known as "Drive-in Cache" or "Cache and dash".
             </desc>
         </lang>
         <lang id="de">
-            <name>Drive-In-Cache</name>
+            <name>Drive-In Cache</name>
             <desc>
                 Der Parkplatz befindet sich in unmittelbarer Nähe zum Geocache. Es
                 sind nicht mehr als einige Schritte notwendig, um den Geocache zu
@@ -1117,7 +1122,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
             </desc>
         </lang>
         <lang id="pl">
-            <name>Zaparkuj i znajdź</name>
+            <name>Zaparkujesz tuż obok skrzynki</name>
             <desc>
                 Skrzynka znajduje się w pobliżu parkingu, tylko kilka kroków dalej.
             </desc>
@@ -1127,6 +1132,12 @@ store these attributes in GPX <groundspeak:attribute> elements.
             <desc>
                 De cache is dicht bij een parkeerplaats, maar een paar stappen
                 verwijderd.
+            </desc>
+        </lang>
+        <lang id="ro">
+            <name>Parchez şi găsesc</name>
+            <desc>
+                Geocutia este ascunsă în apropierea unei parcări, la doar câţiva paşi.
             </desc>
         </lang>
     </attr>
@@ -4168,6 +4179,133 @@ store these attributes in GPX <groundspeak:attribute> elements.
             <name>Handicap: Blind</name>
             <desc>
                 Dieser Cache kann von Menschen mit Sehbehinderung gefunden werden.
+            </desc>
+        </lang>
+    </attr>
+
+    <attr acode="A98" categories="de-location">
+        <ocgs id="223" inc="true" />
+        <opencaching schema="OCPL" id="223" />
+        <opencaching schema="OCRO" id="223" />
+        <lang id="en">
+            <name>Detail</name>
+            <desc>
+                The cache can be found after locating an architectural detail in the designated area.
+                Read the description carefully.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Wyimek</name>
+            <desc>
+                Skrzynka do znalezienia po zlokalizowaniu detalu architektonicznego w danyym rejonie.
+            </desc>
+        </lang>
+        <lang id="ro">
+            <name>Detaliu</name>
+            <desc>
+                Geocutia poate fi găsită după ce ai identificat un detaliu arhitectural din zonă.
+                Citeşte cu atenţie descrierea.
+            </desc>
+        </lang>
+    </attr>
+
+    <attr acode="A99" categories="de-location">
+        <ocgs id="224" inc="true" />
+        <opencaching schema="OCPL" id="224" />
+        <opencaching schema="OCRO" id="224" />
+        <lang id="en">
+            <name>Natural monument</name>
+            <desc>
+                The cache is located near a natural monument, such as a protected tree or other natural feature.
+                Please respect nature and the site.                
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Pomnik przyrody</name>
+            <desc>
+                Skrzynka znajduje się w pobliżu pomnika przyrody ożywionej lub nieożywionej. 
+                Prosimy o poszanowanie przyrody i miejsca.
+            </desc>
+        </lang>
+        <lang id="ro">
+            <name>Monument al naturii</name>
+            <desc>
+                Geocutia se află în apropierea unui monument al naturii precum un arbore protejat sau arie naturală
+                protejată.
+                Vă rugăm să respectaţi natura şi zona protejată.
+            </desc>
+        </lang>
+    </attr>
+
+    <attr acode="A100" categories="de-location">
+        <groundspeak id="8" inc="true" name="Scenic view" />
+        <opencaching schema="OCPL" id="8" />
+        <opencaching schema="OCRO" id="8" />
+        <lang id="en">
+            <name>Scenic view</name>
+            <desc>
+                The geocache is placed near a scenic viewpoint. 
+                Take a moment to enjoy the view, snap a picture.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Punkt widokowy</name>
+            <desc>
+                Skrzynka znajduje się w pobliżu punktu widokowego.
+            </desc>
+        </lang>
+        <lang id="ro">
+            <name>Belvedere</name>
+            <desc>
+                Geocutia se află în apropierea unui punct de belvedere.
+                Bucură-te de privelişte, poate vrei să faci şi o fotografie.
+            </desc>
+        </lang>
+    </attr>
+
+    <attr acode="A101" categories="de-location">
+        <ocgs id="225" inc="true" />
+        <opencaching schema="OCPL" id="225" />
+        <opencaching schema="OCRO" id="225" />
+        <lang id="en">
+            <name>Street Art</name>
+            <desc>
+                The cache is located near a street painting,graffiti, mural or other form of urban art. 
+                Finding the cache does not require interfering with or damaging the artwork or its surroundings.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Street Art</name>
+            <desc>
+                Skrzynka znajduje się w pobliżu dzieła street artu, muralu lub innej formy sztuki ulicznej. 
+                Poszukiwania skrzynki nie wymagają ingerowania w dzieło ani jego otoczenie.
+            </desc>
+        </lang>
+        <lang id="ro">
+            <name>Artă stradală</name>
+            <desc>
+                Geocutia se află în apropierea unei picturi murale, graffiti sau altă formă de artă stradală.
+                Pentru a găsi geocutia nu trebuie să interacţionaţi sau să afectaţi în nici un fel 
+                opera de artă sau împrejurimile acesteia.
+            </desc>
+        </lang>
+    </attr>
+
+    <attr acode="A102" categories="de-location">
+        <ocgs id="226" inc="true" />
+        <opencaching schema="OCPL" id="226" />
+        <lang id="en">
+            <name>Urbex</name>
+            <desc>
+                The cache is located in or near an abandoned building or site. 
+                Take extra care while searching.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Urbex</name>
+            <desc>
+                Skrzynka znajduje się na terenie opuszczonego obiektu lub w jego bezpośrednim otoczeniu. 
+                Zachowaj szczególną ostrożność podczas poszukiwań
             </desc>
         </lang>
     </attr>
