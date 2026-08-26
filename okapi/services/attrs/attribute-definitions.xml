@@ -4091,14 +4091,32 @@ store these attributes in GPX <groundspeak:attribute> elements.
     <attr acode="A82" categories="de-cache-types">
         <groundspeak id="54" inc="true" name="Abandoned structure" />
         <opencaching schema="OCRO" id="54" />
+        <opencaching schema="OCPL" id="54" />
         <lang id="en">
-            <name>Ruin</name>
+            <name>Ruin / Urbex</name>
             <desc>
-                Abandoned structure / ruin.
+                The cache is located in or near an abandoned building, structure, or ruin.
+                It may indicate a location of interest for urban exploration.
+                Take extra care while searching.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Urbex / Ruiny</name>
+            <desc>
+                Skrzynka znajduje się na terenie lub w okolicy opuszczonego obiektu albo ruin. 
+                Zachowaj szczególną ostrożność podczas poszukiwań.
+            </desc>
+        </lang>
+        <lang id="ro">
+            <name>Ruină / Urbex</name>
+            <desc>
+                Geocutia este ascunsă în apropierea sau în zona unei clădiri sau structuri abandonate sau o ruină.
+                În mediu urban destinaţia poate fi un obiectiv Urbex.
+                Atenţie sporită în timpul căutării.
             </desc>
         </lang>
     </attr>
-
+    
     <attr acode="A83" categories="de-cache-types">
         <groundspeak id="48" inc="true" name="UV Light Required" />
         <opencaching schema="OCRO" id="48" />
@@ -4287,25 +4305,6 @@ store these attributes in GPX <groundspeak:attribute> elements.
                 Geocutia se află în apropierea unei picturi murale, graffiti sau altă formă de artă stradală.
                 Pentru a găsi geocutia nu trebuie să interacţionaţi sau să afectaţi în nici un fel 
                 opera de artă sau împrejurimile acesteia.
-            </desc>
-        </lang>
-    </attr>
-
-    <attr acode="A102" categories="de-location">
-        <ocgs id="226" inc="true" />
-        <opencaching schema="OCPL" id="226" />
-        <lang id="en">
-            <name>Urbex</name>
-            <desc>
-                The cache is located in or near an abandoned building or site. 
-                Take extra care while searching.
-            </desc>
-        </lang>
-        <lang id="pl">
-            <name>Urbex</name>
-            <desc>
-                Skrzynka znajduje się na terenie opuszczonego obiektu lub w jego bezpośrednim otoczeniu. 
-                Zachowaj szczególną ostrożność podczas poszukiwań
             </desc>
         </lang>
     </attr>
