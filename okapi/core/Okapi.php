@@ -1132,26 +1132,64 @@ class Okapi
       * in the future. Developers are advised to treat unknown types as
       * 'Comment's.
       */
+      
+    # LOGTYPE definitions    
+    # reference documentation: https://wiki.opencaching.eu/index.php?title=Log_types    
+    const LOGTYPE_ID_FOUNDIT = 1;
+    const LOGTYPE_ID_DIDNOTFIND = 2;
+    const LOGTYPE_ID_COMMENT = 3;
+    const LOGTYPE_ID_MOVED = 4;
+    const LOGTYPE_ID_NEEDMAINTENANCE = 5;
+    const LOGTYPE_ID_MADEMAINTENANCE = 6;
+    const LOGTYPE_ID_ATTENDED = 7;
+    const LOGTYPE_ID_WILLATTEND = 8;
+    const LOGTYPE_ID_ARCHIVED = 9;
+    const LOGTYPE_ID_READYTOSEARCH = 10;
+    const LOGTYPE_ID_TEMPORARYUNAVAILABLE = 11;
+    const LOGTYPE_ID_ADMINNOTE = 12;
+    const LOGTYPE_ID_LOCKED = 13;                  # OCDE only
+    const LOGTYPE_ID_LOCKEDINVISIBLE = 14;         # OCDE only
+   
+    const LOGTYPE_NAME_FOUNDIT = 'Found it';
+    const LOGTYPE_NAME_DIDNOTFIND = "Didn't find it";
+    const LOGTYPE_NAME_COMMENT = 'Comment';
+    const LOGTYPE_NAME_MOVED = 'Moved';
+    const LOGTYPE_NAME_NEEDMAINTENANCE = 'Needs Maintenance';
+    const LOGTYPE_NAME_MADEMAINTENANCE = 'Maintenance performed';
+    const LOGTYPE_NAME_ATTENDED = 'Attended';
+    const LOGTYPE_NAME_WILLATTEND = 'Will attend';
+    const LOGTYPE_NAME_ARCHIVED = 'Archived';
+    const LOGTYPE_NAME_READYTOSEARCH = 'Ready to search';
+    const LOGTYPE_NAME_TEMPORARYUNAVAILABLE = 'Temporarily unavailable';
+    const LOGTYPE_NAME_ADMINNOTE = 'OC Team comment';
+    const LOGTYPE_NAME_LOCKED = 'Locked';                                   # OCDE only
+    const LOGTYPE_NAME_LOCKEDINVISIBLE = 'Locked, invisible';               # OCDE only   
+    
     private static $submittable_log_types = [   # accepted by services/logs/submit
-        'Found it' => 1,
-        "Didn't find it" => 2,
-        'Comment' => 3,
-        'Attended' => 7,
-        'Will attend' => 8,
-        'Archived' => 9,   # not submittable on OCPL website, but supported and on the todo list
-        'Ready to search' => 10,
-        'Temporarily unavailable' => 11,
+        self::LOGTYPE_NAME_FOUNDIT => self::LOGTYPE_ID_FOUNDIT,
+        self::LOGTYPE_NAME_DIDNOTFIND => self::LOGTYPE_ID_DIDNOTFIND,
+        self::LOGTYPE_NAME_COMMENT => self::LOGTYPE_ID_COMMENT,
+        # LOGTYPE_ID_MOVED
+        # LOGTYPE_ID_NEEDMAINTENANCE
+        # LOGTYPE_ID_MADEMAINTENANCE
+        self::LOGTYPE_NAME_ATTENDED => self::LOGTYPE_ID_ATTENDED,
+        self::LOGTYPE_NAME_WILLATTEND => self::LOGTYPE_ID_WILLATTEND,
+        self::LOGTYPE_NAME_ARCHIVED => self::LOGTYPE_ID_ARCHIVED,           # not submittable on OCPL website, but supported and on the todo list
+        self::LOGTYPE_NAME_READYTOSEARCH => self::LOGTYPE_ID_READYTOSEARCH,
+        self::LOGTYPE_NAME_TEMPORARYUNAVAILABLE => self::LOGTYPE_ID_TEMPORARYUNAVAILABLE,
+        # LOGTYPE_ID_ADMINNOTE
+        # LOGTYPE_ID_LOCKED
+        # LOGTYPE_ID_LOCKEDINVISIBLE
     ];
     private static $nonsubmittable_log_types = [   # not implemented in services/logs/submit
         # OCPL only
-        'Moved' => 4,
-        'Needs maintenance' => 5,       # submittable by type=Comment&needs_maintenance2=true
-        'Maintenance performed' => 6,   # see https://github.com/opencaching/okapi/issues/548
-        'OC Team comment' => 12,
-
+        self::LOGTYPE_NAME_MOVED => self::LOGTYPE_ID_MOVED,
+        self::LOGTYPE_NAME_NEEDMAINTENANCE => self::LOGTYPE_ID_NEEDMAINTENANCE,     # submittable by type=Comment&needs_maintenance2=true
+        self::LOGTYPE_NAME_MADEMAINTENANCE => self::LOGTYPE_ID_MADEMAINTENANCE,     # see https://github.com/opencaching/okapi/issues/548
+        self::LOGTYPE_NAME_ADMINNOTE => self::LOGTYPE_ID_ADMINNOTE,
         # OCDE only
-        'Locked' => 13,
-        # TODO:  '???' => 14,     # OCDE "Locked, invisible"; OCPL (not implemented) "Blocked" 
+        self::LOGTYPE_NAME_LOCKED => self::LOGTYPE_ID_LOCKED,                       # OCDE only; equivalent to OCPL status="Blocked" 
+        self::LOGTYPE_NAME_LOCKEDINVISIBLE => self::LOGTYPE_ID_LOCKEDINVISIBLE,     # OCDE "Locked, invisible"
     ];
 
     public static function get_submittable_logtype_names()
@@ -1180,7 +1218,7 @@ class Okapi
     /** E.g. 1 => 'Found it'. For unknown ids returns 'Comment'. */
     public static function logtypeid2name($id)
     {
-        if ($id == 14) return "Locked";   # TODO: Assign an individual name.
+        if ($id == self::LOGTYPE_ID_LOCKEDINVISIBLE) return self::LOGTYPE_ID_LOCKED;        # TODO clarify
 
         static $reverted = null;
         if (!$reverted) {
@@ -1195,7 +1233,7 @@ class Okapi
         # There are lots of strange log types in OCPL databases.
         # OCPL websites ignore them or treat them as 'Comment's.
 
-        return "Comment";
+        return self::LOGTYPE_NAME_COMMENT;
     }
 
     /**

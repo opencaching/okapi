@@ -54,11 +54,19 @@ class WebService
         if ($logtype === null)
             $logtype = $log['type'];
         elseif (!in_array($logtype, array(
-            'Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended'
+            Okapi::LOGTYPE_NAME_FOUNDIT,
+            Okapi::LOGTYPE_NAME_DIDNOTFIND,
+            Okapi::LOGTYPE_NAME_COMMENT,
+            Okapi::LOGTYPE_NAME_WILLATTEND,
+            Okapi::LOGTYPE_NAME_ATTENDED
         ))) {
             throw new InvalidParam('logtype', "'$logtype' in not a valid logtype code.");
         } elseif (!in_array($log['type'], array(
-            'Found it', "Didn't find it", 'Comment', 'Will attend', 'Attended'
+            Okapi::LOGTYPE_NAME_FOUNDIT,
+            Okapi::LOGTYPE_NAME_DIDNOTFIND,
+            Okapi::LOGTYPE_NAME_COMMENT,
+            Okapi::LOGTYPE_NAME_WILLATTEND,
+            Okapi::LOGTYPE_NAME_ATTENDED
         ))) {
             throw new CannotPublishException("Cannot change the type of this log");
         }
@@ -128,7 +136,7 @@ class WebService
             # services/logs/edit options consistent: All allow to confirm an
             # existing value.
 
-            if (!in_array($logtype, ['Found it', 'Attended'])) {
+            if (!in_array($logtype, [Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_ATTENDED])) {
                 throw new BadRequest(
                     "Recommending is allowed only for 'Found it' and 'Attended' logs."
                 );
@@ -154,7 +162,7 @@ class WebService
         elseif ($recommend == 'false' && $cache['is_recommended'])
         {
             # For forward compatibility, we enforce the log type also for revocation.
-            if (!in_array($log['type'], ['Found it', 'Attended'])) {
+            if (!in_array($log['type'], [Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_ATTENDED])) {
                 throw new BadRequest(
                     "Must be a 'Found it' or 'Attended' log entry to withdraw recommendation."
                 );
@@ -177,7 +185,7 @@ class WebService
             $rating = 'unchanged';
 
         # For forward compatibility, we enforce the log type also for revocation.
-        if ($rating != 'unchanged' && !in_array($log['type'], ['Found it', 'Attended'])) {
+        if ($rating != 'unchanged' && !in_array($log['type'], [Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_ATTENDED])) {
             throw new BadRequest(
                 "Must be a 'Found it' or 'Attended' log entry to withdraw rating."
             );
