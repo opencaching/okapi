@@ -418,64 +418,13 @@ class SearchAssistant
         # found_by
         #
 
-        if ($tmp = $this->request->get_parameter('found_by'))
-        {
-            try {
-                $users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
-                    $this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
-            } catch (InvalidParam $e) { # too many uuids
-                throw new InvalidParam('found_by', $e->whats_wrong_about_it);
-            }
-
-            if (empty($users) || !is_array($users)) {
-                throw new InvalidParam('found_by', "No valid users found for the given parameter.");
-            }
-
-            $user_uuids = explode("|", $tmp);
-
-            $invalid_uuids = [];
-            foreach ($user_uuids as $uuid) {
-                if (!isset($users[$uuid])) {
-                    $invalid_uuids[] = $uuid;
-                }
-            }
-
-            if (!empty($invalid_uuids)) {
-                throw new InvalidParam('found_by', "The following UUID(s) are invalid or not found: " . implode(", ", $invalid_uuids));
-            }
-
-            $internal_user_ids = array_map(function ($user) { return $user["internal_id"]; }, $users);
-            if (Settings::get('USE_SQL_SUBQUERIES')) {
-                $found_cache_subquery = self::get_found_cache_ids_subquery($internal_user_ids);
-                $where_conds[] = "caches.cache_id in (".$found_cache_subquery.")";
-            } else {
-                $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
-                $where_conds[] = "caches.cache_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
-            }
-        }
+	    $this->apply_found_by_filter($where_conds);
 
         #
         # not_found_by
         #
 
-        if ($tmp = $this->request->get_parameter('not_found_by'))
-        {
-            try {
-                $users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
-                    $this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
-            } catch (InvalidParam $e) { # too many uuids
-                throw new InvalidParam('not_found_by', $e->whats_wrong_about_it);
-            }
-
-            $internal_user_ids = array_map(function ($user) { return $user["internal_id"]; }, $users);
-            if (Settings::get('USE_SQL_SUBQUERIES')) {
-                $found_cache_subquery = self::get_found_cache_ids_subquery($internal_user_ids);
-                $where_conds[] = "caches.cache_id not in (".$found_cache_subquery.")";
-            } else {
-                $found_cache_ids = self::get_found_cache_ids($internal_user_ids);
-                $where_conds[] = "caches.cache_id not in ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
-            }
-        }
+	    $this->apply_found_by_filter($where_conds, true);
 
         #
         # recommended_only
@@ -814,6 +763,49 @@ class SearchAssistant
             $this->search_params = array_merge_recursive($this->search_params, $ret_array);
         }
     }
+
+	private function apply_found_by_filter(&$where_conds, $is_exclude = false)
+	{
+		$param_name = $is_exclude ? 'not_found_by' : 'found_by';
+
+		if ($tmp = $this->request->get_parameter($param_name))
+		{
+			try {
+				$users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
+					$this->request->consumer, null, array('user_uuids' => $tmp, 'fields' => 'internal_id')));
+			} catch (InvalidParam $e) { # too many uuids
+				throw new InvalidParam($param_name, $e->whats_wrong_about_it);
+			}
+
+			if (empty($users) || !is_array($users)) {
+				throw new InvalidParam($param_name, "No valid users found for the given parameter.");
+			}
+
+			$user_uuids = explode("|", $tmp);
+
+			$invalid_uuids = [];
+			foreach ($user_uuids as $uuid) {
+				if (!isset($users[$uuid])) {
+					$invalid_uuids[] = $uuid;
+				}
+			}
+
+			if (!empty($invalid_uuids)) {
+				throw new InvalidParam($param_name, "The following UUID(s) are invalid or not found: " . implode(", ", $invalid_uuids));
+			}
+
+			$internal_user_ids = array_map(function ($user) { return $user["internal_id"]; }, $users);
+			$operator = $is_exclude ? "not in" : "in";
+
+			if (Settings::get('USE_SQL_SUBQUERIES')) {
+				$found_cache_subquery = self::get_found_cache_ids_subquery($internal_user_ids);
+				$where_conds[] = "caches.cache_id $operator (".$found_cache_subquery.")";
+			} else {
+				$found_cache_ids = self::get_found_cache_ids($internal_user_ids);
+				$where_conds[] = "caches.cache_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $found_cache_ids))."')";
+			}
+		}
+	}
 
     /**
      * Search for caches using conditions and options stored in the instance
