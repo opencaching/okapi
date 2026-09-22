@@ -107,6 +107,13 @@
                 <p><b>geocache_passwd_max_length</b> - the maximum length
                 of geocache log passwords.</p>
             </li>
+            <li>
+                <p><b>has_lists</b> - boolean, <b>true</b> if this installation
+                supports geocache lists. Only present on installations where it
+                is true. Use this to determine whether the
+                <a href="%OKAPI:methodargref:services/lists/create%">services/lists/*</a>
+                family of methods is available.</p>
+            </li>
         </ul>
     </returns>
 </xml>
