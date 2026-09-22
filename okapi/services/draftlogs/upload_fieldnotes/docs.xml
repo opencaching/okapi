@@ -1,0 +1,47 @@
+<xml>
+    <brief>Upload Fieldnotes</brief>
+    <infotags>ocde-specific</infotags>
+    <issue-id>630</issue-id>
+    <desc>
+        <p>This method allows you to upload a series of fieldnote objects in CSV format.
+        Fieldnotes are draft versions of log entries. Once uploaded, users will be able
+        to review, edit, and submit them via the Opencaching website.</p>
+        <p>This method is only available on installations that support draft logs. Check
+        the <b>has_draft_logs</b> field in
+        <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
+        before calling it.</p>
+    </desc>
+    <req name='field_notes'>
+        <p>The fieldnotes data. Accepted either as a raw string or base64-encoded
+        (base64 is recommended when the log text contains newlines or special characters,
+        and is required when using the OKAPI Browser).</p>
+        <p>The data is a sequence of CSV records with <b>no header line</b>. Each record
+        has four fields:</p>
+        <ol>
+            <li><b>Geocache Code</b> - e.g. <tt>OC1012</tt></li>
+            <li><b>Date</b> - ISO 8601 UTC, e.g. <tt>2023-11-23T10:17:55Z</tt></li>
+            <li><b>Log Type</b> - must match a value from the <b>log_types</b> list in
+            <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
+            (case sensitive). Records with unrecognized log types are silently skipped.</li>
+            <li><b>Log Text</b> - may span multiple lines and contain quote characters.</li>
+        </ol>
+        <p>Character encoding is detected automatically. Supported encodings: UTF-8
+        (with or without BOM), UTF-16LE (with or without BOM), UTF-16BE (with BOM).
+        This covers all known fieldnote sources (cgeo, Garmin, Looking4Cache, etc.).</p>
+        <p>Fieldnotes produced by multi-platform apps (e.g. cgeo) typically contain
+        records for several geocaching platforms at once. Records not starting with
+        an OC cache code are silently skipped; the difference between
+        <b>total_records</b> and <b>processed_records</b> in the response reflects this.</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li><b>success</b> - true</li>
+            <li><b>total_records</b> - number of CSV records found in the input</li>
+            <li><b>processed_records</b> - number of records actually inserted as draft
+            logs; may be less than <b>total_records</b> when records are skipped (wrong
+            platform prefix, unsupported log type, unknown cache code, invalid date)</li>
+        </ul>
+    </returns>
+</xml>

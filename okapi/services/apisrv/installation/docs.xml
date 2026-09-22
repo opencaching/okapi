@@ -107,6 +107,29 @@
                 <p><b>geocache_passwd_max_length</b> - the maximum length
                 of geocache log passwords.</p>
             </li>
+            <li>
+                <p><b>has_draft_logs</b> - boolean, <b>true</b> if this installation
+                supports draft log entries (fieldnotes). Use this to determine whether
+                <a href="%OKAPI:methodargref:services/draftlogs/upload_fieldnotes%">services/draftlogs/upload_fieldnotes</a>
+                is available.</p>
+            </li>
+            <li>
+                <p><b>has_lists</b> - boolean, <b>true</b> if this installation
+                supports geocache lists. Use this to determine whether the
+                <b>services/lists/*</b> family of methods is available.</p>
+            </li>
+            <li>
+                <p><b>cache_types</b> - list of cache type names supported by this
+                installation. Only present when <b>has_draft_logs</b> is true.
+                Values are OKAPI cache type names (e.g. <b>Traditional</b>,
+                <b>Multi-cache</b>).</p>
+            </li>
+            <li>
+                <p><b>log_types</b> - list of log type names that can be submitted
+                on this installation. Only present when <b>has_draft_logs</b> is true.
+                Use these values when uploading fieldnotes via
+                <a href="%OKAPI:methodargref:services/draftlogs/upload_fieldnotes%">services/draftlogs/upload_fieldnotes</a>.</p>
+            </li>
         </ul>
     </returns>
 </xml>

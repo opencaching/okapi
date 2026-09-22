@@ -1128,6 +1128,30 @@ class Okapi
       * installations. That's why all known types are hardcoded here.
       * These names are officially documented and may never change!
       *
+      * These strings are the external contract: they are the values
+      * accepted in the field-notes CSV format (Garmin/Groundspeak
+      * legacy), in the services/logs/submit "logtype" parameter, and
+      * returned by services/logs/entry, services/logs/capabilities,
+      * and services/apisrv/installation. The integer IDs are an
+      * internal storage detail; API consumers never see them.
+      *
+      * | Field notes / API string  | ID | Submittable | Notes                                 |
+      * |---------------------------|----|-------------|---------------------------------------|
+      * | "Found it"                |  1 | yes         |                                       |
+      * | "Didn't find it"          |  2 | yes         |                                       |
+      * | "Comment"                 |  3 | yes         |                                       |
+      * | "Moved"                   |  4 | no          | OCPL only                             |
+      * | "Needs maintenance"       |  5 | no          | Submit via Comment + needs_maintenance2=true |
+      * | "Maintenance performed"   |  6 | no          | see issue #548                        |
+      * | "Attended"                |  7 | yes         | Event caches only                     |
+      * | "Will attend"             |  8 | yes         | Event caches only                     |
+      * | "Archived"                |  9 | yes         | OCPL: on roadmap, not on website yet  |
+      * | "Ready to search"         | 10 | yes         |                                       |
+      * | "Temporarily unavailable" | 11 | yes         |                                       |
+      * | "OC Team comment"         | 12 | no          |                                       |
+      * | "Locked"                  | 13 | no          | OCDE only                             |
+      * | "Locked, invisible"       | 14 | no          | OCDE only; maps to "Locked" in output |
+      *
       * Important: This set is not closed. Other types may be introduced
       * in the future. Developers are advised to treat unknown types as
       * 'Comment's.
