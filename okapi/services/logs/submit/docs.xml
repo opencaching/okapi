@@ -25,6 +25,18 @@
                 <p>Note that <i>Ready to search</i> is inconsistently named;
                 the corresponding geocache status is <i>Available</i>.</p>
             </li>
+            <li>
+                <p>%OKAPI:infotag:ocpl-specific% <i>Needs maintenance</i> - for
+                non-Event caches, to indicate that the cache needs some special
+                attention of its owner. This is an alternative to using the
+                <b>needs_maintenance2</b> parameter (do not combine the two -
+                see <b>needs_maintenance2</b> below).</p>
+            </li>
+            <li>
+                <p>%OKAPI:infotag:ocpl-specific% <i>Maintenance performed</i> - for
+                non-Event caches owned by your user, to confirm that the owner
+                has performed the maintenance.</p>
+            </li>
         </ul>
         <p>Depending on the geocache and user status, there can be additional
         restrictions on what log types are currently available. If those
@@ -158,6 +170,9 @@
 
         <p>Note: Currently, this is not allowed for Event Caches (you will get a HTTP 200
         "user friendly" response).</p>
+        <p>Note: Do not combine this parameter with <b>logtype=Needs maintenance</b> or
+        <b>logtype=Maintenance performed</b> - submit those log types directly instead
+        (OKAPI will respond with a Bad Request error otherwise).</p>
         <p>You may query the <b>can_set_needs_maintenance</b> and
         <b>can_reset_needs_maintenance</b> fields of
         <a href="%OKAPI:methodargref:services/logs/capabilities%">services/logs/capabilities</a>

@@ -117,18 +117,31 @@ class WebService
             if ($event) {
                 $disabled_logtypes['Found it'] = true;
                 $disabled_logtypes["Didn't find it"] = true;
+                $disabled_logtypes['Needs maintenance'] = true;
+                $disabled_logtypes['Maintenance performed'] = true;
             } else {
                 $disabled_logtypes['Attended'] = true;
                 $disabled_logtypes['Will attend'] = true;
             }
 
+            # Only the cache owner may confirm that maintenance has been performed.
+
+            if (!$is_owner) {
+                $disabled_logtypes['Maintenance performed'] = true;
+            }
+
             # So far OKAPI only implements cache status changes by the owner.
             # Changing to status log types also is not implemented in OKAPI.
+            # The same applies to the two maintenance-related log types.
 
             if ($edit || !$is_owner) {
                 $disabled_logtypes['Ready to search'] = true;
                 $disabled_logtypes['Temporarily unavailable'] = true;
                 $disabled_logtypes['Archived'] = true;
+            }
+            if ($edit) {
+                $disabled_logtypes['Needs maintenance'] = true;
+                $disabled_logtypes['Maintenance performed'] = true;
             }
 
             # There are additional restrictions at OCPL sites.
