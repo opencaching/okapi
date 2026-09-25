@@ -71,6 +71,11 @@ class LogsCommon
                     'you can attend it, or comment on it)!'
                 ));
             }
+            if (in_array($logtype, array('Needs maintenance', 'Maintenance performed'))) {
+                throw new CannotPublishException(_(
+                    'This cache is an Event cache. Event caches cannot "need maintenance"!'
+                ));
+            }
         }
         else  # type != event
         {

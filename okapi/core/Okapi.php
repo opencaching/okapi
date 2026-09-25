@@ -1141,12 +1141,16 @@ class Okapi
         'Archived' => 9,   # not submittable on OCPL website, but supported and on the todo list
         'Ready to search' => 10,
         'Temporarily unavailable' => 11,
+
+        # OCPL only. On other branches, "needs maintenance" is expressed with
+        # the separate needs_maintenance2 flag, not as a standalone logtype -
+        # see get_submittable_logtype_names() below.
+        'Needs maintenance' => 5,       # also submittable by type=Comment&needs_maintenance2=true
+        'Maintenance performed' => 6,   # see https://github.com/opencaching/okapi/issues/548
     ];
     private static $nonsubmittable_log_types = [   # not implemented in services/logs/submit
         # OCPL only
         'Moved' => 4,
-        'Needs maintenance' => 5,       # submittable by type=Comment&needs_maintenance2=true
-        'Maintenance performed' => 6,   # see https://github.com/opencaching/okapi/issues/548
         'OC Team comment' => 12,
 
         # OCDE only
@@ -1154,14 +1158,28 @@ class Okapi
         # TODO:  '???' => 14,     # OCDE "Locked, invisible"; OCPL (not implemented) "Blocked" 
     ];
 
+    /**
+     * Log types accepted as the "logtype" parameter of services/logs/submit
+     * (and reported by services/logs/capabilities as submittable_logtypes).
+     *
+     * "Needs maintenance" and "Maintenance performed" are only directly
+     * submittable on OCPL. Other branches keep expressing the "needs
+     * maintenance" flag via the needs_maintenance2 parameter instead.
+     */
     public static function get_submittable_logtype_names()
     {
-        return array_keys(self::$submittable_log_types);
+        $names = array_keys(self::$submittable_log_types);
+        if (Settings::get('OC_BRANCH') != 'oc.pl') {
+            $names = array_values(array_diff(
+                $names, ['Needs maintenance', 'Maintenance performed']
+            ));
+        }
+        return $names;
     }
 
     public static function is_submittable_logtype($name)
     {
-        return isset(self::$submittable_log_types[$name]);
+        return in_array($name, self::get_submittable_logtype_names());
     }
 
     /**
