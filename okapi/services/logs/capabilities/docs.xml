@@ -90,8 +90,8 @@
                 if the user can reset a "needs maintenance" status of the cache
                 (or confirm that ist still is in good shape) by submitting
                 <i>needs_maintenance2=false</i>; <b>false</b> if this argument
-                will be ignored. This feature is not available yet at some OC
-                installations.</p>
+                will be ignored. Like "needs maintenance", this is not available
+                for all cache types.</p>
             </li>
         </ul>
         <p>The <b>can_rate</b> and <b>can_..._maintenance</b> fields currently

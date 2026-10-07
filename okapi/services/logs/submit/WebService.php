@@ -151,19 +151,6 @@ class WebService
             );
         }
 
-        if (
-            $needs_maintenance2 == 'false'
-            && Settings::get('OC_BRANCH') == 'oc.pl'
-        ) {
-            # If not supported, just ignore it.
-
-            self::$success_message .= " ".sprintf(_(
-                "However, your \"does not need maintenance\" flag was ignored, because ".
-                "%s does not yet support this feature."
-            ), Okapi::get_normalized_site_name());
-            $needs_maintenance2 = 'null';
-        }
-
         # Check if cache exists and retrieve cache internal ID (this will throw
         # a proper exception on invalid cache_code). Also, get the user object.
 
@@ -360,31 +347,36 @@ class WebService
             LogsCommon::check_if_user_can_add_recommendation($user['rcmd_founds_needed']);
         }
 
-        # If user checked the "needs_maintenance(2)" flag for OCPL, we will shuffle things
+        # If user set the "needs_maintenance(2)" flag for OCPL, we will shuffle things
         # a little...
 
-        if (Settings::get('OC_BRANCH') == 'oc.pl' && $needs_maintenance2 == 'true')
+        if (Settings::get('OC_BRANCH') == 'oc.pl' && $needs_maintenance2 != 'null')
         {
-            # If we're here, then we also know that the "Needs maintenance" log
-            # type is supported by this OC site. However, it's a separate log
-            # type, so we might have to submit two log types together:
+            # OCPL has separate log types for the maintenance status: "Needs
+            # maintenance" (needs_maintenance2=true) and "Maintenance performed"
+            # (needs_maintenance2=false; also used to confirm that the cache is
+            # fine, see issue #548). So we might have to submit two log types
+            # together:
+
+            $maintenance_logtype = ($needs_maintenance2 == 'true')
+                ? 'Needs maintenance' : 'Maintenance performed';
 
             if ($logtype == 'Comment')
             {
                 # If user submits a "Comment", we'll just change its type to
-                # "Needs maintenance". Only one log entry will be issued.
+                # the maintenance log type. Only one log entry will be issued.
 
-                $logtype = 'Needs maintenance';
+                $logtype = $maintenance_logtype;
                 $second_logtype = null;
                 $second_formatted_comment = null;
             }
             elseif ($logtype == 'Found it')
             {
                 # If "Found it", then we'll issue two log entries: one "Found
-                # it" with the original comment, and second one "Needs
-                # maintenance" with empty comment.
+                # it" with the original comment, and second one of the
+                # maintenance log type with empty comment.
 
-                $second_logtype = 'Needs maintenance';
+                $second_logtype = $maintenance_logtype;
                 $second_formatted_comment = "";
             }
             elseif ($logtype == "Didn't find it")
@@ -393,9 +385,10 @@ class WebService
                 # we'll do this the other way around. The first "Didn't find it" entry
                 # will have an empty comment. We will move the comment to the second
                 # "Needs maintenance" log entry. (It's okay for this behavior to change
-                # in the future, but it seems natural to me.)
+                # in the future, but it seems natural to me.) Only for
+                # needs_maintenance2=true; "false" was already dropped above.
 
-                $second_logtype = 'Needs maintenance';
+                $second_logtype = $maintenance_logtype;
                 $second_formatted_comment = $formatted_comment;
                 $formatted_comment = "";
             }
@@ -403,12 +396,13 @@ class WebService
                 'Ready to search', 'Temporarily unavailable', 'Archived')))
             {
                 # For status-changing logs, we'll issue two log entries, but this time
-                # we put the "Needs maintenance" first with empty comment, then the
-                # status-changing log with comment text.
+                # we put the maintenance log first with empty comment, then the
+                # status-changing log with comment text (e.g. "Maintenance performed",
+                # then "Ready to search").
 
                 $second_logtype = $logtype;
                 $second_formatted_comment = $formatted_comment;
-                $logtype = 'Needs maintenance';
+                $logtype = $maintenance_logtype;
                 $formatted_comment = "";
             }
             else if ($logtype == 'Will attend' || $logtype == 'Attended')
@@ -416,9 +410,11 @@ class WebService
                 # OC branches which allow maintenance logs, still don't allow them on
                 # event caches.
 
-                throw new CannotPublishException(_(
-                    "Event caches cannot \"need maintenance\"."
-                ));
+                throw new CannotPublishException(
+                    ($needs_maintenance2 == 'true')
+                    ? _("Event caches cannot \"need maintenance\".")
+                    : _("Maintenance cannot be logged for event caches.")
+                );
             }
             else {
                 throw new Exception();
@@ -464,10 +460,9 @@ class WebService
                 $second_logtype, $when + 1, $second_formatted_comment,
                 $value_for_text_html_field, $value_for_text_htmledit_field, 'null'
 
-                # Yes, the second log is the "needs maintenance" one. But this code
-                # is only called for OCPL, while the last parameter of insert_log_row()
-                # is only evaulated for OCDE! The 'null' is a dummy here, and the
-                # "needs maintenance" information is in $second_logtype.
+                # The maintenance information is in one of the two log types. This
+                # code is only called for OCPL, while the last parameter of
+                # insert_log_row() is only evaluated for OCDE, so 'null' is a dummy.
             );
             LogsCommon::update_cache_stats($cache['internal_id'], null, $second_logtype, null, $when + 1);
             LogsCommon::update_user_stats($user['internal_id'], null, $second_logtype);

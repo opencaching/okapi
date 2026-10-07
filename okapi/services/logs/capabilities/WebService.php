@@ -259,7 +259,7 @@ class WebService
         $result['can_reset_needs_maintenance'] =
             $logtype_is_allowed &&
             $submit &&
-            !$ocpl &&
+            !($ocpl && $event) &&   # OCPL: "Maintenance performed" log, not for events
             ($logtype === null || !in_array($logtype, ["Didn't find it", 'Archived']));
 
         # Done. Return the results.

@@ -26,6 +26,11 @@
                 the corresponding geocache status is <i>Available</i>.</p>
             </li>
         </ul>
+        <p>The <i>Needs maintenance</i> and <i>Maintenance performed</i> log types
+        of OCPL installations cannot be submitted directly. Use the
+        <b>needs_maintenance2</b> option instead, which works the same on all
+        installations. <i>Moved</i> and <i>OC Team comment</i> cannot be submitted
+        via OKAPI.</p>
         <p>Depending on the geocache and user status, there can be additional
         restrictions on what log types are currently available. If those
         additional criteria are not met, OKAPI returns success=false and an
@@ -148,13 +153,20 @@
                 <b>true</b> (one of them with empty comment).</p>
             </li>
             <li>
-                <p>%OKAPI:infotag:ocde-specific% <b>false</b> - use this to indicate that
-                your user thinks that the cache's condition is fine.</p>
+                <p><b>false</b> - use this to indicate that your user thinks that the
+                cache's condition is fine, e.g. after maintenance has been performed.</p>
 
-                <p>Note: The <b>false</b> option currently is not evaluated by some
-                installations. They will just ignore it.</p>
+                <p>Note: As with <b>true</b>, OKAPI may publish two separate log
+                entries (one of them with empty comment).</p>
             </li>
         </ul>
+
+        <p>How the condition is stored depends on the OC installation: OCDE
+        installations store it as a flag of the log entry itself. OCPL installations
+        have separate log types for it: <b>true</b> results in a <i>Needs
+        maintenance</i> log entry, <b>false</b> in a <i>Maintenance performed</i>
+        log entry. A <i>Comment</i> becomes such a log entry; with other log types,
+        the maintenance log entry is published in addition.</p>
 
         <p>Note: Currently, this is not allowed for Event Caches (you will get a HTTP 200
         "user friendly" response).</p>
