@@ -22,7 +22,7 @@ class WebService
     private static $valid_field_names = array(
         'uuid', 'username', 'profile_url', 'internal_id', 'date_registered', 'is_admin',
         'caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given', 'rcmds_left',
-        'rcmd_founds_needed', 'home_location', 'description'
+        'rcmd_founds_needed', 'home_location', 'description', 'is_oc_team'
     );
 
     public static function call(OkapiRequest $request)
@@ -40,8 +40,9 @@ class WebService
         foreach ($fields as $field)
             if (!in_array($field, self::$valid_field_names))
                 throw new InvalidParam('fields', "'$field' is not a valid field code.");
+        $role_column = (Settings::get('OC_BRANCH') == 'oc.pl') ? 'role' : "'' as role";
         $rs = Db::query("
-            select user_id, uuid, username, latitude, longitude, date_created, description
+            select user_id, uuid, username, latitude, longitude, date_created, description, ".$role_column."
             from user
             where uuid in ('".implode("','", array_map('\okapi\core\Db::escape_string', $user_uuids))."')
         ");
@@ -78,6 +79,11 @@ class WebService
                         } else {
                             $entry['is_admin'] = false;
                         }
+                        break;
+                    case 'is_oc_team':
+                        # OCPL stores roles in a SET column.
+                        # OCDE has no public equivalent, see #410 and #546.
+                        $entry['is_oc_team'] = in_array('ocTeamMember', explode(',', $row['role']));
                         break;
                     case 'internal_id': $entry['internal_id'] = $row['user_id']; break;
                     case 'date_registered':
