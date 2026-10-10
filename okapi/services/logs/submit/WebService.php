@@ -152,6 +152,17 @@ class WebService
         }
 
         if (
+            $needs_maintenance2 != 'null'
+            && in_array($logtype, array('Needs maintenance', 'Maintenance performed'))
+        ) {
+            throw new BadRequest(
+                "needs_maintenance(2) cannot be used together with logtype='$logtype'. ".
+                "Just submit the 'Needs maintenance' or 'Maintenance performed' log ".
+                "directly, without setting this flag."
+            );
+        }
+
+        if (
             $needs_maintenance2 == 'false'
             && Settings::get('OC_BRANCH') == 'oc.pl'
         ) {
@@ -207,6 +218,13 @@ class WebService
                 "you may not recommend your own caches."
             );
             $recommend = null;
+        }
+
+        if ($logtype == 'Maintenance performed' && $user['uuid'] != $cache['owner']['uuid']) {
+            throw new CannotPublishException(_(
+                "You are not the owner of this cache. Only the owner may log ".
+                "\"Maintenance performed\"."
+            ));
         }
 
         if (in_array($logtype, array('Ready to search', 'Temporarily unavailable', 'Archived')))
