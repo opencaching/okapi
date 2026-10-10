@@ -64,6 +64,10 @@
                 attendances the user needs in order to give another recomendation.</p>
             </li>
             <li>
+                <p><b>rcmds_received</b> - number of recommendations received for the
+                geocaches currently owned by the user.</p>
+            </li>
+            <li>
                 <p><b>home_location</b> - home location of the user in the "lat|lon" format
                 (lat and lon are in full degrees with a dot as a decimal point);
                 <b>null</b> if no home location is given in the user's Opencaching profile.</p>
