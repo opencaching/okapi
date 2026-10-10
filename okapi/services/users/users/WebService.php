@@ -22,7 +22,7 @@ class WebService
     private static $valid_field_names = array(
         'uuid', 'username', 'profile_url', 'internal_id', 'date_registered', 'is_admin',
         'caches_found', 'caches_notfound', 'caches_hidden', 'rcmds_given', 'rcmds_left',
-        'rcmd_founds_needed', 'home_location', 'description', 'is_oc_team'
+        'rcmd_founds_needed', 'rcmds_received', 'home_location', 'description', 'is_oc_team'
     );
 
     public static function call(OkapiRequest $request)
@@ -95,6 +95,7 @@ class WebService
                     case 'rcmds_given': /* handled separately */ break;
                     case 'rcmds_left': /* handled separately */ break;
                     case 'rcmd_founds_needed': /* handled separately */ break;
+                    case 'rcmds_received': /* handled separately */ break;
                     case 'home_location':
                         if (!$request->token) {
                             $entry['home_location'] = null;
@@ -204,6 +205,33 @@ class WebService
                 foreach ($results as $uuid => &$result_ref)
                     $result_ref[$field] = $extras[$uuid2id[$uuid]][$field];
             }
+        }
+
+        # rcmds_received
+
+        if (in_array('rcmds_received', $fields) && count($id2uuid) > 0)
+        {
+            # Count only the caches which OKAPI publishes (status 1,2,3), so that
+            # the result equals the sum of 'recommendations' of the user's caches.
+
+            $rs = Db::query("
+                select c.user_id, count(*) as rcmds_received
+                from
+                    caches c
+                    join cache_rating cr
+                        on cr.cache_id = c.cache_id
+                where
+                    c.user_id in (".implode(",", array_keys($id2uuid)).")
+                    and c.status in (1,2,3)
+                group by c.user_id
+            ");
+            $rcmds_received = [];
+            while ($row = Db::fetch_assoc($rs))
+                $rcmds_received[$row['user_id']] = 0 + $row['rcmds_received'];
+            Db::free_result($rs);
+            foreach ($results as $uuid => &$result_ref)
+                $result_ref['rcmds_received'] = $rcmds_received[$uuid2id[$uuid]] ?? 0;
+            unset($result_ref);
         }
 
         # Check which user IDs were not found and mark them with null.
