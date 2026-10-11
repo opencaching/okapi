@@ -183,6 +183,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         <opencaching schema="OCRO" id="106" />
         <opencaching schema="OCUK" id="106" />
         <opencaching schema="OCUS" id="106" />
+        <opencaching schema="OCPL" id="106" />
         <lang id="en">
             <name>Listed at Opencaching only</name>
             <desc>
@@ -4305,6 +4306,25 @@ store these attributes in GPX <groundspeak:attribute> elements.
                 Geocutia se află în apropierea unei picturi murale, graffiti sau altă formă de artă stradală.
                 Pentru a găsi geocutia nu trebuie să interacţionaţi sau să afectaţi în nici un fel 
                 opera de artă sau împrejurimile acesteia.
+            </desc>
+        </lang>
+    </attr>
+
+    <attr acode="A102" categories="de-location">
+        <groundspeak id="61" inc="true" name="Partnership cache" />
+        <opencaching schema="OCPL" id="226" />
+        <lang id="en">
+            <name>Partnership cache</name>
+            <desc>
+                The cache was created in cooperation with an institution or organization.
+                Its final location may be at or near the partner's site.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Skrzynka partnerska</name>
+            <desc>
+                Skrzynka powstała we współpracy z instytucją lub organizacją.
+                Jej finał może znajdować się na terenie lub przy obiekcie partnera.
             </desc>
         </lang>
     </attr>
