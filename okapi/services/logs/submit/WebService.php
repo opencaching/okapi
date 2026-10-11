@@ -252,6 +252,7 @@ class WebService
                     "However, your maintenance status tag was ignored, because ".
                     "you didn't find the cache."
                 );
+                $needs_maintenance2 = 'null';
             }
         }
 
@@ -361,7 +362,18 @@ class WebService
             $maintenance_logtype = ($needs_maintenance2 == 'true')
                 ? 'Needs maintenance' : 'Maintenance performed';
 
-            if ($logtype == 'Comment')
+            if ($cache['type'] == 'Event')
+            {
+                # OC branches which allow maintenance logs, still don't allow them on
+                # event caches (see also services/logs/capabilities).
+
+                throw new CannotPublishException(
+                    ($needs_maintenance2 == 'true')
+                    ? _("Event caches cannot \"need maintenance\".")
+                    : _("Maintenance cannot be logged for event caches.")
+                );
+            }
+            elseif ($logtype == 'Comment')
             {
                 # If user submits a "Comment", we'll just change its type to
                 # the maintenance log type. Only one log entry will be issued.
@@ -386,7 +398,7 @@ class WebService
                 # will have an empty comment. We will move the comment to the second
                 # "Needs maintenance" log entry. (It's okay for this behavior to change
                 # in the future, but it seems natural to me.) Only for
-                # needs_maintenance2=true; "false" was already dropped above.
+                # needs_maintenance2=true; "false" was dropped above.
 
                 $second_logtype = $maintenance_logtype;
                 $second_formatted_comment = $formatted_comment;
@@ -404,17 +416,6 @@ class WebService
                 $second_formatted_comment = $formatted_comment;
                 $logtype = $maintenance_logtype;
                 $formatted_comment = "";
-            }
-            else if ($logtype == 'Will attend' || $logtype == 'Attended')
-            {
-                # OC branches which allow maintenance logs, still don't allow them on
-                # event caches.
-
-                throw new CannotPublishException(
-                    ($needs_maintenance2 == 'true')
-                    ? _("Event caches cannot \"need maintenance\".")
-                    : _("Maintenance cannot be logged for event caches.")
-                );
             }
             else {
                 throw new Exception();
