@@ -144,13 +144,15 @@ class CronJobController
      */
     public static function reset_job_schedule($job_name, $key=null)
     {
+        # $job_name is either the full class name or its short name (e.g.
+        # "FulldumpGeneratorJob"), regardless of the namespace the job lives in.
         $thejob = null;
         foreach (self::get_enabled_cronjobs() as $tmp)
-            if (($tmp->get_name() == $job_name) || ($tmp->get_name() == "okapi\\cronjobs\\".$job_name))
+            if (($tmp->get_name() == $job_name) || ((new \ReflectionClass($tmp))->getShortName() == $job_name))
                 $thejob = $tmp;
         if ($thejob == null) {
             if ($key === null)
-                throw new \Exception("Could not reset schedule for job $job_name. $jon_name not found.");
+                throw new \Exception("Could not reset schedule for job $job_name: job not found.");
             else
                 return;
         }
