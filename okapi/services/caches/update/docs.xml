@@ -1,0 +1,58 @@
+<xml>
+    <brief>Update an existing geocache</brief>
+    <infotags>ocde-specific</infotags>
+    <issue-id></issue-id>
+    <desc>
+        <p>This method allows the cache owner to update details of an existing geocache.
+        Only the cache owner can modify a cache. At least one optional parameter must be provided.</p>
+    </desc>
+    <req name='cache_code'>
+        <p>Code of the cache to update. The authenticated user must be the cache owner.</p>
+    </req>
+    <opt name='cache_name'>
+        <p>New name for the cache (max 256 characters).</p>
+    </opt>
+    <opt name='difficulty'>
+        <p>New difficulty rating (1.0-5.0).</p>
+    </opt>
+    <opt name='terrain'>
+        <p>New terrain rating (1.0-5.0).</p>
+    </opt>
+    <opt name='size2'>
+        <p>New container size (none, nano, micro, small, regular, large, xlarge, other).</p>
+    </opt>
+    <opt name='short_description'>
+        <p>New short description/tagline (max 255 characters).</p>
+    </opt>
+    <opt name='description'>
+        <p>New full HTML description.</p>
+    </opt>
+    <opt name='hint2'>
+        <p>New plain-text hint.</p>
+    </opt>
+    <opt name='status'>
+        <p>New cache status. Must be one of: Available, Temporarily unavailable, Archived.</p>
+    </opt>
+    <opt name='alt_wpts'>
+        <p>JSON array of waypoints. Replaces all existing waypoints with the provided list.
+        Each waypoint must have: name, location (lat|lon), type, description.</p>
+    </opt>
+    <opt name='add_alt_wpts'>
+        <p>JSON array of waypoints to add without removing existing waypoints.</p>
+    </opt>
+    <opt name='remove_alt_wpts'>
+        <p>Pipe-separated list of waypoint names to remove (e.g., "P1|S1").</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li>
+                <p><b>success</b> - true, if the cache was updated successfully.</p>
+            </li>
+            <li>
+                <p><b>message</b> - status message for the user.</p>
+            </li>
+        </ul>
+    </returns>
+</xml>
