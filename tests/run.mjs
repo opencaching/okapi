@@ -199,10 +199,20 @@ await check('level 3: logs/capabilities', async () => {
   return `submittable: ${j.submittable_logtypes.join(', ')}`;
 });
 
+await check('level 3: user coordinates field (has_user_coords)', async () => {
+  needToken();
+  if (!ctx.installation?.has_user_coords) skip('installation has no has_user_coords');
+  if (!ctx.cacheCode) skip('no cache code');
+  const j = okJson(await api.request('services/caches/geocache',
+    { cache_code: ctx.cacheCode, fields: 'code|my_coords' }, { auth: 'hmac' }), 'geocache my_coords');
+  assert('my_coords' in j, 'my_coords missing');
+  return `my_coords=${j.my_coords}`;
+});
+
 // --- writing level (--write) ------------------------------------------------
 // Works on the target's writeCache, an existing cache that is never changed itself:
-// only per-user data is written to it (a personal note, one Comment log), and all of
-// it is removed again.
+// only per-user data is written to it (own coordinates, a personal note, one Comment
+// log), and all of it is removed again.
 
 if (write) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
@@ -212,6 +222,21 @@ if (write) {
   const read = async fields =>
     okJson(await api.request('services/caches/geocache', { cache_code: w.code, fields }, { auth: 'hmac' }), 'geocache');
   const needCache = () => { needToken(); if (!w.code) skip('target has no writeCache'); };
+
+  await check('write: save_user_coords set and remove', async () => {
+    needCache();
+    if (!ctx.installation?.has_user_coords) skip('installation has no has_user_coords');
+    const [lat, lon] = (await read('location')).location.split('|');
+    const coords = `${(Number(lat) + 0.001).toFixed(6)}|${(Number(lon) + 0.001).toFixed(6)}`;
+    await post('services/caches/save_user_coords', { cache_code: w.code, user_coords: coords }, 'set');
+    const set = (await read('my_coords')).my_coords;
+    const same = (a, b) => a.split('|').every((v, i) => Math.abs(Number(v) - Number(b.split('|')[i])) < 1e-6);
+    assert(set && same(set, coords), `my_coords is ${set}, expected ${coords}`);
+    await post('services/caches/save_user_coords', { cache_code: w.code, user_coords: '' }, 'remove');
+    const removed = (await read('my_coords')).my_coords;
+    assert(removed === null, `my_coords is ${removed} after removal`);
+    return `${coords}, then removed`;
+  });
 
   await check('write: save_personal_notes set and clear', async () => {
     needCache();

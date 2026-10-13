@@ -479,6 +479,18 @@
 
                 <p>This field requires you to use the <b>Level 3</b> Authentication.</p>
             </li>
+            <li>
+                <p><b>my_coords</b> - user's own (corrected) coordinates of the cache,
+                in the same "lat|lon" format as <b>location</b>, or <b>null</b> if
+                the user hadn't defined any. Use the
+                <a href="%OKAPI:methodref:services/caches/save_user_coords%">services/caches/save_user_coords</a>
+                method to set or remove them.</p>
+
+                <p>The same coordinates are also included in <b>alt_wpts</b>, as a
+                waypoint of the <b>user-coords</b> type.</p>
+
+                <p>This field requires you to use the <b>Level 3</b> Authentication.</p>
+            </li>
             <li><b>trackables_count</b> - a total number of trackables hidden within the cache.</li>
             <li>
                 <p><b>trackables</b> - list of dictionaries, each dictionary represents one

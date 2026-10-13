@@ -33,6 +33,7 @@ class WebService
         $result['has_image_positions'] = Settings::get('OC_BRANCH') == 'oc.de';
         $result['has_ratings'] = Settings::get('OC_BRANCH') == 'oc.pl';
         $result['geocache_passwd_max_length'] = Db::field_length('caches', 'logpw');
+        $result['has_user_coords'] = true;
 
         return Okapi::formatted_response($request, $result);
     }
