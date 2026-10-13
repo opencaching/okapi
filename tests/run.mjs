@@ -26,8 +26,8 @@ function loadTarget(name) {
     }
     return t;
   }
-  const { baseUrl, consumerKey, consumerSecret, accessToken, tokenSecret, allowWrite, writeCache } = config;
-  return { baseUrl, consumerKey, consumerSecret, accessToken, tokenSecret, allowWrite, writeCache };
+  const { baseUrl, consumerKey, consumerSecret, accessToken, tokenSecret, allowWrite, writeLocation, writeCache } = config;
+  return { baseUrl, consumerKey, consumerSecret, accessToken, tokenSecret, allowWrite, writeLocation, writeCache };
 }
 
 const targetName = opt('target');
@@ -224,18 +224,52 @@ await check('level 3: draftlogs/query (has_draft_logs)', async () => {
 });
 
 // --- writing level (--write) ------------------------------------------------
-// Works on the target's writeCache, an existing cache that is never changed itself:
-// only per-user data is written to it (own coordinates, a personal note, a list, draft
-// logs, one Comment log), and all of it is removed again.
+// Works on its own test cache, created first and archived last, so it touches no one
+// else's data. Everything it creates is removed again, except the archived test cache.
+// Installations without caches/create (OCPL) use the target's writeCache instead: an
+// existing cache, which is never updated or archived; only per-user data is written.
 
 if (write) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
-  const w = { code: target.writeCache };  // state of the writing level
+  const [lat, lon] = (target.writeLocation ?? '52.327366|9.543').split('|');
+  const w = {};  // state of the writing level
   const post = async (path, params, what) =>
     okJson(await api.request(path, params, { auth: 'hmac', method: 'POST' }), what);
   const read = async fields =>
     okJson(await api.request('services/caches/geocache', { cache_code: w.code, fields }, { auth: 'hmac' }), 'geocache');
-  const needCache = () => { needToken(); if (!w.code) skip('target has no writeCache'); };
+  const needCache = () => { needToken(); if (!w.code) skip('no test cache'); };
+
+  await check('write: caches/create', async () => {
+    needToken();
+    const params = {
+      cache_name: `okapi-test ${stamp}`, cache_type: 'Traditional', latitude: lat, longitude: lon,
+      difficulty: '1.5', terrain: '1.5', size2: 'micro',
+      short_description: 'Created by the OKAPI test suite; archived again at the end of the run.',
+    };
+    const res = await api.request('services/caches/create', params, { auth: 'hmac', method: 'POST' });
+    // caches/create, update and delete exist for OCDE only.
+    if (res.status === 400 && /not supported in this OKAPI installation/.test(res.text)) {
+      if (target.writeCache) { w.code = target.writeCache; w.foreign = true; }
+      skip(`caches/create is not supported by this installation (OCDE only)${w.foreign ? `; using writeCache ${w.code}` : ''}`);
+    }
+    const j = okJson(res, 'caches/create');
+    assert(j.cache_code, `no cache_code: ${JSON.stringify(j)}`);
+    w.code = j.cache_code;
+    const c = await read('code|name|status|owner');
+    assert(c.owner.uuid === ctx.user?.uuid, 'test cache is not owned by the test user');
+    return `${w.code} (${c.status})`;
+  });
+
+  await check('write: caches/update', async () => {
+    needCache();
+    if (w.foreign) skip('writeCache is not the test user\'s cache');
+    const name = `okapi-test ${stamp} (updated)`;
+    await post('services/caches/update', { cache_code: w.code, cache_name: name, difficulty: '2.5' }, 'caches/update');
+    const c = await read('name|difficulty');
+    assert(c.name === name, `name is '${c.name}'`);
+    assert(Number(c.difficulty) === 2.5, `difficulty is ${c.difficulty}`);
+    return 'name and difficulty changed';
+  });
 
   await check('write: save_user_coords set and remove', async () => {
     needCache();
@@ -366,6 +400,16 @@ if (write) {
       assert(d.success === true, `delete failed: ${d.message ?? JSON.stringify(d)}`);
     }
     return `log ${uuid} submitted, edited, deleted`;
+  });
+
+  // Always last: archive the test cache, even if checks above failed.
+  await check('write: caches/delete (archive the test cache)', async () => {
+    needCache();
+    if (w.foreign) skip('writeCache is not the test user\'s cache');
+    await post('services/caches/delete', { cache_code: w.code, reason: 'okapi test suite cleanup' }, 'caches/delete');
+    const c = await read('status');
+    assert(c.status === 'Archived', `status is ${c.status}`);
+    return `${w.code} archived`;
   });
 }
 
