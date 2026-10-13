@@ -225,8 +225,8 @@ await check('level 3: draftlogs/query (has_draft_logs)', async () => {
 
 // --- writing level (--write) ------------------------------------------------
 // Works on the target's writeCache, an existing cache that is never changed itself:
-// only per-user data is written to it (own coordinates, a personal note, draft logs,
-// one Comment log), and all of it is removed again.
+// only per-user data is written to it (own coordinates, a personal note, a list, draft
+// logs, one Comment log), and all of it is removed again.
 
 if (write) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
@@ -267,6 +267,22 @@ if (write) {
     const cleared = (await read('my_notes')).my_notes;
     assert(cleared === null || cleared === '', `my_notes is ${JSON.stringify(cleared)} after clearing`);
     return 'set, then cleared';
+  });
+
+  await check('write: lists create/add/get/remove/delete', async () => {
+    needCache();
+    if (!ctx.installation?.has_lists) skip('installation has no has_lists');
+    const list = await post('services/lists/create', { list_name: `okapi-test ${stamp}`, list_status: 'private' }, 'lists/create');
+    assert(list.list_id, 'no list_id');
+    try {
+      await post('services/lists/add_caches', { list_id: list.list_id, cache_codes: w.code }, 'add_caches');
+      const got = await post('services/lists/get_caches', { list_id: list.list_id }, 'get_caches');
+      assert((got.cache_codes ?? '').split('|').includes(w.code), `cache not in list: ${JSON.stringify(got)}`);
+      await post('services/lists/remove_caches', { list_id: list.list_id, cache_codes: w.code }, 'remove_caches');
+    } finally {
+      await post('services/lists/delete', { list_id: list.list_id }, 'lists/delete');
+    }
+    return 'list created, cache added and removed, list deleted';
   });
 
   await check('write: draftlogs/upload_fieldnotes (hybrid file)', async () => {
