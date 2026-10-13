@@ -214,10 +214,19 @@ await check('level 3: user coordinates field', async () => {
   return `user_coords=${j.user_coords}`;
 });
 
+await check('level 3: draftlogs/query (has_draft_logs)', async () => {
+  needToken();
+  if (!ctx.installation?.has_draft_logs) skip('installation has no has_draft_logs');
+  const j = okJson(await api.request('services/draftlogs/query', {}, { auth: 'hmac' }), 'draftlogs/query');
+  assert(Array.isArray(j), 'not an array');
+  for (const d of j) assert(d.draft_id && d.cache_code && d.type && typeof d.needs_maintenance2 === 'boolean', 'draft without draft_id/cache_code/type/needs_maintenance2');
+  return `${j.length} drafts`;
+});
+
 // --- writing level (--write) ------------------------------------------------
 // Works on the target's writeCache, an existing cache that is never changed itself:
-// only per-user data is written to it (own coordinates, a personal note, one Comment
-// log), and all of it is removed again.
+// only per-user data is written to it (own coordinates, a personal note, draft logs,
+// one Comment log), and all of it is removed again.
 
 if (write) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
@@ -258,6 +267,48 @@ if (write) {
     const cleared = (await read('my_notes')).my_notes;
     assert(cleared === null || cleared === '', `my_notes is ${JSON.stringify(cleared)} after clearing`);
     return 'set, then cleared';
+  });
+
+  await check('write: draftlogs/upload_fieldnotes (hybrid file)', async () => {
+    needCache();
+    if (!ctx.installation?.has_draft_logs) skip('installation has no has_draft_logs');
+    // One hybrid file as c:geo/Garmin write it: UTF-16LE, GC log type names, records of other platforms included.
+    const records = [
+      ['GC12345', 'Found it', 'TFTC', false],
+      [w.code, 'Found it', 'Grüße, Straße ß', true],
+      [w.code, 'Write note', "Zeile 1\nZeile 2 mit 'Zitat' <3", true],
+      [w.code, 'Needs Maintenance', 'Logbuch voll', true],
+      ['OP1234', 'Found it', 'Dzięki', false],
+    ];
+    const content = records.map(([code, type, text], i) => `${code},2024-05-01T10:2${i}:00Z,${type},"${text}"`).join('\n') + '\n';
+    const j = await post('services/draftlogs/upload_fieldnotes',
+      { field_notes: Buffer.from(content, 'utf16le').toString('base64') }, 'upload_fieldnotes');
+    const expected = records.filter(r => r[3]).length;
+    assert(j.success === true, `success is ${j.success}`);
+    assert(j.total_records === records.length, `total_records ${j.total_records}, expected ${records.length}`);
+    assert(j.processed_records === expected, `processed_records ${j.processed_records}, expected ${expected}`);
+    assert(Array.isArray(j.draft_ids) && j.draft_ids.length === expected, `draft_ids ${JSON.stringify(j.draft_ids)}`);
+    w.draftIds = j.draft_ids;
+    return `${j.processed_records} of ${j.total_records} records became drafts ${j.draft_ids.join(', ')}`;
+  });
+
+  await check('write: draftlogs/query and delete', async () => {
+    needCache();
+    if (!w.draftIds) skip('no drafts uploaded');
+    const q = async () => okJson(await api.request('services/draftlogs/query', { cache_code: w.code }, { auth: 'hmac' }), 'draftlogs/query');
+    const drafts = await q();
+    assert(drafts.length === w.draftIds.length, `query returns ${drafts.length} drafts, expected ${w.draftIds.length}`);
+    const got = drafts.map(d => `${d.type}${d.needs_maintenance2 ? '+NM' : ''}`).join(', ');
+    assert(got === "Found it, Comment, Comment+NM", `types are ${got}`);
+    assert(drafts[1].comment === "Zeile 1<br />\nZeile 2 mit 'Zitat' &lt;3", `comment is ${JSON.stringify(drafts[1].comment)}`);
+    const del = await post('services/draftlogs/delete', { draft_ids: [...w.draftIds, '999999999'].join('|') }, 'draftlogs/delete');
+    assert(del.success === true, 'success is not true');
+    assert([...del.deleted_draft_ids].sort().join() === [...w.draftIds].sort().join(), `deleted ${JSON.stringify(del.deleted_draft_ids)}`);
+    assert(del.not_found_draft_ids.join() === '999999999', `not_found ${JSON.stringify(del.not_found_draft_ids)}`);
+    assert((await q()).length === 0, 'drafts still there after delete');
+    const bad = await api.request('services/draftlogs/delete', { draft_ids: 'abc' }, { auth: 'hmac', method: 'POST' });
+    assert(bad.status === 400, `invalid draft_ids: HTTP ${bad.status}, expected 400`);
+    return `${got}; deleted, unknown ID reported, invalid ID rejected`;
   });
 
   await check('write: logs/submit, edit, delete', async () => {
