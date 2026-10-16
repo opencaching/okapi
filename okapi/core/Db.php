@@ -49,12 +49,6 @@ class Db
             PDO::MYSQL_ATTR_LOCAL_INFILE => true,
         );
 
-        /* Older PHP versions do not support the 'charset' DSN option. */
-
-        if ($dsnarr['charset'] and version_compare(PHP_VERSION, '5.3.6', '<')) {
-            $options[PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES ' . $dsnarr['charset'];
-        }
-
         $dsnpairs = array();
         foreach ($dsnarr as $k => $v) {
             if ($v === null) {
