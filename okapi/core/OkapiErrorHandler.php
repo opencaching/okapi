@@ -41,11 +41,11 @@ class OkapiErrorHandler
     /** Handle error encountered while executing OKAPI request. */
     public static function handle($severity, $message, $filename, $lineno)
     {
-        if ($severity != E_DEPRECATED &&
+        // 2048 = E_STRICT, still raised by PHP 7 (e.g. mysqli, htmlentities()).
+        // The constant itself is deprecated since PHP 8.4, so use its value.
+        if ($severity != 2048 && $severity != E_DEPRECATED &&
             error_reporting() > 0  // is 0 if suppressed by @ operator
         ) {
-            // Note: E_STRICT removed from this check — it was retired in PHP 8.0
-            // and its constant was deprecated in PHP 8.4.
             throw new \ErrorException($message, 0, $severity, $filename, $lineno);
         }
     }
