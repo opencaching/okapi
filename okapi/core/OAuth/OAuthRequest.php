@@ -257,9 +257,6 @@ class OAuthRequest {
      * util function: current nonce
      */
     private static function generate_nonce() {
-        $mt = microtime();
-        $rand = mt_rand();
-
-        return md5($mt . $rand); // md5s look nicer than numbers
+        return bin2hex(random_bytes(16));
     }
 }

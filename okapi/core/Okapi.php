@@ -57,23 +57,11 @@ class Okapi
     /** Return a new, random UUID. */
     public static function create_uuid()
     {
-        /* If we're on Linux, then we'll use a system function for that. */
+        $bytes = random_bytes(16);
+        $bytes[6] = chr(ord($bytes[6]) & 0x0f | 0x40);  # version 4
+        $bytes[8] = chr(ord($bytes[8]) & 0x3f | 0x80);  # RFC 4122 variant
 
-        if (file_exists("/proc/sys/kernel/random/uuid")) {
-            return trim(file_get_contents("/proc/sys/kernel/random/uuid"));
-        }
-
-        /* On other systems (as well as on some other Linux distributions)
-         * fall back to the original implementation (which is NOT safe - we had
-         * one duplicate during 3 years of its running). */
-
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($bytes), 4));
     }
 
     /**
@@ -579,7 +567,7 @@ class Okapi
         $key = "";
         for ($i=0; $i<$length; $i++)
         {
-            $key .= $chars[rand(0, $max-1)];
+            $key .= $chars[random_int(0, $max-1)];
         }
         return $key;
     }
