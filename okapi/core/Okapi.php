@@ -1185,7 +1185,7 @@ class Okapi
         # OCPL only
         self::LOGTYPE_NAME_MOVED => self::LOGTYPE_ID_MOVED,
         self::LOGTYPE_NAME_NEEDMAINTENANCE => self::LOGTYPE_ID_NEEDMAINTENANCE,     # submittable by type=Comment&needs_maintenance2=true
-        self::LOGTYPE_NAME_MADEMAINTENANCE => self::LOGTYPE_ID_MADEMAINTENANCE,     # see https://github.com/opencaching/okapi/issues/548
+        self::LOGTYPE_NAME_MADEMAINTENANCE => self::LOGTYPE_ID_MADEMAINTENANCE,     # submittable by type=Comment&needs_maintenance2=false
         self::LOGTYPE_NAME_ADMINNOTE => self::LOGTYPE_ID_ADMINNOTE,
         # OCDE only
         self::LOGTYPE_NAME_LOCKED => self::LOGTYPE_ID_LOCKED,                       # OCDE only; equivalent to OCPL status="Blocked"

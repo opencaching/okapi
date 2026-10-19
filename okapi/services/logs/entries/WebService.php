@@ -108,8 +108,8 @@ class WebService
                     and cr.cache_id = c.cache_id
                     ".$ratingdate_condition."
                     and cl.type in (
-                        ".Okapi::logtypename2id(Okapi::LOGTYPE_NAME_FOUNDIT).",
-                        ".Okapi::logtypename2id(Okapi::LOGTYPE_NAME_ATTENDED)."
+                        ".Okapi::LOGTYPE_ID_FOUNDIT.",
+                        ".Okapi::LOGTYPE_ID_ATTENDED."
                     )
                 ".$join_SQL."
             where
