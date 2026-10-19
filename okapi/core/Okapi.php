@@ -1132,9 +1132,9 @@ class Okapi
       * in the future. Developers are advised to treat unknown types as
       * 'Comment's.
       */
-      
-    # LOGTYPE definitions    
-    # reference documentation: https://wiki.opencaching.eu/index.php?title=Log_types    
+
+    # LOGTYPE definitions
+    # reference documentation: https://wiki.opencaching.eu/index.php?title=Log_types
     const LOGTYPE_ID_FOUNDIT = 1;
     const LOGTYPE_ID_DIDNOTFIND = 2;
     const LOGTYPE_ID_COMMENT = 3;
@@ -1149,12 +1149,12 @@ class Okapi
     const LOGTYPE_ID_ADMINNOTE = 12;
     const LOGTYPE_ID_LOCKED = 13;                  # OCDE only
     const LOGTYPE_ID_LOCKEDINVISIBLE = 14;         # OCDE only
-   
+
     const LOGTYPE_NAME_FOUNDIT = 'Found it';
     const LOGTYPE_NAME_DIDNOTFIND = "Didn't find it";
     const LOGTYPE_NAME_COMMENT = 'Comment';
     const LOGTYPE_NAME_MOVED = 'Moved';
-    const LOGTYPE_NAME_NEEDMAINTENANCE = 'Needs Maintenance';
+    const LOGTYPE_NAME_NEEDMAINTENANCE = 'Needs maintenance';
     const LOGTYPE_NAME_MADEMAINTENANCE = 'Maintenance performed';
     const LOGTYPE_NAME_ATTENDED = 'Attended';
     const LOGTYPE_NAME_WILLATTEND = 'Will attend';
@@ -1163,8 +1163,8 @@ class Okapi
     const LOGTYPE_NAME_TEMPORARYUNAVAILABLE = 'Temporarily unavailable';
     const LOGTYPE_NAME_ADMINNOTE = 'OC Team comment';
     const LOGTYPE_NAME_LOCKED = 'Locked';                                   # OCDE only
-    const LOGTYPE_NAME_LOCKEDINVISIBLE = 'Locked, invisible';               # OCDE only   
-    
+    const LOGTYPE_NAME_LOCKEDINVISIBLE = 'Locked, invisible';               # OCDE only
+
     private static $submittable_log_types = [   # accepted by services/logs/submit
         self::LOGTYPE_NAME_FOUNDIT => self::LOGTYPE_ID_FOUNDIT,
         self::LOGTYPE_NAME_DIDNOTFIND => self::LOGTYPE_ID_DIDNOTFIND,
@@ -1188,7 +1188,7 @@ class Okapi
         self::LOGTYPE_NAME_MADEMAINTENANCE => self::LOGTYPE_ID_MADEMAINTENANCE,     # see https://github.com/opencaching/okapi/issues/548
         self::LOGTYPE_NAME_ADMINNOTE => self::LOGTYPE_ID_ADMINNOTE,
         # OCDE only
-        self::LOGTYPE_NAME_LOCKED => self::LOGTYPE_ID_LOCKED,                       # OCDE only; equivalent to OCPL status="Blocked" 
+        self::LOGTYPE_NAME_LOCKED => self::LOGTYPE_ID_LOCKED,                       # OCDE only; equivalent to OCPL status="Blocked"
         self::LOGTYPE_NAME_LOCKEDINVISIBLE => self::LOGTYPE_ID_LOCKEDINVISIBLE,     # OCDE "Locked, invisible"
     ];
 
@@ -1218,7 +1218,7 @@ class Okapi
     /** E.g. 1 => 'Found it'. For unknown ids returns 'Comment'. */
     public static function logtypeid2name($id)
     {
-        if ($id == self::LOGTYPE_ID_LOCKEDINVISIBLE) return self::LOGTYPE_ID_LOCKED;        # TODO clarify
+        if ($id == self::LOGTYPE_ID_LOCKEDINVISIBLE) return self::LOGTYPE_NAME_LOCKED;   # TODO: Assign an individual name.
 
         static $reverted = null;
         if (!$reverted) {

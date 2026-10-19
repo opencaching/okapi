@@ -237,9 +237,9 @@ class LogsCommon
 
         if (Settings::get('OC_BRANCH') == 'oc.pl' &&
             $new_logtype != $old_logtype &&
-            in_array($new_logtype, array(Okapi::LOGTYPE_NAME_FOUNDIT, 
-                                         Okapi::LOGTYPE_NAME_DIDNOTFIND, 
-                                         Okapi::LOGTYPE_NAME_ATTENDED, 
+            in_array($new_logtype, array(Okapi::LOGTYPE_NAME_FOUNDIT,
+                                         Okapi::LOGTYPE_NAME_DIDNOTFIND,
+                                         Okapi::LOGTYPE_NAME_ATTENDED,
                                          Okapi::LOGTYPE_NAME_WILLATTEND)) &&
             !($new_logtype == Okapi::LOGTYPE_NAME_DIDNOTFIND && $old_logtype == Okapi::LOGTYPE_NAME_FOUNDIT) &&
             !($new_logtype == Okapi::LOGTYPE_NAME_WILLATTEND && $old_logtype == Okapi::LOGTYPE_NAME_ATTENDED)

@@ -156,8 +156,7 @@ class WebService
                 if ($cache['status'] == 'Available') {
                     $disabled_logtypes[Okapi::LOGTYPE_NAME_READYTOSEARCH] = true;
                 } elseif (in_array($cache['status'], ['Temporarily unavailable', 'Archived'])) {
-                    $disabled_logtypes[Okapi::LOGTYPE_NAME_TEMPORARYUNAVAILABLE] = true;
-                    $disabled_logtypes[Okapi::LOGTYPE_NAME_ARCHIVED] = true;
+                    $disabled_logtypes[$cache['status']] = true;
                 }
 
                 # OCPL owners cannot unarchive or publish their caches.
@@ -252,7 +251,7 @@ class WebService
             !($ocpl && $event) &&
             ($logtype === null || in_array(
                 $logtype, [
-                    Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::OGTYPE_NAME_COMMENT, Okapi::LOGTYPE_NAME_TEMPORARYUNAVAILABLE,
+                    Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_COMMENT, Okapi::LOGTYPE_NAME_TEMPORARYUNAVAILABLE,
                     ($ocpl ? Okapi::LOGTYPE_NAME_DIDNOTFIND : Okapi::LOGTYPE_NAME_ATTENDED)
                 ]
             ));
