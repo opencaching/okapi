@@ -968,8 +968,8 @@ class SearchAssistant
             where
                 user_id in ('".implode("','", array_map('\okapi\core\Db::escape_string', $internal_user_ids))."')
                 and type in (
-                    '".Db::escape_string(Okapi::logtypename2id("Found it"))."',
-                    '".Db::escape_string(Okapi::logtypename2id("Attended"))."'
+                    '".Db::escape_string(Okapi::LOGTYPE_ID_FOUNDIT)."',
+                    '".Db::escape_string(Okapi::LOGTYPE_ID_ATTENDED)."'
                 )
                 and ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "deleted = 0" : "true")."
         ";

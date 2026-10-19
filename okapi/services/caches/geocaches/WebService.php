@@ -506,8 +506,8 @@ class WebService
                 where
                     c.cache_id = cl.cache_id
                     and cl.type in (
-                        '".Db::escape_string(Okapi::logtypename2id("Found it"))."',
-                        '".Db::escape_string(Okapi::logtypename2id("Attended"))."'
+                        '".Db::escape_string(Okapi::LOGTYPE_ID_FOUNDIT)."',
+                        '".Db::escape_string(Okapi::LOGTYPE_ID_ATTENDED)."'
                     )
                     and cl.user_id = '".Db::escape_string($user_id)."'
                     ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "and cl.deleted = 0" : "")."
@@ -532,7 +532,7 @@ class WebService
                     cache_logs cl
                 where
                     c.cache_id = cl.cache_id
-                    and cl.type = '".Db::escape_string(Okapi::logtypename2id("Didn't find it"))."'
+                    and cl.type = '".Db::escape_string(Okapi::LOGTYPE_ID_DIDNOTFIND)."'
                     and cl.user_id = '".Db::escape_string($user_id)."'
                     ".((Settings::get('OC_BRANCH') == 'oc.pl') ? "and cl.deleted = 0" : "")."
             ");

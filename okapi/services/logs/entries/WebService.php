@@ -78,9 +78,9 @@ class WebService
         }
         else
         {
-            $teamentry_field = '(cl.type=12)';
+            $teamentry_field = '(cl.type=' . Okapi::LOGTYPE_ID_ADMINNOTE . ')';
             $ratingdate_condition = '';
-            $needs_maintenance_SQL = 'IF(cl.type=5, 2, IF(cl.type=6, 1, 0))';
+            $needs_maintenance_SQL = 'IF(cl.type=' . Okapi::LOGTYPE_ID_NEEDMAINTENANCE . ', 2, IF(cl.type=' . Okapi::LOGTYPE_ID_MADEMAINTENANCE . ', 1, 0))';
             $listing_is_outdated_SQL = '0';
             $join_SQL = 'left join cache_moved cm on cm.log_id=cl.id';
             $latlong_SQL = ', cm.latitude, cm.longitude';
@@ -108,8 +108,8 @@ class WebService
                     and cr.cache_id = c.cache_id
                     ".$ratingdate_condition."
                     and cl.type in (
-                        ".Okapi::logtypename2id("Found it").",
-                        ".Okapi::logtypename2id("Attended")."
+                        ".Okapi::LOGTYPE_ID_FOUNDIT.",
+                        ".Okapi::LOGTYPE_ID_ATTENDED."
                     )
                 ".$join_SQL."
             where

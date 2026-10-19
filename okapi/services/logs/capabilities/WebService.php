@@ -103,7 +103,7 @@ class WebService
             # The user must not edit other user's logs.
             $result['log_types'] = [];
         }
-        elseif ($edit && in_array($log['type'], ['Ready to search', 'Temporarily unavailable', 'Archived']))
+        elseif ($edit && in_array($log['type'], [Okapi::LOGTYPE_NAME_READYTOSEARCH, Okapi::LOGTYPE_NAME_TEMPORARYUNAVAILABLE, Okapi::LOGTYPE_NAME_ARCHIVED]))
         {
             # Changing a status-logtype is not implemented in OKAPI.
             $result['log_types'] = [$log['type']];
@@ -115,20 +115,20 @@ class WebService
             # Some log types are available only for certain cache types.
 
             if ($event) {
-                $disabled_logtypes['Found it'] = true;
-                $disabled_logtypes["Didn't find it"] = true;
+                $disabled_logtypes[Okapi::LOGTYPE_NAME_FOUNDIT] = true;
+                $disabled_logtypes[Okapi::LOGTYPE_NAME_DIDNOTFIND] = true;
             } else {
-                $disabled_logtypes['Attended'] = true;
-                $disabled_logtypes['Will attend'] = true;
+                $disabled_logtypes[Okapi::LOGTYPE_NAME_ATTENDED] = true;
+                $disabled_logtypes[Okapi::LOGTYPE_NAME_WILLATTEND] = true;
             }
 
             # So far OKAPI only implements cache status changes by the owner.
             # Changing to status log types also is not implemented in OKAPI.
 
             if ($edit || !$is_owner) {
-                $disabled_logtypes['Ready to search'] = true;
-                $disabled_logtypes['Temporarily unavailable'] = true;
-                $disabled_logtypes['Archived'] = true;
+                $disabled_logtypes[Okapi::LOGTYPE_NAME_READYTOSEARCH] = true;
+                $disabled_logtypes[Okapi::LOGTYPE_NAME_TEMPORARYUNAVAILABLE] = true;
+                $disabled_logtypes[Okapi::LOGTYPE_NAME_ARCHIVED] = true;
             }
 
             # There are additional restrictions at OCPL sites.
@@ -138,23 +138,23 @@ class WebService
                 # OCPL users cannot log multiple founds/attendances for the same cache.
 
                 if ($cache['is_found']) {
-                    $disabled_logtypes['Found it'] = true;
-                    $disabled_logtypes["Didn't find it"] = true;
-                    $disabled_logtypes['Attended'] = true;
-                    $disabled_logtypes['Will attend'] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_FOUNDIT] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_DIDNOTFIND] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_ATTENDED] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_WILLATTEND] = true;
                 }
 
                 # OCPL owners may attend their own events, but not search their own caches.
 
                 if ($is_owner) {
-                    $disabled_logtypes['Found it'] = true;
-                    $disabled_logtypes["Didn't find it"] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_FOUNDIT] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_DIDNOTFIND] = true;
                 }
 
                 # An OCPL cache status cannot be repeated / confirmed.
 
                 if ($cache['status'] == 'Available') {
-                    $disabled_logtypes['Ready to search'] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_READYTOSEARCH] = true;
                 } elseif (in_array($cache['status'], ['Temporarily unavailable', 'Archived'])) {
                     $disabled_logtypes[$cache['status']] = true;
                 }
@@ -163,8 +163,8 @@ class WebService
                 # (Nonpublic cache status are not implemented yet in OKAPI.)
 
                 if ($is_owner && !in_array($cache['status'], ['Available', 'Temporarily unavailable'])) {
-                    $disabled_logtypes['Temporarily unavailable'] = true;
-                    $disabled_logtypes['Ready to search'] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_TEMPORARYUNAVAILABLE] = true;
+                    $disabled_logtypes[Okapi::LOGTYPE_NAME_READYTOSEARCH] = true;
                 }
             }
 
@@ -174,10 +174,10 @@ class WebService
 
             if ($edit) {
                 unset($disabled_logtypes[$log['type']]);
-                if ($log['type'] == 'Found it')
-                    unset($disabled_logtypes["Didn't find it"]);
-                if ($log['type'] == 'Attended')
-                    unset($disabled_logtypes['Will attend']);
+                if ($log['type'] == Okapi::LOGTYPE_NAME_FOUNDIT)
+                    unset($disabled_logtypes[Okapi::LOGTYPE_NAME_DIDNOTFIND]);
+                if ($log['type'] == Okapi::LOGTYPE_NAME_ATTENDED)
+                    unset($disabled_logtypes[Okapi::LOGTYPE_NAME_WILLATTEND]);
             }
 
             $result['submittable_logtypes'] = array_values(array_diff(
@@ -197,11 +197,11 @@ class WebService
             $is_logger &&
             !$is_owner &&
             !($ocpl && $event) &&
-            ($logtype === null || in_array($logtype, ['Found it', 'Attended'])) &&  # throws BadRequest
+            ($logtype === null || in_array($logtype, [Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_ATTENDED])) &&  # throws BadRequest
             !$cache['is_recommended'] &&
             !(
-                ($submit && isset($disabled_logtypes['Found it']) && isset($disabled_logtypes['Attended'])) ||
-                ($edit && $ocpl && $cache['is_found'] && !in_array($log['type'], ['Found it', 'Attended']))
+                ($submit && isset($disabled_logtypes[Okapi::LOGTYPE_NAME_FOUNDIT]) && isset($disabled_logtypes[Okapi::LOGTYPE_NAME_ATTENDED])) ||
+                ($edit && $ocpl && $cache['is_found'] && !in_array($log['type'], [Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_ATTENDED]))
                 # (Cannot add a second OCPL found log for the cache, so we must edit THE found log to add rcmd.)
             )
         );
@@ -210,7 +210,7 @@ class WebService
             $result['rcmd_founds_needed'] = null;
         } else {
             $founds_needed = $user['rcmd_founds_needed'];
-            if ($submit || !in_array($log['type'], ['Found it', 'Attended']))
+            if ($submit || !in_array($log['type'], [Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_ATTENDED]))
             {
                 # To add a recomendation, the user must either submit a new
                 # 'Found it' log, or change an existing log's type to 'Found it'.
@@ -241,9 +241,9 @@ class WebService
             $submit &&
             $ocpl &&
             !$is_owner &&
-            ($logtype === null || in_array($logtype, ['Found it', 'Attended'])) &&  # throws BadRequest
+            ($logtype === null || in_array($logtype, [Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_ATTENDED])) &&  # throws BadRequest
             ($cache['my_rating'] == null) &&
-            !(isset($disabled_logtypes['Found it']) && isset($disabled_logtypes['Attended']));
+            !(isset($disabled_logtypes[Okapi::LOGTYPE_NAME_FOUNDIT]) && isset($disabled_logtypes[Okapi::LOGTYPE_NAME_ATTENDED]));
 
         $result['can_set_needs_maintenance'] =
             $logtype_is_allowed &&
@@ -251,8 +251,8 @@ class WebService
             !($ocpl && $event) &&
             ($logtype === null || in_array(
                 $logtype, [
-                    'Found it', 'Comment', 'Temporarily unavailable',
-                    ($ocpl ? "Didn't find it" : 'Attended')
+                    Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_COMMENT, Okapi::LOGTYPE_NAME_TEMPORARYUNAVAILABLE,
+                    ($ocpl ? Okapi::LOGTYPE_NAME_DIDNOTFIND : Okapi::LOGTYPE_NAME_ATTENDED)
                 ]
             ));
 
@@ -260,7 +260,7 @@ class WebService
             $logtype_is_allowed &&
             $submit &&
             !($ocpl && $event) &&   # OCPL: "Maintenance performed" log, not for events
-            ($logtype === null || !in_array($logtype, ["Didn't find it", 'Archived']));
+            ($logtype === null || !in_array($logtype, [Okapi::LOGTYPE_NAME_DIDNOTFIND, Okapi::LOGTYPE_NAME_ARCHIVED]));
 
         # Done. Return the results.
 

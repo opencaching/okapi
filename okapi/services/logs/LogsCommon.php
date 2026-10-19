@@ -65,7 +65,7 @@ class LogsCommon
 
         if ($cache['type'] == 'Event')
         {
-            if (in_array($logtype, array('Found it', "Didn't find it"))) {
+            if (in_array($logtype, array(Okapi::LOGTYPE_NAME_FOUNDIT, Okapi::LOGTYPE_NAME_DIDNOTFIND))) {
                 throw new CannotPublishException(_(
                     'This cache is an Event cache. You cannot "Find" it (but '.
                     'you can attend it, or comment on it)!'
@@ -74,7 +74,7 @@ class LogsCommon
         }
         else  # type != event
         {
-            if (in_array($logtype, array('Will attend', 'Attended'))) {
+            if (in_array($logtype, array(Okapi::LOGTYPE_NAME_WILLATTEND, Okapi::LOGTYPE_NAME_ATTENDED))) {
                 throw new CannotPublishException(_(
                     'This cache is NOT an Event cache. You cannot "Attend" it '.
                     '(but you can find it, or comment on it)!'
@@ -82,7 +82,7 @@ class LogsCommon
             }
         }
 
-        if (($logtype == 'Found it' || $logtype == 'Attended') && $cache['req_passwd'])
+        if (($logtype == Okapi::LOGTYPE_NAME_FOUNDIT || $logtype == Okapi::LOGTYPE_NAME_ATTENDED) && $cache['req_passwd'])
         {
             $valid_password = Db::select_value("
                 select logpw
@@ -103,7 +103,7 @@ class LogsCommon
 
     public static function validate_comment($comment, $logtype)
     {
-        if ($logtype == 'Comment' && strlen(trim($comment)) == 0) {
+        if ($logtype == Okapi::LOGTYPE_NAME_COMMENT && strlen(trim($comment)) == 0) {
             throw new CannotPublishException(_(
                 "Your have to supply some text for your comment."
             ));
@@ -136,7 +136,7 @@ class LogsCommon
                 "the past, but NOT in the future."
             ));
         }
-        if ($logtype == 'Attended' && $when < strtotime($date_hidden)) {
+        if ($logtype == Okapi::LOGTYPE_NAME_ATTENDED && $when < strtotime($date_hidden)) {
             throw new CannotPublishException(_(
                 'You cannot attend an event before it takes place. '.
                 'Please check the log type and date.'
@@ -237,15 +237,18 @@ class LogsCommon
 
         if (Settings::get('OC_BRANCH') == 'oc.pl' &&
             $new_logtype != $old_logtype &&
-            in_array($new_logtype, array('Found it', "Didn't find it", 'Attended', 'Will attend')) &&
-            !($new_logtype == "Didn't find it" && $old_logtype == 'Found it') &&
-            !($new_logtype == "Will attend" && $old_logtype == 'Attended')
+            in_array($new_logtype, array(Okapi::LOGTYPE_NAME_FOUNDIT,
+                                         Okapi::LOGTYPE_NAME_DIDNOTFIND,
+                                         Okapi::LOGTYPE_NAME_ATTENDED,
+                                         Okapi::LOGTYPE_NAME_WILLATTEND)) &&
+            !($new_logtype == Okapi::LOGTYPE_NAME_DIDNOTFIND && $old_logtype == Okapi::LOGTYPE_NAME_FOUNDIT) &&
+            !($new_logtype == Okapi::LOGTYPE_NAME_WILLATTEND && $old_logtype == Okapi::LOGTYPE_NAME_ATTENDED)
         ) {
             # OCPL owners are allowed to attend their own events, but not to
             # search their own caches:
 
             if ($user['uuid'] == $cache['owner']['uuid'] &&
-                !in_array($new_logtype, ['Attended', 'Will attend'])
+                !in_array($new_logtype, [Okapi::LOGTYPE_NAME_ATTENDED, Okapi::LOGTYPE_NAME_WILLATTEND])
             ) {
                 throw new CannotPublishException(_(
                     "You are the owner of this cache. You may submit ".
@@ -257,10 +260,10 @@ class LogsCommon
             # for an already found/attended cache, while OCDE allows all kinds of duplicate
             # logs.
 
-            if ($new_logtype == "Didn't find it")
-                $matching_logtype = 'Found it';
-            elseif ($new_logtype == 'Will attend')
-                $matching_logtype = 'Attended';
+            if ($new_logtype == Okapi::LOGTYPE_NAME_DIDNOTFIND)
+                $matching_logtype = Okapi::LOGTYPE_NAME_FOUNDIT;
+            elseif ($new_logtype == Okapi::LOGTYPE_NAME_WILLATTEND)
+                $matching_logtype = Okapi::LOGTYPE_NAME_ATTENDED;
             else
                 $matching_logtype = $new_logtype;
 
@@ -277,7 +280,7 @@ class LogsCommon
             ");
             if ($has_already_found_it) {
                 throw new CannotPublishException(
-                    $matching_logtype == 'Found it'
+                    $matching_logtype == Okapi::LOGTYPE_NAME_FOUNDIT
                     ? _("You have already submitted a \"Found it\" log entry once. ".
                         "Now you may submit \"Comments\" only!")
                     : _("You have already submitted an \"Attended\" log entry once. ".
@@ -320,19 +323,19 @@ class LogsCommon
             $deltaDNF = 0;
             $deltaComment = 0;
 
-            if ($old_logtype == 'Found it' || $old_logtype == 'Attended')
+            if ($old_logtype == Okapi::LOGTYPE_NAME_FOUNDIT || $old_logtype == Okapi::LOGTYPE_NAME_ATTENDED)
                 --$deltaFound;
-            elseif ($old_logtype == "Didn't find it" || $old_logtype == 'Will attend')
+            elseif ($old_logtype == Okapi::LOGTYPE_NAME_DIDNOTFIND || $old_logtype == Okapi::LOGTYPE_NAME_WILLATTEND)
                 --$deltaDNF;
-            elseif ($old_logtype == 'Comment')
+            elseif ($old_logtype == Okapi::LOGTYPE_NAME_COMMENT)
                 --$deltaComment;
 
-            $is_foundlog = ($new_logtype == 'Found it' || $new_logtype == 'Attended');
+            $is_foundlog = ($new_logtype == Okapi::LOGTYPE_NAME_FOUNDIT || $new_logtype == Okapi::LOGTYPE_NAME_ATTENDED);
             if ($is_foundlog)
                 ++$deltaFound;
-            elseif ($new_logtype == "Didn't find it" || $new_logtype == 'Will attend')
+            elseif ($new_logtype == Okapi::LOGTYPE_NAME_DIDNOTFIND || $new_logtype == Okapi::LOGTYPE_NAME_WILLATTEND)
                 ++$deltaDNF;
-            elseif ($new_logtype == 'Comment')
+            elseif ($new_logtype == Okapi::LOGTYPE_NAME_COMMENT)
                 ++$deltaComment;
 
             # Other log types do not change the cache stats.
@@ -348,7 +351,8 @@ class LogsCommon
                 $last_found = Db::select_value("
                     select max(`date`)
                     from cache_logs
-                    where type in (1,7) and cache_id = '".Db::escape_string($cache_internal_id)."' and deleted = 0
+                    where type in (" . Okapi::LOGTYPE_ID_FOUNDIT . "," . Okapi::LOGTYPE_ID_ATTENDED . ") and cache_id = '"
+                    .Db::escape_string($cache_internal_id)."' and deleted = 0
                 ");
                 $set_lastfound_SQL = ", last_found='".Db::escape_string($last_found)."'";
             } else {
@@ -382,18 +386,18 @@ class LogsCommon
             $deltaDNF = 0;
             $deltaComment = 0;
 
-            if ($old_logtype == 'Found it')
+            if ($old_logtype == Okapi::LOGTYPE_NAME_FOUNDIT)
                 --$deltaFound;
-            elseif ($old_logtype == "Didn't find it")
+            elseif ($old_logtype == Okapi::LOGTYPE_NAME_DIDNOTFIND)
                 --$deltaDNF;
-            elseif ($old_logtype == 'Comment')
+            elseif ($old_logtype == Okapi::LOGTYPE_NAME_COMMENT)
                 --$deltaComment;
 
-            if ($new_logtype == 'Found it')
+            if ($new_logtype == Okapi::LOGTYPE_NAME_FOUNDIT)
                 ++$deltaFound;
-            elseif ($new_logtype == "Didn't find it")
+            elseif ($new_logtype == Okapi::LOGTYPE_NAME_DIDNOTFIND)
                 ++$deltaDNF;
-            elseif ($new_logtype == 'Comment')
+            elseif ($new_logtype == Okapi::LOGTYPE_NAME_COMMENT)
                 ++$deltaComment;
 
             # Other log types do not change the cache stats.
@@ -424,7 +428,7 @@ class LogsCommon
 
         # Discard recommendation and rating, if log type changes from found/attended
 
-        if ($log['type'] == 'Found it' || $log['type'] == 'Attended')
+        if ($log['type'] == Okapi::LOGTYPE_NAME_FOUNDIT || $log['type'] == Okapi::LOGTYPE_NAME_ATTENDED)
         {
             $user_and_cache_condition_SQL = "
                 user_id='".Db::escape_string($log['user']['internal_id'])."'
@@ -441,7 +445,7 @@ class LogsCommon
                 select max(`date`)
                 from cache_logs
                 where ".$user_and_cache_condition_SQL."
-                and type in (1,7)
+                and type in (" . Okapi::LOGTYPE_ID_FOUNDIT . "," . Okapi::LOGTYPE_ID_ATTENDED . ")
                 ".(Settings::get('OC_BRANCH') == 'oc.pl' ? "and deleted = 0" : "") . "
             ");
             if (!$last_found) {
@@ -548,8 +552,8 @@ class LogsCommon
 
         $update_user_ids = [];
 
-        if ($new_logtype == 'Found it' || $new_logtype == 'Attended' ||
-            $old_logtype == 'Found it' || $old_logtype == 'Attended')
+        if ($new_logtype == Okapi::LOGTYPE_NAME_FOUNDIT || $new_logtype == Okapi::LOGTYPE_NAME_ATTENDED ||
+            $old_logtype == Okapi::LOGTYPE_NAME_FOUNDIT || $old_logtype == Okapi::LOGTYPE_NAME_ATTENDED)
         {
             $update_user_ids[] = $logger_internal_id;
 
@@ -563,7 +567,7 @@ class LogsCommon
 
         if ($owner_internal_id !== null && array_intersect(
             [$new_logtype, $old_logtype],
-            ['Ready to search', 'Temporarily unavailable', 'Archived']
+            [Okapi::LOGTYPE_NAME_READYTOSEARCH, Okapi::LOGTYPE_NAME_TEMPORARYUNAVAILABLE, Okapi::LOGTYPE_NAME_ARCHIVED]
         )) {
             $update_user_ids[] = $owner_internal_id;
         }
