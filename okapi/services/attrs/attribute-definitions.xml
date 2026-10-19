@@ -2374,6 +2374,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
     <attr acode="A45" categories="de-time-and-seasons">
         <groundspeak id="62" inc="true" name="Seasonal access" />
         <opencaching schema="OCDE" id="60" />
+        <opencaching schema="OCPL" id="62" />
         <lang id="en">
             <name>Only available during specified seasons</name>
             <desc>
@@ -2403,10 +2404,10 @@ store these attributes in GPX <groundspeak:attribute> elements.
             </desc>
         </lang>
         <lang id="pl">
-            <name>Dostępna tylko w określonych porach roku</name>
+            <name>Sezonowy dostęp</name>
             <desc>
-                Skrzynka może być podjęta jedynie w pewnych okresach - więcej
-                szczegółów w opisie.
+                Skrzynka dostępna tylko w określonych porach roku. Przed wyprawą sprawdź,
+                czy miejsce jest dostępne.
             </desc>
         </lang>
     </attr>
@@ -3341,6 +3342,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
     <attr acode="A63" categories="de-dangers">
         <groundspeak id="39" inc="true" name="Thorns" />
         <opencaching schema="OCDE" id="13" />
+        <opencaching schema="OCPL" id="39" />
         <opencaching schema="OCNL" id="39" />
         <opencaching schema="OCRO" id="39" />
         <opencaching schema="OCUK" id="39" />
@@ -3383,10 +3385,12 @@ store these attributes in GPX <groundspeak:attribute> elements.
             </desc>
         </lang>
         <lang id="pl">
-            <name>Uwaga na kolce</name>
+            <name>Kolce i ciernie</name>
             <desc>
-                W okolicy skrzynki występują kolczaste rośliny. Wskazany odpowiedni
-                strój.
+                Skrzynka może znajdować się w pobliżu kolczastych lub ciernistych roślin,
+                takich jak jeżyny, róże, głogi lub inna roślinność wyposażona w kolce czy
+                ciernie. Podczas poszukiwań zachowaj ostrożność, aby uniknąć zadrapań lub
+                ukłuć.
             </desc>
         </lang>
     </attr>
@@ -4312,7 +4316,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
 
     <attr acode="A102" categories="de-location">
         <groundspeak id="61" inc="true" name="Partnership cache" />
-        <opencaching schema="OCPL" id="226" />
+        <opencaching schema="OCPL" id="61" />
         <lang id="en">
             <name>Partnership cache</name>
             <desc>
