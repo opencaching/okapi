@@ -22,7 +22,7 @@ class WebService
     {
         # Writes the OCDE database layout; other installations would fail half-way.
         if (Settings::get('OC_BRANCH') != 'oc.de')
-            throw new BadRequest('This method is not supported in this OKAPI installation.');
+            throw new BadRequest('This method is not supported in this OKAPI installation. See the has_cache_editing field in services/apisrv/installation method.');
 
         $user_id = $request->token->user_id;
 

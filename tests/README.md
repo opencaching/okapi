@@ -67,7 +67,7 @@ It works on its own test cache, so it touches no one else's data:
 
 Left behind per run: the archived test cache.
 
-`caches/create`, `update` and `delete` exist on OCDE only. Elsewhere (OCPL), set
+`caches/create`, `update` and `delete` run only where `has_cache_editing` is set (OCDE). Elsewhere (OCPL), set
 `writeCache` in the target to an existing cache code; steps 3–7 then run on that
 cache and steps 1, 2 and 8 are skipped, so the cache itself is never changed. Only
 per-user data is written to it, and all of it is removed again. OCPL accepts user

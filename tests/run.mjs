@@ -226,7 +226,7 @@ await check('level 3: draftlogs/query (has_draft_logs)', async () => {
 // --- writing level (--write) ------------------------------------------------
 // Works on its own test cache, created first and archived last, so it touches no one
 // else's data. Everything it creates is removed again, except the archived test cache.
-// Installations without caches/create (OCPL) use the target's writeCache instead: an
+// Installations without cache editing (has_cache_editing false, e.g. OCPL) use the target's writeCache instead: an
 // existing cache, which is never updated or archived; only per-user data is written.
 
 if (write) {
@@ -241,18 +241,16 @@ if (write) {
 
   await check('write: caches/create', async () => {
     needToken();
+    if (!ctx.installation?.has_cache_editing) {
+      if (target.writeCache) { w.code = target.writeCache; w.foreign = true; }
+      skip(`installation has no has_cache_editing${w.foreign ? `; using writeCache ${w.code}` : ''}`);
+    }
     const params = {
       cache_name: `okapi-test ${stamp}`, cache_type: 'Traditional', latitude: lat, longitude: lon,
       difficulty: '1.5', terrain: '1.5', size2: 'micro',
       short_description: 'Created by the OKAPI test suite; archived again at the end of the run.',
     };
-    const res = await api.request('services/caches/create', params, { auth: 'hmac', method: 'POST' });
-    // caches/create, update and delete exist for OCDE only.
-    if (res.status === 400 && /not supported in this OKAPI installation/.test(res.text)) {
-      if (target.writeCache) { w.code = target.writeCache; w.foreign = true; }
-      skip(`caches/create is not supported by this installation (OCDE only)${w.foreign ? `; using writeCache ${w.code}` : ''}`);
-    }
-    const j = okJson(res, 'caches/create');
+    const j = await post('services/caches/create', params, 'caches/create');
     assert(j.cache_code, `no cache_code: ${JSON.stringify(j)}`);
     w.code = j.cache_code;
     const c = await read('code|name|status|owner');
