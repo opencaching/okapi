@@ -199,9 +199,14 @@ await check('level 3: logs/capabilities', async () => {
   return `submittable: ${j.submittable_logtypes.join(', ')}`;
 });
 
-await check('level 3: user coordinates field (has_user_coords)', async () => {
+// Whether an installation has a method: services/apiref/method answers 400 for unknown ones.
+const hasMethod = async name =>
+  (await api.request('services/apiref/method', { name }, { auth: 'none' })).status === 200;
+ctx.hasUserCoords = await hasMethod('services/caches/save_user_coords');
+
+await check('level 3: user coordinates field', async () => {
   needToken();
-  if (!ctx.installation?.has_user_coords) skip('installation has no has_user_coords');
+  if (!ctx.hasUserCoords) skip('installation has no services/caches/save_user_coords');
   if (!ctx.cacheCode) skip('no cache code');
   const j = okJson(await api.request('services/caches/geocache',
     { cache_code: ctx.cacheCode, fields: 'code|user_coords' }, { auth: 'hmac' }), 'geocache user_coords');
@@ -225,7 +230,7 @@ if (write) {
 
   await check('write: save_user_coords set and remove', async () => {
     needCache();
-    if (!ctx.installation?.has_user_coords) skip('installation has no has_user_coords');
+    if (!ctx.hasUserCoords) skip('installation has no services/caches/save_user_coords');
     const [lat, lon] = (await read('location')).location.split('|');
     const coords = `${(Number(lat) + 0.001).toFixed(6)}|${(Number(lon) + 0.001).toFixed(6)}`;
     const same = (a, b) => a.split('|').every((v, i) => Math.abs(Number(v) - Number(b.split('|')[i])) < 1e-6);

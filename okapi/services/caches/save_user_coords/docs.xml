@@ -10,8 +10,7 @@
         using the <b>user_coords</b> field (or the <b>user-coords</b> entry of the
         <b>alt_wpts</b> field) in the
         <a href="%OKAPI:methodargref:services/caches/geocache#fields%">services/caches/geocache</a>
-        method. Use <a href="%OKAPI:methodref:services/apisrv/installation%">services/apisrv/installation</a>
-        (<b>has_user_coords</b>) to find out if an installation supports this method.</p>
+        method.</p>
     </desc>
     <req name='cache_code'>
         <p>Code of the geocache.</p>
