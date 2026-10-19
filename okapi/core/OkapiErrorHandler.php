@@ -43,6 +43,7 @@ class OkapiErrorHandler
     {
         // 2048 = E_STRICT, still raised by PHP 7 (e.g. mysqli, htmlentities()).
         // The constant itself is deprecated since PHP 8.4, so use its value.
+        // TODO: drop when PHP 8 is required.
         if ($severity != 2048 && $severity != E_DEPRECATED &&
             error_reporting() > 0  // is 0 if suppressed by @ operator
         ) {
