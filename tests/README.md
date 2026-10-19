@@ -36,7 +36,7 @@ What it checks:
 - level 1: unknown consumer key rejected; `caches/search/all`, `caches/geocache`, `logs/logs`
 - level 3: `users/user` signed with PLAINTEXT and with HMAC-SHA1 (both must work and
   return the same user); HMAC with parameters that need percent-encoding; a wrong
-  secret is rejected; `logs/capabilities`; `my_coords` when `has_user_coords` is set
+  secret is rejected; `logs/capabilities`; `user_coords` when `has_user_coords` is set
 
 Levels whose credentials a target lacks are skipped, not failed. PLAINTEXT is skipped
 on plain-HTTP targets, since OKAPI accepts it only over HTTPS.
@@ -52,7 +52,7 @@ marked `allowWrite: true` in `config.js`. Never set it for production.
 
 It writes only per-user data, to an existing cache named by `writeCache` in the
 target, and removes all of it again; the cache itself is never changed:
-1. `caches/save_user_coords`: set, read back via `my_coords`, remove
+1. `caches/save_user_coords`: set, read back via `saved_value` and `user_coords`, remove
 2. `caches/save_personal_notes`: set, read back, clear
 3. `logs/submit` a Comment, `logs/edit`, `logs/delete`
 

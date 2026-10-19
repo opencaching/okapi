@@ -111,7 +111,7 @@
                 <p><b>has_user_coords</b> - boolean, <b>true</b> if users can store
                 their own coordinates of geocaches with
                 <a href="%OKAPI:methodref:services/caches/save_user_coords%">services/caches/save_user_coords</a>
-                and read them with the <b>my_coords</b> field of
+                and read them with the <b>user_coords</b> field of
                 <a href="%OKAPI:methodargref:services/caches/geocache#fields%">services/caches/geocache</a>.
                 Older installations don't return this field; treat that as <b>false</b>.</p>
             </li>

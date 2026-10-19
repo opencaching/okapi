@@ -29,7 +29,7 @@ class WebService
         'is_not_found', 'founds', 'notfounds', 'size', 'size2', 'oxsize', 'difficulty', 'terrain',
         'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description',
         'descriptions', 'hint', 'hints', 'images', 'attr_acodes', 'attrnames', 'latest_logs',
-        'my_notes', 'my_coords', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
+        'my_notes', 'user_coords', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
         'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
         'is_ignored', 'willattends',
         'country', 'country2', 'state', 'region',
@@ -371,7 +371,7 @@ class WebService
                     case 'attrnames': /* handled separately */ break;
                     case 'latest_logs': /* handled separately */ break;
                     case 'my_notes': /* handles separately */ break;
-                    case 'my_coords': /* handled separately */ break;
+                    case 'user_coords': /* handled separately */ break;
                     case 'trackables_count': /* handled separately */ break;
                     case 'trackables': /* handled separately */ break;
                     case 'alt_wpts': /* handled separately */ break;
@@ -1134,17 +1134,20 @@ class WebService
             }
         }
 
-        # My coordinates (user's corrected coordinates)
+        # User coordinates (user's corrected coordinates). Looked up once, also
+        # for the user-coords waypoint in alt_wpts below.
 
-        if (in_array('my_coords', $fields))
+        $cacheid2user_coords = null;
+        if (in_array('user_coords', $fields))
         {
             if ($request->token == null)
-                throw new BadRequest("Level 3 Authentication is required to access 'my_coords' field.");
+                throw new BadRequest("Level 3 Authentication is required to access 'user_coords' field.");
             foreach ($results as &$result_ref)
-                $result_ref['my_coords'] = null;
+                $result_ref['user_coords'] = null;
+            unset($result_ref);
             $cacheid2user_coords = self::get_user_coords(array_keys($cacheid2wptcode), $request->token->user_id);
             foreach ($cacheid2user_coords as $cache_id => $row)
-                $results[$cacheid2wptcode[$cache_id]]['my_coords'] = Okapi::coords2latlon($row['latitude'], $row['longitude']);
+                $results[$cacheid2wptcode[$cache_id]]['user_coords'] = Okapi::coords2latlon($row['latitude'], $row['longitude']);
         }
 
         if (in_array('trackables', $fields))
@@ -1386,7 +1389,8 @@ class WebService
             # Issue #305 - User coordinates implemented in oc.de
             if ($request->token != null)
             {
-                $cacheid2user_coords = self::get_user_coords(array_keys($cacheid2wptcode), $request->token->user_id);
+                if ($cacheid2user_coords === null)
+                    $cacheid2user_coords = self::get_user_coords(array_keys($cacheid2wptcode), $request->token->user_id);
                 foreach ($cacheid2user_coords as $cache_id => $row)
                 {
                     $cache_code = $cacheid2wptcode[$cache_id];
@@ -1737,7 +1741,7 @@ class WebService
     /**
      * Return the user's corrected coordinates for the given caches, as
      * cache_id => array('latitude' => ..., 'longitude' => ...). Caches without
-     * user coordinates are omitted. Shared by the my_coords and alt_wpts fields.
+     * user coordinates are omitted. Shared by the user_coords and alt_wpts fields.
      */
     private static function get_user_coords($cache_ids, $user_id)
     {
@@ -1765,8 +1769,7 @@ class WebService
                     cache_id in ($cache_ids_escaped_and_imploded)
                     and user_id = '".Db::escape_string($user_id)."'
                     and type = 2
-                    and longitude != 0
-                    and latitude != 0
+                    and (latitude != 0 or longitude != 0)
                 order by id
             ");
         }

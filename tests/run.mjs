@@ -204,9 +204,9 @@ await check('level 3: user coordinates field (has_user_coords)', async () => {
   if (!ctx.installation?.has_user_coords) skip('installation has no has_user_coords');
   if (!ctx.cacheCode) skip('no cache code');
   const j = okJson(await api.request('services/caches/geocache',
-    { cache_code: ctx.cacheCode, fields: 'code|my_coords' }, { auth: 'hmac' }), 'geocache my_coords');
-  assert('my_coords' in j, 'my_coords missing');
-  return `my_coords=${j.my_coords}`;
+    { cache_code: ctx.cacheCode, fields: 'code|user_coords' }, { auth: 'hmac' }), 'geocache user_coords');
+  assert('user_coords' in j, 'user_coords missing');
+  return `user_coords=${j.user_coords}`;
 });
 
 // --- writing level (--write) ------------------------------------------------
@@ -228,13 +228,18 @@ if (write) {
     if (!ctx.installation?.has_user_coords) skip('installation has no has_user_coords');
     const [lat, lon] = (await read('location')).location.split('|');
     const coords = `${(Number(lat) + 0.001).toFixed(6)}|${(Number(lon) + 0.001).toFixed(6)}`;
-    await post('services/caches/save_user_coords', { cache_code: w.code, user_coords: coords }, 'set');
-    const set = (await read('my_coords')).my_coords;
     const same = (a, b) => a.split('|').every((v, i) => Math.abs(Number(v) - Number(b.split('|')[i])) < 1e-6);
-    assert(set && same(set, coords), `my_coords is ${set}, expected ${coords}`);
-    await post('services/caches/save_user_coords', { cache_code: w.code, user_coords: '' }, 'remove');
-    const removed = (await read('my_coords')).my_coords;
-    assert(removed === null, `my_coords is ${removed} after removal`);
+    const saved = (await post('services/caches/save_user_coords', { cache_code: w.code, new_value: coords }, 'set')).saved_value;
+    assert(saved && same(saved, coords), `saved_value is ${saved}, expected ${coords}`);
+    const both = await read('user_coords|alt_wpts');  // both fields at once share one lookup
+    const set = both.user_coords;
+    const wpt = both.alt_wpts.find(x => x.type === 'user-coords');
+    assert(wpt && same(wpt.location, coords), `user-coords waypoint is ${wpt?.location}, expected ${coords}`);
+    assert(set && same(set, coords), `user_coords is ${set}, expected ${coords}`);
+    const cleared = (await post('services/caches/save_user_coords', { cache_code: w.code, new_value: '' }, 'remove')).saved_value;
+    assert(cleared === null, `saved_value is ${cleared} after removal`);
+    const removed = (await read('user_coords')).user_coords;
+    assert(removed === null, `user_coords is ${removed} after removal`);
     return `${coords}, then removed`;
   });
 

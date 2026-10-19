@@ -23,13 +23,13 @@ class WebService
     public static function call(OkapiRequest $request)
     {
 
-        $user_coords = $request->get_parameter('user_coords');
-        if ($user_coords === null)
-            throw new ParamMissing('user_coords');
-        $remove = ($user_coords === '');
+        $new_value = $request->get_parameter('new_value');
+        if ($new_value === null)
+            throw new ParamMissing('new_value');
+        $remove = ($new_value === '');
         $latitude = $longitude = null;
         if (!$remove)
-            list($latitude, $longitude) = self::parse_coords($user_coords);
+            list($latitude, $longitude) = self::parse_coords($new_value);
 
         # Verify cache_code
 
@@ -58,34 +58,33 @@ class WebService
             'services/caches/geocache',
             new OkapiInternalRequest($request->consumer, $request->token, array(
                 'cache_code' => $cache_code,
-                'fields' => 'my_coords'
+                'fields' => 'user_coords'
             ))
         );
         $result = array(
-            'success' => true,
-            'my_coords' => $geocache['my_coords'],
+            'saved_value' => $geocache['user_coords'],
         );
         return Okapi::formatted_response($request, $result);
     }
 
-    private static function parse_coords($user_coords)
+    private static function parse_coords($new_value)
     {
-        $parts = explode('|', $user_coords);
+        $parts = explode('|', $new_value);
         if (count($parts) != 2)
-            throw new InvalidParam('user_coords', "Expecting 2 pipe-separated parts, got ".count($parts).".");
+            throw new InvalidParam('new_value', "Expecting 2 pipe-separated parts, got ".count($parts).".");
         foreach ($parts as &$part_ref)
         {
             if (!preg_match("/^-?[0-9]+(\.?[0-9]*)$/", $part_ref))
-                throw new InvalidParam('user_coords', "'$part_ref' is not a valid float number.");
+                throw new InvalidParam('new_value', "'$part_ref' is not a valid float number.");
             $part_ref = floatval($part_ref);
         }
         list($latitude, $longitude) = $parts;
         if ($latitude < -90 || $latitude > 90)
-            throw new InvalidParam('user_coords', "Latitude '$latitude' is out of range (-90 to 90).");
+            throw new InvalidParam('new_value', "Latitude '$latitude' is out of range (-90 to 90).");
         if ($longitude < -180 || $longitude > 180)
-            throw new InvalidParam('user_coords', "Longitude '$longitude' is out of range (-180 to 180).");
+            throw new InvalidParam('new_value', "Longitude '$longitude' is out of range (-180 to 180).");
         if ($latitude == 0 && $longitude == 0)
-            throw new InvalidParam('user_coords', "'0|0' is not a valid location. Use an empty string to remove the coordinates.");
+            throw new InvalidParam('new_value', "'0|0' is not a valid location. Use an empty string to remove the coordinates.");
         return array($latitude, $longitude);
     }
 

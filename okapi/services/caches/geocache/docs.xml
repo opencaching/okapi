@@ -480,7 +480,7 @@
                 <p>This field requires you to use the <b>Level 3</b> Authentication.</p>
             </li>
             <li>
-                <p><b>my_coords</b> - user's own (corrected) coordinates of the cache,
+                <p><b>user_coords</b> - user's own (corrected) coordinates of the cache,
                 in the same "lat|lon" format as <b>location</b>, or <b>null</b> if
                 the user hadn't defined any. Use the
                 <a href="%OKAPI:methodref:services/caches/save_user_coords%">services/caches/save_user_coords</a>

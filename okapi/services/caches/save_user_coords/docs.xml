@@ -7,7 +7,7 @@
         cache. Each user has at most one such location per geocache.</p>
 
         <p>Current personal coordinates for the geocache can be retrieved
-        using the <b>my_coords</b> field (or the <b>user-coords</b> entry of the
+        using the <b>user_coords</b> field (or the <b>user-coords</b> entry of the
         <b>alt_wpts</b> field) in the
         <a href="%OKAPI:methodargref:services/caches/geocache#fields%">services/caches/geocache</a>
         method. Use <a href="%OKAPI:methodref:services/apisrv/installation%">services/apisrv/installation</a>
@@ -19,19 +19,18 @@
         caches of type <b>Multi</b>, <b>Quiz</b>, and <b>Other</b>. Supplying a
         cache of any other type will result in an HTTP 400 error.</p>
     </req>
-    <req name='user_coords'>
-        <p>The coordinates are defined by a string in the format "lat|lon".
+    <req name='new_value'>
+        <p>The new coordinates, as a string in the format "lat|lon".
         An empty string removes the user's coordinates. "0|0" is rejected.</p>
-	<p>Use positive numbers for latitudes in the northern hemisphere and longitudes
-	in the eastern hemisphere (and negative for southern and western hemispheres
-	accordingly). These are full degrees with a dot as a decimal point (ex. "48.7|15.89").</p>
+        <p>Use positive numbers for latitudes in the northern hemisphere and longitudes
+        in the eastern hemisphere (and negative for southern and western hemispheres
+        accordingly). These are full degrees with a dot as a decimal point (ex. "48.7|15.89").</p>
     </req>
     <common-format-params/>
     <returns>
         <p>A dictionary of the following structure:</p>
         <ul>
-            <li><b>success</b> - true,</li>
-            <li><b>my_coords</b> - the user's coordinates as stored now, in the
+            <li><b>saved_value</b> - the user's coordinates as stored now, in the
             "lat|lon" format, or <b>null</b> if they have been removed.</li>
         </ul>
     </returns>
