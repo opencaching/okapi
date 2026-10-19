@@ -1,5 +1,8 @@
 Options -Indexes
 
 RewriteEngine on
+# Pass Authorization header to PHP-FPM (required for OAuth)
+RewriteCond %{HTTP:Authorization} .+
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteCond %{REQUEST_URI} !/okapi/static/
 RewriteRule ^(.*)$ index.php [L,QSA,E=no-gzip:1,E=dont-vary:1]
