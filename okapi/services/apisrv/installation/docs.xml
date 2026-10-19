@@ -120,6 +120,14 @@
                 family of methods is available.</p>
             </li>
             <li>
+                <p><b>has_cache_editing</b> - boolean, <b>true</b> if owners can
+                create, update and archive their geocaches with
+                <a href="%OKAPI:methodref:services/caches/create%">services/caches/create</a>,
+                <a href="%OKAPI:methodref:services/caches/update%">services/caches/update</a> and
+                <a href="%OKAPI:methodref:services/caches/delete%">services/caches/delete</a>.
+                Older installations don't return this field; treat that as <b>false</b>.</p>
+            </li>
+            <li>
                 <p><b>cache_types</b> - list of the OKAPI cache type names this
                 installation uses (e.g. <b>Traditional</b>, <b>Multi</b>).
                 Only present when <b>has_draft_logs</b> is true.</p>

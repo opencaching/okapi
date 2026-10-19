@@ -4,6 +4,10 @@
     <issue-id></issue-id>
     <desc>
         <p>This method allows users to create a new geocache.</p>
+        <p>This method is only available on installations that support cache editing.
+        Check the <b>has_cache_editing</b> field in
+        <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
+        before calling it.</p>
     </desc>
     <req name='cache_name'>
         <p>Name of the cache. Must not be empty or exceed 256 characters.</p>

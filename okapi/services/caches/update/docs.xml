@@ -5,6 +5,10 @@
     <desc>
         <p>This method allows the cache owner to update details of an existing geocache.
         Only the cache owner can modify a cache. At least one optional parameter must be provided.</p>
+        <p>This method is only available on installations that support cache editing.
+        Check the <b>has_cache_editing</b> field in
+        <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
+        before calling it.</p>
     </desc>
     <req name='cache_code'>
         <p>Code of the cache to update. The authenticated user must be the cache owner.</p>
