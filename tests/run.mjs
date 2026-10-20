@@ -225,6 +225,32 @@ if (write) {
     return 'set, then cleared';
   });
 
+  await check('write: caches/edit passwd set and clear', async () => {
+    needCache();
+    const c = await read('owner|req_passwd');
+    const edit = async passwd => okJson(await api.request('services/caches/edit',
+      { cache_code: w.code, passwd }, { auth: 'hmac', method: 'POST' }), 'caches/edit');
+    if (c.owner.uuid !== ctx.user?.uuid) {
+      // Only owners reach the password code; others must get a clean refusal.
+      const r = await api.request('services/caches/edit', { cache_code: w.code, passwd: 'x' }, { auth: 'hmac', method: 'POST' });
+      assert(r.status === 400, `not the owner: HTTP ${r.status}, expected 400`);
+      skip(`writeCache ${w.code} is not the test user's cache; refusal checked`);
+    }
+    assert(c.req_passwd === false, `${w.code} already has a log password`);
+    try {
+      const set = await edit('okapitest');
+      assert(set.success === true, `set failed: ${JSON.stringify(set.messages)}`);
+      assert((await read('req_passwd')).req_passwd === true, 'req_passwd not true after setting it');
+      const long = await edit('x'.repeat(ctx.installation?.geocache_passwd_max_length + 1));
+      assert(long.success === false && long.messages?.passwd, 'a too long password was not refused');
+    } finally {
+      const clear = await edit('');
+      assert(clear.success === true, `clear failed: ${JSON.stringify(clear.messages)}`);
+    }
+    assert((await read('req_passwd')).req_passwd === false, 'req_passwd not false after clearing it');
+    return 'set, too long refused, cleared';
+  });
+
   await check('write: logs/submit, edit, delete', async () => {
     needCache();
     const res = await api.request('services/logs/submit',

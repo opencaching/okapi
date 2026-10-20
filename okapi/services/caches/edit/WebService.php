@@ -80,14 +80,12 @@ class WebService
             $newpw = $request->get_parameter('passwd');
             if ($newpw !== null)
             {
-                $capabilities = OkapiServiceRunner::call(
-                    'services/caches/capabilities',
-                    new OkapiInternalRequest($request->consumer, $request->token, [])
-                );
-                if (strlen($newpw) > $capabilities['password_max_length']) {
+                # The same limit as geocache_passwd_max_length in services/apisrv/installation.
+                $max_length = Db::field_length('caches', 'logpw');
+                if (strlen($newpw) > $max_length) {
                     $problems['passwd'] = sprintf(
                         _('The password must not be longer than %d characters.'),
-                        $capabilities['password_max_length']
+                        $max_length
                     );
                 } elseif (
                     Settings::get('OC_BRANCH') == 'oc.pl' &&

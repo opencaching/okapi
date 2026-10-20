@@ -139,11 +139,8 @@
                 (<i>lat</i> and <i>lon</i> are in full degrees with a dot as a decimal point),
             </li>
             <li>
-                <p><b>type</b> - cache type, one of the type codes that are included
-                in the <b>types</b> field of
-                <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>.
-                Currently there are eight types which are in use at all OKAPI
-                installations:</p>
+                <p><b>type</b> - cache type. Currently there are eight types
+                which are in use at all OKAPI installations:</p>
                 <ul>
                     <li><b>Traditional</b>,</li>
                     <li><b>Multi</b>,</li>
@@ -334,7 +331,7 @@
                 <p><b>Note:</b> Some installations don't provide ratings for
                 their geocaches; they will always return <b>null</b> for this
                 field. The <b>has_ratings</b> field of
-                <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
+                <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>
                 tells if ratings are available.</p>
 
                 <p><b>Note:</b> Currently OC sites expose cache ratings as integers only.
@@ -348,7 +345,7 @@
 
                 <p><b>Note:</b> Some installations don't provide ratings for their geocaches;
                 they will always return <b>0</b> for this field. The <b>has_ratings</b> field of
-                <a href='%OKAPI:methodargref:services/caches/capabilities%'>services/caches/capabilities</a>
+                <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>
                 tells if ratings are available.</p>
             </li>
             <li>

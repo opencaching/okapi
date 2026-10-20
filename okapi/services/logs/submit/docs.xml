@@ -110,7 +110,7 @@
         installations user's rating will always be <i>ignored</i> (if you include
         the rating, log entry will be posted successfully, but rating will be
         ignored). The <b>has_ratings</b> field of
-        <a href="%OKAPI:methodargref:services/caches/capabilities%">services/caches/capabilities</a>
+        <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
         tells if ratings are avaialble at this installation.</p>
     </opt>
     <opt name='recommend' default='false'>
