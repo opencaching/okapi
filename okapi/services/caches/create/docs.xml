@@ -4,9 +4,12 @@
     <issue-id></issue-id>
     <desc>
         <p>The user creates a geocache they own. The rules are those of the
-        website's "hide a cache" form: the cache is published at once, as
-        <b>Available</b>, or as <b>Temporarily unavailable</b> if
-        <b>date_hidden</b> lies in the future (except for events).</p>
+        website's "hide a cache" form, including its choices for publishing
+        (<b>publish</b>), its date rules and its refusal of a second active
+        cache at the same coordinates.</p>
+        <p>A geocache that is not published yet can't be read through OKAPI
+        (like any unpublished geocache); <b>cache_code</b> and <b>url</b> point
+        to it on the website.</p>
         <p>This method is only available on installations that support cache editing.
         Check the <b>has_cache_editing</b> field in
         <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
@@ -38,27 +41,55 @@
         none, nano, micro, small, regular, large, xlarge or other.</p>
     </req>
     <opt name='short_description' default=''>
-        <p>One line shown above the description, plain text.</p>
+        <p>One line shown above the description, plain text only.</p>
     </opt>
     <opt name='description' default=''>
-        <p>The description.</p>
+        <p>The description, in the format given by <b>description_format</b>.
+        Smileys such as :-) are stored as typed; the website shows them as images.
+        Images can't be uploaded with the description.</p>
     </opt>
     <opt name='description_format' default='plaintext'>
-        <p><b>plaintext</b> or <b>html</b>. Plain text is shown as written. HTML
-        is cleaned the same way as on the website (and as log comments in
-        <a href="%OKAPI:methodargref:services/logs/submit#comment_format%">services/logs/submit</a>).</p>
+        <p>One of the following:</p>
+        <ul>
+            <li><b>plaintext</b> - shown as written: HTML special characters are
+            escaped, line breaks are kept;</li>
+            <li><b>html</b> - cleaned by the website's own HTML purifier, the same
+            one the website uses for descriptions written in its editor.</li>
+        </ul>
+        <p>Both are stored as HTML, as every description the website writes.</p>
     </opt>
     <opt name='hint2' default=''>
-        <p>Hint, plain text.</p>
+        <p>Hint, plain text only.</p>
     </opt>
     <opt name='desc_lang' default='EN'>
-        <p>Language of the description, a two-letter code.</p>
+        <p>Language of the description, a two-letter code. A geocache is created
+        with one description language; further languages are added on the website.</p>
     </opt>
     <opt name='country' default="the user's country">
         <p>Two-letter country code. Mandatory if the user's profile has no country.</p>
     </opt>
     <opt name='date_hidden' default='today'>
-        <p>Date the cache was (or will be) hidden, e.g. 2026-10-20. For events, the event date.</p>
+        <p>Date the cache was hidden, e.g. 2026-10-20; for events, the event date.
+        As on the website, unless <b>publish</b> is <b>notnow</b>: a geocache
+        must be hidden by the time it is published (with <b>now</b>: today at
+        the latest), and an event must take place after it is published (with
+        <b>now</b>: tomorrow at the earliest).</p>
+    </opt>
+    <opt name='publish' default='now'>
+        <p>When the geocache is published, as on the website:</p>
+        <ul>
+            <li><b>now</b> - published at once, as <b>Available</b>;</li>
+            <li><b>later</b> - published by the website at <b>activate_on</b>,
+            <b>activate_hour</b>;</li>
+            <li><b>notnow</b> - not published; the owner publishes it later on the website.</li>
+        </ul>
+    </opt>
+    <opt name='activate_on'>
+        <p>With <b>publish</b>=<b>later</b> (and then mandatory): the day of
+        publication, e.g. 2026-11-01, in the installation's time zone.</p>
+    </opt>
+    <opt name='activate_hour' default='0'>
+        <p>With <b>publish</b>=<b>later</b>: the full hour of publication, 0 to 23.</p>
     </opt>
     <opt name='passwd' default=''>
         <p>Log password: if given, "Found it" log entries need it (see

@@ -47,7 +47,7 @@ class CacheEditCommon
             throw new InvalidParam('cache_code', 'cache_code is mandatory.');
         $cache = Db::select_row("
             select cache_id, user_id, wp_oc, status, name, latitude, longitude,
-                difficulty, terrain, size, default_desclang
+                difficulty, terrain, size, logpw, default_desclang
             from caches
             where wp_oc = '".Db::escape_string($cache_code)."'
         ");
@@ -107,13 +107,16 @@ class CacheEditCommon
     /**
      * The description as stored, and the value of cache_desc.desc_html. Same
      * processing as the comment of services/logs/submit: plain text is
-     * escaped, HTML goes through the website's HTML purifier.
+     * escaped (line breaks kept), HTML goes through the website's HTML
+     * purifier. Both are stored as HTML (desc_html = 1), as every description
+     * the website writes today; desc_html = 0 is the website's old text mode.
      */
     public static function process_description($description, $format)
     {
         if (!in_array($format, ['plaintext', 'html']))
             throw new InvalidParam('description_format', "Must be 'plaintext' or 'html'.");
-        return LogsCommon::process_comment($description, $format);
+        list($stored, $unused) = LogsCommon::process_comment($description, $format);
+        return [$stored, 1];
     }
 
     /** The hint as stored by the website: HTML-escaped, line breaks as <br />. */
@@ -198,19 +201,58 @@ class CacheEditCommon
      * by services/logs/submit, so the rules and side effects are exactly those
      * of the existing status logs on every installation.
      */
+    /**
+     * Status change by the owner: a status log entry via services/logs/submit.
+     * Unlike logs/submit, a change to the status the cache already has is
+     * refused (the website writes a status log only when the status really
+     * changes), and the comment is always plain text.
+     */
     public static function change_status(OkapiRequest $request, $logtype)
     {
-        $params = [
-            'cache_code' => $request->get_parameter('cache_code'),
-            'logtype' => $logtype,
-        ];
-        foreach (['comment', 'comment_format', 'langpref'] as $name) {
-            $value = $request->get_parameter($name);
-            if ($value !== null)
-                $params[$name] = $value;
-        }
-        if (!$params['cache_code'])
+        $cache_code = $request->get_parameter('cache_code');
+        if (!$cache_code)
             throw new InvalidParam('cache_code', 'cache_code is mandatory.');
+
+        # Same ids on OCDE and OCPL: 1 Available, 2 Temporarily unavailable, 3 Archived.
+        $from = [
+            'Ready to search' => [2, 3],     # 3: only where the website allows unarchiving
+            'Temporarily unavailable' => [1],
+            'Archived' => [1, 2],
+        ][$logtype];
+        if (Settings::get('OC_BRANCH') != 'oc.de')
+            $from = array_diff($from, [3]);  # OCPL does not allow to unarchive
+
+        $cache = Db::select_row("
+            select user_id, status from caches
+            where wp_oc = '".Db::escape_string($cache_code)."'
+        ");
+        # Unknown caches and other users' caches: logs/submit gives its usual answer.
+        if ($cache && $cache['user_id'] == $request->token->user_id && !in_array($cache['status'], $from)) {
+            $langpref = $request->get_parameter('langpref') ?: 'en';
+            Okapi::gettext_domain_init(explode('|', $langpref));
+            $target = ['Ready to search' => 1, 'Temporarily unavailable' => 2, 'Archived' => 3][$logtype];
+            if ($cache['status'] == $target)
+                $message = _("The geocache already has this status.");
+            elseif (!in_array($cache['status'], [1, 2, 3]))
+                $message = _("The status of this geocache can only be changed on the website.");
+            elseif ($cache['status'] == 3 && $logtype == 'Ready to search')
+                $message = sprintf(_("%s does not allow to unarchive geocaches."), Okapi::get_normalized_site_name());
+            else
+                $message = _("This status change is not possible.");
+            Okapi::gettext_domain_restore();
+            $result = ['success' => false, 'message' => $message, 'log_uuid' => null, 'log_uuids' => []];
+            return Okapi::formatted_response($request, $result);
+        }
+
+        $params = [
+            'cache_code' => $cache_code,
+            'logtype' => $logtype,
+            'comment' => (string)$request->get_parameter('comment'),
+            'comment_format' => 'plaintext',
+        ];
+        $langpref = $request->get_parameter('langpref');
+        if ($langpref !== null)
+            $params['langpref'] = $langpref;
         $result = OkapiServiceRunner::call(
             'services/logs/submit',
             new OkapiInternalRequest($request->consumer, $request->token, $params)

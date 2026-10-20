@@ -86,11 +86,47 @@ class WebService
         if ($alt_wpts !== null && $alt_wpts !== '')
             $waypoints = CacheEditCommon::parse_waypoints('alt_wpts', $alt_wpts);
 
-        # As on the website: a cache hidden in the future is not available yet,
-        # except events (their date is the event date).
-        $status = ($date_hidden > date('Y-m-d') && $cache_type != 'Event')
-            ? Okapi::cache_status_name2id('Temporarily unavailable')
-            : Okapi::cache_status_name2id('Available');
+        # Publishing, as the choices of the website's form: now, later (at a
+        # given day and full hour; the website publishes it then), or not now
+        # (the owner publishes it on the website). Not published = status 5.
+        $publish = $request->get_parameter('publish') ?: 'now';
+        if (!in_array($publish, ['now', 'later', 'notnow']))
+            throw new InvalidParam('publish', "Must be 'now', 'later' or 'notnow'.");
+        $activation_date = null;
+        if ($publish == 'later') {
+            $activate_on = $request->get_parameter('activate_on');
+            $a = $activate_on ? \DateTime::createFromFormat('!Y-m-d', $activate_on) : false;
+            if (!$a || $a->format('Y-m-d') !== $activate_on)
+                throw new InvalidParam('activate_on', "With publish=later, a date like '2026-11-01' is mandatory.");
+            $activate_hour = $request->get_parameter('activate_hour') ?: '0';
+            if (!ctype_digit((string)$activate_hour) || $activate_hour > 23)
+                throw new InvalidParam('activate_hour', 'Must be a full hour, 0 to 23.');
+            $activation_date = sprintf('%s %02d:00:00', $activate_on, $activate_hour);
+        }
+
+        # The website's date rules (newcache.php): when published now or later,
+        # an event must not be before its publication, and any other cache must
+        # be hidden by then. The website compares the day of date_hidden (0:00)
+        # with the time of publication (now, or 0:00 of the activation day).
+        if ($publish != 'notnow') {
+            $hidden_ts = strtotime($date_hidden.' 00:00:00');
+            $publish_ts = ($publish == 'later') ? strtotime($activate_on.' 00:00:00') : time();
+            if ($cache_type == 'Event' && $hidden_ts < $publish_ts)
+                throw new InvalidParam('date_hidden', 'The event must happen after publish.');
+            if ($cache_type != 'Event' && $hidden_ts > $publish_ts)
+                throw new InvalidParam('date_hidden', 'The cache must be hidden before publish.');
+        }
+        $status = ($publish == 'now') ? Okapi::cache_status_name2id('Available') : 5;
+
+        # As on the website: no second active cache at the same coordinates.
+        $duplicate = Db::select_value("
+            select min(wp_oc) from caches
+            where status = 1
+            and round(longitude, 6) = round('".Db::escape_string($longitude)."', 6)
+            and round(latitude, 6) = round('".Db::escape_string($latitude)."', 6)
+        ");
+        if ($duplicate)
+            throw new InvalidParam('latitude', "Another cache ($duplicate) exists at these coordinates.");
 
         $node = Settings::get('OC_NODE_ID');
 
@@ -119,7 +155,7 @@ class WebService
                     '".Db::escape_string($status)."',
                     '".Db::escape_string($country)."',
                     '".Db::escape_string($date_hidden)."',
-                    null,
+                    ".($activation_date === null ? "null" : "'".Db::escape_string($activation_date)."'").",
                     '".Db::escape_string($size_int)."',
                     '".Db::escape_string($diff_int)."',
                     '".Db::escape_string($terr_int)."',

@@ -20,7 +20,7 @@ class WebService
 
     # Every parameter this method changes something with.
     private static $fields = [
-        'cache_name', 'latitude', 'longitude', 'difficulty', 'terrain', 'size2',
+        'cache_name', 'latitude', 'longitude', 'difficulty', 'terrain', 'size2', 'passwd',
         'short_description', 'description', 'hint2',
         'alt_wpts', 'add_alt_wpts', 'remove_alt_wpts',
     ];
@@ -76,6 +76,17 @@ class WebService
             if ($size != $cache['size']) {
                 $cache_sets[] = "size = '".Db::escape_string($size)."'";
                 $changed[] = 'size2';
+            }
+        }
+
+        if ($p['passwd'] !== null) {
+            # Same rule as services/caches/edit; an empty value removes the password.
+            $max_length = Db::field_length('caches', 'logpw');
+            if (strlen($p['passwd']) > $max_length)
+                throw new InvalidParam('passwd', "Must not be longer than $max_length characters.");
+            if ($p['passwd'] !== $cache['logpw']) {
+                $cache_sets[] = "logpw = '".Db::escape_string($p['passwd'])."'";
+                $changed[] = 'passwd';
             }
         }
 

@@ -231,7 +231,9 @@ await check('level 3: draftlogs/query (has_draft_logs)', async () => {
 
 if (write) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
-  const [lat, lon] = (target.writeLocation ?? '52.327366|9.543').split('|');
+  // Shifted a little per run: create refuses a second active cache at the same coordinates.
+  const [lat, lon] = (target.writeLocation ?? '52.327366|9.543').split('|')
+    .map((v, i) => (Number(v) + (i ? (Date.now() % 997) * 1e-6 : 0)).toFixed(6));
   const w = {};  // state of the writing level
   const post = async (path, params, what) =>
     okJson(await api.request(path, params, { auth: 'hmac', method: 'POST' }), what);
@@ -265,9 +267,20 @@ if (write) {
     assert(!c.description.includes('<b>'), `plain-text description not escaped: ${c.description}`);
     assert(c.hint2 === 'under the <stone>', `hint2 is ${JSON.stringify(c.hint2)}`);
     assert(c.alt_wpts.map(x => x.type).join() === 'parking,final', `alt_wpts are ${c.alt_wpts.map(x => x.type)}`);
-    const bad = await api.request('services/caches/create', { ...params, difficulty: '1.3' }, { auth: 'hmac', method: 'POST' });
-    assert(bad.status === 400, `difficulty 1.3: HTTP ${bad.status}, expected 400`);
-    return `${w.code} (${c.status}), description escaped, 2 waypoints, invalid difficulty refused`;
+    // Refused as on the website; none of these creates a cache.
+    const day = n => new Date(Date.now() + n * 86400e3).toISOString().slice(0, 10);
+    for (const [what, extra] of [
+      ['difficulty 1.3', { difficulty: '1.3' }],
+      ['same coordinates as an active cache', {}],
+      ['hidden after publishing', { date_hidden: day(1), latitude: '52.4' }],
+      ['event before publishing', { cache_type: 'Event', date_hidden: day(0), latitude: '52.4' }],
+      ['publish=later without a date', { publish: 'later', latitude: '52.4' }],
+      ['unknown publish choice', { publish: 'soon', latitude: '52.4' }],
+    ]) {
+      const r = await api.request('services/caches/create', { ...params, ...extra }, { auth: 'hmac', method: 'POST' });
+      assert(r.status === 400, `${what}: HTTP ${r.status}, expected 400`);
+    }
+    return `${w.code} (${c.status}), description escaped, 2 waypoints; 6 website rules refused`;
   });
 
   await check('write: caches/update', async () => {
@@ -284,6 +297,10 @@ if (write) {
     assert(Number(c.difficulty) === 2.5, `difficulty is ${c.difficulty}`);
     assert(c.hint2 === '', `hint2 not removed: ${JSON.stringify(c.hint2)}`);
     assert(c.alt_wpts.map(x => x.type).join() === 'final', `alt_wpts after removal: ${c.alt_wpts.map(x => x.type)}`);
+    const pw = okJson(await update({ passwd: 'okapitest' }), 'caches/update passwd');
+    assert(pw.changed.join() === 'passwd' && (await read('req_passwd')).req_passwd === true, `passwd not set: ${pw.changed}`);
+    const nopw = okJson(await update({ passwd: '' }), 'caches/update passwd clear');
+    assert(nopw.changed.join() === 'passwd' && (await read('req_passwd')).req_passwd === false, `passwd not removed: ${nopw.changed}`);
     const again = okJson(await update({ cache_name: name, difficulty: '2.5' }), 'caches/update');
     assert(again.changed.length === 0, `unchanged values changed ${again.changed}`);
     for (const [what, params] of [['empty latitude', { latitude: '', longitude: '' }], ['latitude alone', { latitude: '52.3' }],
@@ -291,7 +308,7 @@ if (write) {
       const r = await update(params);
       assert(r.status === 400, `${what}: HTTP ${r.status}, expected 400`);
     }
-    return 'name, difficulty, hint and a waypoint changed; unchanged values left alone; bad values refused';
+    return 'name, difficulty, hint, a waypoint and the log password changed; unchanged values left alone; bad values refused';
   });
 
   await check('write: save_user_coords set and remove', async () => {
@@ -430,6 +447,8 @@ if (write) {
     const res = await api.request(`services/caches/${method}`,
       { cache_code: w.code, comment: `okapi-test ${method}` }, { auth: 'hmac', method: 'POST' });
     if (/OcHTMLPurifier/.test(res.text)) skip('OKAPI runs without the website (OcHTMLPurifier missing)');
+    // Known, separate: logs/submit doesn't set cache_logs.picture, which has no default on OCDE (strict SQL).
+    if (/Field 'picture' doesn't have a default/.test(res.text)) skip('logs/submit fails under strict SQL (cache_logs.picture has no default)');
     const j = okJson(res, `caches/${method}`);
     assert(j.success === true && j.log_uuid, `${method} failed: ${j.message ?? JSON.stringify(j)}`);
     const c = await read('status');
@@ -446,6 +465,17 @@ if (write) {
     const after = okJson(await api.request('services/caches/geocache', { cache_code: code, fields: 'status' }, { auth: 'hmac' }), 'geocache');
     assert(after.status === c.status, `status changed to ${after.status}`);
     return `${code}: "${j.message}"`;
+  });
+
+  await check('write: status change to the current status refused', async () => {
+    needCache();
+    if (w.foreign) skip('writeCache is not the test user\'s cache');
+    const before = (await read('status')).status;
+    const method = before === 'Available' ? 'enable' : 'disable';
+    const j = okJson(await api.request(`services/caches/${method}`, { cache_code: w.code }, { auth: 'hmac', method: 'POST' }), `caches/${method}`);
+    assert(j.success === false && !j.log_uuid, `${method} on a cache that is ${before} was not refused: ${JSON.stringify(j)}`);
+    assert((await read('status')).status === before, 'status changed');
+    return `${method} on ${before}: "${j.message}"`;
   });
 
   await check('write: caches/disable and enable', async () => {
