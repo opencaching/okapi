@@ -55,9 +55,9 @@ class WebService
         $short_desc = CacheEditCommon::parse_text('short_description',
             (string)$request->get_parameter('short_description'), 'cache_desc', 'short_desc', true);
 
-        $description_format = $request->get_parameter('description_format') ?: 'plaintext';
-        list($description, $desc_html) = CacheEditCommon::process_description(
-            (string)$request->get_parameter('description'), $description_format);
+        # Plain text only; descriptions with formatting are written on the website.
+        $description = CacheEditCommon::encode_description((string)$request->get_parameter('description'));
+        $desc_html = 1;
 
         $hint = CacheEditCommon::encode_hint(trim((string)$request->get_parameter('hint2')));
 

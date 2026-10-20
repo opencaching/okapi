@@ -44,19 +44,11 @@
         <p>One line shown above the description, plain text only.</p>
     </opt>
     <opt name='description' default=''>
-        <p>The description, in the format given by <b>description_format</b>.
-        Smileys such as :-) are stored as typed; the website shows them as images.
-        Images can't be uploaded with the description.</p>
-    </opt>
-    <opt name='description_format' default='plaintext'>
-        <p>One of the following:</p>
-        <ul>
-            <li><b>plaintext</b> - shown as written: HTML special characters are
-            escaped, line breaks are kept;</li>
-            <li><b>html</b> - cleaned by the website's own HTML purifier, the same
-            one the website uses for descriptions written in its editor.</li>
-        </ul>
-        <p>Both are stored as HTML, as every description the website writes.</p>
+        <p>The description, plain text: it is shown as written (HTML special
+        characters are escaped, line breaks are kept) and stored as HTML, like
+        every description the website writes. OKAPI takes no HTML here: a
+        description with formatting is written on the website. Smileys such as
+        :-) are stored as typed; the website shows them as images.</p>
     </opt>
     <opt name='hint2' default=''>
         <p>Hint, plain text only.</p>

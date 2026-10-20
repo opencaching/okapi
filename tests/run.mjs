@@ -290,8 +290,9 @@ if (write) {
     const update = params => api.request('services/caches/update', { cache_code: w.code, ...params }, { auth: 'hmac', method: 'POST' });
     const before = await read('alt_wpts');
     const u = okJson(await update({ cache_name: name, difficulty: '2.5', terrain: '1.5', hint2: '',
-      remove_alt_wpts: before.alt_wpts[0].name }), 'caches/update');
-    assert(u.changed.join() === 'cache_name,difficulty,hint2,alt_wpts', `changed is ${u.changed}`);
+      description: 'New <plain> text\nline 2', remove_alt_wpts: before.alt_wpts[0].name }), 'caches/update');
+    assert(u.changed.join() === 'cache_name,difficulty,description,hint2,alt_wpts', `changed is ${u.changed}`);
+    assert((await read('description')).description.includes('New &lt;plain&gt; text'), 'description not replaced as plain text');
     const c = await read('name|difficulty|terrain|hint2|alt_wpts');
     assert(c.name === name, `name is '${c.name}'`);
     assert(Number(c.difficulty) === 2.5, `difficulty is ${c.difficulty}`);

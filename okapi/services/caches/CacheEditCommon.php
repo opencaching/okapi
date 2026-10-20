@@ -105,18 +105,30 @@ class CacheEditCommon
     }
 
     /**
-     * The description as stored, and the value of cache_desc.desc_html. Same
-     * processing as the comment of services/logs/submit: plain text is
-     * escaped (line breaks kept), HTML goes through the website's HTML
-     * purifier. Both are stored as HTML (desc_html = 1), as every description
-     * the website writes today; desc_html = 0 is the website's old text mode.
+     * The description as stored, from plain text: escaped and with line breaks
+     * kept, the same processing as a plain-text comment of services/logs/submit.
+     * Stored as HTML (desc_html = 1), as every description the website writes.
+     * Descriptions with formatting are written on the website; OKAPI takes no
+     * HTML here.
      */
-    public static function process_description($description, $format)
+    public static function encode_description($text)
     {
-        if (!in_array($format, ['plaintext', 'html']))
-            throw new InvalidParam('description_format', "Must be 'plaintext' or 'html'.");
-        list($stored, $unused) = LogsCommon::process_comment($description, $format);
-        return [$stored, 1];
+        list($stored, $unused) = LogsCommon::process_comment($text, 'plaintext');
+        return $stored;
+    }
+
+    /**
+     * Whether a stored description is plain, i.e. what encode_description
+     * makes of some text: no HTML tags but <br />, no entities but &amp; &lt;
+     * &gt; &quot; and &nbsp;. Only plain descriptions can be changed through
+     * OKAPI, so that no client removes formatting written on the website.
+     */
+    public static function is_plain_description($stored)
+    {
+        $text = preg_replace('~<br />(?=\r?\n)~', '', $stored);
+        $text = str_replace('&nbsp;', ' ', $text);
+        $text = htmlspecialchars_decode($text, ENT_COMPAT);
+        return self::encode_description($text) === $stored;
     }
 
     /** The hint as stored by the website: HTML-escaped, line breaks as <br />. */
