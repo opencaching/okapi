@@ -110,11 +110,12 @@ class WebService
                 }
             }
             if ($p['description'] !== null) {
-                # Plain text only. A description with formatting (written on the
-                # website) is not replaced, so no client removes the formatting.
+                # Plain text only. Only a plain or simple description (paragraphs
+                # and line breaks) is replaced; one with more formatting, written
+                # on the website, is not, so no client removes the formatting.
                 $value = CacheEditCommon::encode_description($p['description']);
                 if ($value !== $desc['desc'] || $desc['desc_html'] != 1) {
-                    if (!CacheEditCommon::is_plain_description($desc['desc']))
+                    if (!CacheEditCommon::is_simple_description($desc['desc']))
                         throw new InvalidParam('description', 'This description has formatting; it can only be changed on the website.');
                     $desc_sets[] = "`desc` = '".Db::escape_string($value)."', desc_html = 1, desc_htmledit = 0";
                     $changed[] = 'description';

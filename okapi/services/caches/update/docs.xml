@@ -52,14 +52,20 @@
     <opt name='description'>
         <p>New description, plain text, as in
         <a href="%OKAPI:methodargref:services/caches/create#description%">services/caches/create</a>.</p>
-        <p>Only a plain description can be replaced: one that contains no HTML
-        tags but &lt;br /&gt; (each followed by a line break) and no character
-        references but those that escaping plain text produces (for &amp;, &lt;,
-        &gt;, the double quote and repeated spaces), as OKAPI writes it.
-        A description with formatting, written on the website, is refused with
-        HTTP 400 and stays unchanged, so that no client removes the formatting;
-        the owner changes it on the website. The other parameters are not
-        affected by this.</p>
+        <p>Only a description without formatting can be replaced: one whose only
+        HTML tags are &lt;p&gt;, &lt;/p&gt; and &lt;br&gt; (without attributes).
+        That includes every description written through OKAPI, and descriptions
+        written on the website as a few paragraphs of text. To show such a
+        description for editing, a client turns it into plain text: paragraphs
+        into blank lines, line breaks into line breaks, character references
+        into characters. The new text replaces it in the plain form OKAPI writes.</p>
+        <p>A description with more formatting (links, images, bold text, lists
+        and so on) is refused with HTTP 400 and stays unchanged, so that no client
+        removes the formatting; the owner changes it on the website. The other
+        parameters are not affected by this.</p>
+        <p>These methods are meant for simple listings, such as an app creates in
+        the field, and their later corrections. They are not a full listing
+        editor; that is the website.</p>
     </opt>
     <opt name='hint2'>
         <p>New hint, plain text only. An empty value removes it.</p>
