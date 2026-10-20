@@ -19,10 +19,11 @@
         <p>Name of the geocache. Must not be empty.</p>
     </req>
     <req name='cache_type'>
-        <p>One of the cache types of
-        <a href="%OKAPI:methodargref:services/caches/geocache#fields%">services/caches/geocache</a>'s
-        <b>type</b> field that this installation supports (see <b>cache_types</b> in
-        services/apisrv/installation).</p>
+        <p>For now only <b>Traditional</b>, the simple listing an app creates
+        in the field (like the official Geocaching app, which creates only
+        traditional caches). Other types are created on the website: on OCDE,
+        additional waypoints are always public, so the stages and the final of
+        a multi or mystery cache can't be kept secret through OKAPI.</p>
     </req>
     <req name='latitude'>
         <p>Latitude of the geocache, -90 to 90.</p>
@@ -90,9 +91,9 @@
     </opt>
     <opt name='alt_wpts' default=''>
         <p>JSON array of additional waypoints, each an object with <b>location</b>
-        ("lat|lon"), <b>type</b> (parking, stage, path, final or poi; the aliases
-        physical-stage, virtual-stage and trailhead are accepted) and an optional
-        plain-text <b>description</b>. Names are given by the installation, as in
+        ("lat|lon"), <b>type</b> (parking, path or poi; the alias trailhead is
+        accepted) and an optional plain-text <b>description</b>. Stages and
+        finals are not taken here, because additional waypoints are public. Names are given by the installation, as in
         the <b>alt_wpts</b> field of services/caches/geocache.</p>
     </opt>
     <common-format-params/>
