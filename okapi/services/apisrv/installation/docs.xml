@@ -114,16 +114,19 @@
                 is available.</p>
             </li>
             <li>
-                <p><b>cache_types</b> - list of cache type names supported by this
-                installation. Only present when <b>has_draft_logs</b> is true.
-                Values are OKAPI cache type names (e.g. <b>Traditional</b>,
-                <b>Multi-cache</b>).</p>
+                <p><b>cache_types</b> - list of the OKAPI cache type names this
+                installation uses (e.g. <b>Traditional</b>, <b>Multi</b>).
+                Only present when <b>has_draft_logs</b> is true.</p>
             </li>
             <li>
-                <p><b>log_types</b> - list of log type names that can be submitted
-                on this installation. Only present when <b>has_draft_logs</b> is true.
-                Use these values when uploading fieldnotes via
-                <a href="%OKAPI:methodargref:services/draftlogs/upload_fieldnotes%">services/draftlogs/upload_fieldnotes</a>.</p>
+                <p><b>log_types</b> - list of the log type names that
+                <a href="%OKAPI:methodref:services/logs/submit%">services/logs/submit</a>
+                accepts. It is the same list on every installation; whether a
+                particular log is allowed depends on the geocache and the user (see
+                <a href="%OKAPI:methodref:services/logs/capabilities%">services/logs/capabilities</a>).
+                Only present when <b>has_draft_logs</b> is true. Field notes uploaded with
+                <a href="%OKAPI:methodref:services/draftlogs/upload_fieldnotes%">services/draftlogs/upload_fieldnotes</a>
+                use their own set of log type names, listed there.</p>
             </li>
         </ul>
     </returns>
