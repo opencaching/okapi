@@ -36,7 +36,8 @@ What it checks:
 - level 1: unknown consumer key rejected; `caches/search/all`, `caches/geocache`, `logs/logs`
 - level 3: `users/user` signed with PLAINTEXT and with HMAC-SHA1 (both must work and
   return the same user); HMAC with parameters that need percent-encoding; a wrong
-  secret is rejected; `logs/capabilities`
+  secret is rejected; `logs/capabilities`; `user_coords` when the installation has `save_user_coords`;
+  `draftlogs/query` when `has_draft_logs` is set
 
 Levels whose credentials a target lacks are skipped, not failed. PLAINTEXT is skipped
 on plain-HTTP targets, since OKAPI accepts it only over HTTPS.
@@ -50,9 +51,30 @@ node run.mjs --write                      # read-only checks, then the writing l
 Only for dev and test installations. `--write` is refused unless the target is
 marked `allowWrite: true` in `config.js`. Never set it for production.
 
-It writes only per-user data, to an existing cache named by `writeCache` in the
-target, and removes all of it again; the cache itself is never changed:
-1. `caches/save_personal_notes`: set, read back, clear
-2. `logs/submit` a Comment, `logs/edit`, `logs/delete`
+It works on its own test cache, so it touches no one else's data:
+1. `caches/create` a cache `okapi-test <timestamp>` owned by the test user, with a
+   plain-text description, a hint and two waypoints
+   (location: `writeLocation` in the target, `'lat|lon'`, default N52.327 E9.543)
+2. `caches/update` name, difficulty, hint and one waypoint, read back; the same values
+   again change nothing; invalid values are refused
+3. `caches/save_user_coords`: set, read back via `saved_value` and `user_coords`, remove
+4. `caches/save_personal_notes`: set, read back, clear
+5. `lists/*`: create, add the cache, get, remove, delete the list
+   (only when `has_lists` is set)
+6. `draftlogs/upload_fieldnotes` with one hybrid file (UTF-16LE, GC log type names,
+   records of other platforms), then `draftlogs/query` and `draftlogs/delete`
+   (only when `has_draft_logs` is set)
+7. `logs/submit` a Comment, `logs/edit`, `logs/delete`
+8. `caches/disable`, then `caches/enable` (status logs)
+9. `caches/archive`: the test cache is archived, always last
 
-Without `writeCache` these checks are skipped.
+Steps 7–9 write log entries through `logs/submit`, which needs the full website
+(OKAPI on its own lacks the website's HTML purifier); without it they are skipped.
+
+Left behind per run: the archived test cache.
+
+`caches/create` and `update` run only where `has_cache_editing` is set (OCDE). Elsewhere (OCPL), set
+`writeCache` in the target to an existing cache code; steps 3–7 then run on that
+cache and steps 1, 2, 8 and 9 are skipped, so the cache itself is never changed. Only
+per-user data is written to it, and all of it is removed again. OCPL accepts user
+coordinates only on Multi, Quiz and Other caches, so pick one of those types there.

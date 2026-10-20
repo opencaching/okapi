@@ -1,0 +1,28 @@
+<xml>
+    <brief>Delete draft logs</brief>
+    <infotags>ocde-specific</infotags>
+    <issue-id>630</issue-id>
+    <desc>
+        <p>Deletes draft logs (field notes) of the user, as the website's own field notes
+        page does. Only the user's own drafts can be deleted. Draft IDs are returned by
+        <a href="%OKAPI:methodargref:services/draftlogs/query%">services/draftlogs/query</a>
+        and by <a href="%OKAPI:methodargref:services/draftlogs/upload_fieldnotes%">services/draftlogs/upload_fieldnotes</a>.</p>
+        <p>This method is only available on installations that support draft logs. Check
+        the <b>has_draft_logs</b> field in
+        <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
+        before calling it.</p>
+    </desc>
+    <req name='draft_ids'>
+        <p>Pipe-separated list of draft IDs, at most 500.</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary of the following structure:</p>
+        <ul>
+            <li><b>success</b> - true,</li>
+            <li><b>deleted_draft_ids</b> - list of the IDs that were deleted,</li>
+            <li><b>not_found_draft_ids</b> - list of the IDs that were not deleted, because
+            no such draft exists or it belongs to another user.</li>
+        </ul>
+    </returns>
+</xml>
