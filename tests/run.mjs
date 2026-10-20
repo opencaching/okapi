@@ -273,7 +273,8 @@ if (write) {
       ['difficulty 1.3', { difficulty: '1.3' }],
       ['same coordinates as an active cache', {}],
       ['hidden after publishing', { date_hidden: day(1), latitude: '52.4' }],
-      ['a type other than Traditional', { cache_type: 'Multi', latitude: '52.4' }],
+      ['a type other than Traditional or Quiz', { cache_type: 'Multi', latitude: '52.4' }],
+      ['a Quiz with waypoints', { cache_type: 'Quiz', latitude: '52.4' }],
       ['a final waypoint', { latitude: '52.4', alt_wpts: JSON.stringify([{ location: '52.4|9.5', type: 'final' }]) }],
       ['publish=later without a date', { publish: 'later', latitude: '52.4' }],
       ['unknown publish choice', { publish: 'soon', latitude: '52.4' }],
@@ -281,7 +282,25 @@ if (write) {
       const r = await api.request('services/caches/create', { ...params, ...extra }, { auth: 'hmac', method: 'POST' });
       assert(r.status === 400, `${what}: HTTP ${r.status}, expected 400`);
     }
-    return `${w.code} (${c.status}), description escaped, 2 waypoints; 7 rules refused`;
+    return `${w.code} (${c.status}), description escaped, 2 waypoints; 8 rules refused`;
+  });
+
+  // A mystery submitted unpublished: listing coordinates only, finished on the website.
+  // Unpublished caches can't be archived through OKAPI, so each run leaves one behind.
+  await check('write: caches/create Quiz, not published', async () => {
+    needToken();
+    if (!ctx.installation?.has_cache_editing) skip('installation has no has_cache_editing');
+    const j = await post('services/caches/create', {
+      cache_name: `okapi-test ${stamp} quiz`, cache_type: 'Quiz', latitude: lat, longitude: (Number(lon) + 0.001).toFixed(6),
+      difficulty: '3', terrain: '1.5', size2: 'small', country: 'DE', publish: 'notnow',
+      description: 'Solve the puzzle; the final is added on the website.',
+    }, 'caches/create Quiz');
+    assert(j.cache_code, `no cache_code: ${JSON.stringify(j)}`);
+    const r = await api.request('services/caches/geocache', { cache_code: j.cache_code, fields: 'code|status' }, { auth: 'hmac' });
+    const u = okJson(await api.request('services/caches/update', { cache_code: j.cache_code, terrain: '2' },
+      { auth: 'hmac', method: 'POST' }), 'caches/update unpublished');
+    assert(u.changed.join() === 'terrain', `changed is ${u.changed}`);
+    return `${j.cache_code}; geocache for the owner: HTTP ${r.status}; update works`;
   });
 
   await check('write: caches/update', async () => {
