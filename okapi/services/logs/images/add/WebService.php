@@ -326,11 +326,12 @@ class WebService
             # All other fields are set by trigger or defaults for OCDE.
         } else {
             # These are the additional fields that OCPL newpic.php supplies
-            # (seq is set from default):
+            # (seq is set from default). thumb_url has no default, so strict
+            # SQL mode needs it; '' is what non-strict MySQL stores without it.
             $local_fields_SQL =
-                "date_created, last_modified, description, desc_html, last_url_check, user_id";
+                "date_created, last_modified, description, desc_html, last_url_check, user_id, thumb_url";
             $local_values_escaped_SQL =
-                "NOW(), NOW(), '', 0, NOW(), '".Db::escape_string($user_id)."'";
+                "NOW(), NOW(), '', 0, NOW(), '".Db::escape_string($user_id)."', ''";
         }
 
         $image_url = Settings::get('IMAGES_URL').$image_uuid.$file_ext;

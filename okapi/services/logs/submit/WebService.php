@@ -575,13 +575,16 @@ class WebService
     )
     {
         if (Settings::get('OC_BRANCH') == 'oc.de') {
-            $needs_maintenance_field_SQL = ', needs_maintenance';
+            # `picture` (the number of the log's pictures) is kept up to date by
+            # triggers of the pictures table, but has no default, so strict SQL
+            # mode needs it here.
+            $needs_maintenance_field_SQL = ', needs_maintenance, picture';
             if ($needs_maintenance2 == 'true') {
-                $needs_maintenance_SQL = ',2';
+                $needs_maintenance_SQL = ',2,0';
             } else if ($needs_maintenance2 == 'false') {
-                $needs_maintenance_SQL = ',1';
+                $needs_maintenance_SQL = ',1,0';
             } else {  // 'null'
-                $needs_maintenance_SQL = ',0';
+                $needs_maintenance_SQL = ',0,0';
             }
         } else {
             $needs_maintenance_field_SQL = '';

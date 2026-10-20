@@ -285,8 +285,6 @@ if (write) {
       const image = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAUElEQVR4nJXCERaFAABE0becWcQsLAiCD0EQBEEQfAiCoAW2hnfPJUNVMlYlU1Xyq0rmqmSpStaqZKtK9qrkqErOquRflVxVyV2VPFXJW/UDj4L6AdKjvyUAAAAASUVORK5CYII=';
       const ar = await api.request('services/logs/images/add',
         { log_uuid: uuid, image, caption: `okapi-test image ${stamp}`, is_spoiler: 'false' }, { auth: 'hmac', method: 'POST' });
-      // Known, separate: OCPL's pictures.thumb_url has no default, which strict SQL refuses.
-      if (/thumb_url/.test(ar.text)) skip('logs/images/add fails under strict SQL (pictures.thumb_url has no default)');
       const a = okJson(ar, 'logs/images/add');
       assert(a.success === true && a.image_uuid, `add failed: ${a.message ?? JSON.stringify(a)}`);
       const d = await post('services/logs/images/delete', { image_uuid: a.image_uuid }, 'logs/images/delete');
