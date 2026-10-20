@@ -224,7 +224,7 @@ class SearchAssistant
                 $operator = "not in";
             }
 
-            $user_ids = $this->get_internal_user_ids($tmp, 'owner_uuid');
+            $user_ids = $this->get_internal_user_ids($tmp, 'owner_uuid', false);
 
             if (!empty($user_ids)) {
                 $where_conds[] = "caches.user_id $operator ('".implode("','", array_map('\okapi\core\Db::escape_string', $user_ids))."')";
@@ -765,7 +765,7 @@ class SearchAssistant
         }
     }
 
-    private function get_internal_user_ids($user_uuids, $param_name)
+    private function get_internal_user_ids($user_uuids, $param_name, $strict = true)
     {
         try {
             $users = OkapiServiceRunner::call("services/users/users", new OkapiInternalRequest(
@@ -781,6 +781,9 @@ class SearchAssistant
         }
 
         if (empty($users) || !is_array($users)) {
+            if (!$strict) {
+                return [];
+            }
             throw new InvalidParam($param_name, "No valid users found for the given parameter.");
         }
 
@@ -793,12 +796,14 @@ class SearchAssistant
             }
         }
 
-        if (!empty($invalid_uuids)) {
+        if ($strict && !empty($invalid_uuids)) {
             throw new InvalidParam(
                 $param_name,
                 "The following UUID(s) are invalid or not found: " . implode(", ", $invalid_uuids)
             );
         }
+
+        $users = array_filter($users, 'is_array');
 
         return array_map(function ($user) {
             return $user["internal_id"];
