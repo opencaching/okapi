@@ -507,8 +507,8 @@ can call to find out what features are available:</p>
 <ul>
     <li><a href='services/attrs/attribute_index.html'>services/attrs/attribute_index</a>
         - list of available cache attributes,</li>
-    <li><a href='services/caches/capabilities.html'>services/caches/capabilities</a>
-        - geocache capabilities,</li>
+    <li><a href='services/apisrv/installation.html'>services/apisrv/installation</a>
+        - features of this installation, e.g. whether it has ratings,</li>
     <li><a href='services/logs/capabilities.html'>services/logs/capabilities</a>
         - logging capabilitie.</li>
 </ul>

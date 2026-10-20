@@ -76,7 +76,7 @@
         that rating. Otherwise, it will be ignored (which includes
         installations that do not provide geocache ratings; see the
         <b>has_ratings</b> field of
-        <a href='%OKAPI:methodargref:services/caches/capabilities'>services/caches/capabilities</a>).</p>
+        <a href='%OKAPI:methodargref:services/apisrv/installation%'>services/apisrv/installation</a>).</p>
     </opt>
     <opt name='langpref' default='en'>
         <p>Pipe-separated list of ISO 639-1 language codes. This indicates the
