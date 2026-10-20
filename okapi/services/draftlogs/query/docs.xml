@@ -1,0 +1,31 @@
+<xml>
+    <brief>Retrieve the user's draft logs</brief>
+    <infotags>ocde-specific</infotags>
+    <issue-id>630</issue-id>
+    <desc>
+        <p>Returns the draft logs (field notes) of the user, e.g. those uploaded with
+        <a href="%OKAPI:methodargref:services/draftlogs/upload_fieldnotes%">services/draftlogs/upload_fieldnotes</a>
+        or on the website. Use the <b>draft_id</b> values to delete drafts with
+        <a href="%OKAPI:methodargref:services/draftlogs/delete%">services/draftlogs/delete</a>.</p>
+        <p>This method is only available on installations that support draft logs. Check
+        the <b>has_draft_logs</b> field in
+        <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
+        before calling it.</p>
+    </desc>
+    <opt name='cache_code'>
+        <p>If given, only the drafts for this geocache are returned.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A list of dictionaries, ordered by date, each with the following keys:</p>
+        <ul>
+            <li><b>draft_id</b> - ID of the draft log (a string),</li>
+            <li><b>cache_code</b> - code of the geocache,</li>
+            <li><b>type</b> - <i>Found it</i>, <i>Didn't find it</i> or <i>Comment</i>,</li>
+            <li><b>needs_maintenance2</b> - true if the draft reports that the geocache
+            needs maintenance (a comment with "needs maintenance" set), otherwise false,</li>
+            <li><b>date</b> - date and time of the draft, in ISO 8601 format,</li>
+            <li><b>comment</b> - text of the draft, in HTML.</li>
+        </ul>
+    </returns>
+</xml>
