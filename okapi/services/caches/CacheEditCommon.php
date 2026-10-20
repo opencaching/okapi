@@ -138,7 +138,12 @@ class CacheEditCommon
     }
 
     /** Waypoints from a JSON array of {location, type, description}. */
-    public static function parse_waypoints($param, $json)
+    /**
+     * Waypoints from a JSON array. $allowed_types limits the types (by the
+     * names below), e.g. create takes no stages or finals: on OCDE all
+     * additional waypoints are public.
+     */
+    public static function parse_waypoints($param, $json, $allowed_types = null)
     {
         $list = json_decode($json, true);
         if (!is_array($list) || ($list && array_keys($list) !== range(0, count($list) - 1)))
@@ -159,6 +164,11 @@ class CacheEditCommon
             if (!isset(self::$wpt_subtypes[$wpt['type']]))
                 throw new InvalidParam($param, "Waypoint $n: unknown type '".$wpt['type']."'. Use one of: "
                     .implode(', ', array_keys(self::$wpt_subtypes)).'.');
+            $allowed_subtypes = ($allowed_types === null) ? null
+                : array_map(function ($t) { return self::$wpt_subtypes[$t]; }, $allowed_types);
+            if ($allowed_subtypes !== null && !in_array(self::$wpt_subtypes[$wpt['type']], $allowed_subtypes))
+                throw new InvalidParam($param, "Waypoint $n: type '".$wpt['type']."' is not possible here. Use one of: "
+                    .implode(', ', $allowed_types).'.');
             $desc = isset($wpt['description']) ? trim((string)$wpt['description']) : '';
             $result[] = ['lat' => $lat, 'lon' => $lon, 'subtype' => self::$wpt_subtypes[$wpt['type']], 'description' => $desc];
         }
