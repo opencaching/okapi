@@ -48,7 +48,7 @@ class WebService
                     localID, uuid, type, removed_date, node
                 )
                 VALUES (
-                    ".$image_row['id']."
+                    ".$image_row['id'].",
                     '".$image_uuid_escaped."',
                     6,
                     NOW(),

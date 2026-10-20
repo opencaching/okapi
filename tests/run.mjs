@@ -270,6 +270,41 @@ if (write) {
     }
     return `log ${uuid} submitted, edited, deleted`;
   });
+
+  await check('write: logs/images add and delete', async () => {
+    needCache();
+    const res = await api.request('services/logs/submit',
+      { cache_code: w.code, logtype: 'Comment', comment: `okapi-test image log ${stamp}` }, { auth: 'hmac', method: 'POST' });
+    if (/OcHTMLPurifier/.test(res.text)) skip('OKAPI runs without the website (OcHTMLPurifier missing)');
+    const j = okJson(res, 'logs/submit');
+    assert(j.success === true && j.log_uuids?.length, `submit failed: ${j.message ?? JSON.stringify(j)}`);
+    const uuid = j.log_uuids[0];
+    let deleted = false;
+    try {
+      // A 16x16 PNG.
+      const image = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAUElEQVR4nJXCERaFAABE0becWcQsLAiCD0EQBEEQfAiCoAW2hnfPJUNVMlYlU1Xyq0rmqmSpStaqZKtK9qrkqErOquRflVxVyV2VPFXJW/UDj4L6AdKjvyUAAAAASUVORK5CYII=';
+      const ar = await api.request('services/logs/images/add',
+        { log_uuid: uuid, image, caption: `okapi-test image ${stamp}`, is_spoiler: 'false' }, { auth: 'hmac', method: 'POST' });
+      // Known, separate: OCPL's pictures.thumb_url has no default, which strict SQL refuses.
+      if (/thumb_url/.test(ar.text)) skip('logs/images/add fails under strict SQL (pictures.thumb_url has no default)');
+      const a = okJson(ar, 'logs/images/add');
+      assert(a.success === true && a.image_uuid, `add failed: ${a.message ?? JSON.stringify(a)}`);
+      const d = await post('services/logs/images/delete', { image_uuid: a.image_uuid }, 'logs/images/delete');
+      assert(d.success === true, `image delete failed: ${JSON.stringify(d)}`);
+      const imgs = okJson(await api.request('services/logs/entry', { log_uuid: uuid, fields: 'images' }, { auth: 'hmac' }), 'logs/entry').images;
+      assert(Array.isArray(imgs) && imgs.length === 0, `log still has ${imgs?.length} image(s)`);
+      // logs/delete also deletes the images of a log: add one more and delete the log with it.
+      const b = await post('services/logs/images/add',
+        { log_uuid: uuid, image, caption: `okapi-test image ${stamp} (2)`, is_spoiler: 'false' }, 'logs/images/add');
+      assert(b.success === true, `second add failed: ${b.message ?? JSON.stringify(b)}`);
+      const del = await post('services/logs/delete', { log_uuid: uuid }, 'logs/delete');
+      assert(del.success === true, `log delete failed: ${del.message ?? JSON.stringify(del)}`);
+      deleted = true;
+    } finally {
+      if (!deleted) await api.request('services/logs/delete', { log_uuid: uuid }, { auth: 'hmac', method: 'POST' });
+    }
+    return `log ${uuid}: image added and deleted, log with an image deleted`;
+  });
 }
 
 // --- report ------------------------------------------------------------------
