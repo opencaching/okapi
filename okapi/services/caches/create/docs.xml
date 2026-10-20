@@ -22,8 +22,7 @@
         <p>One of the cache types of
         <a href="%OKAPI:methodargref:services/caches/geocache#fields%">services/caches/geocache</a>'s
         <b>type</b> field that this installation supports (see <b>cache_types</b> in
-        services/apisrv/installation). A multi or mystery cache is usually sent
-        with <b>publish</b>=<b>notnow</b> and finished on the website.</p>
+        services/apisrv/installation).</p>
     </req>
     <req name='latitude'>
         <p>Latitude of the geocache, -90 to 90.</p>
@@ -74,8 +73,12 @@
             <li><b>now</b> - published at once, as <b>Available</b>;</li>
             <li><b>later</b> - published by the website at <b>activate_on</b>,
             <b>activate_hour</b>;</li>
-            <li><b>notnow</b> - not published; the owner publishes it later on the website.</li>
+            <li><b>notnow</b> - not published; the owner finishes the listing and
+            publishes it later on the website.</li>
         </ul>
+        <p>Every cache type can be sent with any of these choices. An unpublished
+        geocache is not visible through OKAPI, not even to its owner, but its owner
+        can still change it with services/caches/update.</p>
     </opt>
     <opt name='activate_on'>
         <p>With <b>publish</b>=<b>later</b> (and then mandatory): the day of
