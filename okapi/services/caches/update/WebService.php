@@ -110,10 +110,13 @@ class WebService
                 }
             }
             if ($p['description'] !== null) {
-                $format = $request->get_parameter('description_format') ?: 'plaintext';
-                list($value, $html) = CacheEditCommon::process_description($p['description'], $format);
-                if ($value !== $desc['desc'] || $html != $desc['desc_html']) {
-                    $desc_sets[] = "`desc` = '".Db::escape_string($value)."', desc_html = '".Db::escape_string($html)."', desc_htmledit = 0";
+                # Plain text only. A description with formatting (written on the
+                # website) is not replaced, so no client removes the formatting.
+                $value = CacheEditCommon::encode_description($p['description']);
+                if ($value !== $desc['desc'] || $desc['desc_html'] != 1) {
+                    if (!CacheEditCommon::is_plain_description($desc['desc']))
+                        throw new InvalidParam('description', 'This description has formatting; it can only be changed on the website.');
+                    $desc_sets[] = "`desc` = '".Db::escape_string($value)."', desc_html = 1, desc_htmledit = 0";
                     $changed[] = 'description';
                 }
             }

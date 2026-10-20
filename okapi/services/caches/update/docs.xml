@@ -50,11 +50,16 @@
         <p>New short description, plain text only. An empty value removes it.</p>
     </opt>
     <opt name='description'>
-        <p>New description.</p>
-    </opt>
-    <opt name='description_format' default='plaintext'>
-        <p>Format of <b>description</b>, as in
-        <a href="%OKAPI:methodargref:services/caches/create#description_format%">services/caches/create</a>.</p>
+        <p>New description, plain text, as in
+        <a href="%OKAPI:methodargref:services/caches/create#description%">services/caches/create</a>.</p>
+        <p>Only a plain description can be replaced: one that contains no HTML
+        tags but &lt;br /&gt; (each followed by a line break) and no character
+        references but those that escaping plain text produces (for &amp;, &lt;,
+        &gt;, the double quote and repeated spaces), as OKAPI writes it.
+        A description with formatting, written on the website, is refused with
+        HTTP 400 and stays unchanged, so that no client removes the formatting;
+        the owner changes it on the website. The other parameters are not
+        affected by this.</p>
     </opt>
     <opt name='hint2'>
         <p>New hint, plain text only. An empty value removes it.</p>
