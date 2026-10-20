@@ -255,6 +255,8 @@ if (write) {
       alt_wpts: JSON.stringify([
         { location: `${lat}|${lon}`, type: 'parking', description: 'parking' },
         { location: `${lat}|${lon}`, type: 'poi', description: 'viewpoint' },
+        { location: `${lat}|${lon}`, type: 'stage', description: 'stage 1' },
+        { location: `${lat}|${lon}`, type: 'final', description: 'final, public on purpose' },
       ]),
     };
     const j = await post('services/caches/create', params, 'caches/create');
@@ -266,23 +268,22 @@ if (write) {
     assert(c.size2 === 'micro', `size2 is ${c.size2}`);
     assert(!c.description.includes('<b>'), `plain-text description not escaped: ${c.description}`);
     assert(c.hint2 === 'under the <stone>', `hint2 is ${JSON.stringify(c.hint2)}`);
-    assert(c.alt_wpts.map(x => x.type).join() === 'parking,poi', `alt_wpts are ${c.alt_wpts.map(x => x.type)}`);
+    assert(c.alt_wpts.map(x => x.type).join() === 'parking,poi,stage,final', `alt_wpts are ${c.alt_wpts.map(x => x.type)}`);
     // Refused as on the website; none of these creates a cache.
     const day = n => new Date(Date.now() + n * 86400e3).toISOString().slice(0, 10);
     for (const [what, extra] of [
       ['difficulty 1.3', { difficulty: '1.3' }],
       ['same coordinates as an active cache', {}],
       ['hidden after publishing', { date_hidden: day(1), latitude: '52.4' }],
-      ['a type other than Traditional or Quiz', { cache_type: 'Multi', latitude: '52.4' }],
-      ['a Quiz with waypoints', { cache_type: 'Quiz', latitude: '52.4' }],
-      ['a final waypoint', { latitude: '52.4', alt_wpts: JSON.stringify([{ location: '52.4|9.5', type: 'final' }]) }],
+      ['an unknown cache type', { cache_type: 'Bonus', latitude: '52.4' }],
+      ['an unknown waypoint type', { latitude: '52.4', alt_wpts: JSON.stringify([{ location: '52.4|9.5', type: 'treasure' }]) }],
       ['publish=later without a date', { publish: 'later', latitude: '52.4' }],
       ['unknown publish choice', { publish: 'soon', latitude: '52.4' }],
     ]) {
       const r = await api.request('services/caches/create', { ...params, ...extra }, { auth: 'hmac', method: 'POST' });
       assert(r.status === 400, `${what}: HTTP ${r.status}, expected 400`);
     }
-    return `${w.code} (${c.status}), description escaped, 2 waypoints; 8 rules refused`;
+    return `${w.code} (${c.status}), description escaped, 4 waypoints; 7 rules refused`;
   });
 
   // A mystery submitted unpublished: listing coordinates only, finished on the website.
@@ -317,7 +318,7 @@ if (write) {
     assert(c.name === name, `name is '${c.name}'`);
     assert(Number(c.difficulty) === 2.5, `difficulty is ${c.difficulty}`);
     assert(c.hint2 === '', `hint2 not removed: ${JSON.stringify(c.hint2)}`);
-    assert(c.alt_wpts.map(x => x.type).join() === 'poi', `alt_wpts after removal: ${c.alt_wpts.map(x => x.type)}`);
+    assert(c.alt_wpts.map(x => x.type).join() === 'poi,stage,final', `alt_wpts after removal: ${c.alt_wpts.map(x => x.type)}`);
     const pw = okJson(await update({ passwd: 'okapitest' }), 'caches/update passwd');
     assert(pw.changed.join() === 'passwd' && (await read('req_passwd')).req_passwd === true, `passwd not set: ${pw.changed}`);
     const nopw = okJson(await update({ passwd: '' }), 'caches/update passwd clear');

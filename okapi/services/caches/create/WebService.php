@@ -33,14 +33,11 @@ class WebService
         $cache_type = $request->get_parameter('cache_type');
         if (!$cache_type)
             throw new InvalidParam('cache_type', 'cache_type is mandatory.');
-        # Traditional and Mystery (Quiz), for now. A Mystery gets its listing
-        # coordinates only: its final and any other waypoint are added on the
-        # website (on OCDE, additional waypoints are always public, so stages and
-        # finals can't be kept secret here). With publish=notnow the owner
-        # finishes such a listing on the website before publishing it.
-        if (!in_array($cache_type, ['Traditional', 'Quiz']))
-            throw new InvalidParam('cache_type', 'Only Traditional and Quiz caches can be created through OKAPI; create other types on the website.');
-        $type_id = Okapi::cache_type_name2id($cache_type);
+        try {
+            $type_id = Okapi::cache_type_name2id($cache_type);
+        } catch (\Exception $e) {
+            throw new InvalidParam('cache_type', "Unknown cache type '$cache_type'.");
+        }
 
         list($latitude, $longitude) = CacheEditCommon::parse_location(
             $request->get_parameter('latitude'), $request->get_parameter('longitude'));
@@ -86,10 +83,8 @@ class WebService
 
         $waypoints = [];
         $alt_wpts = $request->get_parameter('alt_wpts');
-        if ($alt_wpts !== null && $alt_wpts !== '' && $cache_type == 'Quiz')
-            throw new InvalidParam('alt_wpts', 'A Quiz cache is created without waypoints; add them on the website.');
         if ($alt_wpts !== null && $alt_wpts !== '')
-            $waypoints = CacheEditCommon::parse_waypoints('alt_wpts', $alt_wpts, ['parking', 'path', 'poi']);
+            $waypoints = CacheEditCommon::parse_waypoints('alt_wpts', $alt_wpts);
 
         # Publishing, as the choices of the website's form: now, later (at a
         # given day and full hour; the website publishes it then), or not now
