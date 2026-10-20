@@ -471,12 +471,13 @@ if (write) {
   });
 
   // Status changes are status logs (services/logs/submit), so they need a full website.
+  // OCDE records each status change in cache_status_modified, keyed by cache and second,
+  // so two changes of one cache within the same second collide: wait a little before each.
   const status = async (method, expected) => {
+    await new Promise(r => setTimeout(r, 1100));
     const res = await api.request(`services/caches/${method}`,
       { cache_code: w.code, comment: `okapi-test ${method}` }, { auth: 'hmac', method: 'POST' });
     if (/OcHTMLPurifier/.test(res.text)) skip('OKAPI runs without the website (OcHTMLPurifier missing)');
-    // Known, separate: logs/submit doesn't set cache_logs.picture, which has no default on OCDE (strict SQL).
-    if (/Field 'picture' doesn't have a default/.test(res.text)) skip('logs/submit fails under strict SQL (cache_logs.picture has no default)');
     const j = okJson(res, `caches/${method}`);
     assert(j.success === true && j.log_uuid, `${method} failed: ${j.message ?? JSON.stringify(j)}`);
     const c = await read('status');
