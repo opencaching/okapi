@@ -3,21 +3,21 @@
     <issue-id>637</issue-id>
     <desc>
         <p>The owner archives the geocache. The listing and all its logs stay; the cache can no longer be found or logged as found.</p>
-        <p>This is a shortcut for
+        <p>It works like
         <a href="%OKAPI:methodref:services/logs/submit%">services/logs/submit</a>
-        with <b>logtype</b> "Archived": it publishes the same status log entry, with the
-        same rules and the same result, on every installation. Only the owner of
-        the geocache may change its status.</p>
+        with <b>logtype</b> "Archived": it publishes the same status log entry,
+        with the same rules, on every installation. Only the owner of the geocache
+        may change its status. Two differences: the geocache must be available or temporarily unavailable
+        (a status the geocache already has is refused, so no status log entry
+        is written for nothing), and the comment is always plain text.</p>
     </desc>
     <req name='cache_code'>
         <p>Code of the geocache.</p>
     </req>
-    <opt name='comment'>
-        <p>Text of the status log entry, as in
-        <a href="%OKAPI:methodargref:services/logs/submit#comment%">services/logs/submit</a>.</p>
-    </opt>
-    <opt name='comment_format' default='auto'>
-        <p>As in <a href="%OKAPI:methodargref:services/logs/submit#comment_format%">services/logs/submit</a>.</p>
+    <opt name='comment' default=''>
+        <p>Text of the status log entry, plain text (no HTML), as the owner wrote it.
+        OKAPI adds no text of its own; an empty comment gives a status log entry
+        without text, as the website writes it.</p>
     </opt>
     <opt name='langpref' default='en'>
         <p>Language of the message returned, as in
@@ -28,7 +28,8 @@
         <p>The same dictionary as
         <a href="%OKAPI:methodref:services/logs/submit%">services/logs/submit</a>
         returns (<b>success</b>, <b>message</b>, <b>log_uuid</b>, <b>log_uuids</b>).
-        As there, a refused status change is <b>success</b> false with a message
-        for the user, not an HTTP error.</p>
+        As there, a refused status change (including one to the status the
+        geocache already has) is <b>success</b> false with a message for the
+        user, not an HTTP error.</p>
     </returns>
 </xml>

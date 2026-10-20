@@ -9,8 +9,7 @@
         <p>This method does not change the status (use
         <a href="%OKAPI:methodref:services/caches/archive%">services/caches/archive</a>,
         <a href="%OKAPI:methodref:services/caches/disable%">disable</a> and
-        <a href="%OKAPI:methodref:services/caches/enable%">enable</a>) nor the log
-        password (use <a href="%OKAPI:methodref:services/caches/edit%">services/caches/edit</a>).</p>
+        <a href="%OKAPI:methodref:services/caches/enable%">enable</a>).</p>
         <p>This method is only available on installations that support cache editing.
         Check the <b>has_cache_editing</b> field in
         <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
@@ -37,13 +36,18 @@
     <opt name='size2'>
         <p>As in <a href="%OKAPI:methodref:services/caches/create%">services/caches/create</a>.</p>
     </opt>
+    <opt name='passwd'>
+        <p>New log password; an empty value removes it. The same rules as in
+        <a href="%OKAPI:methodref:services/caches/edit%">services/caches/edit</a>,
+        which stays available for clients that use it.</p>
+    </opt>
     <opt name='desc_lang' default="the geocache's main language">
         <p>Which description <b>short_description</b>, <b>description</b> and
         <b>hint2</b> change. The geocache must already have a description in
         this language.</p>
     </opt>
     <opt name='short_description'>
-        <p>New short description, plain text. An empty value removes it.</p>
+        <p>New short description, plain text only. An empty value removes it.</p>
     </opt>
     <opt name='description'>
         <p>New description.</p>
@@ -53,7 +57,7 @@
         <a href="%OKAPI:methodargref:services/caches/create#description_format%">services/caches/create</a>.</p>
     </opt>
     <opt name='hint2'>
-        <p>New hint, plain text. An empty value removes it.</p>
+        <p>New hint, plain text only. An empty value removes it.</p>
     </opt>
     <opt name='alt_wpts'>
         <p><b>Replaces all</b> additional waypoints of the geocache with this
