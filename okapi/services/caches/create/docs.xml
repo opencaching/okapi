@@ -19,11 +19,12 @@
         <p>Name of the geocache. Must not be empty.</p>
     </req>
     <req name='cache_type'>
-        <p>For now only <b>Traditional</b>, the simple listing an app creates
-        in the field (like the official Geocaching app, which creates only
-        traditional caches). Other types are created on the website: on OCDE,
-        additional waypoints are always public, so the stages and the final of
-        a multi or mystery cache can't be kept secret through OKAPI.</p>
+        <p>For now <b>Traditional</b> or <b>Quiz</b> (mystery). A Quiz cache
+        is created with its listing coordinates only and without additional
+        waypoints: on OCDE, additional waypoints are always public, so its final
+        can't be kept secret through OKAPI. The owner adds the final on the
+        website; use <b>publish</b>=<b>notnow</b> to finish the listing there
+        before it is published. Other types are created on the website.</p>
     </req>
     <req name='latitude'>
         <p>Latitude of the geocache, -90 to 90.</p>
@@ -93,7 +94,8 @@
         <p>JSON array of additional waypoints, each an object with <b>location</b>
         ("lat|lon"), <b>type</b> (parking, path or poi; the alias trailhead is
         accepted) and an optional plain-text <b>description</b>. Stages and
-        finals are not taken here, because additional waypoints are public. Names are given by the installation, as in
+        finals are not taken here, because additional waypoints are public. Not
+        allowed for a Quiz cache. Names are given by the installation, as in
         the <b>alt_wpts</b> field of services/caches/geocache.</p>
     </opt>
     <common-format-params/>
