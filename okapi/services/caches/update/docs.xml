@@ -70,6 +70,9 @@
         <a href="%OKAPI:methodargref:services/caches/create#alt_wpts%">services/caches/create</a>).
         An empty array <b>removes all</b> of them. Cannot be combined with
         <b>add_alt_wpts</b> or <b>remove_alt_wpts</b>.</p>
+        <p>As in services/caches/create, <b>additional waypoints are public</b>:
+        on OCDE everyone sees them with their coordinates, so a <b>final</b>
+        waypoint gives the final location away.</p>
     </opt>
     <opt name='add_alt_wpts'>
         <p>JSON array of waypoints to add, in the same format. The existing ones stay.</p>
