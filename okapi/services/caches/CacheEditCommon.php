@@ -131,6 +131,24 @@ class CacheEditCommon
         return self::encode_description($text) === $stored;
     }
 
+    /**
+     * Whether a stored description may be replaced through OKAPI: plain, or
+     * simple text with paragraphs and line breaks only (<p>, </p> and <br>
+     * without attributes, any character references), as the website's editor
+     * writes a few paragraphs of text. Everything else has formatting that a
+     * plain-text replacement would remove, so it is changed on the website.
+     */
+    public static function is_simple_description($stored)
+    {
+        if (self::is_plain_description($stored))
+            return true;
+        preg_match_all('~<[^>]*>?~', $stored, $m);
+        foreach ($m[0] as $tag)
+            if (!preg_match('~^<(?:/?p|br\s*/?)>$~i', $tag))
+                return false;
+        return true;
+    }
+
     /** The hint as stored by the website: HTML-escaped, line breaks as <br />. */
     public static function encode_hint($hint)
     {
