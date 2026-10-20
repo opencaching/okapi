@@ -3,74 +3,81 @@
     <infotags>ocde-specific</infotags>
     <issue-id></issue-id>
     <desc>
-        <p>This method allows users to create a new geocache.</p>
+        <p>The user creates a geocache they own. The rules are those of the
+        website's "hide a cache" form: the cache is published at once, as
+        <b>Available</b>, or as <b>Temporarily unavailable</b> if
+        <b>date_hidden</b> lies in the future (except for events).</p>
         <p>This method is only available on installations that support cache editing.
         Check the <b>has_cache_editing</b> field in
         <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
         before calling it.</p>
     </desc>
     <req name='cache_name'>
-        <p>Name of the cache. Must not be empty or exceed 256 characters.</p>
+        <p>Name of the geocache. Must not be empty.</p>
     </req>
     <req name='cache_type'>
-        <p>Type of the cache. Must be one of: Traditional, Multi, Quiz, Moving, Virtual, Webcam, Other, Event, Own, Podcast.</p>
+        <p>One of the cache types of
+        <a href="%OKAPI:methodargref:services/caches/geocache#fields%">services/caches/geocache</a>'s
+        <b>type</b> field that this installation supports (see <b>cache_types</b> in
+        services/apisrv/installation).</p>
     </req>
     <req name='latitude'>
-        <p>Latitude of the cache location. Must be between -90 and 90.</p>
+        <p>Latitude of the geocache, -90 to 90.</p>
     </req>
     <req name='longitude'>
-        <p>Longitude of the cache location. Must be between -180 and 180.</p>
+        <p>Longitude of the geocache, -180 to 180. 0|0 is refused.</p>
     </req>
-    <opt name='difficulty' default='null'>
-        <p>Difficulty rating of the cache. Must be between 1.0 and 5.0.</p>
-    </opt>
-    <opt name='terrain' default='null'>
-        <p>Terrain rating of the cache. Must be between 1.0 and 5.0.</p>
-    </opt>
-    <opt name='size2' default='small'>
-        <p>Size of the cache container. One of: none, nano, micro, small, regular, large, xlarge, other.</p>
-    </opt>
+    <req name='difficulty'>
+        <p>1 to 5, in steps of 0.5.</p>
+    </req>
+    <req name='terrain'>
+        <p>1 to 5, in steps of 0.5.</p>
+    </req>
+    <req name='size2'>
+        <p>Container size, as in the <b>size2</b> field of services/caches/geocache:
+        none, nano, micro, small, regular, large, xlarge or other.</p>
+    </req>
     <opt name='short_description' default=''>
-        <p>One-line tagline for the cache. Must not exceed 255 characters.</p>
+        <p>One line shown above the description, plain text.</p>
     </opt>
     <opt name='description' default=''>
-        <p>Full HTML description of the cache.</p>
+        <p>The description.</p>
+    </opt>
+    <opt name='description_format' default='plaintext'>
+        <p><b>plaintext</b> or <b>html</b>. Plain text is shown as written. HTML
+        is cleaned the same way as on the website (and as log comments in
+        <a href="%OKAPI:methodargref:services/logs/submit#comment_format%">services/logs/submit</a>).</p>
     </opt>
     <opt name='hint2' default=''>
-        <p>Plain-text hint or spoiler for the cache.</p>
+        <p>Hint, plain text.</p>
+    </opt>
+    <opt name='desc_lang' default='EN'>
+        <p>Language of the description, a two-letter code.</p>
+    </opt>
+    <opt name='country' default="the user's country">
+        <p>Two-letter country code. Mandatory if the user's profile has no country.</p>
     </opt>
     <opt name='date_hidden' default='today'>
-        <p>ISO 8601 date when the cache was/will be hidden. Defaults to today's date.</p>
+        <p>Date the cache was (or will be) hidden, e.g. 2026-10-20. For events, the event date.</p>
     </opt>
-    <opt name='req_passwd' default='false'>
-        <p>Boolean. If true, a password is required to submit "Found it" log entries.</p>
+    <opt name='passwd' default=''>
+        <p>Log password: if given, "Found it" log entries need it (see
+        <a href="%OKAPI:methodref:services/caches/edit%">services/caches/edit</a>,
+        which changes it later).</p>
     </opt>
     <opt name='alt_wpts' default=''>
-        <p>JSON array of additional waypoints. Each waypoint object should have: name, location (lat|lon format), type, description.
-        Waypoint types: parking, trailhead, path, stage, physical-stage, virtual-stage, final, poi, other.</p>
+        <p>JSON array of additional waypoints, each an object with <b>location</b>
+        ("lat|lon"), <b>type</b> (parking, stage, path, final or poi; the aliases
+        physical-stage, virtual-stage and trailhead are accepted) and an optional
+        plain-text <b>description</b>. Names are given by the installation, as in
+        the <b>alt_wpts</b> field of services/caches/geocache.</p>
     </opt>
     <common-format-params/>
     <returns>
-        <p>A dictionary of the following structure:</p>
+        <p>A dictionary:</p>
         <ul>
-            <li>
-                <p><b>success</b> - true, if the cache was created successfully.</p>
-            </li>
-            <li>
-                <p><b>message</b> - status message for the user.</p>
-            </li>
-            <li>
-                <p><b>cache_code</b> - the unique code assigned to the newly created cache.</p>
-            </li>
-            <li>
-                <p><b>cache_id</b> - the internal ID of the newly created cache.</p>
-            </li>
-            <li>
-                <p><b>alt_wpts_count</b> - number of additional waypoints created.</p>
-            </li>
-            <li>
-                <p><b>url</b> - direct URL to the cache on the OC website.</p>
-            </li>
+            <li><b>cache_code</b> - code of the new geocache,</li>
+            <li><b>url</b> - its page on the website.</li>
         </ul>
     </returns>
 </xml>

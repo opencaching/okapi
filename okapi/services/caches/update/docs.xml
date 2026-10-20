@@ -1,62 +1,81 @@
 <xml>
-    <brief>Update an existing geocache</brief>
+    <brief>Change the listing of an own geocache</brief>
     <infotags>ocde-specific</infotags>
     <issue-id></issue-id>
     <desc>
-        <p>This method allows the cache owner to update details of an existing geocache.
-        Only the cache owner can modify a cache. At least one optional parameter must be provided.</p>
+        <p>The owner changes the listing of their geocache. Only the parameters
+        given are changed; a value equal to the stored one changes nothing, so a
+        client may send back all fields it has read.</p>
+        <p>This method does not change the status (use
+        <a href="%OKAPI:methodref:services/caches/archive%">services/caches/archive</a>,
+        <a href="%OKAPI:methodref:services/caches/disable%">disable</a> and
+        <a href="%OKAPI:methodref:services/caches/enable%">enable</a>) nor the log
+        password (use <a href="%OKAPI:methodref:services/caches/edit%">services/caches/edit</a>).</p>
         <p>This method is only available on installations that support cache editing.
         Check the <b>has_cache_editing</b> field in
         <a href="%OKAPI:methodargref:services/apisrv/installation%">services/apisrv/installation</a>
         before calling it.</p>
     </desc>
     <req name='cache_code'>
-        <p>Code of the cache to update. The authenticated user must be the cache owner.</p>
+        <p>Code of the geocache. The user must be its owner.</p>
     </req>
     <opt name='cache_name'>
-        <p>New name for the cache (max 256 characters).</p>
+        <p>New name. Must not be empty.</p>
+    </opt>
+    <opt name='latitude'>
+        <p>New latitude. Must be given together with <b>longitude</b>.</p>
+    </opt>
+    <opt name='longitude'>
+        <p>New longitude. Must be given together with <b>latitude</b>. 0|0 is refused.</p>
     </opt>
     <opt name='difficulty'>
-        <p>New difficulty rating (1.0-5.0).</p>
+        <p>1 to 5, in steps of 0.5.</p>
     </opt>
     <opt name='terrain'>
-        <p>New terrain rating (1.0-5.0).</p>
+        <p>1 to 5, in steps of 0.5.</p>
     </opt>
     <opt name='size2'>
-        <p>New container size (none, nano, micro, small, regular, large, xlarge, other).</p>
+        <p>As in <a href="%OKAPI:methodref:services/caches/create%">services/caches/create</a>.</p>
+    </opt>
+    <opt name='desc_lang' default="the geocache's main language">
+        <p>Which description <b>short_description</b>, <b>description</b> and
+        <b>hint2</b> change. The geocache must already have a description in
+        this language.</p>
     </opt>
     <opt name='short_description'>
-        <p>New short description/tagline (max 255 characters).</p>
+        <p>New short description, plain text. An empty value removes it.</p>
     </opt>
     <opt name='description'>
-        <p>New full HTML description.</p>
+        <p>New description.</p>
+    </opt>
+    <opt name='description_format' default='plaintext'>
+        <p>Format of <b>description</b>, as in
+        <a href="%OKAPI:methodargref:services/caches/create#description_format%">services/caches/create</a>.</p>
     </opt>
     <opt name='hint2'>
-        <p>New plain-text hint.</p>
-    </opt>
-    <opt name='status'>
-        <p>New cache status. Must be one of: Available, Temporarily unavailable, Archived.</p>
+        <p>New hint, plain text. An empty value removes it.</p>
     </opt>
     <opt name='alt_wpts'>
-        <p>JSON array of waypoints. Replaces all existing waypoints with the provided list.
-        Each waypoint must have: name, location (lat|lon), type, description.</p>
+        <p><b>Replaces all</b> additional waypoints of the geocache with this
+        JSON array (format as in
+        <a href="%OKAPI:methodargref:services/caches/create#alt_wpts%">services/caches/create</a>).
+        An empty array <b>removes all</b> of them. Cannot be combined with
+        <b>add_alt_wpts</b> or <b>remove_alt_wpts</b>.</p>
     </opt>
     <opt name='add_alt_wpts'>
-        <p>JSON array of waypoints to add without removing existing waypoints.</p>
+        <p>JSON array of waypoints to add, in the same format. The existing ones stay.</p>
     </opt>
     <opt name='remove_alt_wpts'>
-        <p>Pipe-separated list of waypoint names to remove (e.g., "P1|S1").</p>
+        <p>Pipe-separated names of waypoints to remove, as returned in the
+        <b>alt_wpts</b> field of services/caches/geocache (e.g. "OC1234-1|OC1234-3").
+        The names refer to the waypoints as they were before this call; the
+        names of the remaining waypoints may change afterwards. An unknown name
+        is refused and nothing is changed.</p>
     </opt>
     <common-format-params/>
     <returns>
-        <p>A dictionary of the following structure:</p>
-        <ul>
-            <li>
-                <p><b>success</b> - true, if the cache was updated successfully.</p>
-            </li>
-            <li>
-                <p><b>message</b> - status message for the user.</p>
-            </li>
-        </ul>
+        <p>A dictionary with <b>changed</b>, the list of parameters whose value
+        was different from the stored one and was saved (alt_wpts stands for any
+        waypoint change). An empty list means nothing was changed.</p>
     </returns>
 </xml>
