@@ -1,21 +1,17 @@
 <xml>
-    <brief>Delete Cache List</brief>
+    <brief>Delete a cache list</brief>
     <infotags>ocde-specific</infotags>
     <issue-id>627</issue-id>
     <desc>
-        <p>This method is used to delete a geocache list. The geocache objects
-        that were on the list will not be touched in any way.</p>
+        <p>Deletes one of the user's lists, with its watches. The caches on it are not touched.</p>
     </desc>
-    <req name="list_id">
-        <p>The id of the list to be removed. IDs can be obtained by
-         the service ::services/lists/query</p>
-        </req>
+    <req name='list_id'>
+        <p>The id of one of the user's lists, as returned by
+        <a href='%OKAPI:methodref:services/lists/query%'>services/lists/query</a>. Another user's list,
+        or one that no longer exists (e.g. deleted on the website), gives HTTP 400.</p>
+    </req>
     <common-format-params/>
     <returns>
-        <p>A dictionary of the following structure:</p>
-        <ul>
-            <li>success - true</li>
-            <li>message - cache list deleted successfully</li>
-        </ul>
+        <p>A dictionary with <b>list_id</b>, the id of the deleted list.</p>
     </returns>
 </xml>

@@ -1,47 +1,39 @@
 <xml>
-    <brief>Create Cache List</brief>
+    <brief>Create a cache list</brief>
     <infotags>ocde-specific</infotags>
     <issue-id>627</issue-id>
     <desc>
-        <p>This method creates a list for adding geocaches to. Only the list is created,
-        no geocaches are added to it during the create. For adding and removing geocaches
-        to/from the list use specific methods within the ::services/lists namespace
-        </p>
+        <p>Creates an empty cache list for the user. Caches are added with
+        <a href='%OKAPI:methodref:services/lists/add_caches%'>services/lists/add_caches</a>.
+        The same rules apply as on the website's list form.</p>
     </desc>
-    <req name="list_name">
-    <p>A string, defining the human readable name of the list</p>
+    <req name='list_name'>
+        <p>The list's name, at most 80 characters, unique among the user's lists (as on the website).
+        A public list (list_status 2 or 3) needs a name of at least 10 characters.</p>
     </req>
-    <opt name="list_description">
-        <p>A string via which a description of the list's purpose and
-        potentially content can be defined.</p>
+    <opt name='list_description'>
+        <p>Plain text. The website keeps list descriptions as HTML, so the text is stored HTML-escaped,
+        with its line breaks as &lt;br /&gt;.</p>
     </opt>
-    <opt name="list_status">
-        <p>This parameter can take the following values:
+    <opt name='list_status' default='0'>
+        <p>Who can see the list (the website's "visibility"):</p>
         <ul>
-            <li><b>0</b> - The list is private</li>
-            <li><b>2</b> - The list is public</li>
-            <li><b>3</b> - The list is public and is visible in cache listings</li>
+            <li><b>0</b> - private,</li>
+            <li><b>2</b> - public,</li>
+            <li><b>3</b> - public, and shown in the listings of the caches on it.</li>
         </ul>
-        </p>
     </opt>
-    <opt name="list_password">
-        <p>This parameter allows to add a password to a private list. The password
-        has no meaning if the list is public. The first 16 alphanumeric characters
-        are used as a password. No encryption is performed in the password, instead
-        it is stored in the database in plain text.</p>
-        </opt>
-    <opt name="list_watch">
-        <p>A boolean, either 0, 1, false, true. If set to 1 or true
-        a user wants to get a notification if the content of the list
-        changes.</p>
-        </opt>
+    <opt name='list_password'>
+        <p>Only for private lists: other users who know the password can open the list on the website.
+        At most 80 characters. Like on the website, it is stored as given (not hashed), and it is
+        dropped when the list becomes public.</p>
+    </opt>
+    <opt name='list_watch' default='false'>
+        <p><b>true</b> or <b>false</b>: whether the user gets the website's notifications when caches
+        on the list get new logs.</p>
+    </opt>
     <common-format-params/>
     <returns>
-        <p>A dictionary of the following structure:</p>
-        <ul>
-            <li>success - true</li>
-            <li>message - Cache list created successfully</li>
-            <li>list_id - The id of the list by which it can be referenced</li>
-        </ul>
+        <p>A dictionary with <b>list_id</b>, the new list's id.</p>
     </returns>
 </xml>

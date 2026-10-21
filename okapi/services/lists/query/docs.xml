@@ -1,41 +1,35 @@
 <xml>
-    <brief>Query Cache Lists</brief>
+    <brief>The user's cache lists</brief>
     <infotags>ocde-specific</infotags>
     <issue-id>627</issue-id>
     <desc>
-        <p>This method is used to query the metadata of all user owned cache lists.
-        Such a query ist typically performed by a client application that wants to render
-        a list of geocache lists at the UI. The metadata of the list is necessary and sufficient
-        for this purpose. Please note, an <i>id</i> is also part of the returned meta data.
-        Using this id as a reference code, specific operations can be performed on selected lists
-        for instance adding geocaches to the list, removing them, updating the metadata of the
-        referenced list or deleting the referenced list entirely. Typically such entities as
-        geocaches, logs, or lists, are referenced by a <i>referenceCode</i>, for instance
-        for geocaches, there would be a <i>cache_code</i> in the namespace <i>OCxxxxx</i> where
-        cache_code would be interpreted as a <i>referenceCode</i> for geocaches. Unfortunately lists
-        do not yet have such a <i>referenceCode</i>. They can be referenced only by their internal id,
-        which is named <i>id</i> in the returned objects for this method. This id is used as the
-        <i>list_id</i> parameter in all subsequent methods dealing with lists.
-        </p>
+        <p>Returns the cache lists the user owns, sorted by name.</p>
+        <p>A list is referenced by its numeric <b>id</b> (lists have no code like caches); the other
+        services/lists methods take it as <b>list_id</b>.</p>
+        <p><b>last_modified</b> changes whenever the list or its caches change, also on the website.
+        A client that keeps the lists offline needs to fetch the caches only of lists whose
+        last_modified changed.</p>
     </desc>
+    <opt name='include_caches' default='false'>
+        <p><b>true</b> adds the codes of the caches on each list (field <b>cache_codes</b>), so a
+        client gets all lists and their caches in one request.</p>
+    </opt>
     <common-format-params/>
     <returns>
-        <p>An array of the following structure:</p>
-        <pre>
-[
-    {
-        "id": 13,
-        "name": "This is my list",
-        "date_created": "2023-11-28 09:29:34",
-        "last_modified": "2023-11-28 09:49:16",
-        "last_added": "2023-11-28 09:40:18",
-        "description": "Just a list for testing",
-        "is_public": 0,
-        "caches_count": 4,
-        "watches_count": 1
-    },
-    { .... }
-]
-        </pre>
+        <p>A list of dictionaries, one per list:</p>
+        <ul>
+            <li><b>id</b> - the list's id,</li>
+            <li><b>name</b> - its name,</li>
+            <li><b>description</b> - its description in HTML (as the website keeps it; may be empty),</li>
+            <li><b>status</b> - 0 private, 2 public, 3 public and shown in cache listings
+            (see list_status in <a href='%OKAPI:methodref:services/lists/create%'>services/lists/create</a>),</li>
+            <li><b>password</b> - the password of a private list (empty if none, and for public lists),</li>
+            <li><b>is_watched</b> - whether the user watches the list,</li>
+            <li><b>date_created</b>, <b>last_modified</b>, <b>last_added</b> - date and time in the
+            installation's time zone ("YYYY-MM-DD HH:MM:SS"); last_added is null while no cache was added,</li>
+            <li><b>caches_count</b> - the number of caches on the list,</li>
+            <li><b>watches_count</b> - how many users watch the list,</li>
+            <li><b>cache_codes</b> - only with include_caches: the codes of the caches on the list.</li>
+        </ul>
     </returns>
 </xml>
