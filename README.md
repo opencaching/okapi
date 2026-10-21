@@ -37,10 +37,6 @@ following sites:
   * http://www.opencaching.ro/okapi/
   * https://www.opencache.uk/okapi/
 
-There is one site where OKAPI is not available yet:
-
-  * http://www.opencaching.cz/
-
 The API itself is also being used by numerous geocaching clients (e.g. c:geo).
 
 
