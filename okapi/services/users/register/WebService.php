@@ -56,6 +56,7 @@ class WebService
         ");
         $user = UserRegistration::user_by_email($email);
         UserRegistration::send_activation_mail($user, UserRegistration::mail_lang($request));
+        UserRegistration::note_mail_sent($user['user_id'], false);
 
         $result = array(
             'username' => $user['username'],

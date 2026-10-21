@@ -2,6 +2,7 @@
 
 namespace okapi\services\users;
 
+use okapi\core\Cache;
 use okapi\core\Consumer\OkapiConsumer;
 use okapi\core\Db;
 use okapi\core\Exception\BadRequest;
@@ -117,6 +118,39 @@ class UserRegistration
         if (!empty($config['password_hash']))
             return hash_hmac('sha512', $md5, isset($config['password_salt']) ? $config['password_salt'] : '');
         return $md5;
+    }
+
+    /** Resends per account, and the time between two activation mails (seconds). */
+    const MAX_RESENDS = 3;
+    const MAIL_INTERVAL = 300;
+
+    /**
+     * Refuses a resend that comes too soon after the last mail or after MAX_RESENDS resends.
+     * The website sends the activation mail once (only its admins can send it again), so this
+     * keeps resend_activation from being used to flood an address with mail from the site.
+     */
+    public static function check_resend_allowed($user_id)
+    {
+        $sent = Cache::get('users/mails/'.$user_id);
+        if ($sent === null)
+            return;
+        if ($sent['resends'] >= self::MAX_RESENDS)
+            throw new RegistrationRefused('email', 'too_many_mails',
+                'The activation mail was sent '.(self::MAX_RESENDS + 1).' times already. Check the spam folder, or ask the site\'s team.');
+        $wait = $sent['last'] + self::MAIL_INTERVAL - time();
+        if ($wait > 0)
+            throw new RegistrationRefused('email', 'too_soon',
+                'The activation mail was sent a moment ago. Try again in '.ceil($wait / 60).' minutes.');
+    }
+
+    /** Notes a sent activation mail; kept for the 14 days an inactive account lives. */
+    public static function note_mail_sent($user_id, $is_resend)
+    {
+        $sent = $is_resend ? Cache::get('users/mails/'.$user_id) : null;
+        Cache::set('users/mails/'.$user_id, array(
+            'resends' => ($sent === null ? 0 : $sent['resends']) + ($is_resend ? 1 : 0),
+            'last' => time(),
+        ), 15 * 86400);
     }
 
     /** user.class.php createCode */
