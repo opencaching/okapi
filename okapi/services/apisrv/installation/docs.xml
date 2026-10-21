@@ -120,6 +120,17 @@
                 family of methods is available.</p>
             </li>
             <li>
+                <p><b>has_registration</b> - boolean, <b>true</b> if applications can create
+                user accounts on this installation through
+                <a href="%OKAPI:methodref:services/users/register%">services/users/register</a>.
+                The site's administrators also have to allow each application.</p>
+            </li>
+            <li>
+                <p><b>terms_url</b>, <b>privacy_url</b>, <b>data_license_url</b> - the pages a
+                new user accepts when registering (terms of service, privacy statement, data
+                license); null if unknown.</p>
+            </li>
+            <li>
                 <p><b>has_cache_editing</b> - boolean, <b>true</b> if owners can
                 create geocaches and change their listings with
                 <a href="%OKAPI:methodref:services/caches/create%">services/caches/create</a> and

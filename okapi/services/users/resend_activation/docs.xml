@@ -1,0 +1,20 @@
+<xml>
+    <brief>Send the activation mail again</brief>
+    <infotags>ocde-specific</infotags>
+    <desc>
+        <p>Sends the activation mail of an account that is not active yet once more, with the same
+        code (so an earlier mail stays valid). Only for applications the site's administrators
+        allowed to register users, and only over HTTPS.</p>
+        <p>Refusals give HTTP 400 with a <b>reason</b>: <b>unknown_email</b>, <b>already_active</b>.</p>
+    </desc>
+    <req name='email'>
+        <p>The email address the account was registered with.</p>
+    </req>
+    <opt name='langpref'>
+        <p>Language of the mail, as in services/users/register.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary with the <b>email</b> the mail was sent to.</p>
+    </returns>
+</xml>
