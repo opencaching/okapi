@@ -5,32 +5,34 @@
         <title>Sign up for an API Key</title>
         <link rel="stylesheet" href="<?= $vars['okapi_base_url'] ?>static/common.css?<?= $vars['okapi_rev'] ?>">
         <link rel="icon" type="image/x-icon" href="<?= $vars['okapi_base_url'] ?>static/favicon.ico">
-        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
         <script>
             var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
         </script>
         <script src='<?= $vars['okapi_base_url'] ?>static/common.js?<?= $vars['okapi_rev'] ?>'></script>
         <script>
-            $(function() {
-                $('#submit').click(function() {
-                    $.ajax({
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            'posted': 'true',
-                            'appname': $('#appname').attr('value'),
-                            'appurl': $('#appurl').attr('value'),
-                            'email': $('#email').attr('value'),
-                            'terms': $('#terms').attr('checked')
-                        },
-                        error: function() { alert("Oops... Something went wrong.\nContact the developers if problem persists."); },
-                        success: function(result)
-                        {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('submit').addEventListener('click', function() {
+                    var data = new URLSearchParams();
+                    data.append('posted', 'true');
+                    data.append('appname', document.getElementById('appname').value);
+                    data.append('appurl', document.getElementById('appurl').value);
+                    data.append('email', document.getElementById('email').value);
+                    if (document.getElementById('terms').checked)
+                        data.append('terms', 'checked');
+                    fetch(window.location.href, { method: 'POST', body: data })
+                        .then(function(response) {
+                            if (!response.ok)
+                                throw new Error(response.status);
+                            return response.json();
+                        })
+                        .then(function(result) {
                             if (result.ok)
-                                $('#signup').hide();
+                                document.getElementById('signup').style.display = 'none';
                             alert(result.notice);
-                        }
-                    });
+                        })
+                        .catch(function() {
+                            alert("Oops... Something went wrong.\nContact the developers if problem persists.");
+                        });
                 });
             });
         </script>
