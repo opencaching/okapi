@@ -3,15 +3,12 @@
 namespace okapi\services\lists\create;
 
 use okapi\core\Db;
-use okapi\core\Exception\BadRequest;
-use okapi\core\Exception\InvalidParam;
 use okapi\core\Okapi;
 use okapi\core\Request\OkapiRequest;
-use okapi\Settings;
+use okapi\services\lists\ListsCommon;
 
 class WebService
 {
-
     public static function options()
     {
         return array(
@@ -21,73 +18,40 @@ class WebService
 
     public static function call(OkapiRequest $request)
     {
-        if (Settings::get('OC_BRANCH') != 'oc.de')
-            throw new BadRequest('This method is not supported in this OKAPI installation. See the has_lists field in services/apisrv/installation method.');
-
+        ListsCommon::require_lists();
         $user_id = $request->token->user_id;
 
-            $list_name        = $request->get_parameter('list_name');
-            $list_description = $request->get_parameter('list_description');
-            $list_status      = $request->get_parameter('list_status');
-            $is_watched       = $request->get_parameter('is_watched');
-            $list_password    = $request->get_parameter('list_password');
+        $status = $request->get_parameter('list_status');
+        $status = ($status === null) ? 0 : ListsCommon::parse_status($status);
+        $name = trim((string)$request->get_parameter('list_name'));
+        ListsCommon::check_name($name, $status, $user_id);
+        $description = ListsCommon::description_html((string)$request->get_parameter('list_description'));
+        // The website keeps a password only for private lists (it lets others open the list).
+        $password = ($status == 0) ? ListsCommon::check_password((string)$request->get_parameter('list_password')) : '';
+        $watch = $request->get_parameter('list_watch');
+        $watch = ($watch === null) ? false : ListsCommon::parse_bool('list_watch', $watch);
 
-            if (empty($list_name)) {
-                throw new InvalidParam('list_name', 'list_name is mandatory and must not be empty.');
-            }
+        // uuid, date_created and last_modified are set by OCDE's triggers. description and password
+        // are NOT NULL without a default.
+        Db::execute("
+            insert into cache_lists (user_id, name, is_public, description, password)
+            values (
+                '".Db::escape_string($user_id)."',
+                '".Db::escape_string($name)."',
+                '".Db::escape_string($status)."',
+                '".Db::escape_string($description)."',
+                '".Db::escape_string($password)."'
+            )
+        ");
+        $list_id = (int)Db::last_insert_id();
+        if ($watch) {
+            Db::execute("
+                insert ignore into cache_list_watches (cache_list_id, user_id)
+                values ('".Db::escape_string($list_id)."', '".Db::escape_string($user_id)."')
+            ");
+        }
 
-            // description and password are NOT NULL without a default in OCDE's schema
-            $insert_fields = array(
-                'name' => Db::escape_string($list_name),
-                'user_id' => Db::escape_string($user_id),
-                'description' => Db::escape_string((string)$list_description),
-                'password' => ''
-            );
-
-            if ($list_status !== null && $list_status !== '') {
-                $list_status = (int)$list_status;
-                if (!in_array($list_status, [0, 2, 3])) {
-                    throw new InvalidParam('list_status', 'list_status must be a valid value (0, 2, 3).');
-                }
-                $insert_fields['is_public'] = $list_status;
-
-                // Handle list_password only if list_status is 0 (private)
-                if ($list_status == 0) {
-                    if (isset($list_password) && $list_password !== '') {
-                        $insert_fields['password'] = Db::escape_string(substr($list_password, 0, 16));
-                    }
-                }
-            }
-
-            $columns = implode(', ', array_keys($insert_fields));
-            $values = "'" . implode("', '", $insert_fields) . "'";
-
-            $insert_query = "INSERT INTO cache_lists ($columns) VALUES ($values)";
-            Db::query($insert_query);
-
-            $list_id = Db::last_insert_id();
-
-            // Handle is_watched
-            if ($is_watched !== null && $is_watched !== '') {
-                $is_watched = (int)$is_watched;
-                if (!in_array($is_watched, [0, 1])) {
-                    throw new InvalidParam('is_watched', 'is_watched must be a valid value (0, 1).');
-                }
-
-                // A row in cache_list_watches means the user watches the list
-                if ($is_watched == 1) {
-                    Db::query("
-                        INSERT INTO cache_list_watches (cache_list_id, user_id)
-                        VALUES ('".Db::escape_string($list_id)."', '".Db::escape_string($user_id)."')
-                    ");
-                }
-            }
-
-        $result = array(
-            'success' => true,
-            'message' => 'Cache list created successfully.',
-            'list_id' => $list_id
-        );
+        $result = array('list_id' => $list_id);
         return Okapi::formatted_response($request, $result);
     }
 }

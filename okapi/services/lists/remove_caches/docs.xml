@@ -1,24 +1,20 @@
 <xml>
-    <brief>Remove Caches From List</brief>
+    <brief>Remove caches from a cache list</brief>
     <infotags>ocde-specific</infotags>
     <issue-id>627</issue-id>
     <desc>
-        <p>This method removes geocaches from a list.</p>
+        <p>Takes caches off one of the user's lists. Codes that are not on the list are skipped, so sending the same request twice is harmless.</p>
     </desc>
-    <req name="list_id">
-        <p>The id of a list. List IDs can be obtained by ::services/lists/query</p>
+    <req name='list_id'>
+        <p>The id of one of the user's lists, as returned by
+        <a href='%OKAPI:methodref:services/lists/query%'>services/lists/query</a>. Another user's list,
+        or one that no longer exists (e.g. deleted on the website), gives HTTP 400.</p>
     </req>
-    <req name="cache_codes">
-        <p>A pipe separated list of cache_codes to be removed from the list.</p>
-        <p>Up to 500 geoaches can be removed from the list by one request to
-        this method</p>
+    <req name='cache_codes'>
+        <p>Pipe-separated cache codes (e.g. <b>OC1234|OC5678</b>), at most 500 per request.</p>
     </req>
     <common-format-params/>
     <returns>
-        <p>A dictionary of the following structure:</p>
-        <ul>
-            <li>success - true</li>
-            <li>removed_count - number of geocaches removed from the list</li>
-        </ul>
+        <p>A dictionary with <b>removed_count</b>, the number of caches removed.</p>
     </returns>
 </xml>

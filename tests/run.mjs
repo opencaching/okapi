@@ -269,20 +269,41 @@ if (write) {
     return 'set, then cleared';
   });
 
-  await check('write: lists create/add/get/remove/delete', async () => {
+  await check('write: lists create/query/update/add/get/remove/delete', async () => {
     needCache();
     if (!ctx.installation?.has_lists) skip('installation has no has_lists');
-    const list = await post('services/lists/create', { list_name: `okapi-test ${stamp}`, list_status: 'private' }, 'lists/create');
+    const name = `okapi-test ${stamp}`;
+    const list = await post('services/lists/create', { list_name: name, list_description: 'a <b>b</b>\nc', list_watch: 'true' }, 'lists/create');
     assert(list.list_id, 'no list_id');
+    const raw = async (path, params) => api.request(path, params, { auth: 'hmac', method: 'POST' });
     try {
-      await post('services/lists/add_caches', { list_id: list.list_id, cache_codes: w.code }, 'add_caches');
+      // the website's name rules
+      const dup = await raw('services/lists/create', { list_name: name });
+      assert(dup.status === 400, `duplicate name: HTTP ${dup.status}, expected 400`);
+      const short = await raw('services/lists/create', { list_name: 'short', list_status: '2' });
+      if (short.status === 200) await post('services/lists/delete', { list_id: JSON.parse(short.text).list_id }, 'cleanup');
+      assert(short.status === 400, `public list with a 5-character name: HTTP ${short.status}, expected 400`);
+      const lists = okJson(await api.request('services/lists/query', { include_caches: 'true' }, { auth: 'hmac' }), 'lists/query');
+      assert(Array.isArray(lists), `query: expected an array, got ${JSON.stringify(lists).slice(0, 80)}`);
+      const mine = lists.find(l => l.id === list.list_id);
+      assert(mine, 'new list not in query');
+      assert(mine.status === 0 && mine.is_watched === true && Array.isArray(mine.cache_codes), `query entry: ${JSON.stringify(mine)}`);
+      // plain text in, escaped HTML stored (the website shows it as HTML)
+      assert(mine.description === 'a &lt;b&gt;b&lt;/b&gt;<br />\nc', `description stored as ${JSON.stringify(mine.description)}`);
+      const added = await post('services/lists/add_caches', { list_id: list.list_id, cache_codes: `${w.code}|${w.code}|OCZZZZZZ` }, 'add_caches');
+      assert(added.added_count === 1, `added_count ${added.added_count}, expected 1`);
       const got = await post('services/lists/get_caches', { list_id: list.list_id }, 'get_caches');
-      assert((got.cache_codes ?? '').split('|').includes(w.code), `cache not in list: ${JSON.stringify(got)}`);
-      await post('services/lists/remove_caches', { list_id: list.list_id, cache_codes: w.code }, 'remove_caches');
+      assert(Array.isArray(got.cache_codes) && got.cache_codes.includes(w.code) && got.cache_count === 1, `get_caches: ${JSON.stringify(got)}`);
+      const upd = await post('services/lists/update', { list_id: list.list_id, list_description: '', list_watch: 'false' }, 'lists/update');
+      assert(upd.description === '' && upd.is_watched === false && upd.name === name, `update: ${JSON.stringify(upd)}`);
+      const removed = await post('services/lists/remove_caches', { list_id: list.list_id, cache_codes: w.code }, 'remove_caches');
+      assert(removed.removed_count === 1, `removed_count ${removed.removed_count}, expected 1`);
     } finally {
       await post('services/lists/delete', { list_id: list.list_id }, 'lists/delete');
     }
-    return 'list created, cache added and removed, list deleted';
+    const gone = await api.request('services/lists/get_caches', { list_id: String(list.list_id) }, { auth: 'hmac' });
+    assert(gone.status === 400, `deleted list: HTTP ${gone.status}, expected 400`);
+    return 'website name rules, query shape, escaped description, add/remove counts, update, delete';
   });
 
   await check('write: draftlogs/upload_fieldnotes (hybrid file)', async () => {
