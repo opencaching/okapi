@@ -6,6 +6,7 @@ use okapi\core\Db;
 use okapi\core\Okapi;
 use okapi\core\Request\OkapiRequest;
 use okapi\Settings;
+use okapi\services\users\UserRegistration;
 
 class WebService
 {
@@ -36,6 +37,11 @@ class WebService
         $result['has_draft_logs'] = Settings::get('OC_BRANCH') == 'oc.de';
         $result['has_lists']      = Settings::get('OC_BRANCH') == 'oc.de';
         $result['has_cache_editing'] = Settings::get('OC_BRANCH') == 'oc.de';
+        $registration = UserRegistration::config();
+        $result['has_registration'] = $registration !== null;
+        $result['terms_url'] = isset($registration['terms_url']) ? $registration['terms_url'] : null;
+        $result['privacy_url'] = isset($registration['privacy_url']) ? $registration['privacy_url'] : null;
+        $result['data_license_url'] = Settings::get('DATA_LICENSE_URL');
         if (Settings::get('OC_BRANCH') == 'oc.de') {
             $result['cache_types'] = Okapi::get_local_cachetypes();
             $result['log_types']   = Okapi::get_submittable_logtype_names();

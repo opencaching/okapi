@@ -42,6 +42,13 @@ class OkapiConsumer extends OAuthConsumer
      */
     const FLAG_KEY_REVOKED = 4;
 
+    /**
+     * Allows the consumer to create user accounts ("services/users/register" and
+     * "services/users/activate"). Set by the site's administrators for applications
+     * they trust, e.g. the site's own app; activation returns an Access Token.
+     */
+    const FLAG_REGISTER_USERS = 8;
+
     public function __construct($key, $secret, $name, $url, $email, $bflags=0)
     {
         parent::__construct($key, $secret, null);

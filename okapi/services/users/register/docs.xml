@@ -1,0 +1,45 @@
+<xml>
+    <brief>Create a user account</brief>
+    <infotags>ocde-specific</infotags>
+    <desc>
+        <p>Creates a user account, as the site's own registration form does, and sends the site's
+        activation mail. The account can't be used until it is activated with the code from that
+        mail (<a href='%OKAPI:methodref:services/users/activate%'>services/users/activate</a>).
+        Like on the website, an account that is never activated is deleted after 14 days.</p>
+        <p>Only for applications the site's administrators allowed to register users, and only
+        over HTTPS (the request carries a password). Check <b>has_registration</b> in
+        <a href='%OKAPI:methodref:services/apisrv/installation%'>services/apisrv/installation</a>
+        first; it also gives the URLs of the pages the user accepts.</p>
+        <p>The checks are the website's. A refused value gives HTTP 400 with the parameter's name
+        in <b>parameter</b> and a fixed code in <b>reason</b>, so the application can show it at
+        the right field: <b>username_invalid</b>, <b>username_taken</b>, <b>email_invalid</b>,
+        <b>email_taken</b>, <b>password_invalid</b>, <b>password_weak</b>. The readable text is in
+        <b>whats_wrong_about_it</b>.</p>
+    </desc>
+    <req name='username'>
+        <p>3 to 60 letters, digits or <b>. - _ @ = ( ) / \ &amp; * + ~ #</b>; spaces only inside the
+        name; not an email address; not taken.</p>
+    </req>
+    <req name='email'>
+        <p>The user's email address (at most 60 characters); the activation mail goes there. It
+        must not belong to another account.</p>
+    </req>
+    <req name='password'>
+        <p>6 to 60 letters, digits, spaces or <b>. - _ @ = ( ) / \ &amp; * + ~ #</b>, at least 5
+        different characters, not containing the username, "open", "cache" or "caching", and not
+        one of the site's list of common passwords.</p>
+    </req>
+    <req name='accept_terms'>
+        <p><b>true</b>: the user has read and accepted the terms of service, the privacy statement
+        and the data license (terms_url, privacy_url and data_license_url in
+        services/apisrv/installation). Show them with links before the user confirms.</p>
+    </req>
+    <opt name='langpref'>
+        <p>Language of the activation mail: German for <b>de</b>, English otherwise. Default: the
+        site's language.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary with the account's <b>username</b> and <b>email</b> as stored.</p>
+    </returns>
+</xml>

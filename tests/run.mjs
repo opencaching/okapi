@@ -129,6 +129,31 @@ await check('level 1: caches/search/all', async () => {
   return `${j.results.length} codes, using ${ctx.cacheCode}`;
 });
 
+// Registration refusals write nothing, so they run without --write. Each one must be refused
+// with the field and the reason code; a request that would be accepted is never sent.
+await check('level 1: users/register refuses what the website refuses', async () => {
+  needKey();
+  if (!ctx.installation?.has_registration) skip('installation has no has_registration');
+  const reg = params => api.request('services/users/register', params, { method: 'POST' });
+  const probe = await reg({ username: 'a', email: 'x', password: 'x', accept_terms: 'true' });
+  if (probe.status === 400 && /may not register users/.test(probe.text)) skip('this consumer may not register users (FLAG_REGISTER_USERS)');
+  const cases = [
+    [{ username: 'okapi test user', email: 'not-an-address', password: 'Wald-Weg 42', accept_terms: 'true' }, 'email', 'email_invalid'],
+    [{ username: 'x', email: 'okapi-test@example.org', password: 'Wald-Weg 42', accept_terms: 'true' }, 'username', 'username_invalid'],
+    [{ username: 'a@example.org', email: 'okapi-test@example.org', password: 'Wald-Weg 42', accept_terms: 'true' }, 'username', 'username_invalid'],
+    [{ username: 'okapi test user', email: 'okapi-test@example.org', password: 'aaaaaa', accept_terms: 'true' }, 'password', 'password_weak'],
+    [{ username: 'okapi test user', email: 'okapi-test@example.org', password: 'my opencaching', accept_terms: 'true' }, 'password', 'password_weak'],
+    [{ username: 'okapi test user', email: 'okapi-test@example.org', password: 'Wald-Weg 42' }, 'accept_terms', undefined],
+  ];
+  for (const [params, field, reason] of cases) {
+    const res = await reg(params);
+    const err = JSON.parse(res.text).error ?? {};
+    assert(res.status === 400 && err.parameter === field && (reason === undefined || err.reason === reason),
+      `${JSON.stringify(params)}: HTTP ${res.status} ${err.parameter}/${err.reason}, expected ${field}/${reason}`);
+  }
+  return `${cases.length} refusals with field and reason`;
+});
+
 await check('level 1: caches/geocache', async () => {
   needKey();
   if (!ctx.cacheCode) skip('no cache code');
