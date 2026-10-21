@@ -29,8 +29,11 @@ class WebService
         if ($user['is_active_flag'])
             throw new RegistrationRefused('email', 'already_active', 'This account is already active. Log in with the username and password.');
 
+        UserRegistration::check_resend_allowed($user['user_id']);
+
         // The same code again, so an older mail stays valid.
         UserRegistration::send_activation_mail($user, UserRegistration::mail_lang($request));
+        UserRegistration::note_mail_sent($user['user_id'], true);
         $result = array('email' => $user['email']);
         return Okapi::formatted_response($request, $result);
     }
