@@ -169,6 +169,8 @@ await check('level 3 HMAC-SHA1: users/user', async () => {
   const j = okJson(await api.request('services/users/user', { fields: 'uuid|username' }, { auth: 'hmac' }), 'users/user');
   assert(j.uuid && j.username, 'uuid/username missing');
   if (ctx.user) assert(j.uuid === ctx.user.uuid, 'PLAINTEXT and HMAC return different users');
+  // PLAINTEXT is skipped over plain HTTP (OKAPI not in DEBUG mode), so the user is recorded here too.
+  ctx.user = j;
   return j.username;
 });
 
@@ -274,7 +276,7 @@ if (write) {
   await check('write: logs/images add and delete', async () => {
     needCache();
     const res = await api.request('services/logs/submit',
-      { cache_code: w.code, logtype: 'Comment', comment: `okapi-test image log ${stamp}` }, { auth: 'hmac', method: 'POST' });
+      { cache_code: w.code, logtype: 'Comment', comment: `okapi-test image log ${stamp}`, comment_format: 'plaintext' }, { auth: 'hmac', method: 'POST' });
     if (/OcHTMLPurifier/.test(res.text)) skip('OKAPI runs without the website (OcHTMLPurifier missing)');
     const j = okJson(res, 'logs/submit');
     assert(j.success === true && j.log_uuids?.length, `submit failed: ${j.message ?? JSON.stringify(j)}`);
