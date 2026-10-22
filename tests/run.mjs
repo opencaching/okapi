@@ -169,6 +169,8 @@ await check('level 3 HMAC-SHA1: users/user', async () => {
   const j = okJson(await api.request('services/users/user', { fields: 'uuid|username' }, { auth: 'hmac' }), 'users/user');
   assert(j.uuid && j.username, 'uuid/username missing');
   if (ctx.user) assert(j.uuid === ctx.user.uuid, 'PLAINTEXT and HMAC return different users');
+  // PLAINTEXT is skipped over plain HTTP (OKAPI not in DEBUG mode), so the user is recorded here too.
+  ctx.user = j;
   return j.username;
 });
 
