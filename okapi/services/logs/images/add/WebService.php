@@ -321,8 +321,9 @@ class WebService
         }
 
         if (Settings::get('OC_BRANCH') == 'oc.de') {
-            $local_fields_SQL = "seq";
-            $local_values_escaped_SQL = "'".Db::escape_string($seq)."'";
+            # thumb_url has no default, so strict SQL mode needs it; the website stores ''.
+            $local_fields_SQL = "seq, thumb_url";
+            $local_values_escaped_SQL = "'".Db::escape_string($seq)."', ''";
             # All other fields are set by trigger or defaults for OCDE.
         } else {
             # These are the additional fields that OCPL newpic.php supplies

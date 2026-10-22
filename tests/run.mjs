@@ -274,7 +274,7 @@ if (write) {
   await check('write: logs/images add and delete', async () => {
     needCache();
     const res = await api.request('services/logs/submit',
-      { cache_code: w.code, logtype: 'Comment', comment: `okapi-test image log ${stamp}` }, { auth: 'hmac', method: 'POST' });
+      { cache_code: w.code, logtype: 'Comment', comment: `okapi-test image log ${stamp}`, comment_format: 'plaintext' }, { auth: 'hmac', method: 'POST' });
     if (/OcHTMLPurifier/.test(res.text)) skip('OKAPI runs without the website (OcHTMLPurifier missing)');
     const j = okJson(res, 'logs/submit');
     assert(j.success === true && j.log_uuids?.length, `submit failed: ${j.message ?? JSON.stringify(j)}`);
