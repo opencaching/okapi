@@ -154,6 +154,21 @@ await check('level 1: users/register refuses what the website refuses', async ()
   return `${cases.length} refusals with field and reason`;
 });
 
+// A wrong password must be refused before anything happens; a deletion is never sent.
+await check('level 3: users/delete refuses a wrong password', async () => {
+  needToken();
+  if (!ctx.installation?.has_registration) skip('installation has no has_registration');
+  const res = await api.request('services/users/delete', { password: 'not the password 42' }, { method: 'POST', auth: 'hmac' });
+  if (res.status === 400 && /may not register users/.test(res.text)) skip('this consumer may not register users (FLAG_REGISTER_USERS)');
+  if (target.baseUrl.startsWith('http:') && res.status === 400 && /only over HTTPS/.test(res.text)) skip('users/delete needs HTTPS; this target uses plain HTTP');
+  const err = JSON.parse(res.text).error ?? {};
+  assert(res.status === 400 && err.parameter === 'password' && err.reason === 'wrong_password',
+    `HTTP ${res.status} ${err.parameter}/${err.reason}, expected password/wrong_password`);
+  const me = okJson(await api.request('services/users/user', { fields: 'uuid' }, { auth: 'hmac' }), 'users/user');
+  assert(me.uuid, 'the test user is gone');
+  return 'refused, account untouched';
+});
+
 await check('level 1: caches/geocache', async () => {
   needKey();
   if (!ctx.cacheCode) skip('no cache code');

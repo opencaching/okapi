@@ -123,7 +123,9 @@
                 <p><b>has_registration</b> - boolean, <b>true</b> if applications can create
                 user accounts on this installation through
                 <a href="%OKAPI:methodref:services/users/register%">services/users/register</a>.
-                The site's administrators also have to allow each application.</p>
+                The site's administrators also have to allow each application. Such an
+                application can also delete the user's account with
+                <a href="%OKAPI:methodref:services/users/delete%">services/users/delete</a>.</p>
             </li>
             <li>
                 <p><b>terms_url</b>, <b>privacy_url</b>, <b>data_license_url</b> - the pages a

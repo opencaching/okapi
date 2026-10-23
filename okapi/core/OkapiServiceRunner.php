@@ -79,6 +79,7 @@ class OkapiServiceRunner
         'services/users/register',
         'services/users/activate',
         'services/users/resend_activation',
+        'services/users/delete',
         'services/users/users',
         'services/users/by_usernames',
         'services/users/by_username',
