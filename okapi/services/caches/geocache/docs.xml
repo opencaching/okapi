@@ -176,7 +176,13 @@
                     <li><b>Available</b> - Cache is available and ready for search,</li>
                     <li><b>Temporarily unavailable</b> - Cache is unavailable
                     (probably cannot be found) but may be restored,</li>
-                    <li><b>Archived</b> - Cache is permanently unavailable (moved to the archives).</li>
+                    <li><b>Archived</b> - Cache is permanently unavailable (moved to the archives),</li>
+                    <li><b>Unpublished</b> - the owner has created the cache but not
+                    published it yet. Such a cache is returned <b>only to its owner</b>, i.e.
+                    when the request is signed with the owner's Access Token (Level 3); for
+                    everyone else it does not exist. Search methods return it only when
+                    asked for with <b>status=Unpublished</b>. Clients that don't handle
+                    this value will only see it when the owner asks for the code.</li>
                 </ul>
             </li>
             <li>

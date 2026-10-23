@@ -180,6 +180,11 @@ class WebService
                 throw new InvalidParam('current_position', "Longitudes have to be within -180..180 range.");
         }
 
+        # A cache that is not yet published (status 5 on both branches) is visible to its owner only,
+        # as on the website, so that an owner's app can read it back and finish it. Nobody else gets it;
+        # search methods list it only for status=Unpublished (SearchAssistant).
+        $own_user_id = ($request->token != null) ? $request->token->user_id : -1;
+
         if (Settings::get('OC_BRANCH') == 'oc.de')
         {
             # DE branch:
@@ -210,7 +215,8 @@ class WebService
                     left join stat_caches as sc on c.cache_id = sc.cache_id
                 where
                     wp_oc in ('".implode("','", array_map('\okapi\core\Db::escape_string', $cache_codes))."')
-                    and status in (1,2,3)
+                    and (c.status in (1,2,3)
+                        or (c.status = 5 and c.user_id = '".Db::escape_string($own_user_id)."'))
             ");
         }
         elseif (Settings::get('OC_BRANCH') == 'oc.pl')
@@ -242,7 +248,8 @@ class WebService
                     caches c
                 where
                     wp_oc in ('".implode("','", array_map('\okapi\core\Db::escape_string', $cache_codes))."')
-                    and c.status in (1,2,3)
+                    and (c.status in (1,2,3)
+                        or (c.status = 5 and c.user_id = '".Db::escape_string($own_user_id)."'))
             ");
         }
 
@@ -273,7 +280,7 @@ class WebService
                     case 'names': $entry['names'] = array(Settings::get('SITELANG') => $row['name']); break; // for the future
                     case 'location': $entry['location'] = Okapi::coords2latlon($row['latitude'], $row['longitude']); break;
                     case 'type': /* handled below */ break;
-                    case 'status': $entry['status'] = Okapi::cache_status_id2name($row['status']); break;
+                    case 'status': $entry['status'] = ($row['status'] == 5) ? 'Unpublished' : Okapi::cache_status_id2name($row['status']); break;
                     case 'needs_maintenance': $entry['needs_maintenance'] = $row['needs_maintenance'] > 0; break;
                     case 'url': $entry['url'] = Settings::get('SITE_URL')."viewcache.php?wp=".$row['wp_oc']; break;
                     case 'owner':

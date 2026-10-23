@@ -198,8 +198,17 @@ class SearchAssistant
         $tmp = $this->request->get_parameter('status');
         if ($tmp == null) $tmp = "Available";
         $codes = array();
+        $own_unpublished = false;
         foreach (explode("|", $tmp) as $name)
         {
+            if ($name == 'Unpublished')
+            {
+                # Only ever the caller's own caches, as in services/caches/geocaches.
+                if ($this->request->token == null)
+                    throw new InvalidParam('status', "'Unpublished' might be used only for requests signed with an Access Token.");
+                $own_unpublished = true;
+                continue;
+            }
             try
             {
                 $codes[] = Okapi::cache_status_name2id($name);
@@ -209,7 +218,12 @@ class SearchAssistant
                 throw new InvalidParam('status', "'$name' is not a valid cache status.");
             }
         }
-        $where_conds[] = "caches.status in ('".implode("','", array_map('\okapi\core\Db::escape_string', $codes))."')";
+        $status_conds = array();
+        if ($codes)
+            $status_conds[] = "caches.status in ('".implode("','", array_map('\okapi\core\Db::escape_string', $codes))."')";
+        if ($own_unpublished)
+            $status_conds[] = "(caches.status = 5 and caches.user_id = '".Db::escape_string($this->request->token->user_id)."')";
+        $where_conds[] = "(".implode(" or ", $status_conds).")";
 
         #
         # owner_uuid
