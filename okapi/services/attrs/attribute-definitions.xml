@@ -1351,6 +1351,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
     <attr acode="A24" categories="de-accessibility">
         <groundspeak id="10" inc="true" name="Difficult climbing" />
         <opencaching schema="OCDE" id="28" />
+        <opencaching schema="OCPL" id="10" />
         <opencaching schema="OCRO" id="10" />
         <opencaching schema="OCUK" id="10" />
         <lang id="en">
@@ -4179,12 +4180,21 @@ store these attributes in GPX <groundspeak:attribute> elements.
 
     <attr acode="A88" categories="de-cache-types">
         <groundspeak id="64" inc="true" name="Tree Climbing" />
+        <opencaching schema="OCPL" id="64" />
         <opencaching schema="OCRO" id="64" />
         <opencaching schema="OCUK" id="64" />
         <lang id="en">
-            <name>Treeclimbing</name>
+            <name>Tree climbing required</name>
             <desc>
-                Tree climbing required.
+                The cache can only be reached by climbing a tree or its trunk and branches, so take extra care when
+                climbing and performing any manoeuvres.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Wspinaczka na drzewo</name>
+            <desc>
+                Odnalezienie skrzynki wymaga wspinaczki na pień lub konary drzewa. Oceń swoje możliwości i warunki przed
+                podjęciem próby. Zachowaj ostrożność. Nie ryzykuj, jeśli nie czujesz się pewnie.
             </desc>
         </lang>
     </attr>
