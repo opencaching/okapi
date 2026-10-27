@@ -130,15 +130,35 @@ class WebService
         }
         unset($image_properties);
 
-        if ($width * $height > self::max_pixels($base64_image)) {
+        if ($width * $height > self::max_pixels($base64_image, self::memory_limit())) {
             # This large image may crash the image processing functions.
 
+            if ($width * $height <= self::max_pixels($base64_image, self::MEMORY_BUDGET)) {
+                # The image is fine; the server doesn't give OKAPI the memory it asks
+                # for in Okapi::init_internals() (e.g. memory_limit locked by
+                # php_admin_value). Tell the admins, and don't blame the user.
+
+                Okapi::mail_admins(
+                    "OKAPI can't process uploaded images: PHP memory_limit too low",
+                    "services/logs/images/add refused an image of ".$width."x".$height." pixels,\n".
+                    "because PHP gives OKAPI only memory_limit = ".ini_get('memory_limit')." (".
+                    round(memory_get_usage() / 1024 / 1024, 1)." MB already in use).\n\n".
+                    "OKAPI raises memory_limit to ".self::MEMORY_BUDGET." itself, but the server doesn't allow it\n".
+                    "(e.g. php_admin_value in the PHP-FPM pool or the Apache config). Allow at least\n".
+                    self::MEMORY_BUDGET." for OKAPI requests, e.g. with php_value instead of php_admin_value.\n\n".
+                    "Until then every image upload through OKAPI fails."
+                );
+                throw new CannotPublishException(sprintf(
+                    _("%s can't process images at the moment because of a server problem. Please try again later or upload the image on the website."),
+                    Okapi::get_normalized_site_name()
+                ));
+            }
             throw new CannotPublishException(sprintf(_(
                 "The image you have uploaded is too large (%s megapixels). ".
                 "Please use an external application to downscale it first. ".
                 "(You can also contact the developers of '%s' and ask them to ".
                 "downscale uploaded images automatically.)"
-            ), round($width * $height / 1024 / 1024), $request->consumer->name));
+            ), round($width * $height / 1000000, 1), $request->consumer->name));
         }
         try {
             $image = imagecreatefromstring($image);  # can throw
@@ -212,16 +232,32 @@ class WebService
         return array($image_uuid, $position, $image_url);
     }
 
+    /** The memory_limit OKAPI asks for in Okapi::init_internals(). */
+    const MEMORY_BUDGET = '512M';
+
     /**
-     * Estimate an upper limit of the processable image dimensions.
+     * The current memory_limit in bytes. "Unlimited" (-1, possible when the
+     * server doesn't let OKAPI lower it to MEMORY_BUDGET) counts as
+     * MEMORY_BUDGET, so huge images are still refused before GD runs out of
+     * the machine's memory.
+     */
+    private static function memory_limit()
+    {
+        $limit = Okapi::from_human_to_bytes(ini_get('memory_limit'));
+        return ($limit < 0) ? Okapi::from_human_to_bytes(self::MEMORY_BUDGET) : $limit;
+    }
+
+    /**
+     * Estimate an upper limit of the processable image dimensions for a given
+     * memory_limit (in bytes or with a K/M/G suffix).
      * This will be in the scale of ~40 MP for 256 MB memory_limit and
      * ~16 MP for 128 MB. See Okapi::init_internals() for current memory_limit.
      */
 
-    private static function max_pixels($base64_image)
+    private static function max_pixels($base64_image, $memory_limit)
     {
         $bytes_per_pixel = 5;   # GD needs 5 bytes per pixel for "true color"
-        $available_memory = Okapi::from_human_to_bytes(ini_get('memory_limit')) - memory_get_usage();
+        $available_memory = Okapi::from_human_to_bytes($memory_limit) - memory_get_usage();
         $available_memory -= 16 * 1024 * 1024;  # reserve
         $available_memory -= strlen($base64_image);  # will be copied for EXIF processing
         $available_memory -= 3 * $bytes_per_pixel * Settings::get('IMAGE_MAX_PIXEL_COUNT');  # processing buffers
