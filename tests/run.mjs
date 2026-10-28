@@ -201,6 +201,24 @@ await check('level 3: logs/capabilities', async () => {
   return `submittable: ${j.submittable_logtypes.join(', ')}`;
 });
 
+await check('level 3: own unpublished caches (status=Unpublished)', async () => {
+  needToken();
+  const search = auth => api.request('services/caches/search/all', { status: 'Unpublished', limit: '500' }, { auth });
+  const r = await search('hmac');
+  if (r.status === 400) skip('installation does not know status=Unpublished');
+  const j = okJson(r, 'search/all status=Unpublished');
+  if (j.results.length) {
+    const c = okJson(await api.request('services/caches/geocaches',
+      { cache_codes: j.results.join('|'), fields: 'status|owner' }, { auth: 'hmac' }), 'geocaches of own unpublished');
+    for (const [code, x] of Object.entries(c)) {
+      assert(x && x.status === 'Unpublished' && x.owner.uuid === ctx.user?.uuid, `${code}: ${JSON.stringify(x)}`);
+    }
+  }
+  const anon = await search('key');
+  assert(anon.status === 400, `status=Unpublished without a token: HTTP ${anon.status}, expected 400`);
+  return `${j.results.length} own unpublished caches, all 'Unpublished' and owned by the test user; refused without a token`;
+});
+
 // --- writing level (--write) ------------------------------------------------
 // Works on the target's writeCache, an existing cache that is never changed itself:
 // only per-user data is written to it (a personal note, one Comment log), and all of
