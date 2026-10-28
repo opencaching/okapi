@@ -41,10 +41,7 @@ class OkapiErrorHandler
     /** Handle error encountered while executing OKAPI request. */
     public static function handle($severity, $message, $filename, $lineno)
     {
-        // 2048 = E_STRICT, still raised by PHP 7 (e.g. mysqli, htmlentities()).
-        // The constant itself is deprecated since PHP 8.4, so use its value.
-        // TODO: drop when PHP 8 is required.
-        if ($severity != 2048 && $severity != E_DEPRECATED &&
+        if ($severity != E_DEPRECATED &&
             error_reporting() > 0  // is 0 if suppressed by @ operator
         ) {
             throw new \ErrorException($message, 0, $severity, $filename, $lineno);
@@ -59,7 +56,7 @@ class OkapiErrorHandler
             $error = error_get_last();
 
             # We don't know whether this error has been already handled. The error_get_last
-            # function will return E_NOTICE or E_STRICT errors if the script has shut down
+            # function will return E_NOTICE or E_WARNING errors if the script has shut down
             # correctly. The only error which cannot be recovered from is E_ERROR, we have
             # to check the type then.
 
