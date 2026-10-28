@@ -10,15 +10,8 @@ use okapi\core\Okapi;
         <title>OKAPI Changelog</title>
         <link rel="stylesheet" href="<?= $vars['okapi_base_url'] ?>static/common.css?<?= $vars['okapi_rev'] ?>">
         <link rel="icon" type="image/x-icon" href="<?= $vars['okapi_base_url'] ?>static/favicon.ico">
-        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
         <script>
             var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
-            $(function() {
-                $('h2').each(function() {
-                    $('#toc').append($("<div></div>").append($("<a></a>")
-                        .text($(this).text()).attr("href", "#" + $(this).attr('id'))));
-                });
-            });
         </script>
         <script src='<?= $vars['okapi_base_url'] ?>static/common.js?<?= $vars['okapi_rev'] ?>'></script>
     </head>
