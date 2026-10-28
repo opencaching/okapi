@@ -31,7 +31,6 @@ class ClsTbsZip {
 
     public function CreateNew($ArchName='new.zip') {
     // Create a new virtual empty archive, the name will be the default name when the archive is flushed.
-        if (!isset($this->Meth8Ok)) $this->__construct();  // for PHP 4 compatibility
         $this->Close(); // note that $this->ArchHnd is set to false here
         $this->Error = false;
         $this->ArchFile = $ArchName;
@@ -44,7 +43,6 @@ class ClsTbsZip {
 
     public function Open($ArchFile, $UseIncludePath=false) {
     // Open the zip archive
-        if (!isset($this->Meth8Ok)) $this->__construct();  // for PHP 4 compatibility
         $this->Close(); // close handle and init info
         $this->Error = false;
         $this->ArchIsNew = false;
