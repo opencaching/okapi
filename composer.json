@@ -1,7 +1,7 @@
 {
     "name": "opencaching/okapi",
     "require": {
-        "php": ">=7.4"
+        "php": ">=8.2"
     },
     "autoload": {
         "psr-4": {

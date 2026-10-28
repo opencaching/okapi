@@ -110,7 +110,7 @@ You can also read about how OKAPI tries to deal with OC site and branch differen
 
 ## Requirements ##
 
-  * PHP 7.4 or newer
+  * PHP 8.2 or newer
   * A working Opencaching site.
 
 
