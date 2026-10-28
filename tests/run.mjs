@@ -201,10 +201,25 @@ await check('level 3: logs/capabilities', async () => {
   return `submittable: ${j.submittable_logtypes.join(', ')}`;
 });
 
+// Whether an installation has a method: services/apiref/method answers 400 for unknown ones.
+const hasMethod = async name =>
+  (await api.request('services/apiref/method', { name }, { auth: 'none' })).status === 200;
+ctx.hasUserCoords = await hasMethod('services/caches/save_user_coords');
+
+await check('level 3: user coordinates field', async () => {
+  needToken();
+  if (!ctx.hasUserCoords) skip('installation has no services/caches/save_user_coords');
+  if (!ctx.cacheCode) skip('no cache code');
+  const j = okJson(await api.request('services/caches/geocache',
+    { cache_code: ctx.cacheCode, fields: 'code|user_coords' }, { auth: 'hmac' }), 'geocache user_coords');
+  assert('user_coords' in j, 'user_coords missing');
+  return `user_coords=${j.user_coords}`;
+});
+
 // --- writing level (--write) ------------------------------------------------
 // Works on the target's writeCache, an existing cache that is never changed itself:
-// only per-user data is written to it (a personal note, one Comment log), and all of
-// it is removed again.
+// only per-user data is written to it (own coordinates, a personal note, one Comment
+// log), and all of it is removed again.
 
 if (write) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
@@ -214,6 +229,26 @@ if (write) {
   const read = async fields =>
     okJson(await api.request('services/caches/geocache', { cache_code: w.code, fields }, { auth: 'hmac' }), 'geocache');
   const needCache = () => { needToken(); if (!w.code) skip('target has no writeCache'); };
+
+  await check('write: save_user_coords set and remove', async () => {
+    needCache();
+    if (!ctx.hasUserCoords) skip('installation has no services/caches/save_user_coords');
+    const [lat, lon] = (await read('location')).location.split('|');
+    const coords = `${(Number(lat) + 0.001).toFixed(6)}|${(Number(lon) + 0.001).toFixed(6)}`;
+    const same = (a, b) => a.split('|').every((v, i) => Math.abs(Number(v) - Number(b.split('|')[i])) < 1e-6);
+    const saved = (await post('services/caches/save_user_coords', { cache_code: w.code, new_value: coords }, 'set')).saved_value;
+    assert(saved && same(saved, coords), `saved_value is ${saved}, expected ${coords}`);
+    const both = await read('user_coords|alt_wpts');  // both fields at once share one lookup
+    const set = both.user_coords;
+    const wpt = both.alt_wpts.find(x => x.type === 'user-coords');
+    assert(wpt && same(wpt.location, coords), `user-coords waypoint is ${wpt?.location}, expected ${coords}`);
+    assert(set && same(set, coords), `user_coords is ${set}, expected ${coords}`);
+    const cleared = (await post('services/caches/save_user_coords', { cache_code: w.code, new_value: '' }, 'remove')).saved_value;
+    assert(cleared === null, `saved_value is ${cleared} after removal`);
+    const removed = (await read('user_coords')).user_coords;
+    assert(removed === null, `user_coords is ${removed} after removal`);
+    return `${coords}, then removed`;
+  });
 
   await check('write: save_personal_notes set and clear', async () => {
     needCache();
