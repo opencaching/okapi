@@ -45,7 +45,7 @@ class OkapiErrorHandler
         // The constant itself is deprecated since PHP 8.4, so use its value.
         // TODO: drop when PHP 8 is required.
         if ($severity != 2048 && $severity != E_DEPRECATED &&
-            error_reporting() > 0  // is 0 if suppressed by @ operator
+            (error_reporting() & $severity)  // not suppressed by @ operator
         ) {
             throw new \ErrorException($message, 0, $severity, $filename, $lineno);
         }
