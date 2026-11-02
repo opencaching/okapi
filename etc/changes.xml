@@ -23,6 +23,65 @@
 
     -->
     <changes>
+        <change commit="af9826ab" version="2019" time="2026-11-02T23:11:03+0100" type="enhancement">
+            User coordinates: the new method
+            <a href="services/caches/save_user_coords.html">services/caches/save_user_coords</a>
+            saves or removes the user's own coordinates for a geocache, and the
+            new field <i>user_coords</i> of
+            <a href="services/caches/geocache.html">services/caches/geocache</a>
+            returns them. On OCPL sites only for Multi, Quiz and Other caches.
+        </change>
+        <change commit="453510aa" version="2018" time="2026-11-02T23:11:59+0100" type="bugfix">
+            Site admins: behind a proxy that terminates HTTPS, OAuth signatures
+            failed when the server saw another port than the client. OKAPI now
+            takes the port from the <i>X-Forwarded-Port</i> header when it holds
+            a plain port number.
+        </change>
+        <change commit="d6f95bb2" version="2014" time="2026-10-28T14:10:13+0100" type="enhancement">
+            <a href="services/users/user.html">services/users/user</a> and
+            <a href="services/users/users.html">services/users/users</a> have a
+            new field <i>rcmds_received</i>: the number of recommendations the
+            user's caches have received.
+        </change>
+        <change commit="c24b53a4" version="2010" time="2026-10-28T13:10:38+0100" type="other">
+            Site admins: OKAPI now requires PHP 8.2 or newer.
+        </change>
+        <change commit="443d5db1" version="2004" time="2026-10-27T23:10:18+0100" type="bugfix">
+            <a href="services/logs/images/add.html">services/logs/images/add</a>
+            no longer refuses every image as "too large (0 megapixels)" when the
+            server locks PHP's <i>memory_limit</i> or sets it to unlimited. If the
+            server's memory limit is too low for an image, OKAPI now answers with
+            a server problem and tells the site admins how to fix it.
+        </change>
+        <change commit="6706c46c" version="2002" time="2026-10-27T18:10:01+0100" type="enhancement">
+            OCPL sites: the attributes A24 (Some climbing) and A88 (Tree climbing)
+            are now mapped to OCPL attributes 10 and 64.
+        </change>
+        <change commit="91f77232" version="2001" time="2026-10-27T18:10:56+0100" type="bugfix">
+            <a href="services/caches/search/all.html">Search methods</a>: an
+            unknown user UUID in <i>recommended_by</i> is now refused with
+            HTTP 400 instead of an internal error.
+        </change>
+        <change commit="634590b3" version="1999" time="2026-10-22T15:10:58+0200" type="bugfix">
+            OCDE sites: <a href="services/logs/images/add.html">services/logs/images/add</a>
+            works on databases in strict SQL mode (it failed with an internal error).
+        </change>
+        <change commit="77a16b29" version="1995" time="2026-10-20T23:10:43+0200" type="docs">
+            The <a href="introduction.html">introduction</a> now documents the
+            signature methods: PLAINTEXT is accepted over HTTPS, and there
+            timestamp and nonce are not checked.
+        </change>
+        <change commit="ca9bb72a" version="1993" time="2026-10-20T23:10:24+0200" type="bugfix">
+            Strict SQL mode: <a href="services/logs/submit.html">services/logs/submit</a>
+            works on OCDE sites and <a href="services/logs/images/add.html">services/logs/images/add</a>
+            works on OCPL sites whose database runs in strict SQL mode (both failed
+            with an internal error).
+        </change>
+        <change commit="6420fd03" version="1991" time="2026-10-20T23:10:18+0200" type="bugfix">
+            OCPL sites: <a href="services/logs/images/delete.html">services/logs/images/delete</a>
+            works, and so does <a href="services/logs/delete.html">services/logs/delete</a>
+            for a log entry with images. Both failed with an internal error.
+        </change>
         <change commit="46b8e890" version="1986" time="2026-10-20T14:10:17+0200" type="bugfix">
             Setting a log password with the <i>passwd</i> option of
             <a href="services/caches/edit.html">services/caches/edit</a> works
