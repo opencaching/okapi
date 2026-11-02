@@ -29,7 +29,7 @@ class WebService
         'is_not_found', 'founds', 'notfounds', 'size', 'size2', 'oxsize', 'difficulty', 'terrain',
         'rating', 'rating_votes', 'recommendations', 'req_passwd', 'description',
         'descriptions', 'hint', 'hints', 'images', 'attr_acodes', 'attrnames', 'latest_logs',
-        'my_notes', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
+        'my_notes', 'user_coords', 'trackables_count', 'trackables', 'alt_wpts', 'last_found',
         'last_modified', 'date_created', 'date_hidden', 'internal_id', 'is_watched',
         'is_ignored', 'willattends',
         'country', 'country2', 'state', 'region',
@@ -371,6 +371,7 @@ class WebService
                     case 'attrnames': /* handled separately */ break;
                     case 'latest_logs': /* handled separately */ break;
                     case 'my_notes': /* handles separately */ break;
+                    case 'user_coords': /* handled separately */ break;
                     case 'trackables_count': /* handled separately */ break;
                     case 'trackables': /* handled separately */ break;
                     case 'alt_wpts': /* handled separately */ break;
@@ -1133,6 +1134,22 @@ class WebService
             }
         }
 
+        # User coordinates (user's corrected coordinates). Looked up once, also
+        # for the user-coords waypoint in alt_wpts below.
+
+        $cacheid2user_coords = null;
+        if (in_array('user_coords', $fields))
+        {
+            if ($request->token == null)
+                throw new BadRequest("Level 3 Authentication is required to access 'user_coords' field.");
+            foreach ($results as &$result_ref)
+                $result_ref['user_coords'] = null;
+            unset($result_ref);
+            $cacheid2user_coords = self::get_user_coords(array_keys($cacheid2wptcode), $request->token->user_id);
+            foreach ($cacheid2user_coords as $cache_id => $row)
+                $results[$cacheid2wptcode[$cache_id]]['user_coords'] = Okapi::coords2latlon($row['latitude'], $row['longitude']);
+        }
+
         if (in_array('trackables', $fields))
         {
             # Currently we support Geokrety only. But this interface should remain
@@ -1372,50 +1389,23 @@ class WebService
             # Issue #305 - User coordinates implemented in oc.de
             if ($request->token != null)
             {
-                # Query DB for user provided coordinates
-                if (Settings::get('OC_BRANCH') == 'oc.pl')
-                {
-                    $cacheid2user_coords = Db::select_group_by('cache_id', "
-                        select
-                            cache_id, longitude, latitude
-                        from cache_mod_cords
-                        where
-                            cache_id in ($cache_codes_escaped_and_imploded)
-                            and user_id = '".Db::escape_string($request->token->user_id)."'
-                    ");
-                } else {
-                    # oc.de
-                    $cacheid2user_coords = Db::select_group_by('cache_id', "
-                        select
-                            cache_id, longitude, latitude
-                        from coordinates
-                        where
-                            cache_id in ($cache_codes_escaped_and_imploded)
-                            and user_id = '".Db::escape_string($request->token->user_id)."'
-                            and type = 2
-                            and longitude != 0
-                            and latitude != 0
-                    ");
-                }
-                foreach ($cacheid2user_coords as $cache_id => $waypoints)
+                if ($cacheid2user_coords === null)
+                    $cacheid2user_coords = self::get_user_coords(array_keys($cacheid2wptcode), $request->token->user_id);
+                foreach ($cacheid2user_coords as $cache_id => $row)
                 {
                     $cache_code = $cacheid2wptcode[$cache_id];
-                    foreach ($waypoints as $row)
-                    {
-                        # there should be only one user waypoint per cache...
-                        $results[$cache_code]['alt_wpts'][] = array(
-                            'name' => $cache_code.'-USER-COORDS',
-                            'location' => Okapi::coords2latlon($row['latitude'], $row['longitude']),
-                            'type' => 'user-coords',
-                            'type_name' => _("User location"),
-                            'gc_type' => 'Reference Point',
-                            'sym' => 'Block, Green',
-                            'description' => sprintf(
-                                _("Your own custom coordinates for the %s geocache"),
-                                $cache_code
-                            ),
-                        );
-                    }
+                    $results[$cache_code]['alt_wpts'][] = array(
+                        'name' => $cache_code.'-USER-COORDS',
+                        'location' => Okapi::coords2latlon($row['latitude'], $row['longitude']),
+                        'type' => 'user-coords',
+                        'type_name' => _("User location"),
+                        'gc_type' => 'Reference Point',
+                        'sym' => 'Block, Green',
+                        'description' => sprintf(
+                            _("Your own custom coordinates for the %s geocache"),
+                            $cache_code
+                        ),
+                    );
                 }
             }
 
@@ -1746,6 +1736,48 @@ class WebService
         }
 
         return Okapi::formatted_response($request, $ordered_results);
+    }
+
+    /**
+     * Return the user's corrected coordinates for the given caches, as
+     * cache_id => array('latitude' => ..., 'longitude' => ...). Caches without
+     * user coordinates are omitted. Shared by the user_coords and alt_wpts fields.
+     */
+    private static function get_user_coords($cache_ids, $user_id)
+    {
+        if (count($cache_ids) == 0)
+            return array();
+        $cache_ids_escaped_and_imploded = "'".implode("','", array_map('\okapi\core\Db::escape_string', $cache_ids))."'";
+        if (Settings::get('OC_BRANCH') == 'oc.pl')
+        {
+            $rs = Db::query("
+                select cache_id, latitude, longitude
+                from cache_mod_cords
+                where
+                    cache_id in ($cache_ids_escaped_and_imploded)
+                    and user_id = '".Db::escape_string($user_id)."'
+            ");
+        }
+        else
+        {
+            # oc.de: personal coordinates share the type-2 row with the personal note;
+            # 0/0 means "no coordinates" (that's how the website stores it).
+            $rs = Db::query("
+                select cache_id, latitude, longitude
+                from coordinates
+                where
+                    cache_id in ($cache_ids_escaped_and_imploded)
+                    and user_id = '".Db::escape_string($user_id)."'
+                    and type = 2
+                    and (latitude != 0 or longitude != 0)
+                order by id
+            ");
+        }
+        $result = array();
+        while ($row = Db::fetch_assoc($rs))
+            $result[$row['cache_id']] = $row;  # one per cache; on duplicates the newest row wins
+        Db::free_result($rs);
+        return $result;
     }
 
     /**
