@@ -412,9 +412,14 @@ class WebService
 
         # Store information on the consumer_key which uploaded this image.
         # (Maybe we'll want to display this somewhen later.)
+        #
+        # "replace", not "insert": a row left behind by a deleted image may hold this
+        # id. Deletes (here or on the website) don't remove these rows, and InnoDB
+        # before MariaDB 10.2 / MySQL 8.0 hands out the ids of deleted rows again
+        # after a database restart. A plain insert then fails with a duplicate key.
 
         Db::execute("
-            insert into okapi_submitted_objects (object_type, object_id, consumer_key)
+            replace into okapi_submitted_objects (object_type, object_id, consumer_key)
             values (
                 '".Okapi::OBJECT_TYPE_CACHE_LOG_IMAGE."',
                 '".Db::escape_string($image_internal_id)."',
