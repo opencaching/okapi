@@ -216,10 +216,19 @@ await check('level 3: user coordinates field', async () => {
   return `user_coords=${j.user_coords}`;
 });
 
+await check('level 3: draftlogs/query (has_draft_logs)', async () => {
+  needToken();
+  if (!ctx.installation?.has_draft_logs) skip('installation has no has_draft_logs');
+  const j = okJson(await api.request('services/draftlogs/query', {}, { auth: 'hmac' }), 'draftlogs/query');
+  assert(Array.isArray(j), 'not an array');
+  for (const d of j) assert(d.draft_id && d.cache_code && d.type && typeof d.needs_maintenance2 === 'boolean', 'draft without draft_id/cache_code/type/needs_maintenance2');
+  return `${j.length} drafts`;
+});
+
 // --- writing level (--write) ------------------------------------------------
 // Works on the target's writeCache, an existing cache that is never changed itself:
-// only per-user data is written to it (own coordinates, a personal note, one Comment
-// log), and all of it is removed again.
+// only per-user data is written to it (own coordinates, a personal note, a list, draft
+// logs, one Comment log), and all of it is removed again.
 
 if (write) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
@@ -286,6 +295,85 @@ if (write) {
     }
     assert((await read('req_passwd')).req_passwd === false, 'req_passwd not false after clearing it');
     return 'set, too long refused, cleared';
+  });
+
+  await check('write: lists create/query/update/add/get/remove/delete', async () => {
+    needCache();
+    if (!ctx.installation?.has_lists) skip('installation has no has_lists');
+    const name = `okapi-test ${stamp}`;
+    const list = await post('services/lists/create', { list_name: name, list_description: 'a <b>b</b>\nc', list_watch: 'true' }, 'lists/create');
+    assert(list.list_id, 'no list_id');
+    const raw = async (path, params) => api.request(path, params, { auth: 'hmac', method: 'POST' });
+    try {
+      // the website's name rules
+      const dup = await raw('services/lists/create', { list_name: name });
+      assert(dup.status === 400, `duplicate name: HTTP ${dup.status}, expected 400`);
+      const short = await raw('services/lists/create', { list_name: 'short', list_status: '2' });
+      if (short.status === 200) await post('services/lists/delete', { list_id: JSON.parse(short.text).list_id }, 'cleanup');
+      assert(short.status === 400, `public list with a 5-character name: HTTP ${short.status}, expected 400`);
+      const lists = okJson(await api.request('services/lists/query', { include_caches: 'true' }, { auth: 'hmac' }), 'lists/query');
+      assert(Array.isArray(lists), `query: expected an array, got ${JSON.stringify(lists).slice(0, 80)}`);
+      const mine = lists.find(l => l.id === list.list_id);
+      assert(mine, 'new list not in query');
+      assert(mine.status === 0 && mine.is_watched === true && Array.isArray(mine.cache_codes), `query entry: ${JSON.stringify(mine)}`);
+      // plain text in, escaped HTML stored (the website shows it as HTML)
+      assert(mine.description === 'a &lt;b&gt;b&lt;/b&gt;<br />\nc', `description stored as ${JSON.stringify(mine.description)}`);
+      const added = await post('services/lists/add_caches', { list_id: list.list_id, cache_codes: `${w.code}|${w.code}|OCZZZZZZ` }, 'add_caches');
+      assert(added.added_count === 1, `added_count ${added.added_count}, expected 1`);
+      const got = await post('services/lists/get_caches', { list_id: list.list_id }, 'get_caches');
+      assert(Array.isArray(got.cache_codes) && got.cache_codes.includes(w.code) && got.cache_count === 1, `get_caches: ${JSON.stringify(got)}`);
+      const upd = await post('services/lists/update', { list_id: list.list_id, list_description: '', list_watch: 'false' }, 'lists/update');
+      assert(upd.description === '' && upd.is_watched === false && upd.name === name, `update: ${JSON.stringify(upd)}`);
+      const removed = await post('services/lists/remove_caches', { list_id: list.list_id, cache_codes: w.code }, 'remove_caches');
+      assert(removed.removed_count === 1, `removed_count ${removed.removed_count}, expected 1`);
+    } finally {
+      await post('services/lists/delete', { list_id: list.list_id }, 'lists/delete');
+    }
+    const gone = await api.request('services/lists/get_caches', { list_id: String(list.list_id) }, { auth: 'hmac' });
+    assert(gone.status === 400, `deleted list: HTTP ${gone.status}, expected 400`);
+    return 'website name rules, query shape, escaped description, add/remove counts, update, delete';
+  });
+
+  await check('write: draftlogs/upload_fieldnotes (hybrid file)', async () => {
+    needCache();
+    if (!ctx.installation?.has_draft_logs) skip('installation has no has_draft_logs');
+    // One hybrid file as c:geo/Garmin write it: UTF-16LE, GC log type names, records of other platforms included.
+    const records = [
+      ['GC12345', 'Found it', 'TFTC', false],
+      [w.code, 'Found it', 'Grüße, Straße ß', true],
+      [w.code, 'Write note', "Zeile 1\nZeile 2 mit 'Zitat' <3", true],
+      [w.code, 'Needs Maintenance', 'Logbuch voll', true],
+      ['OP1234', 'Found it', 'Dzięki', false],
+    ];
+    const content = records.map(([code, type, text], i) => `${code},2024-05-01T10:2${i}:00Z,${type},"${text}"`).join('\n') + '\n';
+    const j = await post('services/draftlogs/upload_fieldnotes',
+      { field_notes: Buffer.from(content, 'utf16le').toString('base64') }, 'upload_fieldnotes');
+    const expected = records.filter(r => r[3]).length;
+    assert(j.success === true, `success is ${j.success}`);
+    assert(j.total_records === records.length, `total_records ${j.total_records}, expected ${records.length}`);
+    assert(j.processed_records === expected, `processed_records ${j.processed_records}, expected ${expected}`);
+    assert(Array.isArray(j.draft_ids) && j.draft_ids.length === expected, `draft_ids ${JSON.stringify(j.draft_ids)}`);
+    w.draftIds = j.draft_ids;
+    return `${j.processed_records} of ${j.total_records} records became drafts ${j.draft_ids.join(', ')}`;
+  });
+
+  await check('write: draftlogs/query and delete', async () => {
+    needCache();
+    if (!w.draftIds) skip('no drafts uploaded');
+    const q = async () => okJson(await api.request('services/draftlogs/query', { cache_code: w.code }, { auth: 'hmac' }), 'draftlogs/query');
+    const drafts = await q();
+    assert(drafts.length === w.draftIds.length, `query returns ${drafts.length} drafts, expected ${w.draftIds.length}`);
+    const got = drafts.map(d => `${d.type}${d.needs_maintenance2 ? '+NM' : ''}`).join(', ');
+    assert(got === "Found it, Comment, Comment+NM", `types are ${got}`);
+    assert(drafts[1].comment === "Zeile 1<br />\nZeile 2 mit 'Zitat' &lt;3", `comment is ${JSON.stringify(drafts[1].comment)}`);
+    const del = await post('services/draftlogs/delete', { draft_ids: [...w.draftIds, '999999999'].join('|') }, 'draftlogs/delete');
+    assert(del.success === true, 'success is not true');
+    assert([...del.deleted_draft_ids].sort().join() === [...w.draftIds].sort().join(), `deleted ${JSON.stringify(del.deleted_draft_ids)}`);
+    assert(del.not_found_draft_ids.join() === '999999999', `not_found ${JSON.stringify(del.not_found_draft_ids)}`);
+    assert((await q()).length === 0, 'drafts still there after delete');
+    const bad = await api.request('services/draftlogs/delete', { draft_ids: 'abc' }, { auth: 'hmac', method: 'POST' });
+    assert(bad.status === 400, `invalid draft_ids: HTTP ${bad.status}, expected 400`);
+    return `${got}; deleted, unknown ID reported, invalid ID rejected`;
   });
 
   await check('write: logs/submit, edit, delete', async () => {
