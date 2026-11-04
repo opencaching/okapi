@@ -3,7 +3,6 @@
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <title><?= _("Authorization Form") ?></title>
-        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
         <style>
             .okapi { font-size: 15px; max-width: 600px; font-family: "lucida grande", "Segoe UI", tahoma, arial, sans-serif; color: #555; margin: 20px 60px 0 40px; }
             .okapi a.opencaching { font-size: 20px; font-weight: bold; padding-top: 13px; color: #333; text-decoration: none; outline:none; display: block; }
@@ -19,9 +18,9 @@
             .okapi .pin { margin: 20px 20px 0 0; background: #eee; border: 1px solid #ccc; padding: 20px 40px; text-align: center; font-size: 24px; }
         </style>
         <script>
-            $(function() {
-                $('#langpref').change(function() {
-                    document.location = "?oauth_token=<?= isset($vars['token']['key']) ? $vars['token']['key'] : '' ?>&langpref=" + $('#langpref').attr('value');
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('langpref').addEventListener('change', function() {
+                    document.location = "?oauth_token=<?= isset($vars['token']['key']) ? $vars['token']['key'] : '' ?>&langpref=" + encodeURIComponent(this.value);
                 });
             });
         </script>
