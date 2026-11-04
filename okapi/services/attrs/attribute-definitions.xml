@@ -892,6 +892,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         <opencaching schema="OCDE" id="55" />
         <opencaching schema="OCRO" id="47" />
         <opencaching schema="OCUK" id="47" />
+        <opencaching schema="OCPL" id="47" />
         <lang id="en">
             <name>Field Puzzle / Mystery</name>
             <desc>
@@ -936,11 +937,12 @@ store these attributes in GPX <groundspeak:attribute> elements.
             </desc>
         </lang>
         <lang id="pl">
-            <name>Quiz / Zagadka</name>
+            <name>Zagadka terenowa</name>
             <desc>
-                Ten quiz lub zagadka musi być rozwiązana (przynajmniej częściowo)
-                w terenie, odwiedzając punkt początkowy lub dodatkowe miejsca
-                wymienione w opisie.
+                Zagadka terenowa wymaga odwiedzenia wskazanego miejsca i rozwiązania zadania
+                na podstawie informacji, obiektów lub wskazówek dostępnych w terenie.
+                Samo analizowanie opisu skrytki w domu nie wystarczy.
+                Kluczowe informacje można zdobyć dopiero na miejscu.
             </desc>
         </lang>
     </attr>
@@ -4339,6 +4341,27 @@ store these attributes in GPX <groundspeak:attribute> elements.
             <desc>
                 Skrzynka powstała we współpracy z instytucją lub organizacją.
                 Jej finał może znajdować się na terenie lub przy obiekcie partnera.
+            </desc>
+        </lang>
+    </attr>
+
+    <attr acode="A103" categories="de-location">
+        <ocgs id="226" inc="true" />
+        <opencaching schema="OCPL" id="226" />
+        <lang id="en">
+            <name>Cache to be solved online</name>
+            <desc>
+                An online puzzle can be solved from home without visiting a specific location.
+                All the necessary clues are available in the cache listing or through publicly accessible online sources,
+                and the solution leads to the final coordinates.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Zadanie do rozwiązania online</name>
+            <desc>
+                Zagadka online może zostać rozwiązana w domu, bez konieczności odwiedzania konkretnego miejsca.
+                Wszystkie niezbędne wskazówki są dostępne w opisie skrytki lub w ogólnodostępnych źródłach internetowych,
+                a rozwiązanie pozwala ustalić współrzędne finału.
             </desc>
         </lang>
     </attr>
