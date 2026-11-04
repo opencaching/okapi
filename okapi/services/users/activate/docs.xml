@@ -1,0 +1,36 @@
+<xml>
+    <brief>Activate a new account and log in</brief>
+    <infotags>ocde-specific</infotags>
+    <desc>
+        <p>Activates an account made with
+        <a href='%OKAPI:methodref:services/users/register%'>services/users/register</a> (or on the
+        website), with the code from the activation mail, as the website's activation page does.</p>
+        <p>The user chose the password in this application and has just proved the email address,
+        so the application gets its Access Token for the user right away, without the authorize
+        page. Only for applications the site's administrators allowed to register users, and only
+        over HTTPS.</p>
+        <p>Refusals give HTTP 400 with a <b>reason</b>: <b>unknown_email</b>, <b>already_active</b>
+        (log in through the usual OAuth flow then), <b>wrong_code</b>.</p>
+        <p>The mail also holds the website's activation link. If the user opens it in a browser, the
+        website activates the account and this method then answers <b>already_active</b>, so the
+        application has to offer the usual login in that case. An application can claim that link
+        for itself (Android App Links, iOS Universal Links, with the site's verification file for
+        the application); it then gets the address and the code from the link and calls this
+        method.</p>
+    </desc>
+    <req name='email'>
+        <p>The email address the account was registered with.</p>
+    </req>
+    <req name='code'>
+        <p>The code from the activation mail (case and spaces don't matter).</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary:</p>
+        <ul>
+            <li><b>oauth_token</b>, <b>oauth_token_secret</b> - the Access Token for this
+            application and user (the same one the OAuth flow would give),</li>
+            <li><b>user_uuid</b>, <b>username</b> - the new user.</li>
+        </ul>
+    </returns>
+</xml>
