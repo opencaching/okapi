@@ -1,0 +1,23 @@
+<xml>
+    <brief>The caches on a cache list</brief>
+    <infotags>ocde-specific</infotags>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>Returns the codes of the caches on one of the user's lists. To get all lists with their
+        caches in one request, use include_caches of
+        <a href='%OKAPI:methodref:services/lists/query%'>services/lists/query</a>.</p>
+    </desc>
+    <req name='list_id'>
+        <p>The id of one of the user's lists, as returned by
+        <a href='%OKAPI:methodref:services/lists/query%'>services/lists/query</a>. Another user's list,
+        or one that no longer exists (e.g. deleted on the website), gives HTTP 400.</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary:</p>
+        <ul>
+            <li><b>cache_codes</b> - the codes of the caches on the list, sorted,</li>
+            <li><b>cache_count</b> - how many there are.</li>
+        </ul>
+    </returns>
+</xml>
