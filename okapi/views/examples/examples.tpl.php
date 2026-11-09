@@ -5,14 +5,19 @@
         <title>OKAPI Examples</title>
         <link rel="stylesheet" href="<?= $vars['okapi_base_url'] ?>static/common.css?<?= $vars['okapi_rev'] ?>">
         <link rel="icon" type="image/x-icon" href="<?= $vars['okapi_base_url'] ?>static/favicon.ico">
-        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
         <script>
             var okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
-            $(function() {
-                $('h2').each(function() {
-                    $('#toc').append($("<div></div>").append($("<a></a>")
-                        .text($(this).text()).attr("href", "#" + $(this).attr('id'))));
-                });
+            document.addEventListener('DOMContentLoaded', function() {
+                var toc = document.getElementById('toc');
+                var headers = document.getElementsByTagName('h2');
+                for (var i = 0; i < headers.length; i++) {
+                    var a = document.createElement('a');
+                    a.textContent = headers[i].textContent;
+                    a.setAttribute('href', '#' + headers[i].id);
+                    var div = document.createElement('div');
+                    div.appendChild(a);
+                    toc.appendChild(div);
+                }
             });
         </script>
         <script src='<?= $vars['okapi_base_url'] ?>static/common.js?<?= $vars['okapi_rev'] ?>'></script>
@@ -59,13 +64,58 @@ gracefully.</p>
 
 <p>This will print the number of users in the <?= $vars['site_name'] ?> installation:</p>
 
-<script src="https://gist.github.com/4231796.js?file=users.php"></script>
+<pre>&lt;?php
+$okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
+$json = file_get_contents($okapi_base_url."services/apisrv/stats");
+$data = json_decode($json);
+print "Number of <?= $vars['site_name'] ?> users: ".$data-&gt;user_count;</pre>
 
 <h2 id='php2'>PHP Example 2 - search for nearest geocaches</h2>
 
 <p>This will print the codes of some nearest unfound caches:</p>
 
-<script src="https://gist.github.com/4231824.js?file=nearest_unfound.php"></script>
+<pre>&lt;?php
+
+/* Enter your OKAPI's URL here. */
+$okapi_base_url = "<?= $vars['okapi_base_url'] ?>";
+
+/* Enter your Consumer Key here. */
+$consumer_key = "YOUR_KEY_HERE";
+
+/* Caches found by this user will be EXCLUDED from the result. */
+$username = "USERNAME_HERE";
+
+/* Your location. */
+$lat = 54.3;
+$lon = 22.3;
+
+/* 1. Get the UUID of the user. */
+$json = @file_get_contents(
+    $okapi_base_url."services/users/by_username".
+    "?username=".$username.
+    "&amp;fields=uuid".
+    "&amp;consumer_key=".$consumer_key
+);
+if (!$json)
+    die("ERROR! Check your consumer_key and/or username!\n");
+$user_uuid = json_decode($json)-&gt;uuid;
+print "Your UUID: ".$user_uuid."\n";
+
+/* 2. Search for caches. */
+$json = @file_get_contents(
+    $okapi_base_url."services/caches/search/nearest".
+    "?center=".$lat."|".$lon.
+    "&amp;not_found_by=".$user_uuid.
+    "&amp;limit=5".
+    "&amp;consumer_key=".$consumer_key
+);
+if (!$json)
+    die("ERROR!");
+$cache_codes = json_decode($json)-&gt;results;
+
+/* Display them. */
+print "Five nearest unfound caches: ";
+print implode(", ", $cache_codes)."\n";</pre>
 
 <h2 id='js1'>JavaScript Example</h2>
 
