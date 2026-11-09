@@ -1,0 +1,20 @@
+<xml>
+    <brief>Add caches to a cache list</brief>
+    <infotags>ocde-specific</infotags>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>Puts caches on one of the user's lists. Like on the website, only caches the user can see are added (the ones OKAPI shows: Available, Temporarily unavailable, Archived). Unknown codes and caches already on the list are skipped, so sending the same request twice is harmless.</p>
+    </desc>
+    <req name='list_id'>
+        <p>The id of one of the user's lists, as returned by
+        <a href='%OKAPI:methodref:services/lists/query%'>services/lists/query</a>. Another user's list,
+        or one that no longer exists (e.g. deleted on the website), gives HTTP 400.</p>
+    </req>
+    <req name='cache_codes'>
+        <p>Pipe-separated cache codes (e.g. <b>OC1234|OC5678</b>), at most 500 per request.</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary with <b>added_count</b>, the number of caches added.</p>
+    </returns>
+</xml>
