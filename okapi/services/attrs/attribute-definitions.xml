@@ -176,6 +176,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
     attribute is currently ignored. See issue 70.
     -->
 
+    <!-- A-CODE A1 ******************************************************** -->
     <attr acode="A1" categories="de-listing">
         <ocgs id="106" inc="true" />
         <opencaching schema="OCDE" id="6" />
@@ -237,6 +238,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A2 ******************************************************** -->
     <attr acode="A2" categories="de-cache-types">
         <ocgs id="208" inc="true" />
         <opencaching schema="OCPL" id="208" />
@@ -279,6 +281,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A3 ******************************************************** -->
     <attr acode="A3" categories="de-cache-types">
         <ocgs id="209" inc="true" />
         <opencaching schema="OCPL" id="209" />
@@ -328,6 +331,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A4 ******************************************************** -->
     <attr acode="A4" categories="de-cache-types">
         <ocgs id="108" inc="true" />
         <opencaching schema="OCDE" id="8" />
@@ -404,6 +408,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A5 ******************************************************** -->
     <attr acode="A5" categories="de-cache-types">
         <ocgs id="202" inc="true" />
         <opencaching schema="OCPL" id="202" />
@@ -448,6 +453,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A6 ******************************************************** -->
     <attr acode="A6" categories="de-cache-types">
         <ocgs id="204" inc="true" />
         <opencaching schema="OCPL" id="204" />
@@ -486,6 +492,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A7 ******************************************************** -->
     <attr acode="A7" categories="de-cache-types">
         <ocgs id="205" inc="true" />
         <opencaching schema="OCPL" id="205" />
@@ -531,6 +538,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A8 ******************************************************** -->
     <attr acode="A8" categories="de-cache-types">
         <ocgs id="206" inc="true" />
         <opencaching schema="OCPL" id="206" />
@@ -578,6 +586,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A9 ******************************************************** -->
     <attr acode="A9" categories="de-cache-types">
         <groundspeak id="60" inc="true" name="Wireless Beacon" />
         <opencaching schema="OCPL" id="60" />
@@ -585,40 +594,48 @@ store these attributes in GPX <groundspeak:attribute> elements.
         <opencaching schema="OCRO" id="60" />
         <opencaching schema="OCUS" id="60" />
         <lang id="en">
-            <name>Garmin's wireless beacon</name>
+            <name>Wireless beacon</name>
             <desc>
-                Contains Garmin's wireless Chirp™ beacon.
+                Contains a wireless beacon or tag, such as a Garmin Chirp™,
+                an NFC or RFID tag, a Bluetooth Low Energy (BLE) beacon, or another
+                type of radio beacon.
             </desc>
         </lang>
         <lang id="pl">
-            <name>Beacon - Garmin Chirp</name>
+            <name>Nadajnik bezprzewodowy</name>
             <desc>
-                Skrzynka zawiera Beacon Garmin Chirp™.
+                Zawiera bezprzewodowy beacon lub znacznik, np. Garmin Chirp™,
+                znacznik NFC lub RFID, beacon Bluetooth Low Energy (BLE) albo inny
+                rodzaj radiowego znacznika.
             </desc>
         </lang>
         <lang id="de">
-            <name>Funksignal – Garmin Chirp</name>
+            <name>Drahtloser Beacon</name>
             <desc>
-                Zusammen mit dem Cache sind ein oder mehrere Garmin-Funksender
-                versteckt. Um den Cache zu finden, müssen die Funksignale empfangen
-                werden. Dazu wird ein passender Empfänger benötigt.
+                Enthält einen drahtlosen Beacon oder Transponder, zum
+                Beispiel einen Garmin Chirp™, einen NFC- oder RFID-Tag, einen
+                Bluetooth-Low-Energy-(BLE)-Beacon oder eine andere Art von Funkbake.
             </desc>
         </lang>
         <lang id="nl">
-            <name>Beacon - Garmin chirp</name>
+            <name>Draadloze beacon</name>
             <desc>
-                Deze cache is gemaakt met 1 of meer Garmins Chirp™ draadloze
-                zenders.
+                Bevat een draadloze beacon of tag, zoals een Garmin
+                Chirp™, een NFC- of RFID-tag, een Bluetooth Low Energy (BLE)-beacon
+                of een ander type radiobaken.
             </desc>
         </lang>
         <lang id="ro">
             <name>Baliză radio</name>
             <desc>
-                Baliză radio de tip Garmin Chirp™.
+                Conţine o baliză radio precum Garmin Chirp™,
+                un tag NFC sau RFID, o baliză Bluetooth Low Energy (BLE) sau un alt
+                tip de baliză radio.
             </desc>
         </lang>
     </attr>
 
+    <!-- A-CODE A10 ******************************************************* -->
     <attr acode="A10" categories="de-cache-types">
         <ocgs id="207" inc="true" />
         <opencaching schema="OCPL" id="207" />
@@ -669,6 +686,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A11 ******************************************************* -->
     <attr acode="A11" categories="de-cache-types">
         <ocgs id="131" inc="true" />
         <opencaching schema="OCDE" id="31" />
@@ -731,6 +749,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A12 ******************************************************* -->
     <attr acode="A12" categories="de-cache-types">
         <ocgs id="132" inc="true" />
         <opencaching schema="OCDE" id="32" />
@@ -794,6 +813,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A13 ******************************************************* -->
     <attr acode="A13" categories="de-listing">
         <ocgs id="157" inc="true" />
         <opencaching schema="OCDE" id="57" />
@@ -842,6 +862,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A14 ******************************************************* -->
     <attr acode="A14" categories="de-preconditions">
         <ocgs id="154" inc="true" />
         <opencaching schema="OCDE" id="54" />
@@ -887,6 +908,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A15 ******************************************************* -->
     <attr acode="A15" categories="de-preconditions">
         <groundspeak id="47" inc="true" name="Field puzzle" />
         <opencaching schema="OCDE" id="55" />
@@ -947,6 +969,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A16 ******************************************************* -->
     <attr acode="A16" categories="de-preconditions">
         <ocgs id="156" inc="true" />
         <opencaching schema="OCDE" id="56" />
@@ -997,6 +1020,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A17 ******************************************************* -->
     <attr acode="A17" categories="de-preconditions">
         <ocgs id="158" inc="true" />
         <opencaching schema="OCDE" id="58" />
@@ -1045,6 +1069,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A18 ******************************************************* -->
     <attr acode="A18" categories="de-accessibility">
         <groundspeak id="24" inc="true" name="Wheelchair accessible" />
         <opencaching schema="OCPL" id="24" />
@@ -1091,6 +1116,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A19 ******************************************************* -->
     <attr acode="A19" categories="de-accessibility">
         <groundspeak id="53" inc="true" name="Park and grab" />
         <opencaching schema="OCDE" id="24" />
@@ -1145,6 +1171,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A20 ******************************************************* -->
     <attr acode="A20" categories="de-accessibility">
         <ocgs id="213" inc="true" />
         <opencaching schema="OCPL" id="213" />
@@ -1184,6 +1211,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A21 ******************************************************* -->
     <attr acode="A21" categories="de-accessibility">
         <groundspeak id="9" inc="true" name="Significant Hike" />
         <opencaching schema="OCDE" id="25" />
@@ -1253,6 +1281,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A22 ******************************************************* -->
     <attr acode="A22" categories="de-accessibility">
         <groundspeak id="11" inc="true" name="May require wading" />
         <opencaching schema="OCDE" id="26" />
@@ -1307,6 +1336,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A23 ******************************************************* -->
     <attr acode="A23" categories="de-accessibility">
         <ocgs id="127" inc="true" />
         <opencaching schema="OCDE" id="27" />
@@ -1350,6 +1380,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A24 ******************************************************* -->
     <attr acode="A24" categories="de-accessibility">
         <groundspeak id="10" inc="true" name="Difficult climbing" />
         <opencaching schema="OCDE" id="28" />
@@ -1410,6 +1441,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A25 ******************************************************* -->
     <attr acode="A25" categories="de-accessibility">
         <groundspeak id="12" inc="true" name="May require swimming" />
         <opencaching schema="OCDE" id="29" />
@@ -1464,6 +1496,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A26 ******************************************************* -->
     <attr acode="A26" categories="de-accessibility">
         <groundspeak id="2" inc="true" name="Access or parking fee" />
         <opencaching schema="OCDE" id="36" />
@@ -1513,6 +1546,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A27 ******************************************************* -->
     <attr acode="A27" categories="de-accessibility">
         <groundspeak id="32" inc="true" name="Bicycles" />
         <opencaching schema="OCPL" id="32" />
@@ -1551,6 +1585,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A28 ******************************************************* -->
     <attr acode="A28" categories="de-location">
         <ocgs id="210" inc="true" />
         <opencaching schema="OCPL" id="210" />
@@ -1593,6 +1628,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A29 ******************************************************* -->
     <attr acode="A29" categories="de-location">
         <ocgs id="211" inc="true" />
         <opencaching schema="OCPL" id="211" />
@@ -1636,6 +1672,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A30 ******************************************************* -->
     <attr acode="A30" categories="de-location">
         <ocgs id="130" inc="true" />
         <opencaching schema="OCDE" id="30" />
@@ -1699,13 +1736,15 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A31 ******************************************************* -->
     <attr acode="A31" categories="de-location">
         <ocgs id="133" inc="true" />
         <opencaching schema="OCDE" id="33" />
         <opencaching schema="OCRO" id="133" />
         <opencaching schema="OCUK" id="133" />
+        <opencaching schema="OCPL" id="133" />
         <lang id="en">
-            <name>Hidden wihin enclosed rooms (caves, buildings etc.)</name>
+            <name>Hidden wihin enclosed space (buildings, caves, etc.)</name>
             <desc>
                 This geocache is not hidden in the open air, but within a building, a
                 cave or similar.
@@ -1746,8 +1785,16 @@ store these attributes in GPX <groundspeak:attribute> elements.
                 grot of iets dergelijks.
             </desc>
         </lang>
+        <lang id="ro">
+            <name>Ascunsă în interior (clădire, peşteră, etc.)</name>
+            <desc>
+                Geocutia se află în interiorul unei clădiri sau alt fel de spaţiu închis
+                precum o peşteră sau ceva similar.
+            </desc>
+        </lang>
     </attr>
 
+    <!-- A-CODE A32 ******************************************************* -->
     <attr acode="A32" categories="de-location">
         <ocgs id="134" inc="true" />
         <opencaching schema="OCDE" id="34" />
@@ -1794,6 +1841,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A33 ******************************************************* -->
     <attr acode="A33" categories="de-facilities">
         <groundspeak id="25" inc="true" name="Parking available" />
         <opencaching schema="OCDE" id="18" />
@@ -1848,6 +1896,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A34 ******************************************************* -->
     <attr acode="A34" categories="de-facilities">
         <groundspeak id="26" inc="true" name="Public transportation" />
         <opencaching schema="OCDE" id="19" />
@@ -1892,6 +1941,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A35 ******************************************************* -->
     <attr acode="A35" categories="de-facilities">
         <groundspeak id="27" inc="true" name="Drinking water nearby" />
         <opencaching schema="OCDE" id="20" />
@@ -1951,6 +2001,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A36 ******************************************************* -->
     <attr acode="A36" categories="de-facilities">
         <groundspeak id="28" inc="true" name="Public restrooms nearby" />
         <opencaching schema="OCDE" id="21" />
@@ -1992,6 +2043,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A37 ******************************************************* -->
     <attr acode="A37" categories="de-facilities">
         <groundspeak id="29" inc="true" name="Telephone nearby" />
         <opencaching schema="OCDE" id="22" />
@@ -2034,6 +2086,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A38 ******************************************************* -->
     <attr acode="A38" categories="de-facilities">
         <ocgs id="123" inc="true" />
         <opencaching schema="OCDE" id="23" />
@@ -2078,6 +2131,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A39 ******************************************************* -->
     <attr acode="A39" categories="de-time-and-seasons">
         <groundspeak id="13" inc="true" name="Available at all times" />
         <opencaching schema="OCDE" id="38" />
@@ -2128,6 +2182,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A40 ******************************************************* -->
     <attr acode="A40" categories="de-time-and-seasons">
         <groundspeak id="13" inc="false" name="Available at all times" />
         <opencaching schema="OCDE" id="39" />
@@ -2182,6 +2237,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A41 ******************************************************* -->
     <attr acode="A41" categories="de-time-and-seasons">
         <groundspeak id="14" inc="false" name="Recommended at night" />
         <opencaching schema="OCDE" id="40" />
@@ -2233,6 +2289,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A42 ******************************************************* -->
     <attr acode="A42" categories="de-time-and-seasons">
         <groundspeak id="14" inc="true" name="Recommended at night" />
         <opencaching schema="OCPL" id="14" />
@@ -2275,6 +2332,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A43 ******************************************************* -->
     <attr acode="A43" categories="de-time-and-seasons">
         <groundspeak id="52" inc="true" name="Night Cache" />
         <opencaching schema="OCDE" id="1" />
@@ -2330,6 +2388,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A44 ******************************************************* -->
     <attr acode="A44" categories="de-time-and-seasons">
         <groundspeak id="62" inc="false" name="Seasonal access" />
         <opencaching schema="OCDE" id="42" />
@@ -2374,6 +2433,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A45 ******************************************************* -->
     <attr acode="A45" categories="de-time-and-seasons">
         <groundspeak id="62" inc="true" name="Seasonal access" />
         <opencaching schema="OCDE" id="60" />
@@ -2415,6 +2475,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A46 ******************************************************* -->
     <attr acode="A46" categories="de-time-and-seasons">
         <ocgs id="143" inc="true" />
         <opencaching schema="OCDE" id="43" />
@@ -2465,6 +2526,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A47 ******************************************************* -->
     <attr acode="A47" categories="de-time-and-seasons">
         <groundspeak id="15" inc="true" name="Available during winter" />
         <opencaching schema="OCDE" id="44" />
@@ -2517,6 +2579,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A48 ******************************************************* -->
     <attr acode="A48" categories="de-time-and-seasons">
         <ocgs id="142" inc="true" />
         <opencaching schema="OCDE" id="41" />
@@ -2548,6 +2611,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A49 ******************************************************* -->
     <attr acode="A49" categories="de-tools">
         <ocgs id="147" inc="true" />
         <opencaching schema="OCDE" id="47" />
@@ -2602,6 +2666,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A50 ******************************************************* -->
     <attr acode="A50" categories="de-tools">
         <ocgs id="203" inc="true" />
         <opencaching schema="OCPL" id="203" />
@@ -2642,6 +2707,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A51 ******************************************************* -->
     <attr acode="A51" categories="de-tools">
         <ocgs id="212" inc="true" />
         <opencaching schema="OCPL" id="212" />
@@ -2680,6 +2746,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A52 ******************************************************* -->
     <attr acode="A52" categories="de-tools">
         <groundspeak id="44" inc="true" name="Flashlight required" />
         <opencaching schema="OCDE" id="48" />
@@ -2735,6 +2802,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A53 ******************************************************* -->
     <attr acode="A53" categories="de-tools">
         <groundspeak id="3" inc="true" name="Climbing gear" />
         <opencaching schema="OCDE" id="49" />
@@ -2793,15 +2861,18 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A54 ******************************************************* -->
     <attr acode="A54" categories="de-tools">
         <ocgs id="150" inc="true" />
         <opencaching schema="OCDE" id="50" />
         <opencaching schema="OCUK" id="150" />
+        <opencaching schema="OCPL" id="150" />
         <lang id="en">
             <name>Cave equipment required</name>
             <desc>
-                This geocache is hidden in a cave, and you should use appropriate
-                equipment to access it. Beware: Even small caves may confront you with
+                This geocache is hidden inside a cave or similar underground structure 
+                and you should use appropriate equipment to access it. 
+                Beware: Even small caves may confront you with
                 unforeseen problems and dangers, like thunder storms (water!) or a
                 sprained ankle. Have advice first from cave-experienced people! Also
                 take care of protected nature; e.g. bat places must not be disturbed.
@@ -2857,6 +2928,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A55 ******************************************************* -->
     <attr acode="A55" categories="de-tools">
         <groundspeak id="5" inc="true" name="Scuba gear" />
         <opencaching schema="OCDE" id="51" />
@@ -2922,6 +2994,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A56 ******************************************************* -->
     <attr acode="A56" categories="de-tools">
         <groundspeak id="51" inc="true" name="Special Tool Required" />
         <opencaching schema="OCDE" id="46" />
@@ -2979,6 +3052,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A57 ******************************************************* -->
     <attr acode="A57" categories="de-tools">
         <groundspeak id="4" inc="true" name="Boat" />
         <opencaching schema="OCDE" id="52" />
@@ -3041,6 +3115,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A58 ******************************************************* -->
     <attr acode="A58" categories="de-tools">
         <ocgs id="135" inc="true" />
         <opencaching schema="OCDE" id="35" />
@@ -3086,6 +3161,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A59 ******************************************************* -->
     <attr acode="A59" categories="de-dangers">
         <groundspeak id="23" inc="true" name="Dangerous area" />
         <opencaching schema="OCDE" id="9" />
@@ -3156,6 +3232,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A60 ******************************************************* -->
     <attr acode="A60" categories="de-dangers">
         <ocgs id="110" inc="true" />
         <opencaching schema="OCDE" id="10" />
@@ -3208,6 +3285,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A61 ******************************************************* -->
     <attr acode="A61" categories="de-dangers">
         <groundspeak id="21" inc="true" name="Cliff / falling rocks" />
         <opencaching schema="OCDE" id="11" />
@@ -3275,6 +3353,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A62 ******************************************************* -->
     <attr acode="A62" categories="de-dangers">
         <groundspeak id="22" inc="true" name="Hunting" />
         <opencaching schema="OCDE" id="12" />
@@ -3342,6 +3421,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A63 ******************************************************* -->
     <attr acode="A63" categories="de-dangers">
         <groundspeak id="39" inc="true" name="Thorns" />
         <opencaching schema="OCDE" id="13" />
@@ -3398,6 +3478,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A64 ******************************************************* -->
     <attr acode="A64" categories="de-dangers">
         <groundspeak id="19" inc="true" name="Ticks" />
         <opencaching schema="OCDE" id="14" />
@@ -3467,6 +3548,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A65 ******************************************************* -->
     <attr acode="A65" categories="de-dangers">
         <groundspeak id="20" inc="true" name="Abandoned mines" />
         <opencaching schema="OCDE" id="15" />
@@ -3525,6 +3607,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A66 ******************************************************* -->
     <attr acode="A66" categories="de-dangers">
         <groundspeak id="17" inc="true" name="Poison plants" />
         <opencaching schema="OCDE" id="16" />
@@ -3572,6 +3655,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A67 ******************************************************* -->
     <attr acode="A67" categories="de-dangers">
         <groundspeak id="18" inc="true" name="Dangerous Animals" />
         <opencaching schema="OCDE" id="17" />
@@ -3619,6 +3703,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A68 ******************************************************* -->
     <attr acode="A68" categories="de-rating">
         <ocgs id="201" inc="true" />
         <opencaching schema="OCPL" id="201" />
@@ -3657,6 +3742,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A69 ******************************************************* -->
     <attr acode="A69" categories="de-rating">
         <ocgs id="137" inc="true" />
         <opencaching schema="OCDE" id="37" />
@@ -3711,6 +3797,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A70 ******************************************************* -->
     <attr acode="A70" categories="de-rating">
         <groundspeak id="6" inc="true" name="Recommended for kids" />
         <opencaching schema="OCPL" id="6" />
@@ -3755,6 +3842,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A71 ******************************************************* -->
     <attr acode="A71" categories="de-rating">
         <groundspeak id="6" inc="true" name="Recommended for kids" />
         <opencaching schema="OCDE" id="59" />
@@ -3808,6 +3896,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A72 ******************************************************* -->
     <attr acode="A72" categories="de-cache-types">
         <ocgs id="161" inc="true" />
         <opencaching schema="OCDE" id="61" />
@@ -3845,6 +3934,12 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A73 ******************************************************* -->
+    <!-- 
+         This A-CODE is OBSOLETE; duplicate of A40 !!!
+         No longer used at OC sites.
+         Retained according to A-CODE numbering policy.
+    -->     
     <attr acode="A73" categories="de-time-and-seasons">
         <groundspeak id="13" inc="false" name="Available at all times" />
         <lang id="en">
@@ -3884,6 +3979,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A74 ******************************************************* -->
     <attr acode="A74" categories="de-dangers">
         <groundspeak id="40" inc="true" name="Stealth required" />
         <opencaching schema="OCNL" id="40" />
@@ -3926,6 +4022,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A75 ******************************************************* -->
     <attr acode="A75" categories="de-tools">
         <ocgs id="153" inc="true" />
         <opencaching schema="OCDE" id="53" />
@@ -3970,6 +4067,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A76 ******************************************************* -->
     <attr acode="A76" categories="de-accessibility">
         <ocgs id="214" inc="true" />
         <opencaching schema="OCUK" id="214" />
@@ -4014,6 +4112,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A77 ******************************************************* -->
     <attr acode="A77" categories="de-cache-types">
         <ocgs id="215" inc="true" />
         <opencaching schema="OCUK" id="215" />
@@ -4052,6 +4151,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A78 ******************************************************* -->
     <attr acode="A78" categories="de-cache-types">
         <ocgs id="216" inc="true" />
         <opencaching schema="OCUS" id="216" />
@@ -4063,6 +4163,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A79 ******************************************************* -->
     <attr acode="A79" categories="de-cache-types">
         <ocgs id="217" inc="true" />
         <opencaching schema="OCUK" id="217" />
@@ -4074,6 +4175,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A80 ******************************************************* -->
     <attr acode="A80" categories="de-cache-types">
         <ocgs id="218" inc="true" />
         <opencaching schema="OCRO" id="218" />
@@ -4085,6 +4187,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A81 ******************************************************* -->
     <attr acode="A81" categories="de-cache-types">
         <ocgs id="219" inc="true" />
         <opencaching schema="OCRO" id="219" />
@@ -4096,6 +4199,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A82 ******************************************************* -->
     <attr acode="A82" categories="de-cache-types">
         <groundspeak id="54" inc="true" name="Abandoned structure" />
         <opencaching schema="OCRO" id="54" />
@@ -4125,6 +4229,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
     
+    <!-- A-CODE A83 ******************************************************* -->
     <attr acode="A83" categories="de-cache-types">
         <groundspeak id="48" inc="true" name="UV Light Required" />
         <opencaching schema="OCRO" id="48" />
@@ -4136,6 +4241,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A84 ******************************************************* -->
     <attr acode="A84" categories="de-cache-types">
         <groundspeak id="15" inc="false" name="Available during winter" />
         <opencaching schema="OCUS" id="9015" />
@@ -4147,6 +4253,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A85 ******************************************************* -->
     <attr acode="A85" categories="de-cache-types">
         <groundspeak id="1" inc="false" name="Dogs" />
         <opencaching schema="OCNL" id="9001" />
@@ -4158,6 +4265,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A86 ******************************************************* -->
     <attr acode="A86" categories="de-cache-types">
         <groundspeak id="46" inc="true" name="Truck Driver/RV" />
         <opencaching schema="OCUS" id="46" />
@@ -4169,6 +4277,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A87 ******************************************************* -->
     <attr acode="A87" categories="de-cache-types">
         <ocgs id="220" inc="true" />
         <opencaching schema="OCRO" id="220" />
@@ -4180,6 +4289,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A88 ******************************************************* -->
     <attr acode="A88" categories="de-cache-types">
         <groundspeak id="64" inc="true" name="Tree Climbing" />
         <opencaching schema="OCPL" id="64" />
@@ -4201,6 +4311,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A89 ******************************************************* -->
     <attr acode="A89" categories="de-cache-types">
         <ocgs id="162" inc="true" />
         <opencaching schema="OCDE" id="62" />
@@ -4218,6 +4329,96 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A90 ******************************************************* -->
+    <attr acode="A90" categories="de-cache-types">
+        <groundspeak id="69" inc="true" name="BONUS cache" />
+        <!-- <opencaching schema="OCRO" id="69" /> -->
+        <lang id="en">
+            <name>BONUS cache</name>
+            <desc>
+                A BONUS cache for solving other puzzles/series/etc.
+            </desc>
+        </lang>
+    </attr>
+
+    <!-- A-CODE A91 ******************************************************* -->
+    <attr acode="A91" categories="de-cache-types">
+        <ocgs id="998" inc="true" />
+        <!-- <opencaching schema="OCPL" id="998" /> -->
+        <lang id="en">
+            <name>Geopath</name>
+            <desc>
+                Cache is part of a GeoPath.
+            </desc>
+        </lang>
+    </attr>
+
+    <!-- A-CODE A92 ******************************************************* -->
+    <attr acode="A92" categories="de-cache-types">
+        <groundspeak id="71" inc="true" name="Challenge" />
+        <opencaching schema="OCUS" id="71" />
+        <lang id="en">
+            <name>Challenge</name>
+            <desc>
+                Must meet challenge requirements to log.
+            </desc>
+        </lang>
+    </attr>
+
+    <!-- A-CODE A93 ******************************************************* -->
+    <attr acode="A93" categories="de-cache-types">
+        <groundspeak id="72" inc="true" name="OpenChecker" />
+        <!-- <opencaching schema="OCRO" id="72" /> -->
+        <lang id="en">
+            <name>OpenChecker</name>
+            <desc>
+                Solution checker provided.
+            </desc>
+        </lang>
+    </attr>
+
+    <!-- A-CODE A94 ******************************************************* -->
+    
+    <!-- !!! currently not allocated -->
+
+    <!-- A-CODE A95 ******************************************************* -->
+    <attr acode="A95" categories="de-cache-types">
+        <ocgs id="221" inc="true" />
+        <opencaching schema="OCUS" id="221" />
+        <lang id="en">
+            <name>BITcache</name>
+            <desc>
+                BIT stands for "Bound ID Tag" to represent that the cache is bound in plastic, 
+                also known as laminating it. No container. No log sheet. No hassles.
+            </desc>
+        </lang>
+    </attr>
+
+    <!-- A-CODE A96 ******************************************************* -->
+    <attr acode="A96" categories="de-cache-types">
+        <ocgs id="222" inc="true" />
+        <opencaching schema="OCUS" id="222" />
+        <lang id="en">
+            <name>Guestbook</name>
+            <desc>
+                Log is part of a guestbook.
+            </desc>
+        </lang>
+    </attr>
+
+    <!-- A-CODE A97 ******************************************************* -->
+    <attr acode="A97" categories="de-cache-types">
+        <ocgs id="999" inc="true" />
+        <!-- <opencaching schema="OCRO" id="999" /> -->
+        <lang id="en">
+            <name>Password</name>
+            <desc>
+                You need a password to submit your online log.
+            </desc>
+        </lang>
+    </attr>
+    
+    <!-- A-CODE A98 ******************************************************* -->
     <attr acode="A98" categories="de-location">
         <ocgs id="223" inc="true" />
         <opencaching schema="OCPL" id="223" />
@@ -4244,6 +4445,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A99 ******************************************************* -->
     <attr acode="A99" categories="de-location">
         <ocgs id="224" inc="true" />
         <opencaching schema="OCPL" id="224" />
@@ -4272,6 +4474,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A100 ****************************************************** -->
     <attr acode="A100" categories="de-location">
         <groundspeak id="8" inc="true" name="Scenic view" />
         <opencaching schema="OCPL" id="8" />
@@ -4298,6 +4501,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A101 ****************************************************** -->
     <attr acode="A101" categories="de-location">
         <ocgs id="225" inc="true" />
         <opencaching schema="OCPL" id="225" />
@@ -4326,6 +4530,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A102 ****************************************************** -->
     <attr acode="A102" categories="de-location">
         <groundspeak id="61" inc="true" name="Partnership cache" />
         <opencaching schema="OCPL" id="61" />
@@ -4345,6 +4550,7 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A103 ****************************************************** -->
     <attr acode="A103" categories="de-location">
         <ocgs id="226" inc="true" />
         <opencaching schema="OCPL" id="226" />
@@ -4366,4 +4572,47 @@ store these attributes in GPX <groundspeak:attribute> elements.
         </lang>
     </attr>
 
+    <!-- A-CODE A104 ****************************************************** -->
+    <attr acode="A104" categories="de-location">
+        <ocgs id="227" inc="true" />
+        <opencaching schema="OCPL" id="227"/>
+        <lang id="en">
+            <name>Cave or adit (mine tunnel)</name>
+            <desc>
+                The cache is hidden near a cave or an adit, or directly inside one.
+                The exact hiding location should be clearly specified in the cache description.
+                In the case of caves and adits that are difficult to access, appropriate attributes should also be enabled, such as "Dangerous",
+                "Flashlight required", "Special equipment required" or "Hidden within enclosed rooms" (if available),
+                to inform seekers about the conditions and requirements for reaching the cache.
+            </desc>
+        </lang>
+        <lang id="pl">
+            <name>Jaskinia lub sztolnia</name>
+            <desc>
+                Skrzynka jest ukryta w pobliżu jaskini lub sztolni albo bezpośrednio w jej wnętrzu.
+                Dokładne miejsce ukrycia powinno być jasno określone w opisie skrzynki.
+                W przypadku jaskiń i sztolni o utrudnionym dostępie należy dodatkowo włączyć odpowiednie atrybuty, np. „Niebezpieczna”,
+                „Potrzebna latarka”, „Wymagany dodatkowy sprzęt” lub „Ukryta w zamkniętych pomieszczeniach” (jeśli są dostępne),
+                aby poinformować poszukiwaczy o warunkach i wymaganiach związanych z dotarciem do skrytki.
+            </desc>
+        </lang>
+        <lang id="ro">
+            <name>Peşteră sau galerie (de mină)</name>
+            <desc>
+                Geocutia este ascunsă în apropierea unei peşteri, a unei galerii de mină,
+                sau în interiorul acesteia.
+                Amplasamentul exact trebuie specificat clar în descriere.
+                În situaţiile cu acces dificil, trebuie să fie prezente şi atribute suplimentare 
+                precum "Pericol", "Necesită lanternă", "Necesită echipament special", "Ascunsă în interior" după caz
+                pentru a informa căutătorii despre condiţiile în care se poate ajunge la ea.
+            </desc>
+        </lang>
+    </attr>
+    
+    <!-- 
+         ******************************************************************
+         END A-CODE 
+         ******************************************************************
+    -->
+    
 </xml>
