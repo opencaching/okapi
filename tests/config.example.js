@@ -8,7 +8,7 @@ export const baseUrl        = 'https://okapi.example.org';
 // Allow run.mjs --write on this target (dev/test installations only, never production).
 export const allowWrite     = false;
 // The existing cache run.mjs --write writes per-user data to (own coordinates, personal
-// note, a Comment log). On OCPL use a Multi, Quiz or Other cache (user coordinates).
+// note, draft logs, a Comment log). On OCPL use a Multi, Quiz or Other cache (user coordinates).
 export const writeCache     = '';
 
 // Optional named targets for run.mjs (`node run.mjs --target prod`). Each needs its own
