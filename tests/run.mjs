@@ -26,8 +26,8 @@ function loadTarget(name) {
     }
     return t;
   }
-  const { baseUrl, consumerKey, consumerSecret, accessToken, tokenSecret, allowWrite, writeCache } = config;
-  return { baseUrl, consumerKey, consumerSecret, accessToken, tokenSecret, allowWrite, writeCache };
+  const { baseUrl, consumerKey, consumerSecret, accessToken, tokenSecret, allowWrite, writeLocation, writeCache } = config;
+  return { baseUrl, consumerKey, consumerSecret, accessToken, tokenSecret, allowWrite, writeLocation, writeCache };
 }
 
 const targetName = opt('target');
@@ -129,6 +129,46 @@ await check('level 1: caches/search/all', async () => {
   return `${j.results.length} codes, using ${ctx.cacheCode}`;
 });
 
+// Registration refusals write nothing, so they run without --write. Each one must be refused
+// with the field and the reason code; a request that would be accepted is never sent.
+await check('level 1: users/register refuses what the website refuses', async () => {
+  needKey();
+  if (!ctx.installation?.has_registration) skip('installation has no has_registration');
+  const reg = params => api.request('services/users/register', params, { method: 'POST' });
+  const probe = await reg({ username: 'a', email: 'x', password: 'x', accept_terms: 'true' });
+  if (probe.status === 400 && /may not register users/.test(probe.text)) skip('this consumer may not register users (FLAG_REGISTER_USERS)');
+  const cases = [
+    [{ username: 'okapi test user', email: 'not-an-address', password: 'Wald-Weg 42', accept_terms: 'true' }, 'email', 'email_invalid'],
+    [{ username: 'x', email: 'okapi-test@example.org', password: 'Wald-Weg 42', accept_terms: 'true' }, 'username', 'username_invalid'],
+    [{ username: 'a@example.org', email: 'okapi-test@example.org', password: 'Wald-Weg 42', accept_terms: 'true' }, 'username', 'username_invalid'],
+    [{ username: 'okapi test user', email: 'okapi-test@example.org', password: 'aaaaaa', accept_terms: 'true' }, 'password', 'password_weak'],
+    [{ username: 'okapi test user', email: 'okapi-test@example.org', password: 'my opencaching', accept_terms: 'true' }, 'password', 'password_weak'],
+    [{ username: 'okapi test user', email: 'okapi-test@example.org', password: 'Wald-Weg 42' }, 'accept_terms', undefined],
+  ];
+  for (const [params, field, reason] of cases) {
+    const res = await reg(params);
+    const err = JSON.parse(res.text).error ?? {};
+    assert(res.status === 400 && err.parameter === field && (reason === undefined || err.reason === reason),
+      `${JSON.stringify(params)}: HTTP ${res.status} ${err.parameter}/${err.reason}, expected ${field}/${reason}`);
+  }
+  return `${cases.length} refusals with field and reason`;
+});
+
+// A wrong password must be refused before anything happens; a deletion is never sent.
+await check('level 3: users/delete refuses a wrong password', async () => {
+  needToken();
+  if (!ctx.installation?.has_registration) skip('installation has no has_registration');
+  const res = await api.request('services/users/delete', { password: 'not the password 42' }, { method: 'POST', auth: 'hmac' });
+  if (res.status === 400 && /may not register users/.test(res.text)) skip('this consumer may not register users (FLAG_REGISTER_USERS)');
+  if (target.baseUrl.startsWith('http:') && res.status === 400 && /only over HTTPS/.test(res.text)) skip('users/delete needs HTTPS; this target uses plain HTTP');
+  const err = JSON.parse(res.text).error ?? {};
+  assert(res.status === 400 && err.parameter === 'password' && err.reason === 'wrong_password',
+    `HTTP ${res.status} ${err.parameter}/${err.reason}, expected password/wrong_password`);
+  const me = okJson(await api.request('services/users/user', { fields: 'uuid' }, { auth: 'hmac' }), 'users/user');
+  assert(me.uuid, 'the test user is gone');
+  return 'refused, account untouched';
+});
+
 await check('level 1: caches/geocache', async () => {
   needKey();
   if (!ctx.cacheCode) skip('no cache code');
@@ -216,19 +256,130 @@ await check('level 3: user coordinates field', async () => {
   return `user_coords=${j.user_coords}`;
 });
 
+await check('level 3: draftlogs/query (has_draft_logs)', async () => {
+  needToken();
+  if (!ctx.installation?.has_draft_logs) skip('installation has no has_draft_logs');
+  const j = okJson(await api.request('services/draftlogs/query', {}, { auth: 'hmac' }), 'draftlogs/query');
+  assert(Array.isArray(j), 'not an array');
+  for (const d of j) assert(d.draft_id && d.cache_code && d.type && typeof d.needs_maintenance2 === 'boolean', 'draft without draft_id/cache_code/type/needs_maintenance2');
+  return `${j.length} drafts`;
+});
+
 // --- writing level (--write) ------------------------------------------------
-// Works on the target's writeCache, an existing cache that is never changed itself:
-// only per-user data is written to it (own coordinates, a personal note, one Comment
-// log), and all of it is removed again.
+// Works on its own test cache, created first and archived last, so it touches no one
+// else's data. Everything it creates is removed again, except the archived test cache.
+// Installations without cache editing (has_cache_editing false, e.g. OCPL) use the target's writeCache instead: an
+// existing cache, which is never updated or archived; only per-user data is written.
 
 if (write) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
-  const w = { code: target.writeCache };  // state of the writing level
+  // Shifted a little per run: create refuses a second active cache at the same coordinates.
+  const [lat, lon] = (target.writeLocation ?? '52.327366|9.543').split('|')
+    .map((v, i) => (Number(v) + (i ? (Date.now() % 997) * 1e-6 : 0)).toFixed(6));
+  const w = {};  // state of the writing level
   const post = async (path, params, what) =>
     okJson(await api.request(path, params, { auth: 'hmac', method: 'POST' }), what);
   const read = async fields =>
     okJson(await api.request('services/caches/geocache', { cache_code: w.code, fields }, { auth: 'hmac' }), 'geocache');
-  const needCache = () => { needToken(); if (!w.code) skip('target has no writeCache'); };
+  const needCache = () => { needToken(); if (!w.code) skip('no test cache'); };
+
+  await check('write: caches/create', async () => {
+    needToken();
+    if (!ctx.installation?.has_cache_editing) {
+      if (target.writeCache) { w.code = target.writeCache; w.foreign = true; }
+      skip(`installation has no has_cache_editing${w.foreign ? `; using writeCache ${w.code}` : ''}`);
+    }
+    const params = {
+      cache_name: `okapi-test ${stamp}`, cache_type: 'Traditional', latitude: lat, longitude: lon,
+      difficulty: '1.5', terrain: '1.5', size2: 'micro', country: 'DE',
+      short_description: 'Created by the OKAPI test suite; archived again at the end of the run.',
+      description: 'Plain text <b>not bold</b>\nsecond line', hint2: 'under the <stone>',
+      alt_wpts: JSON.stringify([
+        { location: `${lat}|${lon}`, type: 'parking', description: 'parking' },
+        { location: `${lat}|${lon}`, type: 'poi', description: 'viewpoint' },
+        { location: `${lat}|${lon}`, type: 'stage', description: 'stage 1' },
+        { location: `${lat}|${lon}`, type: 'final', description: 'final, public on purpose' },
+      ]),
+    };
+    const j = await post('services/caches/create', params, 'caches/create');
+    assert(j.cache_code, `no cache_code: ${JSON.stringify(j)}`);
+    w.code = j.cache_code;
+    assert(j.url?.endsWith(`viewcache.php?wp=${w.code}`), `url is ${j.url}`);
+    const c = await read('code|name|status|owner|size2|description|hint2|alt_wpts');
+    assert(c.owner.uuid === ctx.user?.uuid, 'test cache is not owned by the test user');
+    assert(c.size2 === 'micro', `size2 is ${c.size2}`);
+    assert(!c.description.includes('<b>'), `plain-text description not escaped: ${c.description}`);
+    assert(c.hint2 === 'under the <stone>', `hint2 is ${JSON.stringify(c.hint2)}`);
+    assert(c.alt_wpts.map(x => x.type).join() === 'parking,poi,stage,final', `alt_wpts are ${c.alt_wpts.map(x => x.type)}`);
+    // Refused as on the website; none of these creates a cache.
+    const day = n => new Date(Date.now() + n * 86400e3).toISOString().slice(0, 10);
+    for (const [what, extra] of [
+      ['difficulty 1.3', { difficulty: '1.3' }],
+      ['same coordinates as an active cache', {}],
+      ['hidden after publishing', { date_hidden: day(1), latitude: '52.4' }],
+      ['an unknown cache type', { cache_type: 'Bonus', latitude: '52.4' }],
+      ['an unknown waypoint type', { latitude: '52.4', alt_wpts: JSON.stringify([{ location: '52.4|9.5', type: 'treasure' }]) }],
+      ['publish=later without a date', { publish: 'later', latitude: '52.4' }],
+      ['unknown publish choice', { publish: 'soon', latitude: '52.4' }],
+    ]) {
+      const r = await api.request('services/caches/create', { ...params, ...extra }, { auth: 'hmac', method: 'POST' });
+      assert(r.status === 400, `${what}: HTTP ${r.status}, expected 400`);
+    }
+    return `${w.code} (${c.status}), description escaped, 4 waypoints; 7 rules refused`;
+  });
+
+  // Listings sent unpublished, to be finished on the website: any cache type.
+  // Unpublished caches can't be archived through OKAPI, so each run leaves these behind.
+  await check('write: caches/create, not published (Traditional, Multi, Quiz)', async () => {
+    needToken();
+    if (!ctx.installation?.has_cache_editing) skip('installation has no has_cache_editing');
+    const codes = [];
+    for (const [i, type] of ['Traditional', 'Multi', 'Quiz'].entries()) {
+      const j = await post('services/caches/create', {
+        cache_name: `okapi-test ${stamp} ${type} unpublished`, cache_type: type,
+        latitude: lat, longitude: (Number(lon) + 0.001 * (i + 1)).toFixed(6),
+        difficulty: '3', terrain: '1.5', size2: 'small', country: 'DE', publish: 'notnow',
+        description: 'Finished on the website.',
+      }, `caches/create ${type}`);
+      assert(j.cache_code, `${type}: no cache_code: ${JSON.stringify(j)}`);
+      const r = await api.request('services/caches/geocache', { cache_code: j.cache_code, fields: 'code' }, { auth: 'hmac' });
+      assert(r.status === 400, `${type}: unpublished cache visible through geocache (HTTP ${r.status})`);
+      const u = okJson(await api.request('services/caches/update', { cache_code: j.cache_code, terrain: '2' },
+        { auth: 'hmac', method: 'POST' }), `caches/update unpublished ${type}`);
+      assert(u.changed.join() === 'terrain', `${type}: changed is ${u.changed}`);
+      codes.push(j.cache_code);
+    }
+    return `${codes.join(', ')}; not visible through geocache, update works`;
+  });
+
+  await check('write: caches/update', async () => {
+    needCache();
+    if (w.foreign) skip('writeCache is not the test user\'s cache');
+    const name = `okapi-test ${stamp} (updated)`;
+    const update = params => api.request('services/caches/update', { cache_code: w.code, ...params }, { auth: 'hmac', method: 'POST' });
+    const before = await read('alt_wpts');
+    const u = okJson(await update({ cache_name: name, difficulty: '2.5', terrain: '1.5', hint2: '',
+      description: 'New <plain> text\nline 2', remove_alt_wpts: before.alt_wpts[0].name }), 'caches/update');
+    assert(u.changed.join() === 'cache_name,difficulty,description,hint2,alt_wpts', `changed is ${u.changed}`);
+    assert((await read('description')).description.includes('New &lt;plain&gt; text'), 'description not replaced as plain text');
+    const c = await read('name|difficulty|terrain|hint2|alt_wpts');
+    assert(c.name === name, `name is '${c.name}'`);
+    assert(Number(c.difficulty) === 2.5, `difficulty is ${c.difficulty}`);
+    assert(c.hint2 === '', `hint2 not removed: ${JSON.stringify(c.hint2)}`);
+    assert(c.alt_wpts.map(x => x.type).join() === 'poi,stage,final', `alt_wpts after removal: ${c.alt_wpts.map(x => x.type)}`);
+    const pw = okJson(await update({ passwd: 'okapitest' }), 'caches/update passwd');
+    assert(pw.changed.join() === 'passwd' && (await read('req_passwd')).req_passwd === true, `passwd not set: ${pw.changed}`);
+    const nopw = okJson(await update({ passwd: '' }), 'caches/update passwd clear');
+    assert(nopw.changed.join() === 'passwd' && (await read('req_passwd')).req_passwd === false, `passwd not removed: ${nopw.changed}`);
+    const again = okJson(await update({ cache_name: name, difficulty: '2.5' }), 'caches/update');
+    assert(again.changed.length === 0, `unchanged values changed ${again.changed}`);
+    for (const [what, params] of [['empty latitude', { latitude: '', longitude: '' }], ['latitude alone', { latitude: '52.3' }],
+      ['unknown waypoint', { remove_alt_wpts: `${w.code}-9` }], ['status', { status: 'Archived' }]]) {
+      const r = await update(params);
+      assert(r.status === 400, `${what}: HTTP ${r.status}, expected 400`);
+    }
+    return 'name, difficulty, hint, a waypoint and the log password changed; unchanged values left alone; bad values refused';
+  });
 
   await check('write: save_user_coords set and remove', async () => {
     needCache();
@@ -288,6 +439,85 @@ if (write) {
     return 'set, too long refused, cleared';
   });
 
+  await check('write: lists create/query/update/add/get/remove/delete', async () => {
+    needCache();
+    if (!ctx.installation?.has_lists) skip('installation has no has_lists');
+    const name = `okapi-test ${stamp}`;
+    const list = await post('services/lists/create', { list_name: name, list_description: 'a <b>b</b>\nc', list_watch: 'true' }, 'lists/create');
+    assert(list.list_id, 'no list_id');
+    const raw = async (path, params) => api.request(path, params, { auth: 'hmac', method: 'POST' });
+    try {
+      // the website's name rules
+      const dup = await raw('services/lists/create', { list_name: name });
+      assert(dup.status === 400, `duplicate name: HTTP ${dup.status}, expected 400`);
+      const short = await raw('services/lists/create', { list_name: 'short', list_status: '2' });
+      if (short.status === 200) await post('services/lists/delete', { list_id: JSON.parse(short.text).list_id }, 'cleanup');
+      assert(short.status === 400, `public list with a 5-character name: HTTP ${short.status}, expected 400`);
+      const lists = okJson(await api.request('services/lists/query', { include_caches: 'true' }, { auth: 'hmac' }), 'lists/query');
+      assert(Array.isArray(lists), `query: expected an array, got ${JSON.stringify(lists).slice(0, 80)}`);
+      const mine = lists.find(l => l.id === list.list_id);
+      assert(mine, 'new list not in query');
+      assert(mine.status === 0 && mine.is_watched === true && Array.isArray(mine.cache_codes), `query entry: ${JSON.stringify(mine)}`);
+      // plain text in, escaped HTML stored (the website shows it as HTML)
+      assert(mine.description === 'a &lt;b&gt;b&lt;/b&gt;<br />\nc', `description stored as ${JSON.stringify(mine.description)}`);
+      const added = await post('services/lists/add_caches', { list_id: list.list_id, cache_codes: `${w.code}|${w.code}|OCZZZZZZ` }, 'add_caches');
+      assert(added.added_count === 1, `added_count ${added.added_count}, expected 1`);
+      const got = await post('services/lists/get_caches', { list_id: list.list_id }, 'get_caches');
+      assert(Array.isArray(got.cache_codes) && got.cache_codes.includes(w.code) && got.cache_count === 1, `get_caches: ${JSON.stringify(got)}`);
+      const upd = await post('services/lists/update', { list_id: list.list_id, list_description: '', list_watch: 'false' }, 'lists/update');
+      assert(upd.description === '' && upd.is_watched === false && upd.name === name, `update: ${JSON.stringify(upd)}`);
+      const removed = await post('services/lists/remove_caches', { list_id: list.list_id, cache_codes: w.code }, 'remove_caches');
+      assert(removed.removed_count === 1, `removed_count ${removed.removed_count}, expected 1`);
+    } finally {
+      await post('services/lists/delete', { list_id: list.list_id }, 'lists/delete');
+    }
+    const gone = await api.request('services/lists/get_caches', { list_id: String(list.list_id) }, { auth: 'hmac' });
+    assert(gone.status === 400, `deleted list: HTTP ${gone.status}, expected 400`);
+    return 'website name rules, query shape, escaped description, add/remove counts, update, delete';
+  });
+
+  await check('write: draftlogs/upload_fieldnotes (hybrid file)', async () => {
+    needCache();
+    if (!ctx.installation?.has_draft_logs) skip('installation has no has_draft_logs');
+    // One hybrid file as c:geo/Garmin write it: UTF-16LE, GC log type names, records of other platforms included.
+    const records = [
+      ['GC12345', 'Found it', 'TFTC', false],
+      [w.code, 'Found it', 'Grüße, Straße ß', true],
+      [w.code, 'Write note', "Zeile 1\nZeile 2 mit 'Zitat' <3", true],
+      [w.code, 'Needs Maintenance', 'Logbuch voll', true],
+      ['OP1234', 'Found it', 'Dzięki', false],
+    ];
+    const content = records.map(([code, type, text], i) => `${code},2024-05-01T10:2${i}:00Z,${type},"${text}"`).join('\n') + '\n';
+    const j = await post('services/draftlogs/upload_fieldnotes',
+      { field_notes: Buffer.from(content, 'utf16le').toString('base64') }, 'upload_fieldnotes');
+    const expected = records.filter(r => r[3]).length;
+    assert(j.success === true, `success is ${j.success}`);
+    assert(j.total_records === records.length, `total_records ${j.total_records}, expected ${records.length}`);
+    assert(j.processed_records === expected, `processed_records ${j.processed_records}, expected ${expected}`);
+    assert(Array.isArray(j.draft_ids) && j.draft_ids.length === expected, `draft_ids ${JSON.stringify(j.draft_ids)}`);
+    w.draftIds = j.draft_ids;
+    return `${j.processed_records} of ${j.total_records} records became drafts ${j.draft_ids.join(', ')}`;
+  });
+
+  await check('write: draftlogs/query and delete', async () => {
+    needCache();
+    if (!w.draftIds) skip('no drafts uploaded');
+    const q = async () => okJson(await api.request('services/draftlogs/query', { cache_code: w.code }, { auth: 'hmac' }), 'draftlogs/query');
+    const drafts = await q();
+    assert(drafts.length === w.draftIds.length, `query returns ${drafts.length} drafts, expected ${w.draftIds.length}`);
+    const got = drafts.map(d => `${d.type}${d.needs_maintenance2 ? '+NM' : ''}`).join(', ');
+    assert(got === "Found it, Comment, Comment+NM", `types are ${got}`);
+    assert(drafts[1].comment === "Zeile 1<br />\nZeile 2 mit 'Zitat' &lt;3", `comment is ${JSON.stringify(drafts[1].comment)}`);
+    const del = await post('services/draftlogs/delete', { draft_ids: [...w.draftIds, '999999999'].join('|') }, 'draftlogs/delete');
+    assert(del.success === true, 'success is not true');
+    assert([...del.deleted_draft_ids].sort().join() === [...w.draftIds].sort().join(), `deleted ${JSON.stringify(del.deleted_draft_ids)}`);
+    assert(del.not_found_draft_ids.join() === '999999999', `not_found ${JSON.stringify(del.not_found_draft_ids)}`);
+    assert((await q()).length === 0, 'drafts still there after delete');
+    const bad = await api.request('services/draftlogs/delete', { draft_ids: 'abc' }, { auth: 'hmac', method: 'POST' });
+    assert(bad.status === 400, `invalid draft_ids: HTTP ${bad.status}, expected 400`);
+    return `${got}; deleted, unknown ID reported, invalid ID rejected`;
+  });
+
   await check('write: logs/submit, edit, delete', async () => {
     needCache();
     const res = await api.request('services/logs/submit',
@@ -339,6 +569,59 @@ if (write) {
       if (!deleted) await api.request('services/logs/delete', { log_uuid: uuid }, { auth: 'hmac', method: 'POST' });
     }
     return `log ${uuid}: image added and deleted, log with an image deleted`;
+  });
+
+  // Status changes are status logs (services/logs/submit), so they need a full website.
+  // OCDE records each status change in cache_status_modified, keyed by cache and second,
+  // so two changes of one cache within the same second collide: wait a little before each.
+  const status = async (method, expected) => {
+    await new Promise(r => setTimeout(r, 1100));
+    const res = await api.request(`services/caches/${method}`,
+      { cache_code: w.code, comment: `okapi-test ${method}` }, { auth: 'hmac', method: 'POST' });
+    if (/OcHTMLPurifier/.test(res.text)) skip('OKAPI runs without the website (OcHTMLPurifier missing)');
+    const j = okJson(res, `caches/${method}`);
+    assert(j.success === true && j.log_uuid, `${method} failed: ${j.message ?? JSON.stringify(j)}`);
+    const c = await read('status');
+    assert(c.status === expected, `after ${method} status is ${c.status}`);
+  };
+
+  await check('write: caches/disable refused on a cache of someone else', async () => {
+    needToken();
+    const code = w.foreign ? w.code : ctx.cacheCode;
+    const c = okJson(await api.request('services/caches/geocache', { cache_code: code, fields: 'owner|status' }, { auth: 'hmac' }), 'geocache');
+    if (c.owner.uuid === ctx.user?.uuid) skip(`${code} is the test user's own cache`);
+    const j = okJson(await api.request('services/caches/disable', { cache_code: code }, { auth: 'hmac', method: 'POST' }), 'caches/disable');
+    assert(j.success === false, `disable was not refused: ${JSON.stringify(j)}`);
+    const after = okJson(await api.request('services/caches/geocache', { cache_code: code, fields: 'status' }, { auth: 'hmac' }), 'geocache');
+    assert(after.status === c.status, `status changed to ${after.status}`);
+    return `${code}: "${j.message}"`;
+  });
+
+  await check('write: status change to the current status refused', async () => {
+    needCache();
+    if (w.foreign) skip('writeCache is not the test user\'s cache');
+    const before = (await read('status')).status;
+    const method = before === 'Available' ? 'enable' : 'disable';
+    const j = okJson(await api.request(`services/caches/${method}`, { cache_code: w.code }, { auth: 'hmac', method: 'POST' }), `caches/${method}`);
+    assert(j.success === false && !j.log_uuid, `${method} on a cache that is ${before} was not refused: ${JSON.stringify(j)}`);
+    assert((await read('status')).status === before, 'status changed');
+    return `${method} on ${before}: "${j.message}"`;
+  });
+
+  await check('write: caches/disable and enable', async () => {
+    needCache();
+    if (w.foreign) skip('writeCache is not the test user\'s cache');
+    await status('disable', 'Temporarily unavailable');
+    await status('enable', 'Available');
+    return 'disabled and enabled again, with status logs';
+  });
+
+  // Always last: archive the test cache, even if checks above failed.
+  await check('write: caches/archive (the test cache)', async () => {
+    needCache();
+    if (w.foreign) skip('writeCache is not the test user\'s cache');
+    await status('archive', 'Archived');
+    return `${w.code} archived`;
   });
 }
 
