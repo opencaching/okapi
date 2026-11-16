@@ -35,6 +35,13 @@
             cannot be found) but may be restored,</li>
             <li><b>Archived</b> - Cache is permanently unavailable (moved to the archives).</li>
         </ul>
+        <p>One more status code may be given, for requests signed with an Access Token only:</p>
+        <ul>
+            <li><b>Unpublished</b> - the user's <b>own</b> caches which are not published
+            yet. Caches of other users are never included, whatever their status.
+            Combine it with other codes, e.g. <b>Available|Unpublished</b>, to get
+            both.</li>
+        </ul>
         <p>More statuses are in use at OC sites and may be implemented in future
         OKAPI versions (see <a href="https://github.com/opencaching/okapi/issues/565">discussion</a>).</p>
     </opt>
