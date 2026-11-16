@@ -1,30 +1,32 @@
-$(function() {
-    $('.issue-comments').each(function() {
-        var div = $(this);
-        var issue_id = div.attr('issue_id');
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: okapi_base_url + 'services/apiref/issue',
-            data: {
-                'issue_id': issue_id
-            },
-            success: function(issue)
-            {
-                var comments, link;
-                if (issue.comment_count === null) {
-                    link = $("<a>Comments</a>");
-                } else {
-                    comments = (issue.comment_count === 1) ? "comment" : "comments";
-                    link = $("<a>" + issue.comment_count + " " + comments + "</a>");
-                }
-                link.attr('href', issue.url);
-                div.append(link);
-                var notice = $("<span class='notice'>Notice: comments are shared between all OKAPI installations.</span>");
-                div.append(notice);
-            }
-        });
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    var divs = document.querySelectorAll('.issue-comments');
+    for (var i = 0; i < divs.length; i++) {
+        (function(div) {
+            var issue_id = div.getAttribute('issue_id');
+            fetch(okapi_base_url + 'services/apiref/issue?issue_id=' + encodeURIComponent(issue_id))
+                .then(function(response) {
+                    if (!response.ok)
+                        throw new Error(response.status);
+                    return response.json();
+                })
+                .then(function(issue) {
+                    var link = document.createElement('a');
+                    if (issue.comment_count === null) {
+                        link.textContent = "Comments";
+                    } else {
+                        var comments = (issue.comment_count === 1) ? "comment" : "comments";
+                        link.textContent = issue.comment_count + " " + comments;
+                    }
+                    link.setAttribute('href', issue.url);
+                    div.appendChild(link);
+                    var notice = document.createElement('span');
+                    notice.className = 'notice';
+                    notice.textContent = "Notice: comments are shared between all OKAPI installations.";
+                    div.appendChild(notice);
+                })
+                .catch(function() {});
+        })(divs[i]);
+    }
 
     /**
      * When present on http(s)://opencaching.xx/okapi/some/path page, return "some/path".
@@ -44,12 +46,17 @@ $(function() {
         throw "We're outside of okapi_base_url";
     };
 
-    $('#switcher').change(function() {
-        var current_base_url = $('#switcher option[current]').attr('value');
-        var new_base_url = $('#switcher option:selected').attr('value');
-        if (current_base_url !== new_base_url) {
-            window.location.href = new_base_url + get_rel_path();
-        }
-    });
-    $('#switcher option[current]').attr('selected', true);
+    var switcher = document.getElementById('switcher');
+    if (switcher) {
+        var current = switcher.querySelector('option[current]');
+        switcher.addEventListener('change', function() {
+            var current_base_url = current ? current.value : null;
+            var new_base_url = switcher.value;
+            if (current_base_url !== new_base_url) {
+                window.location.href = new_base_url + get_rel_path();
+            }
+        });
+        if (current)
+            current.selected = true;
+    }
 });
