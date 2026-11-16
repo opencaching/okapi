@@ -23,6 +23,46 @@
 
     -->
     <changes>
+        <change commit="5e63627f" version="2029" time="2026-11-16T09:11:53+0100" type="enhancement">
+            Owners can read their own unpublished caches:
+            <a href="services/caches/geocache.html">services/caches/geocache</a> and
+            <a href="services/caches/geocaches.html">services/caches/geocaches</a>
+            return them to their owner with the new status <i>Unpublished</i>, and
+            <a href="services/caches/search/all.html">search methods</a> find them
+            with <i>status=Unpublished</i> (opt-in, Level 3, only the caller's own
+            caches). <a href="services/logs/submit.html">services/logs/submit</a>
+            refuses status logs on such caches; publishing stays on the website.
+        </change>
+        <change commit="9a1c61e9" version="2028" time="2026-11-16T09:11:01+0100" type="other">
+            Site admins: OKAPI's own pages no longer load jQuery or anything else
+            from outside the installation (Google CDN, gist.github.com). Examples
+            are shown inline with the installation's own URL.
+        </change>
+        <change commit="68f830cc" version="2027" time="2026-11-16T09:11:46+0100" type="enhancement">
+            Draft logs (OCDE): the new methods
+            <a href="services/draftlogs/upload_fieldnotes.html">services/draftlogs/upload_fieldnotes</a>,
+            <a href="services/draftlogs/query.html">services/draftlogs/query</a> and
+            <a href="services/draftlogs/delete.html">services/draftlogs/delete</a>
+            upload a field notes file as drafts on the website, list the user's
+            drafts and delete them. <a href="services/apisrv/installation.html">services/apisrv/installation</a>
+            reports <i>has_draft_logs</i>.
+        </change>
+        <change commit="183ad8d1" version="2026" time="2026-11-12T15:11:15+0100" type="enhancement">
+            Attributes: new A104 (cave or adit, OCPL 227); A31 now reads
+            "enclosed space"; A90 to A97 got definitions, with the matching
+            geocaching.com attributes 71 (Challenge) and 72 (OpenChecker) and the
+            OCUS attributes 221 and 222.
+        </change>
+        <change commit="529bbbd1" version="2024" time="2026-11-04T13:11:29+0100" type="bugfix">
+            <a href="services/logs/submit.html">services/logs/submit</a> and
+            <a href="services/logs/images/add.html">services/logs/images/add</a>
+            no longer fail with HTTP 500 when the database reuses the id of a
+            deleted log or picture (on MariaDB before 10.2 after a server restart).
+        </change>
+        <change commit="618332d6" version="2023" time="2026-11-04T12:11:48+0100" type="enhancement">
+            OCPL sites: A15 (Field puzzle) is also mapped to OCPL attribute 47, and
+            the new A103 (Cache to be solved online) to OCPL attribute 226.
+        </change>
         <change commit="af9826ab" version="2019" time="2026-11-02T23:11:03+0100" type="enhancement">
             User coordinates: the new method
             <a href="services/caches/save_user_coords.html">services/caches/save_user_coords</a>
