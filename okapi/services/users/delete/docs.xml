@@ -1,0 +1,37 @@
+<xml>
+    <brief>Delete the user's account</brief>
+    <infotags>ocde-specific</infotags>
+    <desc>
+        <p>Deletes the account of the user the Access Token belongs to, by the site's own rules, as
+        its terms promise when a user ends the agreement:</p>
+        <ul>
+            <li>An account without geocaches, logs or reports is deleted completely.</li>
+            <li>Any other account is anonymized, as the site's team does it on a deletion request:
+            the personal data (name, email address, password, profile, home coordinates, lists,
+            watches, personal notes, sessions) is deleted; the user's geocaches are locked and their
+            listings neutralized; the texts of the user's logs are replaced and the pictures of the
+            user's geocaches and logs deleted. The logs themselves, the geocaches' positions and
+            ratings stay, so the game's history stays intact for others. The username becomes
+            <i>delete_&lt;id&gt;</i>.</li>
+        </ul>
+        <p>This can't be undone. All Access Tokens of the user end with it, this one too.</p>
+        <p>The request needs the account's password, so a stored Access Token alone is not enough.
+        Only for applications the site's administrators allowed to register users (an application
+        that creates accounts has to offer their deletion too), and only over HTTPS. Available
+        where <b>has_registration</b> in
+        <a href='%OKAPI:methodref:services/apisrv/installation%'>services/apisrv/installation</a>
+        is true.</p>
+        <p>A wrong password gives HTTP 400 with the <b>reason</b> <b>wrong_password</b>.</p>
+    </desc>
+    <req name='password'>
+        <p>The account's password.</p>
+    </req>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary:</p>
+        <ul>
+            <li><b>result</b> - <b>deleted</b> (the account is gone) or <b>anonymized</b>
+            (see above).</li>
+        </ul>
+    </returns>
+</xml>

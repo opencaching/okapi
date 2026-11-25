@@ -170,6 +170,23 @@ final class Settings
         'MOBILE_REGISTRATION_URL' => null,
 
         /**
+         * OCDE only: account creation through services/users/register. null (the default)
+         * turns it off. To turn it on, give the website's own values, so accounts made
+         * through OKAPI log in on the website:
+         *
+         * array(
+         *     'password_hash' => $opt['logic']['password_hash'],
+         *     'password_salt' => $opt['logic']['password_salt'],
+         *     'data_license'  => $opt['logic']['license']['newusers'],
+         *     'terms_url'     => absolute URL of the terms of service,
+         *     'privacy_url'   => absolute URL of the privacy statement,
+         * )
+         *
+         * Only consumers with the FLAG_REGISTER_USERS flag may register users.
+         */
+        'OCDE_REGISTRATION' => null,
+
+        /**
          * URL of the site's logo image.
          * Minimum size is 64x64 pixels, maximum size 72x72 pixels.
          */

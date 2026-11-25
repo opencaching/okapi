@@ -114,6 +114,34 @@
                 is available.</p>
             </li>
             <li>
+                <p><b>has_lists</b> - boolean, <b>true</b> if this installation
+                supports geocache lists. Use this to determine whether the
+                <a href="%OKAPI:methodargref:services/lists/create%">services/lists/*</a>
+                family of methods is available.</p>
+            </li>
+            <li>
+                <p><b>has_registration</b> - boolean, <b>true</b> if applications can create
+                user accounts on this installation through
+                <a href="%OKAPI:methodref:services/users/register%">services/users/register</a>.
+                The site's administrators also have to allow each application. Such an
+                application can also delete the user's account with
+                <a href="%OKAPI:methodref:services/users/delete%">services/users/delete</a>.</p>
+            </li>
+            <li>
+                <p><b>terms_url</b>, <b>privacy_url</b>, <b>data_license_url</b> - the pages a
+                new user accepts when registering (terms of service, privacy statement, data
+                license); null if unknown.</p>
+            </li>
+            <li>
+                <p><b>has_cache_editing</b> - boolean, <b>true</b> if owners can
+                create geocaches and change their listings with
+                <a href="%OKAPI:methodref:services/caches/create%">services/caches/create</a> and
+                <a href="%OKAPI:methodref:services/caches/update%">services/caches/update</a>.
+                Older installations don't return this field; treat that as <b>false</b>.
+                (Archiving, disabling and enabling work everywhere, see
+                <a href="%OKAPI:methodref:services/caches/archive%">services/caches/archive</a>.)</p>
+            </li>
+            <li>
                 <p><b>cache_types</b> - list of the OKAPI cache type names this
                 installation uses (e.g. <b>Traditional</b>, <b>Multi</b>).
                 Only present when <b>has_draft_logs</b> is true.</p>

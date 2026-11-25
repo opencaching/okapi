@@ -1,0 +1,25 @@
+<xml>
+    <brief>Send the activation mail again</brief>
+    <infotags>ocde-specific</infotags>
+    <desc>
+        <p>Sends the activation mail of an account that is not active yet once more, with the same
+        code (so an earlier mail stays valid). Only for applications the site's administrators
+        allowed to register users, and only over HTTPS.</p>
+        <p>An account gets at most 3 resends, at least 5 minutes after the previous mail (the
+        website itself sends the mail only once), so the method can't be used to flood an address
+        with mail from the site.</p>
+        <p>Refusals give HTTP 400 with a <b>reason</b>: <b>unknown_email</b>, <b>already_active</b>,
+        <b>too_soon</b> (the last mail went out less than 5 minutes ago), <b>too_many_mails</b>
+        (3 resends already).</p>
+    </desc>
+    <req name='email'>
+        <p>The email address the account was registered with.</p>
+    </req>
+    <opt name='langpref'>
+        <p>Language of the mail, as in services/users/register.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>A dictionary with the <b>email</b> the mail was sent to.</p>
+    </returns>
+</xml>

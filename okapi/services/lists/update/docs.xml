@@ -1,0 +1,45 @@
+<xml>
+    <brief>Change a cache list</brief>
+    <infotags>ocde-specific</infotags>
+    <issue-id>627</issue-id>
+    <desc>
+        <p>Changes the name, description, visibility, password or the user's watch of a list.
+        Parameters left out keep their current value; at least one is required. The same rules
+        apply as on the website's list form.</p>
+    </desc>
+    <req name='list_id'>
+        <p>The id of one of the user's lists, as returned by
+        <a href='%OKAPI:methodref:services/lists/query%'>services/lists/query</a>. Another user's list,
+        or one that no longer exists (e.g. deleted on the website), gives HTTP 400.</p>
+    </req>
+    <opt name='list_name'>
+        <p>The list's name, at most 80 characters, unique among the user's lists (as on the website).
+        A public list (list_status 2 or 3) needs a name of at least 10 characters.</p>
+    </opt>
+    <opt name='list_description'>
+        <p>Plain text; an empty value removes the description. The website keeps list descriptions as HTML, so the text is stored HTML-escaped,
+        with its line breaks as &lt;br /&gt;.</p>
+    </opt>
+    <opt name='list_status'>
+        <p>Who can see the list (the website's "visibility"):</p>
+        <ul>
+            <li><b>0</b> - private,</li>
+            <li><b>2</b> - public,</li>
+            <li><b>3</b> - public, and shown in the listings of the caches on it.</li>
+        </ul>
+    </opt>
+    <opt name='list_password'>
+        <p>Only for private lists: other users who know the password can open the list on the website.
+        At most 80 characters. Like on the website, it is stored as given (not hashed), and it is
+        dropped when the list becomes public.</p>
+    </opt>
+    <opt name='list_watch'>
+        <p><b>true</b> or <b>false</b>: whether the user gets the website's notifications when caches
+        on the list get new logs.</p>
+    </opt>
+    <common-format-params/>
+    <returns>
+        <p>The list after the change, as one entry of
+        <a href='%OKAPI:methodref:services/lists/query%'>services/lists/query</a>.</p>
+    </returns>
+</xml>
