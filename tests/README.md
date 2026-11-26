@@ -55,10 +55,12 @@ It writes only per-user data, to an existing cache named by `writeCache` in the
 target, and removes all of it again; the cache itself is never changed:
 1. `caches/save_user_coords`: set, read back via `saved_value` and `user_coords`, remove
 2. `caches/save_personal_notes`: set, read back, clear
-3. `draftlogs/upload_fieldnotes` with one hybrid file (UTF-16LE, GC log type names,
+3. `lists/*`: create, add the cache, get, remove, delete the list
+   (only when `has_lists` is set)
+4. `draftlogs/upload_fieldnotes` with one hybrid file (UTF-16LE, GC log type names,
    records of other platforms), then `draftlogs/query` and `draftlogs/delete`
    (only when `has_draft_logs` is set)
-4. `logs/submit` a Comment, `logs/edit`, `logs/delete`
+5. `logs/submit` a Comment, `logs/edit`, `logs/delete`
 
 On OCPL, user coordinates are accepted only on Multi, Quiz and Other caches, so pick
 `writeCache` of one of those types there.

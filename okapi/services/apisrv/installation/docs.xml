@@ -114,6 +114,12 @@
                 is available.</p>
             </li>
             <li>
+                <p><b>has_lists</b> - boolean, <b>true</b> if this installation
+                supports geocache lists. Use this to determine whether the
+                <a href="%OKAPI:methodargref:services/lists/create%">services/lists/*</a>
+                family of methods is available.</p>
+            </li>
+            <li>
                 <p><b>cache_types</b> - list of the OKAPI cache type names this
                 installation uses (e.g. <b>Traditional</b>, <b>Multi</b>).
                 Only present when <b>has_draft_logs</b> is true.</p>
