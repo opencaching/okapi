@@ -149,6 +149,22 @@ await check('level 1: logs/logs', async () => {
   return `${j.length} logs`;
 });
 
+await check('level 1: logs/entries without logs, with user_fields', async () => {
+  needKey();
+  // No existing log: OKAPI must not ask services/users/users for an empty list
+  // of users (that ended in HTTP 500).
+  const uuid = '00000000-0000-0000-0000-000000000000';
+  const j = okJson(await api.request('services/logs/entries', {
+    log_uuids: uuid, fields: 'uuid|user', user_fields: 'uuid|caches_found',
+  }), 'logs/entries');
+  assert(j[uuid] === null, `expected null for an unknown log, got ${JSON.stringify(j)}`);
+  const e = okJson(await api.request('services/logs/entries', {
+    log_uuids: '', fields: 'uuid|user', user_fields: 'uuid|caches_found',
+  }), 'logs/entries (empty list)');
+  assert(Array.isArray(e) ? e.length === 0 : Object.keys(e).length === 0, `expected no entries, got ${JSON.stringify(e)}`);
+  return 'unknown log and empty list answered';
+});
+
 // Level 3: OAuth with an access token. PLAINTEXT and HMAC-SHA1 must both work
 // (PLAINTEXT over HTTPS is used by clients out there; HMAC by e.g. c:geo).
 
