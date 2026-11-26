@@ -122,6 +122,7 @@ class WebService
         $results = array();
         $log_id2uuid = array(); /* Maps logs' internal_ids to uuids */
         $log_user_ids = array();
+        $log_uuid2user_uuid = array(); /* Maps logs' uuids to their users' uuids */
         $flag_options = array('null', 'false', 'true');
         while ($row = Db::fetch_assoc($rs))
         {
@@ -197,9 +198,10 @@ class WebService
             Db::free_result($rs);
         }
 
-        # fetch users, if non-default user fields are selected
+        # fetch users, if non-default user fields are selected (and there are
+        # any logs: users/users refuses an empty list of users)
 
-        if ($user_fields && !$only_basic_user_fields)
+        if ($user_fields && !$only_basic_user_fields && count($log_uuid2user_uuid) > 0)
         {
             $usersRequest = new OkapiInternalRequest(
                 $request->consumer,
